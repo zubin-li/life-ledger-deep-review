@@ -2,9 +2,9 @@ const CACHE_NAME = "life-ledger-pwa-0.1.0-beta.1";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.1.0-beta.1",
-  "./app.js?v=0.1.0-beta.1",
-  "./manifest.webmanifest?v=0.1.0-beta.1",
+  "./styles.css",
+  "./app.js",
+  "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",

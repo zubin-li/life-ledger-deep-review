@@ -44,7 +44,25 @@ There is no hosted Life Ledger account, advertising layer, or central user datab
 
 ## Choose how to use it
 
-### 1. Local only — fastest and most private
+### 1. Local only — download and open
+
+No account, terminal, Node.js, or Cloudflare setup is required:
+
+1. On GitHub, choose **Code → Download ZIP**.
+2. Unzip the download.
+3. Double-click `OPEN-LIFE-LEDGER.html`.
+
+The app starts in local-only mode and saves to that browser's `localStorage`. In direct-file mode, cloud sync, PWA installation, and service-worker caching remain disabled by design.
+
+For a more consistent browser origin without installing project dependencies, start a small local server from the repository folder:
+
+```bash
+python3 -m http.server 4173 --directory public
+```
+
+Then open `http://localhost:4173`.
+
+### 2. Developer mode
 
 ```bash
 git clone https://github.com/zubin-li/life-ledger-deep-review.git
@@ -53,13 +71,13 @@ npm install
 npm run dev
 ```
 
-Open the local URL shown by Wrangler. The first start applies the D1 schema locally, but the app itself works without cloud login. Browser data remains in `localStorage`.
+Open the local URL shown by Wrangler. The first start applies the D1 schema locally. This mode is intended for changing the Worker API or testing D1 integration.
 
-### 2. Create your own copy
+### 3. Create your own copy
 
 Use GitHub's **Use this template** button. Your new repository has an independent history and can be customized without sharing data with this project.
 
-### 3. Deploy your own private cloud copy
+### 4. Deploy your own private cloud copy
 
 Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository, create a Worker and D1 database in your account, apply the migration, and deploy the app.
 
@@ -101,7 +119,7 @@ Cloud synchronization is optional. The Worker validates the Access JWT before th
 | `npm run db:migrations:apply` | Apply D1 migrations to the configured remote database |
 | `npm run deploy` | Migrate and deploy to Cloudflare |
 
-Requires Node.js 20 or newer.
+The development and deployment commands require Node.js 20 or newer. Direct local use does not require Node.js.
 
 ## Project structure
 

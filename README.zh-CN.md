@@ -44,7 +44,25 @@
 
 ## 三种使用方式
 
-### 1. 仅在本地使用——最简单、最私密
+### 1. 仅在本地使用——下载后直接打开
+
+不需要账户、终端、Node.js 或 Cloudflare 配置：
+
+1. 在 GitHub 点击 **Code → Download ZIP**。
+2. 解压下载文件。
+3. 双击 `OPEN-LIFE-LEDGER.html`。
+
+应用会直接进入仅本地模式，数据保存在该浏览器的 `localStorage` 中。直接打开文件时，云同步、PWA 安装和 Service Worker 缓存会有意保持关闭。
+
+如果希望使用更稳定的浏览器本地域名，同时又不安装项目依赖，可以在仓库目录运行一个轻量本地服务器：
+
+```bash
+python3 -m http.server 4173 --directory public
+```
+
+然后打开 `http://localhost:4173`。
+
+### 2. 开发者模式
 
 ```bash
 git clone https://github.com/zubin-li/life-ledger-deep-review.git
@@ -53,13 +71,13 @@ npm install
 npm run dev
 ```
 
-打开 Wrangler 显示的本地网址。首次启动会建立本地 D1 结构，但即使不登录云端，应用也能正常工作；浏览器数据保存在 `localStorage` 中。
+打开 Wrangler 显示的本地网址。首次启动会建立本地 D1 结构；这个模式主要用于修改 Worker API 或测试 D1 集成。
 
-### 2. 建立自己的 GitHub 副本
+### 3. 建立自己的 GitHub 副本
 
 点击 GitHub 页面上的 **Use this template**。生成的新仓库拥有独立历史，可以自行修改，不会把任何个人数据分享给本项目。
 
-### 3. 部署属于自己的私有云版本
+### 4. 部署属于自己的私有云版本
 
 点击上面的 **Deploy to Cloudflare**。Cloudflare 会把公开仓库复制到你的账号，在你的账户中创建 Worker 和 D1 数据库，执行初始化并完成部署。
 
@@ -101,7 +119,7 @@ npm run dev
 | `npm run db:migrations:apply` | 对远程 D1 执行数据库迁移 |
 | `npm run deploy` | 执行迁移并部署到 Cloudflare |
 
-需要 Node.js 20 或以上版本。
+开发和部署命令需要 Node.js 20 或以上版本；直接本地使用不需要安装 Node.js。
 
 ## 项目结构
 

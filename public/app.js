@@ -881,7 +881,9 @@ let selectedReviewWeek = isoWeekKey(new Date());
 let selectedWorkspaceWeek = isoWeekKey(new Date());
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
-let cloudMode = location.hostname !== "127.0.0.1" && location.hostname !== "localhost";
+let cloudMode = location.protocol === "https:"
+  && location.hostname !== "127.0.0.1"
+  && location.hostname !== "localhost";
 let cloudTimer = null;
 let cloudRetryTimer = null;
 let authExpired = false;
@@ -2271,6 +2273,9 @@ function bindEvents() {
 }
 
 initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
+if (location.protocol === "file:") {
+  $$('[data-install-app]').forEach(button => { button.hidden = true; });
+}
 if (cloudMode) pullCloudState(); else setSaveMode("", tr("save.localPreview"));
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => {

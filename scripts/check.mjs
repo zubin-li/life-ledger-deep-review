@@ -8,6 +8,7 @@ const required = [
   "public/styles.css",
   "public/sw.js",
   "public/manifest.webmanifest",
+  "OPEN-LIFE-LEDGER.html",
   "src/index.js",
   "migrations/0001_initial.sql",
   "README.md",
@@ -25,11 +26,10 @@ const textFiles = [
   "wrangler.jsonc",
 ];
 const forbidden = [
-  /111d2aac5acc6efc98199232866fdcae/i,
-  /e4973028-fbf1-4982-a746-6cd94037bf78/i,
-  /life-ledger-1tj\.pages\.dev/i,
-  /\/Users\/ashan/i,
-  /zubinli\.applications@gmail\.com/i,
+  /"database_id"\s*:\s*"[0-9a-f]{8}-[0-9a-f-]{27,}"/i,
+  /life-ledger-[a-z0-9]+\.pages\.dev/i,
+  /\/Users\/[^/\s]+\//i,
+  /[\w.+-]+@gmail\.com/i,
 ];
 
 for (const path of textFiles) {
@@ -42,6 +42,19 @@ for (const path of textFiles) {
 const assetNames = await readdir(new URL("public/assets/", root));
 for (const name of ["app-icon-192.png", "app-icon-512.png", "apple-touch-icon.png"]) {
   if (!assetNames.includes(name)) throw new Error(`Missing required asset: ${name}`);
+}
+
+const index = await readFile(new URL("public/index.html", root), "utf8");
+const app = await readFile(new URL("public/app.js", root), "utf8");
+if (/type=["']module["'][^>]*src=["']\.\/app\.js/.test(index)) {
+  throw new Error("Direct-file mode must load app.js as a classic script");
+}
+if (!app.includes('location.protocol === "https:"')) {
+  throw new Error("Cloud sync must stay disabled for file:// and local HTTP use");
+}
+const launcher = await readFile(new URL("OPEN-LIFE-LEDGER.html", root), "utf8");
+if (!launcher.includes("public/index.html")) {
+  throw new Error("The zero-configuration launcher must point to public/index.html");
 }
 
 console.log("Open-source safety and structure checks passed.");

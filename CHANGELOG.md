@@ -14,6 +14,7 @@ All notable changes are documented here.
 - Installable PWA, reminders while supported, and scoped JSON export.
 - Optional self-hosted synchronization with Cloudflare Workers, Access, and D1.
 - One-click Cloudflare deployment configuration.
+- Zero-configuration local use by opening `public/index.html` directly.
 
 ### Known beta limitations
 
