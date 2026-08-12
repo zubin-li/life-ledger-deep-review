@@ -17,6 +17,37 @@
 
 > **Beta 说明：** 当前版本已经适合个人使用和自托管。同步机制仍会继续完善，建议定期导出 JSON 备份。
 
+## 产品展示
+
+<p align="center">
+  <img src="docs/images/demo-preview/zh-desktop/04-monthly-review-zh.png" width="100%" alt="Life Ledger 中文桌面版月度复盘" />
+</p>
+
+<p align="center"><sub>一个月的节奏、习惯趋势和文字复盘集中呈现，让数字始终服务于真实生活。</sub></p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/01-today-planning-zh.png" alt="每日目标与每日复盘" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/03-weekly-plan-zh.png" alt="本周目标与本周输出" /></td>
+  </tr>
+  <tr>
+    <td><strong>每日更清楚</strong><br />安排当天目标，完成后逐项划去，并把值得记住的事情留在日历旁边。</td>
+    <td><strong>每周有方向</strong><br />把必须完成的工作与本周输出放在同一个安静、清晰的空间里。</td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/images/demo-preview/zh-mobile/01-today-planning-mobile-zh.png" width="30%" alt="手机版每日规划" />
+  <img src="docs/images/demo-preview/zh-mobile/02-daily-review-mobile-zh.png" width="30%" alt="手机版单日复盘" />
+  <img src="docs/images/demo-preview/zh-mobile/04-monthly-review-mobile-zh.png" width="30%" alt="手机版月度复盘" />
+</p>
+
+<p align="center"><strong>为手机重新排版。</strong> 安装为 PWA 后使用底部导航；单日打卡与日记在小屏幕上变成专注的纵向复盘空间。</p>
+
+<p align="center"><a href="docs/SHOWCASE.zh-CN.md"><strong>查看完整桌面与手机产品图集 →</strong></a></p>
+
+<sub>截图采用虚构的 2026 年 7 月演示数据，不包含真实个人记录。</sub>
+
 ## 为什么做 Life Ledger
 
 大多数工具把习惯、任务、心情、日记和复盘拆成不同产品。Life Ledger 把它们放进一条更自然的流程：

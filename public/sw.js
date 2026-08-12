@@ -1,4 +1,4 @@
-const CACHE_NAME = "life-ledger-pwa-0.1.0-beta.1";
+const CACHE_NAME = "life-ledger-pwa-0.1.0-beta.1-weekday-1";
 const APP_SHELL = [
   "./",
   "./index.html",

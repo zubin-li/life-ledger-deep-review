@@ -897,6 +897,10 @@ const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 function weekdayName(day) { return i18n[currentLang].weekdayNames[day]; }
+function weekdayShortName(day) {
+  const name = weekdayName(day);
+  return currentLang === "zh" ? name.replace(/^星期/, "周") : name.slice(0, 3);
+}
 function monthName(monthIndex) { return monthNames[currentLang]?.[monthIndex] || String(monthIndex + 1); }
 function formatDateChip(date) {
   return tr("dateChip", { year: date.getFullYear(), month: date.getMonth() + 1, monthName: monthName(date.getMonth()), day: date.getDate(), weekday: weekdayName(date.getDay()) });
@@ -1412,7 +1416,7 @@ function renderDayRoll() {
     date.setDate(selected.getDate() + index - 2);
     const key = isoDate(date);
     return `<button type="button" class="day-roll-item ${key === selectedPlanningDate ? "active" : ""} ${key === today ? "today" : ""}" data-date="${key}">
-      <span>${weekdayName(date.getDay()).slice(0, currentLang === "zh" ? 1 : 3)}</span><strong>${date.getDate()}</strong>
+      <span>${weekdayShortName(date.getDay())}</span><strong>${date.getDate()}</strong>
     </button>`;
   }).join("");
   $$("#dayRoll .day-roll-item").forEach(button => button.addEventListener("click", () => selectPlanningDate(button.dataset.date)));

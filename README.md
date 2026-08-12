@@ -17,6 +17,37 @@
 
 > **Beta:** Life Ledger is ready for personal use and self-hosting. Keep regular JSON exports while the synchronization model continues to mature.
 
+## Product tour
+
+<p align="center">
+  <img src="docs/images/demo-preview/04-monthly-review-july.png" width="100%" alt="Life Ledger monthly review dashboard on desktop" />
+</p>
+
+<p align="center"><sub>One month, seen clearly: completion rhythm, habit comparisons, and a reflection that keeps the numbers in context.</sub></p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/demo-preview/01-today-planning-july-30.png" alt="Daily planning and reflection" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/03-weekly-plan-jul-27.png" alt="Weekly goals and output" /></td>
+  </tr>
+  <tr>
+    <td><strong>Daily clarity</strong><br />Plan the day, complete a small set of goals, and leave a reflection beside the calendar.</td>
+    <td><strong>Weekly direction</strong><br />Keep must-finish work and the week's written output in one calm workspace.</td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/images/demo-preview/en-mobile/01-today-planning-mobile.png" width="30%" alt="Daily planning on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/02-daily-review-mobile.png" width="30%" alt="Daily review drawer on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/04-monthly-review-mobile.png" width="30%" alt="Monthly review on mobile" />
+</p>
+
+<p align="center"><strong>Responsive by design.</strong> The installed PWA uses a bottom navigation bar and a focused, full-height daily review on smaller screens.</p>
+
+<p align="center"><a href="docs/SHOWCASE.md"><strong>Explore the complete desktop and mobile product showcase →</strong></a></p>
+
+<sub>The screenshots use fictional July 2026 sample data created only for demonstration.</sub>
+
 ## Why Life Ledger
 
 Most trackers separate habits, tasks, mood, journaling, and reviews. Life Ledger keeps them in one quiet workflow:

@@ -2,6 +2,16 @@
 
 All notable changes are documented here.
 
+## Unreleased
+
+### Added
+
+- English and Simplified Chinese desktop/mobile product showcases.
+
+### Fixed
+
+- Simplified Chinese day-strip labels now use clear weekday abbreviations such as `周二` instead of truncating every label to `星`.
+
 ## [0.1.0-beta.1] - 2026-08-12
 
 ### Added
