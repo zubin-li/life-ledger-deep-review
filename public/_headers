@@ -1,0 +1,19 @@
+/
+  Cache-Control: no-store, no-cache, must-revalidate
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/index.html
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/sw.js
+  Cache-Control: no-store, no-cache, must-revalidate
+  Service-Worker-Allowed: /
+
+/app.js
+  Cache-Control: no-cache, must-revalidate
+
+/styles.css
+  Cache-Control: no-cache, must-revalidate

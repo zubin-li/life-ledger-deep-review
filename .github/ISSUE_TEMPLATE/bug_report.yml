@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible problem without sharing private journal data.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please remove names, journal text, email addresses, and other private information from screenshots and exports.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v0.1.0-beta.1
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Storage mode
+      options:
+        - Local only
+        - Cloudflare D1 sync
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Browser and device
+      placeholder: Safari 19, iPhone; Chrome 140, macOS
+    validations:
+      required: true

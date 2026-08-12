@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#10231d" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Life Ledger" />
+    <meta name="description" content="A private habit and deep-review system that grows with you." />
+    <meta name="author" content="Zubin Li and contributors" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Life Ledger · Deep Review" />
+    <meta property="og:description" content="A calm, multilingual, local-first habit tracker and deep-review PWA." />
+    <meta property="og:image" content="./assets/app-icon-512.png" />
+    <link rel="icon" href="./assets/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+    <script>
+      (() => {
+        const choice = localStorage.getItem("life-ledger-theme") || "system";
+        const dark = choice === "dark" || (choice === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
+    <link rel="manifest" href="./manifest.webmanifest?v=0.1.0-beta.1" />
+    <link rel="stylesheet" href="./styles.css?v=0.1.0-beta.1" />
+    <title>Life Ledger · Deep Review</title>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg>
+        </button>
+        <a class="brand" href="#" aria-label="Life Ledger">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><circle cx="16.3" cy="6" r="2.5" fill="currentColor" stroke="none"/><path class="walker-body" d="m15.3 10.1-2.7 6.2 4.1 2.1 1.7 7.3m-3-15.2 5 3.5 3.5-1.8m-11 4.2-5.2 8.1"/><path class="brand-path" d="M4.5 27.2c6.6-3.6 14.5-4.1 23-.9"/></svg>
+          </span>
+          <span class="brand-copy"><strong>Life Ledger</strong><small>DEEP REVIEW</small></span>
+        </a>
+
+        <nav class="main-nav" aria-label="主导航">
+          <button class="nav-item active" data-view="today"><span class="nav-icon">▦</span><span class="nav-label">今日</span></button>
+          <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
+          <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
+          <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
+        </nav>
+
+        <div class="sidebar-note">
+          <span class="pulse-dot"></span>
+          <p>不积跬步，<br />无以至千里。<small>《荀子·劝学》</small></p>
+        </div>
+
+        <div class="profile">
+          <div class="profile-identity">
+            <div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4.5h11a2 2 0 0 1 2 2v13H8a2 2 0 0 1-2-2v-13Z"/><path d="M8 4.5v15M11 9h5m-5 4h5"/></svg></div>
+            <div class="profile-copy"><strong>Personal Ledger</strong><small id="profileSaveMode">Connecting to cloud</small></div>
+          </div>
+          <div class="profile-actions">
+            <button class="icon-button pwa-install-button" id="installAppButton" type="button" data-install-app title="安装应用" aria-label="安装应用">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
+            </button>
+            <button class="icon-button" id="exportButton" title="导出数据">⇩</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="eyebrow">2026年6月22日 — 6月28日</p>
+            <h1 id="viewTitle">慎终如始，则无败事。</h1>
+          </div>
+          <div class="top-actions">
+            <span class="save-mode" id="saveMode"><i></i><span>本地预览</span></span>
+            <button class="secondary-button notification-trigger" id="reminderButton" type="button" title="Daily review reminder" aria-label="Daily review reminder">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+              <span id="reminderQuickLabel">Reminder</span><i aria-hidden="true"></i>
+            </button>
+            <button class="secondary-button mobile-install-button" type="button" data-install-app>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
+              <span id="mobileInstallLabel">安装应用</span>
+            </button>
+            <label class="theme-switcher" id="themeControl" for="themeSelect">
+              <span class="theme-current-icon" id="themeCurrentIcon" aria-hidden="true">◐</span>
+              <select id="themeSelect" aria-label="外观">
+                <option value="system">跟随系统</option>
+                <option value="light">浅色模式</option>
+                <option value="dark">深色模式</option>
+              </select>
+            </label>
+            <label class="language-switcher" for="languageSelect">
+              <span class="language-flag" id="languageFlag" aria-hidden="true">🇬🇧</span>
+              <select id="languageSelect" aria-label="Select interface language">
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="zh">中文</option>
+              </select>
+            </label>
+            <div class="date-jump">
+              <select id="yearSelect" aria-label="选择年份"></select>
+              <span>年</span>
+              <select id="monthSelect" aria-label="选择月份"></select>
+              <span>月</span>
+            </div>
+            <button class="primary-button" id="todayButton">回到今天</button>
+          </div>
+        </header>
+
+        <section class="view active" id="todayView">
+          <div class="hero-grid">
+            <article class="hero-card">
+              <div class="hero-copy">
+                <span class="date-chip" id="todayDateChip"></span>
+                <h2>不积小流，<br />无以成江海。</h2>
+                <span class="quote-source">《荀子·劝学》</span>
+                <p id="heroProgressText">0 / 4 项完成</p>
+              </div>
+              <div class="progress-orbit" id="progressOrbit" style="--progress: 0">
+                <div><strong id="progressNumber">0 / 3</strong><span>今日完成</span></div>
+              </div>
+            </article>
+
+            <article class="mood-card">
+              <div class="section-heading">
+                <div><span class="kicker">MOOD</span><h3>此刻感觉如何？</h3></div>
+              </div>
+              <div class="mood-options" id="quickMood">
+                <button data-mood="低落"><span>☂</span>低落</button>
+                <button data-mood="平静"><span>◌</span>平静</button>
+                <button data-mood="很好"><span>☀</span>很好</button>
+              </div>
+              <p class="mood-note" id="moodNote">人有悲欢离合，月有阴晴圆缺。<small>苏轼《水调歌头》</small></p>
+            </article>
+          </div>
+
+          <div class="section-heading habits-heading">
+            <div><span class="kicker">FOUNDATIONS</span><h2>今日基础目标</h2></div>
+            <button class="text-button" data-open-settings>调整目标 <span>→</span></button>
+          </div>
+          <div class="habit-grid" id="todayHabits"></div>
+
+          <section class="daily-planning-grid" aria-label="Daily planning">
+            <article class="daily-goals-card" data-plan="selected-day">
+              <div class="daily-goals-heading">
+                <div><span class="kicker">DAY PLAN</span><h3>Daily Goals</h3><p>Select a day to review or plan ahead.</p><small id="todayPlanDate"></small></div>
+                <strong id="dailyGoalProgress">0 / 0</strong>
+              </div>
+              <div class="day-roll-control">
+                <button class="day-roll-arrow" id="previousPlanDay" type="button" aria-label="Previous day">←</button>
+                <div class="day-roll" id="dayRoll"></div>
+                <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
+              </div>
+              <div class="weekly-goal-list daily-goal-list" id="dailyGoalList"></div>
+              <form class="weekly-goal-form daily-goal-form" id="dailyGoalForm">
+                <input id="dailyGoalInput" maxlength="100" placeholder="Add something for this day…" />
+                <button aria-label="Add daily goal">＋</button>
+              </form>
+            </article>
+            <article class="daily-goals-card daily-journal-card">
+              <div class="daily-goals-heading">
+                <div><span class="kicker">JOURNAL & EVENTS</span><h3>Daily Reflection</h3><p>Capture what happened, what moved, and what matters.</p><small id="journalPlanDate"></small></div>
+                <span class="autosave" id="homeJournalSave">● autosaved</span>
+              </div>
+              <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
+              <p class="journal-availability" id="journalAvailability"></p>
+            </article>
+          </section>
+
+          <section class="calendar-embedded" aria-labelledby="calendarTitle">
+            <div class="calendar-toolbar">
+            <div>
+              <span class="kicker">MONTH IN VIEW</span>
+              <h2 id="calendarTitle">2026年 6月</h2>
+              <p>点开任意一天，完成打卡或补上一段记录。</p>
+            </div>
+            <div class="calendar-controls">
+              <button class="icon-button" id="prevMonth" aria-label="上个月">←</button>
+              <button class="icon-button" id="nextMonth" aria-label="下个月">→</button>
+            </div>
+            </div>
+            <div class="calendar-card">
+              <div class="calendar-atmosphere">
+                <span id="calendarMonthMark">06</span>
+                <p><strong id="monthCompletion">0%</strong> 本月完成度</p>
+                <div class="month-orbit" aria-hidden="true"></div>
+              </div>
+              <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+              <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+            <div class="calendar-legend">
+              <span><i class="legend-dot complete"></i>全部完成</span>
+              <span><i class="legend-dot partial"></i>部分完成</span>
+              <span><i class="legend-dot empty"></i>尚未记录</span>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="weekView">
+          <section class="weekly-workspace" aria-labelledby="weeklyWorkspaceTitle">
+            <div class="section-heading weekly-heading">
+              <div><span class="kicker">THIS WEEK</span><h2 id="weeklyWorkspaceTitle">Weekly Plan</h2></div>
+              <div class="week-navigator" aria-label="切换计划周">
+                <button class="week-nav-button" id="previousWorkspaceWeek" type="button" aria-label="上一周">←</button>
+                <button class="week-current-button" id="currentWorkspaceWeek" type="button">
+                  <strong id="weekRange"></strong>
+                  <span id="weekRelativeLabel">本周</span>
+                </button>
+                <button class="week-nav-button" id="nextWorkspaceWeek" type="button" aria-label="下一周">→</button>
+              </div>
+            </div>
+            <article class="weekly-goals-panel">
+              <section class="weekly-goals-card">
+                <div class="week-stamp-row"><span id="currentWeekNumber">2026年6月22日 — 6月28日</span><span id="basketYear"></span></div>
+                  <div class="weekly-card-heading">
+                    <div><span class="kicker">CHECKLIST</span><h3>本周目标</h3></div>
+                    <strong id="weeklyGoalProgress">0 / 0</strong>
+                  </div>
+                  <div class="weekly-goal-list" id="weeklyGoalList"></div>
+                  <form class="weekly-goal-form" id="weeklyGoalForm">
+                    <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" />
+                    <button aria-label="添加本周目标">＋</button>
+                  </form>
+              </section>
+              <figure class="weekly-classical-image weekly-minimal-image">
+                <img src="./assets/weekly-minimal-still-life-v2.jpg" alt="Minimal journal, pencil and clock on a softly lit desk" />
+              </figure>
+            </article>
+
+            <article class="weekly-writing-panel">
+              <div class="weekly-writing-heading">
+                <div><span class="kicker">WEEKLY OUTPUT</span><h3>本周输出与感想</h3></div>
+                <div><span class="autosave">● 自动保存</span><strong id="basketWeekLabel">2026年6月22日 — 6月28日</strong></div>
+              </div>
+              <textarea id="weeklyOutputText" placeholder="这一周，我输出了什么？&#10;&#10;完成的作品、推进的项目、一次重要表达，或者一段真正想清楚的思考……"></textarea>
+              <footer><span id="weeklyOutputStatus">尚未开始</span><span>文字会持续保存在当前周</span></footer>
+            </article>
+          </section>
+        </section>
+
+        <section class="view" id="reviewView">
+          <div class="review-intro quiet-intro">
+            <div><span class="review-year" id="reviewYear">2026</span><span class="kicker">MONTHLY REVIEW</span><h2 id="reviewTitle">June · Monthly Review</h2></div>
+          </div>
+          <div class="score-grid" id="scoreGrid"></div>
+          <div class="review-grid">
+            <article class="panel chart-panel">
+              <div class="panel-heading"><div><span class="kicker">RHYTHM</span><h3>每日完成节奏</h3></div><span class="panel-meta">按日期</span></div>
+              <div class="bar-chart" id="barChart"></div>
+            </article>
+            <article class="panel resistance-panel">
+              <div class="panel-heading analytics-dashboard-heading">
+                <div><span class="kicker">METRIC TRENDS</span><h3>Habit comparison</h3></div>
+                <button class="period-add-button" id="addPeriodTarget" type="button">＋ Add metric</button>
+              </div>
+              <div class="analytics-dashboard-controls">
+                <div><span class="analytics-control-label" id="analyticsMetricLabel">Choose up to 2</span><div class="analytics-metric-picker" id="analyticsMetricPicker"></div></div>
+                <div class="chart-mode-switch" id="analyticsChartMode" role="group" aria-label="Chart type">
+                  <button class="active" type="button" data-analytics-chart="line">Line</button>
+                  <button type="button" data-analytics-chart="bar">Bars</button>
+                </div>
+              </div>
+              <div class="comparison-dashboard" id="weeklyResistance"></div>
+            </article>
+          </div>
+          <article class="panel monthly-reflection-panel">
+            <div class="panel-heading"><div><span class="kicker">MONTHLY REFLECTION</span><h3>General Reflection</h3></div><div class="reflection-actions"><span class="autosave">● autosaved</span><button class="secondary-button" id="generateReview" type="button">Start guided review</button></div></div>
+            <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
+          </article>
+          <article class="panel weekly-output-archive">
+            <div class="panel-heading">
+              <div><span class="kicker">WEEKS IN THIS MONTH</span><h3>Weekly Notes</h3></div>
+              <label class="review-week-select"><span id="reviewWeekSelectLabel">Week</span><select id="reviewWeekSelect"></select></label>
+            </div>
+            <div class="week-review-summary compact-week-detail">
+              <div class="week-review-meta"><strong id="reviewWeekLabel">第26周</strong><span id="reviewWeekRange"></span></div>
+              <div class="week-review-columns">
+                <section><span class="kicker">GOALS</span><h4>Weekly Goals</h4><div id="reviewWeekGoals"></div></section>
+                <section><span class="kicker">NOTES</span><h4>Output & Reflection</h4><div class="review-week-output" id="reviewWeekOutput"></div></section>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="habitsView">
+          <div class="settings-intro quiet-intro">
+            <div><span class="kicker">HABITS</span><p id="habitSummary">4 active habits</p></div>
+            <button class="primary-button" id="addHabitButton">＋ 新增习惯</button>
+          </div>
+          <div class="habit-settings-list" id="habitSettingsList"></div>
+        </section>
+      </main>
+    </div>
+
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="day-drawer" id="dayDrawer" aria-hidden="true">
+      <header>
+        <div><span class="kicker" id="drawerWeekday">SUNDAY</span><h2 id="drawerDate">6月28日</h2></div>
+        <button class="icon-button" id="closeDrawer" aria-label="关闭">×</button>
+      </header>
+      <div class="drawer-content">
+        <p class="drawer-future-notice" id="drawerFutureNotice" hidden></p>
+        <section>
+          <div class="drawer-section-title"><h3>今日目标</h3><span id="drawerProgress">0 / 4</span></div>
+          <div class="drawer-habits" id="drawerHabits"></div>
+        </section>
+        <section>
+          <div class="drawer-section-title"><h3>今日心情</h3></div>
+          <div class="mood-options compact" id="drawerMood">
+            <button data-mood="低落"><span>☂</span>低落</button>
+            <button data-mood="平静"><span>◌</span>平静</button>
+            <button data-mood="很好"><span>☀</span>很好</button>
+          </div>
+        </section>
+        <section>
+          <label class="drawer-section-title" for="dayNote"><h3>日记与事件</h3><span>Markdown</span></label>
+          <textarea id="dayNote" placeholder="今天发生了什么？推进了什么？有什么值得记住？"></textarea>
+        </section>
+      </div>
+      <footer><span id="saveState">修改将自动保存</span><button class="primary-button" id="completeDay">完成记录</button></footer>
+    </aside>
+
+    <dialog id="habitDialog">
+      <form method="dialog" id="habitForm">
+        <header><div><span class="kicker">HABIT VERSION</span><h2 id="habitDialogTitle">新增习惯</h2></div><button class="icon-button close-habit-dialog" type="button" aria-label="取消并关闭">×</button></header>
+        <div class="form-grid">
+          <label class="full">习惯名称<input name="name" required placeholder="例如：阅读" /></label>
+          <label class="icon-picker-field">图标<input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" hidden></div></label>
+          <label>强调色<select name="color"><option value="sage">鼠尾草绿</option><option value="amber">琥珀黄</option><option value="coral">珊瑚红</option><option value="blue">雾霾蓝</option><option value="violet">紫罗兰</option><option value="cyan">天空蓝</option></select></label>
+          <label>目标值<input name="target" required type="number" min="1" value="30" /></label>
+          <label>单位<input name="unit" required value="分钟" /></label>
+          <label>统计周期<select name="frequency"><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option></select></label>
+          <label id="periodTargetField">周期内目标次数<input name="periodTarget" type="number" min="1" max="31" value="3" /></label>
+          <label class="full daily-score-choice">
+            <input name="countsTowardDaily" type="checkbox" />
+            <span><strong>计入当天完成度</strong><small>关闭后仍可每天打卡，但只影响每周或每月的周期达标。</small></span>
+          </label>
+          <label class="full">生效日期<input name="effectiveDate" required type="date" /></label>
+        </div>
+        <p class="form-hint">已有习惯的修改会创建新版本，之前的打卡标准保持不变。</p>
+        <footer>
+          <button class="danger-button" id="deleteHabitButton" type="button">删除习惯</button>
+          <span class="dialog-footer-spacer"></span>
+          <button class="secondary-button close-habit-dialog" type="button">取消</button>
+          <button class="primary-button" type="submit" id="saveHabit">保存版本</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="exportDialog" class="export-dialog">
+      <form method="dialog" id="exportForm">
+        <header><div><span class="kicker">EXPORT</span><h2 id="exportDialogTitle">选择导出范围</h2></div><button class="icon-button close-export-dialog" type="button" aria-label="关闭">×</button></header>
+        <div class="export-options">
+          <label><input type="radio" name="exportScope" value="all" checked /><span><strong id="exportAllTitle">全部历史</strong><small id="exportAllHelp">所有习惯、心情、记录、目标和复盘</small></span></label>
+          <label><input type="radio" name="exportScope" value="month" /><span><strong id="exportMonthTitle">指定月份</strong><small id="exportMonthHelp">选择一个月份</small></span></label>
+          <label><input type="radio" name="exportScope" value="week" /><span><strong id="exportWeekTitle">指定一周</strong><small id="exportWeekHelp">输入该周中的任意日期</small></span></label>
+          <label><input type="radio" name="exportScope" value="day" /><span><strong id="exportDayTitle">指定一天</strong><small id="exportDayHelp">仅导出当天内容</small></span></label>
+          <div class="export-date-fields"><input id="exportMonth" type="month" /><input id="exportDate" type="date" /></div>
+        </div>
+        <footer><button class="secondary-button close-export-dialog" type="button" id="exportCancel">取消</button><button class="primary-button" type="submit" id="exportConfirm">导出 JSON</button></footer>
+      </form>
+    </dialog>
+
+    <dialog id="reminderDialog" class="reminder-dialog">
+      <div class="reminder-dialog-content">
+        <header><div><span class="kicker" id="reminderKicker">DAILY RHYTHM</span><h2 id="reminderDialogTitle">Daily review reminder</h2></div><button class="icon-button close-reminder-dialog" type="button" aria-label="Close">×</button></header>
+        <div class="reminder-body">
+          <label class="reminder-toggle"><input id="reminderEnabled" type="checkbox" /><span><strong id="reminderEnableTitle">Remind me every day</strong><small id="reminderEnableHelp">A quiet prompt to close the day with intention.</small></span></label>
+          <label class="reminder-time"><span id="reminderTimeLabel">Reminder time</span><input id="reminderTime" type="time" value="21:00" /></label>
+          <div class="reminder-status-card"><span class="reminder-status-dot" aria-hidden="true"></span><div><strong id="reminderStatusTitle">Notifications are not enabled</strong><small id="reminderStatusHelp">Permission will only be requested after you save.</small></div></div>
+          <p class="reminder-caveat" id="reminderCaveat">Local preview can remind you while the app is open. Reliable background reminders require the installed PWA and cloud push service.</p>
+        </div>
+        <footer><button class="secondary-button" id="testReminderButton" type="button">Send test</button><span class="dialog-footer-spacer"></span><button class="secondary-button close-reminder-dialog" type="button" id="reminderCancel">Cancel</button><button class="primary-button" id="saveReminderButton" type="button">Save reminder</button></footer>
+      </div>
+    </dialog>
+
+    <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
+
+    <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
+    <script type="module" src="./app.js?v=0.1.0-beta.1"></script>
+  </body>
+</html>

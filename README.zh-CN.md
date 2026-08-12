@@ -1,0 +1,135 @@
+<div align="center">
+  <img src="public/assets/app-icon-192.png" width="96" height="96" alt="Life Ledger 图标" />
+  <h1>Life Ledger · 深度复盘</h1>
+  <p>一个安静、多语言、本地优先的习惯、日记与长期复盘空间。</p>
+
+  <p>
+    <a href="README.md">English</a> ·
+    <a href="README.zh-CN.md">简体中文</a>
+  </p>
+
+  <p>
+    <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
+      <img src="https://deploy.workers.cloudflare.com/button" alt="部署到 Cloudflare" />
+    </a>
+  </p>
+</div>
+
+> **Beta 说明：** 当前版本已经适合个人使用和自托管。同步机制仍会继续完善，建议定期导出 JSON 备份。
+
+## 为什么做 Life Ledger
+
+大多数工具把习惯、任务、心情、日记和复盘拆成不同产品。Life Ledger 把它们放进一条更自然的流程：
+
+- 记录今天实际发生了什么；
+- 安排本周或下一周的重要目标；
+- 查看习惯趋势，但不把生活变成分数游戏；
+- 结合每天和每周的事实，写月度深度复盘；
+- 数据只留在你的设备，或进入你自己的 Cloudflare 账户。
+
+项目不提供统一的 Life Ledger 账户，不放广告，也不建立由维护者掌控的中央用户数据库。
+
+## 主要功能
+
+- 每日习惯、目标数值和生效日期管理
+- 每日目标、心情、日记与事件记录
+- 本周目标、清单、本周输出和历史归档
+- 月度复盘、习惯趋势对比、折线图与柱状图
+- 按天、周、月或完整历史导出 JSON
+- 英文、简体中文和德语界面
+- 浅色、深色和跟随系统模式
+- 可安装 PWA 与离线应用外壳
+- 可选的 Cloudflare Access + D1 跨设备同步
+- 面向电脑与手机的响应式 Apple 风格界面
+
+## 三种使用方式
+
+### 1. 仅在本地使用——最简单、最私密
+
+```bash
+git clone https://github.com/zubin-li/life-ledger-deep-review.git
+cd life-ledger-deep-review
+npm install
+npm run dev
+```
+
+打开 Wrangler 显示的本地网址。首次启动会建立本地 D1 结构，但即使不登录云端，应用也能正常工作；浏览器数据保存在 `localStorage` 中。
+
+### 2. 建立自己的 GitHub 副本
+
+点击 GitHub 页面上的 **Use this template**。生成的新仓库拥有独立历史，可以自行修改，不会把任何个人数据分享给本项目。
+
+### 3. 部署属于自己的私有云版本
+
+点击上面的 **Deploy to Cloudflare**。Cloudflare 会把公开仓库复制到你的账号，在你的账户中创建 Worker 和 D1 数据库，执行初始化并完成部署。
+
+部署完成后启用 Cloudflare Access：
+
+1. 进入 Cloudflare 的 **Workers & Pages**。
+2. 打开新建的 `life-ledger-deep-review` Worker。
+3. 进入 **Settings → Domains & Routes**。
+4. 在 `workers.dev` 地址旁点击 **Enable Cloudflare Access**。
+5. 只允许你自己的邮箱或可信任的家庭成员。
+6. 复制 Access 应用的 **Application Audience (AUD) Tag**。
+7. 在 Worker 的 **Settings → Variables and Secrets** 中添加：`TEAM_DOMAIN` 填写 `https://<你的团队名>.cloudflareaccess.com`，`POLICY_AUD` 填写刚才复制的 AUD。
+8. 打开应用并完成一次验证，之后云同步会使用经过验证的 Access 身份。
+
+完整步骤请看[自托管说明](docs/self-hosting.zh-CN.md)和[Cloudflare Access 设置](docs/cloudflare-access.zh-CN.md)。
+
+## 数据归属
+
+```text
+浏览器 / 已安装的 PWA
+   ├── localStorage     即时本地保存
+   ├── JSON 导出        用户自主备份
+   └── /api/state       可选的身份验证同步
+            ↓
+      Cloudflare Worker
+            ↓
+        你自己的 D1 数据库
+```
+
+云同步不是必需功能。Worker 会先验证 Access JWT，再把经过验证的邮箱做 SHA-256 哈希并作为 D1 记录键。日记内容没有进行应用层端到端加密，因此 Cloudflare 账户管理员可以查看自己 D1 中的数据。保存敏感信息前请阅读 [PRIVACY.md](PRIVACY.md)。
+
+## 常用命令
+
+| 命令 | 用途 |
+|---|---|
+| `npm run dev` | 执行本地迁移并启动 Wrangler 开发环境 |
+| `npm test` | 执行语法、隐私标记、结构和 Worker 测试 |
+| `npm run check` | 快速检查仓库 |
+| `npm run db:migrations:apply` | 对远程 D1 执行数据库迁移 |
+| `npm run deploy` | 执行迁移并部署到 Cloudflare |
+
+需要 Node.js 20 或以上版本。
+
+## 项目结构
+
+```text
+public/       浏览器应用、PWA 和视觉资源
+src/          Cloudflare Worker API 与静态资源路由
+migrations/   D1 数据库结构
+tests/        轻量 Worker 测试
+docs/         自托管和数据说明
+.github/      CI 与 Issue 模板
+```
+
+## 费用预期
+
+Life Ledger 面向个人或小型家庭使用。Cloudflare 的静态资源请求免费，Worker 与 D1 消耗计入部署者自己的 Cloudflare 账户。正常的个人记录量预计远低于免费方案的每日额度，但部署者仍应自行检查 Cloudflare 的最新价格和账户设置。
+
+## 后续计划
+
+- 更安全地处理多设备离线编辑冲突
+- JSON 导入与引导式恢复
+- 为超长期日记提供按月拆分存储
+- 自动化无障碍与多浏览器回归测试
+- 社区贡献的更多语言
+
+## 参与贡献
+
+欢迎提交 Issue 和范围清晰的 Pull Request。请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)、[SECURITY.md](SECURITY.md)和[更新记录](CHANGELOG.md)。不要在公开 Issue 中上传私人日记导出文件。
+
+## 开源协议
+
+Life Ledger 使用 [MIT License](LICENSE)。改编的 Lucide 图标路径说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

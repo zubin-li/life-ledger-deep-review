@@ -1,0 +1,40 @@
+{
+  "name": "life-ledger-deep-review",
+  "version": "0.1.0-beta.1",
+  "description": "A calm, multilingual, local-first habit tracker and deep-review PWA.",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zubin-li/life-ledger-deep-review.git"
+  },
+  "homepage": "https://github.com/zubin-li/life-ledger-deep-review#readme",
+  "bugs": {
+    "url": "https://github.com/zubin-li/life-ledger-deep-review/issues"
+  },
+  "scripts": {
+    "predev": "wrangler d1 migrations apply DB --local",
+    "dev": "wrangler dev",
+    "check": "node --check public/app.js && node --check public/sw.js && node --check src/index.js && node scripts/check.mjs",
+    "test": "npm run check && node --test tests/*.test.mjs",
+    "db:migrations:apply": "wrangler d1 migrations apply DB --remote",
+    "deploy": "npm run db:migrations:apply && wrangler deploy"
+  },
+  "cloudflare": {
+    "bindings": {
+      "DB": {
+        "description": "Your private Life Ledger D1 database. Cloudflare creates and binds it during deployment."
+      }
+    }
+  },
+  "dependencies": {
+    "jose": "^6.1.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.122.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
