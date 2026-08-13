@@ -13,10 +13,6 @@
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
       <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
     </a>
-    &nbsp;
-    <a href="docs/cloudbase-china.md">
-      <img src="https://img.shields.io/badge/Deploy_to_Tencent_CloudBase-006EFF?style=for-the-badge&logo=tencentcloud&logoColor=white" alt="Deploy to Tencent CloudBase" />
-    </a>
   </p>
 </div>
 
