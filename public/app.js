@@ -114,7 +114,7 @@ const i18n = {
       caveat: "本地预览仅能在应用打开时提醒。要在完全关闭后稳定提醒，需要安装 PWA 并接入云端 Push 服务。", test: "发送测试", cancel: "取消", save: "保存提醒", saved: "提醒设置已保存",
       body: "花几分钟完成今天的打卡、心情与复盘。", testBody: "通知工作正常。今晚也记得回来看看自己的脚步。", close: "关闭每日提醒设置", short: "提醒",
     },
-    foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度" },
+    foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
     calendar: {
       kicker: "MONTH IN VIEW",
       title: "{year}年 {month}月",
@@ -387,7 +387,7 @@ const i18n = {
       caveat: "Local preview can remind you while the app is open. Reliable reminders after the app is closed require the installed PWA and a cloud push service.", test: "Send test", cancel: "Cancel", save: "Save reminder", saved: "Reminder settings saved",
       body: "Take a few minutes to complete today's habits, mood, and reflection.", testBody: "Notifications are working. Come back tonight and review the path you made.", close: "Close daily reminder settings", short: "Reminder",
     },
-    foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score" },
+    foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
     calendar: {
       kicker: "MONTH IN VIEW",
       title: "{monthName} {year}",
@@ -660,7 +660,7 @@ const i18n = {
       caveat: "Die lokale Vorschau erinnert nur bei geöffneter App. Zuverlässige Erinnerungen nach dem Schließen benötigen die installierte PWA und einen Cloud-Push-Dienst.", test: "Test senden", cancel: "Abbrechen", save: "Erinnerung speichern", saved: "Erinnerung gespeichert",
       body: "Nimm dir ein paar Minuten für Gewohnheiten, Stimmung und Tagesreflexion.", testBody: "Mitteilungen funktionieren. Kehre heute Abend zurück und betrachte deinen Weg.", close: "Einstellungen für tägliche Erinnerung schließen", short: "Erinnerung",
     },
-    foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore" },
+    foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
     calendar: {
       kicker: "MONATSANSICHT",
       title: "{monthName} {year}",
@@ -969,6 +969,11 @@ let reminderTimer = null;
 let pendingImport = null;
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
+const HABITS_PER_PAGE = 4;
+let todayHabitPage = 0;
+let habitCarouselScrollFrame = 0;
+let habitCarouselDrag = null;
+let suppressHabitCardClick = false;
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -1078,6 +1083,11 @@ function applyLanguage() {
   setText(".habits-heading h2", tr("foundations.title"));
   const settingsButton = $("[data-open-settings]");
   if (settingsButton) settingsButton.innerHTML = `${tr("foundations.adjust")} <span>→</span>`;
+  setAria("#todayHabitCarousel", tr("foundations.carousel"));
+  setAria("#todayHabitViewport", tr("foundations.carousel"));
+  setAria("#habitCarouselNav", tr("foundations.carousel"));
+  setAria("#previousHabitPage", tr("foundations.previousPage"));
+  setAria("#nextHabitPage", tr("foundations.nextPage"));
   setText('[data-plan="selected-day"] .kicker', tr("todayGoals.kicker"));
   setText('[data-plan="selected-day"] .daily-goals-heading h3', tr("todayGoals.title"));
   setText('[data-plan="selected-day"] .daily-goals-heading p', tr("todayGoals.desc"));
@@ -1570,6 +1580,74 @@ function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
 }
 
+function orderedTodayHabits(habits, completedIds) {
+  const byId = new Map(habits.map(habit => [habit.id, habit]));
+  const completed = new Set(completedIds);
+  const remaining = habits.filter(habit => !completed.has(habit.id));
+  const finished = completedIds.map(id => byId.get(id)).filter(Boolean);
+  return [...remaining, ...finished];
+}
+
+function updateHabitCarouselNavigation(pageCount) {
+  const nav = $("#habitCarouselNav");
+  const previous = $("#previousHabitPage");
+  const next = $("#nextHabitPage");
+  const status = $("#habitCarouselStatus");
+  const pages = $("#habitCarouselPages");
+  if (!nav || !previous || !next || !status || !pages) return;
+  nav.hidden = pageCount <= 1;
+  previous.disabled = todayHabitPage === 0;
+  next.disabled = todayHabitPage >= pageCount - 1;
+  status.textContent = `${todayHabitPage + 1} / ${pageCount}`;
+  pages.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button type="button" class="habit-carousel-page ${index === todayHabitPage ? "active" : ""}" data-page="${index}" aria-label="${escapeHtml(tr("foundations.page", { page: index + 1, total: pageCount }))}" ${index === todayHabitPage ? 'aria-current="page"' : ""}><span></span></button>`).join("");
+  $$(".habit-carousel-page", pages).forEach(button => button.addEventListener("click", () => setTodayHabitPage(Number(button.dataset.page))));
+}
+
+function setTodayHabitPage(page, behavior = "smooth") {
+  const viewport = $("#todayHabitViewport");
+  const pageCount = Number($("#todayHabitCarousel")?.dataset.pageCount || 1);
+  todayHabitPage = Math.max(0, Math.min(page, pageCount - 1));
+  updateHabitCarouselNavigation(pageCount);
+  if (viewport) viewport.scrollTo({ left: viewport.clientWidth * todayHabitPage, behavior });
+}
+
+function syncHabitCarouselPageFromScroll() {
+  const viewport = $("#todayHabitViewport");
+  if (!viewport?.clientWidth) return;
+  const pageCount = Number($("#todayHabitCarousel")?.dataset.pageCount || 1);
+  const page = Math.max(0, Math.min(Math.round(viewport.scrollLeft / viewport.clientWidth), pageCount - 1));
+  if (page === todayHabitPage) return;
+  todayHabitPage = page;
+  updateHabitCarouselNavigation(pageCount);
+}
+
+function renderHabitCarousel(habits, date, completedIds) {
+  const ordered = orderedTodayHabits(habits, completedIds);
+  const pageCount = Math.max(1, Math.ceil(ordered.length / HABITS_PER_PAGE));
+  todayHabitPage = Math.min(todayHabitPage, pageCount - 1);
+  const carousel = $("#todayHabitCarousel");
+  const viewport = $("#todayHabitViewport");
+  carousel.dataset.pageCount = String(pageCount);
+  $("#todayHabits").innerHTML = Array.from({ length: pageCount }, (_, page) => {
+    const group = ordered.slice(page * HABITS_PER_PAGE, (page + 1) * HABITS_PER_PAGE);
+    return `<div class="habit-page" data-page="${page}" aria-label="${escapeHtml(tr("foundations.page", { page: page + 1, total: pageCount }))}">${group.map(habit => habitCard(habit, date, completedIds.includes(habit.id))).join("")}</div>`;
+  }).join("");
+  if (viewport) viewport.scrollLeft = viewport.clientWidth * todayHabitPage;
+  updateHabitCarouselNavigation(pageCount);
+  $$("#todayHabits .habit-card").forEach(card => {
+    const activate = () => {
+      if (suppressHabitCardClick) return;
+      toggleHabit(date, card.dataset.id);
+    };
+    card.addEventListener("click", activate);
+    card.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      activate();
+    });
+  });
+}
+
 
 function renderToday() {
   const date = isoDate(new Date());
@@ -1589,8 +1667,7 @@ function renderToday() {
     progressNumber.classList.add("number-pop");
   }
   $("#progressOrbit").style.setProperty("--progress", progress);
-  $("#todayHabits").innerHTML = habits.map(h => habitCard(h, date, log.completed.includes(h.id))).join("");
-  $$("#todayHabits .habit-card").forEach(card => card.addEventListener("click", () => toggleHabit(date, card.dataset.id)));
+  renderHabitCarousel(habits, date, log.completed);
   $$("#quickMood button").forEach(b => b.classList.toggle("selected", b.dataset.mood === log.mood));
   renderDailyGoals();
 }
@@ -1675,7 +1752,8 @@ function habitCard(habit, date, done) {
   const v = versionFor(habit, date);
   const target = habitMetaLabel(v);
   const periodNote = countsTowardDaily(habit, date) ? "" : `<span class="period-note">${tr("foundations.periodNote")}</span>`;
-  return `<article class="habit-card ${done ? "completed" : ""}" data-id="${habit.id}" style="${habitStyle(habit)}">
+  const transitionName = `habit-${String(habit.id).replace(/[^a-z0-9_-]/gi, "-")}`;
+  return `<article class="habit-card ${done ? "completed" : ""}" data-id="${habit.id}" role="button" tabindex="0" aria-pressed="${done}" style="${habitStyle(habit)};view-transition-name:${transitionName}">
     <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check">✓</span></div>
     <h3>${escapeHtml(displayHabitName(habit))}</h3><p>${target}</p>${periodNote}
   </article>`;
@@ -1687,10 +1765,25 @@ function toggleHabit(date, id) {
   const wasComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   const i = log.completed.indexOf(id);
   if (i >= 0) log.completed.splice(i, 1); else log.completed.push(id);
-  state.logs[date] = log; saveState(); renderAll();
+  const commit = () => {
+    state.logs[date] = log;
+    saveState();
+    renderAll();
+    if ($("#dayDrawer").classList.contains("open")) renderDrawer();
+  };
+  const animateReorder = date === isoDate(new Date())
+    && $("#todayView").classList.contains("active")
+    && typeof document.startViewTransition === "function"
+    && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (animateReorder) {
+    document.documentElement.classList.add("habit-reordering");
+    const finishReorder = () => document.documentElement.classList.remove("habit-reordering");
+    document.startViewTransition(commit).finished.then(finishReorder, finishReorder);
+  } else {
+    commit();
+  }
   const isComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   if (!wasComplete && isComplete) showCelebration();
-  if ($("#dayDrawer").classList.contains("open")) renderDrawer();
   showToast(i >= 0 ? tr("toast.habitOff") : tr("toast.habitOn"));
 }
 function setMood(date, mood) {
@@ -2610,6 +2703,43 @@ function bindEvents() {
   $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); });
   $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); });
   $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); });
+  $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
+  $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
+  $("#todayHabitViewport").addEventListener("scroll", () => {
+    cancelAnimationFrame(habitCarouselScrollFrame);
+    habitCarouselScrollFrame = requestAnimationFrame(syncHabitCarouselPageFromScroll);
+  }, { passive: true });
+  $("#todayHabitViewport").addEventListener("keydown", event => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (event.target.closest(".habit-card")) return;
+    event.preventDefault();
+    setTodayHabitPage(todayHabitPage + (event.key === "ArrowRight" ? 1 : -1));
+  });
+  $("#todayHabitViewport").addEventListener("pointerdown", event => {
+    if (event.pointerType !== "mouse" || event.button !== 0 || event.target.closest(".habit-card")) return;
+    const viewport = event.currentTarget;
+    habitCarouselDrag = { pointerId: event.pointerId, startX: event.clientX, startScroll: viewport.scrollLeft, moved: false };
+    viewport.setPointerCapture(event.pointerId);
+    viewport.classList.add("dragging");
+  });
+  $("#todayHabitViewport").addEventListener("pointermove", event => {
+    if (!habitCarouselDrag || event.pointerId !== habitCarouselDrag.pointerId) return;
+    const delta = event.clientX - habitCarouselDrag.startX;
+    if (Math.abs(delta) > 5) habitCarouselDrag.moved = true;
+    if (habitCarouselDrag.moved) event.currentTarget.scrollLeft = habitCarouselDrag.startScroll - delta;
+  });
+  const finishHabitDrag = event => {
+    if (!habitCarouselDrag || event.pointerId !== habitCarouselDrag.pointerId) return;
+    const viewport = event.currentTarget;
+    suppressHabitCardClick = habitCarouselDrag.moved;
+    viewport.classList.remove("dragging");
+    if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
+    habitCarouselDrag = null;
+    setTodayHabitPage(Math.round(viewport.scrollLeft / Math.max(1, viewport.clientWidth)));
+    window.setTimeout(() => { suppressHabitCardClick = false; }, 0);
+  };
+  $("#todayHabitViewport").addEventListener("pointerup", finishHabitDrag);
+  $("#todayHabitViewport").addEventListener("pointercancel", finishHabitDrag);
   $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(isoDate(new Date()), b.dataset.mood)));
   $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood)));
   bindDailyGoalForm("#dailyGoalForm", "#dailyGoalInput", () => selectedPlanningDate, "todayGoals.added");

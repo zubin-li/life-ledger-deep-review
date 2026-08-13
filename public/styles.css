@@ -112,7 +112,22 @@ button { cursor: pointer; }
 .text-button { border: 0; background: transparent; font-size: 12px; color: var(--muted); }
 .text-button span { margin-left: 5px; transition: transform 160ms var(--ease-enter); display: inline-block; }
 .text-button:hover span { transform: translateX(3px); }
-.habit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.habit-carousel { --habit-gap: 12px; min-width: 0; }
+.habit-carousel-viewport { min-width: 0; overflow-x: auto; overflow-y: visible; border-radius: 23px; outline: none; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; cursor: grab; }
+.habit-carousel-viewport::-webkit-scrollbar { display: none; }
+.habit-carousel-viewport:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage) 28%, transparent); }
+.habit-carousel-viewport.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.habit-carousel-track { display: flex; align-items: stretch; }
+.habit-page { min-width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--habit-gap); scroll-snap-align: start; scroll-snap-stop: always; }
+.habit-carousel-nav { min-height: 38px; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.habit-carousel-nav[hidden] { display: none; }
+.habit-carousel-arrow { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: color-mix(in srgb, var(--card) 86%, transparent); color: var(--ink); box-shadow: 0 7px 20px rgba(29,29,31,.055); cursor: pointer; transition: transform 170ms var(--ease-enter), opacity 170ms ease, background-color 170ms ease; }
+.habit-carousel-arrow:disabled { opacity: .28; cursor: default; }
+.habit-carousel-pages { display: flex; align-items: center; gap: 5px; }
+.habit-carousel-page { width: 18px; height: 26px; padding: 0; display: grid; place-items: center; border: 0; background: transparent; cursor: pointer; }
+.habit-carousel-page span { width: 5px; height: 5px; border-radius: 99px; background: var(--line); transition: width 180ms var(--ease-enter), background-color 180ms ease; }
+.habit-carousel-page.active span { width: 16px; background: var(--sage); }
+.habit-carousel-status { min-width: 34px; color: var(--muted); font: 8px "DM Mono"; text-align: center; }
 .habit-card { position: relative; min-height: 172px; border: 1px solid var(--line); background: var(--card); border-radius: 17px; padding: 21px; cursor: pointer; overflow: hidden; transition: transform 180ms var(--ease-enter), border-color 180ms ease, background-color 180ms ease; }
 .habit-card::after { content: ""; position: absolute; inset: auto -30px -54px auto; width: 100px; height: 100px; border-radius: 50%; background: var(--habit-soft); opacity: .55; }
 .habit-card.completed { background: var(--habit-soft); border-color: var(--habit-color); }
@@ -122,6 +137,9 @@ button { cursor: pointer; }
 .habit-card.completed .habit-check { background: var(--habit-color); color: white; border-color: transparent; transform: scale(1.06); }
 .habit-card h3 { font: 600 15px "Noto Serif SC"; margin: 22px 0 6px; }
 .habit-card p { color: var(--muted); font-size: 10px; margin: 0; }
+::view-transition-group(*) { animation-duration: 330ms; animation-timing-function: cubic-bezier(.22,1,.36,1); }
+html.habit-reordering::view-transition-old(root),
+html.habit-reordering::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 .daily-planning-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
 .daily-goals-card { min-width: 0; min-height: 270px; padding: 25px; display: flex; flex-direction: column; box-shadow: 0 18px 60px rgba(16,35,29,.04); }
 .tomorrow-goals-card { background: linear-gradient(145deg, rgba(125,174,255,.07), transparent 48%), var(--card); }
@@ -420,9 +438,10 @@ dialog { border-radius: 28px; }
   .primary-button:hover { transform: translateY(-2px); box-shadow: 0 13px 30px rgba(29,29,31,.2), inset 0 1px 0 rgba(255,255,255,.18); }
   .icon-button:hover { transform: translateY(-1px); background: rgba(255,255,255,.7); box-shadow: 0 8px 20px rgba(29,29,31,.08); }
   .language-switcher:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.9); box-shadow: 0 12px 30px rgba(29,29,31,.09), inset 0 1px 0 rgba(255,255,255,.95); }
+  .habit-carousel-arrow:not(:disabled):hover { transform: translateY(-1px); background: var(--card); }
 }
 @media (max-width: 1050px) {
-  .habit-grid, .score-grid { grid-template-columns: repeat(2, 1fr); }
+  .habit-page, .score-grid { grid-template-columns: repeat(2, 1fr); }
   .hero-grid, .review-grid { grid-template-columns: 1fr; }
   .weekly-goals-panel, .week-review-columns { grid-template-columns: 1fr; }
   .weekly-classical-image { min-height: 240px; }
@@ -448,7 +467,7 @@ dialog { border-radius: 28px; }
   .hero-copy { min-width: 0; max-width: 100%; }
   .hero-copy h2 { max-width: calc(100% - 8px); overflow-wrap: anywhere; font-size: clamp(23px, 7.5vw, 33px); }
   .progress-orbit { width: 100px; position: absolute; right: 22px; bottom: 22px; }
-  .habit-grid { grid-template-columns: 1fr 1fr; }
+  .habit-page { grid-template-columns: 1fr 1fr; }
   .habit-card { min-height: 154px; padding: 17px; }
   .calendar-card { padding: 7px; }
   .calendar-day { min-height: 82px; padding: 6px; }

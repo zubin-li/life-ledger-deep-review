@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.6-picker-dismissal";
+const CACHE_NAME = "life-ledger-pwa-0.2.7-habit-carousel";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.6",
-  "./app.js?v=0.2.6",
-  "./deployment-mode.js?v=0.2.6",
-  "./cloudbase-sync.js?v=0.2.6",
+  "./styles.css?v=0.2.7",
+  "./app.js?v=0.2.7",
+  "./deployment-mode.js?v=0.2.7",
+  "./cloudbase-sync.js?v=0.2.7",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.6",
+  "./_init_tcb-env.js?v=0.2.7",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
