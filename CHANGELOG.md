@@ -15,6 +15,8 @@ All notable changes are documented here.
 
 ### Fixed
 
+- PWA upgrades now fetch core UI files network-first and use versioned asset URLs, preventing a new backup button from being paired with an older cached script.
+- Mobile backup and restore now uses the same compact control rhythm and line-icon language as reminders and installation.
 - Static HTTPS hosts no longer assume a Cloudflare API exists; deployment mode is now explicit.
 - Blob download URLs remain available long enough for Safari and installed PWAs to save exports reliably.
 - Simplified Chinese day-strip labels now use clear weekday abbreviations such as `周二` instead of truncating every label to `星`.

@@ -789,6 +789,23 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
   .setting-row { grid-template-columns: 38px minmax(0, 1fr) 38px; padding: 13px 14px; }
 }
 
+/* Mobile data controls share one visual rhythm and stay reachable outside the hidden sidebar. */
+@media (max-width: 760px) {
+  .notification-trigger { order: 3; flex: 1 1 auto; width: auto; min-height: 44px; }
+  .save-mode { order: 4; flex: 1 1 auto; width: auto; min-height: 36px; }
+  .mobile-backup-button { order: 4; display: inline-flex; flex: 0 0 auto; width: auto; min-height: 40px; padding-inline: 16px; }
+  .mobile-install-button,
+  #todayButton { order: 5; flex: 1 1 calc(50% - 5px); width: auto; min-height: 44px; }
+  .mobile-backup-button { border-color: color-mix(in srgb, var(--sage) 24%, var(--line)); }
+  .mobile-backup-button svg { color: var(--sage-dark); }
+}
+
+html[data-theme="dark"] .mobile-backup-button {
+  border-color: var(--edge-soft);
+  background: var(--surface-2);
+}
+html[data-theme="dark"] .mobile-backup-button svg { color: var(--sage); }
+
 /* Period target dashboard: one selected metric, one trend, three answers. */
 .review-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .period-dashboard-heading { align-items: center; margin-bottom: 16px; }

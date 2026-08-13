@@ -1,11 +1,11 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.0-local-first";
+const CACHE_NAME = "life-ledger-pwa-0.2.1-backup-restore";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./deployment-mode.js",
-  "./cloudbase-sync.js",
+  "./styles.css?v=0.2.1",
+  "./app.js?v=0.2.1",
+  "./deployment-mode.js?v=0.2.1",
+  "./cloudbase-sync.js?v=0.2.1",
   "./vendor/cloudbase-sdk.js",
   "./_init_tcb-env.js",
   "./manifest.webmanifest",
@@ -42,6 +42,20 @@ self.addEventListener("fetch", event => {
           return response;
         })
         .catch(async () => (await caches.match("./index.html")) || caches.match("./"))
+    );
+    return;
+  }
+
+  const networkFirst = ["/app.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+    .some(path => url.pathname.endsWith(path));
+  if (networkFirst) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
