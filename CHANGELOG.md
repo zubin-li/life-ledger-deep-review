@@ -7,6 +7,8 @@ All notable changes are documented here.
 ### Added
 
 - English and Simplified Chinese desktop/mobile product showcases.
+- Tencent CloudBase deployment for mainland China, including email OTP authentication, creator-only document synchronization, maintained CLI configuration, and bilingual setup/cost documentation.
+- A reproducible CloudBase build and one-command CLI deployment path that never includes browser-local demo data.
 
 ### Fixed
 

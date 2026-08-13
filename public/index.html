@@ -59,6 +59,9 @@
             <div class="profile-copy"><strong>Personal Ledger</strong><small id="profileSaveMode">Connecting to cloud</small></div>
           </div>
           <div class="profile-actions">
+            <button class="icon-button cloud-account-button" id="cloudAccountButton" type="button" title="云同步账户" aria-label="云同步账户">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.2 4.5 4.5 0 0 0 7 18Z"/><path d="m9.5 13 2 2 3.5-4"/></svg>
+            </button>
             <button class="icon-button pwa-install-button" id="installAppButton" type="button" data-install-app title="安装应用" aria-label="安装应用">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
             </button>
@@ -376,9 +379,33 @@
       </div>
     </dialog>
 
+    <dialog id="cloudbaseAuthDialog" class="cloudbase-auth-dialog">
+      <form method="dialog" id="cloudbaseAuthForm">
+        <header><div><span class="kicker" id="cloudbaseAuthKicker">PRIVATE SYNC</span><h2 id="cloudbaseAuthTitle">连接腾讯云同步</h2></div><button class="icon-button close-cloudbase-auth" type="button" aria-label="关闭">×</button></header>
+        <div class="cloudbase-auth-body">
+          <p id="cloudbaseAuthIntro">使用邮箱验证码登录。会话有效期间无需重复验证，数据只写入你自己的 CloudBase 环境。</p>
+          <label><span id="cloudbaseEmailLabel">邮箱</span><input id="cloudbaseEmail" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+          <div class="cloudbase-code-row">
+            <label><span id="cloudbaseCodeLabel">验证码</span><input id="cloudbaseCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="6位验证码" /></label>
+            <button class="secondary-button" id="cloudbaseSendCode" type="button">发送验证码</button>
+          </div>
+          <p class="cloudbase-auth-status" id="cloudbaseAuthStatus" role="status"></p>
+          <p class="cloudbase-auth-note" id="cloudbaseAuthNote">首次部署者需要在 CloudBase 控制台开启“邮箱验证码 → 邮件代发”。这是一次性免费设置。</p>
+        </div>
+        <footer>
+          <button class="secondary-button" id="cloudbaseSignOut" type="button" hidden>退出登录</button>
+          <span class="dialog-footer-spacer"></span>
+          <button class="secondary-button close-cloudbase-auth" id="cloudbaseAuthCancel" type="button">稍后</button>
+          <button class="primary-button" id="cloudbaseAuthConfirm" type="submit">登录并同步</button>
+        </footer>
+      </form>
+    </dialog>
+
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
+    <script src="./_init_tcb-env.js"></script>
+    <script src="./cloudbase-sync.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>

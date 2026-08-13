@@ -62,11 +62,17 @@ const i18n = {
       networkRetry: "网络异常 · 自动重试",
       authExpired: "云同步需要登录 · 点击继续",
       profileCloud: "D1 云端同步",
+      profileCloudBase: "CloudBase 云同步",
       profileSyncing: "正在连接云端",
       profileAuth: "云同步尚未连接",
       profilePending: "云端连接待恢复",
       profileLocal: "仅本机预览",
       authTitle: "点击登录或配置 Cloudflare Access",
+    },
+    cloudbase: {
+      account: "云同步账户", kicker: "私有同步", title: "连接腾讯云同步", intro: "使用邮箱验证码登录。会话有效期间无需重复验证，数据只写入你自己的 CloudBase 环境。",
+      email: "邮箱", code: "验证码", codePlaceholder: "6位验证码", send: "发送验证码", sending: "正在发送…", sent: "验证码已发送，请查看邮箱。",
+      note: "首次部署者需要在 CloudBase 控制台开启“邮箱验证码 → 邮件代发”。这是一次性免费设置。", later: "稍后", confirm: "登录并同步", signingIn: "正在登录…", connected: "已连接 CloudBase。", signOut: "退出登录", signedOut: "已退出云同步。", close: "关闭腾讯云登录", error: "无法连接 CloudBase，请检查邮箱验证码和部署设置。",
     },
     viewTitles: {
       today: "今日",
@@ -314,11 +320,17 @@ const i18n = {
       networkRetry: "Network issue · retrying",
       authExpired: "Cloud sync needs sign-in · click to continue",
       profileCloud: "D1 cloud sync",
+      profileCloudBase: "CloudBase sync",
       profileSyncing: "Connecting to cloud",
       profileAuth: "Cloud sync is not connected",
       profilePending: "Cloud pending",
       profileLocal: "Local preview only",
       authTitle: "Click to sign in or configure Cloudflare Access",
+    },
+    cloudbase: {
+      account: "Cloud sync account", kicker: "PRIVATE SYNC", title: "Connect Tencent CloudBase", intro: "Sign in with an email code. You stay signed in while the session remains valid, and data is written only to your own CloudBase environment.",
+      email: "Email", code: "Verification code", codePlaceholder: "6-digit code", send: "Send code", sending: "Sending…", sent: "Code sent. Check your email.",
+      note: "The deployer must enable Email verification → Built-in email service once in the CloudBase console. This setup is free.", later: "Later", confirm: "Sign in and sync", signingIn: "Signing in…", connected: "Connected to CloudBase.", signOut: "Sign out", signedOut: "Cloud sync signed out.", close: "Close CloudBase sign-in", error: "CloudBase could not connect. Check the email code and deployment setup.",
     },
     viewTitles: {
       today: "Today",
@@ -566,11 +578,17 @@ const i18n = {
       networkRetry: "Netzwerkproblem · neuer Versuch",
       authExpired: "Cloud-Sync benötigt Anmeldung · klicken",
       profileCloud: "D1-Cloud-Sync",
+      profileCloudBase: "CloudBase-Sync",
       profileSyncing: "Cloud wird verbunden",
       profileAuth: "Cloud-Sync ist nicht verbunden",
       profilePending: "Cloud wartet",
       profileLocal: "Nur lokale Vorschau",
       authTitle: "Anmelden oder Cloudflare Access einrichten",
+    },
+    cloudbase: {
+      account: "Cloud-Sync-Konto", kicker: "PRIVATER SYNC", title: "Tencent CloudBase verbinden", intro: "Melde dich per E-Mail-Code an. Solange die Sitzung gültig ist, bleibt das Gerät angemeldet; Daten werden nur in deiner CloudBase-Umgebung gespeichert.",
+      email: "E-Mail", code: "Bestätigungscode", codePlaceholder: "6-stelliger Code", send: "Code senden", sending: "Wird gesendet…", sent: "Code gesendet. Prüfe dein Postfach.",
+      note: "Der Betreiber muss einmalig E-Mail-Bestätigung → integrierten Mailversand in CloudBase aktivieren. Diese Einrichtung ist kostenlos.", later: "Später", confirm: "Anmelden und synchronisieren", signingIn: "Anmeldung…", connected: "Mit CloudBase verbunden.", signOut: "Abmelden", signedOut: "Cloud-Sync abgemeldet.", close: "CloudBase-Anmeldung schließen", error: "CloudBase konnte nicht verbunden werden. Prüfe Code und Bereitstellung.",
     },
     viewTitles: {
       today: "Heute",
@@ -881,12 +899,17 @@ let selectedReviewWeek = isoWeekKey(new Date());
 let selectedWorkspaceWeek = isoWeekKey(new Date());
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
-let cloudMode = location.protocol === "https:"
+const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
+const hostedCloudMode = location.protocol === "https:"
   && location.hostname !== "127.0.0.1"
   && location.hostname !== "localhost";
+const cloudProvider = cloudBaseConfigured ? "cloudbase" : hostedCloudMode ? "cloudflare" : "local";
+let cloudMode = cloudProvider !== "local";
+let cloudBaseAdapter = cloudBaseConfigured ? window.LifeLedgerCloudBase.createAdapter() : null;
 let cloudTimer = null;
 let cloudRetryTimer = null;
 let authExpired = false;
+let cloudBaseLoginState = null;
 let deferredInstallPrompt = null;
 let themeChoice = ["system", "light", "dark"].includes(localStorage.getItem(THEME_KEY)) ? localStorage.getItem(THEME_KEY) : "system";
 let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
@@ -961,6 +984,8 @@ function applyLanguage() {
   if (note) note.innerHTML = `${escapeHtml(sidebarQuote.text)}<small>${escapeHtml(sidebarQuote.source)}</small>`;
   setText(".profile strong", tr("profileName"));
   $("#exportButton")?.setAttribute("title", tr("exportTitle"));
+  setAria("#cloudAccountButton", tr("cloudbase.account"));
+  $("#cloudAccountButton")?.setAttribute("title", tr("cloudbase.account"));
   $$('[data-install-app]').forEach(button => {
     button.setAttribute("title", deferredInstallPrompt ? tr("pwa.ready") : tr("pwa.install"));
     button.setAttribute("aria-label", tr("pwa.install"));
@@ -1084,11 +1109,26 @@ function applyLanguage() {
   setText("#exportCancel", tr("export.cancel"));
   setText("#exportConfirm", tr("export.confirm"));
   setText("#celebrationText", tr("celebration"));
+  applyCloudBaseLanguage();
   applyReminderLanguage();
   applyTheme();
   applySidebarState();
   renderIconPicker();
   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
+}
+function applyCloudBaseLanguage() {
+  setText("#cloudbaseAuthKicker", tr("cloudbase.kicker"));
+  setText("#cloudbaseAuthTitle", tr("cloudbase.title"));
+  setText("#cloudbaseAuthIntro", tr("cloudbase.intro"));
+  setText("#cloudbaseEmailLabel", tr("cloudbase.email"));
+  setText("#cloudbaseCodeLabel", tr("cloudbase.code"));
+  setPlaceholder("#cloudbaseCode", tr("cloudbase.codePlaceholder"));
+  setText("#cloudbaseSendCode", tr("cloudbase.send"));
+  setText("#cloudbaseAuthNote", tr("cloudbase.note"));
+  setText("#cloudbaseAuthCancel", tr("cloudbase.later"));
+  setText("#cloudbaseAuthConfirm", tr("cloudbase.confirm"));
+  setText("#cloudbaseSignOut", tr("cloudbase.signOut"));
+  setAria(".close-cloudbase-auth", tr("cloudbase.close"));
 }
 function applyDialogLanguage() {
   setText("#habitForm header .kicker", tr("dialog.kicker"));
@@ -1142,12 +1182,14 @@ function setSaveMode(mode, text) {
   badge.classList.toggle("cloud", mode === "cloud");
   badge.classList.toggle("syncing", mode === "syncing");
   badge.classList.toggle("auth", mode === "auth");
-  badge.title = mode === "auth" ? tr("save.authTitle") : "";
+  badge.title = mode === "auth"
+    ? cloudProvider === "cloudbase" ? tr("cloudbase.title") : tr("save.authTitle")
+    : "";
   $("span", badge).textContent = text;
   const profileMode = $("#profileSaveMode");
   if (profileMode) {
     profileMode.textContent = mode === "cloud"
-      ? tr("save.profileCloud")
+      ? cloudProvider === "cloudbase" ? tr("save.profileCloudBase") : tr("save.profileCloud")
       : mode === "syncing"
         ? tr("save.profileSyncing")
         : mode === "auth"
@@ -1156,6 +1198,7 @@ function setSaveMode(mode, text) {
           ? tr("save.profilePending")
           : tr("save.profileLocal");
   }
+  $("#cloudAccountButton")?.classList.toggle("connected", cloudProvider === "cloudbase" && mode === "cloud");
 }
 function isAuthFailure(response) {
   const type = response.headers.get("content-type") || "";
@@ -1170,6 +1213,33 @@ function markAuthExpired() {
   clearTimeout(cloudRetryTimer);
   setSaveMode("auth", tr("save.authExpired"));
 }
+function isCloudBaseAuthError(error) {
+  return error?.name === "CloudBaseAuthRequiredError"
+    || /login|sign-in|credential|auth/i.test(String(error?.message || ""));
+}
+function setCloudBaseAuthStatus(message = "", isError = false) {
+  const status = $("#cloudbaseAuthStatus");
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle("error", isError);
+}
+async function refreshCloudBaseAccount() {
+  if (!cloudBaseAdapter) return null;
+  try {
+    cloudBaseLoginState = await cloudBaseAdapter.loginState();
+  } catch (error) {
+    console.warn("CloudBase account check failed", error);
+    cloudBaseLoginState = null;
+  }
+  $("#cloudbaseSignOut").hidden = !cloudBaseLoginState?.user;
+  return cloudBaseLoginState;
+}
+async function openCloudBaseAuth() {
+  if (!cloudBaseAdapter) return;
+  setCloudBaseAuthStatus();
+  await refreshCloudBaseAccount();
+  $("#cloudbaseAuthDialog").showModal();
+}
 function scheduleCloudRetry() {
   clearTimeout(cloudRetryTimer);
   cloudRetryTimer = setTimeout(() => {
@@ -1179,6 +1249,12 @@ function scheduleCloudRetry() {
 async function pushCloudState() {
   setSaveMode("syncing", tr("save.syncing"));
   try {
+    if (cloudProvider === "cloudbase") {
+      await cloudBaseAdapter.putState(state);
+      authExpired = false;
+      setSaveMode("cloud", tr("save.cloudSaved"));
+      return;
+    }
     const response = await fetch(CLOUD_API, {
       method: "PUT",
       headers: { "content-type": "application/json" },
@@ -1189,6 +1265,10 @@ async function pushCloudState() {
     authExpired = false;
     setSaveMode("cloud", tr("save.cloudSaved"));
   } catch (error) {
+    if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) {
+      markAuthExpired();
+      return;
+    }
     console.warn("Cloud sync failed", error);
     setSaveMode("", tr("save.networkRetry"));
     scheduleCloudRetry();
@@ -1197,6 +1277,18 @@ async function pushCloudState() {
 async function pullCloudState() {
   setSaveMode("syncing", tr("save.connecting"));
   try {
+    if (cloudProvider === "cloudbase") {
+      const remote = await cloudBaseAdapter.getState();
+      if (!remote) { await pushCloudState(); return; }
+      if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
+        state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {} };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderAll();
+      }
+      authExpired = false;
+      setSaveMode("cloud", tr("save.cloudSaved"));
+      return;
+    }
     const response = await fetch(CLOUD_API, { headers: { accept: "application/json" } });
     if (isAuthFailure(response)) { markAuthExpired(); return; }
     if (response.status === 404) { await pushCloudState(); return; }
@@ -1209,6 +1301,10 @@ async function pullCloudState() {
     }
     setSaveMode("cloud", tr("save.cloudSaved"));
   } catch (error) {
+    if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) {
+      markAuthExpired();
+      return;
+    }
     console.warn("Cloud pull failed", error);
     setSaveMode("", tr("save.networkRetry"));
     scheduleCloudRetry();
@@ -2231,6 +2327,59 @@ function bindEvents() {
     updateExportFields();
     $("#exportDialog").showModal();
   });
+  $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";
+  $("#cloudAccountButton").addEventListener("click", openCloudBaseAuth);
+  $$(".close-cloudbase-auth").forEach(button => button.addEventListener("click", () => $("#cloudbaseAuthDialog").close()));
+  $("#cloudbaseSendCode").addEventListener("click", async () => {
+    const email = $("#cloudbaseEmail").value.trim();
+    if (!email || !$("#cloudbaseEmail").checkValidity()) {
+      $("#cloudbaseEmail").reportValidity();
+      return;
+    }
+    const button = $("#cloudbaseSendCode");
+    button.disabled = true;
+    button.textContent = tr("cloudbase.sending");
+    setCloudBaseAuthStatus();
+    try {
+      await cloudBaseAdapter.sendEmailCode(email);
+      setCloudBaseAuthStatus(tr("cloudbase.sent"));
+      $("#cloudbaseCode").focus();
+    } catch (error) {
+      console.warn("CloudBase verification request failed", error);
+      setCloudBaseAuthStatus(error?.message || tr("cloudbase.error"), true);
+    } finally {
+      button.disabled = false;
+      button.textContent = tr("cloudbase.send");
+    }
+  });
+  $("#cloudbaseAuthForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = $("#cloudbaseAuthConfirm");
+    button.disabled = true;
+    button.textContent = tr("cloudbase.signingIn");
+    setCloudBaseAuthStatus();
+    try {
+      await cloudBaseAdapter.signInWithEmailCode($("#cloudbaseEmail").value, $("#cloudbaseCode").value);
+      authExpired = false;
+      await refreshCloudBaseAccount();
+      setCloudBaseAuthStatus(tr("cloudbase.connected"));
+      await pullCloudState();
+      setTimeout(() => $("#cloudbaseAuthDialog").close(), 450);
+    } catch (error) {
+      console.warn("CloudBase sign-in failed", error);
+      setCloudBaseAuthStatus(error?.message || tr("cloudbase.error"), true);
+    } finally {
+      button.disabled = false;
+      button.textContent = tr("cloudbase.confirm");
+    }
+  });
+  $("#cloudbaseSignOut").addEventListener("click", async () => {
+    await cloudBaseAdapter.signOut();
+    cloudBaseLoginState = null;
+    markAuthExpired();
+    $("#cloudbaseSignOut").hidden = true;
+    setCloudBaseAuthStatus(tr("cloudbase.signedOut"));
+  });
   $("#reminderButton").addEventListener("click", openReminderDialog);
   $$(".close-reminder-dialog").forEach(button => button.addEventListener("click", () => $("#reminderDialog").close()));
   $("#testReminderButton").addEventListener("click", async () => {
@@ -2254,7 +2403,9 @@ function bindEvents() {
   $("#exportForm").addEventListener("submit", downloadExport);
   $$(".close-export-dialog").forEach(button => button.addEventListener("click", () => $("#exportDialog").close()));
   $("#saveMode").addEventListener("click", () => {
-    if (authExpired) location.reload();
+    if (!authExpired) return;
+    if (cloudProvider === "cloudbase") openCloudBaseAuth();
+    else location.reload();
   });
   window.addEventListener("online", () => {
     if (cloudMode && !authExpired) pushCloudState();
@@ -2280,7 +2431,28 @@ initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock(
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }
-if (cloudMode) pullCloudState(); else setSaveMode("", tr("save.localPreview"));
+async function initializeCloudSync() {
+  if (!cloudMode) {
+    setSaveMode("", tr("save.localPreview"));
+    return;
+  }
+  if (cloudProvider === "cloudbase") {
+    try {
+      await cloudBaseAdapter.initialize();
+      const login = await refreshCloudBaseAccount();
+      if (!login?.user) {
+        markAuthExpired();
+        return;
+      }
+    } catch (error) {
+      console.warn("CloudBase initialization failed", error);
+      setSaveMode("", tr("save.networkRetry"));
+      return;
+    }
+  }
+  await pullCloudState();
+}
+initializeCloudSync();
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).catch(error => console.warn("Service worker registration failed", error));

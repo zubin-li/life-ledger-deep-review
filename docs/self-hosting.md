@@ -1,5 +1,10 @@
 # Self-hosting
 
+Life Ledger supports two private cloud paths:
+
+- **Cloudflare Workers + D1**, documented below;
+- **Tencent CloudBase**, recommended for mainland China and documented in the [CloudBase guide](cloudbase-china.md).
+
 ## Recommended path: Deploy to Cloudflare
 
 The deployment button in the README asks Cloudflare to clone this repository into your GitHub account, provision a Worker and D1 database, apply the migration, and deploy the application. Accept the detected `npm run deploy` command.
@@ -36,3 +41,5 @@ Before a major update:
 ## Free-plan behavior
 
 When a Cloudflare Free-plan limit is reached, the API can temporarily reject synchronization requests. Local browser saves remain available. Do not upgrade a Cloudflare plan unless you intentionally accept its billing terms.
+
+CloudBase's current Free environment cannot enable pay-as-you-go billing. See the [mainland-China cost and domain notes](cloudbase-china.md#what-it-costs); the assigned domain does not require a purchase, but Tencent documents it for development/testing rather than public production.

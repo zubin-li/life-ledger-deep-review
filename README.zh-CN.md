@@ -13,6 +13,10 @@
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
       <img src="https://deploy.workers.cloudflare.com/button" alt="部署到 Cloudflare" />
     </a>
+    &nbsp;
+    <a href="docs/cloudbase-china.zh-CN.md">
+      <img src="https://img.shields.io/badge/部署到腾讯云_CloudBase-006EFF?style=for-the-badge&logo=tencentcloud&logoColor=white" alt="部署到腾讯云 CloudBase" />
+    </a>
   </p>
 </div>
 
@@ -79,6 +83,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 浅色、深色和跟随系统模式
 - 可安装 PWA 与离线应用外壳
 - 可选的 Cloudflare Access + D1 跨设备同步
+- 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面
 
 ## 产品展示
@@ -112,7 +117,13 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 
 <sub>截图采用虚构的 2026 年 7 月演示数据，不包含真实个人记录。</sub>
 
-## 三种使用方式
+## 选择使用方式
+
+| 方式 | 适合谁 | 必须买域名 | 起步费用 |
+|---|---|---:|---:|
+| 仅本地使用 | 单设备、追求最简单 | 否 | 0 元 |
+| Cloudflare + D1 | 国际网络环境下自托管 | 否 | 免费额度 |
+| 腾讯云 CloudBase | 中国大陆访问与跨设备同步 | 个人体验不需要 | 免费体验环境 |
 
 ### 1. 仅在本地使用——下载后直接打开
 
@@ -147,7 +158,7 @@ npm run dev
 
 点击 GitHub 页面上的 **Use this template**。生成的新仓库拥有独立历史，可以自行修改，不会把任何个人数据分享给本项目。
 
-### 4. 部署属于自己的私有云版本
+### 4. 使用 Cloudflare 部署
 
 点击上面的 **Deploy to Cloudflare**。Cloudflare 会把公开仓库复制到你的账号，在你的账户中创建 Worker 和 D1 数据库，执行初始化并完成部署。
 
@@ -164,20 +175,35 @@ npm run dev
 
 完整步骤请看[自托管说明](docs/self-hosting.zh-CN.md)和[Cloudflare Access 设置](docs/cloudflare-access.zh-CN.md)。
 
+### 5. 在中国大陆使用腾讯云 CloudBase 部署
+
+CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身份认证和文档型数据库都位于部署者自己的腾讯云环境中。
+
+个人自用可以直接使用系统分配的 `*.tcloudbaseapp.com` 地址，开始阶段不需要购买域名，也不需要为自己的域名办理 ICP 备案。截至 2026 年 8 月，免费体验环境每月提供 3000 资源点，不支持按量付费，因此不会因超出免费额度自动扣费；它需要每 6 个月手动续期，未来政策仍以腾讯云官方页面为准。
+
+仓库已经包含完整的可运行实现：
+
+- 当前 CloudBase CLI 使用的 `cloudbaserc.json`；
+- 基于 CloudBase Web SDK v3 的同步适配器；
+- Git 部署构建命令 `npm run build:cloudbase`；
+- 本地一条命令部署 `npm run deploy:cloudbase`。
+
+首次只需在自己的控制台完成三项安全配置：创建免费文档数据库环境、开启邮箱验证码、创建 `life_ledger_states` 并选择**仅创建者可读写**。这三步涉及账户管理权限，不能安全地放到网页代码中自动执行，否则就必须暴露管理员密钥。
+
+请按[中国大陆 CloudBase 完整部署指南](docs/cloudbase-china.zh-CN.md)操作；英文说明见 [Mainland China deployment guide](docs/cloudbase-china.md)。
+
 ## 数据归属
 
 ```text
 浏览器 / 已安装的 PWA
    ├── localStorage     即时本地保存
    ├── JSON 导出        用户自主备份
-   └── /api/state       可选的身份验证同步
-            ↓
-      Cloudflare Worker
-            ↓
-        你自己的 D1 数据库
+   └── 可选的身份验证同步
+            ├── Cloudflare Worker → 你自己的 D1
+            └── CloudBase Web SDK → 你自己的文档集合
 ```
 
-云同步不是必需功能。Worker 会先验证 Access JWT，再把经过验证的邮箱做 SHA-256 哈希并作为 D1 记录键。日记内容没有进行应用层端到端加密，因此 Cloudflare 账户管理员可以查看自己 D1 中的数据。保存敏感信息前请阅读 [PRIVACY.md](PRIVACY.md)。
+云同步不是必需功能。Cloudflare 方案验证 Access JWT 后写入 D1；CloudBase 方案使用登录会话和“仅创建者可读写”的集合权限。日记内容没有进行应用层端到端加密，因此相应云账户的管理员可以查看自己数据库中的记录。保存敏感信息前请阅读 [PRIVACY.md](PRIVACY.md)。
 
 ## 常用命令
 
@@ -186,6 +212,8 @@ npm run dev
 | `npm run dev` | 执行本地迁移并启动 Wrangler 开发环境 |
 | `npm test` | 执行语法、隐私标记、结构和 Worker 测试 |
 | `npm run check` | 快速检查仓库 |
+| `npm run build:cloudbase` | 使用 `TCB_ENV_ID` 与 `TCB_ACCESS_KEY` 构建 CloudBase 发布文件 |
+| `npm run deploy:cloudbase` | 构建并部署到腾讯云 CloudBase 静态网站托管 |
 | `npm run db:migrations:apply` | 对远程 D1 执行数据库迁移 |
 | `npm run deploy` | 执行迁移并部署到 Cloudflare |
 
@@ -194,9 +222,10 @@ npm run dev
 ## 项目结构
 
 ```text
-public/       浏览器应用、PWA 和视觉资源
+public/       浏览器应用、PWA、同步适配器和视觉资源
 src/          Cloudflare Worker API 与静态资源路由
 migrations/   D1 数据库结构
+scripts/      仓库检查与 CloudBase 构建/部署工具
 tests/        轻量 Worker 测试
 docs/         自托管和数据说明
 .github/      CI 与 Issue 模板
@@ -204,7 +233,9 @@ docs/         自托管和数据说明
 
 ## 费用预期
 
-Life Ledger 面向个人或小型家庭使用。Cloudflare 的静态资源请求免费，Worker 与 D1 消耗计入部署者自己的 Cloudflare 账户。正常的个人记录量预计远低于免费方案的每日额度，但部署者仍应自行检查 Cloudflare 的最新价格和账户设置。
+Life Ledger 面向个人或小型家庭使用，两种云方案都运行在部署者自己的账户中。正常个人记录量预计能留在免费额度内，但云厂商的规则和价格可能变化。
+
+中国大陆方案目前可使用一个每月 3000 资源点的 CloudBase 免费体验环境；它不支持按量付费，需要每 6 个月手动续期。系统默认域名被官方定位为开发/测试用途；只有以后面向公众正式运营，才需要自有域名、满足条件的付费环境和 ICP 备案。详见[费用与域名决策表](docs/cloudbase-china.zh-CN.md#费用与域名决策)。
 
 ## 后续计划
 

@@ -13,6 +13,10 @@
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
       <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
     </a>
+    &nbsp;
+    <a href="docs/cloudbase-china.md">
+      <img src="https://img.shields.io/badge/Deploy_to_Tencent_CloudBase-006EFF?style=for-the-badge&logo=tencentcloud&logoColor=white" alt="Deploy to Tencent CloudBase" />
+    </a>
   </p>
 </div>
 
@@ -75,6 +79,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Light, dark, and system appearance
 - Installable PWA with offline app shell
 - Optional Cloudflare Access + D1 cross-device synchronization
+- Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
 
 ## Product tour
@@ -110,6 +115,12 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 ## Choose how to use it
 
+| Path | Best for | Domain required | Starting cost |
+|---|---|---:|---:|
+| Local only | One device, maximum simplicity | No | Free |
+| Cloudflare + D1 | International self-hosting | No | Free tier |
+| Tencent CloudBase | Mainland China access and private sync | No for personal evaluation | Free environment |
+
 ### 1. Local only — download and open
 
 No account, terminal, Node.js, or Cloudflare setup is required:
@@ -143,7 +154,7 @@ Open the local URL shown by Wrangler. The first start applies the D1 schema loca
 
 Use GitHub's **Use this template** button. Your new repository has an independent history and can be customized without sharing data with this project.
 
-### 4. Deploy your own private cloud copy
+### 4. Deploy with Cloudflare
 
 Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository, create a Worker and D1 database in your account, apply the migration, and deploy the app.
 
@@ -160,20 +171,35 @@ After deployment, enable Cloudflare Access:
 
 See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough.
 
+### 5. Deploy with Tencent CloudBase in mainland China
+
+CloudBase is the recommended mainland-China path. It uses Tencent-hosted static files, email OTP authentication, and a creator-only document collection in **your own** CloudBase environment.
+
+Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
+
+The repository includes:
+
+- the maintained CloudBase CLI configuration in `cloudbaserc.json`;
+- a CloudBase Web SDK v3 synchronization adapter;
+- a Git-deployment build (`npm run build:cloudbase`);
+- a one-command local deployment (`npm run deploy:cloudbase`).
+
+There are three one-time safety settings in the deployer's console: create a Free document-database environment, enable email OTP, and create `life_ledger_states` with **Only the creator can read and write** permission. These cannot safely be performed by browser code because that would expose administrator credentials.
+
+Read the complete [Tencent CloudBase deployment guide](docs/cloudbase-china.md) or the detailed [Chinese guide](docs/cloudbase-china.zh-CN.md).
+
 ## Data ownership
 
 ```text
 Browser / installed PWA
    ├── localStorage     immediate local persistence
    ├── JSON export     user-controlled backup
-   └── /api/state      optional authenticated sync
-            ↓
-      Cloudflare Worker
-            ↓
-      Your own D1 database
+   └── optional authenticated sync
+            ├── Cloudflare Worker → your D1 database
+            └── CloudBase Web SDK → your document collection
 ```
 
-Cloud synchronization is optional. The Worker validates the Access JWT before the verified email is hashed into a D1 record key. Journal content is not application-layer end-to-end encrypted, so the owner of the Cloudflare account can inspect their own D1 data. Read [PRIVACY.md](PRIVACY.md) before storing sensitive information.
+Cloud synchronization is optional. Cloudflare validates an Access JWT before writing to D1; CloudBase uses an authenticated session plus creator-only collection permissions. Journal content is not application-layer end-to-end encrypted, so the owner of either cloud account can inspect their own database. Read [PRIVACY.md](PRIVACY.md) before storing sensitive information.
 
 ## Commands
 
@@ -182,6 +208,8 @@ Cloud synchronization is optional. The Worker validates the Access JWT before th
 | `npm run dev` | Apply local migrations and start Wrangler development mode |
 | `npm test` | Run syntax, privacy-marker, structure, and Worker tests |
 | `npm run check` | Run fast repository checks |
+| `npm run build:cloudbase` | Build a CloudBase artifact using `TCB_ENV_ID` and `TCB_ACCESS_KEY` |
+| `npm run deploy:cloudbase` | Build and deploy to Tencent CloudBase Static Hosting |
 | `npm run db:migrations:apply` | Apply D1 migrations to the configured remote database |
 | `npm run deploy` | Migrate and deploy to Cloudflare |
 
@@ -190,9 +218,10 @@ The development and deployment commands require Node.js 20 or newer. Direct loca
 ## Project structure
 
 ```text
-public/       browser application, PWA shell, and visual assets
+public/       browser application, PWA shell, sync adapters, and visual assets
 src/          Cloudflare Worker API and static-asset routing
 migrations/   D1 database schema
+scripts/      validation and CloudBase build/deploy helpers
 tests/        dependency-light Worker tests
 docs/         self-hosting and data guides
 .github/      CI and issue templates
@@ -200,7 +229,9 @@ docs/         self-hosting and data guides
 
 ## Cost expectations
 
-Life Ledger is designed for one person or a small household. Static asset requests on Cloudflare are free, while Worker and D1 usage stays inside the deployer's own Cloudflare plan. A normal personal tracker is expected to remain far below the Free plan's daily limits, but the deployer is responsible for reviewing current Cloudflare pricing and account settings.
+Life Ledger is designed for one person or a small household. Both cloud paths run inside the deployer's own account. A normal personal tracker is expected to remain within the providers' free allowances, but limits and prices can change.
+
+For mainland China, CloudBase currently offers one Free environment with 3,000 resource points per month. It cannot enable pay-as-you-go billing and requires manual renewal every six months. The assigned domain is documented for development/testing; a public production site requires a custom domain and a qualifying ICP setup. See the [cost and domain decision table](docs/cloudbase-china.md#what-it-costs).
 
 ## Roadmap
 
