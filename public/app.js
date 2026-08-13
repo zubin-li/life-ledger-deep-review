@@ -55,6 +55,7 @@ const i18n = {
     exportTitle: "导入与导出",
     pwa: { install: "安装为应用", ready: "可安装", manual: "请使用浏览器菜单中的“添加到主屏幕”或“安装应用”。", installed: "Life Ledger 已安装" },
     theme: { label: "外观", system: "跟随系统", light: "浅色模式", dark: "深色模式" },
+    toolbar: { open: "展开工具", close: "收起工具", short: "工具" },
     yearSuffix: "年",
     monthSuffix: "月",
     todayButton: "回到今天",
@@ -273,11 +274,14 @@ const i18n = {
       target: "目标值",
       unit: "单位",
       frequency: "统计周期",
+      schedule: "具体时间（可选）",
       periodTarget: "周期内目标次数",
       dailyScore: "计入当天完成度",
       dailyScoreHelp: "关闭后仍可每天打卡，但只影响每周或每月的周期达标。",
       effectiveDate: "生效日期",
       hint: "修改将从所选日期生效。",
+      preview: "即时预览",
+      previewName: "新习惯",
       delete: "删除习惯",
       cancel: "取消",
       save: "保存",
@@ -324,6 +328,7 @@ const i18n = {
     exportTitle: "Import & export",
     pwa: { install: "Install app", ready: "Ready to install", manual: "Use your browser menu and choose Add to Home Screen or Install app.", installed: "Life Ledger installed" },
     theme: { label: "Appearance", system: "Follow system", light: "Light mode", dark: "Dark mode" },
+    toolbar: { open: "Show tools", close: "Hide tools", short: "Tools" },
     yearSuffix: "",
     monthSuffix: "",
     todayButton: "Today",
@@ -542,11 +547,14 @@ const i18n = {
       target: "Target",
       unit: "Unit",
       frequency: "Frequency",
+      schedule: "Specific time (optional)",
       periodTarget: "Target count per period",
       dailyScore: "Count toward daily score",
       dailyScoreHelp: "If off, it can still be checked daily but only affects weekly or monthly targets.",
       effectiveDate: "Effective date",
       hint: "Changes apply from the selected date.",
+      preview: "Live preview",
+      previewName: "New habit",
       delete: "Delete habit",
       cancel: "Cancel",
       save: "Save",
@@ -593,6 +601,7 @@ const i18n = {
     exportTitle: "Import & Export",
     pwa: { install: "App installieren", ready: "Installationsbereit", manual: "Wähle im Browsermenü „Zum Home-Bildschirm“ oder „App installieren“.", installed: "Life Ledger wurde installiert" },
     theme: { label: "Darstellung", system: "Systemeinstellung", light: "Heller Modus", dark: "Dunkler Modus" },
+    toolbar: { open: "Werkzeuge anzeigen", close: "Werkzeuge ausblenden", short: "Werkzeuge" },
     yearSuffix: "",
     monthSuffix: "",
     todayButton: "Heute",
@@ -811,11 +820,14 @@ const i18n = {
       target: "Zielwert",
       unit: "Einheit",
       frequency: "Rhythmus",
+      schedule: "Uhrzeit (optional)",
       periodTarget: "Zielanzahl je Periode",
       dailyScore: "In Tagesscore zählen",
       dailyScoreHelp: "Ausgeschaltet kann es täglich abgehakt werden, zählt aber nur für Wochen- oder Monatsziele.",
       effectiveDate: "Startdatum",
       hint: "Änderungen gelten ab dem gewählten Datum.",
+      preview: "Live-Vorschau",
+      previewName: "Neue Gewohnheit",
       delete: "Gewohnheit löschen",
       cancel: "Abbrechen",
       save: "Speichern",
@@ -956,6 +968,7 @@ let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
 let pendingImport = null;
 let persistenceRequested = false;
+let mobileToolbarOpen = false;
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -1045,6 +1058,8 @@ function applyLanguage() {
   setAria("#yearSelect", languageText("选择年份", "Select year", "Jahr wählen"));
   setAria("#monthSelect", languageText("选择月份", "Select month", "Monat wählen"));
   setText("#todayButton", tr("todayButton"));
+  setText("#mobileToolbarLabel", tr("toolbar.short"));
+  setAria("#mobileToolbarToggle", mobileToolbarOpen ? tr("toolbar.close") : tr("toolbar.open"));
   const heroQuote = quoteFor(0);
   setText(".hero-copy h2", heroQuote.text);
   setText(".quote-source", heroQuote.source);
@@ -1191,18 +1206,17 @@ function applyCloudBaseLanguage() {
 function applyDialogLanguage() {
   setText("#habitForm header .kicker", tr("dialog.kicker"));
   setAria(".close-habit-dialog", tr("dialog.close"));
-  const labels = $$("#habitForm .form-grid label");
-  const labelMap = [tr("dialog.name"), tr("dialog.icon"), tr("dialog.color"), tr("dialog.target"), tr("dialog.unit"), tr("dialog.frequency"), tr("dialog.periodTarget")];
-  labels.slice(0, 7).forEach((label, index) => {
-    const control = label.querySelector("input, select");
-    if (!control) return;
-    label.firstChild.textContent = labelMap[index];
-  });
-  const effectiveDateLabel = labels[8];
-  if (effectiveDateLabel?.firstChild) effectiveDateLabel.firstChild.textContent = tr("dialog.effectiveDate");
+  setText("#habitNameLabel", tr("dialog.name"));
+  setText("#habitIconLabel", tr("dialog.icon"));
+  setText("#habitColorLabel", tr("dialog.color"));
+  setText("#habitTargetLabel", tr("dialog.target"));
+  setText("#habitUnitLabel", tr("dialog.unit"));
+  setText("#habitFrequencyLabel", tr("dialog.frequency"));
+  setText("#habitScheduleLabel", tr("dialog.schedule"));
+  setText("#habitPeriodTargetLabel", tr("dialog.periodTarget"));
+  setText("#habitEffectiveDateLabel", tr("dialog.effectiveDate"));
+  setText("#habitPreviewKicker", tr("dialog.preview"));
   setPlaceholder('input[name="name"]', tr("dialog.namePlaceholder"));
-  const color = $('select[name="color"]');
-  if (color) [...color.options].forEach(option => option.textContent = tr(`dialog.colors.${option.value}`));
   const frequency = $('select[name="frequency"]');
   if (frequency) {
     frequency.options[0].textContent = tr("habits.daily");
@@ -1217,6 +1231,8 @@ function applyDialogLanguage() {
   setText("#saveHabit", tr("dialog.save"));
   const habit = state?.habits?.find(h => h.id === editingHabitId);
   setText("#habitDialogTitle", habit ? tr("dialog.editTitle", { habit: displayHabitName(habit) }) : tr("dialog.addTitle"));
+  renderColorPicker();
+  updateHabitFormPreview();
 }
 
 function loadState() {
@@ -1408,6 +1424,20 @@ function frequencyLabel(version) {
   if (version.frequency === "weekly") return tr("habits.weekly", { target: periodTargetFor(version) });
   if (version.frequency === "monthly") return tr("habits.monthly", { target: periodTargetFor(version) });
   return tr("habits.daily");
+}
+function scheduleLabel(version) {
+  const explicit = String(version?.scheduleTime || "").trim();
+  if (explicit) return explicit;
+  const legacyUnit = String(version?.unit || "").trim();
+  return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(legacyUnit) ? legacyUnit : "";
+}
+function habitMetaLabel(version) {
+  if (!version) return "";
+  const schedule = scheduleLabel(version);
+  const unit = String(version.unit || "").trim();
+  const unitIsSchedule = /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(unit);
+  const quantity = unitIsSchedule ? "" : `${version.target}${displayUnit(unit)}`;
+  return [frequencyLabel(version), schedule, quantity].filter(Boolean).join(" · ");
 }
 function habitStyle(habit) {
   const c = colors[habit.color] || colors.sage;
@@ -1641,8 +1671,7 @@ function renderDailyGoalList(date, listSelector, progressSelector, emptyKey) {
 
 function habitCard(habit, date, done) {
   const v = versionFor(habit, date);
-  const period = v.frequency === "weekly" ? ` · ${tr("habits.weekly", { target: periodTargetFor(v) })}` : v.frequency === "monthly" ? ` · ${tr("habits.monthly", { target: periodTargetFor(v) })}` : "";
-  const target = `${v.target === 1 ? "" : v.target}${displayUnit(v.unit)}${period}`;
+  const target = habitMetaLabel(v);
   const periodNote = countsTowardDaily(habit, date) ? "" : `<span class="period-note">${tr("foundations.periodNote")}</span>`;
   return `<article class="habit-card ${done ? "completed" : ""}" data-id="${habit.id}" style="${habitStyle(habit)}">
     <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check">✓</span></div>
@@ -1944,7 +1973,7 @@ function renderHabitSettings() {
     const v = versionFor(h, isoDate(new Date())) || h.versions[h.versions.length - 1];
     return `<article class="setting-row" style="${habitStyle(h)}">
       <span class="habit-icon">${renderIcon(iconKey(h))}</span>
-      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${v.target === 1 ? "" : `${v.target}${displayUnit(v.unit)} · `}${frequencyLabel(v)}</span></div>
+      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span></div>
       <button class="icon-button edit-habit" data-id="${h.id}" aria-label="${tr("habits.editLabel", { habit: displayHabitName(h) })}">···</button>
     </article>`;
   }).join("");
@@ -1965,6 +1994,50 @@ function renderIconPicker() {
     $("#iconPickerTrigger").setAttribute("aria-expanded", "false");
     renderIconPicker();
   }));
+}
+
+function renderColorPicker() {
+  const input = $('#habitForm input[name="color"]');
+  const popover = $("#colorPickerPopover");
+  if (!input || !popover) return;
+  const selected = colors[input.value] ? input.value : "sage";
+  const selectedColor = colors[selected];
+  $("#colorPickerPreview").style.background = selectedColor.solid;
+  $("#colorPickerName").textContent = tr(`dialog.colors.${selected}`);
+  popover.innerHTML = Object.entries(colors).map(([key, value]) => `
+    <button type="button" class="color-choice ${key === selected ? "selected" : ""}" data-color="${key}">
+      <i style="--choice-color:${value.solid};--choice-soft:${value.soft}" aria-hidden="true"></i>
+      <span>${escapeHtml(tr(`dialog.colors.${key}`))}</span>
+      <b aria-hidden="true">${key === selected ? "✓" : ""}</b>
+    </button>`).join("");
+  $$(".color-choice", popover).forEach(button => button.addEventListener("click", () => {
+    input.value = button.dataset.color;
+    popover.hidden = true;
+    $("#colorPickerTrigger").setAttribute("aria-expanded", "false");
+    renderColorPicker();
+    updateHabitFormPreview();
+  }));
+}
+
+function updateHabitFormPreview() {
+  const form = $("#habitForm");
+  if (!form) return;
+  const colorKey = colors[form.elements.color.value] ? form.elements.color.value : "sage";
+  const color = colors[colorKey];
+  const icon = iconCatalog[form.elements.icon.value] ? form.elements.icon.value : "target";
+  const version = {
+    target: Math.max(1, Number(form.elements.target.value) || 1),
+    unit: form.elements.unit.value.trim(),
+    frequency: form.elements.frequency.value,
+    periodTarget: Number(form.elements.periodTarget.value) || 1,
+    scheduleTime: form.elements.scheduleTime.value,
+  };
+  const preview = $("#habitLivePreview");
+  preview.style.setProperty("--habit-color", color.solid);
+  preview.style.setProperty("--habit-soft", color.soft);
+  $("#habitPreviewIcon").innerHTML = renderIcon(icon);
+  $("#habitPreviewName").textContent = form.elements.name.value.trim() || tr("dialog.previewName");
+  $("#habitPreviewMeta").textContent = habitMetaLabel(version);
 }
 
 function showCelebration() {
@@ -2003,7 +2076,7 @@ function renderDrawer() {
   $("#drawerHabits").innerHTML = habits.map(h => {
     const done = log.completed.includes(h.id), v = versionFor(h, selectedDate);
     const note = countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
-    const target = `${v.target === 1 ? "" : v.target}${displayUnit(v.unit)} · ${frequencyLabel(v)}`;
+    const target = habitMetaLabel(v);
     return `<details class="drawer-habit ${done ? "done" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
       <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? "✓" : "⌄"}</span></summary>
       <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${note}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
@@ -2030,13 +2103,16 @@ function openHabitDialog(id = null) {
   form.elements.target.value = v?.target || 30;
   form.elements.unit.value = v?.unit || "分钟";
   form.elements.frequency.value = v?.frequency || "daily";
+  form.elements.scheduleTime.value = v?.scheduleTime || (/^\d{1,2}:\d{2}$/.test(String(v?.unit || "")) ? v.unit : "");
   form.elements.periodTarget.value = v ? periodTargetFor(v) : 3;
   form.elements.countsTowardDaily.checked = v ? countsTowardDaily(habit, isoDate(new Date())) : true;
   form.elements.effectiveDate.value = isoDate(new Date());
   $("#deleteHabitButton").hidden = !habit;
   applyDialogLanguage();
   renderIconPicker();
+  renderColorPicker();
   updateHabitFormRules();
+  updateHabitFormPreview();
   $("#habitDialog").showModal();
 }
 function closeHabitDialog() {
@@ -2051,6 +2127,7 @@ function updateHabitFormRules() {
   periodField.style.display = frequency === "daily" ? "none" : "";
   form.elements.periodTarget.required = frequency !== "daily";
   form.elements.periodTarget.max = frequency === "weekly" ? 7 : 31;
+  updateHabitFormPreview();
 }
 function saveHabitFromForm(event) {
   event.preventDefault();
@@ -2058,6 +2135,7 @@ function saveHabitFromForm(event) {
   const form = new FormData(event.currentTarget);
   const version = {
     target: +form.get("target"), unit: form.get("unit"), frequency: form.get("frequency"),
+    scheduleTime: form.get("scheduleTime") || "",
     periodTarget: form.get("frequency") === "daily" ? null : +form.get("periodTarget"),
     weeklyTarget: form.get("frequency") === "weekly" ? +form.get("periodTarget") : null,
     countsTowardDaily: form.get("countsTowardDaily") === "on",
@@ -2164,6 +2242,17 @@ function syncExportButtonPlacement() {
   if (!button || !anchor || !topActions) return;
   if (window.matchMedia("(max-width: 760px)").matches) topActions.append(button);
   else anchor.after(button);
+}
+function syncMobileToolbar() {
+  const mobile = window.matchMedia("(max-width: 760px)").matches;
+  const button = $("#mobileToolbarToggle");
+  const actions = $("#mobileTopActions");
+  if (!button || !actions) return;
+  button.hidden = !mobile;
+  actions.classList.toggle("mobile-collapsed", mobile && !mobileToolbarOpen);
+  actions.classList.toggle("mobile-open", mobile && mobileToolbarOpen);
+  button.setAttribute("aria-expanded", String(mobile && mobileToolbarOpen));
+  button.setAttribute("aria-label", mobileToolbarOpen ? tr("toolbar.close") : tr("toolbar.open"));
 }
 function createBackup(scope) {
   const range = exportRange(scope);
@@ -2463,6 +2552,10 @@ function bindEvents() {
     localStorage.setItem(SIDEBAR_KEY, String(sidebarCollapsed));
     applySidebarState();
   });
+  $("#mobileToolbarToggle").addEventListener("click", () => {
+    mobileToolbarOpen = !mobileToolbarOpen;
+    syncMobileToolbar();
+  });
   systemTheme.addEventListener("change", () => { if (themeChoice === "system") applyTheme(); });
   $("#languageSelect").addEventListener("change", event => {
     currentLang = event.target.value;
@@ -2517,10 +2610,16 @@ function bindEvents() {
   });
   $$("[data-open-settings]").forEach(b => b.addEventListener("click", () => $(".nav-item[data-view='habits']").click()));
   $("#habitForm").elements.frequency.addEventListener("change", updateHabitFormRules);
+  $("#habitForm").addEventListener("input", updateHabitFormPreview);
   $("#iconPickerTrigger").addEventListener("click", () => {
     const popover = $("#iconPickerPopover");
     popover.hidden = !popover.hidden;
     $("#iconPickerTrigger").setAttribute("aria-expanded", String(!popover.hidden));
+  });
+  $("#colorPickerTrigger").addEventListener("click", () => {
+    const popover = $("#colorPickerPopover");
+    popover.hidden = !popover.hidden;
+    $("#colorPickerTrigger").setAttribute("aria-expanded", String(!popover.hidden));
   });
   $("#habitForm").addEventListener("submit", saveHabitFromForm);
   $$("[data-analytics-chart]").forEach(button => button.addEventListener("click", () => {
@@ -2672,11 +2771,14 @@ function bindEvents() {
     $$('[data-install-app]').forEach(button => button.classList.remove("ready"));
     showToast(tr("pwa.installed"));
   });
-  window.addEventListener("resize", syncExportButtonPlacement, { passive: true });
+  window.addEventListener("resize", () => {
+    syncExportButtonPlacement();
+    syncMobileToolbar();
+  }, { passive: true });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 }
 
-syncExportButtonPlacement(); initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }

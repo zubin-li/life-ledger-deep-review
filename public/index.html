@@ -24,7 +24,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=0.2.4" />
+    <link rel="stylesheet" href="./styles.css?v=0.2.5" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -75,11 +75,15 @@
 
       <main class="main-content">
         <header class="topbar">
-          <div>
+          <div class="topbar-copy">
             <p class="eyebrow" id="eyebrow">2026年6月22日 — 6月28日</p>
             <h1 id="viewTitle">慎终如始，则无败事。</h1>
           </div>
-          <div class="top-actions">
+          <button class="mobile-toolbar-toggle" id="mobileToolbarToggle" type="button" aria-expanded="false" aria-controls="mobileTopActions">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+            <span id="mobileToolbarLabel">工具</span>
+          </button>
+          <div class="top-actions" id="mobileTopActions">
             <span class="save-mode" id="saveMode"><i></i><span>本地预览</span></span>
             <button class="secondary-button notification-trigger" id="reminderButton" type="button" title="Daily review reminder" aria-label="Daily review reminder">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
@@ -332,18 +336,24 @@
       <form method="dialog" id="habitForm">
         <header><div><span class="kicker">HABIT VERSION</span><h2 id="habitDialogTitle">新增习惯</h2></div><button class="icon-button close-habit-dialog" type="button" aria-label="取消并关闭">×</button></header>
         <div class="form-grid">
-          <label class="full">习惯名称<input name="name" required placeholder="例如：阅读" /></label>
-          <label class="icon-picker-field">图标<input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" hidden></div></label>
-          <label>强调色<select name="color"><option value="sage">鼠尾草绿</option><option value="amber">琥珀黄</option><option value="coral">珊瑚红</option><option value="blue">雾霾蓝</option><option value="violet">紫罗兰</option><option value="cyan">天空蓝</option></select></label>
-          <label>目标值<input name="target" required type="number" min="1" value="30" /></label>
-          <label>单位<input name="unit" required value="分钟" /></label>
-          <label>统计周期<select name="frequency"><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option></select></label>
-          <label id="periodTargetField">周期内目标次数<input name="periodTarget" type="number" min="1" max="31" value="3" /></label>
+          <label class="full"><span id="habitNameLabel">习惯名称</span><input name="name" required placeholder="例如：阅读" /></label>
+          <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" hidden></div></label>
+          <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" hidden></div></label>
+          <label><span id="habitTargetLabel">目标值</span><input name="target" required type="number" min="1" value="30" /></label>
+          <label><span id="habitUnitLabel">单位</span><input name="unit" required value="分钟" /></label>
+          <label><span id="habitFrequencyLabel">统计周期</span><select name="frequency"><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option></select></label>
+          <label id="habitScheduleField"><span id="habitScheduleLabel">具体时间（可选）</span><input name="scheduleTime" type="time" /></label>
+          <label id="periodTargetField"><span id="habitPeriodTargetLabel">周期内目标次数</span><input name="periodTarget" type="number" min="1" max="31" value="3" /></label>
           <label class="full daily-score-choice">
             <input name="countsTowardDaily" type="checkbox" />
             <span><strong>计入当天完成度</strong><small>关闭后仍可每天打卡，但只影响每周或每月的周期达标。</small></span>
           </label>
-          <label class="full">生效日期<input name="effectiveDate" required type="date" /></label>
+          <div class="habit-live-preview full" id="habitLivePreview" style="--habit-color:#6f8f7d;--habit-soft:#dbe6dc">
+            <span class="habit-icon" id="habitPreviewIcon"></span>
+            <div><small id="habitPreviewKicker">即时预览</small><strong id="habitPreviewName">新习惯</strong><span id="habitPreviewMeta">每日 · 30分钟</span></div>
+            <i aria-hidden="true">✓</i>
+          </div>
+          <label class="full"><span id="habitEffectiveDateLabel">生效日期</span><input name="effectiveDate" required type="date" /></label>
         </div>
         <p class="form-hint">已有习惯的修改会创建新版本，之前的打卡标准保持不变。</p>
         <footer>
@@ -436,9 +446,9 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=0.2.4"></script>
-    <script src="./_init_tcb-env.js?v=0.2.4"></script>
-    <script src="./cloudbase-sync.js?v=0.2.4"></script>
-    <script src="./app.js?v=0.2.4"></script>
+    <script src="./deployment-mode.js?v=0.2.5"></script>
+    <script src="./_init_tcb-env.js?v=0.2.5"></script>
+    <script src="./cloudbase-sync.js?v=0.2.5"></script>
+    <script src="./app.js?v=0.2.5"></script>
   </body>
 </html>
