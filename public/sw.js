@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.2-import-export";
+const CACHE_NAME = "life-ledger-pwa-0.2.3-import-export";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.2",
-  "./app.js?v=0.2.2",
-  "./deployment-mode.js?v=0.2.2",
-  "./cloudbase-sync.js?v=0.2.2",
+  "./styles.css?v=0.2.3",
+  "./app.js?v=0.2.3",
+  "./deployment-mode.js?v=0.2.3",
+  "./cloudbase-sync.js?v=0.2.3",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.2",
+  "./_init_tcb-env.js?v=0.2.3",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -21,9 +21,14 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key.startsWith("life-ledger-") && key !== CACHE_NAME).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
+    caches.keys().then(async keys => {
+      const previousCaches = keys.filter(key => key.startsWith("life-ledger-") && key !== CACHE_NAME);
+      await Promise.all(previousCaches.map(key => caches.delete(key)));
+      await self.clients.claim();
+      if (!previousCaches.length) return;
+      const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      await Promise.all(windows.map(client => client.navigate(client.url).catch(() => undefined)));
+    })
   );
 });
 
