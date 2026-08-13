@@ -1,11 +1,12 @@
 <div align="center">
   <img src="public/assets/app-icon-192.png" width="96" height="96" alt="Life Ledger icon" />
   <h1>Life Ledger · Deep Review</h1>
-  <p>A calm, multilingual, local-first space for habits, daily notes, and meaningful reflection.</p>
+  <p><strong>Understand your past. Shape your future.</strong></p>
+  <p><em>A personal reflection system that helps you understand your past, not just plan your future.</em></p>
 
   <p>
-    <a href="README.md">English</a> ·
-    <a href="README.zh-CN.md">简体中文</a>
+    <strong><a href="README.md">English</a></strong> ·
+    <strong><a href="README.zh-CN.md">简体中文</a></strong>
   </p>
 
   <p>
@@ -16,6 +17,65 @@
 </div>
 
 > **Beta:** Life Ledger is ready for personal use and self-hosting. Keep regular JSON exports while the synchronization model continues to mature.
+
+## Why Life Ledger
+
+Most productivity tools focus on what you should do next.
+
+Life Ledger focuses on what you have already experienced.
+
+It provides a simple place to record your daily habits, mood, priorities, and weekly reflections—allowing small everyday moments to gradually become a meaningful history of your personal growth.
+
+The goal is not to quantify life.
+
+It is to understand it more clearly.
+
+Over time, your own data becomes something far more valuable than isolated notes or completed tasks. It becomes a record of how you think, grow, struggle, and improve.
+
+Life Ledger is designed around a simple principle:
+
+> **Your data belongs to you. Your history belongs to you.**
+
+Deploy it to your own Cloudflare account, keep everything local, or export your data whenever you want.
+
+There is no hosted platform, no advertising, and no central database.
+
+## Deep Review
+
+Deep Review is the methodology behind Life Ledger.
+
+Instead of collecting more information, it encourages a habit of reflection.
+
+Small daily records become weekly reviews. Weekly reviews become monthly understanding. Months eventually become a personal history that helps you see your own growth instead of forgetting it.
+
+The purpose is not productivity.
+
+The purpose is perspective.
+
+## AI-assisted Reflection
+
+Life Ledger records your journey. AI helps you understand it.
+
+Future versions are planned to let you connect your own AI provider with an API key and generate weekly, monthly, and yearly reflection reports based entirely on your own history.
+
+Instead of uploading your life to someone else's platform, your own data becomes the foundation for your own insights.
+
+AI is not here to replace reflection. It is here to make reflection more meaningful.
+
+> **Roadmap note:** AI-assisted reflection is a planned capability and is not included in the current beta.
+
+## Highlights
+
+- Daily habits with adjustable targets and effective dates
+- Daily goals, mood, journal, and event notes
+- Weekly goals, checklist behavior, outputs, and archived notes
+- Monthly review with habit comparisons and line/bar charts
+- Daily, weekly, monthly, or complete JSON export
+- English, Simplified Chinese, and German interfaces
+- Light, dark, and system appearance
+- Installable PWA with offline app shell
+- Optional Cloudflare Access + D1 cross-device synchronization
+- Responsive Apple-inspired interface for desktop and mobile
 
 ## Product tour
 
@@ -47,31 +107,6 @@
 <p align="center"><a href="docs/SHOWCASE.md"><strong>Explore the complete desktop and mobile product showcase →</strong></a></p>
 
 <sub>The screenshots use fictional July 2026 sample data created only for demonstration.</sub>
-
-## Why Life Ledger
-
-Most trackers separate habits, tasks, mood, journaling, and reviews. Life Ledger keeps them in one quiet workflow:
-
-- record what happened today;
-- plan the current or next week;
-- compare habit trends without turning life into a scoreboard;
-- write weekly and monthly reflections in context;
-- keep the data on your device or in your own Cloudflare account.
-
-There is no hosted Life Ledger account, advertising layer, or central user database.
-
-## Highlights
-
-- Daily habits with adjustable targets and effective dates
-- Daily goals, mood, journal, and event notes
-- Weekly goals, checklist behavior, outputs, and archived notes
-- Monthly review with habit comparisons and line/bar charts
-- Daily, weekly, monthly, or complete JSON export
-- English, Simplified Chinese, and German interfaces
-- Light, dark, and system appearance
-- Installable PWA with offline app shell
-- Optional Cloudflare Access + D1 cross-device synchronization
-- Responsive Apple-inspired interface for desktop and mobile
 
 ## Choose how to use it
 
