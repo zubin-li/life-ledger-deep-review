@@ -75,6 +75,7 @@ button { cursor: pointer; }
 .secondary-button { background: var(--paper-deep); }
 .primary-button:active, .secondary-button:active, .round-button:active, .icon-button:active { transform: scale(.97); }
 .icon-button { width: 38px; height: 38px; padding: 0; display: grid; place-items: center; border-radius: 13px; border: 1px solid var(--line); background: rgba(255,255,255,.42); color: inherit; transition: transform 140ms var(--ease-enter), background-color 160ms ease, box-shadow 160ms ease; }
+.cloud-account-button[hidden] { display: none !important; }
 .view { display: none; opacity: 0; transform: translateY(10px); }
 .view.active { display: block; animation: viewIn 320ms var(--ease-enter) forwards; }
 @keyframes viewIn { to { opacity: 1; transform: translateY(0); } }
