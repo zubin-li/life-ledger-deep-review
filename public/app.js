@@ -1216,6 +1216,8 @@ function applyDialogLanguage() {
   setText("#habitPeriodTargetLabel", tr("dialog.periodTarget"));
   setText("#habitEffectiveDateLabel", tr("dialog.effectiveDate"));
   setText("#habitPreviewKicker", tr("dialog.preview"));
+  setAria("#iconPickerPopover", tr("dialog.icon"));
+  setAria("#colorPickerPopover", tr("dialog.color"));
   setPlaceholder('input[name="name"]', tr("dialog.namePlaceholder"));
   const frequency = $('select[name="frequency"]');
   if (frequency) {
@@ -1996,6 +1998,29 @@ function renderIconPicker() {
   }));
 }
 
+function closeHabitPickers(except = "", restoreFocus = false) {
+  const pickers = [
+    { key: "icon", panel: $("#iconPickerPopover"), trigger: $("#iconPickerTrigger") },
+    { key: "color", panel: $("#colorPickerPopover"), trigger: $("#colorPickerTrigger") },
+  ];
+  pickers.forEach(({ key, panel, trigger }) => {
+    if (!panel || !trigger || key === except || panel.hidden) return;
+    panel.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    if (restoreFocus) trigger.focus({ preventScroll: true });
+  });
+}
+
+function toggleHabitPicker(key) {
+  const panel = $(`#${key}PickerPopover`);
+  const trigger = $(`#${key}PickerTrigger`);
+  if (!panel || !trigger) return;
+  const opening = panel.hidden;
+  closeHabitPickers(opening ? key : "");
+  panel.hidden = !opening;
+  trigger.setAttribute("aria-expanded", String(opening));
+}
+
 function renderColorPicker() {
   const input = $('#habitForm input[name="color"]');
   const popover = $("#colorPickerPopover");
@@ -2093,6 +2118,7 @@ function renderDrawer() {
 }
 
 function openHabitDialog(id = null) {
+  closeHabitPickers();
   editingHabitId = id;
   const form = $("#habitForm"), habit = state.habits.find(h => h.id === id);
   const v = habit ? versionFor(habit, isoDate(new Date())) || habit.versions[habit.versions.length - 1] : null;
@@ -2116,6 +2142,7 @@ function openHabitDialog(id = null) {
   $("#habitDialog").showModal();
 }
 function closeHabitDialog() {
+  closeHabitPickers();
   $("#habitDialog").close();
   $("#habitForm").reset();
   editingHabitId = null;
@@ -2612,14 +2639,10 @@ function bindEvents() {
   $("#habitForm").elements.frequency.addEventListener("change", updateHabitFormRules);
   $("#habitForm").addEventListener("input", updateHabitFormPreview);
   $("#iconPickerTrigger").addEventListener("click", () => {
-    const popover = $("#iconPickerPopover");
-    popover.hidden = !popover.hidden;
-    $("#iconPickerTrigger").setAttribute("aria-expanded", String(!popover.hidden));
+    toggleHabitPicker("icon");
   });
   $("#colorPickerTrigger").addEventListener("click", () => {
-    const popover = $("#colorPickerPopover");
-    popover.hidden = !popover.hidden;
-    $("#colorPickerTrigger").setAttribute("aria-expanded", String(!popover.hidden));
+    toggleHabitPicker("color");
   });
   $("#habitForm").addEventListener("submit", saveHabitFromForm);
   $$("[data-analytics-chart]").forEach(button => button.addEventListener("click", () => {
@@ -2775,7 +2798,25 @@ function bindEvents() {
     syncExportButtonPlacement();
     syncMobileToolbar();
   }, { passive: true });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+  document.addEventListener("pointerdown", event => {
+    if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;
+    closeHabitPickers();
+  });
+  document.addEventListener("focusin", event => {
+    if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;
+    closeHabitPickers();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    const pickerOpen = [$("#iconPickerPopover"), $("#colorPickerPopover")].some(panel => panel && !panel.hidden);
+    if (pickerOpen) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeHabitPickers("", true);
+      return;
+    }
+    closeDrawer();
+  }, true);
 }
 
 syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();

@@ -24,7 +24,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=0.2.5" />
+    <link rel="stylesheet" href="./styles.css?v=0.2.6" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -337,8 +337,8 @@
         <header><div><span class="kicker">HABIT VERSION</span><h2 id="habitDialogTitle">新增习惯</h2></div><button class="icon-button close-habit-dialog" type="button" aria-label="取消并关闭">×</button></header>
         <div class="form-grid">
           <label class="full"><span id="habitNameLabel">习惯名称</span><input name="name" required placeholder="例如：阅读" /></label>
-          <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" hidden></div></label>
-          <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" hidden></div></label>
+          <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="iconPickerPopover"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" role="dialog" aria-label="选择图标" hidden></div></label>
+          <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="colorPickerPopover"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" role="dialog" aria-label="选择强调色" hidden></div></label>
           <label><span id="habitTargetLabel">目标值</span><input name="target" required type="number" min="1" value="30" /></label>
           <label><span id="habitUnitLabel">单位</span><input name="unit" required value="分钟" /></label>
           <label><span id="habitFrequencyLabel">统计周期</span><select name="frequency"><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option></select></label>
@@ -446,9 +446,9 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=0.2.5"></script>
-    <script src="./_init_tcb-env.js?v=0.2.5"></script>
-    <script src="./cloudbase-sync.js?v=0.2.5"></script>
-    <script src="./app.js?v=0.2.5"></script>
+    <script src="./deployment-mode.js?v=0.2.6"></script>
+    <script src="./_init_tcb-env.js?v=0.2.6"></script>
+    <script src="./cloudbase-sync.js?v=0.2.6"></script>
+    <script src="./app.js?v=0.2.6"></script>
   </body>
 </html>

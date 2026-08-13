@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.5-habit-schedule-toolbar";
+const CACHE_NAME = "life-ledger-pwa-0.2.6-picker-dismissal";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.5",
-  "./app.js?v=0.2.5",
-  "./deployment-mode.js?v=0.2.5",
-  "./cloudbase-sync.js?v=0.2.5",
+  "./styles.css?v=0.2.6",
+  "./app.js?v=0.2.6",
+  "./deployment-mode.js?v=0.2.6",
+  "./cloudbase-sync.js?v=0.2.6",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.5",
+  "./_init_tcb-env.js?v=0.2.6",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
