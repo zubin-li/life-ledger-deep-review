@@ -24,6 +24,6 @@ The repository contains no analytics, advertising, telemetry, or social tracking
 
 ## Data control
 
-Users can export a selected day, week, month, or complete history as JSON. A self-hoster can delete the D1 database, CloudBase collection, or individual records through their own cloud account.
+Users can export a selected day, week, month, or complete history as JSON and restore compatible backups entirely in the browser. Restore files are parsed locally and are not uploaded by the import flow. A self-hoster can delete the D1 database, CloudBase collection, or individual records through their own cloud account.
 
 Life Ledger is a personal organization tool, not a medical device or healthcare service.

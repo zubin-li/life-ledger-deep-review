@@ -5,6 +5,7 @@ const root = new URL("../", import.meta.url);
 const required = [
   "public/index.html",
   "public/app.js",
+  "public/deployment-mode.js",
   "public/cloudbase-sync.js",
   "public/_init_tcb-env.js",
   "public/vendor/cloudbase-sdk.js",
@@ -23,6 +24,9 @@ const required = [
   "scripts/deploy-cloudbase.mjs",
   "docs/cloudbase-china.md",
   "docs/cloudbase-china.zh-CN.md",
+  "docs/backup-and-restore.md",
+  "docs/backup-and-restore.zh-CN.md",
+  ".github/workflows/pages.yml",
   "LICENSE",
 ];
 
@@ -59,8 +63,14 @@ const app = await readFile(new URL("public/app.js", root), "utf8");
 if (/type=["']module["'][^>]*src=["']\.\/app\.js/.test(index)) {
   throw new Error("Direct-file mode must load app.js as a classic script");
 }
-if (!app.includes('location.protocol === "https:"')) {
-  throw new Error("Cloud sync must stay disabled for file:// and local HTTP use");
+if (!app.includes('window.LIFE_LEDGER_DEPLOYMENT_MODE || "local"')) {
+  throw new Error("Static HTTPS hosts must default to explicit local-only mode");
+}
+for (const marker of ["life-ledger-backup", "previewImportFile", "restorePendingImport", "undoLastRestore"]) {
+  if (!app.includes(marker)) throw new Error(`Backup and restore implementation is incomplete: ${marker}`);
+}
+for (const marker of ['id="importFile"', 'id="importPreview"', 'id="restoreImport"']) {
+  if (!index.includes(marker)) throw new Error(`Backup and restore interface is incomplete: ${marker}`);
 }
 const launcher = await readFile(new URL("OPEN-LIFE-LEDGER.html", root), "utf8");
 if (!launcher.includes("public/index.html")) {

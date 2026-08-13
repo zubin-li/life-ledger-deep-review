@@ -6,12 +6,17 @@ All notable changes are documented here.
 
 ### Added
 
+- A zero-setup, HTTPS local-only PWA publishing path for GitHub Pages.
+- Versioned JSON backups with validation, preview, complete restore, partial merge, earlier-export compatibility, and an undo safety copy.
+- Best-effort persistent browser storage requests after local saves.
 - English and Simplified Chinese desktop/mobile product showcases.
 - Tencent CloudBase deployment for mainland China, including email OTP authentication, creator-only document synchronization, maintained CLI configuration, and bilingual setup/cost documentation.
 - A reproducible CloudBase build and one-command CLI deployment path that never includes browser-local demo data.
 
 ### Fixed
 
+- Static HTTPS hosts no longer assume a Cloudflare API exists; deployment mode is now explicit.
+- Blob download URLs remain available long enough for Safari and installed PWAs to save exports reliably.
 - Simplified Chinese day-strip labels now use clear weekday abbreviations such as `周二` instead of truncating every label to `星`.
 
 ## [0.1.0-beta.1] - 2026-08-12

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { hashIdentity, normalizedTeamDomain, validPayload } from "../src/index.js";
+import worker, { hashIdentity, normalizedTeamDomain, validPayload } from "../src/index.js";
 
 test("validPayload accepts the minimum application state", () => {
   assert.equal(validPayload({ habits: [], logs: {} }), true);
@@ -23,4 +23,11 @@ test("normalizedTeamDomain accepts only Cloudflare Access HTTPS domains", () => 
   );
   assert.equal(normalizedTeamDomain("https://malicious.example.com"), "");
   assert.equal(normalizedTeamDomain(""), "");
+});
+
+test("Cloudflare serves an explicit deployment mode without touching D1", async () => {
+  const response = await worker.fetch(new Request("https://ledger.example/deployment-mode.js"), {});
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type"), /text\/javascript/);
+  assert.equal(await response.text(), 'window.LIFE_LEDGER_DEPLOYMENT_MODE = "cloudflare";\n');
 });

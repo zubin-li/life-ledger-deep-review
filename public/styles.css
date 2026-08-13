@@ -485,15 +485,60 @@ body { transition: color 240ms ease, background-color 320ms ease; }
 .icon-choice { min-width: 0; padding: 10px 5px; display: grid; place-items: center; gap: 5px; border: 1px solid transparent; border-radius: 13px; background: transparent; color: var(--muted); cursor: pointer; }
 .icon-choice span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 8px; white-space: nowrap; }
 .icon-choice.selected { color: var(--ink); border-color: var(--line); background: var(--card); box-shadow: 0 7px 18px rgba(29,29,31,.07); }
-.export-options { padding: 22px 26px 8px; display: grid; gap: 9px; }
+.export-dialog { max-height: min(860px, calc(100dvh - 28px)); overflow: auto; }
+.export-dialog form { display: grid; }
+.backup-intro { margin: 20px 26px 2px; padding: 15px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid color-mix(in srgb, var(--sage) 36%, var(--line)); border-radius: 18px; background: color-mix(in srgb, var(--sage-light) 62%, transparent); }
+.backup-intro-icon { width: 30px; height: 30px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: var(--sage); color: white; font-size: 13px; }
+.backup-intro div, .restore-file-button > span:last-child, .import-preview-copy > div { min-width: 0; display: grid; gap: 3px; }
+.backup-intro strong, .restore-file-button strong, .import-preview-copy strong { font-size: 12px; }
+.backup-intro small, .restore-file-button small, .import-preview-copy small { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.backup-section { padding: 20px 26px 4px; }
+.backup-section + .backup-section { margin-top: 14px; padding-top: 22px; border-top: 1px solid var(--line); }
+.backup-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; }
+.backup-section-heading h3 { margin: 4px 0 0; font: 600 17px var(--font-display); }
+.backup-section-heading > small { max-width: 230px; color: var(--muted); font-size: 9px; line-height: 1.5; text-align: right; }
+.export-options { padding: 14px 0 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 .export-options > label { display: flex; gap: 12px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.38); cursor: pointer; }
 .export-options input[type="radio"] { width: 17px; height: 17px; accent-color: var(--accent); }
 .export-options span { display: grid; gap: 3px; }
 .export-options strong { font-size: 12px; }
 .export-options small { color: var(--muted); font-size: 9px; }
-.export-date-fields { display: grid; grid-template-columns: 1fr; }
+.export-date-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; }
 .export-date-fields input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
 .export-date-fields input[hidden] { display: none; }
+.restore-section { padding-bottom: 20px; }
+.restore-file-button { width: 100%; margin-top: 14px; padding: 15px; display: flex; align-items: center; gap: 12px; border: 1px dashed color-mix(in srgb, var(--muted) 46%, transparent); border-radius: 18px; background: transparent; color: var(--ink); text-align: left; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 140ms var(--ease-enter); }
+.restore-file-button:active { transform: scale(.99); }
+.restore-file-icon { width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 11px; background: var(--paper-deep); color: var(--muted); font-size: 18px; }
+.import-error { margin: 12px 0 0; padding: 11px 13px; border-radius: 13px; background: color-mix(in srgb, var(--coral) 13%, transparent); color: var(--coral); font-size: 10px; line-height: 1.5; }
+.import-preview { margin-top: 14px; padding: 15px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+.import-preview-copy { display: flex; align-items: center; gap: 12px; }
+.import-file-badge { width: 40px; height: 40px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 12px; background: var(--paper-deep); color: var(--sage); font: 600 9px "DM Mono"; }
+.import-preview-actions { margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px; }
+.import-preview > p { margin: 11px 0 0; color: var(--muted); font-size: 9px; line-height: 1.55; }
+.undo-restore-button { margin-top: 12px; padding: 4px 0; cursor: pointer; }
+.restore-file-button[hidden], .import-preview[hidden], .import-error[hidden], .undo-restore-button[hidden] { display: none !important; }
+.profile-actions #exportButton svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+html[data-theme="dark"] .backup-intro { background: color-mix(in srgb, var(--sage-light) 56%, var(--surface-1)); }
+html[data-theme="dark"] .export-options > label, html[data-theme="dark"] .restore-file-button { background: rgba(255,255,255,.025); }
+
+@media (hover: hover) and (pointer: fine) {
+  .restore-file-button:hover { border-color: var(--sage); background: color-mix(in srgb, var(--sage-light) 38%, transparent); }
+}
+
+@media (max-width: 560px) {
+  .export-dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 20px); border-radius: 24px; }
+  .export-dialog form > header, .export-dialog form > footer { padding: 19px 18px; }
+  .backup-intro { margin: 16px 18px 0; }
+  .backup-section { padding: 18px 18px 2px; }
+  .backup-section-heading { align-items: start; flex-direction: column; gap: 4px; }
+  .backup-section-heading > small { max-width: none; text-align: left; }
+  .export-options { grid-template-columns: 1fr; }
+  .export-date-fields { grid-column: auto; }
+  .restore-section { padding-bottom: 18px; }
+  .import-preview-actions { display: grid; grid-template-columns: 1fr; }
+  .import-preview-actions button { width: 100%; }
+}
 .celebration { position: fixed; z-index: 80; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(67,139,255,.14), transparent 28rem); }
 .celebration-ring { width: 90px; height: 90px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.88); color: #46705a; font-size: 34px; box-shadow: 0 25px 80px rgba(29,29,31,.2), 0 0 0 0 rgba(101,169,255,.3); backdrop-filter: blur(22px); transform: scale(.5); }
 .celebration p { margin: 0; padding: 9px 14px; border-radius: 999px; background: rgba(29,29,31,.82); color: white; font-size: 12px; transform: translateY(8px); }
@@ -620,6 +665,8 @@ html[data-theme="dark"] .pwa-install-button.ready { color: #9bc2ab; border-color
 .mobile-install-button { display: none; align-items: center; justify-content: center; gap: 8px; }
 .mobile-install-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .mobile-install-button.ready { border-color: color-mix(in srgb, var(--sage) 55%, var(--line)); }
+.mobile-backup-button { display: none; align-items: center; justify-content: center; gap: 8px; }
+.mobile-backup-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 @media (display-mode: standalone) { .pwa-install-button, .mobile-install-button { display: none !important; } }
 
 @media (min-width: 761px) {
@@ -654,7 +701,8 @@ html[data-theme="dark"] .pwa-install-button.ready { color: #9bc2ab; border-color
   .daily-planning-grid { grid-template-columns: 1fr; }
   .icon-picker-popover { grid-template-columns: repeat(3, 1fr); }
   .mobile-install-button { display: inline-flex; order: 4; width: 100%; }
-  #todayButton { order: 5; }
+  .mobile-backup-button { display: inline-flex; order: 5; flex: 1 1 calc(50% - 5px); }
+  #todayButton { order: 6; flex: 1 1 calc(50% - 5px); width: auto; }
   .main-content { padding-top: max(25px, env(safe-area-inset-top)); padding-bottom: max(110px, calc(92px + env(safe-area-inset-bottom))); }
   .sidebar { bottom: max(10px, env(safe-area-inset-bottom)); }
 }

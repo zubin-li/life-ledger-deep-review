@@ -9,6 +9,14 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
   },
 });
 
+const javascript = source => new Response(source, {
+  headers: {
+    "content-type": "text/javascript; charset=utf-8",
+    "cache-control": "no-store",
+    "x-content-type-options": "nosniff",
+  },
+});
+
 async function hashIdentity(identity) {
   const bytes = new TextEncoder().encode(identity.trim().toLowerCase());
   const digest = await crypto.subtle.digest("SHA-256", bytes);
@@ -136,6 +144,9 @@ async function handleApi(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === "/deployment-mode.js") {
+      return javascript('window.LIFE_LEDGER_DEPLOYMENT_MODE = "cloudflare";\n');
+    }
     if (url.pathname === "/api/state") return handleApi(request, env);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);

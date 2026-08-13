@@ -1,9 +1,10 @@
-const CACHE_NAME = "life-ledger-pwa-0.1.0-beta.1-cloudbase-2";
+const CACHE_NAME = "life-ledger-pwa-0.2.0-local-first";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./deployment-mode.js",
   "./cloudbase-sync.js",
   "./vendor/cloudbase-sdk.js",
   "./_init_tcb-env.js",

@@ -4,6 +4,10 @@ const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
 const THEME_KEY = "life-ledger-theme";
 const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
 const REMINDER_KEY = "life-ledger-reminder";
+const RESTORE_SAFETY_KEY = "life-ledger-restore-safety-v1";
+const BACKUP_FORMAT = "life-ledger-backup";
+const BACKUP_SCHEMA_VERSION = 1;
+const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
 const CLOUD_API = "./api/state";
 const colors = {
   sage: { solid: "#6f8f7d", soft: "#dbe6dc" },
@@ -48,14 +52,14 @@ const i18n = {
     nav: { today: "今日", week: "本周", review: "复盘", habits: "习惯设置" },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
     profileName: "个人复盘空间",
-    exportTitle: "导出数据",
+    exportTitle: "备份与恢复",
     pwa: { install: "安装为应用", ready: "可安装", manual: "请使用浏览器菜单中的“添加到主屏幕”或“安装应用”。", installed: "Life Ledger 已安装" },
     theme: { label: "外观", system: "跟随系统", light: "浅色模式", dark: "深色模式" },
     yearSuffix: "年",
     monthSuffix: "月",
     todayButton: "回到今天",
     save: {
-      localPreview: "本地预览",
+      localPreview: "已保存在本机",
       connecting: "正在连接",
       syncing: "正在同步",
       cloudSaved: "云端已保存",
@@ -66,7 +70,7 @@ const i18n = {
       profileSyncing: "正在连接云端",
       profileAuth: "云同步尚未连接",
       profilePending: "云端连接待恢复",
-      profileLocal: "仅本机预览",
+      profileLocal: "本机保存 · 可导出备份",
       authTitle: "点击登录或配置 Cloudflare Access",
     },
     cloudbase: {
@@ -283,10 +287,21 @@ const i18n = {
       habitOn: "完成一项约定",
       habitOff: "已取消打卡",
       mood: "心情已记录",
-      exported: "数据已导出",
+      exported: "备份已导出",
+      restored: "备份已恢复",
+      restoreUndone: "已撤销上一次恢复",
     },
     celebration: "今天计入完成度的目标全部完成了。",
-    export: { title: "选择导出范围", all: "全部历史", allHelp: "所有习惯、心情、记录、目标和复盘", month: "指定月份", monthHelp: "导出一个自然月", week: "指定一周", weekHelp: "输入该周中的任意日期", day: "指定一天", dayHelp: "仅导出当天内容", cancel: "取消", confirm: "导出 JSON" },
+    export: { title: "备份与恢复", all: "全部历史", allHelp: "所有习惯、心情、记录、目标和复盘", month: "指定月份", monthHelp: "导出一个自然月", week: "指定一周", weekHelp: "输入该周中的任意日期", day: "指定一天", dayHelp: "仅导出当天内容", cancel: "完成", confirm: "导出备份" },
+    backup: {
+      kicker: "你的数据", introTitle: "记录保存在这台设备", introHelp: "定期导出完整备份，即可在换设备或换浏览器后恢复。",
+      exportTitle: "导出备份", exportHelp: "JSON 文件只在你选择的位置保存。", restoreTitle: "从备份恢复", restoreHelp: "支持新版备份和早期导出的 JSON。",
+      chooseTitle: "选择备份文件", chooseHelp: "文件会先在本机检查，不会上传。", reselect: "重新选择", restore: "恢复此备份", undo: "撤销上一次恢复",
+      safety: "恢复前会在本机保留一份安全副本。完整备份将替换当前记录，部分备份将合并到现有记录。",
+      invalid: "无法读取这个备份。请选择 Life Ledger 导出的 JSON 文件。", tooLarge: "备份文件过大，无法安全导入。", confirmFull: "这会用备份替换当前记录。是否继续？", confirmPartial: "这会把备份内容合并到当前记录。是否继续？",
+      cloudWarning: "恢复后的内容也会同步到你的云端空间。",
+      summary: "{scope} · {habits} 个习惯 · {days} 天记录 · 导出于 {date}", scopeAll: "完整备份", scopePartial: "部分备份", legacy: "早期版本备份",
+    },
     defaultHabits: {
       wake: "早起",
       move: "每日基础运动量",
@@ -306,14 +321,14 @@ const i18n = {
     nav: { today: "Today", week: "Week", review: "Review", habits: "Habits" },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
     profileName: "Personal Ledger",
-    exportTitle: "Export data",
+    exportTitle: "Backup & restore",
     pwa: { install: "Install app", ready: "Ready to install", manual: "Use your browser menu and choose Add to Home Screen or Install app.", installed: "Life Ledger installed" },
     theme: { label: "Appearance", system: "Follow system", light: "Light mode", dark: "Dark mode" },
     yearSuffix: "",
     monthSuffix: "",
     todayButton: "Today",
     save: {
-      localPreview: "Local preview",
+      localPreview: "Saved on this device",
       connecting: "Connecting",
       syncing: "Syncing",
       cloudSaved: "Saved to cloud",
@@ -324,7 +339,7 @@ const i18n = {
       profileSyncing: "Connecting to cloud",
       profileAuth: "Cloud sync is not connected",
       profilePending: "Cloud pending",
-      profileLocal: "Local preview only",
+      profileLocal: "Local storage · exportable",
       authTitle: "Click to sign in or configure Cloudflare Access",
     },
     cloudbase: {
@@ -541,10 +556,21 @@ const i18n = {
       habitOn: "One promise kept",
       habitOff: "Check-in removed",
       mood: "Mood recorded",
-      exported: "Data exported",
+      exported: "Backup exported",
+      restored: "Backup restored",
+      restoreUndone: "Last restore undone",
     },
     celebration: "Every goal counted for today is complete.",
-    export: { title: "Choose an export range", all: "All history", allHelp: "All habits, moods, notes, goals and reviews", month: "One month", monthHelp: "Export one calendar month", week: "One week", weekHelp: "Choose any date in that week", day: "One day", dayHelp: "Export that day only", cancel: "Cancel", confirm: "Export JSON" },
+    export: { title: "Backup & restore", all: "All history", allHelp: "All habits, moods, notes, goals and reviews", month: "One month", monthHelp: "Export one calendar month", week: "One week", weekHelp: "Choose any date in that week", day: "One day", dayHelp: "Export that day only", cancel: "Done", confirm: "Export backup" },
+    backup: {
+      kicker: "YOUR DATA", introTitle: "Your records stay on this device", introHelp: "Export a complete backup occasionally, then restore it after changing devices or browsers.",
+      exportTitle: "Export a backup", exportHelp: "The JSON file is saved only where you choose.", restoreTitle: "Restore from a backup", restoreHelp: "Supports current backups and earlier Life Ledger JSON exports.",
+      chooseTitle: "Choose backup file", chooseHelp: "It is checked on this device and never uploaded.", reselect: "Choose another", restore: "Restore this backup", undo: "Undo last restore",
+      safety: "A safety copy stays on this device before restoration. Complete backups replace current records; partial backups merge with them.",
+      invalid: "This backup could not be read. Choose a JSON file exported by Life Ledger.", tooLarge: "This backup is too large to import safely.", confirmFull: "This will replace the records currently on this device. Continue?", confirmPartial: "This will merge the backup into the records on this device. Continue?",
+      cloudWarning: "The restored records will also sync to your cloud space.",
+      summary: "{scope} · {habits} habits · {days} recorded days · exported {date}", scopeAll: "Complete backup", scopePartial: "Partial backup", legacy: "Earlier backup format",
+    },
     defaultHabits: {
       wake: "Wake early",
       move: "Daily baseline movement",
@@ -564,14 +590,14 @@ const i18n = {
     nav: { today: "Heute", week: "Woche", review: "Rückblick", habits: "Gewohnheiten" },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
     profileName: "Persönliches Journal",
-    exportTitle: "Daten exportieren",
+    exportTitle: "Sichern & wiederherstellen",
     pwa: { install: "App installieren", ready: "Installationsbereit", manual: "Wähle im Browsermenü „Zum Home-Bildschirm“ oder „App installieren“.", installed: "Life Ledger wurde installiert" },
     theme: { label: "Darstellung", system: "Systemeinstellung", light: "Heller Modus", dark: "Dunkler Modus" },
     yearSuffix: "",
     monthSuffix: "",
     todayButton: "Heute",
     save: {
-      localPreview: "Lokale Vorschau",
+      localPreview: "Auf diesem Gerät gespeichert",
       connecting: "Verbinden",
       syncing: "Synchronisieren",
       cloudSaved: "In der Cloud gespeichert",
@@ -582,7 +608,7 @@ const i18n = {
       profileSyncing: "Cloud wird verbunden",
       profileAuth: "Cloud-Sync ist nicht verbunden",
       profilePending: "Cloud wartet",
-      profileLocal: "Nur lokale Vorschau",
+      profileLocal: "Lokal gespeichert · exportierbar",
       authTitle: "Anmelden oder Cloudflare Access einrichten",
     },
     cloudbase: {
@@ -799,10 +825,21 @@ const i18n = {
       habitOn: "Ein Versprechen gehalten",
       habitOff: "Check-in entfernt",
       mood: "Stimmung gespeichert",
-      exported: "Daten exportiert",
+      exported: "Sicherung exportiert",
+      restored: "Sicherung wiederhergestellt",
+      restoreUndone: "Letzte Wiederherstellung rückgängig gemacht",
     },
     celebration: "Alle Ziele, die heute zählen, sind erledigt.",
-    export: { title: "Exportbereich wählen", all: "Gesamter Verlauf", allHelp: "Alle Gewohnheiten, Stimmungen, Notizen, Ziele und Rückblicke", month: "Ein Monat", monthHelp: "Einen Kalendermonat exportieren", week: "Eine Woche", weekHelp: "Ein beliebiges Datum dieser Woche wählen", day: "Ein Tag", dayHelp: "Nur diesen Tag exportieren", cancel: "Abbrechen", confirm: "JSON exportieren" },
+    export: { title: "Sichern & wiederherstellen", all: "Gesamter Verlauf", allHelp: "Alle Gewohnheiten, Stimmungen, Notizen, Ziele und Rückblicke", month: "Ein Monat", monthHelp: "Einen Kalendermonat exportieren", week: "Eine Woche", weekHelp: "Ein beliebiges Datum dieser Woche wählen", day: "Ein Tag", dayHelp: "Nur diesen Tag exportieren", cancel: "Fertig", confirm: "Sicherung exportieren" },
+    backup: {
+      kicker: "DEINE DATEN", introTitle: "Deine Einträge bleiben auf diesem Gerät", introHelp: "Exportiere gelegentlich eine vollständige Sicherung und stelle sie nach einem Geräte- oder Browserwechsel wieder her.",
+      exportTitle: "Sicherung exportieren", exportHelp: "Die JSON-Datei wird nur am gewählten Ort gespeichert.", restoreTitle: "Aus Sicherung wiederherstellen", restoreHelp: "Unterstützt aktuelle Sicherungen und frühere Life-Ledger-JSON-Exporte.",
+      chooseTitle: "Sicherungsdatei wählen", chooseHelp: "Sie wird nur auf diesem Gerät geprüft und nicht hochgeladen.", reselect: "Andere wählen", restore: "Diese Sicherung wiederherstellen", undo: "Letzte Wiederherstellung rückgängig",
+      safety: "Vorher bleibt eine Sicherheitskopie auf diesem Gerät. Vollständige Sicherungen ersetzen bestehende Einträge; Teilsicherungen werden zusammengeführt.",
+      invalid: "Diese Sicherung konnte nicht gelesen werden. Wähle eine von Life Ledger exportierte JSON-Datei.", tooLarge: "Diese Sicherung ist zu groß für einen sicheren Import.", confirmFull: "Die aktuellen Einträge auf diesem Gerät werden ersetzt. Fortfahren?", confirmPartial: "Die Sicherung wird mit den Einträgen auf diesem Gerät zusammengeführt. Fortfahren?",
+      cloudWarning: "Die wiederhergestellten Einträge werden auch mit deinem Cloud-Speicher synchronisiert.",
+      summary: "{scope} · {habits} Gewohnheiten · {days} Tage mit Einträgen · exportiert {date}", scopeAll: "Vollständige Sicherung", scopePartial: "Teilsicherung", legacy: "Früheres Sicherungsformat",
+    },
     defaultHabits: {
       wake: "Früh aufstehen",
       move: "Tägliche Grundbewegung",
@@ -900,9 +937,11 @@ let selectedWorkspaceWeek = isoWeekKey(new Date());
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
-const hostedCloudMode = location.protocol === "https:"
-  && location.hostname !== "127.0.0.1"
-  && location.hostname !== "localhost";
+const requestedMode = new URLSearchParams(location.search).get("mode");
+const deploymentMode = requestedMode === "local" || requestedMode === "cloudflare"
+  ? requestedMode
+  : window.LIFE_LEDGER_DEPLOYMENT_MODE || "local";
+const hostedCloudMode = deploymentMode === "cloudflare";
 const cloudProvider = cloudBaseConfigured ? "cloudbase" : hostedCloudMode ? "cloudflare" : "local";
 let cloudMode = cloudProvider !== "local";
 let cloudBaseAdapter = cloudBaseConfigured ? window.LifeLedgerCloudBase.createAdapter() : null;
@@ -915,6 +954,8 @@ let themeChoice = ["system", "light", "dark"].includes(localStorage.getItem(THEM
 let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
+let pendingImport = null;
+let persistenceRequested = false;
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -984,6 +1025,9 @@ function applyLanguage() {
   if (note) note.innerHTML = `${escapeHtml(sidebarQuote.text)}<small>${escapeHtml(sidebarQuote.source)}</small>`;
   setText(".profile strong", tr("profileName"));
   $("#exportButton")?.setAttribute("title", tr("exportTitle"));
+  $("#exportButton")?.setAttribute("aria-label", tr("exportTitle"));
+  setText("#mobileBackupLabel", tr("exportTitle"));
+  $$("[data-backup-open]").forEach(button => button.setAttribute("aria-label", tr("exportTitle")));
   setAria("#cloudAccountButton", tr("cloudbase.account"));
   $("#cloudAccountButton")?.setAttribute("title", tr("cloudbase.account"));
   $$('[data-install-app]').forEach(button => {
@@ -1098,6 +1142,19 @@ function applyLanguage() {
     themeSelect.options[2].textContent = tr("theme.dark");
   }
   setText("#exportDialogTitle", tr("export.title"));
+  setText("#backupKicker", tr("backup.kicker"));
+  setText("#backupIntroTitle", tr("backup.introTitle"));
+  setText("#backupIntroHelp", tr("backup.introHelp"));
+  setText("#exportSectionTitle", tr("backup.exportTitle"));
+  setText("#exportSectionHelp", tr("backup.exportHelp"));
+  setText("#restoreSectionTitle", tr("backup.restoreTitle"));
+  setText("#restoreSectionHelp", tr("backup.restoreHelp"));
+  setText("#chooseImportTitle", tr("backup.chooseTitle"));
+  setText("#chooseImportHelp", tr("backup.chooseHelp"));
+  setText("#clearImportFile", tr("backup.reselect"));
+  setText("#restoreImport", tr("backup.restore"));
+  setText("#importSafetyNote", tr("backup.safety"));
+  setText("#undoRestore", tr("backup.undo"));
   setText("#exportAllTitle", tr("export.all"));
   setText("#exportAllHelp", tr("export.allHelp"));
   setText("#exportMonthTitle", tr("export.month"));
@@ -1172,9 +1229,19 @@ function loadState() {
 function saveState(options = {}) {
   state.meta = { ...(state.meta || {}), updatedAt: Date.now() };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  requestPersistentStorage();
   if (cloudMode && !options.skipCloud) {
     clearTimeout(cloudTimer);
     cloudTimer = setTimeout(pushCloudState, 500);
+  }
+}
+async function requestPersistentStorage() {
+  if (persistenceRequested || location.protocol === "file:" || !navigator.storage?.persist) return;
+  persistenceRequested = true;
+  try {
+    if (!await navigator.storage.persisted?.()) await navigator.storage.persist();
+  } catch (error) {
+    console.warn("Persistent storage request was not granted", error);
   }
 }
 function setSaveMode(mode, text) {
@@ -2069,18 +2136,163 @@ function updateExportFields() {
   $("#exportMonth").hidden = scope !== "month";
   $("#exportDate").hidden = !["week", "day"].includes(scope);
 }
+function createBackup(scope) {
+  const range = exportRange(scope);
+  return {
+    format: BACKUP_FORMAT,
+    schemaVersion: BACKUP_SCHEMA_VERSION,
+    app: "Life Ledger · Deep Review",
+    exportedAt: new Date().toISOString(),
+    scope,
+    range,
+    data: scopedState(range),
+  };
+}
+function triggerFileDownload(blob, filename) {
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.href = url;
+  link.download = filename;
+  link.style.display = "none";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  // WebKit may cancel a download when a Blob URL is revoked immediately.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
 function downloadExport(event) {
   event.preventDefault();
   const scope = $('#exportForm input[name="exportScope"]:checked').value;
-  const range = exportRange(scope);
-  const blob = new Blob([JSON.stringify(scopedState(range), null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `life-ledger-${scope}-${range.start || "all"}-${isoDate(new Date())}.json`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-  $("#exportDialog").close();
+  const backup = createBackup(scope);
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  triggerFileDownload(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
   showToast(tr("toast.exported"));
+}
+
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+function importedPayload(raw) {
+  const modern = raw?.format === BACKUP_FORMAT && isRecord(raw.data);
+  if (modern && Number(raw.schemaVersion) > BACKUP_SCHEMA_VERSION) throw new Error("unsupported-backup-version");
+  const payload = modern ? raw.data : raw;
+  if (!isRecord(payload) || !Array.isArray(payload.habits) || !isRecord(payload.logs)) throw new Error("invalid-backup");
+  if (payload.habits.some(habit => !isRecord(habit) || typeof habit.id !== "string" || !Array.isArray(habit.versions))) throw new Error("invalid-habits");
+  for (const key of ["reviews", "dailyGoals", "weeklyGoals", "weeklyOutputs"]) {
+    if (payload[key] !== undefined && !isRecord(payload[key])) throw new Error(`invalid-${key}`);
+  }
+  const scope = modern ? raw.scope : payload.exportMeta?.scope || "all";
+  return {
+    modern,
+    scope: ["all", "month", "week", "day"].includes(scope) ? scope : "all",
+    exportedAt: modern ? raw.exportedAt : payload.exportMeta?.exportedAt,
+    data: {
+      ...cloneData(seed),
+      ...cloneData(payload),
+      habits: cloneData(payload.habits),
+      logs: cloneData(payload.logs),
+      reviews: cloneData(payload.reviews || {}),
+      dailyGoals: cloneData(payload.dailyGoals || {}),
+      weeklyGoals: cloneData(payload.weeklyGoals || {}),
+      weeklyOutputs: cloneData(payload.weeklyOutputs || {}),
+    },
+  };
+}
+function importStats(candidate) {
+  const dayKeys = new Set([
+    ...Object.keys(candidate.data.logs || {}),
+    ...Object.keys(candidate.data.dailyGoals || {}),
+  ]);
+  const date = candidate.exportedAt && !Number.isNaN(Date.parse(candidate.exportedAt))
+    ? new Intl.DateTimeFormat(i18n[currentLang].locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(candidate.exportedAt))
+    : tr("backup.legacy");
+  return tr("backup.summary", {
+    scope: candidate.scope === "all" ? tr("backup.scopeAll") : tr("backup.scopePartial"),
+    habits: candidate.data.habits.length,
+    days: dayKeys.size,
+    date,
+  });
+}
+function clearImportSelection() {
+  pendingImport = null;
+  $("#importFile").value = "";
+  $("#importPreview").hidden = true;
+  $("#importError").hidden = true;
+  $("#chooseImportFile").hidden = false;
+}
+async function previewImportFile(file) {
+  clearImportSelection();
+  if (!file) return;
+  if (file.size > MAX_IMPORT_BYTES) {
+    $("#importError").textContent = tr("backup.tooLarge");
+    $("#importError").hidden = false;
+    return;
+  }
+  try {
+    const candidate = importedPayload(JSON.parse(await file.text()));
+    pendingImport = candidate;
+    $("#importFileName").textContent = file.name;
+    $("#importSummary").textContent = importStats(candidate);
+    $("#chooseImportFile").hidden = true;
+    $("#importPreview").hidden = false;
+  } catch (error) {
+    console.warn("Backup validation failed", error);
+    $("#importError").textContent = tr("backup.invalid");
+    $("#importError").hidden = false;
+  }
+}
+function mergeBackupData(current, incoming) {
+  const habits = new Map((current.habits || []).map(habit => [habit.id, cloneData(habit)]));
+  (incoming.habits || []).forEach(habit => {
+    const existing = habits.get(habit.id);
+    if (!existing) {
+      habits.set(habit.id, cloneData(habit));
+      return;
+    }
+    const versions = new Map((habit.versions || []).map(version => [version.effectiveDate || JSON.stringify(version), cloneData(version)]));
+    (existing.versions || []).forEach(version => versions.set(version.effectiveDate || JSON.stringify(version), cloneData(version)));
+    habits.set(habit.id, { ...cloneData(habit), ...cloneData(existing), versions: [...versions.values()].sort((a, b) => String(a.effectiveDate).localeCompare(String(b.effectiveDate))) });
+  });
+  return {
+    ...cloneData(current),
+    habits: [...habits.values()],
+    logs: { ...(current.logs || {}), ...(incoming.logs || {}) },
+    reviews: { ...(current.reviews || {}), ...(incoming.reviews || {}) },
+    dailyGoals: { ...(current.dailyGoals || {}), ...(incoming.dailyGoals || {}) },
+    weeklyGoals: { ...(current.weeklyGoals || {}), ...(incoming.weeklyGoals || {}) },
+    weeklyOutputs: { ...(current.weeklyOutputs || {}), ...(incoming.weeklyOutputs || {}) },
+  };
+}
+function restorePendingImport() {
+  if (!pendingImport) return;
+  const isComplete = pendingImport.scope === "all";
+  const warning = `${tr(isComplete ? "backup.confirmFull" : "backup.confirmPartial")}${cloudMode ? `\n\n${tr("backup.cloudWarning")}` : ""}`;
+  if (!window.confirm(warning)) return;
+  localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
+  state = isComplete ? cloneData(pendingImport.data) : mergeBackupData(state, pendingImport.data);
+  saveState();
+  selectedAnalyticsHabitIds = [];
+  clearImportSelection();
+  $("#undoRestore").hidden = false;
+  $("#exportDialog").close();
+  renderAll();
+  showToast(tr("toast.restored"));
+}
+function undoLastRestore() {
+  try {
+    const safety = JSON.parse(localStorage.getItem(RESTORE_SAFETY_KEY));
+    const previous = importedPayload(safety?.state).data;
+    localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
+    state = previous;
+    saveState();
+    selectedAnalyticsHabitIds = [];
+    renderAll();
+    showToast(tr("toast.restoreUndone"));
+  } catch (error) {
+    console.warn("Restore safety copy is unavailable", error);
+    localStorage.removeItem(RESTORE_SAFETY_KEY);
+    $("#undoRestore").hidden = true;
+  }
 }
 
 async function installApp() {
@@ -2321,12 +2533,14 @@ function bindEvents() {
     selectedWorkspaceWeek = currentKey;
     renderWeeklyWorkspace();
   });
-  $("#exportButton").addEventListener("click", () => {
-    $("#exportMonth").value = monthKey(new Date());
-    $("#exportDate").value = isoDate(new Date());
-    updateExportFields();
-    $("#exportDialog").showModal();
-  });
+  $$('[data-backup-open]').forEach(button => button.addEventListener("click", () => {
+      $("#exportMonth").value = monthKey(new Date());
+      $("#exportDate").value = isoDate(new Date());
+      updateExportFields();
+      clearImportSelection();
+      $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
+      $("#exportDialog").showModal();
+    }));
   $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";
   $("#cloudAccountButton").addEventListener("click", openCloudBaseAuth);
   $$(".close-cloudbase-auth").forEach(button => button.addEventListener("click", () => $("#cloudbaseAuthDialog").close()));
@@ -2401,7 +2615,18 @@ function bindEvents() {
   $$('[data-install-app]').forEach(button => button.addEventListener("click", installApp));
   $$('#exportForm input[name="exportScope"]').forEach(input => input.addEventListener("change", updateExportFields));
   $("#exportForm").addEventListener("submit", downloadExport);
-  $$(".close-export-dialog").forEach(button => button.addEventListener("click", () => $("#exportDialog").close()));
+  $("#chooseImportFile").addEventListener("click", () => $("#importFile").click());
+  $("#clearImportFile").addEventListener("click", () => {
+    clearImportSelection();
+    $("#importFile").click();
+  });
+  $("#importFile").addEventListener("change", event => previewImportFile(event.target.files?.[0]));
+  $("#restoreImport").addEventListener("click", restorePendingImport);
+  $("#undoRestore").addEventListener("click", undoLastRestore);
+  $$(".close-export-dialog").forEach(button => button.addEventListener("click", () => {
+    clearImportSelection();
+    $("#exportDialog").close();
+  }));
   $("#saveMode").addEventListener("click", () => {
     if (!authExpired) return;
     if (cloudProvider === "cloudbase") openCloudBaseAuth();

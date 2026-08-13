@@ -1,11 +1,36 @@
 # Backup and restore
 
-## Export
+Life Ledger saves local-only records automatically in the current browser profile. A complete backup lets you move those records to another phone, computer, browser, or installed PWA without creating an account.
 
-Open Personal Ledger and choose the export action. Select complete history, a month, a week, or a day. Store complete-history exports somewhere encrypted and private.
+## Create a complete backup
 
-## Current restore status
+1. Open **Backup & restore** from the Personal Ledger area.
+2. Keep **All history** selected.
+3. Choose **Export backup**.
+4. Save the `.json` file somewhere private and durable.
 
-The beta release provides structured JSON export but does not yet include guided import. A D1 owner can use Cloudflare D1 backup and recovery features, while local-only users should retain multiple dated exports.
+The file contains habits and their historical versions, check-ins, moods, journals, daily goals, weekly goals and outputs, and monthly reflections. It is readable JSON for portability, so anyone who receives the file can read its contents. Do not attach it to public issues or store it in an unencrypted public folder.
 
-Do not paste private exports into public issues, pull requests, or AI tools unless you have deliberately removed sensitive content.
+Day, week, and month exports remain available for analysis or selective transfer. They are partial backups rather than a complete replacement for your history.
+
+## Restore on another device
+
+1. Open Life Ledger on the new device. If you plan to install it as a PWA, install it first and then open the installed app.
+2. Open **Backup & restore** and choose **Choose backup file**.
+3. Select the Life Ledger `.json` file.
+4. Check the preview: backup type, number of habits, recorded days, and export time.
+5. Choose **Restore this backup** and confirm.
+
+A complete backup replaces the records in the current browser. A day, week, or month backup merges its records into the current history. Before either operation, Life Ledger keeps the previous state as a safety copy in the same browser; **Undo last restore** restores it.
+
+The importer validates the structure before changing anything and accepts both the current versioned backup format and JSON files exported by earlier beta releases. Files larger than 10 MB are rejected in the browser as a safety limit.
+
+## What local-only means
+
+- Records are separate for each device, browser, and browser profile.
+- Opening the same URL on a phone and a computer does not synchronize them.
+- Clearing site data, using private browsing, or losing the device can remove local records.
+- Life Ledger asks supported browsers for persistent storage, but the browser makes the final decision.
+- Keep more than one dated complete backup for important long-term records.
+
+For live cross-device synchronization, deploy Life Ledger to your own Cloudflare or CloudBase account instead. Local backup and restore remains available in those deployments as an additional safeguard.

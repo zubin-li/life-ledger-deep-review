@@ -65,7 +65,9 @@
             <button class="icon-button pwa-install-button" id="installAppButton" type="button" data-install-app title="安装应用" aria-label="安装应用">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
             </button>
-            <button class="icon-button" id="exportButton" title="导出数据">⇩</button>
+            <button class="icon-button" id="exportButton" type="button" data-backup-open title="备份与恢复" aria-label="备份与恢复">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M5 19h14"/><path d="M5 8V5a2 2 0 0 1 2-2h2m10 5V5a2 2 0 0 0-2-2h-2"/></svg>
+            </button>
           </div>
         </div>
       </aside>
@@ -85,6 +87,10 @@
             <button class="secondary-button mobile-install-button" type="button" data-install-app>
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
               <span id="mobileInstallLabel">安装应用</span>
+            </button>
+            <button class="secondary-button mobile-backup-button" type="button" data-backup-open>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M5 19h14"/></svg>
+              <span id="mobileBackupLabel">备份与恢复</span>
             </button>
             <label class="theme-switcher" id="themeControl" for="themeSelect">
               <span class="theme-current-icon" id="themeCurrentIcon" aria-hidden="true">◐</span>
@@ -354,7 +360,13 @@
 
     <dialog id="exportDialog" class="export-dialog">
       <form method="dialog" id="exportForm">
-        <header><div><span class="kicker">EXPORT</span><h2 id="exportDialogTitle">选择导出范围</h2></div><button class="icon-button close-export-dialog" type="button" aria-label="关闭">×</button></header>
+        <header><div><span class="kicker" id="backupKicker">YOUR DATA</span><h2 id="exportDialogTitle">备份与恢复</h2></div><button class="icon-button close-export-dialog" type="button" aria-label="关闭">×</button></header>
+        <div class="backup-intro">
+          <span class="backup-intro-icon" aria-hidden="true">✓</span>
+          <div><strong id="backupIntroTitle">记录保存在这台设备</strong><small id="backupIntroHelp">定期导出完整备份，即可在换设备或换浏览器后恢复。</small></div>
+        </div>
+        <section class="backup-section" aria-labelledby="exportSectionTitle">
+          <div class="backup-section-heading"><div><span class="kicker">EXPORT</span><h3 id="exportSectionTitle">导出备份</h3></div><small id="exportSectionHelp">JSON 文件只在你选择的位置保存。</small></div>
         <div class="export-options">
           <label><input type="radio" name="exportScope" value="all" checked /><span><strong id="exportAllTitle">全部历史</strong><small id="exportAllHelp">所有习惯、心情、记录、目标和复盘</small></span></label>
           <label><input type="radio" name="exportScope" value="month" /><span><strong id="exportMonthTitle">指定月份</strong><small id="exportMonthHelp">选择一个月份</small></span></label>
@@ -362,7 +374,26 @@
           <label><input type="radio" name="exportScope" value="day" /><span><strong id="exportDayTitle">指定一天</strong><small id="exportDayHelp">仅导出当天内容</small></span></label>
           <div class="export-date-fields"><input id="exportMonth" type="month" /><input id="exportDate" type="date" /></div>
         </div>
-        <footer><button class="secondary-button close-export-dialog" type="button" id="exportCancel">取消</button><button class="primary-button" type="submit" id="exportConfirm">导出 JSON</button></footer>
+        </section>
+        <section class="backup-section restore-section" aria-labelledby="restoreSectionTitle">
+          <div class="backup-section-heading"><div><span class="kicker">RESTORE</span><h3 id="restoreSectionTitle">从备份恢复</h3></div><small id="restoreSectionHelp">支持新版备份和早期导出的 JSON。</small></div>
+          <input id="importFile" type="file" accept="application/json,.json" hidden />
+          <button class="restore-file-button" id="chooseImportFile" type="button">
+            <span class="restore-file-icon" aria-hidden="true">＋</span>
+            <span><strong id="chooseImportTitle">选择备份文件</strong><small id="chooseImportHelp">文件会先在本机检查，不会上传。</small></span>
+          </button>
+          <p class="import-error" id="importError" role="alert" hidden></p>
+          <div class="import-preview" id="importPreview" hidden>
+            <div class="import-preview-copy"><span class="import-file-badge">JSON</span><div><strong id="importFileName"></strong><small id="importSummary"></small></div></div>
+            <div class="import-preview-actions">
+              <button class="secondary-button" id="clearImportFile" type="button">重新选择</button>
+              <button class="primary-button" id="restoreImport" type="button">恢复此备份</button>
+            </div>
+            <p id="importSafetyNote">恢复前会在本机保留一份安全副本。完整备份将替换当前记录，部分备份将合并到现有记录。</p>
+          </div>
+          <button class="text-button undo-restore-button" id="undoRestore" type="button" hidden>撤销上一次恢复</button>
+        </section>
+        <footer><button class="secondary-button close-export-dialog" type="button" id="exportCancel">完成</button><button class="primary-button" type="submit" id="exportConfirm">导出备份</button></footer>
       </form>
     </dialog>
 
@@ -404,6 +435,7 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
+    <script src="./deployment-mode.js"></script>
     <script src="./_init_tcb-env.js"></script>
     <script src="./cloudbase-sync.js"></script>
     <script src="./app.js"></script>

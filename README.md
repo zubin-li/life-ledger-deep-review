@@ -10,13 +10,16 @@
   </p>
 
   <p>
+    <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local">
+      <img src="https://img.shields.io/badge/Use_now-Local_only-1f6f54?style=for-the-badge" alt="Use Life Ledger now in local-only mode" />
+    </a>
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
       <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
     </a>
   </p>
 </div>
 
-> **Beta:** Life Ledger is ready for personal use and self-hosting. Keep regular JSON exports while the synchronization model continues to mature.
+> **Beta:** Life Ledger is ready for personal use and self-hosting. Local records save automatically; complete JSON backups can be restored on another device or browser.
 
 ## Why Life Ledger
 
@@ -70,7 +73,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Daily goals, mood, journal, and event notes
 - Weekly goals, checklist behavior, outputs, and archived notes
 - Monthly review with habit comparisons and line/bar charts
-- Daily, weekly, monthly, or complete JSON export
+- Validated JSON backup and guided restore, including earlier export formats
 - English, Simplified Chinese, and German interfaces
 - Light, dark, and system appearance
 - Installable PWA with offline app shell
@@ -113,19 +116,21 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 | Path | Best for | Domain required | Starting cost |
 |---|---|---:|---:|
-| Local only | One device, maximum simplicity | No | Free |
+| Local-only PWA | One device, no setup | No | Free |
 | Cloudflare + D1 | International self-hosting | No | Free tier |
 | Tencent CloudBase | Mainland China access and private sync | No for personal evaluation | Free environment |
 
-### 1. Local only — download and open
+### 1. Use now — no setup
 
-No account, terminal, Node.js, or Cloudflare setup is required:
+Open **[Life Ledger — Local only](https://zubin-li.github.io/life-ledger-deep-review/?mode=local)** in a current browser. No account, download, terminal, Node.js, or cloud setup is required.
 
-1. On GitHub, choose **Code → Download ZIP**.
-2. Unzip the download.
-3. Double-click `OPEN-LIFE-LEDGER.html`.
+Your records save automatically in that browser on that device. On a phone, use the browser menu to choose **Add to Home Screen** or **Install app** for a full-screen PWA that also keeps its app shell available offline.
 
-The app starts in local-only mode and saves to that browser's `localStorage`. In direct-file mode, cloud sync, PWA installation, and service-worker caching remain disabled by design.
+Before changing device, browser, or browser profile, open **Backup & restore**, export **All history**, move the JSON file privately, and restore it on the new device. A shared URL does not synchronize two devices; use Cloudflare or CloudBase below when you need live cross-device sync. See [Backup and restore](docs/backup-and-restore.md).
+
+#### Desktop offline preview
+
+The GitHub ZIP remains available for source access and desktop preview: choose **Code → Download ZIP**, unzip it, then open `OPEN-LIFE-LEDGER.html`. Direct-file mode intentionally disables PWA installation, Service Worker caching, and cloud sync. It is not the recommended long-term storage path on iPhone or Android.
 
 For a more consistent browser origin without installing project dependencies, start a small local server from the repository folder:
 
@@ -189,13 +194,13 @@ Read the complete [Tencent CloudBase deployment guide](docs/cloudbase-china.md) 
 ```text
 Browser / installed PWA
    ├── localStorage     immediate local persistence
-   ├── JSON export     user-controlled backup
+   ├── JSON backup     validated export + guided restore
    └── optional authenticated sync
             ├── Cloudflare Worker → your D1 database
             └── CloudBase Web SDK → your document collection
 ```
 
-Cloud synchronization is optional. Cloudflare validates an Access JWT before writing to D1; CloudBase uses an authenticated session plus creator-only collection permissions. Journal content is not application-layer end-to-end encrypted, so the owner of either cloud account can inspect their own database. Read [PRIVACY.md](PRIVACY.md) before storing sensitive information.
+Cloud synchronization is optional. A local-only installation has separate data per device and browser profile; clearing site data can remove it, so keep dated complete backups. Cloudflare validates an Access JWT before writing to D1; CloudBase uses an authenticated session plus creator-only collection permissions. Journal content is not application-layer end-to-end encrypted, so the owner of either cloud account can inspect their own database. Read [PRIVACY.md](PRIVACY.md) before storing sensitive information.
 
 ## Commands
 
@@ -232,7 +237,6 @@ For mainland China, CloudBase currently offers one Free environment with 3,000 r
 ## Roadmap
 
 - Safer conflict handling for concurrent offline edits
-- Import and guided restore from JSON backups
 - Optional monthly partitioning for very long journal histories
 - Automated accessibility and browser regression coverage
 - Community-contributed translations

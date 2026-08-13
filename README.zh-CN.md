@@ -10,13 +10,16 @@
   </p>
 
   <p>
+    <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=zh">
+      <img src="https://img.shields.io/badge/立即使用-仅本机保存-1f6f54?style=for-the-badge" alt="立即使用 Life Ledger 仅本机版" />
+    </a>
     <a href="docs/cloudbase-china.zh-CN.md">
       <img src="https://img.shields.io/badge/Deploy_to_CloudBase-006EFF?style=for-the-badge&logo=tencentcloud&logoColor=white" alt="Deploy to CloudBase" />
     </a>
   </p>
 </div>
 
-> **Beta 说明：** 当前版本已经适合个人使用和自托管。同步机制仍会继续完善，建议定期导出 JSON 备份。
+> **Beta 说明：** 当前版本已经适合个人使用和自托管。本机记录会自动保存，完整 JSON 备份可以在另一台设备或另一个浏览器中恢复。
 
 ## 为什么是 Life Ledger？
 
@@ -74,7 +77,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 每日目标、心情、日记与事件记录
 - 本周目标、清单、本周输出和历史归档
 - 月度复盘、习惯趋势对比、折线图与柱状图
-- 按天、周、月或完整历史导出 JSON
+- 经过验证的 JSON 备份、引导式恢复以及早期导出格式兼容
 - 英文、简体中文和德语界面
 - 浅色、深色和跟随系统模式
 - 可安装 PWA 与离线应用外壳
@@ -117,19 +120,21 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 
 | 方式 | 适合谁 | 必须买域名 | 起步费用 |
 |---|---|---:|---:|
-| 仅本地使用 | 单设备、追求最简单 | 否 | 0 元 |
+| 仅本机 PWA | 单设备、无需配置 | 否 | 0 元 |
 | Cloudflare + D1 | 国际网络环境下自托管 | 否 | 免费额度 |
 | 腾讯云 CloudBase | 中国大陆访问与跨设备同步 | 个人体验不需要 | 免费体验环境 |
 
-### 1. 仅在本地使用——下载后直接打开
+### 1. 立即使用——无需配置
 
-不需要账户、终端、Node.js 或 Cloudflare 配置：
+在现代浏览器中打开 **[Life Ledger 仅本机版](https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=zh)**。不需要账户、下载、终端、Node.js 或云端配置。
 
-1. 在 GitHub 点击 **Code → Download ZIP**。
-2. 解压下载文件。
-3. 双击 `OPEN-LIFE-LEDGER.html`。
+记录会自动保存在当前设备的当前浏览器中。手机上可通过浏览器菜单选择**添加到主屏幕**或**安装应用**，获得全屏 PWA 体验，并让应用外壳可以离线打开。
 
-应用会直接进入仅本地模式，数据保存在该浏览器的 `localStorage` 中。直接打开文件时，云同步、PWA 安装和 Service Worker 缓存会有意保持关闭。
+更换设备、浏览器或浏览器资料前，请打开**备份与恢复**，选择**全部历史**并导出，把 JSON 文件私下转移到新设备后再恢复。相同网址不会让两台设备自动同步；需要实时跨设备同步时，请选择下面的 Cloudflare 或 CloudBase 方案。完整说明见[备份与恢复指南](docs/backup-and-restore.zh-CN.md)。
+
+#### 电脑离线预览
+
+GitHub ZIP 仍可用于查看源代码和电脑端预览：点击 **Code → Download ZIP**，解压后打开 `OPEN-LIFE-LEDGER.html`。直接文件模式会主动关闭 PWA 安装、Service Worker 缓存和云同步，不建议把它作为 iPhone 或 Android 的长期记录方式。
 
 如果希望使用更稳定的浏览器本地域名，同时又不安装项目依赖，可以在仓库目录运行一个轻量本地服务器：
 
@@ -193,13 +198,13 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 ```text
 浏览器 / 已安装的 PWA
    ├── localStorage     即时本地保存
-   ├── JSON 导出        用户自主备份
+   ├── JSON 备份        验证导出 + 引导恢复
    └── 可选的身份验证同步
             ├── Cloudflare Worker → 你自己的 D1
             └── CloudBase Web SDK → 你自己的文档集合
 ```
 
-云同步不是必需功能。Cloudflare 方案验证 Access JWT 后写入 D1；CloudBase 方案使用登录会话和“仅创建者可读写”的集合权限。日记内容没有进行应用层端到端加密，因此相应云账户的管理员可以查看自己数据库中的记录。保存敏感信息前请阅读 [PRIVACY.md](PRIVACY.md)。
+云同步不是必需功能。仅本机版在每台设备和每个浏览器资料中各自保存一份数据；清理网站数据可能删除记录，因此应保留带日期的完整备份。Cloudflare 方案验证 Access JWT 后写入 D1；CloudBase 方案使用登录会话和“仅创建者可读写”的集合权限。日记内容没有进行应用层端到端加密，因此相应云账户的管理员可以查看自己数据库中的记录。保存敏感信息前请阅读 [PRIVACY.md](PRIVACY.md)。
 
 ## 常用命令
 
@@ -236,7 +241,6 @@ Life Ledger 面向个人或小型家庭使用，两种云方案都运行在部�
 ## 后续计划
 
 - 更安全地处理多设备离线编辑冲突
-- JSON 导入与引导式恢复
 - 为超长期日记提供按月拆分存储
 - 自动化无障碍与多浏览器回归测试
 - 社区贡献的更多语言
