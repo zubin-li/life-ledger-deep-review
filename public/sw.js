@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.1-backup-restore";
+const CACHE_NAME = "life-ledger-pwa-0.2.2-import-export";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.1",
-  "./app.js?v=0.2.1",
-  "./deployment-mode.js?v=0.2.1",
-  "./cloudbase-sync.js?v=0.2.1",
+  "./styles.css?v=0.2.2",
+  "./app.js?v=0.2.2",
+  "./deployment-mode.js?v=0.2.2",
+  "./cloudbase-sync.js?v=0.2.2",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js",
+  "./_init_tcb-env.js?v=0.2.2",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -37,8 +37,11 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
+          const contentType = response.headers.get("content-type") || "";
+          if (response.ok && contentType.includes("text/html") && !response.redirected) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
+          }
           return response;
         })
         .catch(async () => (await caches.match("./index.html")) || caches.match("./"))

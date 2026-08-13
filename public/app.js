@@ -52,7 +52,7 @@ const i18n = {
     nav: { today: "今日", week: "本周", review: "复盘", habits: "习惯设置" },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
     profileName: "个人复盘空间",
-    exportTitle: "备份与恢复",
+    exportTitle: "导入与导出",
     pwa: { install: "安装为应用", ready: "可安装", manual: "请使用浏览器菜单中的“添加到主屏幕”或“安装应用”。", installed: "Life Ledger 已安装" },
     theme: { label: "外观", system: "跟随系统", light: "浅色模式", dark: "深色模式" },
     yearSuffix: "年",
@@ -292,9 +292,9 @@ const i18n = {
       restoreUndone: "已撤销上一次恢复",
     },
     celebration: "今天计入完成度的目标全部完成了。",
-    export: { title: "备份与恢复", all: "全部历史", allHelp: "所有习惯、心情、记录、目标和复盘", month: "指定月份", monthHelp: "导出一个自然月", week: "指定一周", weekHelp: "输入该周中的任意日期", day: "指定一天", dayHelp: "仅导出当天内容", cancel: "完成", confirm: "导出备份" },
+    export: { title: "导入与导出", all: "全部历史", allHelp: "所有习惯、心情、记录、目标和复盘", month: "指定月份", monthHelp: "导出一个自然月", week: "指定一周", weekHelp: "输入该周中的任意日期", day: "指定一天", dayHelp: "仅导出当天内容", cancel: "完成", confirm: "导出备份" },
     backup: {
-      kicker: "你的数据", short: "数据", introTitle: "记录保存在这台设备", introHelp: "定期导出完整备份，即可在换设备或换浏览器后恢复。",
+      kicker: "你的数据", short: "数据", tabsAria: "选择导入或导出", tabExport: "导出", tabImport: "导入", introTitle: "记录保存在这台设备", introHelp: "定期导出完整备份，即可在换设备或换浏览器后恢复。",
       exportTitle: "导出备份", exportHelp: "JSON 文件只在你选择的位置保存。", restoreTitle: "从备份恢复", restoreHelp: "支持新版备份和早期导出的 JSON。",
       chooseTitle: "选择备份文件", chooseHelp: "文件会先在本机检查，不会上传。", reselect: "重新选择", restore: "恢复此备份", undo: "撤销上一次恢复",
       safety: "恢复前会在本机保留一份安全副本。完整备份将替换当前记录，部分备份将合并到现有记录。",
@@ -321,7 +321,7 @@ const i18n = {
     nav: { today: "Today", week: "Week", review: "Review", habits: "Habits" },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
     profileName: "Personal Ledger",
-    exportTitle: "Backup & restore",
+    exportTitle: "Import & export",
     pwa: { install: "Install app", ready: "Ready to install", manual: "Use your browser menu and choose Add to Home Screen or Install app.", installed: "Life Ledger installed" },
     theme: { label: "Appearance", system: "Follow system", light: "Light mode", dark: "Dark mode" },
     yearSuffix: "",
@@ -561,9 +561,9 @@ const i18n = {
       restoreUndone: "Last restore undone",
     },
     celebration: "Every goal counted for today is complete.",
-    export: { title: "Backup & restore", all: "All history", allHelp: "All habits, moods, notes, goals and reviews", month: "One month", monthHelp: "Export one calendar month", week: "One week", weekHelp: "Choose any date in that week", day: "One day", dayHelp: "Export that day only", cancel: "Done", confirm: "Export backup" },
+    export: { title: "Import & export", all: "All history", allHelp: "All habits, moods, notes, goals and reviews", month: "One month", monthHelp: "Export one calendar month", week: "One week", weekHelp: "Choose any date in that week", day: "One day", dayHelp: "Export that day only", cancel: "Done", confirm: "Export backup" },
     backup: {
-      kicker: "YOUR DATA", short: "Data", introTitle: "Your records stay on this device", introHelp: "Export a complete backup occasionally, then restore it after changing devices or browsers.",
+      kicker: "YOUR DATA", short: "Data", tabsAria: "Choose import or export", tabExport: "Export", tabImport: "Import", introTitle: "Your records stay on this device", introHelp: "Export a complete backup occasionally, then restore it after changing devices or browsers.",
       exportTitle: "Export a backup", exportHelp: "The JSON file is saved only where you choose.", restoreTitle: "Restore from a backup", restoreHelp: "Supports current backups and earlier Life Ledger JSON exports.",
       chooseTitle: "Choose backup file", chooseHelp: "It is checked on this device and never uploaded.", reselect: "Choose another", restore: "Restore this backup", undo: "Undo last restore",
       safety: "A safety copy stays on this device before restoration. Complete backups replace current records; partial backups merge with them.",
@@ -590,7 +590,7 @@ const i18n = {
     nav: { today: "Heute", week: "Woche", review: "Rückblick", habits: "Gewohnheiten" },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
     profileName: "Persönliches Journal",
-    exportTitle: "Sichern & wiederherstellen",
+    exportTitle: "Import & Export",
     pwa: { install: "App installieren", ready: "Installationsbereit", manual: "Wähle im Browsermenü „Zum Home-Bildschirm“ oder „App installieren“.", installed: "Life Ledger wurde installiert" },
     theme: { label: "Darstellung", system: "Systemeinstellung", light: "Heller Modus", dark: "Dunkler Modus" },
     yearSuffix: "",
@@ -830,9 +830,9 @@ const i18n = {
       restoreUndone: "Letzte Wiederherstellung rückgängig gemacht",
     },
     celebration: "Alle Ziele, die heute zählen, sind erledigt.",
-    export: { title: "Sichern & wiederherstellen", all: "Gesamter Verlauf", allHelp: "Alle Gewohnheiten, Stimmungen, Notizen, Ziele und Rückblicke", month: "Ein Monat", monthHelp: "Einen Kalendermonat exportieren", week: "Eine Woche", weekHelp: "Ein beliebiges Datum dieser Woche wählen", day: "Ein Tag", dayHelp: "Nur diesen Tag exportieren", cancel: "Fertig", confirm: "Sicherung exportieren" },
+    export: { title: "Import & Export", all: "Gesamter Verlauf", allHelp: "Alle Gewohnheiten, Stimmungen, Notizen, Ziele und Rückblicke", month: "Ein Monat", monthHelp: "Einen Kalendermonat exportieren", week: "Eine Woche", weekHelp: "Ein beliebiges Datum dieser Woche wählen", day: "Ein Tag", dayHelp: "Nur diesen Tag exportieren", cancel: "Fertig", confirm: "Sicherung exportieren" },
     backup: {
-      kicker: "DEINE DATEN", short: "Daten", introTitle: "Deine Einträge bleiben auf diesem Gerät", introHelp: "Exportiere gelegentlich eine vollständige Sicherung und stelle sie nach einem Geräte- oder Browserwechsel wieder her.",
+      kicker: "DEINE DATEN", short: "Daten", tabsAria: "Import oder Export wählen", tabExport: "Export", tabImport: "Import", introTitle: "Deine Einträge bleiben auf diesem Gerät", introHelp: "Exportiere gelegentlich eine vollständige Sicherung und stelle sie nach einem Geräte- oder Browserwechsel wieder her.",
       exportTitle: "Sicherung exportieren", exportHelp: "Die JSON-Datei wird nur am gewählten Ort gespeichert.", restoreTitle: "Aus Sicherung wiederherstellen", restoreHelp: "Unterstützt aktuelle Sicherungen und frühere Life-Ledger-JSON-Exporte.",
       chooseTitle: "Sicherungsdatei wählen", chooseHelp: "Sie wird nur auf diesem Gerät geprüft und nicht hochgeladen.", reselect: "Andere wählen", restore: "Diese Sicherung wiederherstellen", undo: "Letzte Wiederherstellung rückgängig",
       safety: "Vorher bleibt eine Sicherheitskopie auf diesem Gerät. Vollständige Sicherungen ersetzen bestehende Einträge; Teilsicherungen werden zusammengeführt.",
@@ -1026,8 +1026,6 @@ function applyLanguage() {
   setText(".profile strong", tr("profileName"));
   $("#exportButton")?.setAttribute("title", tr("exportTitle"));
   $("#exportButton")?.setAttribute("aria-label", tr("exportTitle"));
-  setText("#mobileBackupLabel", tr("backup.short"));
-  $$("[data-backup-open]").forEach(button => button.setAttribute("aria-label", tr("exportTitle")));
   setAria("#cloudAccountButton", tr("cloudbase.account"));
   $("#cloudAccountButton")?.setAttribute("title", tr("cloudbase.account"));
   $$('[data-install-app]').forEach(button => {
@@ -1145,6 +1143,9 @@ function applyLanguage() {
   setText("#backupKicker", tr("backup.kicker"));
   setText("#backupIntroTitle", tr("backup.introTitle"));
   setText("#backupIntroHelp", tr("backup.introHelp"));
+  setAria(".backup-tabs", tr("backup.tabsAria"));
+  setText("#backupExportTab", tr("backup.tabExport"));
+  setText("#backupImportTab", tr("backup.tabImport"));
   setText("#exportSectionTitle", tr("backup.exportTitle"));
   setText("#exportSectionHelp", tr("backup.exportHelp"));
   setText("#restoreSectionTitle", tr("backup.restoreTitle"));
@@ -2136,6 +2137,34 @@ function updateExportFields() {
   $("#exportMonth").hidden = scope !== "month";
   $("#exportDate").hidden = !["week", "day"].includes(scope);
 }
+function setBackupTab(tab = "export") {
+  const selected = tab === "import" ? "import" : "export";
+  $$('[data-backup-tab]').forEach(button => {
+    const active = button.dataset.backupTab === selected;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
+  $$('[data-backup-panel]').forEach(panel => { panel.hidden = panel.dataset.backupPanel !== selected; });
+  $("#exportConfirm").hidden = selected !== "export";
+}
+function openBackupDialog() {
+  $("#exportMonth").value = monthKey(new Date());
+  $("#exportDate").value = isoDate(new Date());
+  updateExportFields();
+  clearImportSelection();
+  $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
+  setBackupTab("export");
+  $("#exportDialog").showModal();
+}
+function syncExportButtonPlacement() {
+  const button = $("#exportButton");
+  const anchor = $("#exportButtonAnchor");
+  const topActions = $(".top-actions");
+  if (!button || !anchor || !topActions) return;
+  if (window.matchMedia("(max-width: 760px)").matches) topActions.append(button);
+  else anchor.after(button);
+}
 function createBackup(scope) {
   const range = exportRange(scope);
   return {
@@ -2533,14 +2562,8 @@ function bindEvents() {
     selectedWorkspaceWeek = currentKey;
     renderWeeklyWorkspace();
   });
-  $$('[data-backup-open]').forEach(button => button.addEventListener("click", () => {
-      $("#exportMonth").value = monthKey(new Date());
-      $("#exportDate").value = isoDate(new Date());
-      updateExportFields();
-      clearImportSelection();
-      $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
-      $("#exportDialog").showModal();
-    }));
+  $("#exportButton").addEventListener("click", openBackupDialog);
+  $$('[data-backup-tab]').forEach(button => button.addEventListener("click", () => setBackupTab(button.dataset.backupTab)));
   $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";
   $("#cloudAccountButton").addEventListener("click", openCloudBaseAuth);
   $$(".close-cloudbase-auth").forEach(button => button.addEventListener("click", () => $("#cloudbaseAuthDialog").close()));
@@ -2649,10 +2672,11 @@ function bindEvents() {
     $$('[data-install-app]').forEach(button => button.classList.remove("ready"));
     showToast(tr("pwa.installed"));
   });
+  window.addEventListener("resize", syncExportButtonPlacement, { passive: true });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 }
 
-initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
+syncExportButtonPlacement(); initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }
