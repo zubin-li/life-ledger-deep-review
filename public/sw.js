@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.10-mobile-hero-balance";
+const CACHE_NAME = "life-ledger-pwa-0.2.12-mobile-orbit-corner";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.10",
-  "./app.js?v=0.2.10",
-  "./deployment-mode.js?v=0.2.10",
-  "./cloudbase-sync.js?v=0.2.10",
+  "./styles.css?v=0.2.12",
+  "./app.js?v=0.2.12",
+  "./deployment-mode.js?v=0.2.12",
+  "./cloudbase-sync.js?v=0.2.12",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.10",
+  "./_init_tcb-env.js?v=0.2.12",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",

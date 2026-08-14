@@ -1076,7 +1076,7 @@ function applyLanguage() {
   const heroQuote = quoteFor(0);
   setText(".hero-copy h2", heroQuote.text);
   setText(".quote-source", heroQuote.source);
-  setText(".progress-orbit span", tr("hero.progress"));
+  setText(".progress-orbit-label", tr("hero.progress"));
   setText(".mood-card .kicker", tr("mood.kicker"));
   setText(".mood-card h3", tr("mood.title"));
   setText("#moodNote", "");

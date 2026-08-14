@@ -95,11 +95,11 @@ button { cursor: pointer; }
 .progress-orbit-ring { position: absolute; inset: 0; border-radius: inherit; background: conic-gradient(#a8c5b1 var(--p), rgba(255,255,255,.09) 0); transition: background 280ms var(--ease-enter); }
 .progress-orbit-ring::after { content: ""; position: absolute; inset: 8px; border-radius: inherit; background: var(--ink); border: 1px solid rgba(255,255,255,.08); }
 .progress-orbit div { position: relative; z-index: 1; text-align: center; }
-.progress-orbit strong, .progress-orbit span { display: block; }
+.progress-orbit strong, .progress-orbit-label { display: block; }
 .progress-orbit strong { display: flex; align-items: baseline; justify-content: center; gap: 5px; font-family: var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
 .progress-orbit strong b { font-size: 31px; font-weight: 650; line-height: 1; }
 .progress-orbit strong small { color: rgba(255,255,255,.52); font-size: 14px; font-weight: 550; letter-spacing: -.02em; }
-.progress-orbit span { color: rgba(255,255,255,.44); font-size: 10px; margin-top: 5px; }
+.progress-orbit-label { color: rgba(255,255,255,.44); font-size: 10px; margin-top: 5px; }
 .mood-card { padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; }
 .section-heading h2, .section-heading h3 { font-family: "Noto Serif SC"; margin: 7px 0 0; }
@@ -1102,66 +1102,69 @@ html[data-theme="dark"] .cloudbase-auth-note { background: rgba(255,255,255,.035
 
 /*
  * Mobile hero layout contract (tested at 320–430px):
- * the progress summary must stay in normal document flow, never float over the
- * date or quotation. Keep this block after earlier responsive overrides.
+ * the progress ring stays in normal document flow and aligns to the lower-right,
+ * so longer translations grow the card instead of colliding with its content.
+ * Keep this block after earlier responsive overrides.
  */
 @media (max-width: 760px) {
   .hero-card {
-    min-height: 0;
+    min-height: 300px;
     padding: 24px 22px 22px;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: space-between;
     align-items: stretch;
-    gap: 22px;
+    gap: 14px;
   }
   .hero-copy { width: 100%; }
   .hero-copy h2 { margin-block: 22px 13px; }
   .hero-copy #heroProgressText { display: none; }
   .progress-orbit {
-    width: 100%;
-    max-width: 420px;
-    min-height: 76px;
-    aspect-ratio: auto;
+    width: 90px;
+    max-width: none;
+    min-height: 0;
+    aspect-ratio: 1;
     margin: 0;
-    padding: 10px 14px;
+    padding: 0;
     position: relative;
     inset: auto;
-    justify-self: start;
+    justify-self: end;
     display: grid;
-    grid-template-columns: 54px minmax(0, 1fr);
-    place-items: center start;
-    gap: 14px;
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 21px;
-    background: rgba(255,255,255,.055);
+    grid-template-columns: 1fr;
+    place-items: center;
+    gap: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
     box-sizing: border-box;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-    backdrop-filter: blur(14px);
+    box-shadow: none;
+    backdrop-filter: none;
   }
   .progress-orbit-ring {
-    width: 54px;
-    aspect-ratio: 1;
-    position: relative;
-    inset: auto;
+    width: auto;
+    aspect-ratio: auto;
+    position: absolute;
+    inset: 0;
     grid-column: 1;
     grid-row: 1;
     border-radius: 50%;
   }
-  .progress-orbit-ring::after { inset: 5px; }
+  .progress-orbit-ring::after { inset: 6px; }
   .progress-orbit div {
     min-width: 0;
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
-    text-align: left;
+    text-align: center;
   }
-  .progress-orbit strong { justify-content: flex-start; gap: 4px; }
-  .progress-orbit strong b { font-size: 25px; }
-  .progress-orbit strong small { font-size: 13px; }
-  .progress-orbit span { margin-top: 3px; font-size: 9px; letter-spacing: .04em; }
+  .progress-orbit strong { justify-content: center; gap: 4px; }
+  .progress-orbit strong b { font-size: 27px; }
+  .progress-orbit strong small { font-size: 12px; }
+  .progress-orbit-label { margin-top: 4px; font-size: 8px; letter-spacing: .03em; }
 }
 
 @media (max-width: 350px) {
   .hero-card { padding-inline: 18px; }
-  .progress-orbit { min-height: 70px; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; }
-  .progress-orbit-ring { width: 48px; }
+  .progress-orbit { width: 82px; }
+  .progress-orbit strong b { font-size: 24px; }
 }
