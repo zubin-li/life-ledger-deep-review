@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.9-unslashed-numerals";
+const CACHE_NAME = "life-ledger-pwa-0.2.10-mobile-hero-balance";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.9",
-  "./app.js?v=0.2.9",
-  "./deployment-mode.js?v=0.2.9",
-  "./cloudbase-sync.js?v=0.2.9",
+  "./styles.css?v=0.2.10",
+  "./app.js?v=0.2.10",
+  "./deployment-mode.js?v=0.2.10",
+  "./cloudbase-sync.js?v=0.2.10",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.9",
+  "./_init_tcb-env.js?v=0.2.10",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",

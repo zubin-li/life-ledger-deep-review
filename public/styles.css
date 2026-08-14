@@ -91,8 +91,9 @@ button { cursor: pointer; }
 .quote-source { display: block; margin: -6px 0 14px; color: rgba(255,255,255,.42); font: 10px/1.4 Inter, sans-serif; letter-spacing: .08em; }
 .section-quote-source { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; letter-spacing: .06em; }
 .mood-note small { display: block; margin-top: 5px; opacity: .62; font-size: 10px; }
-.progress-orbit { --p: calc(var(--progress) * 1%); width: 142px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; margin-left: 24px; background: conic-gradient(#a8c5b1 var(--p), rgba(255,255,255,.09) 0); position: relative; transition: background 280ms var(--ease-enter); }
-.progress-orbit::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--ink); border: 1px solid rgba(255,255,255,.08); }
+.progress-orbit { --p: calc(var(--progress) * 1%); width: 142px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; margin-left: 24px; position: relative; }
+.progress-orbit-ring { position: absolute; inset: 0; border-radius: inherit; background: conic-gradient(#a8c5b1 var(--p), rgba(255,255,255,.09) 0); transition: background 280ms var(--ease-enter); }
+.progress-orbit-ring::after { content: ""; position: absolute; inset: 8px; border-radius: inherit; background: var(--ink); border: 1px solid rgba(255,255,255,.08); }
 .progress-orbit div { position: relative; z-index: 1; text-align: center; }
 .progress-orbit strong, .progress-orbit span { display: block; }
 .progress-orbit strong { display: flex; align-items: baseline; justify-content: center; gap: 5px; font-family: var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
@@ -662,7 +663,7 @@ html[data-theme="dark"] .language-label { color: #f0b96e; }
 html[data-theme="dark"] .primary-button { background: var(--accent); color: #0b1725; border-color: rgba(255,255,255,.12); box-shadow: 0 10px 26px rgba(47,121,216,.24), inset 0 1px 0 rgba(255,255,255,.34); }
 html[data-theme="dark"] .secondary-button { background: var(--surface-3); border-color: var(--edge-soft); }
 html[data-theme="dark"] .hero-card { border-color: var(--edge-strong); background: radial-gradient(circle at 77% 45%, rgba(94,153,238,.22), transparent 24rem), linear-gradient(135deg, #303940, #293238 62%, #242a2e); box-shadow: 0 24px 66px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1); }
-html[data-theme="dark"] .progress-orbit::after { background: #22292d; }
+html[data-theme="dark"] .progress-orbit-ring::after { background: #22292d; }
 html[data-theme="dark"] .mood-card,
 html[data-theme="dark"] .daily-goals-card,
 html[data-theme="dark"] .calendar-card,
@@ -1097,4 +1098,70 @@ html[data-theme="dark"] .cloudbase-auth-note { background: rgba(255,255,255,.035
 @media (max-width: 760px) {
   html[data-theme="dark"] .mobile-toolbar-toggle,
   html[data-theme="dark"] .top-actions { border-color: var(--edge-soft); background: color-mix(in srgb, var(--surface-2) 88%, transparent); box-shadow: 0 14px 34px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.05); }
+}
+
+/*
+ * Mobile hero layout contract (tested at 320–430px):
+ * the progress summary must stay in normal document flow, never float over the
+ * date or quotation. Keep this block after earlier responsive overrides.
+ */
+@media (max-width: 760px) {
+  .hero-card {
+    min-height: 0;
+    padding: 24px 22px 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 22px;
+  }
+  .hero-copy { width: 100%; }
+  .hero-copy h2 { margin-block: 22px 13px; }
+  .hero-copy #heroProgressText { display: none; }
+  .progress-orbit {
+    width: 100%;
+    max-width: 420px;
+    min-height: 76px;
+    aspect-ratio: auto;
+    margin: 0;
+    padding: 10px 14px;
+    position: relative;
+    inset: auto;
+    justify-self: start;
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    place-items: center start;
+    gap: 14px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 21px;
+    background: rgba(255,255,255,.055);
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    backdrop-filter: blur(14px);
+  }
+  .progress-orbit-ring {
+    width: 54px;
+    aspect-ratio: 1;
+    position: relative;
+    inset: auto;
+    grid-column: 1;
+    grid-row: 1;
+    border-radius: 50%;
+  }
+  .progress-orbit-ring::after { inset: 5px; }
+  .progress-orbit div {
+    min-width: 0;
+    grid-column: 2;
+    grid-row: 1;
+    text-align: left;
+  }
+  .progress-orbit strong { justify-content: flex-start; gap: 4px; }
+  .progress-orbit strong b { font-size: 25px; }
+  .progress-orbit strong small { font-size: 13px; }
+  .progress-orbit span { margin-top: 3px; font-size: 9px; letter-spacing: .04em; }
+}
+
+@media (max-width: 350px) {
+  .hero-card { padding-inline: 18px; }
+  .progress-orbit { min-height: 70px; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; }
+  .progress-orbit-ring { width: 48px; }
 }
