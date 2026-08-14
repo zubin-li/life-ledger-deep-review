@@ -1,13 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.8-mood-notes";
+const CACHE_NAME = "life-ledger-pwa-0.2.9-unslashed-numerals";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.8",
-  "./app.js?v=0.2.8",
-  "./deployment-mode.js?v=0.2.8",
-  "./cloudbase-sync.js?v=0.2.8",
+  "./styles.css?v=0.2.9",
+  "./app.js?v=0.2.9",
+  "./deployment-mode.js?v=0.2.9",
+  "./cloudbase-sync.js?v=0.2.9",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.8",
+  "./_init_tcb-env.js?v=0.2.9",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
