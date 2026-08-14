@@ -24,7 +24,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=0.2.12" />
+    <link rel="stylesheet" href="./styles.css?v=0.2.13" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -222,7 +222,7 @@
         <section class="view" id="weekView">
           <section class="weekly-workspace" aria-labelledby="weeklyWorkspaceTitle">
             <div class="section-heading weekly-heading">
-              <div><span class="kicker">THIS WEEK</span><h2 id="weeklyWorkspaceTitle">Weekly Plan</h2></div>
+              <h2 class="sr-only" id="weeklyWorkspaceTitle">Weekly Plan</h2>
               <div class="week-navigator" aria-label="切换计划周">
                 <button class="week-nav-button" id="previousWorkspaceWeek" type="button" aria-label="上一周">←</button>
                 <button class="week-current-button" id="currentWorkspaceWeek" type="button">
@@ -263,7 +263,7 @@
 
         <section class="view" id="reviewView">
           <div class="review-intro quiet-intro">
-            <div><span class="review-year" id="reviewYear">2026</span><span class="kicker">MONTHLY REVIEW</span><h2 id="reviewTitle">June · Monthly Review</h2></div>
+            <h2 id="reviewTitle">June 2026</h2>
           </div>
           <div class="score-grid" id="scoreGrid"></div>
           <div class="review-grid">
@@ -470,9 +470,9 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=0.2.12"></script>
-    <script src="./_init_tcb-env.js?v=0.2.12"></script>
-    <script src="./cloudbase-sync.js?v=0.2.12"></script>
-    <script src="./app.js?v=0.2.12"></script>
+    <script src="./deployment-mode.js?v=0.2.13"></script>
+    <script src="./_init_tcb-env.js?v=0.2.13"></script>
+    <script src="./cloudbase-sync.js?v=0.2.13"></script>
+    <script src="./app.js?v=0.2.13"></script>
   </body>
 </html>

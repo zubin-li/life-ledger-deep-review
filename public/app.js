@@ -163,7 +163,7 @@ const i18n = {
     },
     review: {
       kicker: "MONTHLY REVIEW",
-      title: "{month}月 · 月度复盘",
+      title: "{year}年{month}月",
       quote: "君子博学而日参省乎己。",
       source: "《荀子·劝学》",
       generate: "开始引导复盘",
@@ -438,7 +438,7 @@ const i18n = {
     },
     review: {
       kicker: "MONTHLY REVIEW",
-      title: "{monthName} · Monthly Review",
+      title: "{monthName} {year}",
       quote: "Life can only be understood backwards; but it must be lived forwards.",
       source: "Søren Kierkegaard, Journals",
       generate: "Start guided review",
@@ -713,7 +713,7 @@ const i18n = {
     },
     review: {
       kicker: "MONATSRÜCKBLICK",
-      title: "{monthName} · Monatsrückblick",
+      title: "{monthName} {year}",
       quote: "Wer sichere Schritte tun will, muss sie langsam tun.",
       source: "Johann Wolfgang von Goethe, Maximen und Reflexionen",
       generate: "Geführten Rückblick starten",
@@ -1117,7 +1117,6 @@ function applyLanguage() {
   if (weekdayRow) weekdayRow.innerHTML = i18n[currentLang].calendar.weekdays.map(day => `<span>${day}</span>`).join("");
   const legend = $(".calendar-legend");
   if (legend) legend.innerHTML = `<span><i class="legend-dot complete"></i>${tr("calendar.complete")}</span><span><i class="legend-dot partial"></i>${tr("calendar.partial")}</span><span><i class="legend-dot empty"></i>${tr("calendar.empty")}</span>`;
-  setText(".weekly-heading .kicker", tr("week.kicker"));
   setText("#weeklyWorkspaceTitle", tr("week.title"));
   setAria("#previousWorkspaceWeek", tr("week.previous"));
   setAria("#nextWorkspaceWeek", tr("week.next"));
@@ -1129,7 +1128,6 @@ function applyLanguage() {
   setPlaceholder("#weeklyOutputText", tr("week.outputPlaceholder"));
   const weeklyFooter = $(".weekly-writing-panel footer span:last-child");
   if (weeklyFooter) weeklyFooter.textContent = tr("week.savedToWeek");
-  setText(".review-intro .kicker", tr("review.kicker"));
   setText("#generateReview", tr("review.generate"));
   setText(".chart-panel .kicker", languageText("节奏", "RHYTHM", "RHYTHMUS"));
   setText(".chart-panel h3", tr("review.rhythm"));
@@ -1901,7 +1899,6 @@ function renderCalendar() {
 
 function renderReview() {
   const key = monthKey(cursor), year = cursor.getFullYear(), month = cursor.getMonth();
-  $("#reviewYear").textContent = year;
   $("#reviewTitle").textContent = tr("review.title", { year, month: month + 1, monthName: monthName(month) });
   const days = new Date(year, month + 1, 0).getDate();
   const monthDates = Array.from({ length: days }, (_, i) => isoDate(new Date(year, month, i + 1, 12)));

@@ -21,6 +21,7 @@
 }
 
 * { box-sizing: border-box; }
+.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 html { color-scheme: light; }
 body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: hidden; background: radial-gradient(circle at 82% 4%, rgba(125,174,255,.18), transparent 30rem), radial-gradient(circle at 28% 72%, rgba(182,222,199,.18), transparent 34rem), var(--paper); color: var(--ink); font-family: var(--font-body); }
 body[data-language="zh"] { letter-spacing: .01em; }
@@ -157,7 +158,7 @@ html.habit-reordering::view-transition-new(root) { animation: none; mix-blend-mo
 .daily-goal-list { margin: 12px 0 18px; }
 .daily-goal-form { margin-top: auto; }
 .weekly-workspace { margin-top: 0; }
-.weekly-heading { margin-bottom: 18px; }
+.weekly-heading { justify-content: flex-end; margin-bottom: 18px; }
 .weekly-heading h2 { font-size: 24px; }
 .week-navigator { display: grid; grid-template-columns: 36px minmax(160px, auto) 36px; align-items: stretch; gap: 7px; }
 .week-nav-button, .week-current-button { border: 1px solid var(--line); background: rgba(255,255,255,.55); color: var(--ink); cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease, transform 160ms var(--ease-enter); }
@@ -497,7 +498,7 @@ dialog { border-radius: 28px; }
   .setting-row .setting-cell, .setting-row .status-pill { display: none; }
   .review-intro, .settings-intro { align-items: flex-start; }
   .weekly-heading { display: block; }
-  .week-navigator { width: 100%; margin-top: 18px; grid-template-columns: 40px 1fr 40px; }
+  .week-navigator { width: 100%; margin-top: 0; grid-template-columns: 40px 1fr 40px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
@@ -800,6 +801,7 @@ html[data-theme="dark"] .weekly-minimal-image img { filter: brightness(.72) satu
 .quiet-intro { align-items: center; margin-bottom: 18px; }
 .review-year { display: block; margin-bottom: 6px; color: var(--muted); font: 500 12px var(--font-body); letter-spacing: .14em; }
 .quiet-intro .kicker { display: block; }
+.review-intro #reviewTitle { margin: 0; font-size: clamp(24px, 3vw, 32px); letter-spacing: -.025em; }
 .settings-intro.quiet-intro p { margin: 6px 0 0; font-size: 11px; }
 
 .score-card { padding: 17px 18px; }
