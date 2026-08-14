@@ -98,6 +98,7 @@ const i18n = {
       note: "人有悲欢离合，月有阴晴圆缺。",
       source: "苏轼《水调歌头》",
     },
+    moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
     todayGoals: {
       kicker: "DAY PLAN", title: "每日目标", desc: "左右选择日期，回看过去或提前规划。", placeholder: "为这一天添加一个目标…", addLabel: "添加目标",
       empty: "这一天还没有具体目标。<br />先写下一件最重要的事。", added: "目标已添加", previous: "前一天", next: "后一天", futureStatus: "未来目标只能规划，到了当天才能勾选完成",
@@ -291,6 +292,7 @@ const i18n = {
       habitOn: "完成一项约定",
       habitOff: "已取消打卡",
       mood: "心情已记录",
+      moodReason: "心情原因已保存",
       exported: "备份已导出",
       restored: "备份已恢复",
       restoreUndone: "已撤销上一次恢复",
@@ -371,6 +373,7 @@ const i18n = {
       note: "The mind is everything. What you think you become.",
       source: "Attributed to the Buddha",
     },
+    moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
     todayGoals: {
       kicker: "DAY PLAN", title: "Daily Goals", desc: "Move between days to review or plan ahead.", placeholder: "Add a goal for this day…", addLabel: "Add goal",
       empty: "No concrete goals for this day yet.<br />Start with one thing that matters.", added: "Goal added", previous: "Previous day", next: "Next day", futureStatus: "Future goals can be planned now and completed when the day arrives",
@@ -564,6 +567,7 @@ const i18n = {
       habitOn: "One promise kept",
       habitOff: "Check-in removed",
       mood: "Mood recorded",
+      moodReason: "Mood reason saved",
       exported: "Backup exported",
       restored: "Backup restored",
       restoreUndone: "Last restore undone",
@@ -644,6 +648,7 @@ const i18n = {
       note: "Das Glück ist das einzige, das sich verdoppelt, wenn man es teilt.",
       source: "Albert Schweitzer",
     },
+    moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
     todayGoals: {
       kicker: "TAGESPLAN", title: "Tagesziele", desc: "Wechsle zwischen Tagen, um zurückzublicken oder vorauszuplanen.", placeholder: "Ein Ziel für diesen Tag hinzufügen…", addLabel: "Ziel hinzufügen",
       empty: "Für diesen Tag gibt es noch keine konkreten Ziele.<br />Beginne mit einer wichtigen Sache.", added: "Ziel hinzugefügt", previous: "Voriger Tag", next: "Nächster Tag", futureStatus: "Zukünftige Ziele können geplant und erst am jeweiligen Tag erledigt werden",
@@ -837,6 +842,7 @@ const i18n = {
       habitOn: "Ein Versprechen gehalten",
       habitOff: "Check-in entfernt",
       mood: "Stimmung gespeichert",
+      moodReason: "Stimmungsgrund gespeichert",
       exported: "Sicherung exportiert",
       restored: "Sicherung wiederhergestellt",
       restoreUndone: "Letzte Wiederherstellung rückgängig gemacht",
@@ -967,6 +973,8 @@ let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
 let pendingImport = null;
+let pendingMoodDate = null;
+let pendingMood = "";
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
 const HABITS_PER_PAGE = 4;
@@ -1075,6 +1083,7 @@ function applyLanguage() {
   const moodNote = $("#moodNote");
   const moodQuote = quoteFor(2);
   if (moodNote) moodNote.innerHTML = `${escapeHtml(moodQuote.text)}<small>${escapeHtml(moodQuote.source)}</small>`;
+  applyMoodReasonLanguage();
   $$("#quickMood button, #drawerMood button").forEach(button => {
     const icon = $("span", button)?.textContent || moodIcons[button.dataset.mood] || "";
     button.innerHTML = `<span>${icon}</span>${moodLabel(button.dataset.mood)}`;
@@ -1414,7 +1423,7 @@ function isoDate(date) {
 }
 function parseDate(value) { const [y, m, d] = value.split("-").map(Number); return new Date(y, m - 1, d, 12); }
 function monthKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`; }
-function getLog(date) { return state.logs[date] || { completed: [], mood: "", note: "" }; }
+function getLog(date) { return state.logs[date] || { completed: [], mood: "", moodReason: "", note: "" }; }
 function activeHabits(date) {
   return state.habits.filter(h => h.active && h.versions.some(v => v.effectiveDate <= date));
 }
@@ -1478,17 +1487,12 @@ function renderAll() {
   applyLanguage();
   $("#yearSelect").value = cursor.getFullYear();
   $("#monthSelect").value = cursor.getMonth();
-  updateTopbarContext($(".nav-item.active")?.dataset.view || "today");
   renderToday();
   renderWeeklyWorkspace();
   renderCalendar();
   renderReview();
   renderHabitSettings();
   decorateMotionSurfaces();
-}
-
-function updateTopbarContext(view) {
-  $("#eyebrow").textContent = view === "today" ? formatWeekRange(isoWeekKey(cursor)) : "";
 }
 
 const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
@@ -1541,6 +1545,12 @@ function bindPointerMotion() {
   }, { passive: true });
 }
 
+function autoGrowTextarea(textarea) {
+  if (!textarea) return;
+  textarea.style.height = "auto";
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
 function renderWeeklyWorkspace() {
   const key = selectedWorkspaceWeek;
   const currentKey = isoWeekKey(new Date());
@@ -1565,6 +1575,7 @@ function renderWeeklyWorkspace() {
   $("#basketWeekLabel").textContent = range;
   $("#weeklyGoalInput").placeholder = tr("week.goalPlaceholder");
   $("#weeklyOutputText").value = output;
+  autoGrowTextarea($("#weeklyOutputText"));
   $("#weeklyOutputStatus").textContent = output.trim() ? tr("week.outputStatus", { count: output.trim().length }) : tr("week.outputEmpty");
   $$(".weekly-goal").forEach(row => row.addEventListener("click", event => {
     const action = event.target.closest("button")?.dataset.action;
@@ -1660,8 +1671,9 @@ function renderToday() {
   $("#heroProgressText").textContent = tr("hero.progressText", { done: complete, total: scoredHabits.length });
   const progressNumber = $("#progressNumber");
   const progressCount = `${complete} / ${scoredHabits.length}`;
-  if (progressNumber.textContent !== progressCount) {
-    progressNumber.textContent = progressCount;
+  if (progressNumber.dataset.value !== progressCount) {
+    progressNumber.dataset.value = progressCount;
+    progressNumber.innerHTML = `<b>${complete}</b><small>/ ${scoredHabits.length}</small>`;
     progressNumber.classList.remove("number-pop");
     void progressNumber.offsetWidth;
     progressNumber.classList.add("number-pop");
@@ -1669,6 +1681,7 @@ function renderToday() {
   $("#progressOrbit").style.setProperty("--progress", progress);
   renderHabitCarousel(habits, date, log.completed);
   $$("#quickMood button").forEach(b => b.classList.toggle("selected", b.dataset.mood === log.mood));
+  renderMoodReasonSummary("#quickMoodReason", log);
   renderDailyGoals();
 }
 
@@ -1786,11 +1799,71 @@ function toggleHabit(date, id) {
   if (!wasComplete && isComplete) showCelebration();
   showToast(i >= 0 ? tr("toast.habitOff") : tr("toast.habitOn"));
 }
-function setMood(date, mood) {
+function renderMoodReasonSummary(selector, log) {
+  const button = $(selector);
+  if (!button) return;
+  const reason = String(log?.moodReason || "").replace(/\s+/g, " ").trim();
+  button.hidden = !reason;
+  button.textContent = reason ? tr("moodReason.summary", { reason }) : "";
+  button.title = reason;
+}
+
+function applyMoodReasonLanguage() {
+  const mood = pendingMood || "平静";
+  setText("#moodReasonKicker", tr("moodReason.kicker"));
+  setText("#moodReasonTitle", tr("moodReason.title", { mood: moodLabel(mood) }));
+  setText("#moodReasonHelp", tr("moodReason.help"));
+  setText("#moodReasonLabel", tr("moodReason.label"));
+  setPlaceholder("#moodReasonText", tr("moodReason.placeholder"));
+  setText("#skipMoodReason", tr("moodReason.skip"));
+  setText("#saveMoodReason", tr("moodReason.save"));
+  setAria(".close-mood-reason", tr("moodReason.close"));
+}
+
+function closeMoodReasonDialog() {
+  const dialog = $("#moodReasonDialog");
+  if (dialog.open) dialog.close();
+  pendingMoodDate = null;
+  pendingMood = "";
+}
+
+function openMoodReasonDialog(date, mood) {
+  if (!mood || isFutureDate(date)) return;
+  pendingMoodDate = date;
+  pendingMood = mood;
+  const log = getLog(date);
+  $("#moodReasonIcon").textContent = moodIcons[mood] || "◌";
+  $("#moodReasonMood").textContent = moodLabel(mood);
+  $("#moodReasonDate").textContent = formatDateChip(parseDate(date));
+  $("#moodReasonText").value = log.mood === mood ? log.moodReason || "" : "";
+  applyMoodReasonLanguage();
+  $("#moodReasonDialog").showModal();
+  window.setTimeout(() => $("#moodReasonText").focus({ preventScroll: true }), 60);
+}
+
+function setMood(date, mood, promptReason = true) {
   if (isFutureDate(date)) return;
-  state.logs[date] = { ...getLog(date), mood }; saveState(); renderAll();
+  const current = getLog(date);
+  state.logs[date] = { ...current, mood, moodReason: current.mood === mood ? current.moodReason || "" : "" };
+  saveState();
+  renderAll();
   if ($("#dayDrawer").classList.contains("open")) renderDrawer();
   showToast(tr("toast.mood"));
+  if (promptReason) openMoodReasonDialog(date, mood);
+}
+
+function saveMoodReason(event) {
+  event.preventDefault();
+  if (!pendingMoodDate || !pendingMood) return;
+  const date = pendingMoodDate;
+  const mood = pendingMood;
+  const reason = $("#moodReasonText").value.trim();
+  state.logs[date] = { ...getLog(date), mood, moodReason: reason };
+  saveState();
+  closeMoodReasonDialog();
+  renderAll();
+  if ($("#dayDrawer").classList.contains("open")) renderDrawer();
+  showToast(tr("toast.moodReason"));
 }
 
 function renderCalendar() {
@@ -2205,6 +2278,7 @@ function renderDrawer() {
     button.classList.toggle("selected", button.dataset.mood === log.mood);
     button.disabled = future;
   });
+  renderMoodReasonSummary("#drawerMoodReason", log);
   $("#dayNote").value = log.note || "";
   $("#dayNote").disabled = future;
   $("#completeDay").disabled = future;
@@ -2696,7 +2770,6 @@ function bindEvents() {
     $$(".view").forEach(v => v.classList.remove("active"));
     $(`#${button.dataset.view}View`).classList.add("active");
     $("#viewTitle").textContent = tr(`viewTitles.${button.dataset.view}`);
-    updateTopbarContext(button.dataset.view);
     if (button.dataset.view === "week") renderWeeklyWorkspace();
     if (button.dataset.view === "review") renderReview();
   }));
@@ -2742,6 +2815,21 @@ function bindEvents() {
   $("#todayHabitViewport").addEventListener("pointercancel", finishHabitDrag);
   $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(isoDate(new Date()), b.dataset.mood)));
   $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood)));
+  $("#quickMoodReason").addEventListener("click", () => {
+    const date = isoDate(new Date());
+    const log = getLog(date);
+    if (log.mood) openMoodReasonDialog(date, log.mood);
+  });
+  $("#drawerMoodReason").addEventListener("click", () => {
+    const log = getLog(selectedDate);
+    if (log.mood) openMoodReasonDialog(selectedDate, log.mood);
+  });
+  $$(".close-mood-reason").forEach(button => button.addEventListener("click", closeMoodReasonDialog));
+  $("#moodReasonForm").addEventListener("submit", saveMoodReason);
+  $("#moodReasonDialog").addEventListener("cancel", event => {
+    event.preventDefault();
+    closeMoodReasonDialog();
+  });
   bindDailyGoalForm("#dailyGoalForm", "#dailyGoalInput", () => selectedPlanningDate, "todayGoals.added");
   $("#previousPlanDay").addEventListener("click", () => shiftPlanningDay(-1));
   $("#nextPlanDay").addEventListener("click", () => shiftPlanningDay(1));
@@ -2798,6 +2886,7 @@ function bindEvents() {
   $("#weeklyOutputText").addEventListener("input", event => {
     const key = selectedWorkspaceWeek;
     state.weeklyOutputs[key] = event.target.value; saveState();
+    autoGrowTextarea(event.target);
     $("#weeklyOutputStatus").textContent = event.target.value.trim() ? tr("week.outputStatus", { count: event.target.value.trim().length }) : tr("week.outputEmpty");
   });
   $("#previousWorkspaceWeek").addEventListener("click", () => {
@@ -2927,6 +3016,7 @@ function bindEvents() {
   window.addEventListener("resize", () => {
     syncExportButtonPlacement();
     syncMobileToolbar();
+    autoGrowTextarea($("#weeklyOutputText"));
   }, { passive: true });
   document.addEventListener("pointerdown", event => {
     if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;

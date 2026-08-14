@@ -56,7 +56,7 @@ button { cursor: pointer; }
 .main-content { min-width: 0; padding: 42px clamp(28px, 5vw, 76px) 70px; max-width: 1500px; width: 100%; margin: 0 auto; }
 .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-bottom: 42px; }
 .eyebrow, .kicker { margin: 0; font: 500 10px/1.2 "DM Mono"; letter-spacing: .18em; color: var(--sage); }
-.topbar h1 { max-width: 760px; font: 700 clamp(25px, 2.7vw, 38px)/1.24 var(--font-display); margin: 9px 0 0; letter-spacing: -.035em; overflow-wrap: anywhere; text-wrap: balance; }
+.topbar h1 { max-width: 760px; font: 700 clamp(25px, 2.7vw, 38px)/1.24 var(--font-display); margin: 0; letter-spacing: -.035em; overflow-wrap: anywhere; text-wrap: balance; }
 .top-actions, .date-jump { display: flex; align-items: center; gap: 9px; }
 .mobile-toolbar-toggle { display: none; }
 .save-mode { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font: 9px "DM Mono"; }
@@ -95,7 +95,9 @@ button { cursor: pointer; }
 .progress-orbit::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--ink); border: 1px solid rgba(255,255,255,.08); }
 .progress-orbit div { position: relative; z-index: 1; text-align: center; }
 .progress-orbit strong, .progress-orbit span { display: block; }
-.progress-orbit strong { font: 600 24px "DM Mono"; letter-spacing: -.08em; }
+.progress-orbit strong { display: flex; align-items: baseline; justify-content: center; gap: 5px; font-family: var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
+.progress-orbit strong b { font-size: 31px; font-weight: 650; line-height: 1; }
+.progress-orbit strong small { color: rgba(255,255,255,.52); font-size: 14px; font-weight: 550; letter-spacing: -.02em; }
 .progress-orbit span { color: rgba(255,255,255,.44); font-size: 10px; margin-top: 5px; }
 .mood-card { padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; }
@@ -106,6 +108,9 @@ button { cursor: pointer; }
 .mood-options button span { display: block; font-size: 21px; margin-bottom: 7px; }
 .mood-options button.selected { background: var(--sage-light); border-color: var(--sage); }
 .mood-options button:active { transform: scale(.96); }
+.mood-reason-summary { width: 100%; margin: -12px 0 18px; padding: 9px 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--sage) 22%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--sage-light) 46%, transparent); color: var(--muted); font-size: 10px; line-height: 1.45; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.mood-reason-summary[hidden] { display: none; }
+.drawer-mood-reason { margin: 10px 0 0; }
 .mood-note { font: 11px/1.7 "Noto Serif SC"; color: var(--muted); margin: 0; }
 .habits-heading { margin: 44px 0 17px; }
 .habits-heading h2 { font-size: 24px; }
@@ -189,7 +194,7 @@ html.habit-reordering::view-transition-new(root) { animation: none; mix-blend-mo
 .weekly-writing-heading { display: flex; justify-content: space-between; gap: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .weekly-writing-heading h3 { margin: 7px 0 4px; font: 600 20px "Noto Serif SC"; }.weekly-writing-heading p { margin: 0; color: var(--muted); font-size: 10px; }
 .weekly-writing-heading > div:last-child { text-align: right; }.weekly-writing-heading > div:last-child strong { display: block; margin-top: 8px; font: 9px "DM Mono"; color: var(--muted); }
-.weekly-writing-panel textarea { width: 100%; min-height: 250px; padding: 25px 2px; border: 0; outline: none; resize: vertical; background: transparent; font: 13px/2 "Noto Serif SC"; }
+.weekly-writing-panel textarea { width: 100%; min-height: 250px; padding: 25px 2px; overflow-y: hidden; border: 0; outline: none; resize: none; background: transparent; font: 13px/2 "Noto Serif SC"; }
 .weekly-writing-panel footer { display: flex; justify-content: space-between; gap: 12px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font: 9px "DM Mono"; }
 .calendar-embedded { margin-top: 58px; padding-top: 43px; border-top: 1px solid var(--line); }
 .calendar-embedded .calendar-toolbar p { margin: 8px 0 0; color: var(--muted); font-size: 11px; }
@@ -310,6 +315,17 @@ dialog form > footer { justify-content: flex-end; gap: 8px; }
 .danger-button { border: 1px solid rgba(155,62,49,.28); border-radius: 10px; background: rgba(155,62,49,.06); color: #8f3e34; padding: 10px 14px; cursor: pointer; font: inherit; transition: 160ms ease; }
 .danger-button:hover { background: #8f3e34; color: #fff; }
 .danger-button[hidden] { display: none; }
+.mood-reason-dialog { width: min(540px, calc(100vw - 32px)); overflow: hidden; }
+.mood-reason-body { padding: 24px 26px 26px; display: grid; gap: 17px; }
+.mood-reason-selection { display: flex; align-items: center; gap: 13px; }
+.mood-reason-selection > span { width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 16px; background: linear-gradient(145deg, color-mix(in srgb, var(--sage-light) 78%, white), var(--card)); color: var(--sage); font-size: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.9); }
+.mood-reason-selection > div { display: grid; gap: 4px; }
+.mood-reason-selection strong { font-size: 15px; }
+.mood-reason-selection small { color: var(--muted); font: 9px "DM Mono"; }
+.mood-reason-body > p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+.mood-reason-body label { display: grid; gap: 8px; color: var(--muted); font-size: 10px; }
+.mood-reason-body textarea { width: 100%; min-height: 150px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 18px; outline: none; resize: vertical; background: rgba(255,255,255,.52); font: 12px/1.75 var(--font-body); transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; }
+.mood-reason-body textarea:focus { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); background: var(--card); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 9%, transparent); }
 .reminder-dialog-content > header, .reminder-dialog-content > footer { padding: 23px 26px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .reminder-dialog-content > header { border-bottom: 1px solid var(--line); }
 .reminder-dialog-content > footer { border-top: 1px solid var(--line); }
@@ -673,6 +689,10 @@ html[data-theme="dark"] .week-select { color: var(--ink); background: var(--surf
 html[data-theme="dark"] input::placeholder,
 html[data-theme="dark"] textarea::placeholder { color: #858994; opacity: 1; }
 html[data-theme="dark"] .mood-options button.selected { color: #ddf5e6; background: #30483c; border-color: rgba(155,194,171,.58); }
+html[data-theme="dark"] .mood-reason-summary { color: #b7bdc8; background: rgba(155,194,171,.07); border-color: rgba(155,194,171,.2); }
+html[data-theme="dark"] .mood-reason-selection > span { color: #b6dcc3; background: var(--surface-2); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+html[data-theme="dark"] .mood-reason-body textarea { color: var(--ink); background: var(--surface-2); border-color: var(--edge-soft); }
+html[data-theme="dark"] .mood-reason-body textarea:focus { background: var(--surface-3); border-color: rgba(125,183,255,.48); box-shadow: 0 0 0 4px rgba(125,183,255,.08); }
 html[data-theme="dark"] .habit-icon { color: color-mix(in srgb, var(--habit-color) 72%, white); background: color-mix(in srgb, var(--habit-color) 18%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--habit-color) 28%, transparent); }
 html[data-theme="dark"] .habit-card::after { background: color-mix(in srgb, var(--habit-color) 28%, transparent); opacity: .62; }
 html[data-theme="dark"] .habit-card.completed,
@@ -827,6 +847,10 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
   .weekly-minimal-image { min-height: 205px; }
   .weekly-writing-panel { min-height: 330px; padding: 22px; }
   .weekly-writing-panel textarea { min-height: 210px; padding: 18px 2px; }
+  .mood-reason-dialog { width: calc(100vw - 20px); border-radius: 24px; }
+  .mood-reason-dialog form > header, .mood-reason-dialog form > footer { padding-inline: 18px; }
+  .mood-reason-body { padding: 20px 18px 22px; }
+  .mood-reason-body textarea { min-height: 170px; }
   .reflection-actions { align-items: flex-end; flex-direction: column-reverse; }
   .monthly-reflection-panel { padding: 21px; }
   .monthly-reflection-panel textarea { min-height: 300px; }
