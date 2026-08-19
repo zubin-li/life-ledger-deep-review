@@ -1,14 +1,14 @@
-const CACHE_NAME = "life-ledger-pwa-0.3.0-focus-timer";
+const CACHE_NAME = "life-ledger-pwa-0.3.1-focus-timer-inline";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.3.0",
-  "./app.js?v=0.3.0",
-  "./focus-timer.js?v=0.3.0",
-  "./deployment-mode.js?v=0.3.0",
-  "./cloudbase-sync.js?v=0.3.0",
+  "./styles.css?v=0.3.1",
+  "./app.js?v=0.3.1",
+  "./focus-timer.js?v=0.3.1",
+  "./deployment-mode.js?v=0.3.1",
+  "./cloudbase-sync.js?v=0.3.1",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.3.0",
+  "./_init_tcb-env.js?v=0.3.1",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",

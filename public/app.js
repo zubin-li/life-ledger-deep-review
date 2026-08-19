@@ -117,11 +117,11 @@ const i18n = {
       body: "花几分钟完成今天的打卡、心情与复盘。", testBody: "通知工作正常。今晚也记得回来看看自己的脚步。", close: "关闭每日提醒设置", short: "提醒",
     },
     focus: {
-      kicker: "专注", overviewTitle: "专注时间", overviewHint: "只选一件事，把注意力完整地交给它。", open: "开始专注", openActive: "查看计时",
+      kicker: "专注", overviewTitle: "专注时间", overviewHint: "只选一件事，把注意力完整地交给它。", open: "开始专注", openActive: "查看计时", settings: "设置", presetSummary: "{focus} 分钟专注 · {break} 分钟休息", readyShort: "准备开始",
       todayMinutes: "今日分钟", sessions: "次专注", weekMinutes: "本周分钟", weekChart: "本周专注时间", dialogKicker: "专注计时", dialogTitle: "把这一段时间，用在重要的事上。",
       phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", customLabel: "或为这次专注命名", customPlaceholder: "什么值得你现在专注？",
       custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
-      caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。",
+      caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewWeek: "选择一周", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这一周还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", monthTotal: "{month} · 共 {minutes} 分钟",
     },
     foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
     calendar: {
@@ -399,11 +399,11 @@ const i18n = {
       body: "Take a few minutes to complete today's habits, mood, and reflection.", testBody: "Notifications are working. Come back tonight and review the path you made.", close: "Close daily reminder settings", short: "Reminder",
     },
     focus: {
-      kicker: "FOCUS", overviewTitle: "Focus Time", overviewHint: "Choose one thing. Give it your full attention.", open: "Start focus", openActive: "View timer",
+      kicker: "FOCUS", overviewTitle: "Focus Time", overviewHint: "Choose one thing. Give it your full attention.", open: "Start focus", openActive: "View timer", settings: "Settings", presetSummary: "{focus} min focus · {break} min break", readyShort: "Ready",
       todayMinutes: "min today", sessions: "sessions", weekMinutes: "min this week", weekChart: "Focus time this week", dialogKicker: "FOCUS TIMER", dialogTitle: "Make this time count.",
       phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", customLabel: "Or name this session", customPlaceholder: "What deserves your attention?",
       custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
-      caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Open focus", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.",
+      caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Focus session", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewWeek: "Choose week", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded this week.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", monthTotal: "{month} · {minutes} min total",
     },
     foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
     calendar: {
@@ -681,11 +681,11 @@ const i18n = {
       body: "Nimm dir ein paar Minuten für Gewohnheiten, Stimmung und Tagesreflexion.", testBody: "Mitteilungen funktionieren. Kehre heute Abend zurück und betrachte deinen Weg.", close: "Einstellungen für tägliche Erinnerung schließen", short: "Erinnerung",
     },
     focus: {
-      kicker: "FOKUS", overviewTitle: "Fokuszeit", overviewHint: "Wähle eine Sache und schenke ihr deine volle Aufmerksamkeit.", open: "Fokus starten", openActive: "Timer öffnen",
+      kicker: "FOKUS", overviewTitle: "Fokuszeit", overviewHint: "Wähle eine Sache und schenke ihr deine volle Aufmerksamkeit.", open: "Fokus starten", openActive: "Timer öffnen", settings: "Einstellungen", presetSummary: "{focus} Min. Fokus · {break} Min. Pause", readyShort: "Bereit",
       todayMinutes: "Min. heute", sessions: "Einheiten", weekMinutes: "Min. diese Woche", weekChart: "Fokuszeit dieser Woche", dialogKicker: "FOKUS-TIMER", dialogTitle: "Nutze diese Zeit für das Wesentliche.",
       phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", customLabel: "Oder Fokus benennen", customPlaceholder: "Was verdient jetzt deine Aufmerksamkeit?",
       custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
-      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.",
+      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewWeek: "Woche wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diese Woche gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", monthTotal: "{month} · insgesamt {minutes} Min.",
     },
     foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
     calendar: {
@@ -1171,11 +1171,6 @@ function applyLanguage() {
   setText(".monthly-reflection-panel h3", tr("review.reflection"));
   setText(".monthly-reflection-panel .autosave", tr("week.autosave"));
   setPlaceholder("#reviewText", tr("review.placeholder"));
-  setText(".weekly-output-archive .kicker", languageText("本月各周", "WEEKS IN THIS MONTH", "WOCHEN DIESES MONATS"));
-  setText(".weekly-output-archive h3", tr("review.weeksTitle"));
-  setText("#reviewWeekSelectLabel", tr("review.weekSelectLabel"));
-  setText(".week-review-columns section:first-child h4", tr("review.goalsTitle"));
-  setText(".week-review-columns section:last-child h4", tr("review.notesTitle"));
   setText(".settings-intro .kicker", languageText("习惯", "HABITS", "GEWOHNHEITEN"));
   setText("#addHabitButton", tr("habits.add"));
   applyDialogLanguage();
@@ -1238,11 +1233,9 @@ function applyFocusLanguage() {
   setText("#focusOverviewKicker", tr("focus.kicker"));
   setText("#focusOverviewTitle", tr("focus.overviewTitle"));
   setText("#focusOverviewHint", tr("focus.overviewHint"));
-  setText("#focusOpenLabel", focusTimer?.snapshot() ? tr("focus.openActive") : tr("focus.open"));
-  setText("#focusTodayMinutesLabel", tr("focus.todayMinutes"));
-  setText("#focusTodaySessionsLabel", tr("focus.sessions"));
-  setText("#focusWeekMinutesLabel", tr("focus.weekMinutes"));
-  setAria("#focusWeekBars", tr("focus.weekChart"));
+  setText("#focusSettingsLabel", tr("focus.settings"));
+  setAria("#openFocusTimer", tr("focus.settings"));
+  setAria("#focusQuickPresets", tr("focus.presetSummary", { focus: 25, break: 5 }));
   setText("#focusDialogKicker", tr("focus.dialogKicker"));
   setText("#focusDialogTitle", tr("focus.dialogTitle"));
   setText("#focusGoalLabel", tr("focus.goalLabel"));
@@ -1259,8 +1252,13 @@ function applyFocusLanguage() {
   setText("#focusSkipBreak", tr("focus.skipBreak"));
   setText("#focusCaveat", tr("focus.caveat"));
   setAria(".close-focus-dialog", tr("focus.close"));
-  setAria("#focusPill", tr("focus.openActive"));
+  setText("#focusReviewKicker", tr("focus.reviewKicker"));
+  setText("#focusReviewTitle", tr("focus.reviewTitle"));
+  setText("#focusReviewWeekLabel", tr("focus.reviewWeek"));
+  setText("#focusReviewUnit", tr("focus.reviewUnit"));
+  setAria("#focusReviewBars", tr("focus.reviewChart"));
   renderFocusGoalOptions();
+  renderFocusOverview();
   renderFocusTimer(focusTimer?.snapshot() || null);
 }
 function applyCloudBaseLanguage() {
@@ -1990,7 +1988,7 @@ function renderReview() {
   }).join("");
   renderPeriodicGoals(monthDates);
   $("#reviewText").value = state.reviews[key] || "";
-  renderWeekReview(year, month);
+  renderFocusReview(year, month);
 }
 
 function periodDateGroups(dates, frequency) {
@@ -2004,26 +2002,32 @@ function periodDateGroups(dates, frequency) {
   });
   return [...groups.values()];
 }
-function renderWeekReview(year, month) {
+function renderFocusReview(year, month) {
   const weeks = new Set();
   for (let day = 1; day <= new Date(year, month + 1, 0).getDate(); day++) weeks.add(isoWeekKey(new Date(year, month, day, 12)));
   const keys = [...weeks];
   if (!keys.includes(selectedReviewWeek)) selectedReviewWeek = keys.includes(isoWeekKey(new Date())) ? isoWeekKey(new Date()) : keys[0];
-  $("#reviewWeekSelect").innerHTML = keys.map(key => {
-    const goals = state.weeklyGoals[key] || [];
-    const output = (state.weeklyOutputs[key] || "").trim();
-    const done = goals.filter(goal => goal.done).length;
-    const meta = goals.length
-      ? languageText(`${done}/${goals.length} 项`, `${done}/${goals.length} goals`, `${done}/${goals.length} Ziele`)
-      : languageText("无目标", "No goals", "Keine Ziele");
-    return `<option value="${key}" ${key === selectedReviewWeek ? "selected" : ""}>${formatWeekRangeInMonth(key, year, month)} · ${meta}${output ? " · ✓" : ""}</option>`;
-  }).join("");
-  const goals = state.weeklyGoals[selectedReviewWeek] || [];
-  const output = state.weeklyOutputs[selectedReviewWeek] || "";
-  $("#reviewWeekLabel").textContent = formatWeekRangeInMonth(selectedReviewWeek, year, month);
-  $("#reviewWeekRange").textContent = "";
-  $("#reviewWeekGoals").innerHTML = goals.length ? goals.map(goal => `<div class="review-goal-item ${goal.done ? "done" : ""}"><i>${goal.done ? "✓" : ""}</i><span>${escapeHtml(goal.text)}</span></div>`).join("") : `<p class="weekly-goal-empty">${tr("review.noWeekGoals")}</p>`;
-  $("#reviewWeekOutput").textContent = output.trim() || tr("review.noWeekOutput");
+  $("#focusReviewWeekSelect").innerHTML = keys.map(key => `<option value="${key}" ${key === selectedReviewWeek ? "selected" : ""}>${formatWeekRangeInMonth(key, year, month)}</option>`).join("");
+  const { monday, sunday } = weekDatesFromKey(selectedReviewWeek);
+  const daily = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    const minutes = focusSessionsBetween(isoDate(date), isoDate(date)).reduce((total, session) => total + focusSessionMinutes(session), 0);
+    return { date, minutes };
+  });
+  const total = daily.reduce((sum, item) => sum + item.minutes, 0);
+  const previous = weekDatesFromKey(shiftWeekKey(selectedReviewWeek, -1));
+  const previousTotal = focusSessionsBetween(isoDate(previous.monday), isoDate(previous.sunday)).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+  const difference = Math.round(total - previousTotal);
+  const monthStart = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+  const monthEnd = isoDate(new Date(year, month + 1, 0, 12));
+  const monthTotal = focusSessionsBetween(monthStart, monthEnd).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+  const max = Math.max(25, ...daily.map(item => item.minutes));
+  setText("#focusReviewRange", formatWeekRange(selectedReviewWeek));
+  setText("#focusReviewTotal", Math.round(total));
+  setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPrevious", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPrevious", { minutes: Math.abs(difference) }) : tr("focus.sameAsPrevious"));
+  setText("#focusReviewMonthTotal", tr("focus.monthTotal", { month: currentLang === "zh" ? `${month + 1}月` : monthName(month), minutes: Math.round(monthTotal) }));
+  $("#focusReviewBars").innerHTML = daily.map(item => `<span class="focus-review-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.minutes ? Math.round(item.minutes) : ""}</b><i style="height:${Math.max(4, item.minutes / max * 100)}%"></i><small>${escapeHtml(weekdayShortName(item.date.getDay()))}</small></span>`).join("");
 }
 function renderPeriodicGoals(dates) {
   const finalDate = dates[dates.length - 1];
@@ -2815,22 +2819,12 @@ function focusSessionsBetween(start, end) {
 }
 
 function renderFocusOverview() {
-  const today = isoDate(new Date());
-  const { monday, sunday } = weekDatesFromKey(isoWeekKey(new Date()));
-  const todaySessions = focusSessionsBetween(today, today);
-  const weekSessions = focusSessionsBetween(isoDate(monday), isoDate(sunday));
-  const sum = sessions => sessions.reduce((total, session) => total + focusSessionMinutes(session), 0);
-  const rounded = value => Math.round(value);
-  setText("#focusTodayMinutes", rounded(sum(todaySessions)));
-  setText("#focusTodaySessions", todaySessions.length);
-  setText("#focusWeekMinutes", rounded(sum(weekSessions)));
-  const dailyMinutes = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(monday);
-    date.setDate(monday.getDate() + index);
-    return { date, minutes: sum(focusSessionsBetween(isoDate(date), isoDate(date))) };
+  const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
+  setText("#focusPresetSummary", tr("focus.presetSummary", { focus: settings.focusMinutes, break: settings.breakMinutes }));
+  $$('[data-quick-focus-preset]').forEach(button => {
+    button.classList.toggle("active", button.dataset.quickFocusPreset === settings.preset);
+    button.disabled = Boolean(focusTimer?.snapshot());
   });
-  const max = Math.max(25, ...dailyMinutes.map(item => item.minutes));
-  $("#focusWeekBars").innerHTML = dailyMinutes.map(item => `<span class="focus-week-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} min"><i style="height:${Math.max(5, item.minutes / max * 100)}%"></i><span>${escapeHtml(weekdayShortName(item.date.getDay()))}</span></span>`).join("");
 }
 
 function formatFocusTime(milliseconds) {
@@ -2867,7 +2861,18 @@ function selectFocusPreset(preset, options = {}) {
     const values = focusPresetValues(value);
     state.focusSettings = { ...state.focusSettings, preset: value, ...values };
     saveState();
+    renderFocusOverview();
+    renderFocusTimer(focusTimer?.snapshot() || null);
   }
+}
+
+function selectQuickFocusPreset(preset) {
+  if (focusTimer?.snapshot()) return;
+  const values = focusPresetValues(preset);
+  state.focusSettings = { ...seed.focusSettings, ...(state.focusSettings || {}), preset, ...values };
+  saveState();
+  renderFocusOverview();
+  renderFocusTimer(null);
 }
 
 async function acquireFocusWakeLock() {
@@ -2925,6 +2930,7 @@ function recordFocusSession(session) {
   state.focusSessions = [...(state.focusSessions || []), session];
   saveState();
   renderFocusOverview();
+  renderReview();
 }
 
 function handleFocusComplete(session) {
@@ -2970,17 +2976,20 @@ function renderFocusTimer(snapshot) {
   $("#focusSkipBreak").hidden = !isBreak;
   setText("#focusPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
-  const pill = $("#focusPill");
-  pill.hidden = !snapshot;
+  $("#focusInlineTimer")?.style.setProperty("--focus-inline-progress", progress);
+  setText("#focusInlineTime", formatFocusTime(remaining));
+  setText("#focusInlinePhase", snapshot ? (isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus")) : tr("focus.readyShort"));
+  setText("#focusInlineLabel", snapshot?.label || tr("focus.untitled"));
+  setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
+  $("#focusQuickFinish").hidden = !isFocus;
+  $("#focusQuickSkip").hidden = !isBreak;
+  $("#focusQuickPrimary").disabled = isBreak && !readyBreak && !running && !paused;
+  renderFocusOverview();
   if (snapshot) {
-    setText("#focusPillTime", formatFocusTime(remaining));
-    setText("#focusPillLabel", snapshot.label || (isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus")));
-    $(".focus-pill-ring")?.style.setProperty("--pill-progress", progress * 100);
     document.title = `${formatFocusTime(remaining)} · ${tr("title")}`;
   } else {
     document.title = tr("title");
   }
-  setText("#focusOpenLabel", snapshot ? tr("focus.openActive") : tr("focus.open"));
 }
 
 function openFocusTimerDialog(linkedGoalId = "") {
@@ -3018,6 +3027,19 @@ async function startFocusSession() {
   acquireFocusWakeLock();
 }
 
+async function startQuickFocusSession() {
+  const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
+  if (settings.notify) requestNotificationPermission();
+  focusTimer.start({
+    date: isoDate(new Date()),
+    label: tr("focus.untitled"),
+    preset: settings.preset,
+    durationMinutes: settings.focusMinutes,
+    breakMinutes: settings.breakMinutes,
+  });
+  acquireFocusWakeLock();
+}
+
 function handleFocusPrimary() {
   const snapshot = focusTimer?.snapshot();
   if (!snapshot) { startFocusSession(); return; }
@@ -3033,6 +3055,14 @@ function handleFocusPrimary() {
     focusTimer.resume();
     acquireFocusWakeLock();
   }
+}
+
+function handleFocusQuickPrimary() {
+  if (!focusTimer?.snapshot()) {
+    startQuickFocusSession();
+    return;
+  }
+  handleFocusPrimary();
 }
 
 function initFocusTimer() {
@@ -3091,7 +3121,13 @@ function bindEvents() {
   $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
   $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
   $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
-  $("#focusPill").addEventListener("click", () => openFocusTimerDialog());
+  $$('[data-quick-focus-preset]').forEach(button => button.addEventListener("click", () => selectQuickFocusPreset(button.dataset.quickFocusPreset)));
+  $("#focusQuickPrimary").addEventListener("click", handleFocusQuickPrimary);
+  $("#focusQuickFinish").addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
+  $("#focusQuickSkip").addEventListener("click", () => {
+    focusTimer?.skipBreak();
+    releaseFocusWakeLock();
+  });
   $$(".close-focus-dialog").forEach(button => button.addEventListener("click", () => $("#focusDialog").close()));
   $("#focusDialog").addEventListener("cancel", event => {
     event.preventDefault();
@@ -3203,7 +3239,7 @@ function bindEvents() {
     $$("[data-analytics-chart]").forEach(item => item.classList.toggle("active", item === button));
     renderReview();
   }));
-  $("#reviewWeekSelect").addEventListener("change", event => {
+  $("#focusReviewWeekSelect").addEventListener("change", event => {
     selectedReviewWeek = event.target.value;
     renderReview();
   });

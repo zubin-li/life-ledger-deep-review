@@ -250,7 +250,6 @@ html.habit-reordering::view-transition-new(root) { animation: none; mix-blend-mo
 .week-result.pass { color: var(--sage); font-weight: 700; }
 .review-draft { margin-top: 15px; }
 .review-draft textarea { width: 100%; min-height: 220px; border: 0; resize: vertical; outline: none; background: transparent; line-height: 1.9; font-size: 13px; }
-.weekly-output-archive { margin-top: 15px; }
 .week-select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; background: var(--paper); font: 10px var(--font-body); outline: none; }
 .week-review-meta { display: flex; align-items: baseline; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .week-review-meta strong { font: 600 18px "Noto Serif SC"; }.week-review-meta span { color: var(--muted); font: 9px var(--font-body); }
@@ -508,7 +507,7 @@ dialog { border-radius: 28px; }
   margin-top: 22px;
   padding: 24px 26px;
   display: grid;
-  grid-template-columns: minmax(220px, .72fr) minmax(360px, 1.28fr);
+  grid-template-columns: minmax(250px, .8fr) minmax(360px, 1.2fr);
   align-items: center;
   gap: 28px;
   overflow: hidden;
@@ -522,28 +521,24 @@ dialog { border-radius: 28px; }
 .focus-overview-copy { position: relative; z-index: 1; }
 .focus-overview-copy h2 { margin: 7px 0 5px; font: 700 22px/1.2 var(--font-display); letter-spacing: -.025em; }
 .focus-overview-copy p { max-width: 330px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
-.focus-open-button { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; }
-.focus-open-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.focus-overview-data { position: relative; z-index: 1; min-width: 0; }
-.focus-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.focus-metrics > span { min-width: 0; padding: 12px 13px; border: 1px solid rgba(255,255,255,.62); border-radius: 16px; background: rgba(255,255,255,.45); }
-.focus-metrics strong, .focus-metrics small { display: block; }
-.focus-metrics strong { font: 700 25px/1 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
-.focus-metrics small { margin-top: 6px; overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
-.focus-week-bars { height: 58px; margin-top: 13px; padding: 0 7px; display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 7px; }
-.focus-week-day { height: 100%; display: grid; grid-template-rows: 1fr auto; align-items: end; gap: 5px; }
-.focus-week-day i { min-height: 3px; width: 100%; border-radius: 999px; background: color-mix(in srgb, var(--sage) 78%, white); transform-origin: bottom; animation: focusBarIn 360ms var(--ease-enter) both; }
-.focus-week-day span { color: var(--muted); font-size: 7px; text-align: center; }
-@keyframes focusBarIn { from { transform: scaleY(.05); opacity: .3; } }
-
-.focus-pill { position: fixed; z-index: 45; right: max(22px, env(safe-area-inset-right)); bottom: max(22px, env(safe-area-inset-bottom)); min-width: 140px; min-height: 54px; padding: 8px 14px 8px 9px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,.18); border-radius: 20px; background: rgba(29,29,31,.92); color: #fff; box-shadow: 0 16px 44px rgba(0,0,0,.25); backdrop-filter: blur(20px) saturate(150%); transition: transform 180ms var(--ease-enter), opacity 180ms ease; }
-.focus-pill[hidden] { display: none; }
-.focus-pill:active { transform: scale(.97); }
-.focus-pill > span:last-child { min-width: 0; display: grid; text-align: left; }
-.focus-pill strong { font: 650 15px/1.15 var(--font-display); font-variant-numeric: tabular-nums; }
-.focus-pill small { max-width: 92px; margin-top: 3px; overflow: hidden; color: rgba(255,255,255,.58); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
-.focus-pill-ring { --pill-progress: 0; width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(#9bc2ab calc(var(--pill-progress) * 1%), rgba(255,255,255,.12) 0); }
-.focus-pill-ring i { width: 28px; height: 28px; border-radius: inherit; background: #252628; }
+.focus-quick-settings { margin-top: 17px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.focus-quick-settings > span { color: var(--muted); font-size: 8px; }
+.focus-quick-presets { display: inline-flex; padding: 3px; border-radius: 11px; background: rgba(255,255,255,.48); box-shadow: inset 0 0 0 1px var(--line); }
+.focus-quick-presets button { min-width: 42px; min-height: 31px; padding: 5px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease; }
+.focus-quick-presets button.active { color: var(--ink); background: rgba(255,255,255,.88); box-shadow: 0 3px 10px rgba(29,29,31,.08); }
+.focus-quick-presets button:disabled { opacity: .42; cursor: default; }
+.focus-settings-button { min-height: 34px; padding: 7px 10px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.36); color: var(--muted); font-size: 8px; font-weight: 700; }
+.focus-settings-button svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.focus-inline-timer { position: relative; z-index: 1; min-width: 0; min-height: 132px; padding: 18px 20px; display: grid; grid-template-columns: 82px minmax(120px, 1fr) minmax(120px, auto); align-items: center; gap: 17px; border: 1px solid rgba(255,255,255,.68); border-radius: 22px; background: rgba(255,255,255,.48); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.focus-inline-ring { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(#6f8f7d calc(var(--focus-inline-progress) * 100%), rgba(104,114,92,.12) 0); }
+.focus-inline-ring i { width: 64px; height: 64px; border-radius: inherit; background: color-mix(in srgb, white 82%, var(--sage-light)); box-shadow: inset 0 1px 0 rgba(255,255,255,.82); }
+.focus-inline-copy { min-width: 0; display: grid; }
+.focus-inline-copy > span { color: var(--sage); font: 600 8px var(--font-body); letter-spacing: .15em; text-transform: uppercase; }
+.focus-inline-copy strong { margin: 5px 0 4px; font: 680 clamp(30px, 3.5vw, 44px)/1 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.05em; }
+.focus-inline-copy small { overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.focus-inline-actions { display: grid; gap: 7px; justify-items: stretch; }
+.focus-inline-actions .primary-button, .focus-inline-actions .secondary-button { min-width: 118px; }
+.focus-inline-actions .text-button { min-height: 30px; }
 
 .focus-dialog { width: min(820px, calc(100vw - 28px)); max-height: min(900px, calc(100vh - 28px)); padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.72); border-radius: 30px; background: rgba(248,248,250,.97); box-shadow: 0 34px 110px rgba(29,29,31,.27); backdrop-filter: blur(34px) saturate(150%); }
 .focus-dialog::backdrop { background: rgba(15,18,20,.43); backdrop-filter: blur(7px); }
@@ -586,12 +581,17 @@ dialog { border-radius: 28px; }
 .weekly-goal-focus:hover { opacity: 1; background: var(--sage-light); }
 
 html[data-theme="dark"] .focus-overview-card { border-color: var(--edge-soft); background: linear-gradient(118deg, rgba(76,112,91,.14), rgba(74,101,143,.12)), var(--surface-1); box-shadow: 0 18px 52px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.055); }
-html[data-theme="dark"] .focus-metrics > span,
+html[data-theme="dark"] .focus-inline-timer,
+html[data-theme="dark"] .focus-quick-presets,
+html[data-theme="dark"] .focus-settings-button,
 html[data-theme="dark"] .focus-preset-group button,
 html[data-theme="dark"] .focus-options label,
 html[data-theme="dark"] .focus-setup select,
 html[data-theme="dark"] .focus-setup input { color: var(--ink); border-color: var(--edge-soft); background: var(--surface-2); }
 html[data-theme="dark"] .focus-preset-group button.active { color: #e3f3e8; border-color: rgba(155,194,171,.45); background: #30443a; }
+html[data-theme="dark"] .focus-quick-presets button.active { color: #fff; background: var(--surface-3); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 10px rgba(0,0,0,.22); }
+html[data-theme="dark"] .focus-inline-ring { background: conic-gradient(#9bc2ab calc(var(--focus-inline-progress) * 100%), rgba(255,255,255,.1) 0); }
+html[data-theme="dark"] .focus-inline-ring i { background: var(--surface-1); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
 html[data-theme="dark"] .focus-clock { background: radial-gradient(circle, rgba(255,255,255,.035), rgba(125,183,255,.045) 59%, transparent 60%); }
 html[data-theme="dark"] .focus-clock::before { background: radial-gradient(circle at 35% 28%, #30343a, #24282d); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 18px 44px rgba(0,0,0,.26); }
 html[data-theme="dark"] .focus-clock-track { stroke: rgba(255,255,255,.1); }
@@ -599,11 +599,15 @@ html[data-theme="dark"] .focus-clock-progress { stroke: #9bc2ab; }
 
 @media (max-width: 760px) {
   .focus-overview-card { margin-top: 18px; padding: 21px; grid-template-columns: 1fr; gap: 18px; border-radius: 22px; }
-  .focus-overview-copy { padding-right: 52px; }
-  .focus-open-button { width: 100%; justify-content: center; }
-  .focus-metrics > span { padding: 11px; }
-  .focus-metrics strong { font-size: 22px; }
-  .focus-pill { right: 14px; bottom: calc(86px + env(safe-area-inset-bottom)); min-width: 126px; min-height: 50px; }
+  .focus-overview-copy { padding-right: 0; }
+  .focus-inline-timer { min-height: 0; padding: 16px; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; }
+  .focus-inline-ring { width: 60px; height: 60px; }
+  .focus-inline-ring i { width: 50px; height: 50px; }
+  .focus-inline-copy strong { font-size: 31px; }
+  .focus-inline-actions { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) auto; width: 100%; }
+  .focus-inline-actions .primary-button { min-width: 0; }
+  .focus-inline-actions .secondary-button { min-width: 96px; }
+  .focus-inline-actions .text-button { grid-column: 1 / -1; }
   .focus-dialog { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); border-radius: 26px; }
   .focus-dialog-content > header { padding: 18px; }
   .focus-dialog-content > header h2 { font-size: 17px; }
@@ -615,7 +619,7 @@ html[data-theme="dark"] .focus-clock-progress { stroke: #9bc2ab; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .focus-week-day i, .focus-clock.focus-complete { animation: none; }
+  .focus-review-day i, .focus-clock.focus-complete { animation: none; }
   .focus-clock-progress { transition: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1139,6 +1143,22 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .review-week-select span { color: var(--muted); font: 500 8px var(--font-body); letter-spacing: .12em; text-transform: uppercase; }
 .review-week-select select { width: 100%; min-height: 36px; padding: 7px 30px 7px 10px; border: 1px solid var(--line); border-radius: 11px; outline: none; background: color-mix(in srgb, var(--card) 70%, transparent); font-size: 10px; font-weight: 650; }
 
+.focus-review-panel { margin-top: 16px; overflow: hidden; }
+.focus-review-content { min-height: 230px; display: grid; grid-template-columns: minmax(180px, .48fr) minmax(360px, 1.52fr); align-items: end; gap: 28px; padding-top: 20px; }
+.focus-review-summary { align-self: stretch; padding: 20px; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--line); border-radius: 19px; background: linear-gradient(145deg, color-mix(in srgb, var(--sage-light) 54%, transparent), transparent); }
+.focus-review-summary > span { color: var(--muted); font-size: 8px; letter-spacing: .08em; }
+.focus-review-summary > strong { display: flex; align-items: baseline; gap: 7px; margin: 18px 0 10px; }
+.focus-review-summary > strong b { font: 700 clamp(42px, 5vw, 62px)/.9 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.055em; }
+.focus-review-summary > strong small { color: var(--muted); font-size: 10px; font-weight: 600; }
+.focus-review-summary p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.focus-review-chart { height: 210px; padding: 10px 8px 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: end; gap: clamp(7px, 1.4vw, 15px); border-bottom: 1px solid var(--line); background: repeating-linear-gradient(to bottom, transparent 0, transparent 51px, color-mix(in srgb, var(--line) 72%, transparent) 52px); }
+.focus-review-day { height: 100%; min-width: 0; display: grid; grid-template-rows: 18px minmax(0, 1fr) 24px; align-items: end; gap: 4px; text-align: center; }
+.focus-review-day b { color: var(--muted); font-size: 8px; font-weight: 650; }
+.focus-review-day i { width: min(28px, 76%); min-height: 4px; justify-self: center; border-radius: 8px 8px 3px 3px; background: linear-gradient(180deg, #8eab98, #667a6d); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); transform-origin: bottom; animation: focusReviewBarIn 420ms var(--ease-enter) both; }
+.focus-review-day small { color: var(--muted); font-size: 8px; }
+.focus-review-footer { margin-top: 15px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 8px; text-align: right; }
+@keyframes focusReviewBarIn { from { opacity: .3; transform: scaleY(.04); } }
+
 html[data-theme="dark"] .daily-journal-card { background: linear-gradient(145deg, rgba(125,183,255,.07), transparent 52%), var(--surface-1); }
 html[data-theme="dark"] .day-roll-item.active { background: #79b8ff; color: #101318; box-shadow: 0 8px 20px rgba(47,121,216,.24); }
 html[data-theme="dark"] .drawer-habit-toggle,
@@ -1147,6 +1167,9 @@ html[data-theme="dark"] .analytics-metric-chip { border-color: var(--edge-soft);
 html[data-theme="dark"] .analytics-metric-chip.active { color: #fff; background: color-mix(in srgb, var(--metric-color) 11%, var(--surface-2)); }
 html[data-theme="dark"] .analytics-series-summary > div { border-color: var(--edge-soft); background: color-mix(in srgb, var(--series-color) 7%, var(--surface-2)); }
 html[data-theme="dark"] .analytics-point { fill: var(--surface-2); }
+html[data-theme="dark"] .focus-review-summary { border-color: var(--edge-soft); background: linear-gradient(145deg, rgba(155,194,171,.09), transparent); }
+html[data-theme="dark"] .focus-review-chart { border-color: var(--edge-soft); background: repeating-linear-gradient(to bottom, transparent 0, transparent 51px, rgba(255,255,255,.055) 52px); }
+html[data-theme="dark"] .focus-review-day i { background: linear-gradient(180deg, #a5cbb3, #668874); }
 html[data-theme="dark"] .pointer-aura { background: radial-gradient(250px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(125,183,255,.07), transparent 66%); }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1164,7 +1187,10 @@ html[data-theme="dark"] .pointer-aura { background: radial-gradient(250px circle
   .analytics-dashboard-controls .chart-mode-switch { justify-self: start; }
   .analytics-metric-chip { max-width: 128px; }
   .review-week-select { min-width: 0; width: 100%; }
-  .weekly-output-archive > .panel-heading { align-items: stretch; flex-direction: column; gap: 14px; }
+  .focus-review-panel > .panel-heading { align-items: stretch; flex-direction: column; gap: 14px; }
+  .focus-review-content { min-height: 0; grid-template-columns: 1fr; gap: 16px; }
+  .focus-review-summary { min-height: 155px; padding: 18px; }
+  .focus-review-chart { height: 180px; gap: 6px; }
 }
 
 /* CloudBase keeps the domestic self-hosting path quiet, private, and optional. */

@@ -24,7 +24,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=0.3.0" />
+    <link rel="stylesheet" href="./styles.css?v=0.3.1" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -168,18 +168,30 @@
               <span class="kicker" id="focusOverviewKicker">FOCUS</span>
               <h2 id="focusOverviewTitle">Focus Time</h2>
               <p id="focusOverviewHint">Choose one thing. Give it your full attention.</p>
-              <button class="primary-button focus-open-button" id="openFocusTimer" type="button">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3"/></svg>
-                <span id="focusOpenLabel">Start focus</span>
-              </button>
-            </div>
-            <div class="focus-overview-data">
-              <div class="focus-metrics">
-                <span><strong id="focusTodayMinutes">0</strong><small id="focusTodayMinutesLabel">min today</small></span>
-                <span><strong id="focusTodaySessions">0</strong><small id="focusTodaySessionsLabel">sessions</small></span>
-                <span><strong id="focusWeekMinutes">0</strong><small id="focusWeekMinutesLabel">min this week</small></span>
+              <div class="focus-quick-settings">
+                <div class="focus-quick-presets" id="focusQuickPresets" role="group" aria-label="Quick timer length">
+                  <button type="button" data-quick-focus-preset="classic">25</button>
+                  <button type="button" data-quick-focus-preset="deep">50</button>
+                </div>
+                <span id="focusPresetSummary">25 min focus · 5 min break</span>
+                <button class="focus-settings-button" id="openFocusTimer" type="button" aria-label="Focus settings">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+                  <span id="focusSettingsLabel">Settings</span>
+                </button>
               </div>
-              <div class="focus-week-bars" id="focusWeekBars" aria-label="Focus time this week"></div>
+            </div>
+            <div class="focus-inline-timer" id="focusInlineTimer" style="--focus-inline-progress:0">
+              <span class="focus-inline-ring" aria-hidden="true"><i></i></span>
+              <div class="focus-inline-copy">
+                <span id="focusInlinePhase">Ready</span>
+                <strong id="focusInlineTime">25:00</strong>
+                <small id="focusInlineLabel">Open focus</small>
+              </div>
+              <div class="focus-inline-actions">
+                <button class="primary-button" id="focusQuickPrimary" type="button">Start focus</button>
+                <button class="secondary-button" id="focusQuickFinish" type="button" hidden>Finish</button>
+                <button class="text-button" id="focusQuickSkip" type="button" hidden>Skip break</button>
+              </div>
             </div>
           </section>
 
@@ -310,18 +322,20 @@
             <div class="panel-heading"><div><span class="kicker">MONTHLY REFLECTION</span><h3>General Reflection</h3></div><div class="reflection-actions"><span class="autosave">● autosaved</span><button class="secondary-button" id="generateReview" type="button">Start guided review</button></div></div>
             <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
           </article>
-          <article class="panel weekly-output-archive">
+          <article class="panel focus-review-panel">
             <div class="panel-heading">
-              <div><span class="kicker">WEEKS IN THIS MONTH</span><h3>Weekly Notes</h3></div>
-              <label class="review-week-select"><span id="reviewWeekSelectLabel">Week</span><select id="reviewWeekSelect"></select></label>
+              <div><span class="kicker" id="focusReviewKicker">FOCUS REVIEW</span><h3 id="focusReviewTitle">Focused time</h3></div>
+              <label class="review-week-select"><span id="focusReviewWeekLabel">Week</span><select id="focusReviewWeekSelect"></select></label>
             </div>
-            <div class="week-review-summary compact-week-detail">
-              <div class="week-review-meta"><strong id="reviewWeekLabel">第26周</strong><span id="reviewWeekRange"></span></div>
-              <div class="week-review-columns">
-                <section><span class="kicker">GOALS</span><h4>Weekly Goals</h4><div id="reviewWeekGoals"></div></section>
-                <section><span class="kicker">NOTES</span><h4>Output & Reflection</h4><div class="review-week-output" id="reviewWeekOutput"></div></section>
+            <div class="focus-review-content">
+              <div class="focus-review-summary">
+                <span id="focusReviewRange">10 Aug — 16 Aug</span>
+                <strong><b id="focusReviewTotal">0</b><small id="focusReviewUnit">min</small></strong>
+                <p id="focusReviewComparison">No focus time recorded this week.</p>
               </div>
+              <div class="focus-review-chart" id="focusReviewBars" aria-label="Focused minutes by day"></div>
             </div>
+            <footer class="focus-review-footer"><span id="focusReviewMonthTotal">August · 0 min total</span></footer>
           </article>
         </section>
 
@@ -334,11 +348,6 @@
         </section>
       </main>
     </div>
-
-    <button class="focus-pill" id="focusPill" type="button" hidden aria-label="Open focus timer">
-      <span class="focus-pill-ring" aria-hidden="true"><i></i></span>
-      <span><strong id="focusPillTime">25:00</strong><small id="focusPillLabel">Focus</small></span>
-    </button>
 
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
     <aside class="day-drawer" id="dayDrawer" aria-hidden="true">
@@ -535,10 +544,10 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=0.3.0"></script>
-    <script src="./_init_tcb-env.js?v=0.3.0"></script>
-    <script src="./cloudbase-sync.js?v=0.3.0"></script>
-    <script src="./focus-timer.js?v=0.3.0"></script>
-    <script src="./app.js?v=0.3.0"></script>
+    <script src="./deployment-mode.js?v=0.3.1"></script>
+    <script src="./_init_tcb-env.js?v=0.3.1"></script>
+    <script src="./cloudbase-sync.js?v=0.3.1"></script>
+    <script src="./focus-timer.js?v=0.3.1"></script>
+    <script src="./app.js?v=0.3.1"></script>
   </body>
 </html>
