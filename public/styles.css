@@ -912,11 +912,6 @@ html[data-theme="dark"] .pwa-install-button.ready { color: #9bc2ab; border-color
 }
 
 /* Quiet interface pass: progressive disclosure and lower information density. */
-.notification-trigger { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
-.notification-trigger svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.notification-trigger > i { position: absolute; top: 7px; right: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); opacity: .45; }
-.notification-trigger.ready > i { background: #57a977; opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, #57a977 15%, transparent); }
-
 .brand-mark { background: linear-gradient(145deg, #3f5d52, #24362f); box-shadow: 0 8px 22px rgba(19,42,34,.24), inset 0 1px 0 rgba(255,255,255,.24); }
 .brand-mark .walker-body { stroke: #fff; stroke-width: 2.45; }
 html[data-theme="dark"] .brand-mark { background: linear-gradient(145deg, #525a6d, #303641); }
@@ -964,16 +959,11 @@ html[data-theme="dark"] .weekly-minimal-image img { filter: brightness(.72) satu
 .setting-main span { margin-top: 5px; font-size: 10px; }
 .setting-main .setting-note { display: block; max-width: 56ch; margin-top: 6px; overflow: hidden; color: var(--muted); font-size: 9px; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
 .setting-actions { display: flex; align-items: center; gap: 5px; justify-self: end; }
-.habit-order-button { width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 13px; transition: transform 140ms var(--ease-enter), color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
-.habit-order-button:disabled { opacity: .24; cursor: default; }
-.habit-order-button:not(:disabled):active { transform: scale(.94); }
 .setting-actions .edit-habit { width: 32px; height: 32px; }
-html[data-theme="dark"] .habit-order-button { border-color: var(--edge-soft); }
 
 .week-stamp-row { display: none; }
 .weekly-writing-heading > div:last-child strong { display: none; }
 
-html[data-theme="dark"] .notification-trigger { background: var(--surface-3); border-color: var(--edge-soft); }
 html[data-theme="dark"] .review-week-card { border-color: var(--edge-soft); }
 html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,.11); border-color: rgba(125,183,255,.42); }
 
@@ -984,9 +974,7 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
 @media (max-width: 760px) {
   .tracking-mode-choice { grid-template-columns: 1fr; }
   .setting-actions { gap: 3px; }
-  .habit-order-button,
   .setting-actions .edit-habit { width: 30px; height: 30px; }
-  .notification-trigger { order: 3; flex: 1 1 auto; }
   .save-mode { order: 4; }
   .mobile-install-button { order: 5; }
   #todayButton { order: 6; }
@@ -1010,7 +998,6 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
 
 /* On mobile, move the existing data button into the top controls instead of duplicating it. */
 @media (max-width: 760px) {
-  .notification-trigger { order: 3; flex: 1 1 auto; width: auto; min-height: 44px; }
   .save-mode { order: 4; flex: 1 1 auto; width: auto; min-height: 36px; }
   .mobile-install-button,
   #todayButton { order: 5; flex: 1 1 calc(50% - 5px); width: auto; min-height: 44px; }
@@ -1335,4 +1322,108 @@ html[data-theme="dark"] .cloudbase-auth-note { background: rgba(255,255,255,.035
   .hero-card { padding-inline: 18px; }
   .progress-orbit { width: 82px; }
   .progress-orbit strong b { font-size: 24px; }
+}
+
+/* Habit ordering: a dedicated grip prevents drag, edit and page scroll from competing. */
+.habit-drag-handle {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: grab;
+  touch-action: none;
+}
+.habit-drag-handle:active { cursor: grabbing; }
+.habit-drag-handle > span { width: 12px; display: grid; grid-template-columns: repeat(2, 3px); gap: 3px; }
+.habit-drag-handle i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; }
+.habit-drag-handle:focus-visible { border-color: color-mix(in srgb, var(--accent) 55%, transparent); outline: 3px solid color-mix(in srgb, var(--accent) 15%, transparent); }
+.setting-row.habit-dragging { z-index: 5; opacity: .78; border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); box-shadow: 0 18px 42px rgba(20, 28, 24, .14); transform: scale(.985); }
+body.habit-is-dragging { cursor: grabbing; user-select: none; }
+html[data-theme="dark"] .habit-drag-handle { color: #aeb4bd; }
+html[data-theme="dark"] .setting-row.habit-dragging { box-shadow: 0 20px 46px rgba(0,0,0,.36); }
+
+/* Reminder belongs to Habit Settings, not to the global toolbar. */
+.habit-reminder-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--ink);
+  text-align: left;
+}
+.habit-reminder-icon { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: color-mix(in srgb, var(--sage) 12%, var(--paper)); color: var(--sage-dark); }
+.habit-reminder-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.habit-reminder-copy { min-width: 0; display: grid; gap: 3px; }
+.habit-reminder-copy small { color: var(--sage-dark); font-size: 8px; font-weight: 700; letter-spacing: .14em; }
+.habit-reminder-copy strong { font-size: 13px; }
+.habit-reminder-copy > span { color: var(--muted); font-size: 10px; }
+.habit-reminder-arrow { color: var(--muted); transition: transform 160ms var(--ease-enter); }
+.habit-reminder-card.ready .habit-reminder-icon { background: color-mix(in srgb, #57a977 18%, var(--card)); color: #43825d; }
+.habit-reminder-card:active .habit-reminder-arrow { transform: translateX(3px); }
+html[data-theme="dark"] .habit-reminder-card { border-color: var(--edge-soft); background: var(--surface-1); }
+html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1); color: #9bc2ab; }
+
+.focus-session-summary { margin-top: 7px !important; color: var(--sage-dark) !important; font-weight: 650; }
+.review-canvas-trigger { min-height: 34px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 11px; background: color-mix(in srgb, var(--card) 82%, transparent); color: var(--ink); font: 650 10px var(--font-body); white-space: nowrap; }
+
+/* Local Review Canvas: evidence stays compact; the writing area gets the space. */
+.review-canvas-dialog { width: min(1080px, calc(100vw - 28px)); max-height: calc(100vh - 28px); padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 26px; background: var(--paper); color: var(--ink); box-shadow: 0 34px 110px rgba(20,25,22,.24); }
+.review-canvas-shell { max-height: calc(100vh - 28px); display: flex; flex-direction: column; }
+.review-canvas-shell > header, .review-canvas-shell > footer { display: flex; align-items: center; gap: 12px; padding: 19px 22px; border-bottom: 1px solid var(--line); }
+.review-canvas-shell > header { justify-content: space-between; }
+.review-canvas-shell > header h2 { margin: 5px 0 0; font: 650 22px var(--font-display); }
+.review-canvas-shell > footer { border-top: 1px solid var(--line); border-bottom: 0; }
+.review-canvas-toolbar { display: flex; align-items: end; gap: 10px; padding: 14px 22px; border-bottom: 1px solid var(--line); }
+.review-scope-switch { display: flex; padding: 3px; border-radius: 12px; background: var(--paper-deep); }
+.review-scope-switch button { min-height: 34px; padding: 7px 12px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; }
+.review-scope-switch button.active { background: var(--card); color: var(--ink); box-shadow: 0 4px 14px rgba(20,25,22,.08); }
+.review-canvas-toolbar label { display: grid; gap: 5px; color: var(--muted); font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+.review-canvas-toolbar select { min-height: 40px; padding: 8px 32px 8px 11px; border: 1px solid var(--line); border-radius: 11px; background: var(--card); color: var(--ink); }
+.review-canvas-toolbar label[hidden] { display: none !important; }
+.review-canvas-grid { min-height: 0; flex: 1; display: grid; grid-template-columns: minmax(250px, .72fr) minmax(0, 1.45fr); overflow: hidden; }
+.review-evidence-panel, .review-draft-panel { min-height: 0; padding: 22px; overflow: auto; }
+.review-evidence-panel { border-right: 1px solid var(--line); background: color-mix(in srgb, var(--sage) 4%, var(--paper)); }
+.review-evidence-panel h3, .review-draft-panel h3 { margin: 6px 0 0; font: 650 16px var(--font-display); }
+.review-evidence-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 20px 0; }
+.review-evidence-stats div { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: var(--card); }
+.review-evidence-stats strong { display: block; font: 650 22px var(--font-display); }
+.review-evidence-stats span { display: block; margin-top: 4px; color: var(--muted); font-size: 8px; }
+.review-evidence-notes { display: grid; gap: 8px; }
+.review-evidence-notes p { margin: 0; padding: 11px 12px; border-radius: 11px; background: color-mix(in srgb, var(--card) 82%, transparent); color: var(--muted); font: 10px/1.55 var(--font-body); }
+.review-draft-panel { display: flex; flex-direction: column; }
+.review-draft-heading { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+#reviewCanvasText { width: 100%; min-height: 430px; flex: 1; margin-top: 16px; padding: 18px; resize: none; border: 1px solid var(--line); border-radius: 16px; outline: none; background: var(--card); color: var(--ink); font: 13px/1.85 var(--font-display); }
+#reviewCanvasText:focus { border-color: color-mix(in srgb, var(--accent) 46%, var(--line)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 9%, transparent); }
+html[data-theme="dark"] .review-canvas-dialog { border-color: var(--edge-strong); background: var(--surface-1); box-shadow: 0 38px 120px rgba(0,0,0,.58); }
+html[data-theme="dark"] .review-canvas-shell > header, html[data-theme="dark"] .review-canvas-shell > footer, html[data-theme="dark"] .review-canvas-toolbar, html[data-theme="dark"] .review-evidence-panel { border-color: var(--edge-soft); }
+html[data-theme="dark"] .review-evidence-panel { background: rgba(89,124,103,.07); }
+html[data-theme="dark"] .review-scope-switch { background: var(--surface-3); }
+html[data-theme="dark"] .review-scope-switch button.active, html[data-theme="dark"] .review-canvas-toolbar select, html[data-theme="dark"] .review-evidence-stats div, html[data-theme="dark"] #reviewCanvasText { background: var(--surface-2); border-color: var(--edge-soft); }
+
+@media (max-width: 760px) {
+  .habit-drag-handle, .setting-actions .edit-habit { width: 32px; height: 32px; }
+  .weekly-writing-heading { align-items: start; }
+  .review-canvas-trigger { align-self: start; }
+  .review-canvas-dialog { width: calc(100vw - 14px); max-height: calc(100dvh - 14px); border-radius: 23px; }
+  .review-canvas-shell { max-height: calc(100dvh - 14px); }
+  .review-canvas-toolbar { align-items: stretch; flex-wrap: wrap; padding: 12px 15px; }
+  .review-scope-switch { flex: 1 1 100%; }
+  .review-scope-switch button { flex: 1; }
+  .review-canvas-toolbar label { flex: 1; }
+  .review-canvas-grid { display: block; overflow: auto; }
+  .review-evidence-panel { overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); }
+  .review-draft-panel { overflow: visible; }
+  #reviewCanvasText { min-height: 390px; resize: vertical; }
+  .review-canvas-shell > header, .review-canvas-shell > footer, .review-evidence-panel, .review-draft-panel { padding: 17px; }
 }

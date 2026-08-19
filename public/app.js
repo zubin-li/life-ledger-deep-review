@@ -114,14 +114,14 @@ const i18n = {
       off: "通知尚未开启", offHelp: "保存后才会请求浏览器通知权限。", ready: "提醒已开启", readyHelp: "本应用打开时会在 {time} 检查并发送提醒。",
       denied: "通知权限已被阻止", deniedHelp: "请在浏览器或系统设置中允许 Life Ledger 发送通知。", unsupported: "当前浏览器不支持通知", unsupportedHelp: "可以继续使用复盘功能，但无法发送系统通知。",
       caveat: "本地预览仅能在应用打开时提醒。要在完全关闭后稳定提醒，需要安装 PWA 并接入云端 Push 服务。", test: "发送测试", cancel: "取消", save: "保存提醒", saved: "提醒设置已保存",
-      body: "花几分钟完成今天的打卡、心情与复盘。", testBody: "通知工作正常。今晚也记得回来看看自己的脚步。", close: "关闭每日提醒设置", short: "提醒",
+      body: "花几分钟完成今天的打卡、心情与复盘。", testBody: "通知工作正常。今晚也记得回来看看自己的脚步。", close: "关闭每日提醒设置", short: "提醒", cardOn: "已开启 · {time}", cardOff: "尚未开启",
     },
     focus: {
       kicker: "专注", overviewTitle: "专注时间", overviewHint: "只选一件事，把注意力完整地交给它。", open: "开始专注", openActive: "查看计时", settings: "设置", presetSummary: "{focus} 分钟专注 · {break} 分钟休息", readyShort: "准备开始",
       todayMinutes: "今日分钟", sessions: "次专注", weekMinutes: "本周分钟", weekChart: "本周专注时间", dialogKicker: "专注计时", dialogTitle: "把这一段时间，用在重要的事上。",
       phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", customLabel: "或为这次专注命名", customPlaceholder: "什么值得你现在专注？",
       custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
-      caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewWeek: "选择一周", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这一周还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", monthTotal: "{month} · 共 {minutes} 分钟",
+      caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", sessionSummary: "今日已完成 {sessions} 个 Session · {minutes} 分钟", sessionOrdinal: "Session {session}", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewWeek: "选择一周", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这一周还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", monthTotal: "{month} · 共 {minutes} 分钟",
     },
     foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
     calendar: {
@@ -231,6 +231,9 @@ const i18n = {
         next: "## 下个月的一个关键改变",
       },
     },
+    reviewCanvas: {
+      kicker: "DEEP REVIEW", title: "复盘画布", openWeekly: "生成本周复盘", openMonthly: "生成月度复盘", periodAria: "选择复盘周期", weekly: "周度", monthly: "月度", week: "周", month: "月", generate: "重新生成草稿", evidenceKicker: "RECORD", evidenceTitle: "记录告诉我的事实", draftKicker: "REFLECTION", draftTitle: "可编辑复盘", placeholder: "基于现有记录生成事实草稿，再写下你的理解。", autosaved: "● 已自动保存", copy: "复制 Markdown", done: "完成", close: "关闭复盘画布", copied: "复盘已复制", generated: "复盘草稿已生成", replaceConfirm: "重新生成会替换当前草稿，继续吗？", statDays: "有记录的天数", statHabits: "习惯完成", statFocus: "完整 Session", statGoals: "目标完成", noEvidence: "这个周期还没有文字记录。",
+    },
     habits: {
       kicker: "HABIT SYSTEM",
       title: "苟日新，日日新，又日新。",
@@ -245,6 +248,7 @@ const i18n = {
       active: "生效中",
       inactive: "已停用",
       editLabel: "编辑{habit}",
+      reorder: "拖动调整{habit}的顺序",
       moveUp: "上移{habit}",
       moveDown: "下移{habit}",
       moved: "习惯顺序已保存",
@@ -406,14 +410,14 @@ const i18n = {
       off: "Notifications are not enabled", offHelp: "Permission will only be requested after you save.", ready: "Reminder is enabled", readyHelp: "While the app is open, it will check for your {time} reminder.",
       denied: "Notifications are blocked", deniedHelp: "Allow notifications for Life Ledger in your browser or system settings.", unsupported: "Notifications are not supported", unsupportedHelp: "You can keep using reviews, but this browser cannot send system notifications.",
       caveat: "Local preview can remind you while the app is open. Reliable reminders after the app is closed require the installed PWA and a cloud push service.", test: "Send test", cancel: "Cancel", save: "Save reminder", saved: "Reminder settings saved",
-      body: "Take a few minutes to complete today's habits, mood, and reflection.", testBody: "Notifications are working. Come back tonight and review the path you made.", close: "Close daily reminder settings", short: "Reminder",
+      body: "Take a few minutes to complete today's habits, mood, and reflection.", testBody: "Notifications are working. Come back tonight and review the path you made.", close: "Close daily reminder settings", short: "Reminder", cardOn: "On · {time}", cardOff: "Not enabled",
     },
     focus: {
       kicker: "FOCUS", overviewTitle: "Focus Time", overviewHint: "Choose one thing. Give it your full attention.", open: "Start focus", openActive: "View timer", settings: "Settings", presetSummary: "{focus} min focus · {break} min break", readyShort: "Ready",
       todayMinutes: "min today", sessions: "sessions", weekMinutes: "min this week", weekChart: "Focus time this week", dialogKicker: "FOCUS TIMER", dialogTitle: "Make this time count.",
       phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", customLabel: "Or name this session", customPlaceholder: "What deserves your attention?",
       custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
-      caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Focus session", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewWeek: "Choose week", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded this week.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", monthTotal: "{month} · {minutes} min total",
+      caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Focus session", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.", sessionSummary: "{sessions} sessions completed today · {minutes} min", sessionOrdinal: "Session {session}", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewWeek: "Choose week", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded this week.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", monthTotal: "{month} · {minutes} min total",
     },
     foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
     calendar: {
@@ -523,6 +527,9 @@ const i18n = {
         next: "## One key change for next month",
       },
     },
+    reviewCanvas: {
+      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Generate weekly review", openMonthly: "Generate monthly review", periodAria: "Choose review period", weekly: "Weekly", monthly: "Monthly", week: "Week", month: "Month", generate: "Regenerate draft", evidenceKicker: "RECORD", evidenceTitle: "What the record says", draftKicker: "REFLECTION", draftTitle: "Editable review", placeholder: "Generate a factual draft from your records, then add your perspective.", autosaved: "● autosaved", copy: "Copy Markdown", done: "Done", close: "Close review canvas", copied: "Review copied", generated: "Review draft generated", replaceConfirm: "Regenerating will replace the current draft. Continue?", statDays: "Recorded days", statHabits: "Habit check-ins", statFocus: "Full sessions", statGoals: "Goals completed", noEvidence: "There are no written records for this period yet.",
+    },
     habits: {
       kicker: "HABIT SYSTEM",
       title: "Excellence is an art won by training and habituation.",
@@ -537,6 +544,7 @@ const i18n = {
       active: "Active",
       inactive: "Inactive",
       editLabel: "Edit {habit}",
+      reorder: "Drag to reorder {habit}",
       moveUp: "Move {habit} up",
       moveDown: "Move {habit} down",
       moved: "Habit order saved",
@@ -698,14 +706,14 @@ const i18n = {
       off: "Mitteilungen sind nicht aktiviert", offHelp: "Die Berechtigung wird erst beim Speichern angefragt.", ready: "Erinnerung ist aktiviert", readyHelp: "Solange die App geöffnet ist, prüft sie die Erinnerung um {time}.",
       denied: "Mitteilungen sind blockiert", deniedHelp: "Erlaube Life Ledger Mitteilungen in den Browser- oder Systemeinstellungen.", unsupported: "Mitteilungen werden nicht unterstützt", unsupportedHelp: "Reflexionen funktionieren weiterhin, aber dieser Browser kann keine Systemmitteilungen senden.",
       caveat: "Die lokale Vorschau erinnert nur bei geöffneter App. Zuverlässige Erinnerungen nach dem Schließen benötigen die installierte PWA und einen Cloud-Push-Dienst.", test: "Test senden", cancel: "Abbrechen", save: "Erinnerung speichern", saved: "Erinnerung gespeichert",
-      body: "Nimm dir ein paar Minuten für Gewohnheiten, Stimmung und Tagesreflexion.", testBody: "Mitteilungen funktionieren. Kehre heute Abend zurück und betrachte deinen Weg.", close: "Einstellungen für tägliche Erinnerung schließen", short: "Erinnerung",
+      body: "Nimm dir ein paar Minuten für Gewohnheiten, Stimmung und Tagesreflexion.", testBody: "Mitteilungen funktionieren. Kehre heute Abend zurück und betrachte deinen Weg.", close: "Einstellungen für tägliche Erinnerung schließen", short: "Erinnerung", cardOn: "Aktiv · {time}", cardOff: "Nicht aktiviert",
     },
     focus: {
       kicker: "FOKUS", overviewTitle: "Fokuszeit", overviewHint: "Wähle eine Sache und schenke ihr deine volle Aufmerksamkeit.", open: "Fokus starten", openActive: "Timer öffnen", settings: "Einstellungen", presetSummary: "{focus} Min. Fokus · {break} Min. Pause", readyShort: "Bereit",
       todayMinutes: "Min. heute", sessions: "Einheiten", weekMinutes: "Min. diese Woche", weekChart: "Fokuszeit dieser Woche", dialogKicker: "FOKUS-TIMER", dialogTitle: "Nutze diese Zeit für das Wesentliche.",
       phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", customLabel: "Oder Fokus benennen", customPlaceholder: "Was verdient jetzt deine Aufmerksamkeit?",
       custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
-      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewWeek: "Woche wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diese Woche gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", monthTotal: "{month} · insgesamt {minutes} Min.",
+      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", sessionSummary: "Heute {sessions} Sessions abgeschlossen · {minutes} Min.", sessionOrdinal: "Session {session}", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewWeek: "Woche wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diese Woche gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", monthTotal: "{month} · insgesamt {minutes} Min.",
     },
     foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
     calendar: {
@@ -815,6 +823,9 @@ const i18n = {
         next: "## Eine zentrale Veränderung für den nächsten Monat",
       },
     },
+    reviewCanvas: {
+      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Wochenrückblick erstellen", openMonthly: "Monatsrückblick erstellen", periodAria: "Rückblickszeitraum wählen", weekly: "Wöchentlich", monthly: "Monatlich", week: "Woche", month: "Monat", generate: "Entwurf neu erstellen", evidenceKicker: "AUFZEICHNUNG", evidenceTitle: "Was die Aufzeichnungen zeigen", draftKicker: "REFLEXION", draftTitle: "Bearbeitbarer Rückblick", placeholder: "Erstelle einen sachlichen Entwurf aus deinen Einträgen und ergänze deine Sicht.", autosaved: "● automatisch gespeichert", copy: "Markdown kopieren", done: "Fertig", close: "Review Canvas schließen", copied: "Rückblick kopiert", generated: "Rückblicksentwurf erstellt", replaceConfirm: "Ein neuer Entwurf ersetzt den aktuellen Text. Fortfahren?", statDays: "Erfasste Tage", statHabits: "Gewohnheiten", statFocus: "Volle Sessions", statGoals: "Erledigte Ziele", noEvidence: "Für diesen Zeitraum gibt es noch keine Textaufzeichnungen.",
+    },
     habits: {
       kicker: "GEWOHNHEITSSYSTEM",
       title: "Es ist nicht genug zu wollen, man muss auch tun.",
@@ -829,6 +840,7 @@ const i18n = {
       active: "Aktiv",
       inactive: "Inaktiv",
       editLabel: "{habit} bearbeiten",
+      reorder: "{habit} ziehen und neu anordnen",
       moveUp: "{habit} nach oben verschieben",
       moveDown: "{habit} nach unten verschieben",
       moved: "Reihenfolge gespeichert",
@@ -994,6 +1006,7 @@ const seed = {
   dailyGoals: {},
   weeklyGoals: {},
   weeklyOutputs: {},
+  weeklyReviews: {},
   focusSessions: [],
   focusSettings: { preset: "classic", focusMinutes: 25, breakMinutes: 5, sound: true, notify: true, wakeLock: true },
 };
@@ -1032,6 +1045,8 @@ let focusAudioContext = null;
 let pendingImport = null;
 let pendingMoodDate = null;
 let pendingMood = "";
+let reviewCanvasScope = "week";
+let reviewCanvasKey = "";
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
 const HABITS_PER_PAGE = 4;
@@ -1039,6 +1054,7 @@ let todayHabitPage = 0;
 let habitCarouselScrollFrame = 0;
 let habitCarouselDrag = null;
 let suppressHabitCardClick = false;
+let habitDrag = null;
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -1254,10 +1270,32 @@ function applyLanguage() {
   setText("#celebrationText", tr("celebration"));
   applyCloudBaseLanguage();
   applyReminderLanguage();
+  applyReviewCanvasLanguage();
   applyTheme();
   applySidebarState();
   renderIconPicker();
   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
+}
+function applyReviewCanvasLanguage() {
+  setText("#openWeeklyReviewCanvas", tr("reviewCanvas.openWeekly"));
+  setText("#generateReview", tr("reviewCanvas.openMonthly"));
+  setText("#reviewCanvasKicker", tr("reviewCanvas.kicker"));
+  setText("#reviewCanvasTitle", tr("reviewCanvas.title"));
+  setAria("#reviewScopeSwitch", tr("reviewCanvas.periodAria"));
+  $$('[data-review-scope]').forEach(button => { button.textContent = tr(`reviewCanvas.${button.dataset.reviewScope === "week" ? "weekly" : "monthly"}`); });
+  setText("#reviewCanvasWeekLabel", tr("reviewCanvas.week"));
+  setText("#reviewCanvasMonthLabel", tr("reviewCanvas.month"));
+  setText("#regenerateReviewCanvas", tr("reviewCanvas.generate"));
+  setText("#reviewEvidenceKicker", tr("reviewCanvas.evidenceKicker"));
+  setText("#reviewEvidenceTitle", tr("reviewCanvas.evidenceTitle"));
+  setText("#reviewDraftKicker", tr("reviewCanvas.draftKicker"));
+  setText("#reviewDraftTitle", tr("reviewCanvas.draftTitle"));
+  setText("#reviewCanvasAutosave", tr("reviewCanvas.autosaved"));
+  setPlaceholder("#reviewCanvasText", tr("reviewCanvas.placeholder"));
+  setText("#copyReviewCanvas", tr("reviewCanvas.copy"));
+  setText("#saveReviewCanvas", tr("reviewCanvas.done"));
+  setAria(".close-review-canvas", tr("reviewCanvas.close"));
+  populateReviewCanvasPeriods();
 }
 function applyFocusLanguage() {
   setText("#focusOverviewKicker", tr("focus.kicker"));
@@ -1349,7 +1387,7 @@ function applyDialogLanguage() {
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return stored?.habits ? { ...cloneData(seed), ...stored, dailyGoals: stored.dailyGoals || {}, weeklyGoals: stored.weeklyGoals || {}, weeklyOutputs: stored.weeklyOutputs || {} } : { ...cloneData(seed), meta: { updatedAt: 0 } };
+    return stored?.habits ? { ...cloneData(seed), ...stored, dailyGoals: stored.dailyGoals || {}, weeklyGoals: stored.weeklyGoals || {}, weeklyOutputs: stored.weeklyOutputs || {}, weeklyReviews: stored.weeklyReviews || {} } : { ...cloneData(seed), meta: { updatedAt: 0 } };
   } catch {
     return { ...cloneData(seed), meta: { updatedAt: 0 } };
   }
@@ -1476,7 +1514,7 @@ async function pullCloudState() {
       const remote = await cloudBaseAdapter.getState();
       if (!remote) { await pushCloudState(); return; }
       if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
-        state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {} };
+        state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         renderAll();
       }
@@ -1490,7 +1528,7 @@ async function pullCloudState() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const remote = await response.json();
     if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
-      state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {} };
+      state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
     }
@@ -2245,20 +2283,69 @@ function formatWeekRangeInMonth(key, year, month) {
 function renderHabitSettings() {
   const activeCount = state.habits.filter(habit => habit.active).length;
   $("#habitSummary").textContent = tr("habits.summary", { count: activeCount });
-  $("#habitSettingsList").innerHTML = state.habits.map((h, index) => {
+  $("#habitSettingsList").innerHTML = state.habits.map(h => {
     const v = versionFor(h, isoDate(new Date())) || h.versions[h.versions.length - 1];
     return `<article class="setting-row" style="${habitStyle(h)}">
       <span class="habit-icon">${renderIcon(iconKey(h))}</span>
       <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span>${v?.note ? `<small class="setting-note">${escapeHtml(v.note)}</small>` : ""}</div>
       <div class="setting-actions">
-        <button class="habit-order-button" type="button" data-id="${h.id}" data-direction="-1" ${index === 0 ? "disabled" : ""} aria-label="${tr("habits.moveUp", { habit: displayHabitName(h) })}">↑</button>
-        <button class="habit-order-button" type="button" data-id="${h.id}" data-direction="1" ${index === state.habits.length - 1 ? "disabled" : ""} aria-label="${tr("habits.moveDown", { habit: displayHabitName(h) })}">↓</button>
+        <button class="habit-drag-handle" type="button" data-id="${h.id}" aria-label="${tr("habits.reorder", { habit: displayHabitName(h) })}" title="${tr("habits.reorder", { habit: displayHabitName(h) })}"><span aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button>
         <button class="icon-button edit-habit" type="button" data-id="${h.id}" aria-label="${tr("habits.editLabel", { habit: displayHabitName(h) })}">···</button>
       </div>
     </article>`;
   }).join("");
   $$(".edit-habit").forEach(b => b.addEventListener("click", () => openHabitDialog(b.dataset.id)));
-  $$(".habit-order-button").forEach(button => button.addEventListener("click", () => moveHabit(button.dataset.id, Number(button.dataset.direction))));
+  $$(".habit-drag-handle").forEach(bindHabitDragHandle);
+}
+
+function bindHabitDragHandle(handle) {
+  handle.addEventListener("pointerdown", event => {
+    if (event.button !== 0 || habitDrag) return;
+    const row = handle.closest(".setting-row");
+    const container = row?.parentElement;
+    if (!row || !container) return;
+    event.preventDefault();
+    habitDrag = { pointerId: event.pointerId, handle, row, container, moved: false };
+    handle.setPointerCapture?.(event.pointerId);
+    row.classList.add("habit-dragging");
+    document.body.classList.add("habit-is-dragging");
+  });
+  handle.addEventListener("keydown", event => {
+    const direction = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : 0;
+    if (!direction) return;
+    event.preventDefault();
+    moveHabit(handle.dataset.id, direction);
+  });
+}
+
+function moveHabitDrag(event) {
+  if (!habitDrag || event.pointerId !== habitDrag.pointerId) return;
+  event.preventDefault();
+  const { row, container } = habitDrag;
+  if (event.clientY < 76) window.scrollBy(0, -14);
+  else if (event.clientY > window.innerHeight - 76) window.scrollBy(0, 14);
+  row.style.pointerEvents = "none";
+  const target = document.elementFromPoint(event.clientX, event.clientY)?.closest(".setting-row");
+  row.style.pointerEvents = "";
+  if (!target || target === row || target.parentElement !== container) return;
+  const after = event.clientY > target.getBoundingClientRect().top + target.offsetHeight / 2;
+  container.insertBefore(row, after ? target.nextSibling : target);
+  habitDrag.moved = true;
+}
+
+function finishHabitSettingsDrag(event) {
+  if (!habitDrag || event.pointerId !== habitDrag.pointerId) return;
+  const { handle, row, container, moved } = habitDrag;
+  row.classList.remove("habit-dragging");
+  document.body.classList.remove("habit-is-dragging");
+  try { handle.releasePointerCapture?.(event.pointerId); } catch { /* pointer capture already released */ }
+  habitDrag = null;
+  if (!moved) return;
+  const byId = new Map(state.habits.map(habit => [habit.id, habit]));
+  state.habits = $$(".setting-row", container).map(item => byId.get(item.querySelector(".habit-drag-handle")?.dataset.id)).filter(Boolean);
+  saveState();
+  renderAll();
+  showToast(tr("habits.moved"));
 }
 
 function moveHabit(id, direction) {
@@ -2270,7 +2357,7 @@ function moveHabit(id, direction) {
   saveState();
   renderAll();
   showToast(tr("habits.moved"));
-  const nextButton = $(`.habit-order-button[data-id="${CSS.escape(id)}"][data-direction="${direction}"]`);
+  const nextButton = $(`.habit-drag-handle[data-id="${CSS.escape(id)}"]`);
   nextButton?.focus({ preventScroll: true });
 }
 
@@ -2502,15 +2589,161 @@ function deleteHabit() {
   showToast(tr("habits.deleted", { habit: displayHabitName(habit) }));
 }
 
-function generateReview() {
-  const month = cursor.getMonth();
-  const text = languageText(
-    `## 这个月最重要的变化\n\n\n## 值得延续的事\n\n\n## 消耗我、需要停止的事\n\n\n## 下个月最重要的一步\n`,
-    `## What changed most this month?\n\n\n## What deserves to continue?\n\n\n## What drained me or should stop?\n\n\n## The one step that matters next month\n`,
-    `## Was hat sich diesen Monat am stärksten verändert?\n\n\n## Was soll bleiben?\n\n\n## Was hat Kraft gekostet oder sollte enden?\n\n\n## Der wichtigste Schritt im nächsten Monat\n`
-  );
-  $("#reviewText").value = text;
-  state.reviews[monthKey(cursor)] = text; saveState(); showToast(tr("review.generated"));
+function datesForReview(scope, key) {
+  const today = isoDate(new Date());
+  let start;
+  let end;
+  if (scope === "week") {
+    const range = weekDatesFromKey(key);
+    start = new Date(range.monday);
+    end = new Date(range.sunday);
+  } else {
+    const [year, month] = key.split("-").map(Number);
+    start = new Date(year, month - 1, 1, 12);
+    end = new Date(year, month, 0, 12);
+  }
+  const dates = [];
+  for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+    const value = isoDate(date);
+    if (value <= today) dates.push(value);
+  }
+  return dates;
+}
+
+function reviewPeriodLabel(scope, key) {
+  if (scope === "week") {
+    const { monday, sunday } = weekDatesFromKey(key);
+    return formatCompactDateSpan(monday, sunday);
+  }
+  const [year, month] = key.split("-").map(Number);
+  return currentLang === "zh" ? `${year}年${month}月` : `${monthName(month - 1)} ${year}`;
+}
+
+function populateReviewCanvasPeriods() {
+  const weekSelect = $("#reviewCanvasWeek");
+  const monthSelect = $("#reviewCanvasMonth");
+  if (!weekSelect || !monthSelect) return;
+  const currentWeek = weekSelect.value || selectedWorkspaceWeek;
+  const currentMonth = monthSelect.value || monthKey(cursor);
+  const weekKeys = [];
+  const seen = new Set();
+  for (let date = new Date(2026, 0, 1, 12); date <= new Date(2035, 11, 31, 12); date.setDate(date.getDate() + 1)) {
+    const key = isoWeekKey(date);
+    if (seen.has(key) || Number(key.slice(0, 4)) < 2026 || Number(key.slice(0, 4)) > 2035) continue;
+    seen.add(key);
+    weekKeys.push(key);
+  }
+  weekSelect.innerHTML = weekKeys.map(key => `<option value="${key}">${escapeHtml(reviewPeriodLabel("week", key))}</option>`).join("");
+  monthSelect.innerHTML = Array.from({ length: 120 }, (_, index) => {
+    const year = 2026 + Math.floor(index / 12);
+    const month = index % 12 + 1;
+    const key = `${year}-${String(month).padStart(2, "0")}`;
+    return `<option value="${key}">${escapeHtml(reviewPeriodLabel("month", key))}</option>`;
+  }).join("");
+  weekSelect.value = weekKeys.includes(currentWeek) ? currentWeek : selectedWorkspaceWeek;
+  monthSelect.value = currentMonth;
+}
+
+function reviewEvidence(scope, key) {
+  const dates = datesForReview(scope, key);
+  const dateSet = new Set(dates);
+  const logs = dates.map(date => ({ date, log: getLog(date) }));
+  const recordedDays = logs.filter(({ date, log }) => log.completed?.length || log.mood || log.moodReason || log.note?.trim() || (state.dailyGoals[date] || []).length).length;
+  const habitStats = state.habits.map(habit => {
+    const eligible = dates.filter(date => activeHabits(date).some(item => item.id === habit.id));
+    const count = eligible.filter(date => getLog(date).completed?.includes(habit.id)).length;
+    return { name: displayHabitName(habit), count, possible: eligible.length };
+  }).filter(item => item.possible || item.count);
+  const habitCheckins = habitStats.reduce((sum, item) => sum + item.count, 0);
+  const sessions = dates.length ? focusSessionsBetween(dates[0], dates.at(-1)) : [];
+  const completedSessions = sessions.filter(session => session.outcome === "completed").length;
+  const focusMinutes = Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0));
+  const dailyGoals = dates.flatMap(date => state.dailyGoals[date] || []);
+  const weekKeys = [...new Set(dates.map(date => isoWeekKey(parseDate(date))))];
+  const weeklyGoals = weekKeys.flatMap(week => state.weeklyGoals[week] || []);
+  const goals = [...dailyGoals, ...weeklyGoals];
+  const goalsDone = goals.filter(goal => goal.done).length;
+  const unfinishedGoals = goals.filter(goal => !goal.done).map(goal => goal.text).filter(Boolean);
+  const moodCounts = logs.reduce((counts, { log }) => {
+    if (log.mood) counts[log.mood] = (counts[log.mood] || 0) + 1;
+    return counts;
+  }, {});
+  const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0];
+  const notes = logs.flatMap(({ date, log }) => [log.moodReason, log.note].filter(value => value?.trim()).map(value => ({ date, text: value.trim() })));
+  const outputs = weekKeys.map(week => state.weeklyOutputs[week]?.trim()).filter(Boolean);
+  const strongestDay = dates.map(date => ({ date, score: completionFor(date) })).sort((a, b) => b.score - a.score)[0];
+  return { scope, key, dates, dateSet, label: reviewPeriodLabel(scope, key), recordedDays, habitStats, habitCheckins, completedSessions, focusMinutes, goalsDone, goalsTotal: goals.length, unfinishedGoals, topMood, notes, outputs, strongestDay };
+}
+
+function buildLocalReviewDraft(evidence) {
+  const habitLines = evidence.habitStats.length
+    ? evidence.habitStats.map(item => `- ${item.name}: ${item.count}/${item.possible}`).join("\n")
+    : languageText("- 暂无习惯完成记录", "- No habit check-ins yet", "- Noch keine Gewohnheitseinträge");
+  const moodLine = evidence.topMood
+    ? languageText(`最常记录的感受：${moodLabel(evidence.topMood[0])}（${evidence.topMood[1]}天）`, `Most recorded mood: ${moodLabel(evidence.topMood[0])} (${evidence.topMood[1]} days)`, `Häufigste Stimmung: ${moodLabel(evidence.topMood[0])} (${evidence.topMood[1]} Tage)`)
+    : languageText("尚未记录心情。", "No mood was recorded.", "Es wurde noch keine Stimmung erfasst.");
+  const strongest = evidence.strongestDay && evidence.strongestDay.score > 0
+    ? `${formatDateChip(parseDate(evidence.strongestDay.date))} · ${evidence.strongestDay.score}%`
+    : languageText("暂无", "Not enough data", "Noch nicht genügend Daten");
+  const unfinished = evidence.unfinishedGoals.length ? evidence.unfinishedGoals.slice(0, 6).map(text => `- ${text}`).join("\n") : languageText("- 暂无未完成目标", "- No unfinished goals", "- Keine offenen Ziele");
+  const records = [...evidence.outputs, ...evidence.notes.map(item => `${formatDateChip(parseDate(item.date))}: ${item.text}`)].slice(0, 6);
+  const recordLines = records.length ? records.map(text => `- ${text}`).join("\n") : languageText("- 这个周期还没有留下文字。", "- No written record was left in this period.", "- Für diesen Zeitraum gibt es noch keinen Text.");
+  if (currentLang === "zh") return `# ${evidence.label}${evidence.scope === "week" ? "周度" : "月度"}复盘\n\n## 事实摘要\n- 有记录的天数：${evidence.recordedDays}/${evidence.dates.length}\n- 习惯完成：${evidence.habitCheckins} 次\n- 专注：${evidence.completedSessions} 个完整 Session，共 ${evidence.focusMinutes} 分钟\n- 目标：完成 ${evidence.goalsDone}/${evidence.goalsTotal}\n\n## 习惯轨迹\n${habitLines}\n\n## 值得看见\n- 完成度最高的一天：${strongest}\n- ${moodLine}\n\n## 尚未完成\n${unfinished}\n\n## 留下的内容\n${recordLines}\n\n## 我的理解\n- 什么值得继续？\n- 什么正在消耗我？\n- 下一周期最重要的一步是什么？\n`;
+  if (currentLang === "de") return `# ${evidence.label} · ${evidence.scope === "week" ? "Wochenrückblick" : "Monatsrückblick"}\n\n## Fakten\n- Erfasste Tage: ${evidence.recordedDays}/${evidence.dates.length}\n- Gewohnheiten: ${evidence.habitCheckins} Check-ins\n- Fokus: ${evidence.completedSessions} volle Sessions, ${evidence.focusMinutes} Minuten\n- Ziele: ${evidence.goalsDone}/${evidence.goalsTotal} erledigt\n\n## Gewohnheiten\n${habitLines}\n\n## Was sichtbar wird\n- Stärkster Tag: ${strongest}\n- ${moodLine}\n\n## Offen\n${unfinished}\n\n## Hinterlassene Notizen\n${recordLines}\n\n## Meine Einordnung\n- Was sollte bleiben?\n- Was kostet unnötig Kraft?\n- Was ist der wichtigste nächste Schritt?\n`;
+  return `# ${evidence.label} · ${evidence.scope === "week" ? "Weekly Review" : "Monthly Review"}\n\n## Facts\n- Recorded days: ${evidence.recordedDays}/${evidence.dates.length}\n- Habits: ${evidence.habitCheckins} check-ins\n- Focus: ${evidence.completedSessions} full sessions, ${evidence.focusMinutes} minutes\n- Goals: ${evidence.goalsDone}/${evidence.goalsTotal} completed\n\n## Habit trail\n${habitLines}\n\n## What stands out\n- Strongest day: ${strongest}\n- ${moodLine}\n\n## Still open\n${unfinished}\n\n## Notes from the period\n${recordLines}\n\n## My perspective\n- What deserves to continue?\n- What is draining energy?\n- What is the most important next step?\n`;
+}
+
+function reviewCanvasStore() {
+  return reviewCanvasScope === "week" ? state.weeklyReviews : state.reviews;
+}
+
+function renderReviewCanvas(generateIfEmpty = true) {
+  if (!reviewCanvasKey) return;
+  const evidence = reviewEvidence(reviewCanvasScope, reviewCanvasKey);
+  const stats = [
+    [tr("reviewCanvas.statDays"), `${evidence.recordedDays}/${evidence.dates.length}`],
+    [tr("reviewCanvas.statHabits"), evidence.habitCheckins],
+    [tr("reviewCanvas.statFocus"), evidence.completedSessions],
+    [tr("reviewCanvas.statGoals"), `${evidence.goalsDone}/${evidence.goalsTotal}`],
+  ];
+  $("#reviewEvidenceStats").innerHTML = stats.map(([label, value]) => `<div><strong>${value}</strong><span>${escapeHtml(label)}</span></div>`).join("");
+  const notes = [...evidence.outputs, ...evidence.notes.map(note => note.text)].slice(0, 3);
+  $("#reviewEvidenceNotes").innerHTML = notes.length ? notes.map(note => `<p>${escapeHtml(note)}</p>`).join("") : `<p>${escapeHtml(tr("reviewCanvas.noEvidence"))}</p>`;
+  const store = reviewCanvasStore();
+  let text = store[reviewCanvasKey] || "";
+  if (!text && generateIfEmpty) {
+    text = buildLocalReviewDraft(evidence);
+    store[reviewCanvasKey] = text;
+    saveState();
+  }
+  $("#reviewCanvasText").value = text;
+}
+
+function setReviewCanvasScope(scope) {
+  reviewCanvasScope = scope === "month" ? "month" : "week";
+  $$('[data-review-scope]').forEach(button => button.classList.toggle("active", button.dataset.reviewScope === reviewCanvasScope));
+  $("#reviewCanvasWeekField").hidden = reviewCanvasScope !== "week";
+  $("#reviewCanvasMonthField").hidden = reviewCanvasScope !== "month";
+  reviewCanvasKey = reviewCanvasScope === "week" ? ($("#reviewCanvasWeek").value || selectedWorkspaceWeek) : ($("#reviewCanvasMonth").value || monthKey(cursor));
+  renderReviewCanvas();
+}
+
+function openReviewCanvas(scope = "week") {
+  populateReviewCanvasPeriods();
+  $("#reviewCanvasWeek").value = selectedWorkspaceWeek;
+  $("#reviewCanvasMonth").value = monthKey(cursor);
+  setReviewCanvasScope(scope);
+  $("#reviewCanvasDialog").showModal();
+}
+
+function regenerateReviewCanvas() {
+  const current = $("#reviewCanvasText").value.trim();
+  if (current && !window.confirm(tr("reviewCanvas.replaceConfirm"))) return;
+  const text = buildLocalReviewDraft(reviewEvidence(reviewCanvasScope, reviewCanvasKey));
+  reviewCanvasStore()[reviewCanvasKey] = text;
+  $("#reviewCanvasText").value = text;
+  saveState();
+  showToast(tr("reviewCanvas.generated"));
 }
 
 function exportRange(scope) {
@@ -2532,7 +2765,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -2545,6 +2778,10 @@ function scopedState(range) {
   Object.entries(state.weeklyOutputs || {}).forEach(([key, value]) => {
     const { monday, sunday } = weekDatesFromKey(key);
     if (range.scope === "all" || (isoDate(sunday) >= range.start && isoDate(monday) <= range.end)) result.weeklyOutputs[key] = value;
+  });
+  Object.entries(state.weeklyReviews || {}).forEach(([key, value]) => {
+    const { monday, sunday } = weekDatesFromKey(key);
+    if (range.scope === "all" || (isoDate(sunday) >= range.start && isoDate(monday) <= range.end)) result.weeklyReviews[key] = value;
   });
   result.focusSessions = (state.focusSessions || []).filter(session => withinRange(session.date, range)).map(cloneData);
   return result;
@@ -2635,7 +2872,7 @@ function importedPayload(raw) {
   const payload = modern ? raw.data : raw;
   if (!isRecord(payload) || !Array.isArray(payload.habits) || !isRecord(payload.logs)) throw new Error("invalid-backup");
   if (payload.habits.some(habit => !isRecord(habit) || typeof habit.id !== "string" || !Array.isArray(habit.versions))) throw new Error("invalid-habits");
-  for (const key of ["reviews", "dailyGoals", "weeklyGoals", "weeklyOutputs"]) {
+  for (const key of ["reviews", "dailyGoals", "weeklyGoals", "weeklyOutputs", "weeklyReviews"]) {
     if (payload[key] !== undefined && !isRecord(payload[key])) throw new Error(`invalid-${key}`);
   }
   if (payload.focusSessions !== undefined && !Array.isArray(payload.focusSessions)) throw new Error("invalid-focusSessions");
@@ -2654,6 +2891,7 @@ function importedPayload(raw) {
       dailyGoals: cloneData(payload.dailyGoals || {}),
       weeklyGoals: cloneData(payload.weeklyGoals || {}),
       weeklyOutputs: cloneData(payload.weeklyOutputs || {}),
+      weeklyReviews: cloneData(payload.weeklyReviews || {}),
       focusSessions: cloneData(payload.focusSessions || []),
       focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
     },
@@ -2724,6 +2962,7 @@ function mergeBackupData(current, incoming) {
     dailyGoals: { ...(current.dailyGoals || {}), ...(incoming.dailyGoals || {}) },
     weeklyGoals: { ...(current.weeklyGoals || {}), ...(incoming.weeklyGoals || {}) },
     weeklyOutputs: { ...(current.weeklyOutputs || {}), ...(incoming.weeklyOutputs || {}) },
+    weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
   };
@@ -2819,11 +3058,15 @@ function updateReminderStatus() {
     setText("#reminderStatusTitle", tr("reminder.off"));
     setText("#reminderStatusHelp", tr("reminder.offHelp"));
   }
-  $("#reminderButton")?.classList.toggle("ready", reminderSettings.enabled && status === "granted");
+  const ready = reminderSettings.enabled && status === "granted";
+  $("#habitReminderCard")?.classList.toggle("ready", ready);
+  $("#habitReminderCard")?.classList.toggle("blocked", status === "denied" || status === "unsupported");
+  setText("#habitReminderStatus", ready ? tr("reminder.cardOn", { time: reminderSettings.time }) : tr("reminder.cardOff"));
 }
 
 function applyReminderLanguage() {
-  setText("#reminderQuickLabel", tr("reminder.short"));
+  setText("#habitReminderKicker", tr("reminder.kicker"));
+  setText("#habitReminderTitle", tr("reminder.title"));
   setText("#reminderKicker", tr("reminder.kicker"));
   setText("#reminderDialogTitle", tr("reminder.title"));
   setText("#reminderEnableTitle", tr("reminder.enable"));
@@ -2834,8 +3077,7 @@ function applyReminderLanguage() {
   setText("#reminderCancel", tr("reminder.cancel"));
   setText("#saveReminderButton", tr("reminder.save"));
   setAria(".close-reminder-dialog", tr("reminder.close"));
-  setAria("#reminderButton", tr("reminder.title"));
-  $("#reminderButton")?.setAttribute("title", tr("reminder.title"));
+  setAria("#habitReminderCard", tr("reminder.title"));
   updateReminderStatus();
 }
 
@@ -2896,9 +3138,20 @@ function focusSessionsBetween(start, end) {
   return (state.focusSessions || []).filter(session => session.date >= start && session.date <= end);
 }
 
+function focusTodayStats() {
+  const today = isoDate(new Date());
+  const sessions = focusSessionsBetween(today, today);
+  return {
+    completed: sessions.filter(session => session.outcome === "completed").length,
+    minutes: Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0)),
+  };
+}
+
 function renderFocusOverview() {
   const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
+  const today = focusTodayStats();
   setText("#focusPresetSummary", tr("focus.presetSummary", { focus: settings.focusMinutes, break: settings.breakMinutes }));
+  setText("#focusSessionSummary", tr("focus.sessionSummary", { sessions: today.completed, minutes: today.minutes }));
   $$('[data-quick-focus-preset]').forEach(button => {
     button.classList.toggle("active", button.dataset.quickFocusPreset === settings.preset);
     button.disabled = Boolean(focusTimer?.snapshot());
@@ -3046,7 +3299,8 @@ function renderFocusTimer(snapshot) {
   const progress = snapshot ? Math.max(0, Math.min(1, 1 - remaining / Math.max(1, duration))) : 0;
   $("#focusClock")?.style.setProperty("--focus-progress", progress);
   setText("#focusTime", formatFocusTime(remaining));
-  setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
+  const sessionOrdinal = focusTodayStats().completed + 1;
+  setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.sessionOrdinal", { session: sessionOrdinal }));
   setText("#focusCurrentLabel", snapshot?.label || (readyBreak ? tr("focus.breakReady") : tr("focus.ready")));
   $("#focusSetup").hidden = Boolean(snapshot);
   $("#focusFinish").hidden = !isFocus;
@@ -3056,7 +3310,7 @@ function renderFocusTimer(snapshot) {
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
   $("#focusInlineTimer")?.style.setProperty("--focus-inline-progress", progress);
   setText("#focusInlineTime", formatFocusTime(remaining));
-  setText("#focusInlinePhase", snapshot ? (isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus")) : tr("focus.readyShort"));
+  setText("#focusInlinePhase", isBreak ? tr("focus.phaseBreak") : tr("focus.sessionOrdinal", { session: sessionOrdinal }));
   setText("#focusInlineLabel", snapshot?.label || tr("focus.untitled"));
   setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusQuickFinish").hidden = !isFocus;
@@ -3156,6 +3410,9 @@ function initFocusTimer() {
 }
 
 function bindEvents() {
+  window.addEventListener("pointermove", moveHabitDrag, { passive: false });
+  window.addEventListener("pointerup", finishHabitSettingsDrag);
+  window.addEventListener("pointercancel", finishHabitSettingsDrag);
   $("#themeSelect").addEventListener("change", event => {
     themeChoice = event.target.value;
     localStorage.setItem(THEME_KEY, themeChoice);
@@ -3323,7 +3580,24 @@ function bindEvents() {
     renderReview();
   });
   $("#addPeriodTarget").addEventListener("click", () => openHabitDialog());
-  $("#generateReview").addEventListener("click", generateReview);
+  $("#openWeeklyReviewCanvas").addEventListener("click", () => openReviewCanvas("week"));
+  $("#generateReview").addEventListener("click", () => openReviewCanvas("month"));
+  $$('[data-review-scope]').forEach(button => button.addEventListener("click", () => setReviewCanvasScope(button.dataset.reviewScope)));
+  $("#reviewCanvasWeek").addEventListener("change", event => { reviewCanvasKey = event.target.value || selectedWorkspaceWeek; renderReviewCanvas(); });
+  $("#reviewCanvasMonth").addEventListener("change", event => { reviewCanvasKey = event.target.value || monthKey(cursor); renderReviewCanvas(); });
+  $("#regenerateReviewCanvas").addEventListener("click", regenerateReviewCanvas);
+  $("#reviewCanvasText").addEventListener("input", event => { reviewCanvasStore()[reviewCanvasKey] = event.target.value; saveState(); });
+  $("#copyReviewCanvas").addEventListener("click", async () => {
+    const text = $("#reviewCanvasText").value;
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      $("#reviewCanvasText").select();
+      document.execCommand("copy");
+    }
+    showToast(tr("reviewCanvas.copied"));
+  });
+  $$(".close-review-canvas").forEach(button => button.addEventListener("click", () => $("#reviewCanvasDialog").close()));
+  $("#reviewCanvasDialog").addEventListener("cancel", event => { event.preventDefault(); $("#reviewCanvasDialog").close(); });
   $("#reviewText").addEventListener("input", e => { state.reviews[monthKey(cursor)] = e.target.value; saveState(); });
   $("#weeklyGoalForm").addEventListener("submit", event => {
     event.preventDefault();
@@ -3408,7 +3682,7 @@ function bindEvents() {
     $("#cloudbaseSignOut").hidden = true;
     setCloudBaseAuthStatus(tr("cloudbase.signedOut"));
   });
-  $("#reminderButton").addEventListener("click", openReminderDialog);
+  $("#habitReminderCard").addEventListener("click", openReminderDialog);
   $$(".close-reminder-dialog").forEach(button => button.addEventListener("click", () => $("#reminderDialog").close()));
   $("#testReminderButton").addEventListener("click", async () => {
     const permission = await requestNotificationPermission();
