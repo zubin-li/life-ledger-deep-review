@@ -57,6 +57,7 @@ const i18n = {
     pwa: { install: "安装为应用", ready: "可安装", manual: "请使用浏览器菜单中的“添加到主屏幕”或“安装应用”。", installed: "Life Ledger 已安装" },
     theme: { label: "外观", system: "跟随系统", light: "浅色模式", dark: "深色模式" },
     toolbar: { open: "展开工具", close: "收起工具", short: "工具" },
+    layout: { move: "拖动调整模块位置", moved: "模块顺序已保存" },
     yearSuffix: "年",
     monthSuffix: "月",
     todayButton: "回到今天",
@@ -277,6 +278,13 @@ const i18n = {
       close: "取消并关闭",
       name: "习惯名称",
       namePlaceholder: "例如：阅读",
+      note: "备注（可选）",
+      notePlaceholder: "这项习惯具体意味着什么？",
+      trackingMode: "打卡方式",
+      trackingCheck: "简单打卡",
+      trackingCheckHelp: "完成或未完成，不需要数值。",
+      trackingMeasured: "带目标值",
+      trackingMeasuredHelp: "显示目标数值与单位。",
       icon: "图标",
       color: "强调色",
       colors: { sage: "鼠尾草绿", amber: "琥珀黄", coral: "珊瑚红", blue: "雾霾蓝", violet: "紫罗兰", cyan: "天空蓝" },
@@ -339,6 +347,7 @@ const i18n = {
     pwa: { install: "Install app", ready: "Ready to install", manual: "Use your browser menu and choose Add to Home Screen or Install app.", installed: "Life Ledger installed" },
     theme: { label: "Appearance", system: "Follow system", light: "Light mode", dark: "Dark mode" },
     toolbar: { open: "Show tools", close: "Hide tools", short: "Tools" },
+    layout: { move: "Drag to reorder this section", moved: "Section order saved" },
     yearSuffix: "",
     monthSuffix: "",
     todayButton: "Today",
@@ -559,6 +568,13 @@ const i18n = {
       close: "Cancel and close",
       name: "Habit name",
       namePlaceholder: "e.g. Reading",
+      note: "Note (optional)",
+      notePlaceholder: "What does this habit mean in practice?",
+      trackingMode: "Tracking style",
+      trackingCheck: "Simple check-in",
+      trackingCheckHelp: "Done or not done, with no number required.",
+      trackingMeasured: "Measured target",
+      trackingMeasuredHelp: "Show a target value and unit.",
       icon: "Icon",
       color: "Accent color",
       colors: { sage: "Sage", amber: "Amber", coral: "Coral", blue: "Blue grey", violet: "Violet", cyan: "Sky blue" },
@@ -621,6 +637,7 @@ const i18n = {
     pwa: { install: "App installieren", ready: "Installationsbereit", manual: "Wähle im Browsermenü „Zum Home-Bildschirm“ oder „App installieren“.", installed: "Life Ledger wurde installiert" },
     theme: { label: "Darstellung", system: "Systemeinstellung", light: "Heller Modus", dark: "Dunkler Modus" },
     toolbar: { open: "Werkzeuge anzeigen", close: "Werkzeuge ausblenden", short: "Werkzeuge" },
+    layout: { move: "Zum Sortieren dieses Bereichs ziehen", moved: "Bereichsreihenfolge gespeichert" },
     yearSuffix: "",
     monthSuffix: "",
     todayButton: "Heute",
@@ -841,6 +858,13 @@ const i18n = {
       close: "Abbrechen und schließen",
       name: "Name der Gewohnheit",
       namePlaceholder: "z. B. Lesen",
+      note: "Notiz (optional)",
+      notePlaceholder: "Was bedeutet diese Gewohnheit konkret?",
+      trackingMode: "Art der Erfassung",
+      trackingCheck: "Einfach abhaken",
+      trackingCheckHelp: "Erledigt oder nicht erledigt, ohne Zahlenwert.",
+      trackingMeasured: "Messbares Ziel",
+      trackingMeasuredHelp: "Zielwert und Einheit anzeigen.",
       icon: "Icon",
       color: "Akzentfarbe",
       colors: { sage: "Salbeigrün", amber: "Bernstein", coral: "Koralle", blue: "Blaugrau", violet: "Violett", cyan: "Himmelblau" },
@@ -954,10 +978,10 @@ const seedEffectiveDate = (() => {
 
 const seed = {
   habits: [
-    { id: "wake", name: "早起", icon: "↗", color: "amber", active: true, versions: [{ target: 1, unit: "05:00–06:00", frequency: "daily", periodTarget: null, countsTowardDaily: true, effectiveDate: seedEffectiveDate }] },
-    { id: "move", name: "每日基础运动量", icon: "◒", color: "sage", active: true, versions: [{ target: 30, unit: "分钟", frequency: "daily", periodTarget: null, countsTowardDaily: true, effectiveDate: seedEffectiveDate }] },
-    { id: "protein", name: "蛋白质摄入", icon: "◇", color: "blue", active: true, versions: [{ target: 100, unit: "克", frequency: "daily", periodTarget: null, countsTowardDaily: true, effectiveDate: seedEffectiveDate }] },
-    { id: "strength", name: "抗阻训练", icon: "⌁", color: "coral", active: true, versions: [{ target: 30, unit: "分钟", frequency: "weekly", periodTarget: 3, weeklyTarget: 3, countsTowardDaily: false, effectiveDate: seedEffectiveDate }] },
+    { id: "wake", name: "早起", icon: "↗", color: "amber", active: true, versions: [{ trackingMode: "check", note: "", target: 1, unit: "", scheduleTime: "05:00", frequency: "daily", periodTarget: null, countsTowardDaily: true, effectiveDate: seedEffectiveDate }] },
+    { id: "move", name: "每日基础运动量", icon: "◒", color: "sage", active: true, versions: [{ trackingMode: "measured", note: "", target: 30, unit: "分钟", frequency: "daily", periodTarget: null, countsTowardDaily: true, effectiveDate: seedEffectiveDate }] },
+    { id: "protein", name: "蛋白质摄入", icon: "◇", color: "blue", active: true, versions: [{ trackingMode: "measured", note: "", target: 100, unit: "克", frequency: "daily", periodTarget: null, countsTowardDaily: true, effectiveDate: seedEffectiveDate }] },
+    { id: "strength", name: "抗阻训练", icon: "⌁", color: "coral", active: true, versions: [{ trackingMode: "measured", note: "", target: 30, unit: "分钟", frequency: "weekly", periodTarget: 3, weeklyTarget: 3, countsTowardDaily: false, effectiveDate: seedEffectiveDate }] },
   ],
   logs: {},
   reviews: {},
@@ -966,6 +990,7 @@ const seed = {
   weeklyOutputs: {},
   focusSessions: [],
   focusSettings: { preset: "classic", focusMinutes: 25, breakMinutes: 5, sound: true, notify: true, wakeLock: true },
+  layoutOrder: {},
 };
 
 let state = loadState();
@@ -1009,6 +1034,7 @@ let todayHabitPage = 0;
 let habitCarouselScrollFrame = 0;
 let habitCarouselDrag = null;
 let suppressHabitCardClick = false;
+let layoutDrag = null;
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -1279,6 +1305,13 @@ function applyDialogLanguage() {
   setText("#habitForm header .kicker", tr("dialog.kicker"));
   setAria(".close-habit-dialog", tr("dialog.close"));
   setText("#habitNameLabel", tr("dialog.name"));
+  setText("#habitNoteLabel", tr("dialog.note"));
+  setPlaceholder('#habitForm textarea[name="note"]', tr("dialog.notePlaceholder"));
+  setText("#habitTrackingModeLabel", tr("dialog.trackingMode"));
+  setText("#habitTrackingCheckLabel", tr("dialog.trackingCheck"));
+  setText("#habitTrackingCheckHelp", tr("dialog.trackingCheckHelp"));
+  setText("#habitTrackingMeasuredLabel", tr("dialog.trackingMeasured"));
+  setText("#habitTrackingMeasuredHelp", tr("dialog.trackingMeasuredHelp"));
   setText("#habitIconLabel", tr("dialog.icon"));
   setText("#habitColorLabel", tr("dialog.color"));
   setText("#habitTargetLabel", tr("dialog.target"));
@@ -1505,12 +1538,17 @@ function scheduleLabel(version) {
   const legacyUnit = String(version?.unit || "").trim();
   return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(legacyUnit) ? legacyUnit : "";
 }
+function trackingModeFor(version) {
+  if (version?.trackingMode === "check" || version?.trackingMode === "measured") return version.trackingMode;
+  const unit = String(version?.unit || "").trim();
+  return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(unit) ? "check" : "measured";
+}
 function habitMetaLabel(version) {
   if (!version) return "";
   const schedule = scheduleLabel(version);
   const unit = String(version.unit || "").trim();
   const unitIsSchedule = /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(unit);
-  const quantity = unitIsSchedule ? "" : `${version.target}${displayUnit(unit)}`;
+  const quantity = trackingModeFor(version) === "check" || unitIsSchedule ? "" : `${version.target}${displayUnit(unit)}`;
   return [frequencyLabel(version), schedule, quantity].filter(Boolean).join(" · ");
 }
 function habitStyle(habit) {
@@ -1546,7 +1584,100 @@ function renderAll() {
   renderCalendar();
   renderReview();
   renderHabitSettings();
+  applyLayoutOrder();
+  decorateLayoutBlocks();
   decorateMotionSurfaces();
+}
+
+function layoutBlocks(container) {
+  return $$(':scope > [data-layout-block]', container);
+}
+function saveLayoutOrder(container) {
+  const view = container.dataset.layoutContainer;
+  if (!view) return;
+  state.layoutOrder = { ...(state.layoutOrder || {}), [view]: layoutBlocks(container).map(block => block.dataset.layoutBlock) };
+  saveState();
+}
+function applyLayoutOrder() {
+  $$('[data-layout-container]').forEach(container => {
+    const order = state.layoutOrder?.[container.dataset.layoutContainer];
+    if (!Array.isArray(order)) return;
+    const blocks = new Map(layoutBlocks(container).map(block => [block.dataset.layoutBlock, block]));
+    order.forEach(id => { if (blocks.has(id)) container.append(blocks.get(id)); });
+    blocks.forEach((block, id) => { if (!order.includes(id)) container.append(block); });
+  });
+}
+function finishLayoutDrag(event, cancelled = false) {
+  if (!layoutDrag || (event?.pointerId !== undefined && event.pointerId !== layoutDrag.pointerId)) return;
+  const { block, handle, container, moved } = layoutDrag;
+  if (handle.hasPointerCapture?.(layoutDrag.pointerId)) handle.releasePointerCapture(layoutDrag.pointerId);
+  block.classList.remove("layout-dragging");
+  document.body.classList.remove("layout-is-dragging");
+  layoutDrag = null;
+  if (!cancelled && moved) {
+    saveLayoutOrder(container);
+    showToast(tr("layout.moved"));
+  }
+}
+function handleLayoutPointerMove(event) {
+  if (!layoutDrag || event.pointerId !== layoutDrag.pointerId) return;
+  event.preventDefault();
+  const edge = 72;
+  if (event.clientY < edge) window.scrollBy(0, -18);
+  else if (event.clientY > window.innerHeight - edge) window.scrollBy(0, 18);
+  const { block, container } = layoutDrag;
+  block.style.pointerEvents = "none";
+  const target = document.elementFromPoint(event.clientX, event.clientY)?.closest?.("[data-layout-block]");
+  block.style.pointerEvents = "";
+  if (!target || target === block || target.parentElement !== container) return;
+  const rect = target.getBoundingClientRect();
+  const before = event.clientY < rect.top + rect.height / 2;
+  container.insertBefore(block, before ? target : target.nextSibling);
+  layoutDrag.moved = true;
+}
+function moveLayoutBlockByKeyboard(handle, direction) {
+  const block = handle.closest("[data-layout-block]");
+  const container = block?.parentElement;
+  if (!block || !container?.dataset.layoutContainer) return;
+  const blocks = layoutBlocks(container);
+  const index = blocks.indexOf(block);
+  const nextIndex = index + direction;
+  if (nextIndex < 0 || nextIndex >= blocks.length) return;
+  if (direction < 0) container.insertBefore(block, blocks[nextIndex]);
+  else container.insertBefore(block, blocks[nextIndex].nextSibling);
+  saveLayoutOrder(container);
+  handle.focus({ preventScroll: true });
+  showToast(tr("layout.moved"));
+}
+function decorateLayoutBlocks() {
+  $$('[data-layout-block]').forEach(block => {
+    let handle = block.querySelector(":scope > .layout-drag-handle");
+    if (!handle) {
+      handle = document.createElement("button");
+      handle.type = "button";
+      handle.className = "layout-drag-handle";
+      handle.innerHTML = '<svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="6" cy="5" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="6" cy="9" r="1"/><circle cx="12" cy="9" r="1"/><circle cx="6" cy="13" r="1"/><circle cx="12" cy="13" r="1"/></svg>';
+      handle.addEventListener("pointerdown", event => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        layoutDrag = { block, container: block.parentElement, handle, pointerId: event.pointerId, moved: false };
+        handle.setPointerCapture(event.pointerId);
+        block.classList.add("layout-dragging");
+        document.body.classList.add("layout-is-dragging");
+      });
+      handle.addEventListener("pointermove", handleLayoutPointerMove);
+      handle.addEventListener("pointerup", finishLayoutDrag);
+      handle.addEventListener("pointercancel", event => finishLayoutDrag(event, true));
+      handle.addEventListener("keydown", event => {
+        if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        moveLayoutBlockByKeyboard(handle, event.key === "ArrowUp" ? -1 : 1);
+      });
+      block.prepend(handle);
+    }
+    handle.title = tr("layout.move");
+    handle.setAttribute("aria-label", tr("layout.move"));
+  });
 }
 
 const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .focus-overview-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
@@ -2207,7 +2338,7 @@ function renderHabitSettings() {
     const v = versionFor(h, isoDate(new Date())) || h.versions[h.versions.length - 1];
     return `<article class="setting-row" style="${habitStyle(h)}">
       <span class="habit-icon">${renderIcon(iconKey(h))}</span>
-      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span></div>
+      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span>${v?.note ? `<small class="setting-note">${escapeHtml(v.note)}</small>` : ""}</div>
       <button class="icon-button edit-habit" data-id="${h.id}" aria-label="${tr("habits.editLabel", { habit: displayHabitName(h) })}">···</button>
     </article>`;
   }).join("");
@@ -2283,6 +2414,8 @@ function updateHabitFormPreview() {
   const color = colors[colorKey];
   const icon = iconCatalog[form.elements.icon.value] ? form.elements.icon.value : "target";
   const version = {
+    trackingMode: form.elements.trackingMode.value,
+    note: form.elements.note.value.trim(),
     target: Math.max(1, Number(form.elements.target.value) || 1),
     unit: form.elements.unit.value.trim(),
     frequency: form.elements.frequency.value,
@@ -2295,6 +2428,9 @@ function updateHabitFormPreview() {
   $("#habitPreviewIcon").innerHTML = renderIcon(icon);
   $("#habitPreviewName").textContent = form.elements.name.value.trim() || tr("dialog.previewName");
   $("#habitPreviewMeta").textContent = habitMetaLabel(version);
+  const previewNote = $("#habitPreviewNote");
+  previewNote.textContent = version.note;
+  previewNote.hidden = !version.note;
 }
 
 function showCelebration() {
@@ -2332,11 +2468,12 @@ function renderDrawer() {
   futureNotice.textContent = future ? tr("drawer.futureLocked") : "";
   $("#drawerHabits").innerHTML = habits.map(h => {
     const done = log.completed.includes(h.id), v = versionFor(h, selectedDate);
-    const note = countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
+    const periodNote = countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
+    const habitNote = String(v?.note || "").trim();
     const target = habitMetaLabel(v);
     return `<details class="drawer-habit ${done ? "done" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
       <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? "✓" : "⌄"}</span></summary>
-      <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${note}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
+      <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${habitNote ? `<p class="drawer-habit-note">${escapeHtml(habitNote)}</p>` : ""}${periodNote}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
     </details>`;
   }).join("");
   $$(".drawer-habit-toggle").forEach(button => button.addEventListener("click", () => toggleHabit(selectedDate, button.closest(".drawer-habit").dataset.id)));
@@ -2357,12 +2494,14 @@ function openHabitDialog(id = null) {
   const v = habit ? versionFor(habit, isoDate(new Date())) || habit.versions[habit.versions.length - 1] : null;
   $("#habitDialogTitle").textContent = habit ? tr("dialog.editTitle", { habit: displayHabitName(habit) }) : tr("dialog.addTitle");
   form.elements.name.value = habit?.name || "";
+  form.elements.note.value = v?.note || "";
   form.elements.icon.value = habit ? iconKey(habit) : "target";
   form.elements.color.value = habit?.color || "sage";
   form.elements.target.value = v?.target || 30;
   form.elements.unit.value = v?.unit || "分钟";
+  form.elements.trackingMode.value = v ? trackingModeFor(v) : "check";
   form.elements.frequency.value = v?.frequency || "daily";
-  form.elements.scheduleTime.value = v?.scheduleTime || (/^\d{1,2}:\d{2}$/.test(String(v?.unit || "")) ? v.unit : "");
+  form.elements.scheduleTime.value = v?.scheduleTime || String(v?.unit || "").match(/^(\d{1,2}:\d{2})/)?.[1] || "";
   form.elements.periodTarget.value = v ? periodTargetFor(v) : 3;
   form.elements.countsTowardDaily.checked = v ? countsTowardDaily(habit, isoDate(new Date())) : true;
   form.elements.effectiveDate.value = isoDate(new Date());
@@ -2383,7 +2522,12 @@ function closeHabitDialog() {
 function updateHabitFormRules() {
   const form = $("#habitForm");
   const frequency = form.elements.frequency.value;
+  const measured = form.elements.trackingMode.value === "measured";
   const periodField = $("#periodTargetField");
+  $("#habitTargetField").hidden = !measured;
+  $("#habitUnitField").hidden = !measured;
+  form.elements.target.required = measured;
+  form.elements.unit.required = measured;
   periodField.style.display = frequency === "daily" ? "none" : "";
   form.elements.periodTarget.required = frequency !== "daily";
   form.elements.periodTarget.max = frequency === "weekly" ? 7 : 31;
@@ -2393,8 +2537,13 @@ function saveHabitFromForm(event) {
   event.preventDefault();
   const isEditing = Boolean(editingHabitId);
   const form = new FormData(event.currentTarget);
+  const measured = form.get("trackingMode") === "measured";
   const version = {
-    target: +form.get("target"), unit: form.get("unit"), frequency: form.get("frequency"),
+    trackingMode: measured ? "measured" : "check",
+    note: String(form.get("note") || "").trim(),
+    target: measured ? +form.get("target") : 1,
+    unit: measured ? String(form.get("unit") || "").trim() : "",
+    frequency: form.get("frequency"),
     scheduleTime: form.get("scheduleTime") || "",
     periodTarget: form.get("frequency") === "daily" ? null : +form.get("periodTarget"),
     weeklyTarget: form.get("frequency") === "weekly" ? +form.get("periodTarget") : null,
@@ -2454,7 +2603,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), layoutOrder: cloneData(state.layoutOrder || {}), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -2562,6 +2711,7 @@ function importedPayload(raw) {
   }
   if (payload.focusSessions !== undefined && !Array.isArray(payload.focusSessions)) throw new Error("invalid-focusSessions");
   if (payload.focusSettings !== undefined && !isRecord(payload.focusSettings)) throw new Error("invalid-focusSettings");
+  if (payload.layoutOrder !== undefined && !isRecord(payload.layoutOrder)) throw new Error("invalid-layoutOrder");
   const scope = modern ? raw.scope : payload.exportMeta?.scope || "all";
   return {
     modern,
@@ -2578,6 +2728,7 @@ function importedPayload(raw) {
       weeklyOutputs: cloneData(payload.weeklyOutputs || {}),
       focusSessions: cloneData(payload.focusSessions || []),
       focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
+      layoutOrder: cloneData(payload.layoutOrder || {}),
     },
   };
 }
@@ -2648,6 +2799,7 @@ function mergeBackupData(current, incoming) {
     weeklyOutputs: { ...(current.weeklyOutputs || {}), ...(incoming.weeklyOutputs || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
+    layoutOrder: { ...(incoming.layoutOrder || {}), ...(current.layoutOrder || {}) },
   };
 }
 function restorePendingImport() {
@@ -3078,6 +3230,8 @@ function initFocusTimer() {
 }
 
 function bindEvents() {
+  window.addEventListener("pointerup", finishLayoutDrag);
+  window.addEventListener("pointercancel", event => finishLayoutDrag(event, true));
   $("#themeSelect").addEventListener("change", event => {
     themeChoice = event.target.value;
     localStorage.setItem(THEME_KEY, themeChoice);
@@ -3226,6 +3380,7 @@ function bindEvents() {
   });
   $$("[data-open-settings]").forEach(b => b.addEventListener("click", () => $(".nav-item[data-view='habits']").click()));
   $("#habitForm").elements.frequency.addEventListener("change", updateHabitFormRules);
+  $$('#habitForm input[name="trackingMode"]').forEach(input => input.addEventListener("change", updateHabitFormRules));
   $("#habitForm").addEventListener("input", updateHabitFormPreview);
   $("#iconPickerTrigger").addEventListener("click", () => {
     toggleHabitPicker("icon");
