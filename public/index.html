@@ -165,6 +165,8 @@
               <h2 id="focusOverviewTitle">Focus Time</h2>
               <p id="focusOverviewHint">Choose one thing. Give it your full attention.</p>
               <p class="focus-session-summary" id="focusSessionSummary">0 sessions completed today · 0 min</p>
+              <div class="focus-today-breakdown" id="focusTodayBreakdown" hidden></div>
+              <label class="focus-quick-label"><span id="focusQuickLabelText">Focus on</span><input id="focusQuickLabel" list="focusTopicSuggestions" maxlength="100" placeholder="Name this focus…" /><datalist id="focusTopicSuggestions"></datalist></label>
               <div class="focus-quick-settings">
                 <div class="focus-quick-presets" id="focusQuickPresets" role="group" aria-label="Quick timer length">
                   <button type="button" data-quick-focus-preset="classic">25</button>
@@ -295,6 +297,22 @@
             <h2 id="reviewTitle">June 2026</h2>
           </div>
           <div class="score-grid" id="scoreGrid"></div>
+          <article class="panel focus-review-panel">
+            <div class="panel-heading">
+              <div><span class="kicker" id="focusReviewKicker">FOCUS REVIEW</span><h3 id="focusReviewTitle">Focused time</h3></div>
+              <label class="review-week-select"><span id="focusReviewWeekLabel">Week</span><select id="focusReviewWeekSelect"></select></label>
+            </div>
+            <div class="focus-review-content">
+              <div class="focus-review-summary">
+                <span id="focusReviewRange">10 Aug — 16 Aug</span>
+                <strong><b id="focusReviewTotal">0</b><small id="focusReviewUnit">min</small></strong>
+                <p id="focusReviewComparison">No focus time recorded this week.</p>
+                <div class="focus-review-breakdown" id="focusReviewBreakdown" hidden></div>
+              </div>
+              <div class="focus-review-chart" id="focusReviewBars" aria-label="Focused minutes by day"></div>
+            </div>
+            <footer class="focus-review-footer"><span id="focusReviewMonthTotal">August · 0 min total</span></footer>
+          </article>
           <div class="review-grid">
             <article class="panel chart-panel">
               <div class="panel-heading"><div><span class="kicker">RHYTHM</span><h3>每日完成节奏</h3></div><span class="panel-meta">按日期</span></div>
@@ -318,21 +336,6 @@
           <article class="panel monthly-reflection-panel">
             <div class="panel-heading"><div><span class="kicker">MONTHLY REFLECTION</span><h3>General Reflection</h3></div><div class="reflection-actions"><span class="autosave">● autosaved</span><button class="secondary-button" id="generateReview" type="button">Start guided review</button></div></div>
             <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
-          </article>
-          <article class="panel focus-review-panel">
-            <div class="panel-heading">
-              <div><span class="kicker" id="focusReviewKicker">FOCUS REVIEW</span><h3 id="focusReviewTitle">Focused time</h3></div>
-              <label class="review-week-select"><span id="focusReviewWeekLabel">Week</span><select id="focusReviewWeekSelect"></select></label>
-            </div>
-            <div class="focus-review-content">
-              <div class="focus-review-summary">
-                <span id="focusReviewRange">10 Aug — 16 Aug</span>
-                <strong><b id="focusReviewTotal">0</b><small id="focusReviewUnit">min</small></strong>
-                <p id="focusReviewComparison">No focus time recorded this week.</p>
-              </div>
-              <div class="focus-review-chart" id="focusReviewBars" aria-label="Focused minutes by day"></div>
-            </div>
-            <footer class="focus-review-footer"><span id="focusReviewMonthTotal">August · 0 min total</span></footer>
           </article>
         </section>
 

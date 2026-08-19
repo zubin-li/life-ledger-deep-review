@@ -119,7 +119,7 @@ const i18n = {
     focus: {
       kicker: "专注", overviewTitle: "专注时间", overviewHint: "只选一件事，把注意力完整地交给它。", open: "开始专注", openActive: "查看计时", settings: "设置", presetSummary: "{focus} 分钟专注 · {break} 分钟休息", readyShort: "准备开始",
       todayMinutes: "今日分钟", sessions: "次专注", weekMinutes: "本周分钟", weekChart: "本周专注时间", dialogKicker: "专注计时", dialogTitle: "把这一段时间，用在重要的事上。",
-      phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", customLabel: "或为这次专注命名", customPlaceholder: "什么值得你现在专注？",
+      phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", quickLabel: "专注主题", quickPlaceholder: "例如：数据分析、写作…", customLabel: "或为这次专注命名", customPlaceholder: "什么值得你现在专注？",
       custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
       caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", sessionSummary: "今日已完成 {sessions} 个 Session · {minutes} 分钟", sessionOrdinal: "Session {session}", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewWeek: "选择一周", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这一周还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", monthTotal: "{month} · 共 {minutes} 分钟",
     },
@@ -415,7 +415,7 @@ const i18n = {
     focus: {
       kicker: "FOCUS", overviewTitle: "Focus Time", overviewHint: "Choose one thing. Give it your full attention.", open: "Start focus", openActive: "View timer", settings: "Settings", presetSummary: "{focus} min focus · {break} min break", readyShort: "Ready",
       todayMinutes: "min today", sessions: "sessions", weekMinutes: "min this week", weekChart: "Focus time this week", dialogKicker: "FOCUS TIMER", dialogTitle: "Make this time count.",
-      phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", customLabel: "Or name this session", customPlaceholder: "What deserves your attention?",
+      phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", quickLabel: "Focus topic", quickPlaceholder: "e.g. Data analysis, writing…", customLabel: "Or name this session", customPlaceholder: "What deserves your attention?",
       custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
       caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Focus session", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.", sessionSummary: "{sessions} sessions completed today · {minutes} min", sessionOrdinal: "Session {session}", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewWeek: "Choose week", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded this week.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", monthTotal: "{month} · {minutes} min total",
     },
@@ -711,7 +711,7 @@ const i18n = {
     focus: {
       kicker: "FOKUS", overviewTitle: "Fokuszeit", overviewHint: "Wähle eine Sache und schenke ihr deine volle Aufmerksamkeit.", open: "Fokus starten", openActive: "Timer öffnen", settings: "Einstellungen", presetSummary: "{focus} Min. Fokus · {break} Min. Pause", readyShort: "Bereit",
       todayMinutes: "Min. heute", sessions: "Einheiten", weekMinutes: "Min. diese Woche", weekChart: "Fokuszeit dieser Woche", dialogKicker: "FOKUS-TIMER", dialogTitle: "Nutze diese Zeit für das Wesentliche.",
-      phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", customLabel: "Oder Fokus benennen", customPlaceholder: "Was verdient jetzt deine Aufmerksamkeit?",
+      phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", quickLabel: "Fokusthema", quickPlaceholder: "z. B. Datenanalyse, Schreiben…", customLabel: "Oder Fokus benennen", customPlaceholder: "Was verdient jetzt deine Aufmerksamkeit?",
       custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
       caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", sessionSummary: "Heute {sessions} Sessions abgeschlossen · {minutes} Min.", sessionOrdinal: "Session {session}", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewWeek: "Woche wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diese Woche gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", monthTotal: "{month} · insgesamt {minutes} Min.",
     },
@@ -1301,6 +1301,8 @@ function applyFocusLanguage() {
   setText("#focusOverviewKicker", tr("focus.kicker"));
   setText("#focusOverviewTitle", tr("focus.overviewTitle"));
   setText("#focusOverviewHint", tr("focus.overviewHint"));
+  setText("#focusQuickLabelText", tr("focus.quickLabel"));
+  setPlaceholder("#focusQuickLabel", tr("focus.quickPlaceholder"));
   setText("#focusSettingsLabel", tr("focus.settings"));
   setAria("#openFocusTimer", tr("focus.settings"));
   setAria("#focusQuickPresets", tr("focus.presetSummary", { focus: 25, break: 5 }));
@@ -2096,6 +2098,12 @@ function renderFocusReview(year, month) {
     return { date, minutes };
   });
   const total = daily.reduce((sum, item) => sum + item.minutes, 0);
+  const weekSessions = focusSessionsBetween(isoDate(monday), isoDate(sunday));
+  const byTopic = [...weekSessions.reduce((groups, session) => {
+    const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+    groups.set(label, (groups.get(label) || 0) + focusSessionMinutes(session));
+    return groups;
+  }, new Map()).entries()].filter(([, minutes]) => minutes >= .5).sort((a, b) => b[1] - a[1]);
   const previous = weekDatesFromKey(shiftWeekKey(selectedReviewWeek, -1));
   const previousTotal = focusSessionsBetween(isoDate(previous.monday), isoDate(previous.sunday)).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
   const difference = Math.round(total - previousTotal);
@@ -2108,6 +2116,8 @@ function renderFocusReview(year, month) {
   setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPrevious", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPrevious", { minutes: Math.abs(difference) }) : tr("focus.sameAsPrevious"));
   setText("#focusReviewMonthTotal", tr("focus.monthTotal", { month: currentLang === "zh" ? `${month + 1}月` : monthName(month), minutes: Math.round(monthTotal) }));
   $("#focusReviewBars").innerHTML = daily.map(item => `<span class="focus-review-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.minutes ? Math.round(item.minutes) : ""}</b><i style="height:${Math.max(4, item.minutes / max * 100)}%"></i><small>${escapeHtml(weekdayShortName(item.date.getDay()))}</small></span>`).join("");
+  $("#focusReviewBreakdown").hidden = !byTopic.length;
+  $("#focusReviewBreakdown").innerHTML = byTopic.slice(0, 4).map(([label, minutes]) => `<span><b>${escapeHtml(label)}</b><small>${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</small></span>`).join("");
 }
 function renderPeriodicGoals(dates) {
   const finalDate = dates[dates.length - 1];
@@ -3152,6 +3162,16 @@ function renderFocusOverview() {
   const today = focusTodayStats();
   setText("#focusPresetSummary", tr("focus.presetSummary", { focus: settings.focusMinutes, break: settings.breakMinutes }));
   setText("#focusSessionSummary", tr("focus.sessionSummary", { sessions: today.completed, minutes: today.minutes }));
+  const todayKey = isoDate(new Date());
+  const byTopic = [...focusSessionsBetween(todayKey, todayKey).reduce((groups, session) => {
+    const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+    groups.set(label, (groups.get(label) || 0) + focusSessionMinutes(session));
+    return groups;
+  }, new Map()).entries()].filter(([, minutes]) => minutes >= .5).sort((a, b) => b[1] - a[1]);
+  $("#focusTodayBreakdown").hidden = !byTopic.length;
+  $("#focusTodayBreakdown").innerHTML = byTopic.slice(0, 3).map(([label, minutes]) => `<span><b>${escapeHtml(label)}</b><small>${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</small></span>`).join("");
+  const recentTopics = [...new Set([...(state.focusSessions || [])].reverse().map(session => String(session.label || "").trim()).filter(label => label && label !== tr("focus.untitled")))].slice(0, 8);
+  $("#focusTopicSuggestions").innerHTML = recentTopics.map(label => `<option value="${escapeHtml(label)}"></option>`).join("");
   $$('[data-quick-focus-preset]').forEach(button => {
     button.classList.toggle("active", button.dataset.quickFocusPreset === settings.preset);
     button.disabled = Boolean(focusTimer?.snapshot());
@@ -3328,7 +3348,7 @@ function openFocusTimerDialog(linkedGoalId = "") {
   const snapshot = focusTimer?.snapshot();
   renderFocusGoalOptions(snapshot?.linkedGoalId || linkedGoalId);
   if (!snapshot) {
-    $("#focusCustomLabel").value = "";
+    $("#focusCustomLabel").value = $("#focusQuickLabel")?.value.trim() || "";
     $("#focusMinutes").value = state.focusSettings?.focusMinutes || 25;
     $("#focusBreakMinutes").value = state.focusSettings?.breakMinutes || 5;
     $("#focusSound").checked = state.focusSettings?.sound !== false;
@@ -3364,7 +3384,7 @@ async function startQuickFocusSession() {
   if (settings.notify) requestNotificationPermission();
   focusTimer.start({
     date: isoDate(new Date()),
-    label: tr("focus.untitled"),
+    label: $("#focusQuickLabel")?.value.trim() || tr("focus.untitled"),
     preset: settings.preset,
     durationMinutes: settings.focusMinutes,
     breakMinutes: settings.breakMinutes,
@@ -3458,6 +3478,11 @@ function bindEvents() {
   $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
   $$('[data-quick-focus-preset]').forEach(button => button.addEventListener("click", () => selectQuickFocusPreset(button.dataset.quickFocusPreset)));
   $("#focusQuickPrimary").addEventListener("click", handleFocusQuickPrimary);
+  $("#focusQuickLabel").addEventListener("keydown", event => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    $("#focusQuickPrimary").click();
+  });
   $("#focusQuickFinish").addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
   $("#focusQuickSkip").addEventListener("click", () => {
     focusTimer?.skipBreak();
