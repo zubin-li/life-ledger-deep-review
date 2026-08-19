@@ -24,7 +24,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=0.3.1" />
+    <link rel="stylesheet" href="./styles.css?v=0.3.2" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -383,10 +383,16 @@
         <header><div><span class="kicker">HABIT VERSION</span><h2 id="habitDialogTitle">新增习惯</h2></div><button class="icon-button close-habit-dialog" type="button" aria-label="取消并关闭">×</button></header>
         <div class="form-grid">
           <label class="full"><span id="habitNameLabel">习惯名称</span><input name="name" required placeholder="例如：阅读" /></label>
+          <label class="full"><span id="habitNoteLabel">备注（可选）</span><textarea name="note" maxlength="500" rows="3" placeholder="这项习惯具体意味着什么？"></textarea></label>
           <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="iconPickerPopover"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" role="dialog" aria-label="选择图标" hidden></div></label>
           <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="colorPickerPopover"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" role="dialog" aria-label="选择强调色" hidden></div></label>
-          <label><span id="habitTargetLabel">目标值</span><input name="target" required type="number" min="1" value="30" /></label>
-          <label><span id="habitUnitLabel">单位</span><input name="unit" required value="分钟" /></label>
+          <fieldset class="full tracking-mode-choice">
+            <legend id="habitTrackingModeLabel">打卡方式</legend>
+            <label><input name="trackingMode" type="radio" value="check" checked /><span><strong id="habitTrackingCheckLabel">简单打卡</strong><small id="habitTrackingCheckHelp">完成或未完成，不需要数值。</small></span></label>
+            <label><input name="trackingMode" type="radio" value="measured" /><span><strong id="habitTrackingMeasuredLabel">带目标值</strong><small id="habitTrackingMeasuredHelp">显示目标数值与单位。</small></span></label>
+          </fieldset>
+          <label id="habitTargetField"><span id="habitTargetLabel">目标值</span><input name="target" type="number" min="1" value="30" /></label>
+          <label id="habitUnitField"><span id="habitUnitLabel">单位</span><input name="unit" value="分钟" /></label>
           <label><span id="habitFrequencyLabel">统计周期</span><select name="frequency"><option value="daily">每日</option><option value="weekly">每周</option><option value="monthly">每月</option></select></label>
           <label id="habitScheduleField"><span id="habitScheduleLabel">具体时间（可选）</span><input name="scheduleTime" type="time" /></label>
           <label id="periodTargetField"><span id="habitPeriodTargetLabel">周期内目标次数</span><input name="periodTarget" type="number" min="1" max="31" value="3" /></label>
@@ -396,7 +402,7 @@
           </label>
           <div class="habit-live-preview full" id="habitLivePreview" style="--habit-color:#6f8f7d;--habit-soft:#dbe6dc">
             <span class="habit-icon" id="habitPreviewIcon"></span>
-            <div><small id="habitPreviewKicker">即时预览</small><strong id="habitPreviewName">新习惯</strong><span id="habitPreviewMeta">每日 · 30分钟</span></div>
+            <div><small id="habitPreviewKicker">即时预览</small><strong id="habitPreviewName">新习惯</strong><span id="habitPreviewMeta">每日</span><p id="habitPreviewNote" hidden></p></div>
             <i aria-hidden="true">✓</i>
           </div>
           <label class="full"><span id="habitEffectiveDateLabel">生效日期</span><input name="effectiveDate" required type="date" /></label>
@@ -544,10 +550,10 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=0.3.1"></script>
-    <script src="./_init_tcb-env.js?v=0.3.1"></script>
-    <script src="./cloudbase-sync.js?v=0.3.1"></script>
-    <script src="./focus-timer.js?v=0.3.1"></script>
-    <script src="./app.js?v=0.3.1"></script>
+    <script src="./deployment-mode.js?v=0.3.2"></script>
+    <script src="./_init_tcb-env.js?v=0.3.2"></script>
+    <script src="./cloudbase-sync.js?v=0.3.2"></script>
+    <script src="./focus-timer.js?v=0.3.2"></script>
+    <script src="./app.js?v=0.3.2"></script>
   </body>
 </html>

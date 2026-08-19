@@ -245,6 +245,9 @@ const i18n = {
       active: "生效中",
       inactive: "已停用",
       editLabel: "编辑{habit}",
+      moveUp: "上移{habit}",
+      moveDown: "下移{habit}",
+      moved: "习惯顺序已保存",
       daily: "每日",
       weekly: "每周 {target} 次",
       monthly: "每月 {target} 次",
@@ -277,6 +280,13 @@ const i18n = {
       close: "取消并关闭",
       name: "习惯名称",
       namePlaceholder: "例如：阅读",
+      note: "备注（可选）",
+      notePlaceholder: "这项习惯具体意味着什么？",
+      trackingMode: "打卡方式",
+      trackingCheck: "简单打卡",
+      trackingCheckHelp: "完成或未完成，不需要数值。",
+      trackingMeasured: "带目标值",
+      trackingMeasuredHelp: "显示目标数值与单位。",
       icon: "图标",
       color: "强调色",
       colors: { sage: "鼠尾草绿", amber: "琥珀黄", coral: "珊瑚红", blue: "雾霾蓝", violet: "紫罗兰", cyan: "天空蓝" },
@@ -527,6 +537,9 @@ const i18n = {
       active: "Active",
       inactive: "Inactive",
       editLabel: "Edit {habit}",
+      moveUp: "Move {habit} up",
+      moveDown: "Move {habit} down",
+      moved: "Habit order saved",
       daily: "Daily",
       weekly: "{target}× / week",
       monthly: "{target}× / month",
@@ -559,6 +572,13 @@ const i18n = {
       close: "Cancel and close",
       name: "Habit name",
       namePlaceholder: "e.g. Reading",
+      note: "Note (optional)",
+      notePlaceholder: "What does this habit mean in practice?",
+      trackingMode: "Tracking style",
+      trackingCheck: "Simple check-in",
+      trackingCheckHelp: "Done or not done, with no number required.",
+      trackingMeasured: "Measured target",
+      trackingMeasuredHelp: "Show a target value and unit.",
       icon: "Icon",
       color: "Accent color",
       colors: { sage: "Sage", amber: "Amber", coral: "Coral", blue: "Blue grey", violet: "Violet", cyan: "Sky blue" },
@@ -809,6 +829,9 @@ const i18n = {
       active: "Aktiv",
       inactive: "Inaktiv",
       editLabel: "{habit} bearbeiten",
+      moveUp: "{habit} nach oben verschieben",
+      moveDown: "{habit} nach unten verschieben",
+      moved: "Reihenfolge gespeichert",
       daily: "Täglich",
       weekly: "{target}× / Woche",
       monthly: "{target}× / Monat",
@@ -841,6 +864,13 @@ const i18n = {
       close: "Abbrechen und schließen",
       name: "Name der Gewohnheit",
       namePlaceholder: "z. B. Lesen",
+      note: "Notiz (optional)",
+      notePlaceholder: "Was bedeutet diese Gewohnheit konkret?",
+      trackingMode: "Art der Erfassung",
+      trackingCheck: "Einfach abhaken",
+      trackingCheckHelp: "Erledigt oder nicht erledigt, ohne Zahlenwert.",
+      trackingMeasured: "Messbares Ziel",
+      trackingMeasuredHelp: "Zielwert und Einheit anzeigen.",
       icon: "Icon",
       color: "Akzentfarbe",
       colors: { sage: "Salbeigrün", amber: "Bernstein", coral: "Koralle", blue: "Blaugrau", violet: "Violett", cyan: "Himmelblau" },
@@ -1279,6 +1309,13 @@ function applyDialogLanguage() {
   setText("#habitForm header .kicker", tr("dialog.kicker"));
   setAria(".close-habit-dialog", tr("dialog.close"));
   setText("#habitNameLabel", tr("dialog.name"));
+  setText("#habitNoteLabel", tr("dialog.note"));
+  setPlaceholder('#habitForm textarea[name="note"]', tr("dialog.notePlaceholder"));
+  setText("#habitTrackingModeLabel", tr("dialog.trackingMode"));
+  setText("#habitTrackingCheckLabel", tr("dialog.trackingCheck"));
+  setText("#habitTrackingCheckHelp", tr("dialog.trackingCheckHelp"));
+  setText("#habitTrackingMeasuredLabel", tr("dialog.trackingMeasured"));
+  setText("#habitTrackingMeasuredHelp", tr("dialog.trackingMeasuredHelp"));
   setText("#habitIconLabel", tr("dialog.icon"));
   setText("#habitColorLabel", tr("dialog.color"));
   setText("#habitTargetLabel", tr("dialog.target"));
@@ -1505,12 +1542,17 @@ function scheduleLabel(version) {
   const legacyUnit = String(version?.unit || "").trim();
   return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(legacyUnit) ? legacyUnit : "";
 }
+function trackingModeFor(version) {
+  if (version?.trackingMode === "check" || version?.trackingMode === "measured") return version.trackingMode;
+  const unit = String(version?.unit || "").trim();
+  return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(unit) ? "check" : "measured";
+}
 function habitMetaLabel(version) {
   if (!version) return "";
   const schedule = scheduleLabel(version);
   const unit = String(version.unit || "").trim();
   const unitIsSchedule = /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(unit);
-  const quantity = unitIsSchedule ? "" : `${version.target}${displayUnit(unit)}`;
+  const quantity = trackingModeFor(version) === "check" || unitIsSchedule ? "" : `${version.target}${displayUnit(unit)}`;
   return [frequencyLabel(version), schedule, quantity].filter(Boolean).join(" · ");
 }
 function habitStyle(habit) {
@@ -2203,15 +2245,33 @@ function formatWeekRangeInMonth(key, year, month) {
 function renderHabitSettings() {
   const activeCount = state.habits.filter(habit => habit.active).length;
   $("#habitSummary").textContent = tr("habits.summary", { count: activeCount });
-  $("#habitSettingsList").innerHTML = state.habits.map(h => {
+  $("#habitSettingsList").innerHTML = state.habits.map((h, index) => {
     const v = versionFor(h, isoDate(new Date())) || h.versions[h.versions.length - 1];
     return `<article class="setting-row" style="${habitStyle(h)}">
       <span class="habit-icon">${renderIcon(iconKey(h))}</span>
-      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span></div>
-      <button class="icon-button edit-habit" data-id="${h.id}" aria-label="${tr("habits.editLabel", { habit: displayHabitName(h) })}">···</button>
+      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span>${v?.note ? `<small class="setting-note">${escapeHtml(v.note)}</small>` : ""}</div>
+      <div class="setting-actions">
+        <button class="habit-order-button" type="button" data-id="${h.id}" data-direction="-1" ${index === 0 ? "disabled" : ""} aria-label="${tr("habits.moveUp", { habit: displayHabitName(h) })}">↑</button>
+        <button class="habit-order-button" type="button" data-id="${h.id}" data-direction="1" ${index === state.habits.length - 1 ? "disabled" : ""} aria-label="${tr("habits.moveDown", { habit: displayHabitName(h) })}">↓</button>
+        <button class="icon-button edit-habit" type="button" data-id="${h.id}" aria-label="${tr("habits.editLabel", { habit: displayHabitName(h) })}">···</button>
+      </div>
     </article>`;
   }).join("");
   $$(".edit-habit").forEach(b => b.addEventListener("click", () => openHabitDialog(b.dataset.id)));
+  $$(".habit-order-button").forEach(button => button.addEventListener("click", () => moveHabit(button.dataset.id, Number(button.dataset.direction))));
+}
+
+function moveHabit(id, direction) {
+  const index = state.habits.findIndex(habit => habit.id === id);
+  const nextIndex = index + direction;
+  if (index < 0 || nextIndex < 0 || nextIndex >= state.habits.length) return;
+  const [habit] = state.habits.splice(index, 1);
+  state.habits.splice(nextIndex, 0, habit);
+  saveState();
+  renderAll();
+  showToast(tr("habits.moved"));
+  const nextButton = $(`.habit-order-button[data-id="${CSS.escape(id)}"][data-direction="${direction}"]`);
+  nextButton?.focus({ preventScroll: true });
 }
 
 function renderIconPicker() {
@@ -2283,6 +2343,8 @@ function updateHabitFormPreview() {
   const color = colors[colorKey];
   const icon = iconCatalog[form.elements.icon.value] ? form.elements.icon.value : "target";
   const version = {
+    trackingMode: form.elements.trackingMode.value,
+    note: form.elements.note.value.trim(),
     target: Math.max(1, Number(form.elements.target.value) || 1),
     unit: form.elements.unit.value.trim(),
     frequency: form.elements.frequency.value,
@@ -2295,6 +2357,9 @@ function updateHabitFormPreview() {
   $("#habitPreviewIcon").innerHTML = renderIcon(icon);
   $("#habitPreviewName").textContent = form.elements.name.value.trim() || tr("dialog.previewName");
   $("#habitPreviewMeta").textContent = habitMetaLabel(version);
+  const previewNote = $("#habitPreviewNote");
+  previewNote.textContent = version.note;
+  previewNote.hidden = !version.note;
 }
 
 function showCelebration() {
@@ -2332,11 +2397,12 @@ function renderDrawer() {
   futureNotice.textContent = future ? tr("drawer.futureLocked") : "";
   $("#drawerHabits").innerHTML = habits.map(h => {
     const done = log.completed.includes(h.id), v = versionFor(h, selectedDate);
-    const note = countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
+    const periodNote = countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
+    const habitNote = String(v?.note || "").trim();
     const target = habitMetaLabel(v);
     return `<details class="drawer-habit ${done ? "done" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
       <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? "✓" : "⌄"}</span></summary>
-      <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${note}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
+      <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${habitNote ? `<p class="drawer-habit-note">${escapeHtml(habitNote)}</p>` : ""}${periodNote}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
     </details>`;
   }).join("");
   $$(".drawer-habit-toggle").forEach(button => button.addEventListener("click", () => toggleHabit(selectedDate, button.closest(".drawer-habit").dataset.id)));
@@ -2357,12 +2423,14 @@ function openHabitDialog(id = null) {
   const v = habit ? versionFor(habit, isoDate(new Date())) || habit.versions[habit.versions.length - 1] : null;
   $("#habitDialogTitle").textContent = habit ? tr("dialog.editTitle", { habit: displayHabitName(habit) }) : tr("dialog.addTitle");
   form.elements.name.value = habit?.name || "";
+  form.elements.note.value = v?.note || "";
   form.elements.icon.value = habit ? iconKey(habit) : "target";
   form.elements.color.value = habit?.color || "sage";
   form.elements.target.value = v?.target || 30;
   form.elements.unit.value = v?.unit || "分钟";
+  form.elements.trackingMode.value = v ? trackingModeFor(v) : "check";
   form.elements.frequency.value = v?.frequency || "daily";
-  form.elements.scheduleTime.value = v?.scheduleTime || (/^\d{1,2}:\d{2}$/.test(String(v?.unit || "")) ? v.unit : "");
+  form.elements.scheduleTime.value = v?.scheduleTime || String(v?.unit || "").match(/^(\d{1,2}:\d{2})/)?.[1] || "";
   form.elements.periodTarget.value = v ? periodTargetFor(v) : 3;
   form.elements.countsTowardDaily.checked = v ? countsTowardDaily(habit, isoDate(new Date())) : true;
   form.elements.effectiveDate.value = isoDate(new Date());
@@ -2383,7 +2451,12 @@ function closeHabitDialog() {
 function updateHabitFormRules() {
   const form = $("#habitForm");
   const frequency = form.elements.frequency.value;
+  const measured = form.elements.trackingMode.value === "measured";
   const periodField = $("#periodTargetField");
+  $("#habitTargetField").hidden = !measured;
+  $("#habitUnitField").hidden = !measured;
+  form.elements.target.required = measured;
+  form.elements.unit.required = measured;
   periodField.style.display = frequency === "daily" ? "none" : "";
   form.elements.periodTarget.required = frequency !== "daily";
   form.elements.periodTarget.max = frequency === "weekly" ? 7 : 31;
@@ -2393,8 +2466,13 @@ function saveHabitFromForm(event) {
   event.preventDefault();
   const isEditing = Boolean(editingHabitId);
   const form = new FormData(event.currentTarget);
+  const measured = form.get("trackingMode") === "measured";
   const version = {
-    target: +form.get("target"), unit: form.get("unit"), frequency: form.get("frequency"),
+    trackingMode: measured ? "measured" : "check",
+    note: String(form.get("note") || "").trim(),
+    target: measured ? +form.get("target") : 1,
+    unit: measured ? String(form.get("unit") || "").trim() : "",
+    frequency: form.get("frequency"),
     scheduleTime: form.get("scheduleTime") || "",
     periodTarget: form.get("frequency") === "daily" ? null : +form.get("periodTarget"),
     weeklyTarget: form.get("frequency") === "weekly" ? +form.get("periodTarget") : null,
@@ -3226,6 +3304,7 @@ function bindEvents() {
   });
   $$("[data-open-settings]").forEach(b => b.addEventListener("click", () => $(".nav-item[data-view='habits']").click()));
   $("#habitForm").elements.frequency.addEventListener("change", updateHabitFormRules);
+  $$('#habitForm input[name="trackingMode"]').forEach(input => input.addEventListener("change", updateHabitFormRules));
   $("#habitForm").addEventListener("input", updateHabitFormPreview);
   $("#iconPickerTrigger").addEventListener("click", () => {
     toggleHabitPicker("icon");

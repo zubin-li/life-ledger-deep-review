@@ -301,7 +301,15 @@ dialog h2 { margin: 5px 0 0; font: 600 23px "Noto Serif SC"; }
 .form-grid { padding: 25px 26px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-grid label { color: var(--muted); font-size: 10px; }
 .form-grid label.full { grid-column: 1 / -1; }
-.form-grid input, .form-grid select { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px; background: rgba(255,255,255,.55); margin-top: 6px; outline: none; }
+.form-grid input, .form-grid select, .form-grid textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px; background: rgba(255,255,255,.55); margin-top: 6px; outline: none; }
+.form-grid textarea { min-height: 72px; resize: vertical; font: 11px/1.55 var(--font-body); }
+.tracking-mode-choice { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; padding: 0; border: 0; }
+.tracking-mode-choice legend { margin-bottom: 7px; color: var(--muted); font-size: 10px; }
+.tracking-mode-choice label { min-width: 0; display: flex; align-items: flex-start; gap: 9px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 13px; background: color-mix(in srgb, var(--card) 72%, transparent); cursor: pointer; }
+.tracking-mode-choice input { width: 16px; height: 16px; flex: 0 0 auto; margin: 1px 0 0; accent-color: var(--sage-dark); }
+.tracking-mode-choice span { min-width: 0; display: grid; gap: 3px; }
+.tracking-mode-choice strong { color: var(--ink); font-size: 10px; }
+.tracking-mode-choice small { color: var(--muted); font-size: 8px; line-height: 1.4; }
 .daily-score-choice { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.38); }
 .daily-score-choice input { width: 18px; height: 18px; margin: 0; accent-color: var(--sage); }
 .daily-score-choice span { display: grid; gap: 3px; color: var(--ink); }
@@ -493,7 +501,7 @@ dialog { border-radius: 28px; }
   .day-percent { display: none; }
   .calendar-atmosphere { min-height: 90px; padding: 18px 20px; }
   .score-grid { grid-template-columns: 1fr 1fr; }
-  .setting-row { grid-template-columns: 42px 1fr 36px; gap: 12px; }
+  .setting-row { grid-template-columns: 42px minmax(0, 1fr) auto; gap: 12px; }
   .setting-row .setting-cell, .setting-row .status-pill { display: none; }
   .review-intro, .settings-intro { align-items: flex-start; }
   .weekly-heading { display: block; }
@@ -665,11 +673,13 @@ body { transition: color 240ms ease, background-color 320ms ease; }
 .habit-live-preview small { color: var(--habit-color); font: 600 7px var(--font-body); letter-spacing: .13em; text-transform: uppercase; }
 .habit-live-preview strong { overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .habit-live-preview span { color: var(--muted); font-size: 9px; }
+.habit-live-preview #habitPreviewNote { max-width: 100%; margin: 2px 0 0; overflow: hidden; color: var(--muted); font-size: 8px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 .habit-live-preview > i { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--habit-color); color: #fff; font-size: 10px; font-style: normal; }
 html[data-theme="dark"] .color-picker-trigger,
 html[data-theme="dark"] .color-picker-popover { border-color: var(--edge-soft); background: var(--surface-2); }
 html[data-theme="dark"] .color-choice.selected { border-color: var(--edge-soft); background: var(--surface-3); }
 html[data-theme="dark"] .habit-live-preview { background: linear-gradient(110deg, color-mix(in srgb, var(--habit-color) 10%, var(--surface-2)), var(--surface-1)); }
+html[data-theme="dark"] .tracking-mode-choice label { border-color: var(--edge-soft); background: var(--surface-2); }
 .export-dialog { max-height: min(860px, calc(100dvh - 28px)); overflow: auto; }
 .export-dialog form { display: grid; }
 .backup-intro { margin: 20px 26px 2px; padding: 15px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid color-mix(in srgb, var(--sage) 36%, var(--line)); border-radius: 18px; background: color-mix(in srgb, var(--sage-light) 62%, transparent); }
@@ -806,6 +816,7 @@ html[data-theme="dark"] .weekly-goal-form input,
 html[data-theme="dark"] #dayNote,
 html[data-theme="dark"] .form-grid input,
 html[data-theme="dark"] .form-grid select,
+html[data-theme="dark"] .form-grid textarea,
 html[data-theme="dark"] .icon-picker-trigger,
 html[data-theme="dark"] .export-options > label,
 html[data-theme="dark"] .daily-score-choice,
@@ -947,11 +958,17 @@ html[data-theme="dark"] .weekly-minimal-image img { filter: brightness(.72) satu
 .compact-week-detail .review-week-output { min-height: 150px; padding: 4px 0; color: var(--ink); }
 
 .habit-settings-list { gap: 9px; }
-.setting-row { grid-template-columns: 42px minmax(0, 1fr) 38px; gap: 13px; padding: 14px 16px; }
+.setting-row { grid-template-columns: 42px minmax(0, 1fr) auto; gap: 13px; padding: 14px 16px; }
 .setting-row .habit-icon { width: 38px; height: 38px; }
 .setting-main strong { font-size: 13px; }
 .setting-main span { margin-top: 5px; font-size: 10px; }
-.setting-row .edit-habit { justify-self: end; }
+.setting-main .setting-note { display: block; max-width: 56ch; margin-top: 6px; overflow: hidden; color: var(--muted); font-size: 9px; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
+.setting-actions { display: flex; align-items: center; gap: 5px; justify-self: end; }
+.habit-order-button { width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 13px; transition: transform 140ms var(--ease-enter), color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
+.habit-order-button:disabled { opacity: .24; cursor: default; }
+.habit-order-button:not(:disabled):active { transform: scale(.94); }
+.setting-actions .edit-habit { width: 32px; height: 32px; }
+html[data-theme="dark"] .habit-order-button { border-color: var(--edge-soft); }
 
 .week-stamp-row { display: none; }
 .weekly-writing-heading > div:last-child strong { display: none; }
@@ -965,6 +982,10 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
 }
 
 @media (max-width: 760px) {
+  .tracking-mode-choice { grid-template-columns: 1fr; }
+  .setting-actions { gap: 3px; }
+  .habit-order-button,
+  .setting-actions .edit-habit { width: 30px; height: 30px; }
   .notification-trigger { order: 3; flex: 1 1 auto; }
   .save-mode { order: 4; }
   .mobile-install-button { order: 5; }
@@ -984,7 +1005,7 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
   .review-week-columns section + section { border-left: 0; border-top: 1px solid var(--line); padding: 18px 0 0; }
   .compact-week-detail .review-week-output { min-height: 180px; }
   .settings-intro.quiet-intro { align-items: center; }
-  .setting-row { grid-template-columns: 38px minmax(0, 1fr) 38px; padding: 13px 14px; }
+  .setting-row { grid-template-columns: 38px minmax(0, 1fr) auto; padding: 13px 14px; }
 }
 
 /* On mobile, move the existing data button into the top controls instead of duplicating it. */
@@ -1111,6 +1132,7 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .drawer-habit.done summary .habit-check { color: var(--habit-color); transform: none; }
 .drawer-habit-details { padding: 0 13px 13px 58px; border-top: 1px solid color-mix(in srgb, var(--line) 68%, transparent); }
 .drawer-habit-details p { margin: 11px 0 5px; color: var(--muted); font-size: 10px; }
+.drawer-habit-details .drawer-habit-note { margin: 7px 0 11px; padding-left: 9px; border-left: 2px solid color-mix(in srgb, var(--habit-color) 48%, var(--line)); color: var(--ink); line-height: 1.55; }
 .drawer-habit-details .period-note { display: block; margin-bottom: 9px; }
 .drawer-habit-toggle { min-height: 31px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--ink); font-size: 9px; font-weight: 700; }
 .drawer-habit-toggle:disabled { opacity: .35; cursor: not-allowed; }
