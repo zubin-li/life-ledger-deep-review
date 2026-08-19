@@ -17,6 +17,12 @@
       "migrations_dir": "migrations"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "life-ledger-deep-review-media"
+    }
+  ],
   "observability": {
     "enabled": true
   }

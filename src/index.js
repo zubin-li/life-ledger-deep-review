@@ -42,6 +42,12 @@ function normalizedTeamDomain(value) {
 }
 
 async function identify(request, env) {
+  const requestUrl = new URL(request.url);
+  const localIdentity = String(env.LOCAL_DEV_IDENTITY || "").trim();
+  if (["127.0.0.1", "localhost"].includes(requestUrl.hostname) && localIdentity) {
+    return hashIdentity(localIdentity);
+  }
+
   const teamDomain = normalizedTeamDomain(env.TEAM_DOMAIN);
   const audience = String(env.POLICY_AUD || "").trim();
   if (!teamDomain || !audience) {
@@ -71,6 +77,63 @@ async function identify(request, env) {
     if (error instanceof AccessError) throw error;
     throw new AccessError("Invalid Cloudflare Access token", 401);
   }
+}
+
+const MAX_MEDIA_BYTES = 2_500_000;
+const allowedMediaTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+const validMediaId = value => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || "");
+
+function mediaObjectKey(keyHash, id) {
+  return `${keyHash}/${id}`;
+}
+
+async function handleMedia(request, env, url) {
+  if (url.pathname === "/api/media/capabilities") {
+    return json({ enabled: Boolean(env.MEDIA), maxBytes: MAX_MEDIA_BYTES });
+  }
+  if (!env.MEDIA) return json({ error: "R2 media binding is not configured" }, 503);
+
+  const identity = await identityOrResponse(request, env);
+  if (identity.response) return identity.response;
+  const { keyHash } = identity;
+  const id = url.pathname.split("/").filter(Boolean)[2] || "";
+
+  if (request.method === "POST" && url.pathname === "/api/media") {
+    const contentType = (request.headers.get("content-type") || "").split(";")[0].toLowerCase();
+    if (!allowedMediaTypes.has(contentType)) return json({ error: "Unsupported image type" }, 415);
+    const declaredLength = Number(request.headers.get("content-length")) || 0;
+    if (declaredLength > MAX_MEDIA_BYTES) return json({ error: "Image is too large" }, 413);
+    const body = await request.arrayBuffer();
+    if (!body.byteLength || body.byteLength > MAX_MEDIA_BYTES) return json({ error: "Image is too large" }, 413);
+
+    const mediaId = crypto.randomUUID();
+    const date = String(request.headers.get("x-life-ledger-date") || "").slice(0, 10);
+    await env.MEDIA.put(mediaObjectKey(keyHash, mediaId), body, {
+      httpMetadata: { contentType },
+      customMetadata: /^\d{4}-\d{2}-\d{2}$/.test(date) ? { date } : {},
+    });
+    return json({ id: mediaId, bytes: body.byteLength }, 201);
+  }
+
+  if (!validMediaId(id)) return json({ error: "Invalid media id" }, 400);
+  const key = mediaObjectKey(keyHash, id);
+  if (request.method === "GET") {
+    const object = await env.MEDIA.get(key);
+    if (!object) return json({ error: "Photo not found" }, 404);
+    const headers = new Headers({
+      "cache-control": "private, max-age=3600",
+      "content-security-policy": "default-src 'none'",
+      "x-content-type-options": "nosniff",
+    });
+    object.writeHttpMetadata(headers);
+    headers.set("etag", object.httpEtag);
+    return new Response(object.body, { headers });
+  }
+  if (request.method === "DELETE") {
+    await env.MEDIA.delete(key);
+    return json({ ok: true });
+  }
+  return json({ error: "Method not allowed" }, 405);
 }
 
 async function identityOrResponse(request, env) {
@@ -148,9 +211,10 @@ export default {
       return javascript('window.LIFE_LEDGER_DEPLOYMENT_MODE = "cloudflare";\n');
     }
     if (url.pathname === "/api/state") return handleApi(request, env);
+    if (url.pathname === "/api/media" || url.pathname.startsWith("/api/media/")) return handleMedia(request, env, url);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);
   },
 };
 
-export { hashIdentity, identify, normalizedTeamDomain, validPayload };
+export { hashIdentity, identify, normalizedTeamDomain, validPayload, validMediaId };

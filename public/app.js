@@ -98,7 +98,9 @@ const i18n = {
       note: "人有悲欢离合，月有阴晴圆缺。",
       source: "苏轼《水调歌头》",
     },
-    moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
+    moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存记录", close: "关闭心情原因", summary: "原因 · {reason}" },
+    moodPhoto: { title: "今日照片", help: "选择一张代表今天的照片。", storage: "私人空间", gateTitle: "完整自部署版可使用照片", gateHelp: "公开本机版不会保存图片，避免浏览器容量与清理缓存造成丢失。", gateAction: "了解自部署", emptyTitle: "为今天留下一帧", emptyHelp: "保存前会压缩照片，并移除位置等元数据。", choose: "选择照片", replace: "更换", remove: "移除", ready: "照片已准备好", preparing: "正在优化照片…", uploading: "正在保存到你的私人空间…", details: "{width} × {height} · {size}", tooLarge: "照片超过 20 MB，请选择更小的文件。", unsupported: "当前浏览器无法读取这张照片，请尝试 JPG、PNG 或 WebP。", failed: "照片处理失败，请重新选择。", uploadFailed: "照片未能保存，请检查私人存储配置后重试。", localOnly: "照片保存在你自己的 R2 空间，不进入 D1 文本记录。", memory: "查看今日照片", alt: "今日照片预览", poster: "生成留影卡", removed: "照片将在保存后移除" },
+    moodPoster: { kicker: "DAILY MEMORY", title: "今日留影", styleTitle: "海报氛围", styleHelp: "照片和文字都只在设备上处理。", paper: "明亮", night: "夜色", done: "完成", download: "保存图片", share: "分享", close: "关闭今日留影", canvas: "今日留影海报预览", fileName: "life-ledger-memory-{date}.png", shareText: "我在 Life Ledger 留下的今日片段", unavailable: "当前设备不支持直接分享，已为你保存图片。" },
     todayGoals: {
       kicker: "DAY PLAN", title: "每日目标", desc: "左右选择日期，回看过去或提前规划。", placeholder: "为这一天添加一个目标…", addLabel: "添加目标",
       empty: "这一天还没有具体目标。<br />先写下一件最重要的事。", added: "目标已添加", previous: "前一天", next: "后一天", futureStatus: "未来目标只能规划，到了当天才能勾选完成",
@@ -293,6 +295,10 @@ const i18n = {
       habitOff: "已取消打卡",
       mood: "心情已记录",
       moodReason: "心情原因已保存",
+      photoSaved: "今日照片已保存到本机",
+      photoRemoved: "今日照片已移除",
+      posterSaved: "留影卡已保存",
+      posterShared: "留影卡已分享",
       exported: "备份已导出",
       restored: "备份已恢复",
       restoreUndone: "已撤销上一次恢复",
@@ -373,7 +379,9 @@ const i18n = {
       note: "The mind is everything. What you think you become.",
       source: "Attributed to the Buddha",
     },
-    moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
+    moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save memory", close: "Close mood reason", summary: "Reason · {reason}" },
+    moodPhoto: { title: "Photo of the day", help: "Choose one image that holds today.", storage: "Private space", gateTitle: "Photos are available in the full self-hosted edition", gateHelp: "The public local edition does not retain images, avoiding browser quota and cache-loss risks.", gateAction: "Self-hosting guide", emptyTitle: "Keep one frame from today", emptyHelp: "The photo is compressed and location metadata is removed before saving.", choose: "Choose photo", replace: "Replace", remove: "Remove", ready: "Photo ready", preparing: "Optimising photo…", uploading: "Saving to your private space…", details: "{width} × {height} · {size}", tooLarge: "This photo is over 20 MB. Please choose a smaller file.", unsupported: "This browser cannot read the photo. Try JPG, PNG, or WebP.", failed: "The photo could not be processed. Please try again.", uploadFailed: "The photo could not be saved. Check your private storage configuration and try again.", localOnly: "Photos are stored in your own R2 bucket, outside the D1 text record.", memory: "View today's photo", alt: "Preview of today's photo", poster: "Create memory card", removed: "Photo will be removed when you save" },
+    moodPoster: { kicker: "DAILY MEMORY", title: "A moment from today", styleTitle: "Poster mood", styleHelp: "Your photo and words are processed only on this device.", paper: "Light", night: "Night", done: "Done", download: "Save image", share: "Share", close: "Close daily memory", canvas: "Daily memory poster preview", fileName: "life-ledger-memory-{date}.png", shareText: "A moment I kept in Life Ledger", unavailable: "Direct sharing is unavailable, so the image has been saved instead." },
     todayGoals: {
       kicker: "DAY PLAN", title: "Daily Goals", desc: "Move between days to review or plan ahead.", placeholder: "Add a goal for this day…", addLabel: "Add goal",
       empty: "No concrete goals for this day yet.<br />Start with one thing that matters.", added: "Goal added", previous: "Previous day", next: "Next day", futureStatus: "Future goals can be planned now and completed when the day arrives",
@@ -568,6 +576,10 @@ const i18n = {
       habitOff: "Check-in removed",
       mood: "Mood recorded",
       moodReason: "Mood reason saved",
+      photoSaved: "Photo saved on this device",
+      photoRemoved: "Photo removed",
+      posterSaved: "Memory card saved",
+      posterShared: "Memory card shared",
       exported: "Backup exported",
       restored: "Backup restored",
       restoreUndone: "Last restore undone",
@@ -648,7 +660,9 @@ const i18n = {
       note: "Das Glück ist das einzige, das sich verdoppelt, wenn man es teilt.",
       source: "Albert Schweitzer",
     },
-    moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
+    moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Erinnerung speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
+    moodPhoto: { title: "Foto des Tages", help: "Wähle ein Bild, das diesen Tag festhält.", storage: "Privater Speicher", gateTitle: "Fotos gibt es in der vollständig selbst gehosteten Version", gateHelp: "Die öffentliche lokale Version speichert keine Bilder und vermeidet so Browser-Limits und Datenverlust durch gelöschte Caches.", gateAction: "Self-Hosting ansehen", emptyTitle: "Einen Moment bewahren", emptyHelp: "Das Foto wird vor dem Speichern komprimiert; Standortdaten werden entfernt.", choose: "Foto wählen", replace: "Ersetzen", remove: "Entfernen", ready: "Foto bereit", preparing: "Foto wird optimiert…", uploading: "Wird im privaten Speicher gesichert…", details: "{width} × {height} · {size}", tooLarge: "Das Foto ist größer als 20 MB. Bitte wähle eine kleinere Datei.", unsupported: "Der Browser kann dieses Foto nicht lesen. Versuche JPG, PNG oder WebP.", failed: "Das Foto konnte nicht verarbeitet werden. Bitte versuche es erneut.", uploadFailed: "Das Foto konnte nicht gespeichert werden. Prüfe die private Speicherkonfiguration und versuche es erneut.", localOnly: "Fotos liegen im eigenen R2-Bucket, getrennt vom D1-Texteintrag.", memory: "Heutiges Foto ansehen", alt: "Vorschau des heutigen Fotos", poster: "Erinnerungskarte erstellen", removed: "Das Foto wird beim Speichern entfernt" },
+    moodPoster: { kicker: "DAILY MEMORY", title: "Ein Moment von heute", styleTitle: "Poster-Stimmung", styleHelp: "Foto und Text werden nur auf diesem Gerät verarbeitet.", paper: "Hell", night: "Nacht", done: "Fertig", download: "Bild speichern", share: "Teilen", close: "Tageserinnerung schließen", canvas: "Vorschau der Tageserinnerung", fileName: "life-ledger-memory-{date}.png", shareText: "Ein Moment aus meinem Life Ledger", unavailable: "Direktes Teilen ist nicht verfügbar. Das Bild wurde stattdessen gespeichert." },
     todayGoals: {
       kicker: "TAGESPLAN", title: "Tagesziele", desc: "Wechsle zwischen Tagen, um zurückzublicken oder vorauszuplanen.", placeholder: "Ein Ziel für diesen Tag hinzufügen…", addLabel: "Ziel hinzufügen",
       empty: "Für diesen Tag gibt es noch keine konkreten Ziele.<br />Beginne mit einer wichtigen Sache.", added: "Ziel hinzugefügt", previous: "Voriger Tag", next: "Nächster Tag", futureStatus: "Zukünftige Ziele können geplant und erst am jeweiligen Tag erledigt werden",
@@ -843,6 +857,10 @@ const i18n = {
       habitOff: "Check-in entfernt",
       mood: "Stimmung gespeichert",
       moodReason: "Stimmungsgrund gespeichert",
+      photoSaved: "Foto auf diesem Gerät gespeichert",
+      photoRemoved: "Foto entfernt",
+      posterSaved: "Erinnerungskarte gespeichert",
+      posterShared: "Erinnerungskarte geteilt",
       exported: "Sicherung exportiert",
       restored: "Sicherung wiederhergestellt",
       restoreUndone: "Letzte Wiederherstellung rückgängig gemacht",
@@ -975,6 +993,14 @@ let reminderTimer = null;
 let pendingImport = null;
 let pendingMoodDate = null;
 let pendingMood = "";
+const MAX_PHOTO_INPUT_BYTES = 20 * 1024 * 1024;
+const PHOTO_MAX_EDGE = 1600;
+const PHOTO_QUALITY = 0.82;
+let mediaCapability = cloudProvider === "cloudflare" ? "unknown" : "locked";
+let pendingMoodPhoto = { existingId: "", blob: null, width: 0, height: 0, remove: false, previewUrl: "" };
+let moodPhotoLoadToken = 0;
+let posterTheme = "paper";
+let posterContext = null;
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
 const HABITS_PER_PAGE = 4;
@@ -1680,6 +1706,7 @@ function renderToday() {
   renderHabitCarousel(habits, date, log.completed);
   $$("#quickMood button").forEach(b => b.classList.toggle("selected", b.dataset.mood === log.mood));
   renderMoodReasonSummary("#quickMoodReason", log);
+  renderMoodMemorySummary("#quickMoodMemory", date, log);
   renderDailyGoals();
 }
 
@@ -1806,6 +1833,202 @@ function renderMoodReasonSummary(selector, log) {
   button.title = reason;
 }
 
+function mediaPhotoUrl(id) {
+  return `/api/media/${encodeURIComponent(id)}`;
+}
+
+async function ensureMediaCapability() {
+  if (mediaCapability !== "unknown") return mediaCapability === "enabled";
+  try {
+    const response = await fetch("/api/media/capabilities", { headers: { accept: "application/json" } });
+    const result = response.ok ? await response.json() : null;
+    mediaCapability = result?.enabled ? "enabled" : "locked";
+  } catch {
+    mediaCapability = "locked";
+  }
+  return mediaCapability === "enabled";
+}
+
+function releasePendingPhotoUrl() {
+  if (pendingMoodPhoto.previewUrl) URL.revokeObjectURL(pendingMoodPhoto.previewUrl);
+  pendingMoodPhoto.previewUrl = "";
+}
+
+function setMoodPhotoStatus(message = "", error = false) {
+  const status = $("#moodPhotoStatus");
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle("error", error);
+}
+
+function formatPhotoBytes(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "";
+  return bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function showMoodPhotoGate() {
+  $("#moodPhotoGate").hidden = false;
+  $("#moodPhotoEmpty").hidden = true;
+  $("#moodPhotoPreview").hidden = true;
+  setMoodPhotoStatus("");
+}
+
+function showMoodPhotoEmpty(status = "") {
+  $("#moodPhotoGate").hidden = true;
+  $("#moodPhotoEmpty").hidden = false;
+  $("#moodPhotoPreview").hidden = true;
+  setMoodPhotoStatus(status);
+}
+
+function showMoodPhotoPreview(src, details = "") {
+  $("#moodPhotoGate").hidden = true;
+  $("#moodPhotoEmpty").hidden = true;
+  $("#moodPhotoPreview").hidden = false;
+  $("#moodPhotoImage").src = src;
+  $("#moodPhotoImage").alt = tr("moodPhoto.alt");
+  $("#moodPhotoDetails").textContent = details;
+  setMoodPhotoStatus(tr("moodPhoto.localOnly"));
+}
+
+async function decodeImage(blob) {
+  if (typeof createImageBitmap === "function") {
+    try {
+      const bitmap = await createImageBitmap(blob, { imageOrientation: "from-image" });
+      return { source: bitmap, width: bitmap.width, height: bitmap.height, dispose: () => bitmap.close() };
+    } catch { /* Fall back to HTMLImageElement for browsers with partial bitmap support. */ }
+  }
+  const url = URL.createObjectURL(blob);
+  const image = new Image();
+  image.decoding = "async";
+  image.src = url;
+  try {
+    await image.decode();
+    return { source: image, width: image.naturalWidth, height: image.naturalHeight, dispose: () => URL.revokeObjectURL(url) };
+  } catch (error) {
+    URL.revokeObjectURL(url);
+    throw error;
+  }
+}
+
+function canvasBlob(canvas, type, quality) {
+  return new Promise(resolve => canvas.toBlob(resolve, type, quality));
+}
+
+async function compressMoodPhoto(file) {
+  if (!file || file.size > MAX_PHOTO_INPUT_BYTES) throw new Error("too-large");
+  const decoded = await decodeImage(file);
+  try {
+    if (!decoded.width || !decoded.height) throw new Error("unsupported");
+    let scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(decoded.width, decoded.height));
+    let quality = PHOTO_QUALITY;
+    let result = null;
+    let width = 0;
+    let height = 0;
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      width = Math.max(1, Math.round(decoded.width * scale));
+      height = Math.max(1, Math.round(decoded.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d", { alpha: false });
+      context.fillStyle = "#f4f1ea";
+      context.fillRect(0, 0, width, height);
+      context.drawImage(decoded.source, 0, 0, width, height);
+      result = await canvasBlob(canvas, "image/webp", quality) || await canvasBlob(canvas, "image/jpeg", quality);
+      canvas.width = 1;
+      canvas.height = 1;
+      if (result && result.size <= 2_350_000) break;
+      scale *= 0.82;
+      quality = Math.max(0.64, quality - 0.06);
+    }
+    if (!result || result.size > 2_350_000) throw new Error("too-large");
+    return { blob: result, width, height };
+  } finally {
+    decoded.dispose();
+  }
+}
+
+async function prepareMoodPhoto(log, token) {
+  const enabled = await ensureMediaCapability();
+  if (token !== moodPhotoLoadToken || !pendingMoodDate) return;
+  if (!enabled) {
+    showMoodPhotoGate();
+    return;
+  }
+  pendingMoodPhoto.existingId = log.photoId || "";
+  if (!log.photoId) {
+    showMoodPhotoEmpty();
+    return;
+  }
+  const details = log.photoMeta
+    ? tr("moodPhoto.details", { width: log.photoMeta.width || "", height: log.photoMeta.height || "", size: formatPhotoBytes(log.photoMeta.bytes) })
+    : "";
+  showMoodPhotoPreview(mediaPhotoUrl(log.photoId), details);
+  $("#moodPhotoImage").onerror = () => {
+    if (token === moodPhotoLoadToken) showMoodPhotoEmpty(tr("moodPhoto.uploadFailed"));
+  };
+}
+
+async function selectMoodPhoto(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+  setMoodPhotoStatus(tr("moodPhoto.preparing"));
+  try {
+    const photo = await compressMoodPhoto(file);
+    releasePendingPhotoUrl();
+    pendingMoodPhoto = { ...pendingMoodPhoto, ...photo, remove: false, previewUrl: URL.createObjectURL(photo.blob) };
+    showMoodPhotoPreview(
+      pendingMoodPhoto.previewUrl,
+      tr("moodPhoto.details", { width: photo.width, height: photo.height, size: formatPhotoBytes(photo.blob.size) }),
+    );
+  } catch (error) {
+    const key = error.message === "too-large" ? "moodPhoto.tooLarge" : error.message === "unsupported" ? "moodPhoto.unsupported" : "moodPhoto.failed";
+    setMoodPhotoStatus(tr(key), true);
+  }
+}
+
+function removePendingMoodPhoto() {
+  releasePendingPhotoUrl();
+  pendingMoodPhoto.blob = null;
+  pendingMoodPhoto.width = 0;
+  pendingMoodPhoto.height = 0;
+  pendingMoodPhoto.remove = Boolean(pendingMoodPhoto.existingId);
+  showMoodPhotoEmpty(pendingMoodPhoto.remove ? tr("moodPhoto.removed") : "");
+}
+
+async function uploadMoodPhoto(date, photo) {
+  const response = await fetch("/api/media", {
+    method: "POST",
+    headers: { "content-type": photo.blob.type || "image/webp", "x-life-ledger-date": date },
+    body: photo.blob,
+  });
+  if (!response.ok) throw new Error("upload-failed");
+  return response.json();
+}
+
+async function deleteMoodPhoto(id) {
+  if (!id) return;
+  try { await fetch(mediaPhotoUrl(id), { method: "DELETE" }); } catch { /* The orphan can be cleaned up later. */ }
+}
+
+function renderMoodMemorySummary(selector, date, log) {
+  const button = $(selector);
+  if (!button) return;
+  if (mediaCapability !== "enabled" || !log?.photoId) {
+    button.hidden = true;
+    return;
+  }
+  button.hidden = false;
+  button.dataset.date = date;
+  button.setAttribute("aria-label", tr("moodPhoto.memory"));
+  const image = $("img", button);
+  image.src = mediaPhotoUrl(log.photoId);
+  image.alt = "";
+  image.onerror = () => { button.hidden = true; };
+  $("strong", button).textContent = tr("moodPhoto.memory");
+}
+
 function applyMoodReasonLanguage() {
   const mood = pendingMood || "平静";
   setText("#moodReasonKicker", tr("moodReason.kicker"));
@@ -1816,11 +2039,38 @@ function applyMoodReasonLanguage() {
   setText("#skipMoodReason", tr("moodReason.skip"));
   setText("#saveMoodReason", tr("moodReason.save"));
   setAria(".close-mood-reason", tr("moodReason.close"));
+  setText("#moodPhotoTitle", tr("moodPhoto.title"));
+  setText("#moodPhotoHelp", tr("moodPhoto.help"));
+  setText("#moodPhotoStorage", tr("moodPhoto.storage"));
+  setText("#moodPhotoGateTitle", tr("moodPhoto.gateTitle"));
+  setText("#moodPhotoGateHelp", tr("moodPhoto.gateHelp"));
+  setText("#moodPhotoGateAction", tr("moodPhoto.gateAction"));
+  setText("#moodPhotoEmptyTitle", tr("moodPhoto.emptyTitle"));
+  setText("#moodPhotoEmptyHelp", tr("moodPhoto.emptyHelp"));
+  setText("#chooseMoodPhoto", tr("moodPhoto.choose"));
+  setText("#replaceMoodPhoto", tr("moodPhoto.replace"));
+  setText("#removeMoodPhoto", tr("moodPhoto.remove"));
+  setText("#moodPhotoReady", tr("moodPhoto.ready"));
+  setText("#createMoodPoster span", tr("moodPhoto.poster"));
+  setText("#moodPosterKicker", tr("moodPoster.kicker"));
+  setText("#moodPosterTitle", tr("moodPoster.title"));
+  setText("#moodPosterStyleTitle", tr("moodPoster.styleTitle"));
+  setText("#moodPosterStyleHelp", tr("moodPoster.styleHelp"));
+  setText("#moodPosterPaper", tr("moodPoster.paper"));
+  setText("#moodPosterNight", tr("moodPoster.night"));
+  setText("#moodPosterDone", tr("moodPoster.done"));
+  setText("#downloadMoodPoster", tr("moodPoster.download"));
+  setText("#shareMoodPoster", tr("moodPoster.share"));
+  setAria(".close-mood-poster", tr("moodPoster.close"));
+  setAria("#moodPosterCanvas", tr("moodPoster.canvas"));
 }
 
 function closeMoodReasonDialog() {
   const dialog = $("#moodReasonDialog");
   if (dialog.open) dialog.close();
+  moodPhotoLoadToken += 1;
+  releasePendingPhotoUrl();
+  pendingMoodPhoto = { existingId: "", blob: null, width: 0, height: 0, remove: false, previewUrl: "" };
   pendingMoodDate = null;
   pendingMood = "";
 }
@@ -1834,8 +2084,11 @@ function openMoodReasonDialog(date, mood) {
   $("#moodReasonMood").textContent = moodLabel(mood);
   $("#moodReasonDate").textContent = formatDateChip(parseDate(date));
   $("#moodReasonText").value = log.mood === mood ? log.moodReason || "" : "";
+  pendingMoodPhoto = { existingId: log.photoId || "", blob: null, width: 0, height: 0, remove: false, previewUrl: "" };
+  const photoToken = ++moodPhotoLoadToken;
   applyMoodReasonLanguage();
   $("#moodReasonDialog").showModal();
+  prepareMoodPhoto(log, photoToken);
   window.setTimeout(() => $("#moodReasonText").focus({ preventScroll: true }), 60);
 }
 
@@ -1850,18 +2103,207 @@ function setMood(date, mood, promptReason = true) {
   if (promptReason) openMoodReasonDialog(date, mood);
 }
 
-function saveMoodReason(event) {
+async function saveMoodReason(event) {
   event.preventDefault();
-  if (!pendingMoodDate || !pendingMood) return;
+  if (!pendingMoodDate || !pendingMood) return false;
   const date = pendingMoodDate;
   const mood = pendingMood;
   const reason = $("#moodReasonText").value.trim();
-  state.logs[date] = { ...getLog(date), mood, moodReason: reason };
+  const current = getLog(date);
+  let photoId = current.photoId || "";
+  let photoMeta = current.photoMeta;
+  const replacedId = photoId;
+  const photoWasRemoved = pendingMoodPhoto.remove;
+  try {
+    if (pendingMoodPhoto.blob) {
+      setMoodPhotoStatus(tr("moodPhoto.uploading"));
+      const uploaded = await uploadMoodPhoto(date, pendingMoodPhoto);
+      photoId = uploaded.id;
+      photoMeta = { width: pendingMoodPhoto.width, height: pendingMoodPhoto.height, bytes: uploaded.bytes || pendingMoodPhoto.blob.size };
+    } else if (pendingMoodPhoto.remove) {
+      photoId = "";
+      photoMeta = undefined;
+    }
+  } catch {
+    setMoodPhotoStatus(tr("moodPhoto.uploadFailed"), true);
+    return false;
+  }
+  state.logs[date] = { ...current, mood, moodReason: reason, photoId, photoMeta };
   saveState();
   closeMoodReasonDialog();
+  if (replacedId && replacedId !== photoId) deleteMoodPhoto(replacedId);
   renderAll();
   if ($("#dayDrawer").classList.contains("open")) renderDrawer();
-  showToast(tr("toast.moodReason"));
+  showToast(photoWasRemoved ? tr("toast.photoRemoved") : photoId && photoId !== replacedId ? tr("toast.photoSaved") : tr("toast.moodReason"));
+  return true;
+}
+
+function roundedRectPath(context, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(x + r, y);
+  context.arcTo(x + width, y, x + width, y + height, r);
+  context.arcTo(x + width, y + height, x, y + height, r);
+  context.arcTo(x, y + height, x, y, r);
+  context.arcTo(x, y, x + width, y, r);
+  context.closePath();
+}
+
+function drawImageCover(context, image, x, y, width, height) {
+  const scale = Math.max(width / image.width, height / image.height);
+  const sourceWidth = width / scale;
+  const sourceHeight = height / scale;
+  const sourceX = (image.width - sourceWidth) / 2;
+  const sourceY = (image.height - sourceHeight) / 2;
+  context.drawImage(image.source, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
+}
+
+function posterLines(context, text, maxWidth, maxLines = 4) {
+  const source = String(text || "").replace(/\s+/g, " ").trim();
+  if (!source) return [];
+  const tokens = currentLang === "zh" ? [...source] : source.split(/(\s+)/).filter(Boolean);
+  const lines = [];
+  let line = "";
+  for (const token of tokens) {
+    const next = line + token;
+    if (line && context.measureText(next).width > maxWidth) {
+      lines.push(line.trim());
+      line = token.trimStart();
+      if (lines.length === maxLines) break;
+    } else {
+      line = next;
+    }
+  }
+  if (lines.length < maxLines && line.trim()) lines.push(line.trim());
+  if (lines.length === maxLines && tokens.join("").length > lines.join("").length) {
+    let last = lines[maxLines - 1];
+    while (last && context.measureText(`${last}…`).width > maxWidth) last = last.slice(0, -1);
+    lines[maxLines - 1] = `${last.trim()}…`;
+  }
+  return lines;
+}
+
+function posterDateLabel(date) {
+  return new Intl.DateTimeFormat(i18n[currentLang].locale, { year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(parseDate(date));
+}
+
+async function renderMoodPoster() {
+  if (!posterContext) return;
+  const canvas = $("#moodPosterCanvas");
+  const context = canvas.getContext("2d");
+  const { date, log, blob } = posterContext;
+  const image = await decodeImage(blob);
+  await document.fonts?.ready;
+  try {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    const reason = String(log.moodReason || "").trim() || languageText("今天值得被记住。", "A day worth remembering.", "Ein Tag, der in Erinnerung bleibt.");
+    const mood = moodLabel(log.mood || "平静");
+    if (posterTheme === "night") {
+      drawImageCover(context, image, 0, 0, canvas.width, canvas.height);
+      const veil = context.createLinearGradient(0, 160, 0, canvas.height);
+      veil.addColorStop(0, "rgba(10,16,20,.08)");
+      veil.addColorStop(.48, "rgba(10,16,20,.22)");
+      veil.addColorStop(1, "rgba(8,13,17,.91)");
+      context.fillStyle = veil;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = "rgba(255,255,255,.82)";
+      context.font = '600 26px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      context.letterSpacing = "4px";
+      context.fillText("LIFE LEDGER · DEEP REVIEW", 76, 90);
+      context.letterSpacing = "0px";
+      context.fillStyle = "rgba(255,255,255,.68)";
+      context.font = '500 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      context.fillText(posterDateLabel(date), 76, 985);
+      context.fillStyle = "#fff";
+      context.font = '650 66px -apple-system, BlinkMacSystemFont, "Noto Sans SC", sans-serif';
+      context.fillText(mood, 76, 1075);
+      context.font = '500 39px -apple-system, BlinkMacSystemFont, "Noto Serif SC", serif';
+      posterLines(context, reason, 920, 3).forEach((line, index) => context.fillText(line, 76, 1155 + index * 53));
+    } else {
+      context.fillStyle = "#f2efe8";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      const glow = context.createRadialGradient(930, 90, 10, 930, 90, 520);
+      glow.addColorStop(0, "rgba(205,174,112,.28)");
+      glow.addColorStop(1, "rgba(205,174,112,0)");
+      context.fillStyle = glow;
+      context.fillRect(0, 0, canvas.width, 620);
+      context.fillStyle = "#667268";
+      context.font = '600 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      context.letterSpacing = "4px";
+      context.fillText("LIFE LEDGER · DEEP REVIEW", 72, 92);
+      context.letterSpacing = "0px";
+      context.save();
+      roundedRectPath(context, 72, 140, 936, 650, 42);
+      context.clip();
+      drawImageCover(context, image, 72, 140, 936, 650);
+      context.restore();
+      context.fillStyle = "#73786f";
+      context.font = '500 27px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      context.fillText(posterDateLabel(date), 72, 864);
+      context.fillStyle = "#1c211e";
+      context.font = '650 68px -apple-system, BlinkMacSystemFont, "Noto Sans SC", sans-serif';
+      context.fillText(mood, 72, 958);
+      context.fillStyle = "#2d332f";
+      context.font = '500 40px -apple-system, BlinkMacSystemFont, "Noto Serif SC", serif';
+      posterLines(context, reason, 900, 4).forEach((line, index) => context.fillText(line, 72, 1045 + index * 56));
+      context.fillStyle = "#829087";
+      context.fillRect(72, 1280, 52, 4);
+    }
+  } finally {
+    image.dispose();
+  }
+}
+
+async function openMoodPoster(date) {
+  const log = getLog(date);
+  if (!log.photoId) return;
+  try {
+    const response = await fetch(mediaPhotoUrl(log.photoId));
+    if (!response.ok) throw new Error("missing-photo");
+    posterContext = { date, log, blob: await response.blob() };
+    posterTheme = document.documentElement.dataset.theme === "dark" ? "night" : "paper";
+    $$('[data-poster-theme]').forEach(button => {
+      const active = button.dataset.posterTheme === posterTheme;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    applyMoodReasonLanguage();
+    $("#moodPosterDialog").showModal();
+    await renderMoodPoster();
+  } catch {
+    showToast(tr("moodPhoto.uploadFailed"));
+  }
+}
+
+function closeMoodPoster() {
+  if ($("#moodPosterDialog").open) $("#moodPosterDialog").close();
+  posterContext = null;
+}
+
+async function savePosterImage(showSavedToast = true) {
+  if (!posterContext) return null;
+  const blob = await canvasBlob($("#moodPosterCanvas"), "image/png", 1);
+  if (!blob) return null;
+  triggerFileDownload(blob, tr("moodPoster.fileName", { date: posterContext.date }));
+  if (showSavedToast) showToast(tr("toast.posterSaved"));
+  return blob;
+}
+
+async function sharePosterImage() {
+  if (!posterContext) return;
+  const blob = await canvasBlob($("#moodPosterCanvas"), "image/png", 1);
+  const file = blob ? new File([blob], tr("moodPoster.fileName", { date: posterContext.date }), { type: "image/png" }) : null;
+  if (file && navigator.share && navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], text: tr("moodPoster.shareText") });
+      showToast(tr("toast.posterShared"));
+      return;
+    } catch (error) {
+      if (error.name === "AbortError") return;
+    }
+  }
+  await savePosterImage(false);
+  showToast(tr("moodPoster.unavailable"));
 }
 
 function renderCalendar() {
@@ -2276,6 +2718,7 @@ function renderDrawer() {
     button.disabled = future;
   });
   renderMoodReasonSummary("#drawerMoodReason", log);
+  renderMoodMemorySummary("#drawerMoodMemory", selectedDate, log);
   $("#dayNote").value = log.note || "";
   $("#dayNote").disabled = future;
   $("#completeDay").disabled = future;
@@ -2821,12 +3264,46 @@ function bindEvents() {
     const log = getLog(selectedDate);
     if (log.mood) openMoodReasonDialog(selectedDate, log.mood);
   });
+  $("#quickMoodMemory").addEventListener("click", () => {
+    const date = isoDate(new Date());
+    const log = getLog(date);
+    if (log.mood) openMoodReasonDialog(date, log.mood);
+  });
+  $("#drawerMoodMemory").addEventListener("click", () => {
+    const log = getLog(selectedDate);
+    if (log.mood) openMoodReasonDialog(selectedDate, log.mood);
+  });
+  $("#chooseMoodPhoto").addEventListener("click", () => $("#moodPhotoInput").click());
+  $("#replaceMoodPhoto").addEventListener("click", () => $("#moodPhotoInput").click());
+  $("#moodPhotoInput").addEventListener("change", selectMoodPhoto);
+  $("#removeMoodPhoto").addEventListener("click", removePendingMoodPhoto);
+  $("#createMoodPoster").addEventListener("click", async () => {
+    const date = pendingMoodDate;
+    if (!date || !await saveMoodReason({ preventDefault() {} })) return;
+    await openMoodPoster(date);
+  });
   $$(".close-mood-reason").forEach(button => button.addEventListener("click", closeMoodReasonDialog));
   $("#moodReasonForm").addEventListener("submit", saveMoodReason);
   $("#moodReasonDialog").addEventListener("cancel", event => {
     event.preventDefault();
     closeMoodReasonDialog();
   });
+  $$(".close-mood-poster").forEach(button => button.addEventListener("click", closeMoodPoster));
+  $("#moodPosterDialog").addEventListener("cancel", event => {
+    event.preventDefault();
+    closeMoodPoster();
+  });
+  $$('[data-poster-theme]').forEach(button => button.addEventListener("click", async () => {
+    posterTheme = button.dataset.posterTheme;
+    $$('[data-poster-theme]').forEach(item => {
+      const active = item === button;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
+    await renderMoodPoster();
+  }));
+  $("#downloadMoodPoster").addEventListener("click", () => savePosterImage());
+  $("#shareMoodPoster").addEventListener("click", sharePosterImage);
   bindDailyGoalForm("#dailyGoalForm", "#dailyGoalInput", () => selectedPlanningDate, "todayGoals.added");
   $("#previousPlanDay").addEventListener("click", () => shiftPlanningDay(-1));
   $("#nextPlanDay").addEventListener("click", () => shiftPlanningDay(1));
@@ -3062,6 +3539,11 @@ async function initializeCloudSync() {
   await pullCloudState();
 }
 initializeCloudSync();
+ensureMediaCapability().then(enabled => {
+  if (!enabled) return;
+  renderToday();
+  if ($("#dayDrawer").classList.contains("open")) renderDrawer();
+});
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })

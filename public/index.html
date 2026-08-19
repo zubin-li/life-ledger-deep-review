@@ -143,6 +143,11 @@
                 <button data-mood="很好"><span>☀</span>很好</button>
               </div>
               <button class="mood-reason-summary" id="quickMoodReason" type="button" hidden></button>
+              <button class="mood-memory-summary" id="quickMoodMemory" type="button" hidden>
+                <img alt="" />
+                <span><small>DAILY MEMORY</small><strong id="quickMoodMemoryLabel">今日留影</strong></span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
               <p class="mood-note" id="moodNote">人有悲欢离合，月有阴晴圆缺。<small>苏轼《水调歌头》</small></p>
             </article>
           </div>
@@ -335,6 +340,11 @@
             <button data-mood="很好"><span>☀</span>很好</button>
           </div>
           <button class="mood-reason-summary drawer-mood-reason" id="drawerMoodReason" type="button" hidden></button>
+          <button class="mood-memory-summary drawer-mood-memory" id="drawerMoodMemory" type="button" hidden>
+            <img alt="" />
+            <span><small>DAILY MEMORY</small><strong id="drawerMoodMemoryLabel">今日留影</strong></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
         </section>
         <section>
           <label class="drawer-section-title" for="dayNote"><h3>日记与事件</h3><span>Markdown</span></label>
@@ -384,9 +394,57 @@
           <div class="mood-reason-selection"><span id="moodReasonIcon" aria-hidden="true">☀</span><div><strong id="moodReasonMood">很好</strong><small id="moodReasonDate"></small></div></div>
           <p id="moodReasonHelp">这完全是可选的。留下一句话，未来回看时会更容易理解这一天。</p>
           <label for="moodReasonText"><span id="moodReasonLabel">今天为什么会有这样的感受？</span><textarea id="moodReasonText" maxlength="800" placeholder="例如：完成了一件拖了很久的事情……"></textarea></label>
+          <section class="mood-photo-field" aria-labelledby="moodPhotoTitle">
+            <div class="mood-photo-heading">
+              <div><strong id="moodPhotoTitle">今日照片</strong><small id="moodPhotoHelp">选择一张代表今天的照片。</small></div>
+              <span id="moodPhotoStorage">私人空间</span>
+            </div>
+            <input id="moodPhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden />
+            <div class="mood-photo-gate" id="moodPhotoGate">
+              <span class="mood-photo-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M8 5V3.8M16 5V3.8M7 16l3-3 2.5 2 2.5-2 2 2.5" /></svg>
+              </span>
+              <div><strong id="moodPhotoGateTitle">完整自部署版可使用照片</strong><small id="moodPhotoGateHelp">公开本机版不会保存图片，避免浏览器容量与清理缓存造成丢失。</small></div>
+              <a class="secondary-button" id="moodPhotoGateAction" href="https://github.com/zubin-li/life-ledger-deep-review#deployment" target="_blank" rel="noreferrer">了解自部署</a>
+            </div>
+            <div class="mood-photo-empty" id="moodPhotoEmpty" hidden>
+              <span class="mood-photo-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" /><circle cx="9" cy="10" r="1.5" /><path d="m5.5 17 4.5-4 3 2.5 2.5-2 3 3.5" /></svg>
+              </span>
+              <div><strong id="moodPhotoEmptyTitle">为今天留下一帧</strong><small id="moodPhotoEmptyHelp">照片会在保存前压缩并移除位置等元数据。</small></div>
+              <button class="secondary-button" id="chooseMoodPhoto" type="button">选择照片</button>
+            </div>
+            <div class="mood-photo-preview" id="moodPhotoPreview" hidden>
+              <div class="mood-photo-frame"><img id="moodPhotoImage" alt="今日照片预览" /></div>
+              <div class="mood-photo-meta"><div><strong id="moodPhotoReady">照片已准备好</strong><small id="moodPhotoDetails"></small></div><span aria-hidden="true">✓</span></div>
+              <div class="mood-photo-actions">
+                <button class="secondary-button" id="replaceMoodPhoto" type="button">替换</button>
+                <button class="secondary-button danger-quiet" id="removeMoodPhoto" type="button">移除</button>
+                <button class="poster-button" id="createMoodPoster" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 15l2.5-3 2 2 2.5-3 3 4M8 8h.01" /></svg><span>生成海报</span></button>
+              </div>
+            </div>
+            <p class="mood-photo-status" id="moodPhotoStatus" role="status" aria-live="polite"></p>
+          </section>
         </div>
         <footer><button class="secondary-button close-mood-reason" id="skipMoodReason" type="button">暂不记录</button><button class="primary-button" id="saveMoodReason" type="submit">保存原因</button></footer>
       </form>
+    </dialog>
+
+    <dialog id="moodPosterDialog" class="mood-poster-dialog">
+      <div class="mood-poster-dialog-content">
+        <header><div><span class="kicker" id="moodPosterKicker">DAILY MEMORY</span><h2 id="moodPosterTitle">今日留影</h2></div><button class="icon-button close-mood-poster" type="button" aria-label="关闭">×</button></header>
+        <div class="mood-poster-body">
+          <div class="mood-poster-stage"><canvas id="moodPosterCanvas" width="1080" height="1350" aria-label="今日海报预览"></canvas></div>
+          <div class="mood-poster-controls">
+            <div><strong id="moodPosterStyleTitle">海报氛围</strong><small id="moodPosterStyleHelp">照片和文字都只在设备上处理。</small></div>
+            <div class="poster-theme-switch" role="group" aria-label="选择海报风格">
+              <button class="active" type="button" data-poster-theme="paper" aria-pressed="true"><span class="poster-theme-dot paper"></span><b id="moodPosterPaper">明亮</b></button>
+              <button type="button" data-poster-theme="night" aria-pressed="false"><span class="poster-theme-dot night"></span><b id="moodPosterNight">夜色</b></button>
+            </div>
+          </div>
+        </div>
+        <footer><button class="secondary-button close-mood-poster" type="button" id="moodPosterDone">完成</button><span class="dialog-footer-spacer"></span><button class="secondary-button" id="downloadMoodPoster" type="button">保存图片</button><button class="primary-button" id="shareMoodPoster" type="button">分享</button></footer>
+      </div>
     </dialog>
 
     <dialog id="exportDialog" class="export-dialog">

@@ -113,6 +113,16 @@ button { cursor: pointer; }
 .mood-reason-summary { width: 100%; margin: -12px 0 18px; padding: 9px 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--sage) 22%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--sage-light) 46%, transparent); color: var(--muted); font-size: 10px; line-height: 1.45; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .mood-reason-summary[hidden] { display: none; }
 .drawer-mood-reason { margin: 10px 0 0; }
+.mood-memory-summary { width: 100%; min-height: 58px; margin: -10px 0 16px; padding: 7px 10px 7px 7px; display: grid; grid-template-columns: 44px minmax(0, 1fr) 18px; gap: 10px; align-items: center; border: 1px solid color-mix(in srgb, var(--sage) 22%, var(--line)); border-radius: 16px; background: color-mix(in srgb, var(--sage-light) 34%, transparent); color: var(--ink); text-align: left; cursor: pointer; overflow: hidden; transition: transform 160ms var(--ease-enter), border-color 160ms ease, background-color 160ms ease; }
+.mood-memory-summary[hidden] { display: none; }
+.mood-memory-summary:hover { border-color: color-mix(in srgb, var(--sage) 46%, var(--line)); background: color-mix(in srgb, var(--sage-light) 55%, transparent); }
+.mood-memory-summary:active { transform: scale(.985); }
+.mood-memory-summary img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; background: var(--paper-deep); }
+.mood-memory-summary > span { min-width: 0; display: grid; gap: 3px; }
+.mood-memory-summary small { color: var(--muted); font-size: 7px; letter-spacing: .13em; }
+.mood-memory-summary strong { overflow: hidden; font: 600 11px/1.4 var(--font-body); text-overflow: ellipsis; white-space: nowrap; }
+.mood-memory-summary > svg { width: 17px; fill: none; stroke: var(--muted); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.drawer-mood-memory { margin: 10px 0 0; }
 .mood-note { font: 11px/1.7 "Noto Serif SC"; color: var(--muted); margin: 0; }
 .habits-heading { margin: 44px 0 17px; }
 .habits-heading h2 { font-size: 24px; }
@@ -328,6 +338,63 @@ dialog form > footer { justify-content: flex-end; gap: 8px; }
 .mood-reason-body label { display: grid; gap: 8px; color: var(--muted); font-size: 10px; }
 .mood-reason-body textarea { width: 100%; min-height: 150px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 18px; outline: none; resize: vertical; background: rgba(255,255,255,.52); font: 12px/1.75 var(--font-body); transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; }
 .mood-reason-body textarea:focus { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); background: var(--card); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 9%, transparent); }
+.mood-photo-field { display: grid; gap: 11px; }
+.mood-photo-heading { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+.mood-photo-heading > div { display: grid; gap: 4px; }
+.mood-photo-heading strong { color: var(--ink); font-size: 11px; }
+.mood-photo-heading small { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.mood-photo-heading > span { flex: 0 0 auto; padding: 5px 8px; border: 1px solid color-mix(in srgb, var(--sage) 24%, var(--line)); border-radius: 999px; background: color-mix(in srgb, var(--sage-light) 42%, transparent); color: var(--sage-dark); font-size: 8px; letter-spacing: .08em; }
+.mood-photo-gate { min-height: 96px; padding: 14px; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 12px; border: 1px solid color-mix(in srgb, var(--sage) 20%, var(--line)); border-radius: 20px; background: color-mix(in srgb, var(--paper-deep) 48%, transparent); }
+.mood-photo-gate[hidden] { display: none; }
+.mood-photo-gate > div { min-width: 0; display: grid; gap: 4px; }
+.mood-photo-gate strong { font-size: 11px; }
+.mood-photo-gate small { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.mood-photo-gate .secondary-button { min-height: 40px; display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; }
+.mood-photo-empty { min-height: 96px; padding: 14px; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 12px; border: 1px dashed color-mix(in srgb, var(--sage) 32%, var(--line)); border-radius: 20px; background: color-mix(in srgb, var(--card) 72%, transparent); }
+.mood-photo-empty[hidden] { display: none; }
+.mood-photo-empty-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; background: color-mix(in srgb, var(--sage-light) 68%, var(--card)); color: var(--sage-dark); }
+.mood-photo-empty-icon svg { width: 21px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+.mood-photo-empty > div { min-width: 0; display: grid; gap: 4px; }
+.mood-photo-empty strong { font-size: 11px; }
+.mood-photo-empty small { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.mood-photo-empty .secondary-button { min-height: 40px; white-space: nowrap; }
+.mood-photo-preview { display: grid; gap: 10px; padding: 10px; border: 1px solid color-mix(in srgb, var(--sage) 26%, var(--line)); border-radius: 22px; background: color-mix(in srgb, var(--card) 76%, transparent); }
+.mood-photo-preview[hidden] { display: none; }
+.mood-photo-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 16px; background: var(--paper-deep); }
+.mood-photo-frame::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); border-radius: inherit; }
+.mood-photo-frame img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.mood-photo-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 1px 3px; }
+.mood-photo-meta > div { display: grid; gap: 2px; }
+.mood-photo-meta strong { font-size: 10px; }
+.mood-photo-meta small { color: var(--muted); font-size: 8px; }
+.mood-photo-meta > span { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--sage) 18%, transparent); color: var(--sage-dark); font-size: 10px; }
+.mood-photo-actions { display: flex; align-items: center; gap: 7px; }
+.mood-photo-actions button { min-height: 40px; }
+.danger-quiet { color: #8f3e34; }
+.poster-button { margin-left: auto; min-height: 40px; padding: 9px 13px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid #1d1d1f; border-radius: 12px; background: #1d1d1f; color: #fff; cursor: pointer; font: 600 10px var(--font-body); transition: transform 160ms var(--ease-enter), box-shadow 160ms ease; }
+.poster-button:hover { box-shadow: 0 8px 20px rgba(29,29,31,.16); }
+.poster-button:active { transform: scale(.97); }
+.poster-button svg { width: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.mood-photo-status { min-height: 14px; margin: 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.mood-photo-status.error { color: #9b3e31; }
+.mood-poster-dialog { width: min(760px, calc(100vw - 32px)); max-height: min(940px, calc(100dvh - 24px)); overflow: auto; background: color-mix(in srgb, var(--paper) 88%, white); }
+.mood-poster-dialog-content > header, .mood-poster-dialog-content > footer { padding: 20px 23px; display: flex; justify-content: space-between; align-items: center; gap: 9px; }
+.mood-poster-dialog-content > header { border-bottom: 1px solid var(--line); }
+.mood-poster-dialog-content > footer { border-top: 1px solid var(--line); }
+.mood-poster-body { padding: 22px; display: grid; grid-template-columns: minmax(0, 390px) minmax(190px, 1fr); gap: 22px; align-items: start; }
+.mood-poster-stage { padding: 9px; border: 1px solid rgba(255,255,255,.72); border-radius: 24px; background: rgba(255,255,255,.44); box-shadow: 0 22px 55px rgba(29,29,31,.12); }
+.mood-poster-stage canvas { width: 100%; height: auto; display: block; border-radius: 17px; background: #e9e6de; }
+.mood-poster-controls { position: sticky; top: 18px; display: grid; gap: 16px; padding: 18px; border: 1px solid var(--line); border-radius: 21px; background: color-mix(in srgb, var(--card) 74%, transparent); }
+.mood-poster-controls > div:first-child { display: grid; gap: 5px; }
+.mood-poster-controls strong { font-size: 12px; }
+.mood-poster-controls small { color: var(--muted); font-size: 9px; line-height: 1.55; }
+.poster-theme-switch { display: grid; gap: 8px; }
+.poster-theme-switch button { min-height: 46px; padding: 8px 11px; display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 14px; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.poster-theme-switch button.active { border-color: color-mix(in srgb, var(--accent) 54%, var(--line)); background: color-mix(in srgb, var(--accent) 8%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 7%, transparent); }
+.poster-theme-switch b { font-size: 10px; }
+.poster-theme-dot { width: 24px; height: 24px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.09); }
+.poster-theme-dot.paper { background: linear-gradient(135deg, #f4f1ea, #c9a86a); }
+.poster-theme-dot.night { background: linear-gradient(135deg, #18201c, #6381a6); }
 .reminder-dialog-content > header, .reminder-dialog-content > footer { padding: 23px 26px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .reminder-dialog-content > header { border-bottom: 1px solid var(--line); }
 .reminder-dialog-content > footer { border-top: 1px solid var(--line); }
@@ -692,9 +759,22 @@ html[data-theme="dark"] input::placeholder,
 html[data-theme="dark"] textarea::placeholder { color: #858994; opacity: 1; }
 html[data-theme="dark"] .mood-options button.selected { color: #ddf5e6; background: #30483c; border-color: rgba(155,194,171,.58); }
 html[data-theme="dark"] .mood-reason-summary { color: #b7bdc8; background: rgba(155,194,171,.07); border-color: rgba(155,194,171,.2); }
+html[data-theme="dark"] .mood-memory-summary { color: var(--ink); background: rgba(155,194,171,.055); border-color: rgba(155,194,171,.18); }
+html[data-theme="dark"] .mood-memory-summary:hover { background: rgba(155,194,171,.09); border-color: rgba(155,194,171,.32); }
 html[data-theme="dark"] .mood-reason-selection > span { color: #b6dcc3; background: var(--surface-2); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
 html[data-theme="dark"] .mood-reason-body textarea { color: var(--ink); background: var(--surface-2); border-color: var(--edge-soft); }
 html[data-theme="dark"] .mood-reason-body textarea:focus { background: var(--surface-3); border-color: rgba(125,183,255,.48); box-shadow: 0 0 0 4px rgba(125,183,255,.08); }
+html[data-theme="dark"] .mood-photo-heading > span { color: #b6dcc3; background: rgba(155,194,171,.07); border-color: rgba(155,194,171,.19); }
+html[data-theme="dark"] .mood-photo-gate,
+html[data-theme="dark"] .mood-photo-empty,
+html[data-theme="dark"] .mood-photo-preview,
+html[data-theme="dark"] .mood-poster-controls { background: var(--surface-2); border-color: var(--edge-soft); }
+html[data-theme="dark"] .mood-photo-empty-icon { color: #b6dcc3; background: rgba(155,194,171,.09); }
+html[data-theme="dark"] .mood-photo-frame { background: #101419; }
+html[data-theme="dark"] .mood-photo-meta > span { color: #b6dcc3; background: rgba(155,194,171,.1); }
+html[data-theme="dark"] .poster-button { border-color: rgba(255,255,255,.15); background: #f4f4f6; color: #17191d; }
+html[data-theme="dark"] .mood-poster-dialog { background: var(--surface-1); }
+html[data-theme="dark"] .mood-poster-stage { background: rgba(255,255,255,.035); border-color: rgba(255,255,255,.08); box-shadow: 0 22px 55px rgba(0,0,0,.28); }
 html[data-theme="dark"] .habit-icon { color: color-mix(in srgb, var(--habit-color) 72%, white); background: color-mix(in srgb, var(--habit-color) 18%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--habit-color) 28%, transparent); }
 html[data-theme="dark"] .habit-card::after { background: color-mix(in srgb, var(--habit-color) 28%, transparent); opacity: .62; }
 html[data-theme="dark"] .habit-card.completed,
@@ -854,6 +934,21 @@ html[data-theme="dark"] .review-week-card.active { background: rgba(125,183,255,
   .mood-reason-dialog form > header, .mood-reason-dialog form > footer { padding-inline: 18px; }
   .mood-reason-body { padding: 20px 18px 22px; }
   .mood-reason-body textarea { min-height: 170px; }
+  .mood-photo-gate { grid-template-columns: 40px minmax(0, 1fr); }
+  .mood-photo-gate .secondary-button { grid-column: 1 / -1; justify-content: center; width: 100%; }
+  .mood-photo-empty { grid-template-columns: 40px minmax(0, 1fr); }
+  .mood-photo-empty .secondary-button { grid-column: 1 / -1; width: 100%; }
+  .mood-photo-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .mood-photo-actions .poster-button { grid-column: 1 / -1; width: 100%; justify-content: center; margin-left: 0; }
+  .mood-poster-dialog { width: calc(100vw - 14px); max-height: calc(100dvh - 14px); border-radius: 26px; }
+  .mood-poster-dialog-content > header, .mood-poster-dialog-content > footer { padding-inline: 17px; }
+  .mood-poster-dialog-content > footer { flex-wrap: wrap; }
+  .mood-poster-dialog-content > footer .dialog-footer-spacer { display: none; }
+  .mood-poster-dialog-content > footer button { flex: 1 1 auto; min-height: 44px; }
+  .mood-poster-body { padding: 16px; grid-template-columns: 1fr; gap: 15px; }
+  .mood-poster-stage { max-width: 390px; margin: 0 auto; padding: 7px; border-radius: 21px; }
+  .mood-poster-controls { position: static; padding: 14px; }
+  .poster-theme-switch { grid-template-columns: 1fr 1fr; }
   .reflection-actions { align-items: flex-end; flex-direction: column-reverse; }
   .monthly-reflection-panel { padding: 21px; }
   .monthly-reflection-panel textarea { min-height: 300px; }
