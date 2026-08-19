@@ -5,8 +5,9 @@ const THEME_KEY = "life-ledger-theme";
 const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
 const REMINDER_KEY = "life-ledger-reminder";
 const RESTORE_SAFETY_KEY = "life-ledger-restore-safety-v1";
+const FOCUS_ACTIVE_KEY = "life-ledger-focus-active";
 const BACKUP_FORMAT = "life-ledger-backup";
-const BACKUP_SCHEMA_VERSION = 1;
+const BACKUP_SCHEMA_VERSION = 2;
 const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
 const CLOUD_API = "./api/state";
 const colors = {
@@ -114,6 +115,13 @@ const i18n = {
       denied: "通知权限已被阻止", deniedHelp: "请在浏览器或系统设置中允许 Life Ledger 发送通知。", unsupported: "当前浏览器不支持通知", unsupportedHelp: "可以继续使用复盘功能，但无法发送系统通知。",
       caveat: "本地预览仅能在应用打开时提醒。要在完全关闭后稳定提醒，需要安装 PWA 并接入云端 Push 服务。", test: "发送测试", cancel: "取消", save: "保存提醒", saved: "提醒设置已保存",
       body: "花几分钟完成今天的打卡、心情与复盘。", testBody: "通知工作正常。今晚也记得回来看看自己的脚步。", close: "关闭每日提醒设置", short: "提醒",
+    },
+    focus: {
+      kicker: "专注", overviewTitle: "专注时间", overviewHint: "只选一件事，把注意力完整地交给它。", open: "开始专注", openActive: "查看计时",
+      todayMinutes: "今日分钟", sessions: "次专注", weekMinutes: "本周分钟", weekChart: "本周专注时间", dialogKicker: "专注计时", dialogTitle: "把这一段时间，用在重要的事上。",
+      phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", customLabel: "或为这次专注命名", customPlaceholder: "什么值得你现在专注？",
+      custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
+      caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。",
     },
     foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
     calendar: {
@@ -390,6 +398,13 @@ const i18n = {
       caveat: "Local preview can remind you while the app is open. Reliable reminders after the app is closed require the installed PWA and a cloud push service.", test: "Send test", cancel: "Cancel", save: "Save reminder", saved: "Reminder settings saved",
       body: "Take a few minutes to complete today's habits, mood, and reflection.", testBody: "Notifications are working. Come back tonight and review the path you made.", close: "Close daily reminder settings", short: "Reminder",
     },
+    focus: {
+      kicker: "FOCUS", overviewTitle: "Focus Time", overviewHint: "Choose one thing. Give it your full attention.", open: "Start focus", openActive: "View timer",
+      todayMinutes: "min today", sessions: "sessions", weekMinutes: "min this week", weekChart: "Focus time this week", dialogKicker: "FOCUS TIMER", dialogTitle: "Make this time count.",
+      phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", customLabel: "Or name this session", customPlaceholder: "What deserves your attention?",
+      custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
+      caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Open focus", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.",
+    },
     foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
     calendar: {
       kicker: "MONTH IN VIEW",
@@ -664,6 +679,13 @@ const i18n = {
       denied: "Mitteilungen sind blockiert", deniedHelp: "Erlaube Life Ledger Mitteilungen in den Browser- oder Systemeinstellungen.", unsupported: "Mitteilungen werden nicht unterstützt", unsupportedHelp: "Reflexionen funktionieren weiterhin, aber dieser Browser kann keine Systemmitteilungen senden.",
       caveat: "Die lokale Vorschau erinnert nur bei geöffneter App. Zuverlässige Erinnerungen nach dem Schließen benötigen die installierte PWA und einen Cloud-Push-Dienst.", test: "Test senden", cancel: "Abbrechen", save: "Erinnerung speichern", saved: "Erinnerung gespeichert",
       body: "Nimm dir ein paar Minuten für Gewohnheiten, Stimmung und Tagesreflexion.", testBody: "Mitteilungen funktionieren. Kehre heute Abend zurück und betrachte deinen Weg.", close: "Einstellungen für tägliche Erinnerung schließen", short: "Erinnerung",
+    },
+    focus: {
+      kicker: "FOKUS", overviewTitle: "Fokuszeit", overviewHint: "Wähle eine Sache und schenke ihr deine volle Aufmerksamkeit.", open: "Fokus starten", openActive: "Timer öffnen",
+      todayMinutes: "Min. heute", sessions: "Einheiten", weekMinutes: "Min. diese Woche", weekChart: "Fokuszeit dieser Woche", dialogKicker: "FOKUS-TIMER", dialogTitle: "Nutze diese Zeit für das Wesentliche.",
+      phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", customLabel: "Oder Fokus benennen", customPlaceholder: "Was verdient jetzt deine Aufmerksamkeit?",
+      custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
+      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.",
     },
     foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
     calendar: {
@@ -942,6 +964,8 @@ const seed = {
   dailyGoals: {},
   weeklyGoals: {},
   weeklyOutputs: {},
+  focusSessions: [],
+  focusSettings: { preset: "classic", focusMinutes: 25, breakMinutes: 5, sound: true, notify: true, wakeLock: true },
 };
 
 let state = loadState();
@@ -972,6 +996,9 @@ let themeChoice = ["system", "light", "dark"].includes(localStorage.getItem(THEM
 let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
+let focusTimer = null;
+let focusWakeLock = null;
+let focusAudioContext = null;
 let pendingImport = null;
 let pendingMoodDate = null;
 let pendingMood = "";
@@ -1097,6 +1124,7 @@ function applyLanguage() {
   setAria("#habitCarouselNav", tr("foundations.carousel"));
   setAria("#previousHabitPage", tr("foundations.previousPage"));
   setAria("#nextHabitPage", tr("foundations.nextPage"));
+  applyFocusLanguage();
   setText('[data-plan="selected-day"] .kicker', tr("todayGoals.kicker"));
   setText('[data-plan="selected-day"] .daily-goals-heading h3', tr("todayGoals.title"));
   setText('[data-plan="selected-day"] .daily-goals-heading p', tr("todayGoals.desc"));
@@ -1205,6 +1233,35 @@ function applyLanguage() {
   applySidebarState();
   renderIconPicker();
   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
+}
+function applyFocusLanguage() {
+  setText("#focusOverviewKicker", tr("focus.kicker"));
+  setText("#focusOverviewTitle", tr("focus.overviewTitle"));
+  setText("#focusOverviewHint", tr("focus.overviewHint"));
+  setText("#focusOpenLabel", focusTimer?.snapshot() ? tr("focus.openActive") : tr("focus.open"));
+  setText("#focusTodayMinutesLabel", tr("focus.todayMinutes"));
+  setText("#focusTodaySessionsLabel", tr("focus.sessions"));
+  setText("#focusWeekMinutesLabel", tr("focus.weekMinutes"));
+  setAria("#focusWeekBars", tr("focus.weekChart"));
+  setText("#focusDialogKicker", tr("focus.dialogKicker"));
+  setText("#focusDialogTitle", tr("focus.dialogTitle"));
+  setText("#focusGoalLabel", tr("focus.goalLabel"));
+  setText("#focusCustomLabelText", tr("focus.customLabel"));
+  setPlaceholder("#focusCustomLabel", tr("focus.customPlaceholder"));
+  setText("#focusCustomPresetLabel", tr("focus.custom"));
+  setText("#focusMinutesLabel", tr("focus.focusMinutes"));
+  setText("#focusBreakMinutesLabel", tr("focus.breakMinutes"));
+  setText("#focusSoundLabel", tr("focus.sound"));
+  setText("#focusNotifyLabel", tr("focus.notify"));
+  setText("#focusWakeLockLabel", tr("focus.wakeLock"));
+  setText("#focusFinish", tr("focus.finish"));
+  setText("#focusInterrupt", tr("focus.interrupt"));
+  setText("#focusSkipBreak", tr("focus.skipBreak"));
+  setText("#focusCaveat", tr("focus.caveat"));
+  setAria(".close-focus-dialog", tr("focus.close"));
+  setAria("#focusPill", tr("focus.openActive"));
+  renderFocusGoalOptions();
+  renderFocusTimer(focusTimer?.snapshot() || null);
 }
 function applyCloudBaseLanguage() {
   setText("#cloudbaseAuthKicker", tr("cloudbase.kicker"));
@@ -1486,6 +1543,7 @@ function renderAll() {
   $("#yearSelect").value = cursor.getFullYear();
   $("#monthSelect").value = cursor.getMonth();
   renderToday();
+  renderFocusOverview();
   renderWeeklyWorkspace();
   renderCalendar();
   renderReview();
@@ -1493,7 +1551,7 @@ function renderAll() {
   decorateMotionSurfaces();
 }
 
-const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
+const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .focus-overview-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
 const tiltSurfaceSelector = ".mood-card, .habit-card, .daily-goals-card, .score-card, .setting-row";
 function motionAllowed() {
   return matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1690,6 +1748,7 @@ function renderDailyGoals() {
   $("#todayPlanDate").textContent = formatDateChip(selected);
   $("#journalPlanDate").textContent = formatDateChip(selected);
   renderHomeJournal();
+  renderFocusGoalOptions();
 }
 
 function renderDayRoll() {
@@ -1734,12 +1793,14 @@ function renderHomeJournal() {
 function renderDailyGoalList(date, listSelector, progressSelector, emptyKey) {
   const goals = state.dailyGoals[date] || [];
   const future = isFutureDate(date);
+  const focusAvailable = date === isoDate(new Date());
   const done = goals.filter(goal => goal.done).length;
   $(progressSelector).textContent = `${done} / ${goals.length}`;
   $(listSelector).innerHTML = goals.length ? goals.map(goal => `
-    <div class="weekly-goal ${goal.done ? "done" : ""} ${future ? "future-plan" : ""}" data-id="${goal.id}">
+    <div class="weekly-goal ${focusAvailable ? "focus-linked" : ""} ${goal.done ? "done" : ""} ${future ? "future-plan" : ""}" data-id="${goal.id}">
       <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}" ${future ? "disabled" : ""}>✓</button>
       <button class="weekly-goal-text" ${future ? "" : 'data-action="toggle"'}>${escapeHtml(goal.text)}</button>
+      ${focusAvailable ? `<button class="weekly-goal-focus" data-action="focus" aria-label="${escapeHtml(tr("focus.goalAction"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3"/></svg></button>` : ""}
       <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}">×</button>
     </div>`).join("") : `<p class="weekly-goal-empty">${tr(emptyKey)}</p>`;
   const status = $("#dailyGoalList").parentElement.querySelector(".future-plan-status");
@@ -1751,6 +1812,10 @@ function renderDailyGoalList(date, listSelector, progressSelector, emptyKey) {
     const list = state.dailyGoals[date] || [];
     const index = list.findIndex(goal => goal.id === row.dataset.id);
     if (index < 0) return;
+    if (action === "focus") {
+      openFocusTimerDialog(row.dataset.id);
+      return;
+    }
     if (action === "toggle") list[index].done = !list[index].done;
     if (action === "delete") list.splice(index, 1);
     state.dailyGoals[date] = list;
@@ -2385,7 +2450,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -2399,6 +2464,7 @@ function scopedState(range) {
     const { monday, sunday } = weekDatesFromKey(key);
     if (range.scope === "all" || (isoDate(sunday) >= range.start && isoDate(monday) <= range.end)) result.weeklyOutputs[key] = value;
   });
+  result.focusSessions = (state.focusSessions || []).filter(session => withinRange(session.date, range)).map(cloneData);
   return result;
 }
 function updateExportFields() {
@@ -2490,6 +2556,8 @@ function importedPayload(raw) {
   for (const key of ["reviews", "dailyGoals", "weeklyGoals", "weeklyOutputs"]) {
     if (payload[key] !== undefined && !isRecord(payload[key])) throw new Error(`invalid-${key}`);
   }
+  if (payload.focusSessions !== undefined && !Array.isArray(payload.focusSessions)) throw new Error("invalid-focusSessions");
+  if (payload.focusSettings !== undefined && !isRecord(payload.focusSettings)) throw new Error("invalid-focusSettings");
   const scope = modern ? raw.scope : payload.exportMeta?.scope || "all";
   return {
     modern,
@@ -2504,6 +2572,8 @@ function importedPayload(raw) {
       dailyGoals: cloneData(payload.dailyGoals || {}),
       weeklyGoals: cloneData(payload.weeklyGoals || {}),
       weeklyOutputs: cloneData(payload.weeklyOutputs || {}),
+      focusSessions: cloneData(payload.focusSessions || []),
+      focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
     },
   };
 }
@@ -2562,6 +2632,8 @@ function mergeBackupData(current, incoming) {
     (existing.versions || []).forEach(version => versions.set(version.effectiveDate || JSON.stringify(version), cloneData(version)));
     habits.set(habit.id, { ...cloneData(habit), ...cloneData(existing), versions: [...versions.values()].sort((a, b) => String(a.effectiveDate).localeCompare(String(b.effectiveDate))) });
   });
+  const focusSessions = new Map((current.focusSessions || []).map(session => [session.id, cloneData(session)]));
+  (incoming.focusSessions || []).forEach(session => focusSessions.set(session.id, cloneData(session)));
   return {
     ...cloneData(current),
     habits: [...habits.values()],
@@ -2570,6 +2642,8 @@ function mergeBackupData(current, incoming) {
     dailyGoals: { ...(current.dailyGoals || {}), ...(incoming.dailyGoals || {}) },
     weeklyGoals: { ...(current.weeklyGoals || {}), ...(incoming.weeklyGoals || {}) },
     weeklyOutputs: { ...(current.weeklyOutputs || {}), ...(incoming.weeklyOutputs || {}) },
+    focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
+    focusSettings: { ...(current.focusSettings || seed.focusSettings) },
   };
 }
 function restorePendingImport() {
@@ -2732,6 +2806,247 @@ function openReminderDialog() {
   $("#reminderDialog").showModal();
 }
 
+function focusSessionMinutes(session) {
+  return Math.max(0, Number(session?.actualMinutes) || 0);
+}
+
+function focusSessionsBetween(start, end) {
+  return (state.focusSessions || []).filter(session => session.date >= start && session.date <= end);
+}
+
+function renderFocusOverview() {
+  const today = isoDate(new Date());
+  const { monday, sunday } = weekDatesFromKey(isoWeekKey(new Date()));
+  const todaySessions = focusSessionsBetween(today, today);
+  const weekSessions = focusSessionsBetween(isoDate(monday), isoDate(sunday));
+  const sum = sessions => sessions.reduce((total, session) => total + focusSessionMinutes(session), 0);
+  const rounded = value => Math.round(value);
+  setText("#focusTodayMinutes", rounded(sum(todaySessions)));
+  setText("#focusTodaySessions", todaySessions.length);
+  setText("#focusWeekMinutes", rounded(sum(weekSessions)));
+  const dailyMinutes = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    return { date, minutes: sum(focusSessionsBetween(isoDate(date), isoDate(date))) };
+  });
+  const max = Math.max(25, ...dailyMinutes.map(item => item.minutes));
+  $("#focusWeekBars").innerHTML = dailyMinutes.map(item => `<span class="focus-week-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} min"><i style="height:${Math.max(5, item.minutes / max * 100)}%"></i><span>${escapeHtml(weekdayShortName(item.date.getDay()))}</span></span>`).join("");
+}
+
+function formatFocusTime(milliseconds) {
+  const totalSeconds = Math.max(0, Math.ceil((Number(milliseconds) || 0) / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function focusGoalFor(id) {
+  return (state.dailyGoals[isoDate(new Date())] || []).find(goal => goal.id === id);
+}
+
+function renderFocusGoalOptions(preferred = "") {
+  const select = $("#focusGoalSelect");
+  if (!select) return;
+  const current = preferred || select.value;
+  const goals = state.dailyGoals[isoDate(new Date())] || [];
+  select.innerHTML = `<option value="">${escapeHtml(tr("focus.chooseGoal"))}</option>${goals.map(goal => `<option value="${escapeHtml(goal.id)}">${goal.done ? "✓ " : ""}${escapeHtml(goal.text)}</option>`).join("")}`;
+  if (goals.some(goal => goal.id === current)) select.value = current;
+}
+
+function focusPresetValues(preset) {
+  if (preset === "deep") return { focusMinutes: 50, breakMinutes: 10 };
+  if (preset === "custom") return { focusMinutes: Math.max(1, Number($("#focusMinutes")?.value) || state.focusSettings.focusMinutes || 25), breakMinutes: Math.max(1, Number($("#focusBreakMinutes")?.value) || state.focusSettings.breakMinutes || 5) };
+  return { focusMinutes: 25, breakMinutes: 5 };
+}
+
+function selectFocusPreset(preset, options = {}) {
+  const value = ["classic", "deep", "custom"].includes(preset) ? preset : "classic";
+  $$('[data-focus-preset]').forEach(button => button.classList.toggle("active", button.dataset.focusPreset === value));
+  $("#focusCustomFields").hidden = value !== "custom";
+  if (!options.skipSave) {
+    const values = focusPresetValues(value);
+    state.focusSettings = { ...state.focusSettings, preset: value, ...values };
+    saveState();
+  }
+}
+
+async function acquireFocusWakeLock() {
+  if (!state.focusSettings?.wakeLock || document.hidden || !navigator.wakeLock?.request || focusWakeLock) return;
+  try {
+    focusWakeLock = await navigator.wakeLock.request("screen");
+    focusWakeLock.addEventListener("release", () => { focusWakeLock = null; }, { once: true });
+  } catch (error) {
+    console.warn("Focus wake lock was not available", error);
+  }
+}
+
+async function releaseFocusWakeLock() {
+  const lock = focusWakeLock;
+  focusWakeLock = null;
+  try { await lock?.release(); } catch { /* already released */ }
+}
+
+function playFocusChime() {
+  if (!state.focusSettings?.sound) return;
+  try {
+    focusAudioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+    const now = focusAudioContext.currentTime;
+    [0, .18].forEach((offset, index) => {
+      const oscillator = focusAudioContext.createOscillator();
+      const gain = focusAudioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = index ? 659.25 : 523.25;
+      gain.gain.setValueAtTime(.0001, now + offset);
+      gain.gain.exponentialRampToValueAtTime(.12, now + offset + .025);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + offset + .28);
+      oscillator.connect(gain).connect(focusAudioContext.destination);
+      oscillator.start(now + offset);
+      oscillator.stop(now + offset + .3);
+    });
+  } catch (error) {
+    console.warn("Focus chime could not play", error);
+  }
+}
+
+async function sendFocusNotification(title, body, tag) {
+  if (!state.focusSettings?.notify || reminderPermission() !== "granted") return;
+  const options = { body, icon: "./assets/app-icon-192.png", badge: "./assets/app-icon-192.png", tag, renotify: false };
+  try {
+    const registration = "serviceWorker" in navigator ? await navigator.serviceWorker.getRegistration() : null;
+    if (registration) await registration.showNotification(title, options);
+    else new Notification(title, options);
+  } catch (error) {
+    console.warn("Focus notification could not be sent", error);
+  }
+}
+
+function recordFocusSession(session) {
+  if (!session || (state.focusSessions || []).some(existing => existing.id === session.id)) return;
+  state.focusSessions = [...(state.focusSessions || []), session];
+  saveState();
+  renderFocusOverview();
+}
+
+function handleFocusComplete(session) {
+  recordFocusSession(session);
+  releaseFocusWakeLock();
+  playFocusChime();
+  const label = session.label || tr("focus.untitled");
+  sendFocusNotification(tr("focus.completed"), tr("focus.notificationBody", { label, minutes: Math.round(session.actualMinutes) }), `life-ledger-focus-${session.id}`);
+  showToast(session.outcome === "completed" ? tr("focus.completed") : tr("focus.interrupted"));
+  const clock = $("#focusClock");
+  clock?.classList.remove("focus-complete");
+  void clock?.offsetWidth;
+  clock?.classList.add("focus-complete");
+}
+
+function handleFocusPhaseComplete(phase) {
+  if (phase === "focus") {
+    showToast(tr("focus.breakReady"));
+    return;
+  }
+  releaseFocusWakeLock();
+  playFocusChime();
+  sendFocusNotification(tr("focus.breakDone"), tr("focus.breakDone"), "life-ledger-focus-break");
+  showToast(tr("focus.breakDone"));
+}
+
+function renderFocusTimer(snapshot) {
+  const isFocus = snapshot?.phase === "focus";
+  const isBreak = snapshot?.phase === "break";
+  const running = snapshot?.status === "running";
+  const paused = snapshot?.status === "paused";
+  const readyBreak = isBreak && snapshot?.status === "ready";
+  const duration = snapshot?.durationMs || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes * 60000;
+  const remaining = snapshot?.remainingMs ?? duration;
+  const progress = snapshot ? Math.max(0, Math.min(1, 1 - remaining / Math.max(1, duration))) : 0;
+  $("#focusClock")?.style.setProperty("--focus-progress", progress);
+  setText("#focusTime", formatFocusTime(remaining));
+  setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
+  setText("#focusCurrentLabel", snapshot?.label || (readyBreak ? tr("focus.breakReady") : tr("focus.ready")));
+  $("#focusSetup").hidden = Boolean(snapshot);
+  $("#focusFinish").hidden = !isFocus;
+  $("#focusInterrupt").hidden = !isFocus;
+  $("#focusSkipBreak").hidden = !isBreak;
+  setText("#focusPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
+  $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
+  const pill = $("#focusPill");
+  pill.hidden = !snapshot;
+  if (snapshot) {
+    setText("#focusPillTime", formatFocusTime(remaining));
+    setText("#focusPillLabel", snapshot.label || (isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus")));
+    $(".focus-pill-ring")?.style.setProperty("--pill-progress", progress * 100);
+    document.title = `${formatFocusTime(remaining)} · ${tr("title")}`;
+  } else {
+    document.title = tr("title");
+  }
+  setText("#focusOpenLabel", snapshot ? tr("focus.openActive") : tr("focus.open"));
+}
+
+function openFocusTimerDialog(linkedGoalId = "") {
+  const snapshot = focusTimer?.snapshot();
+  renderFocusGoalOptions(snapshot?.linkedGoalId || linkedGoalId);
+  if (!snapshot) {
+    $("#focusCustomLabel").value = "";
+    $("#focusMinutes").value = state.focusSettings?.focusMinutes || 25;
+    $("#focusBreakMinutes").value = state.focusSettings?.breakMinutes || 5;
+    $("#focusSound").checked = state.focusSettings?.sound !== false;
+    $("#focusNotify").checked = state.focusSettings?.notify !== false;
+    $("#focusWakeLock").checked = state.focusSettings?.wakeLock !== false;
+    selectFocusPreset(state.focusSettings?.preset || "classic", { skipSave: true });
+  }
+  renderFocusTimer(snapshot);
+  $("#focusDialog").showModal();
+}
+
+async function startFocusSession() {
+  const preset = $('[data-focus-preset].active')?.dataset.focusPreset || "classic";
+  const values = focusPresetValues(preset);
+  const goalId = $("#focusGoalSelect").value;
+  const goal = focusGoalFor(goalId);
+  const label = $("#focusCustomLabel").value.trim() || goal?.text || tr("focus.untitled");
+  state.focusSettings = {
+    preset,
+    ...values,
+    sound: $("#focusSound").checked,
+    notify: $("#focusNotify").checked,
+    wakeLock: $("#focusWakeLock").checked,
+  };
+  saveState();
+  if (state.focusSettings.notify) requestNotificationPermission();
+  focusTimer.start({ date: isoDate(new Date()), label, linkedGoalId: goalId, preset, durationMinutes: values.focusMinutes, breakMinutes: values.breakMinutes });
+  acquireFocusWakeLock();
+}
+
+function handleFocusPrimary() {
+  const snapshot = focusTimer?.snapshot();
+  if (!snapshot) { startFocusSession(); return; }
+  if (snapshot.phase === "break" && snapshot.status === "ready") {
+    focusTimer.startBreak();
+    acquireFocusWakeLock();
+    return;
+  }
+  if (snapshot.status === "running") {
+    focusTimer.pause();
+    releaseFocusWakeLock();
+  } else if (snapshot.status === "paused") {
+    focusTimer.resume();
+    acquireFocusWakeLock();
+  }
+}
+
+function initFocusTimer() {
+  if (!window.LifeLedgerFocusTimer) return;
+  focusTimer = window.LifeLedgerFocusTimer.createTimer({
+    storageKey: FOCUS_ACTIVE_KEY,
+    onChange: renderFocusTimer,
+    onFocusComplete: handleFocusComplete,
+    onPhaseComplete: handleFocusPhaseComplete,
+  });
+  const active = focusTimer.initialize();
+  if (active?.status === "running") acquireFocusWakeLock();
+}
+
 function bindEvents() {
   $("#themeSelect").addEventListener("change", event => {
     themeChoice = event.target.value;
@@ -2775,6 +3090,29 @@ function bindEvents() {
   $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); });
   $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
   $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
+  $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
+  $("#focusPill").addEventListener("click", () => openFocusTimerDialog());
+  $$(".close-focus-dialog").forEach(button => button.addEventListener("click", () => $("#focusDialog").close()));
+  $("#focusDialog").addEventListener("cancel", event => {
+    event.preventDefault();
+    $("#focusDialog").close();
+  });
+  $$('[data-focus-preset]').forEach(button => button.addEventListener("click", () => selectFocusPreset(button.dataset.focusPreset)));
+  $("#focusPrimary").addEventListener("click", handleFocusPrimary);
+  $("#focusFinish").addEventListener("click", () => {
+    focusTimer?.endFocus("finishedEarly");
+    $("#focusDialog").close();
+  });
+  $("#focusInterrupt").addEventListener("click", () => {
+    if (!window.confirm(tr("focus.confirmEnd"))) return;
+    focusTimer?.endFocus("interrupted");
+    $("#focusDialog").close();
+  });
+  $("#focusSkipBreak").addEventListener("click", () => {
+    focusTimer?.skipBreak();
+    releaseFocusWakeLock();
+    $("#focusDialog").close();
+  });
   $("#todayHabitViewport").addEventListener("scroll", () => {
     cancelAnimationFrame(habitCarouselScrollFrame);
     habitCarouselScrollFrame = requestAnimationFrame(syncHabitCarouselPageFromScroll);
@@ -2996,7 +3334,13 @@ function bindEvents() {
   window.addEventListener("online", () => {
     if (cloudMode && !authExpired) pushCloudState();
   });
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) maybeSendDailyReminder(); });
+  document.addEventListener("visibilitychange", () => {
+    focusTimer?.reconcile();
+    if (!document.hidden) {
+      maybeSendDailyReminder();
+      if (focusTimer?.snapshot()?.status === "running") acquireFocusWakeLock();
+    }
+  });
   window.addEventListener("beforeinstallprompt", event => {
     event.preventDefault();
     deferredInstallPrompt = event;
@@ -3036,7 +3380,7 @@ function bindEvents() {
   }, true);
 }
 
-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }

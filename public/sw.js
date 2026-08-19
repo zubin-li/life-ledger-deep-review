@@ -1,13 +1,14 @@
-const CACHE_NAME = "life-ledger-pwa-0.2.13-copy-simplification";
+const CACHE_NAME = "life-ledger-pwa-0.3.0-focus-timer";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.2.13",
-  "./app.js?v=0.2.13",
-  "./deployment-mode.js?v=0.2.13",
-  "./cloudbase-sync.js?v=0.2.13",
+  "./styles.css?v=0.3.0",
+  "./app.js?v=0.3.0",
+  "./focus-timer.js?v=0.3.0",
+  "./deployment-mode.js?v=0.3.0",
+  "./cloudbase-sync.js?v=0.3.0",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.2.13",
+  "./_init_tcb-env.js?v=0.3.0",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -54,7 +55,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+  const networkFirst = ["/app.js", "/focus-timer.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
     .some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(

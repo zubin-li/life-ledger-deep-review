@@ -24,7 +24,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=0.2.13" />
+    <link rel="stylesheet" href="./styles.css?v=0.3.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -161,6 +161,26 @@
               <span class="habit-carousel-status" id="habitCarouselStatus" aria-live="polite">1 / 1</span>
               <button class="habit-carousel-arrow" id="nextHabitPage" type="button" aria-label="下一组习惯">→</button>
             </nav>
+          </section>
+
+          <section class="focus-overview-card" id="focusOverview" aria-labelledby="focusOverviewTitle">
+            <div class="focus-overview-copy">
+              <span class="kicker" id="focusOverviewKicker">FOCUS</span>
+              <h2 id="focusOverviewTitle">Focus Time</h2>
+              <p id="focusOverviewHint">Choose one thing. Give it your full attention.</p>
+              <button class="primary-button focus-open-button" id="openFocusTimer" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3"/></svg>
+                <span id="focusOpenLabel">Start focus</span>
+              </button>
+            </div>
+            <div class="focus-overview-data">
+              <div class="focus-metrics">
+                <span><strong id="focusTodayMinutes">0</strong><small id="focusTodayMinutesLabel">min today</small></span>
+                <span><strong id="focusTodaySessions">0</strong><small id="focusTodaySessionsLabel">sessions</small></span>
+                <span><strong id="focusWeekMinutes">0</strong><small id="focusWeekMinutesLabel">min this week</small></span>
+              </div>
+              <div class="focus-week-bars" id="focusWeekBars" aria-label="Focus time this week"></div>
+            </div>
           </section>
 
           <section class="daily-planning-grid" aria-label="Daily planning">
@@ -315,6 +335,11 @@
       </main>
     </div>
 
+    <button class="focus-pill" id="focusPill" type="button" hidden aria-label="Open focus timer">
+      <span class="focus-pill-ring" aria-hidden="true"><i></i></span>
+      <span><strong id="focusPillTime">25:00</strong><small id="focusPillLabel">Focus</small></span>
+    </button>
+
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
     <aside class="day-drawer" id="dayDrawer" aria-hidden="true">
       <header>
@@ -387,6 +412,46 @@
         </div>
         <footer><button class="secondary-button close-mood-reason" id="skipMoodReason" type="button">暂不记录</button><button class="primary-button" id="saveMoodReason" type="submit">保存原因</button></footer>
       </form>
+    </dialog>
+
+    <dialog id="focusDialog" class="focus-dialog">
+      <div class="focus-dialog-content">
+        <header>
+          <div><span class="kicker" id="focusDialogKicker">FOCUS TIMER</span><h2 id="focusDialogTitle">Make this time count.</h2></div>
+          <button class="icon-button close-focus-dialog" type="button" aria-label="Close focus timer">×</button>
+        </header>
+        <div class="focus-dialog-body">
+          <div class="focus-clock" id="focusClock" style="--focus-progress:0">
+            <svg viewBox="0 0 260 260" aria-hidden="true"><circle class="focus-clock-track" cx="130" cy="130" r="114"/><circle class="focus-clock-progress" id="focusProgressCircle" cx="130" cy="130" r="114"/></svg>
+            <div class="focus-clock-copy"><span id="focusPhase">Focus</span><strong id="focusTime">25:00</strong><small id="focusCurrentLabel">Ready when you are</small></div>
+          </div>
+          <section class="focus-setup" id="focusSetup">
+            <label><span id="focusGoalLabel">Focus on</span><select id="focusGoalSelect"><option value="">Choose a daily goal</option></select></label>
+            <label><span id="focusCustomLabelText">Or name this session</span><input id="focusCustomLabel" maxlength="100" placeholder="What deserves your attention?" /></label>
+            <div class="focus-preset-group" id="focusPresetGroup" role="group" aria-label="Timer length">
+              <button class="active" type="button" data-focus-preset="classic"><strong>25</strong><small>+ 5</small></button>
+              <button type="button" data-focus-preset="deep"><strong>50</strong><small>+ 10</small></button>
+              <button type="button" data-focus-preset="custom"><strong>•••</strong><small id="focusCustomPresetLabel">Custom</small></button>
+            </div>
+            <div class="focus-custom-fields" id="focusCustomFields" hidden>
+              <label><span id="focusMinutesLabel">Focus minutes</span><input id="focusMinutes" type="number" min="1" max="180" value="25" /></label>
+              <label><span id="focusBreakMinutesLabel">Break minutes</span><input id="focusBreakMinutes" type="number" min="1" max="60" value="5" /></label>
+            </div>
+            <div class="focus-options">
+              <label><input id="focusSound" type="checkbox" checked /><span id="focusSoundLabel">Sound</span></label>
+              <label><input id="focusNotify" type="checkbox" checked /><span id="focusNotifyLabel">Notification</span></label>
+              <label><input id="focusWakeLock" type="checkbox" checked /><span id="focusWakeLockLabel">Keep screen awake</span></label>
+            </div>
+          </section>
+          <div class="focus-actions" id="focusActions">
+            <button class="primary-button" id="focusPrimary" type="button">Start focus</button>
+            <button class="secondary-button" id="focusFinish" type="button" hidden>Finish now</button>
+            <button class="text-button focus-interrupt" id="focusInterrupt" type="button" hidden>End session</button>
+            <button class="text-button" id="focusSkipBreak" type="button" hidden>Skip break</button>
+          </div>
+          <p class="focus-caveat" id="focusCaveat">The timer stays accurate when this tab is in the background. Completed sessions become part of your review.</p>
+        </div>
+      </div>
     </dialog>
 
     <dialog id="exportDialog" class="export-dialog">
@@ -470,9 +535,10 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=0.2.13"></script>
-    <script src="./_init_tcb-env.js?v=0.2.13"></script>
-    <script src="./cloudbase-sync.js?v=0.2.13"></script>
-    <script src="./app.js?v=0.2.13"></script>
+    <script src="./deployment-mode.js?v=0.3.0"></script>
+    <script src="./_init_tcb-env.js?v=0.3.0"></script>
+    <script src="./cloudbase-sync.js?v=0.3.0"></script>
+    <script src="./focus-timer.js?v=0.3.0"></script>
+    <script src="./app.js?v=0.3.0"></script>
   </body>
 </html>

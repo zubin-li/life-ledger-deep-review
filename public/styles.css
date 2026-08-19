@@ -500,6 +500,124 @@ dialog { border-radius: 28px; }
   .weekly-heading { display: block; }
   .week-navigator { width: 100%; margin-top: 0; grid-template-columns: 40px 1fr 40px; }
 }
+
+/* Focus timer: a compact daily ritual, not a separate productivity dashboard. */
+.focus-overview-card {
+  position: relative;
+  min-width: 0;
+  margin-top: 22px;
+  padding: 24px 26px;
+  display: grid;
+  grid-template-columns: minmax(220px, .72fr) minmax(360px, 1.28fr);
+  align-items: center;
+  gap: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.66);
+  border-radius: 26px;
+  background: linear-gradient(118deg, rgba(224,237,229,.74), rgba(232,238,248,.68)), var(--card);
+  box-shadow: 0 18px 55px rgba(29,29,31,.065), inset 0 1px 0 rgba(255,255,255,.88);
+  backdrop-filter: blur(24px) saturate(145%);
+}
+.focus-overview-card::after { content: ""; position: absolute; width: 260px; height: 260px; right: -118px; top: -150px; border: 1px solid rgba(104,114,92,.11); border-radius: 50%; box-shadow: 0 0 0 42px rgba(104,114,92,.035), 0 0 0 84px rgba(104,114,92,.025); pointer-events: none; }
+.focus-overview-copy { position: relative; z-index: 1; }
+.focus-overview-copy h2 { margin: 7px 0 5px; font: 700 22px/1.2 var(--font-display); letter-spacing: -.025em; }
+.focus-overview-copy p { max-width: 330px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+.focus-open-button { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; }
+.focus-open-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.focus-overview-data { position: relative; z-index: 1; min-width: 0; }
+.focus-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.focus-metrics > span { min-width: 0; padding: 12px 13px; border: 1px solid rgba(255,255,255,.62); border-radius: 16px; background: rgba(255,255,255,.45); }
+.focus-metrics strong, .focus-metrics small { display: block; }
+.focus-metrics strong { font: 700 25px/1 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
+.focus-metrics small { margin-top: 6px; overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.focus-week-bars { height: 58px; margin-top: 13px; padding: 0 7px; display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 7px; }
+.focus-week-day { height: 100%; display: grid; grid-template-rows: 1fr auto; align-items: end; gap: 5px; }
+.focus-week-day i { min-height: 3px; width: 100%; border-radius: 999px; background: color-mix(in srgb, var(--sage) 78%, white); transform-origin: bottom; animation: focusBarIn 360ms var(--ease-enter) both; }
+.focus-week-day span { color: var(--muted); font-size: 7px; text-align: center; }
+@keyframes focusBarIn { from { transform: scaleY(.05); opacity: .3; } }
+
+.focus-pill { position: fixed; z-index: 45; right: max(22px, env(safe-area-inset-right)); bottom: max(22px, env(safe-area-inset-bottom)); min-width: 140px; min-height: 54px; padding: 8px 14px 8px 9px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,.18); border-radius: 20px; background: rgba(29,29,31,.92); color: #fff; box-shadow: 0 16px 44px rgba(0,0,0,.25); backdrop-filter: blur(20px) saturate(150%); transition: transform 180ms var(--ease-enter), opacity 180ms ease; }
+.focus-pill[hidden] { display: none; }
+.focus-pill:active { transform: scale(.97); }
+.focus-pill > span:last-child { min-width: 0; display: grid; text-align: left; }
+.focus-pill strong { font: 650 15px/1.15 var(--font-display); font-variant-numeric: tabular-nums; }
+.focus-pill small { max-width: 92px; margin-top: 3px; overflow: hidden; color: rgba(255,255,255,.58); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.focus-pill-ring { --pill-progress: 0; width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(#9bc2ab calc(var(--pill-progress) * 1%), rgba(255,255,255,.12) 0); }
+.focus-pill-ring i { width: 28px; height: 28px; border-radius: inherit; background: #252628; }
+
+.focus-dialog { width: min(820px, calc(100vw - 28px)); max-height: min(900px, calc(100vh - 28px)); padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.72); border-radius: 30px; background: rgba(248,248,250,.97); box-shadow: 0 34px 110px rgba(29,29,31,.27); backdrop-filter: blur(34px) saturate(150%); }
+.focus-dialog::backdrop { background: rgba(15,18,20,.43); backdrop-filter: blur(7px); }
+.focus-dialog-content > header { padding: 22px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.focus-dialog-content > header h2 { margin: 5px 0 0; font: 700 20px/1.2 var(--font-display); letter-spacing: -.025em; }
+.focus-dialog-body { padding: 24px 28px 26px; display: grid; grid-template-columns: minmax(260px, .9fr) minmax(280px, 1.1fr); align-items: center; gap: 28px 34px; }
+.focus-clock { --focus-progress: 0; position: relative; width: min(100%, 300px); aspect-ratio: 1; justify-self: center; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.72), rgba(232,238,248,.34) 59%, transparent 60%); }
+.focus-clock::before { content: ""; position: absolute; inset: 12%; border-radius: inherit; background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.9), rgba(231,238,234,.75)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 18px 44px rgba(41,67,55,.08); }
+.focus-clock svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.focus-clock circle { fill: none; stroke-width: 7; }
+.focus-clock-track { stroke: rgba(104,114,92,.12); }
+.focus-clock-progress { stroke: #6f8f7d; stroke-linecap: round; stroke-dasharray: 716.29; stroke-dashoffset: calc(716.29 * (1 - var(--focus-progress))); transition: stroke-dashoffset 360ms linear; }
+.focus-clock-copy { position: relative; z-index: 1; width: 68%; display: grid; text-align: center; }
+.focus-clock-copy > span { color: var(--sage); font: 600 9px var(--font-body); letter-spacing: .16em; text-transform: uppercase; }
+.focus-clock-copy strong { margin: 9px 0 7px; font: 650 clamp(42px, 6vw, 62px)/.95 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.055em; }
+.focus-clock-copy small { min-height: 25px; color: var(--muted); font: 9px/1.4 var(--font-body); }
+.focus-clock.focus-complete { animation: focusComplete 720ms var(--ease-enter); }
+@keyframes focusComplete { 45% { transform: scale(1.035); filter: drop-shadow(0 0 24px rgba(111,143,125,.3)); } }
+.focus-setup { min-width: 0; display: grid; gap: 13px; }
+.focus-setup[hidden], .focus-custom-fields[hidden] { display: none; }
+.focus-setup > label, .focus-custom-fields label { display: grid; gap: 6px; color: var(--muted); font-size: 9px; }
+.focus-setup select, .focus-setup input[type="text"], .focus-setup input:not([type]) , .focus-custom-fields input { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 13px; outline: none; background: rgba(255,255,255,.55); padding: 10px 12px; font-size: 11px; }
+.focus-setup select:focus, .focus-setup input:focus { border-color: color-mix(in srgb, var(--accent) 46%, var(--line)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 8%, transparent); }
+.focus-preset-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.focus-preset-group button { min-height: 58px; display: grid; place-items: center; align-content: center; gap: 3px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.34); }
+.focus-preset-group button.active { border-color: color-mix(in srgb, var(--sage) 58%, var(--line)); background: color-mix(in srgb, var(--sage-light) 70%, white); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
+.focus-preset-group strong { font: 650 16px var(--font-display); }
+.focus-preset-group small { color: var(--muted); font-size: 8px; }
+.focus-custom-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.focus-options { display: flex; flex-wrap: wrap; gap: 7px; }
+.focus-options label { min-height: 34px; padding: 7px 10px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.35); color: var(--muted); font-size: 8px; }
+.focus-options input { accent-color: var(--sage); }
+.focus-actions { grid-column: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.focus-actions .primary-button { flex: 1 1 140px; }
+.focus-interrupt { color: #a24e40; }
+.focus-caveat { grid-column: 1 / -1; margin: -8px 0 0; color: var(--muted); font-size: 8px; line-height: 1.5; text-align: center; }
+.weekly-goal.focus-linked { grid-template-columns: 23px minmax(0,1fr) 30px 24px; }
+.weekly-goal-focus { width: 28px; height: 28px; padding: 0; display: grid; place-items: center; border-radius: 9px !important; color: var(--sage); opacity: .68; transition: opacity 150ms ease, background-color 150ms ease, transform 150ms var(--ease-enter); }
+.weekly-goal-focus svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.weekly-goal-focus:hover { opacity: 1; background: var(--sage-light); }
+
+html[data-theme="dark"] .focus-overview-card { border-color: var(--edge-soft); background: linear-gradient(118deg, rgba(76,112,91,.14), rgba(74,101,143,.12)), var(--surface-1); box-shadow: 0 18px 52px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.055); }
+html[data-theme="dark"] .focus-metrics > span,
+html[data-theme="dark"] .focus-preset-group button,
+html[data-theme="dark"] .focus-options label,
+html[data-theme="dark"] .focus-setup select,
+html[data-theme="dark"] .focus-setup input { color: var(--ink); border-color: var(--edge-soft); background: var(--surface-2); }
+html[data-theme="dark"] .focus-preset-group button.active { color: #e3f3e8; border-color: rgba(155,194,171,.45); background: #30443a; }
+html[data-theme="dark"] .focus-clock { background: radial-gradient(circle, rgba(255,255,255,.035), rgba(125,183,255,.045) 59%, transparent 60%); }
+html[data-theme="dark"] .focus-clock::before { background: radial-gradient(circle at 35% 28%, #30343a, #24282d); box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 18px 44px rgba(0,0,0,.26); }
+html[data-theme="dark"] .focus-clock-track { stroke: rgba(255,255,255,.1); }
+html[data-theme="dark"] .focus-clock-progress { stroke: #9bc2ab; }
+
+@media (max-width: 760px) {
+  .focus-overview-card { margin-top: 18px; padding: 21px; grid-template-columns: 1fr; gap: 18px; border-radius: 22px; }
+  .focus-overview-copy { padding-right: 52px; }
+  .focus-open-button { width: 100%; justify-content: center; }
+  .focus-metrics > span { padding: 11px; }
+  .focus-metrics strong { font-size: 22px; }
+  .focus-pill { right: 14px; bottom: calc(86px + env(safe-area-inset-bottom)); min-width: 126px; min-height: 50px; }
+  .focus-dialog { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); border-radius: 26px; }
+  .focus-dialog-content > header { padding: 18px; }
+  .focus-dialog-content > header h2 { font-size: 17px; }
+  .focus-dialog-body { max-height: calc(100dvh - 92px); padding: 18px; overflow-y: auto; grid-template-columns: 1fr; gap: 17px; }
+  .focus-clock { width: min(66vw, 245px); }
+  .focus-actions { grid-column: 1; position: sticky; bottom: -18px; z-index: 2; padding: 10px 0 18px; background: linear-gradient(transparent, rgba(248,248,250,.96) 25%); }
+  html[data-theme="dark"] .focus-actions { background: linear-gradient(transparent, rgba(46,49,56,.97) 25%); }
+  .focus-caveat { grid-column: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-week-day i, .focus-clock.focus-complete { animation: none; }
+  .focus-clock-progress { transition: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
