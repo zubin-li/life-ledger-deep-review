@@ -529,9 +529,6 @@ dialog { border-radius: 28px; }
 .focus-overview-copy { position: relative; z-index: 1; }
 .focus-overview-copy h2 { margin: 7px 0 5px; font: 700 22px/1.2 var(--font-display); letter-spacing: -.025em; }
 .focus-overview-copy p { max-width: 330px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
-.focus-quick-label { max-width: 330px; margin-top: 13px; display: grid; gap: 6px; color: var(--muted); font-size: 8px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.focus-quick-label input { width: 100%; min-height: 39px; padding: 9px 12px; border: 1px solid color-mix(in srgb, var(--line) 82%, transparent); border-radius: 12px; outline: none; background: rgba(255,255,255,.5); color: var(--ink); font: 10px var(--font-body); letter-spacing: 0; text-transform: none; }
-.focus-quick-label input:focus { border-color: color-mix(in srgb, var(--sage) 56%, var(--line)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sage) 9%, transparent); }
 .focus-today-breakdown { max-width: 330px; margin-top: 9px; display: flex; flex-wrap: wrap; gap: 6px; }
 .focus-today-breakdown[hidden], .focus-review-breakdown[hidden] { display: none; }
 .focus-today-breakdown span { min-width: 0; padding: 6px 8px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid color-mix(in srgb, var(--sage) 18%, var(--line)); border-radius: 999px; background: rgba(255,255,255,.34); }
@@ -1159,6 +1156,12 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .review-week-select { min-width: min(260px, 42vw); display: grid; gap: 5px; }
 .review-week-select span { color: var(--muted); font: 500 8px var(--font-body); letter-spacing: .12em; text-transform: uppercase; }
 .review-week-select select { width: 100%; min-height: 36px; padding: 7px 30px 7px 10px; border: 1px solid var(--line); border-radius: 11px; outline: none; background: color-mix(in srgb, var(--card) 70%, transparent); font-size: 10px; font-weight: 650; }
+.focus-review-controls { min-width: min(300px, 45vw); display: grid; grid-template-columns: auto minmax(150px, 1fr); align-items: end; gap: 9px; }
+.focus-review-scope { display: inline-flex; padding: 3px; border-radius: 11px; background: var(--paper-deep); }
+.focus-review-scope button { min-height: 34px; padding: 7px 11px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 9px; font-weight: 700; }
+.focus-review-scope button.active { background: var(--card); color: var(--ink); box-shadow: 0 4px 12px rgba(20,25,22,.08); }
+.focus-review-controls .review-week-select { min-width: 0; }
+.focus-review-controls .review-week-select[hidden] { display: none; }
 
 .focus-review-panel { margin-top: 16px; overflow: hidden; }
 .focus-review-content { min-height: 230px; display: grid; grid-template-columns: minmax(180px, .48fr) minmax(360px, 1.52fr); align-items: end; gap: 28px; padding-top: 20px; }
@@ -1177,6 +1180,13 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .focus-review-day b { color: var(--muted); font-size: 8px; font-weight: 650; }
 .focus-review-day i { width: min(28px, 76%); min-height: 4px; justify-self: center; border-radius: 8px 8px 3px 3px; background: linear-gradient(180deg, #8eab98, #667a6d); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); transform-origin: bottom; animation: focusReviewBarIn 420ms var(--ease-enter) both; }
 .focus-review-day small { color: var(--muted); font-size: 8px; }
+.focus-review-chart.month-view { height: auto; min-height: 240px; padding: 8px; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-rows: minmax(34px, 1fr); align-items: stretch; gap: 6px; border: 0; background: transparent; }
+.focus-heatmap-spacer { min-width: 0; }
+.focus-heatmap-day { position: relative; min-width: 0; min-height: 38px; padding: 6px; overflow: hidden; display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.focus-heatmap-day::after { content: ""; position: absolute; inset: 0; background: var(--sage); opacity: var(--focus-level); }
+.focus-heatmap-day b, .focus-heatmap-day small { position: relative; z-index: 1; }
+.focus-heatmap-day b { font-size: 8px; }
+.focus-heatmap-day small { color: var(--ink); font-size: 7px; font-weight: 700; }
 .focus-review-footer { margin-top: 15px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 8px; text-align: right; }
 @keyframes focusReviewBarIn { from { opacity: .3; transform: scaleY(.04); } }
 
@@ -1189,7 +1199,10 @@ html[data-theme="dark"] .analytics-metric-chip.active { color: #fff; background:
 html[data-theme="dark"] .analytics-series-summary > div { border-color: var(--edge-soft); background: color-mix(in srgb, var(--series-color) 7%, var(--surface-2)); }
 html[data-theme="dark"] .analytics-point { fill: var(--surface-2); }
 html[data-theme="dark"] .focus-review-summary { border-color: var(--edge-soft); background: linear-gradient(145deg, rgba(155,194,171,.09), transparent); }
-html[data-theme="dark"] .focus-quick-label input, html[data-theme="dark"] .focus-today-breakdown span { border-color: var(--edge-soft); background: rgba(255,255,255,.055); }
+html[data-theme="dark"] .focus-today-breakdown span { border-color: var(--edge-soft); background: rgba(255,255,255,.055); }
+html[data-theme="dark"] .focus-review-scope { background: var(--surface-3); }
+html[data-theme="dark"] .focus-review-scope button.active { background: var(--surface-2); }
+html[data-theme="dark"] .focus-heatmap-day { border-color: var(--edge-soft); background: var(--surface-2); }
 html[data-theme="dark"] .focus-review-chart { border-color: var(--edge-soft); background: repeating-linear-gradient(to bottom, transparent 0, transparent 51px, rgba(255,255,255,.055) 52px); }
 html[data-theme="dark"] .focus-review-day i { background: linear-gradient(180deg, #a5cbb3, #668874); }
 html[data-theme="dark"] .pointer-aura { background: radial-gradient(250px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(125,183,255,.07), transparent 66%); }
@@ -1210,6 +1223,7 @@ html[data-theme="dark"] .pointer-aura { background: radial-gradient(250px circle
   .analytics-metric-chip { max-width: 128px; }
   .review-week-select { min-width: 0; width: 100%; }
   .focus-review-panel > .panel-heading { align-items: stretch; flex-direction: column; gap: 14px; }
+  .focus-review-controls { width: 100%; min-width: 0; grid-template-columns: auto minmax(0, 1fr); }
   .focus-review-content { min-height: 0; grid-template-columns: 1fr; gap: 16px; }
   .focus-review-summary { min-height: 155px; padding: 18px; }
   .focus-review-chart { height: 180px; gap: 6px; }
@@ -1337,6 +1351,15 @@ html[data-theme="dark"] .cloudbase-auth-note { background: rgba(255,255,255,.035
   .progress-orbit strong b { font-size: 24px; }
 }
 
+/* Quiet, platform-neutral scrollbars for long settings and dialogs. */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted) 34%, transparent) transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { min-height: 34px; border: 3px solid transparent; border-radius: 999px; background: color-mix(in srgb, var(--muted) 34%, transparent); background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--muted) 52%, transparent); background-clip: padding-box; }
+html[data-theme="dark"] * { scrollbar-color: rgba(226,231,238,.24) transparent; }
+html[data-theme="dark"] *::-webkit-scrollbar-thumb { background: rgba(226,231,238,.24); background-clip: padding-box; }
+
 /* Habit ordering: a dedicated grip prevents drag, edit and page scroll from competing. */
 .habit-drag-handle {
   width: 32px;
@@ -1387,7 +1410,7 @@ html[data-theme="dark"] .setting-row.habit-dragging { box-shadow: 0 20px 46px rg
 html[data-theme="dark"] .habit-reminder-card { border-color: var(--edge-soft); background: var(--surface-1); }
 html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1); color: #9bc2ab; }
 
-.focus-session-summary { margin-top: 7px !important; color: var(--sage-dark) !important; font-weight: 650; }
+.focus-today-summary { margin-top: 7px !important; color: var(--sage-dark) !important; font-weight: 650; }
 .review-canvas-trigger { min-height: 34px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 11px; background: color-mix(in srgb, var(--card) 82%, transparent); color: var(--ink); font: 650 10px var(--font-body); white-space: nowrap; }
 
 /* Local Review Canvas: evidence stays compact; the writing area gets the space. */

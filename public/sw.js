@@ -1,14 +1,14 @@
-const CACHE_NAME = "life-ledger-pwa-0.3.3-drag-review-canvas";
+const CACHE_NAME = "life-ledger-pwa-0.3.4-focus-month-minutes";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=0.3.3",
-  "./app.js?v=0.3.3",
-  "./focus-timer.js?v=0.3.3",
-  "./deployment-mode.js?v=0.3.3",
-  "./cloudbase-sync.js?v=0.3.3",
+  "./styles.css?v=0.3.4",
+  "./app.js?v=0.3.4",
+  "./focus-timer.js?v=0.3.4",
+  "./deployment-mode.js?v=0.3.4",
+  "./cloudbase-sync.js?v=0.3.4",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=0.3.3",
+  "./_init_tcb-env.js?v=0.3.4",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",

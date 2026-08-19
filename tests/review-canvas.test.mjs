@@ -20,6 +20,12 @@ test("weekly review drafts are stored separately from weekly output", () => {
   assert.match(app, /weeklyReviews: \{ \.\.\.\(current\.weeklyReviews/);
 });
 
+test("generated reviews summarize focus minutes without session targets", () => {
+  assert.match(app, /statFocus: "Focus minutes"/);
+  assert.match(app, /Focus: \$\{evidence\.focusMinutes\} minutes/);
+  assert.doesNotMatch(app, /evidence\.completedSessions/);
+});
+
 test("daily reminder entry lives in Habit Settings instead of the global toolbar", () => {
   assert.match(index, /id="habitReminderCard"/);
   assert.doesNotMatch(index, /id="reminderButton"/);

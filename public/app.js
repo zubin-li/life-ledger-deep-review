@@ -119,9 +119,9 @@ const i18n = {
     focus: {
       kicker: "专注", overviewTitle: "专注时间", overviewHint: "只选一件事，把注意力完整地交给它。", open: "开始专注", openActive: "查看计时", settings: "设置", presetSummary: "{focus} 分钟专注 · {break} 分钟休息", readyShort: "准备开始",
       todayMinutes: "今日分钟", sessions: "次专注", weekMinutes: "本周分钟", weekChart: "本周专注时间", dialogKicker: "专注计时", dialogTitle: "把这一段时间，用在重要的事上。",
-      phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", quickLabel: "专注主题", quickPlaceholder: "例如：数据分析、写作…", customLabel: "或为这次专注命名", customPlaceholder: "什么值得你现在专注？",
+      phaseFocus: "专注", phaseBreak: "休息", ready: "准备好就开始", chooseGoal: "选择一个每日目标", goalLabel: "专注于", customLabel: "默认专注主题", customPlaceholder: "例如：数据分析、写作…",
       custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
-      caveat: "切换到后台后计时仍会按真实时间校准；完成记录会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", sessionSummary: "今日已完成 {sessions} 个 Session · {minutes} 分钟", sessionOrdinal: "Session {session}", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewWeek: "选择一周", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这一周还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", monthTotal: "{month} · 共 {minutes} 分钟",
+      caveat: "切换到后台后计时仍会按真实时间校准；专注时长会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", todaySummary: "今日专注 {minutes} 分钟", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewScope: "选择专注复盘周期", scopeWeek: "周", scopeMonth: "月", reviewWeek: "选择一周", reviewMonth: "选择月份", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这个周期还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", moreThanPreviousMonth: "比上个月多 {minutes} 分钟", lessThanPreviousMonth: "比上个月少 {minutes} 分钟", sameAsPreviousMonth: "与上个月相同", monthTotal: "{month} · 共 {minutes} 分钟", monthActivity: "{days} 天有专注记录 · 日均 {average} 分钟",
     },
     foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
     calendar: {
@@ -232,7 +232,7 @@ const i18n = {
       },
     },
     reviewCanvas: {
-      kicker: "DEEP REVIEW", title: "复盘画布", openWeekly: "生成本周复盘", openMonthly: "生成月度复盘", periodAria: "选择复盘周期", weekly: "周度", monthly: "月度", week: "周", month: "月", generate: "重新生成草稿", evidenceKicker: "RECORD", evidenceTitle: "记录告诉我的事实", draftKicker: "REFLECTION", draftTitle: "可编辑复盘", placeholder: "基于现有记录生成事实草稿，再写下你的理解。", autosaved: "● 已自动保存", copy: "复制 Markdown", done: "完成", close: "关闭复盘画布", copied: "复盘已复制", generated: "复盘草稿已生成", replaceConfirm: "重新生成会替换当前草稿，继续吗？", statDays: "有记录的天数", statHabits: "习惯完成", statFocus: "完整 Session", statGoals: "目标完成", noEvidence: "这个周期还没有文字记录。",
+      kicker: "DEEP REVIEW", title: "复盘画布", openWeekly: "生成本周复盘", openMonthly: "生成月度复盘", periodAria: "选择复盘周期", weekly: "周度", monthly: "月度", week: "周", month: "月", generate: "重新生成草稿", evidenceKicker: "RECORD", evidenceTitle: "记录告诉我的事实", draftKicker: "REFLECTION", draftTitle: "可编辑复盘", placeholder: "基于现有记录生成事实草稿，再写下你的理解。", autosaved: "● 已自动保存", copy: "复制 Markdown", done: "完成", close: "关闭复盘画布", copied: "复盘已复制", generated: "复盘草稿已生成", replaceConfirm: "重新生成会替换当前草稿，继续吗？", statDays: "有记录的天数", statHabits: "习惯完成", statFocus: "专注分钟", statGoals: "目标完成", noEvidence: "这个周期还没有文字记录。",
     },
     habits: {
       kicker: "HABIT SYSTEM",
@@ -415,9 +415,9 @@ const i18n = {
     focus: {
       kicker: "FOCUS", overviewTitle: "Focus Time", overviewHint: "Choose one thing. Give it your full attention.", open: "Start focus", openActive: "View timer", settings: "Settings", presetSummary: "{focus} min focus · {break} min break", readyShort: "Ready",
       todayMinutes: "min today", sessions: "sessions", weekMinutes: "min this week", weekChart: "Focus time this week", dialogKicker: "FOCUS TIMER", dialogTitle: "Make this time count.",
-      phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", quickLabel: "Focus topic", quickPlaceholder: "e.g. Data analysis, writing…", customLabel: "Or name this session", customPlaceholder: "What deserves your attention?",
+      phaseFocus: "Focus", phaseBreak: "Break", ready: "Ready when you are", chooseGoal: "Choose a daily goal", goalLabel: "Focus on", customLabel: "Default focus topic", customPlaceholder: "e.g. Data analysis, writing…",
       custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
-      caveat: "The timer stays accurate in the background. Completed sessions become part of your review.", goalAction: "Focus on this goal", untitled: "Focus session", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus session now? The time you invested will still be recorded.", sessionSummary: "{sessions} sessions completed today · {minutes} min", sessionOrdinal: "Session {session}", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewWeek: "Choose week", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded this week.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", monthTotal: "{month} · {minutes} min total",
+      caveat: "The timer stays accurate in the background. Focused minutes become part of your review.", goalAction: "Focus on this goal", untitled: "Open focus", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus now? The time you invested will still be recorded.", todaySummary: "{minutes} min focused today", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewScope: "Choose focus review period", scopeWeek: "Week", scopeMonth: "Month", reviewWeek: "Choose week", reviewMonth: "Choose month", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded in this period.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", moreThanPreviousMonth: "{minutes} min more than last month", lessThanPreviousMonth: "{minutes} min less than last month", sameAsPreviousMonth: "Same as last month", monthTotal: "{month} · {minutes} min total", monthActivity: "{days} focused days · {average} min daily average",
     },
     foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
     calendar: {
@@ -528,7 +528,7 @@ const i18n = {
       },
     },
     reviewCanvas: {
-      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Generate weekly review", openMonthly: "Generate monthly review", periodAria: "Choose review period", weekly: "Weekly", monthly: "Monthly", week: "Week", month: "Month", generate: "Regenerate draft", evidenceKicker: "RECORD", evidenceTitle: "What the record says", draftKicker: "REFLECTION", draftTitle: "Editable review", placeholder: "Generate a factual draft from your records, then add your perspective.", autosaved: "● autosaved", copy: "Copy Markdown", done: "Done", close: "Close review canvas", copied: "Review copied", generated: "Review draft generated", replaceConfirm: "Regenerating will replace the current draft. Continue?", statDays: "Recorded days", statHabits: "Habit check-ins", statFocus: "Full sessions", statGoals: "Goals completed", noEvidence: "There are no written records for this period yet.",
+      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Generate weekly review", openMonthly: "Generate monthly review", periodAria: "Choose review period", weekly: "Weekly", monthly: "Monthly", week: "Week", month: "Month", generate: "Regenerate draft", evidenceKicker: "RECORD", evidenceTitle: "What the record says", draftKicker: "REFLECTION", draftTitle: "Editable review", placeholder: "Generate a factual draft from your records, then add your perspective.", autosaved: "● autosaved", copy: "Copy Markdown", done: "Done", close: "Close review canvas", copied: "Review copied", generated: "Review draft generated", replaceConfirm: "Regenerating will replace the current draft. Continue?", statDays: "Recorded days", statHabits: "Habit check-ins", statFocus: "Focus minutes", statGoals: "Goals completed", noEvidence: "There are no written records for this period yet.",
     },
     habits: {
       kicker: "HABIT SYSTEM",
@@ -711,9 +711,9 @@ const i18n = {
     focus: {
       kicker: "FOKUS", overviewTitle: "Fokuszeit", overviewHint: "Wähle eine Sache und schenke ihr deine volle Aufmerksamkeit.", open: "Fokus starten", openActive: "Timer öffnen", settings: "Einstellungen", presetSummary: "{focus} Min. Fokus · {break} Min. Pause", readyShort: "Bereit",
       todayMinutes: "Min. heute", sessions: "Einheiten", weekMinutes: "Min. diese Woche", weekChart: "Fokuszeit dieser Woche", dialogKicker: "FOKUS-TIMER", dialogTitle: "Nutze diese Zeit für das Wesentliche.",
-      phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", quickLabel: "Fokusthema", quickPlaceholder: "z. B. Datenanalyse, Schreiben…", customLabel: "Oder Fokus benennen", customPlaceholder: "Was verdient jetzt deine Aufmerksamkeit?",
+      phaseFocus: "Fokus", phaseBreak: "Pause", ready: "Bereit, wenn du es bist", chooseGoal: "Tagesziel wählen", goalLabel: "Fokus auf", customLabel: "Standard-Fokusthema", customPlaceholder: "z. B. Datenanalyse, Schreiben…",
       custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
-      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Abgeschlossene Einheiten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diese Fokuseinheit jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", sessionSummary: "Heute {sessions} Sessions abgeschlossen · {minutes} Min.", sessionOrdinal: "Session {session}", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewWeek: "Woche wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diese Woche gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", monthTotal: "{month} · insgesamt {minutes} Min.",
+      caveat: "Der Timer bleibt im Hintergrund zeitgenau. Fokusminuten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diesen Fokus jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", todaySummary: "Heute {minutes} Fokusminuten", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewScope: "Zeitraum für Fokusrückblick wählen", scopeWeek: "Woche", scopeMonth: "Monat", reviewWeek: "Woche wählen", reviewMonth: "Monat wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diesen Zeitraum gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", moreThanPreviousMonth: "{minutes} Min. mehr als im Vormonat", lessThanPreviousMonth: "{minutes} Min. weniger als im Vormonat", sameAsPreviousMonth: "Wie im Vormonat", monthTotal: "{month} · insgesamt {minutes} Min.", monthActivity: "{days} Fokustage · Ø {average} Min. pro Tag",
     },
     foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
     calendar: {
@@ -824,7 +824,7 @@ const i18n = {
       },
     },
     reviewCanvas: {
-      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Wochenrückblick erstellen", openMonthly: "Monatsrückblick erstellen", periodAria: "Rückblickszeitraum wählen", weekly: "Wöchentlich", monthly: "Monatlich", week: "Woche", month: "Monat", generate: "Entwurf neu erstellen", evidenceKicker: "AUFZEICHNUNG", evidenceTitle: "Was die Aufzeichnungen zeigen", draftKicker: "REFLEXION", draftTitle: "Bearbeitbarer Rückblick", placeholder: "Erstelle einen sachlichen Entwurf aus deinen Einträgen und ergänze deine Sicht.", autosaved: "● automatisch gespeichert", copy: "Markdown kopieren", done: "Fertig", close: "Review Canvas schließen", copied: "Rückblick kopiert", generated: "Rückblicksentwurf erstellt", replaceConfirm: "Ein neuer Entwurf ersetzt den aktuellen Text. Fortfahren?", statDays: "Erfasste Tage", statHabits: "Gewohnheiten", statFocus: "Volle Sessions", statGoals: "Erledigte Ziele", noEvidence: "Für diesen Zeitraum gibt es noch keine Textaufzeichnungen.",
+      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Wochenrückblick erstellen", openMonthly: "Monatsrückblick erstellen", periodAria: "Rückblickszeitraum wählen", weekly: "Wöchentlich", monthly: "Monatlich", week: "Woche", month: "Monat", generate: "Entwurf neu erstellen", evidenceKicker: "AUFZEICHNUNG", evidenceTitle: "Was die Aufzeichnungen zeigen", draftKicker: "REFLEXION", draftTitle: "Bearbeitbarer Rückblick", placeholder: "Erstelle einen sachlichen Entwurf aus deinen Einträgen und ergänze deine Sicht.", autosaved: "● automatisch gespeichert", copy: "Markdown kopieren", done: "Fertig", close: "Review Canvas schließen", copied: "Rückblick kopiert", generated: "Rückblicksentwurf erstellt", replaceConfirm: "Ein neuer Entwurf ersetzt den aktuellen Text. Fortfahren?", statDays: "Erfasste Tage", statHabits: "Gewohnheiten", statFocus: "Fokusminuten", statGoals: "Erledigte Ziele", noEvidence: "Für diesen Zeitraum gibt es noch keine Textaufzeichnungen.",
     },
     habits: {
       kicker: "GEWOHNHEITSSYSTEM",
@@ -1008,7 +1008,7 @@ const seed = {
   weeklyOutputs: {},
   weeklyReviews: {},
   focusSessions: [],
-  focusSettings: { preset: "classic", focusMinutes: 25, breakMinutes: 5, sound: true, notify: true, wakeLock: true },
+  focusSettings: { preset: "classic", focusMinutes: 25, breakMinutes: 5, defaultTopic: "", sound: true, notify: true, wakeLock: true },
 };
 
 let state = loadState();
@@ -1018,6 +1018,8 @@ let selectedDate = isoDate(cursor);
 let selectedPlanningDate = isoDate(cursor);
 let editingHabitId = null;
 let selectedReviewWeek = isoWeekKey(new Date());
+let focusReviewScope = "week";
+let selectedFocusReviewMonth = monthKey(new Date());
 let selectedWorkspaceWeek = isoWeekKey(new Date());
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
@@ -1301,8 +1303,6 @@ function applyFocusLanguage() {
   setText("#focusOverviewKicker", tr("focus.kicker"));
   setText("#focusOverviewTitle", tr("focus.overviewTitle"));
   setText("#focusOverviewHint", tr("focus.overviewHint"));
-  setText("#focusQuickLabelText", tr("focus.quickLabel"));
-  setPlaceholder("#focusQuickLabel", tr("focus.quickPlaceholder"));
   setText("#focusSettingsLabel", tr("focus.settings"));
   setAria("#openFocusTimer", tr("focus.settings"));
   setAria("#focusQuickPresets", tr("focus.presetSummary", { focus: 25, break: 5 }));
@@ -1325,6 +1325,9 @@ function applyFocusLanguage() {
   setText("#focusReviewKicker", tr("focus.reviewKicker"));
   setText("#focusReviewTitle", tr("focus.reviewTitle"));
   setText("#focusReviewWeekLabel", tr("focus.reviewWeek"));
+  setText("#focusReviewMonthLabel", tr("focus.reviewMonth"));
+  setAria("#focusReviewScope", tr("focus.reviewScope"));
+  $$('[data-focus-review-scope]').forEach(button => { button.textContent = tr(`focus.${button.dataset.focusReviewScope === "week" ? "scopeWeek" : "scopeMonth"}`); });
   setText("#focusReviewUnit", tr("focus.reviewUnit"));
   setAria("#focusReviewBars", tr("focus.reviewChart"));
   renderFocusGoalOptions();
@@ -2084,38 +2087,85 @@ function periodDateGroups(dates, frequency) {
   });
   return [...groups.values()];
 }
+function focusTopics(sessions) {
+  return [...sessions.reduce((groups, session) => {
+    const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+    groups.set(label, (groups.get(label) || 0) + focusSessionMinutes(session));
+    return groups;
+  }, new Map()).entries()].filter(([, minutes]) => minutes >= .5).sort((a, b) => b[1] - a[1]);
+}
+
 function renderFocusReview(year, month) {
   const weeks = new Set();
   for (let day = 1; day <= new Date(year, month + 1, 0).getDate(); day++) weeks.add(isoWeekKey(new Date(year, month, day, 12)));
   const keys = [...weeks];
   if (!keys.includes(selectedReviewWeek)) selectedReviewWeek = keys.includes(isoWeekKey(new Date())) ? isoWeekKey(new Date()) : keys[0];
   $("#focusReviewWeekSelect").innerHTML = keys.map(key => `<option value="${key}" ${key === selectedReviewWeek ? "selected" : ""}>${formatWeekRangeInMonth(key, year, month)}</option>`).join("");
-  const { monday, sunday } = weekDatesFromKey(selectedReviewWeek);
-  const daily = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(monday);
-    date.setDate(monday.getDate() + index);
-    const minutes = focusSessionsBetween(isoDate(date), isoDate(date)).reduce((total, session) => total + focusSessionMinutes(session), 0);
-    return { date, minutes };
-  });
-  const total = daily.reduce((sum, item) => sum + item.minutes, 0);
-  const weekSessions = focusSessionsBetween(isoDate(monday), isoDate(sunday));
-  const byTopic = [...weekSessions.reduce((groups, session) => {
-    const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
-    groups.set(label, (groups.get(label) || 0) + focusSessionMinutes(session));
-    return groups;
-  }, new Map()).entries()].filter(([, minutes]) => minutes >= .5).sort((a, b) => b[1] - a[1]);
-  const previous = weekDatesFromKey(shiftWeekKey(selectedReviewWeek, -1));
-  const previousTotal = focusSessionsBetween(isoDate(previous.monday), isoDate(previous.sunday)).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
-  const difference = Math.round(total - previousTotal);
-  const monthStart = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-  const monthEnd = isoDate(new Date(year, month + 1, 0, 12));
-  const monthTotal = focusSessionsBetween(monthStart, monthEnd).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
-  const max = Math.max(25, ...daily.map(item => item.minutes));
-  setText("#focusReviewRange", formatWeekRange(selectedReviewWeek));
+  $("#focusReviewMonthSelect").innerHTML = Array.from({ length: 120 }, (_, index) => {
+    const optionYear = 2026 + Math.floor(index / 12);
+    const optionMonth = index % 12 + 1;
+    const key = `${optionYear}-${String(optionMonth).padStart(2, "0")}`;
+    return `<option value="${key}" ${key === selectedFocusReviewMonth ? "selected" : ""}>${escapeHtml(reviewPeriodLabel("month", key))}</option>`;
+  }).join("");
+  $$('[data-focus-review-scope]').forEach(button => button.classList.toggle("active", button.dataset.focusReviewScope === focusReviewScope));
+  $("#focusReviewWeekField").hidden = focusReviewScope !== "week";
+  $("#focusReviewMonthField").hidden = focusReviewScope !== "month";
+  const chart = $("#focusReviewBars");
+  chart.classList.toggle("month-view", focusReviewScope === "month");
+
+  let total = 0;
+  let byTopic = [];
+  if (focusReviewScope === "month") {
+    const [selectedYear, selectedMonth] = selectedFocusReviewMonth.split("-").map(Number);
+    const dayCount = new Date(selectedYear, selectedMonth, 0).getDate();
+    const daily = Array.from({ length: dayCount }, (_, index) => {
+      const date = new Date(selectedYear, selectedMonth - 1, index + 1, 12);
+      const minutes = focusSessionsBetween(isoDate(date), isoDate(date)).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+      return { date, minutes };
+    });
+    const monthStart = `${selectedFocusReviewMonth}-01`;
+    const monthEnd = isoDate(new Date(selectedYear, selectedMonth, 0, 12));
+    const sessions = focusSessionsBetween(monthStart, monthEnd);
+    total = sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+    byTopic = focusTopics(sessions);
+    const previousDate = new Date(selectedYear, selectedMonth - 2, 1, 12);
+    const previousKey = monthKey(previousDate);
+    const previousTotal = focusSessionsBetween(`${previousKey}-01`, isoDate(new Date(previousDate.getFullYear(), previousDate.getMonth() + 1, 0, 12))).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+    const difference = Math.round(total - previousTotal);
+    const activeDays = daily.filter(item => item.minutes > 0).length;
+    const max = Math.max(1, ...daily.map(item => item.minutes));
+    const offset = (daily[0].date.getDay() + 6) % 7;
+    chart.innerHTML = `${Array.from({ length: offset }, () => '<span class="focus-heatmap-spacer"></span>').join("")}${daily.map(item => {
+      const level = item.minutes ? Math.max(.16, item.minutes / max) : 0;
+      return `<span class="focus-heatmap-day" style="--focus-level:${level}" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.date.getDate()}</b><small>${item.minutes ? Math.round(item.minutes) : ""}</small></span>`;
+    }).join("")}`;
+    setText("#focusReviewRange", reviewPeriodLabel("month", selectedFocusReviewMonth));
+    setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPreviousMonth", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPreviousMonth", { minutes: Math.abs(difference) }) : tr("focus.sameAsPreviousMonth"));
+    setText("#focusReviewMonthTotal", tr("focus.monthActivity", { days: activeDays, average: activeDays ? Math.round(total / activeDays) : 0 }));
+  } else {
+    const { monday, sunday } = weekDatesFromKey(selectedReviewWeek);
+    const daily = Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + index);
+      const minutes = focusSessionsBetween(isoDate(date), isoDate(date)).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+      return { date, minutes };
+    });
+    total = daily.reduce((sum, item) => sum + item.minutes, 0);
+    const sessions = focusSessionsBetween(isoDate(monday), isoDate(sunday));
+    byTopic = focusTopics(sessions);
+    const previous = weekDatesFromKey(shiftWeekKey(selectedReviewWeek, -1));
+    const previousTotal = focusSessionsBetween(isoDate(previous.monday), isoDate(previous.sunday)).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+    const difference = Math.round(total - previousTotal);
+    const monthStart = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+    const monthEnd = isoDate(new Date(year, month + 1, 0, 12));
+    const monthTotal = focusSessionsBetween(monthStart, monthEnd).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+    const max = Math.max(25, ...daily.map(item => item.minutes));
+    chart.innerHTML = daily.map(item => `<span class="focus-review-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.minutes ? Math.round(item.minutes) : ""}</b><i style="height:${Math.max(4, item.minutes / max * 100)}%"></i><small>${escapeHtml(weekdayShortName(item.date.getDay()))}</small></span>`).join("");
+    setText("#focusReviewRange", formatWeekRange(selectedReviewWeek));
+    setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPrevious", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPrevious", { minutes: Math.abs(difference) }) : tr("focus.sameAsPrevious"));
+    setText("#focusReviewMonthTotal", tr("focus.monthTotal", { month: currentLang === "zh" ? `${month + 1}月` : monthName(month), minutes: Math.round(monthTotal) }));
+  }
   setText("#focusReviewTotal", Math.round(total));
-  setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPrevious", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPrevious", { minutes: Math.abs(difference) }) : tr("focus.sameAsPrevious"));
-  setText("#focusReviewMonthTotal", tr("focus.monthTotal", { month: currentLang === "zh" ? `${month + 1}月` : monthName(month), minutes: Math.round(monthTotal) }));
-  $("#focusReviewBars").innerHTML = daily.map(item => `<span class="focus-review-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.minutes ? Math.round(item.minutes) : ""}</b><i style="height:${Math.max(4, item.minutes / max * 100)}%"></i><small>${escapeHtml(weekdayShortName(item.date.getDay()))}</small></span>`).join("");
   $("#focusReviewBreakdown").hidden = !byTopic.length;
   $("#focusReviewBreakdown").innerHTML = byTopic.slice(0, 4).map(([label, minutes]) => `<span><b>${escapeHtml(label)}</b><small>${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</small></span>`).join("");
 }
@@ -2666,7 +2716,6 @@ function reviewEvidence(scope, key) {
   }).filter(item => item.possible || item.count);
   const habitCheckins = habitStats.reduce((sum, item) => sum + item.count, 0);
   const sessions = dates.length ? focusSessionsBetween(dates[0], dates.at(-1)) : [];
-  const completedSessions = sessions.filter(session => session.outcome === "completed").length;
   const focusMinutes = Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0));
   const dailyGoals = dates.flatMap(date => state.dailyGoals[date] || []);
   const weekKeys = [...new Set(dates.map(date => isoWeekKey(parseDate(date))))];
@@ -2682,7 +2731,7 @@ function reviewEvidence(scope, key) {
   const notes = logs.flatMap(({ date, log }) => [log.moodReason, log.note].filter(value => value?.trim()).map(value => ({ date, text: value.trim() })));
   const outputs = weekKeys.map(week => state.weeklyOutputs[week]?.trim()).filter(Boolean);
   const strongestDay = dates.map(date => ({ date, score: completionFor(date) })).sort((a, b) => b.score - a.score)[0];
-  return { scope, key, dates, dateSet, label: reviewPeriodLabel(scope, key), recordedDays, habitStats, habitCheckins, completedSessions, focusMinutes, goalsDone, goalsTotal: goals.length, unfinishedGoals, topMood, notes, outputs, strongestDay };
+  return { scope, key, dates, dateSet, label: reviewPeriodLabel(scope, key), recordedDays, habitStats, habitCheckins, focusMinutes, goalsDone, goalsTotal: goals.length, unfinishedGoals, topMood, notes, outputs, strongestDay };
 }
 
 function buildLocalReviewDraft(evidence) {
@@ -2698,9 +2747,9 @@ function buildLocalReviewDraft(evidence) {
   const unfinished = evidence.unfinishedGoals.length ? evidence.unfinishedGoals.slice(0, 6).map(text => `- ${text}`).join("\n") : languageText("- 暂无未完成目标", "- No unfinished goals", "- Keine offenen Ziele");
   const records = [...evidence.outputs, ...evidence.notes.map(item => `${formatDateChip(parseDate(item.date))}: ${item.text}`)].slice(0, 6);
   const recordLines = records.length ? records.map(text => `- ${text}`).join("\n") : languageText("- 这个周期还没有留下文字。", "- No written record was left in this period.", "- Für diesen Zeitraum gibt es noch keinen Text.");
-  if (currentLang === "zh") return `# ${evidence.label}${evidence.scope === "week" ? "周度" : "月度"}复盘\n\n## 事实摘要\n- 有记录的天数：${evidence.recordedDays}/${evidence.dates.length}\n- 习惯完成：${evidence.habitCheckins} 次\n- 专注：${evidence.completedSessions} 个完整 Session，共 ${evidence.focusMinutes} 分钟\n- 目标：完成 ${evidence.goalsDone}/${evidence.goalsTotal}\n\n## 习惯轨迹\n${habitLines}\n\n## 值得看见\n- 完成度最高的一天：${strongest}\n- ${moodLine}\n\n## 尚未完成\n${unfinished}\n\n## 留下的内容\n${recordLines}\n\n## 我的理解\n- 什么值得继续？\n- 什么正在消耗我？\n- 下一周期最重要的一步是什么？\n`;
-  if (currentLang === "de") return `# ${evidence.label} · ${evidence.scope === "week" ? "Wochenrückblick" : "Monatsrückblick"}\n\n## Fakten\n- Erfasste Tage: ${evidence.recordedDays}/${evidence.dates.length}\n- Gewohnheiten: ${evidence.habitCheckins} Check-ins\n- Fokus: ${evidence.completedSessions} volle Sessions, ${evidence.focusMinutes} Minuten\n- Ziele: ${evidence.goalsDone}/${evidence.goalsTotal} erledigt\n\n## Gewohnheiten\n${habitLines}\n\n## Was sichtbar wird\n- Stärkster Tag: ${strongest}\n- ${moodLine}\n\n## Offen\n${unfinished}\n\n## Hinterlassene Notizen\n${recordLines}\n\n## Meine Einordnung\n- Was sollte bleiben?\n- Was kostet unnötig Kraft?\n- Was ist der wichtigste nächste Schritt?\n`;
-  return `# ${evidence.label} · ${evidence.scope === "week" ? "Weekly Review" : "Monthly Review"}\n\n## Facts\n- Recorded days: ${evidence.recordedDays}/${evidence.dates.length}\n- Habits: ${evidence.habitCheckins} check-ins\n- Focus: ${evidence.completedSessions} full sessions, ${evidence.focusMinutes} minutes\n- Goals: ${evidence.goalsDone}/${evidence.goalsTotal} completed\n\n## Habit trail\n${habitLines}\n\n## What stands out\n- Strongest day: ${strongest}\n- ${moodLine}\n\n## Still open\n${unfinished}\n\n## Notes from the period\n${recordLines}\n\n## My perspective\n- What deserves to continue?\n- What is draining energy?\n- What is the most important next step?\n`;
+  if (currentLang === "zh") return `# ${evidence.label}${evidence.scope === "week" ? "周度" : "月度"}复盘\n\n## 事实摘要\n- 有记录的天数：${evidence.recordedDays}/${evidence.dates.length}\n- 习惯完成：${evidence.habitCheckins} 次\n- 专注：${evidence.focusMinutes} 分钟\n- 目标：完成 ${evidence.goalsDone}/${evidence.goalsTotal}\n\n## 习惯轨迹\n${habitLines}\n\n## 值得看见\n- 完成度最高的一天：${strongest}\n- ${moodLine}\n\n## 尚未完成\n${unfinished}\n\n## 留下的内容\n${recordLines}\n\n## 我的理解\n- 什么值得继续？\n- 什么正在消耗我？\n- 下一周期最重要的一步是什么？\n`;
+  if (currentLang === "de") return `# ${evidence.label} · ${evidence.scope === "week" ? "Wochenrückblick" : "Monatsrückblick"}\n\n## Fakten\n- Erfasste Tage: ${evidence.recordedDays}/${evidence.dates.length}\n- Gewohnheiten: ${evidence.habitCheckins} Check-ins\n- Fokus: ${evidence.focusMinutes} Minuten\n- Ziele: ${evidence.goalsDone}/${evidence.goalsTotal} erledigt\n\n## Gewohnheiten\n${habitLines}\n\n## Was sichtbar wird\n- Stärkster Tag: ${strongest}\n- ${moodLine}\n\n## Offen\n${unfinished}\n\n## Hinterlassene Notizen\n${recordLines}\n\n## Meine Einordnung\n- Was sollte bleiben?\n- Was kostet unnötig Kraft?\n- Was ist der wichtigste nächste Schritt?\n`;
+  return `# ${evidence.label} · ${evidence.scope === "week" ? "Weekly Review" : "Monthly Review"}\n\n## Facts\n- Recorded days: ${evidence.recordedDays}/${evidence.dates.length}\n- Habits: ${evidence.habitCheckins} check-ins\n- Focus: ${evidence.focusMinutes} minutes\n- Goals: ${evidence.goalsDone}/${evidence.goalsTotal} completed\n\n## Habit trail\n${habitLines}\n\n## What stands out\n- Strongest day: ${strongest}\n- ${moodLine}\n\n## Still open\n${unfinished}\n\n## Notes from the period\n${recordLines}\n\n## My perspective\n- What deserves to continue?\n- What is draining energy?\n- What is the most important next step?\n`;
 }
 
 function reviewCanvasStore() {
@@ -2713,7 +2762,7 @@ function renderReviewCanvas(generateIfEmpty = true) {
   const stats = [
     [tr("reviewCanvas.statDays"), `${evidence.recordedDays}/${evidence.dates.length}`],
     [tr("reviewCanvas.statHabits"), evidence.habitCheckins],
-    [tr("reviewCanvas.statFocus"), evidence.completedSessions],
+    [tr("reviewCanvas.statFocus"), evidence.focusMinutes],
     [tr("reviewCanvas.statGoals"), `${evidence.goalsDone}/${evidence.goalsTotal}`],
   ];
   $("#reviewEvidenceStats").innerHTML = stats.map(([label, value]) => `<div><strong>${value}</strong><span>${escapeHtml(label)}</span></div>`).join("");
@@ -3152,7 +3201,6 @@ function focusTodayStats() {
   const today = isoDate(new Date());
   const sessions = focusSessionsBetween(today, today);
   return {
-    completed: sessions.filter(session => session.outcome === "completed").length,
     minutes: Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0)),
   };
 }
@@ -3161,7 +3209,7 @@ function renderFocusOverview() {
   const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
   const today = focusTodayStats();
   setText("#focusPresetSummary", tr("focus.presetSummary", { focus: settings.focusMinutes, break: settings.breakMinutes }));
-  setText("#focusSessionSummary", tr("focus.sessionSummary", { sessions: today.completed, minutes: today.minutes }));
+  setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: today.minutes }));
   const todayKey = isoDate(new Date());
   const byTopic = [...focusSessionsBetween(todayKey, todayKey).reduce((groups, session) => {
     const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
@@ -3319,8 +3367,7 @@ function renderFocusTimer(snapshot) {
   const progress = snapshot ? Math.max(0, Math.min(1, 1 - remaining / Math.max(1, duration))) : 0;
   $("#focusClock")?.style.setProperty("--focus-progress", progress);
   setText("#focusTime", formatFocusTime(remaining));
-  const sessionOrdinal = focusTodayStats().completed + 1;
-  setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.sessionOrdinal", { session: sessionOrdinal }));
+  setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
   setText("#focusCurrentLabel", snapshot?.label || (readyBreak ? tr("focus.breakReady") : tr("focus.ready")));
   $("#focusSetup").hidden = Boolean(snapshot);
   $("#focusFinish").hidden = !isFocus;
@@ -3330,8 +3377,8 @@ function renderFocusTimer(snapshot) {
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
   $("#focusInlineTimer")?.style.setProperty("--focus-inline-progress", progress);
   setText("#focusInlineTime", formatFocusTime(remaining));
-  setText("#focusInlinePhase", isBreak ? tr("focus.phaseBreak") : tr("focus.sessionOrdinal", { session: sessionOrdinal }));
-  setText("#focusInlineLabel", snapshot?.label || tr("focus.untitled"));
+  setText("#focusInlinePhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
+  setText("#focusInlineLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
   setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusQuickFinish").hidden = !isFocus;
   $("#focusQuickSkip").hidden = !isBreak;
@@ -3348,7 +3395,7 @@ function openFocusTimerDialog(linkedGoalId = "") {
   const snapshot = focusTimer?.snapshot();
   renderFocusGoalOptions(snapshot?.linkedGoalId || linkedGoalId);
   if (!snapshot) {
-    $("#focusCustomLabel").value = $("#focusQuickLabel")?.value.trim() || "";
+    $("#focusCustomLabel").value = state.focusSettings?.defaultTopic || "";
     $("#focusMinutes").value = state.focusSettings?.focusMinutes || 25;
     $("#focusBreakMinutes").value = state.focusSettings?.breakMinutes || 5;
     $("#focusSound").checked = state.focusSettings?.sound !== false;
@@ -3369,6 +3416,7 @@ async function startFocusSession() {
   state.focusSettings = {
     preset,
     ...values,
+    defaultTopic: label === tr("focus.untitled") ? "" : label,
     sound: $("#focusSound").checked,
     notify: $("#focusNotify").checked,
     wakeLock: $("#focusWakeLock").checked,
@@ -3384,7 +3432,7 @@ async function startQuickFocusSession() {
   if (settings.notify) requestNotificationPermission();
   focusTimer.start({
     date: isoDate(new Date()),
-    label: $("#focusQuickLabel")?.value.trim() || tr("focus.untitled"),
+    label: settings.defaultTopic || tr("focus.untitled"),
     preset: settings.preset,
     durationMinutes: settings.focusMinutes,
     breakMinutes: settings.breakMinutes,
@@ -3478,11 +3526,6 @@ function bindEvents() {
   $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
   $$('[data-quick-focus-preset]').forEach(button => button.addEventListener("click", () => selectQuickFocusPreset(button.dataset.quickFocusPreset)));
   $("#focusQuickPrimary").addEventListener("click", handleFocusQuickPrimary);
-  $("#focusQuickLabel").addEventListener("keydown", event => {
-    if (event.key !== "Enter") return;
-    event.preventDefault();
-    $("#focusQuickPrimary").click();
-  });
   $("#focusQuickFinish").addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
   $("#focusQuickSkip").addEventListener("click", () => {
     focusTimer?.skipBreak();
@@ -3602,8 +3645,18 @@ function bindEvents() {
   }));
   $("#focusReviewWeekSelect").addEventListener("change", event => {
     selectedReviewWeek = event.target.value;
+    focusReviewScope = "week";
     renderReview();
   });
+  $("#focusReviewMonthSelect").addEventListener("change", event => {
+    selectedFocusReviewMonth = event.target.value;
+    focusReviewScope = "month";
+    renderReview();
+  });
+  $$('[data-focus-review-scope]').forEach(button => button.addEventListener("click", () => {
+    focusReviewScope = button.dataset.focusReviewScope === "month" ? "month" : "week";
+    renderReview();
+  }));
   $("#addPeriodTarget").addEventListener("click", () => openHabitDialog());
   $("#openWeeklyReviewCanvas").addEventListener("click", () => openReviewCanvas("week"));
   $("#generateReview").addEventListener("click", () => openReviewCanvas("month"));
