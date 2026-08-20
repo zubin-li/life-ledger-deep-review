@@ -18,6 +18,7 @@
   --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Source Sans 3", "Noto Sans SC", sans-serif;
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
+  --mobile-nav-safe-bottom: env(safe-area-max-inset-bottom, env(safe-area-inset-bottom, 0px));
 }
 
 * { box-sizing: border-box; }
@@ -912,8 +913,12 @@ html[data-theme="dark"] .pwa-install-button.ready { color: #9bc2ab; border-color
   .icon-picker-popover { grid-template-columns: repeat(3, 1fr); }
   .mobile-install-button { display: inline-flex; order: 4; width: 100%; }
   #todayButton { order: 6; flex: 1 1 calc(50% - 5px); width: auto; }
-  .main-content { padding-top: max(25px, env(safe-area-inset-top)); padding-bottom: max(110px, calc(92px + env(safe-area-inset-bottom))); }
-  .sidebar { bottom: max(10px, env(safe-area-inset-bottom)); }
+  .main-content { padding-top: max(25px, env(safe-area-inset-top)); padding-bottom: max(110px, calc(92px + var(--mobile-nav-safe-bottom))); }
+  .sidebar {
+    bottom: max(10px, var(--mobile-nav-safe-bottom));
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* Quiet interface pass: progressive disclosure and lower information density. */

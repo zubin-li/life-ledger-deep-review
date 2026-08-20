@@ -21,3 +21,10 @@ test("mobile hero keeps its progress ring in the lower-right without overlay", (
   assert.match(mobileContract, /\.progress-orbit\s*\{[\s\S]*?width:\s*90px;[\s\S]*?position:\s*relative;[\s\S]*?justify-self:\s*end;/);
   assert.doesNotMatch(mobileContract, /\.progress-orbit\s*\{[^}]*position:\s*absolute;/);
 });
+
+test("mobile navigation uses a stable safe-area inset while the page scrolls", () => {
+  assert.match(css, /--mobile-nav-safe-bottom:\s*env\(safe-area-max-inset-bottom,\s*env\(safe-area-inset-bottom,\s*0px\)\)/);
+  assert.match(css, /\.sidebar\s*\{[\s\S]*?bottom:\s*max\(10px,\s*var\(--mobile-nav-safe-bottom\)\);[\s\S]*?backdrop-filter:\s*none;/);
+  assert.match(css, /padding-bottom:\s*max\(110px,\s*calc\(92px \+ var\(--mobile-nav-safe-bottom\)\)\)/);
+  assert.doesNotMatch(css, /\.sidebar\s*\{[^}]*bottom:\s*max\(10px,\s*env\(safe-area-inset-bottom\)\)/);
+});
