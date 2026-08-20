@@ -237,10 +237,17 @@ For mainland China, CloudBase currently offers one Free environment with 3,000 r
 
 ## Roadmap
 
+- Print-ready weekly and monthly review reports
+- Optional BYOK AI-assisted reflection
+- Voice daily check-ins with review-before-apply
+- Photo attachments with portable media backups
+- Optional weather context as a longer-term exploration
 - Safer conflict handling for concurrent offline edits
 - Optional monthly partitioning for very long journal histories
 - Automated accessibility and browser regression coverage
 - Community-contributed translations
+
+See the [product roadmap](docs/ROADMAP.md) for priorities, privacy guardrails, and explicit non-goals. Roadmap items describe direction rather than a promised release date.
 
 ## Contributing
 

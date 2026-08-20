@@ -237,10 +237,17 @@ Für Festlandchina bietet CloudBase derzeit eine kostenlose Umgebung mit monatli
 
 ## Roadmap
 
+- Druckfertige Wochen- und Monatsrückblicke mit PDF-Speicherung
+- Optionale KI-Reflexion mit eigenem API-Schlüssel
+- Täglicher Sprach-Check-in mit Bestätigung vor jeder Änderung
+- Fotoanhänge mit vollständiger Sicherung und Wiederherstellung
+- Optionaler Wetterkontext als langfristige Erkundung
 - Sicherere Konfliktbehandlung bei gleichzeitigen Offline-Änderungen
 - Optionale monatliche Aufteilung für sehr lange Journalverläufe
 - Automatisierte Barrierefreiheits- und Browser-Regressionstests
 - Weitere Übersetzungen aus der Community
+
+Prioritäten, Datenschutzleitplanken und ausdrückliche Nicht-Ziele stehen in der [Produkt-Roadmap](docs/ROADMAP.md). Die Roadmap beschreibt eine Richtung und kein zugesagtes Veröffentlichungsdatum.
 
 ## Mitwirken
 
