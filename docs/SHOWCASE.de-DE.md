@@ -8,37 +8,37 @@ Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche
 
 ### Heute: planen und reflektieren
 
-<img src="images/demo-preview/de-desktop/01-today-planning.png" alt="Tagesziele, Reflexion und Kalender auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesziele, Reflexion und Kalender auf dem Desktop" />
 
 Konkrete Ziele und eine bearbeitbare Tagesreflexion stehen nebeneinander; der vollständige Monatskalender bleibt darunter sichtbar.
 
 ### Tagesrückblick
 
-<img src="images/demo-preview/de-desktop/02-daily-review.png" alt="Gewohnheiten, Stimmung und Journal im Tagesrückblick" />
+<img src="images/demo-preview/de-desktop/de-02-daily-review-v2.png" alt="Gewohnheiten, Stimmung und Journal im Tagesrückblick" />
 
 Öffne einen vergangenen oder den aktuellen Tag, um Gewohnheiten, Stimmung und Notizen zu ergänzen, ohne den Monat zu verlassen.
 
 ### Woche: Vorhaben und Rückblick
 
-<img src="images/demo-preview/de-desktop/03-weekly-plan.png" alt="Wochenziele und Wochenrückblick auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick auf dem Desktop" />
 
 Erledigte Wochenziele bleiben als sichtbarer Fortschritt erhalten. Der Rückblick bietet ausreichend Raum für zusammenhängende Gedanken.
 
 ### Monatsrückblick: Zahlen im Zusammenhang
 
-<img src="images/demo-preview/de-desktop/04-monthly-review.png" alt="Monatsrückblick mit Gewohnheitsvergleich und Diagrammen" />
+<img src="images/demo-preview/de-desktop/de-04-monthly-review-v2.png" alt="Monatsrückblick mit Gewohnheitsvergleich und Diagrammen" />
 
 Die Auswertung berücksichtigt alle aktiven Gewohnheiten, auch periodische Ziele wie Krafttraining. Bis zu zwei Gewohnheiten lassen sich als Linien- oder Balkendiagramm vergleichen.
 
 ### Fokus: sehen, wohin die Zeit geflossen ist
 
-<img src="images/demo-preview/de-desktop/05-focus-month.png" alt="Monatliche Fokuszeit-Auswertung auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-05-focus-month-v2.png" alt="Monatliche Fokuszeit-Auswertung auf dem Desktop" />
 
 Vergleiche Fokusminuten nach Thema und erkenne deinen Rhythmus in einer Monats-Heatmap – ohne Fortschritt auf Session-Zahlen zu reduzieren.
 
 ### Gewohnheiten: Regeln dürfen sich entwickeln
 
-<img src="images/demo-preview/de-desktop/06-habit-settings.png" alt="Gewohnheitseinstellungen auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-06-habit-settings-v2.png" alt="Gewohnheitseinstellungen auf dem Desktop" />
 
 Gewohnheiten können täglich, wöchentlich oder monatlich gelten, in die Tageswertung einfließen oder davon ausgenommen werden und sich ab einem gewählten Datum ändern, ohne die Historie umzuschreiben.
 
@@ -48,9 +48,9 @@ Die mobile Oberfläche verwendet eine feste Navigation am unteren Rand und macht
 
 <table>
   <tr>
-    <td width="33%"><img src="images/demo-preview/de-mobile/01-today-planning.png" alt="Tagesplanung auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/02-daily-review.png" alt="Tagesrückblick auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/03-weekly-plan.png" alt="Wochenplanung auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-01-today-planning-v2.png" alt="Tagesplanung auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-02-daily-review-v2.png" alt="Tagesrückblick auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-03-weekly-plan-v2.png" alt="Wochenplanung auf dem Smartphone" /></td>
   </tr>
   <tr>
     <td align="center"><strong>Heute</strong></td>
@@ -58,9 +58,9 @@ Die mobile Oberfläche verwendet eine feste Navigation am unteren Rand und macht
     <td align="center"><strong>Woche</strong></td>
   </tr>
   <tr>
-    <td width="33%"><img src="images/demo-preview/de-mobile/04-monthly-review.png" alt="Monatsrückblick auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/05-focus-month.png" alt="Fokusauswertung auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/06-habit-settings.png" alt="Gewohnheitseinstellungen auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-04-monthly-review-v2.png" alt="Monatsrückblick auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-05-focus-month-v2.png" alt="Fokusauswertung auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-06-habit-settings-v2.png" alt="Gewohnheitseinstellungen auf dem Smartphone" /></td>
   </tr>
   <tr>
     <td align="center"><strong>Rückblick</strong></td>

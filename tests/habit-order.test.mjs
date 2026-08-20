@@ -34,3 +34,13 @@ test("new local workspaces start with eight multilingual wellbeing habits", () =
   assert.match(app, /sleep2330: "Vor 23:30 Uhr schlafen"/);
   assert.match(app, /weeklyTarget: 3, countsTowardDaily: false/);
 });
+
+test("legacy public starter habits migrate once without deleting custom habits", () => {
+  assert.match(app, /const STARTER_PACK_VERSION = 2/);
+  assert.match(app, /LEGACY_STARTER_HABIT_IDS = new Set\(\["wake", "move", "protein", "strength"\]\)/);
+  assert.match(app, /function migrateLocalStarterPack\(/);
+  assert.match(app, /legacyCount < 3 \|\| alreadyCurrent/);
+  assert.match(app, /customHabits = habits\.filter/);
+  assert.match(app, /habits: \[\.\.\.cloneData\(seed\.habits\), \.\.\.customHabits\]/);
+  assert.match(app, /requestedMode === "cloudflare"/);
+});

@@ -85,15 +85,15 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 ## Product tour
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/04-monthly-review.png" width="100%" alt="Life Ledger monthly review dashboard on desktop" />
+  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v2.png" width="100%" alt="Life Ledger monthly review dashboard on desktop" />
 </p>
 
 <p align="center"><sub>One month, seen clearly: completion rhythm, habit comparisons, and a reflection that keeps the numbers in context.</sub></p>
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/01-today-planning.png" alt="Daily planning and reflection" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/03-weekly-plan.png" alt="Weekly goals and output" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v2.png" alt="Daily planning and reflection" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v2.png" alt="Weekly goals and output" /></td>
   </tr>
   <tr>
     <td><strong>Daily clarity</strong><br />Plan the day, complete a small set of goals, and leave a reflection beside the calendar.</td>
@@ -102,9 +102,9 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-mobile/01-today-planning.png" width="30%" alt="Daily planning on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/02-daily-review.png" width="30%" alt="Daily review drawer on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/04-monthly-review.png" width="30%" alt="Monthly review on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-01-today-planning-v2.png" width="30%" alt="Daily planning on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-02-daily-review-v2.png" width="30%" alt="Daily review drawer on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v2.png" width="30%" alt="Monthly review on mobile" />
 </p>
 
 <p align="center"><strong>Responsive by design.</strong> The installed PWA uses a bottom navigation bar and a focused, full-height daily review on smaller screens.</p>

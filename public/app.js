@@ -1040,6 +1040,10 @@ const seed = {
   focusSettings: { preset: "classic", focusMinutes: 25, breakMinutes: 5, defaultTopic: "", sound: true, notify: true, wakeLock: true },
 };
 
+const STARTER_PACK_VERSION = 2;
+const LEGACY_STARTER_HABIT_IDS = new Set(["wake", "move", "protein", "strength"]);
+const CURRENT_STARTER_HABIT_IDS = new Set(seed.habits.map(habit => habit.id));
+
 let state = loadState();
 let cursor = new Date();
 cursor.setHours(12, 0, 0, 0);
@@ -1421,10 +1425,35 @@ function applyDialogLanguage() {
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return stored?.habits ? { ...cloneData(seed), ...stored, dailyGoals: stored.dailyGoals || {}, weeklyGoals: stored.weeklyGoals || {}, weeklyOutputs: stored.weeklyOutputs || {}, weeklyReviews: stored.weeklyReviews || {} } : { ...cloneData(seed), meta: { updatedAt: 0 } };
+    if (!stored?.habits) return { ...cloneData(seed), meta: { updatedAt: 0, starterPackVersion: STARTER_PACK_VERSION } };
+    const hydrated = { ...cloneData(seed), ...stored, dailyGoals: stored.dailyGoals || {}, weeklyGoals: stored.weeklyGoals || {}, weeklyOutputs: stored.weeklyOutputs || {}, weeklyReviews: stored.weeklyReviews || {} };
+    const migrated = migrateLocalStarterPack(hydrated);
+    if (migrated !== hydrated) localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+    return migrated;
   } catch {
-    return { ...cloneData(seed), meta: { updatedAt: 0 } };
+    return { ...cloneData(seed), meta: { updatedAt: 0, starterPackVersion: STARTER_PACK_VERSION } };
   }
+}
+
+function migrateLocalStarterPack(stored) {
+  const requestedMode = new URLSearchParams(location.search).get("mode");
+  if (requestedMode === "cloudflare" || window.LifeLedgerCloudBase?.deploymentConfig?.().configured) return stored;
+  if ((stored.meta?.starterPackVersion || 0) >= STARTER_PACK_VERSION) return stored;
+
+  const habits = Array.isArray(stored.habits) ? stored.habits : [];
+  const ids = new Set(habits.map(habit => habit.id));
+  const legacyCount = [...LEGACY_STARTER_HABIT_IDS].filter(id => ids.has(id)).length;
+  const alreadyCurrent = [...CURRENT_STARTER_HABIT_IDS].some(id => id !== "strength" && ids.has(id));
+  const meta = { ...(stored.meta || {}), starterPackVersion: STARTER_PACK_VERSION };
+
+  if (legacyCount < 3 || alreadyCurrent) return { ...stored, meta };
+
+  const customHabits = habits.filter(habit => !LEGACY_STARTER_HABIT_IDS.has(habit.id));
+  return {
+    ...stored,
+    habits: [...cloneData(seed.habits), ...customHabits],
+    meta: { ...meta, updatedAt: Date.now() },
+  };
 }
 function saveState(options = {}) {
   state.meta = { ...(state.meta || {}), updatedAt: Date.now() };

@@ -85,15 +85,15 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 ## Produkt-Tour
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/04-monthly-review.png" width="100%" alt="Monatsrückblick von Life Ledger auf dem Desktop" />
+  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger auf dem Desktop" />
 </p>
 
 <p align="center"><sub>Ein Monat auf einen Blick: Rhythmus, Gewohnheitsvergleich und eine Reflexion, die den Zahlen ihren Zusammenhang gibt.</sub></p>
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/01-today-planning.png" alt="Tagesplanung und Reflexion" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/03-weekly-plan.png" alt="Wochenziele und Wochenrückblick" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesplanung und Reflexion" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick" /></td>
   </tr>
   <tr>
     <td><strong>Klarheit für den Tag</strong><br />Plane den Tag, erledige eine überschaubare Zahl an Zielen und halte deine Gedanken direkt neben dem Kalender fest.</td>
@@ -102,9 +102,9 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-mobile/01-today-planning.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/02-daily-review.png" width="30%" alt="Tagesrückblick auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/04-monthly-review.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v2.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-02-daily-review-v2.png" width="30%" alt="Tagesrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v2.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
 </p>
 
 <p align="center"><strong>Für kleine Bildschirme gestaltet.</strong> Als installierte PWA nutzt Life Ledger eine untere Navigation und einen fokussierten Tagesrückblick über die gesamte Höhe.</p>

@@ -42,3 +42,17 @@ test("every local screenshot referenced by multilingual docs exists", async () =
     }
   }
 });
+
+test("each language document references only its own versioned screenshots", async () => {
+  for (const { file, lang, showcase } of docs) {
+    for (const document of [file, showcase]) {
+      const source = await readFile(resolve(root, document), "utf8");
+      const paths = [...source.matchAll(/<img src="([^"\s]+demo-preview[^"\s]+\.png)"/g)].map((match) => match[1]);
+      assert.ok(paths.length > 0, `${document} must include product screenshots`);
+      for (const path of paths) {
+        assert.ok(path.includes(`/${lang}-desktop/${lang}-`) || path.includes(`/${lang}-mobile/${lang}-`), `${document} has a cross-language screenshot: ${path}`);
+        assert.ok(path.endsWith("-v2.png"), `${document} must use cache-busted screenshots: ${path}`);
+      }
+    }
+  }
+});
