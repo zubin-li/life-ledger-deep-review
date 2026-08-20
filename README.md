@@ -20,7 +20,7 @@
   </p>
 </div>
 
-> **Beta:** Life Ledger is ready for personal use and self-hosting. Local records save automatically; complete JSON backups can be restored on another device or browser.
+> **Stable release:** Life Ledger 1.0 is ready for personal use and self-hosting. Local records save automatically; complete JSON backups can be restored on another device or browser.
 
 ## Why Life Ledger
 
@@ -66,7 +66,7 @@ Instead of uploading your life to someone else's platform, your own data becomes
 
 AI is not here to replace reflection. It is here to make reflection more meaningful.
 
-> **Roadmap note:** AI-assisted reflection is a planned capability and is not included in the current beta.
+> **Roadmap note:** AI-assisted reflection is a planned capability and is not included in the current stable release.
 
 ## Highlights
 

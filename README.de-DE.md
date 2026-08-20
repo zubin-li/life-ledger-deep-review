@@ -20,7 +20,7 @@
   </p>
 </div>
 
-> **Beta:** Life Ledger ist für die persönliche Nutzung und das Self-Hosting bereit. Lokale Einträge werden automatisch gespeichert; vollständige JSON-Sicherungen lassen sich in einem anderen Browser oder auf einem anderen Gerät wiederherstellen.
+> **Stabile Version:** Life Ledger 1.0 ist für die persönliche Nutzung und das Self-Hosting bereit. Lokale Einträge werden automatisch gespeichert; vollständige JSON-Sicherungen lassen sich in einem anderen Browser oder auf einem anderen Gerät wiederherstellen.
 
 ## Warum Life Ledger?
 
@@ -66,7 +66,7 @@ Dein Leben wird dabei nicht auf die Plattform eines anderen hochgeladen. Deine e
 
 KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
-> **Hinweis zur Roadmap:** Die KI-gestützte Reflexion ist geplant und noch nicht Teil der aktuellen Beta-Version.
+> **Hinweis zur Roadmap:** Die KI-gestützte Reflexion ist geplant und noch nicht Teil der aktuellen stabilen Version.
 
 ## Funktionen
 

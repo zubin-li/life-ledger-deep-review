@@ -1,0 +1,31 @@
+name: Publish stable release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Verify release notes
+        run: test -f ".github/releases/${GITHUB_REF_NAME}.md"
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "Life Ledger · Deep Review ${GITHUB_REF_NAME#v}" \
+            --notes-file ".github/releases/${GITHUB_REF_NAME}.md"

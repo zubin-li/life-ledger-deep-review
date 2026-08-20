@@ -4,14 +4,21 @@ All notable changes are documented here.
 
 ## Unreleased
 
+## [1.0.0] - 2026-08-20
+
+Life Ledger 1.0 is the first stable release. It keeps the complete local-only experience free of accounts and central storage while preserving optional self-hosted synchronization.
+
 ### Added
 
 - A zero-setup, HTTPS local-only PWA publishing path for GitHub Pages.
 - Versioned JSON backups with validation, preview, complete restore, partial merge, earlier-export compatibility, and an undo safety copy.
 - Best-effort persistent browser storage requests after local saves.
-- English and Simplified Chinese desktop/mobile product showcases.
+- English, Simplified Chinese, and German desktop/mobile product showcases.
 - Tencent CloudBase deployment for mainland China, including email OTP authentication, creator-only document synchronization, maintained CLI configuration, and bilingual setup/cost documentation.
 - A reproducible CloudBase build and one-command CLI deployment path that never includes browser-local demo data.
+- A local-first focus timer with named topics, daily totals, weekly summaries, and a monthly heatmap.
+- Flexible checklist or measured habits, effective-dated goal versions, optional notes, reliable ordering, and a paged mobile carousel.
+- A structured product roadmap for printable reports, optional AI-assisted reflection, voice check-ins, photos, and contextual data.
 
 ### Fixed
 
@@ -20,6 +27,15 @@ All notable changes are documented here.
 - Static HTTPS hosts no longer assume a Cloudflare API exists; deployment mode is now explicit.
 - Blob download URLs remain available long enough for Safari and installed PWAs to save exports reliably.
 - Simplified Chinese day-strip labels now use clear weekday abbreviations such as `周二` instead of truncating every label to `星`.
+- Mobile bottom navigation now stays aligned to a stable safe-area inset while the page scrolls.
+- Habit schedules and selected times now remain consistent between Today and Habit Settings.
+
+### Compatibility notes
+
+- Existing local and synchronized records continue to load without migration.
+- JSON exports from earlier beta releases remain supported by the restore flow.
+- Concurrent offline edits currently use latest-write-wins synchronization.
+- Reminder delivery continues to depend on operating-system and browser PWA support.
 
 ## [0.1.0-beta.1] - 2026-08-12
 
