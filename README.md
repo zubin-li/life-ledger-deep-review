@@ -6,11 +6,12 @@
 
   <p>
     <strong><a href="README.md">English</a></strong> ·
-    <strong><a href="README.zh-CN.md">简体中文</a></strong>
+    <strong><a href="README.zh-CN.md">简体中文</a></strong> ·
+    <strong><a href="README.de-DE.md">Deutsch</a></strong>
   </p>
 
   <p>
-    <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local">
+    <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&amp;lang=en">
       <img src="https://img.shields.io/badge/Use_now-Local_only-1f6f54?style=for-the-badge" alt="Use Life Ledger now in local-only mode" />
     </a>
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
@@ -84,15 +85,15 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 ## Product tour
 
 <p align="center">
-  <img src="docs/images/demo-preview/04-monthly-review-july.png" width="100%" alt="Life Ledger monthly review dashboard on desktop" />
+  <img src="docs/images/demo-preview/en-desktop/04-monthly-review.png" width="100%" alt="Life Ledger monthly review dashboard on desktop" />
 </p>
 
 <p align="center"><sub>One month, seen clearly: completion rhythm, habit comparisons, and a reflection that keeps the numbers in context.</sub></p>
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/01-today-planning-july-30.png" alt="Daily planning and reflection" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/03-weekly-plan-jul-27.png" alt="Weekly goals and output" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/01-today-planning.png" alt="Daily planning and reflection" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/03-weekly-plan.png" alt="Weekly goals and output" /></td>
   </tr>
   <tr>
     <td><strong>Daily clarity</strong><br />Plan the day, complete a small set of goals, and leave a reflection beside the calendar.</td>
@@ -101,9 +102,9 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-mobile/01-today-planning-mobile.png" width="30%" alt="Daily planning on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/02-daily-review-mobile.png" width="30%" alt="Daily review drawer on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/04-monthly-review-mobile.png" width="30%" alt="Monthly review on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/01-today-planning.png" width="30%" alt="Daily planning on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/02-daily-review.png" width="30%" alt="Daily review drawer on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/04-monthly-review.png" width="30%" alt="Monthly review on mobile" />
 </p>
 
 <p align="center"><strong>Responsive by design.</strong> The installed PWA uses a bottom navigation bar and a focused, full-height daily review on smaller screens.</p>
@@ -122,7 +123,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 ### 1. Use now — no setup
 
-Open **[Life Ledger — Local only](https://zubin-li.github.io/life-ledger-deep-review/?mode=local)** in a current browser. No account, download, terminal, Node.js, or cloud setup is required.
+Open **[Life Ledger — Local only](https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=en)** in a current browser. No account, download, terminal, Node.js, or cloud setup is required.
 
 Your records save automatically in that browser on that device. On a phone, use the browser menu to choose **Add to Home Screen** or **Install app** for a full-screen PWA that also keeps its app shell available offline.
 
