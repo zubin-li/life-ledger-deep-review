@@ -1289,6 +1289,10 @@ html[data-theme="dark"] .cloudbase-auth-note { background: rgba(255,255,255,.035
  * Keep this block after earlier responsive overrides.
  */
 @media (max-width: 760px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .hero-card,
+  .mood-card { min-width: 0; }
+  .mood-reason-summary { min-width: 0; max-width: 100%; }
   .hero-card {
     min-height: 300px;
     padding: 24px 22px 22px;

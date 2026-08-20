@@ -22,3 +22,15 @@ test("habit versions support checklist tracking and optional notes", () => {
   assert.match(app, /function trackingModeFor\(/);
   assert.match(app, /trackingMode: measured \? "measured" : "check"/);
 });
+
+test("new local workspaces start with eight multilingual wellbeing habits", () => {
+  for (const id of ["exercise", "reading", "sleep2330", "hydration", "meditation", "deepwork", "language", "strength"]) {
+    assert.match(app, new RegExp(`id: "${id}"`));
+  }
+  for (const label of ["Exercise", "Reading", "Sleep before 23:30", "Drink enough water", "Meditation", "Deep work", "Language learning", "Strength training"]) {
+    assert.match(app, new RegExp(label));
+  }
+  assert.match(app, /sleep2330: "23:30 前睡"/);
+  assert.match(app, /sleep2330: "Vor 23:30 Uhr schlafen"/);
+  assert.match(app, /weeklyTarget: 3, countsTowardDaily: false/);
+});
