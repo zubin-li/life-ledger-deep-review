@@ -1,4 +1,5 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
+import { VoiceRequestError, handleVoiceReview } from "./voice.js";
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status,
@@ -141,6 +142,23 @@ async function handleApi(request, env) {
   return json({ error: "Method not allowed" }, 405);
 }
 
+async function handleVoiceApi(request, env) {
+  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (!env.DB) return json({ error: "D1 binding is not configured" }, 503);
+  const identity = await identityOrResponse(request, env);
+  if (identity.response) return identity.response;
+  try {
+    return json(await handleVoiceReview(request, env, identity.keyHash));
+  } catch (error) {
+    if (error instanceof VoiceRequestError) {
+      return json({ error: error.message, code: error.code }, error.status);
+    }
+    const requestId = crypto.randomUUID();
+    console.error("Voice review failed", { requestId, name: error?.name || "Error" });
+    return json({ error: "Voice review could not be completed", code: "VOICE_PROCESSING_FAILED", requestId }, 502);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -148,6 +166,7 @@ export default {
       return javascript('window.LIFE_LEDGER_DEPLOYMENT_MODE = "cloudflare";\n');
     }
     if (url.pathname === "/api/state") return handleApi(request, env);
+    if (url.pathname === "/api/voice-review") return handleVoiceApi(request, env);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);
   },

@@ -1,14 +1,15 @@
-const CACHE_NAME = "life-ledger-pwa-1.0.0";
+const CACHE_NAME = "life-ledger-pwa-1.1.0";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=1.0.0",
-  "./app.js?v=1.0.0",
-  "./focus-timer.js?v=1.0.0",
-  "./deployment-mode.js?v=1.0.0",
-  "./cloudbase-sync.js?v=1.0.0",
+  "./styles.css?v=1.1.0",
+  "./app.js?v=1.1.0",
+  "./focus-timer.js?v=1.1.0",
+  "./voice-checkin.js?v=1.1.0",
+  "./deployment-mode.js?v=1.1.0",
+  "./cloudbase-sync.js?v=1.1.0",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=1.0.0",
+  "./_init_tcb-env.js?v=1.1.0",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -55,7 +56,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/focus-timer.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+  const networkFirst = ["/app.js", "/focus-timer.js", "/voice-checkin.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
     .some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(

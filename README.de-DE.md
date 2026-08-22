@@ -20,7 +20,7 @@
   </p>
 </div>
 
-> **Stabile Version:** Life Ledger 1.0 ist für die persönliche Nutzung und das Self-Hosting bereit. Lokale Einträge werden automatisch gespeichert; vollständige JSON-Sicherungen lassen sich in einem anderen Browser oder auf einem anderen Gerät wiederherstellen.
+> **Stabile Version:** Life Ledger 1.1 ergänzt die selbst bereitgestellte Cloudflare-Version um KI-gestützte Sprachreflexion. Lokale Einträge werden weiterhin automatisch gespeichert; vollständige JSON-Sicherungen lassen sich auf einem anderen Gerät oder in einem anderen Browser wiederherstellen.
 
 ## Warum Life Ledger?
 
@@ -60,18 +60,19 @@ Es geht um Perspektive.
 
 Life Ledger hält deinen Weg fest. KI hilft dir, ihn zu verstehen.
 
-Für künftige Versionen ist geplant, einen eigenen KI-Anbieter per API-Schlüssel anzubinden und auf Basis der persönlichen Historie Wochen-, Monats- und Jahresrückblicke zu erstellen.
+In einer selbst bereitgestellten Cloudflare-Version verwandelt **Schnell aufnehmen** einen gesprochenen Check-in in eine klare, bearbeitbare Tagesreflexion. Cloudflare Workers AI transkribiert die Aufnahme, entfernt sprachliche Wiederholungen und ordnet ausschließlich das, was du tatsächlich gesagt hast. Erst nach deiner Bestätigung wird der Entwurf zum heutigen Journal hinzugefügt.
 
-Dein Leben wird dabei nicht auf die Plattform eines anderen hochgeladen. Deine eigenen Daten bleiben die Grundlage deiner eigenen Erkenntnisse.
+Ein zusätzlicher AI-API-Schlüssel ist nicht erforderlich. Die Aufnahme wird nur vorübergehend verarbeitet und weder in Life Ledger noch in D1, Synchronisierungsdaten oder Sicherungen gespeichert. Nur der von dir bestätigte Text wird Teil deiner Historie.
 
 KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
-> **Hinweis zur Roadmap:** Die KI-gestützte Reflexion ist geplant und noch nicht Teil der aktuellen stabilen Version.
+> **Hinweis zur Bereitstellung:** Die KI-Sprachreflexion ist bewusst nur in der selbst bereitgestellten Cloudflare-Version verfügbar. Die lokale und die CloudBase-Version bleiben ohne KI vollständig nutzbar.
 
 ## Funktionen
 
 - Tägliche Gewohnheiten mit anpassbaren Zielen und Gültigkeitsdatum
 - Tagesziele, Stimmung, Journal und Ereignisnotizen
+- Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
 - Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen
 - Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen
 - Validierte JSON-Sicherung und geführte Wiederherstellung, einschließlich früherer Exportformate
@@ -171,6 +172,8 @@ Aktiviere nach der Bereitstellung Cloudflare Access:
 7. Hinterlege unter **Settings → Variables and Secrets**: `TEAM_DOMAIN` als `https://<dein-team>.cloudflareaccess.com` und `POLICY_AUD` als kopierten AUD-Tag.
 8. Öffne die App und authentifiziere dich einmal. Anschließend verwendet die Cloud-Synchronisierung die verifizierte Access-Identität.
 
+Dieselbe Bereitstellung enthält automatisch die Workers-AI-Bindung für **Schnell aufnehmen**. Pro Konto gelten drei Aufnahmen und insgesamt 20 Aufnahmeminuten pro UTC-Tag, bei höchstens 10 Minuten pro Aufnahme. Dadurch bleibt die persönliche Nutzung vorhersehbar. Cloudflare kann Freikontingente und Preise ändern; prüfe vor einer Nutzung mit vielen Personen das eigene Dashboard.
+
 Die vollständige Anleitung findest du unter [Self-Hosting](docs/self-hosting.md) und [Cloudflare Access einrichten](docs/cloudflare-access.md).
 
 ### 5. Mit Tencent CloudBase in Festlandchina bereitstellen
@@ -238,8 +241,7 @@ Für Festlandchina bietet CloudBase derzeit eine kostenlose Umgebung mit monatli
 ## Roadmap
 
 - Druckfertige Wochen- und Monatsrückblicke mit PDF-Speicherung
-- Optionale KI-Reflexion mit eigenem API-Schlüssel
-- Täglicher Sprach-Check-in mit Bestätigung vor jeder Änderung
+- Optionale KI-gestützte Wochen- und Monatsauswertung
 - Fotoanhänge mit vollständiger Sicherung und Wiederherstellung
 - Optionaler Wetterkontext als langfristige Erkundung
 - Sicherere Konfliktbehandlung bei gleichzeitigen Offline-Änderungen

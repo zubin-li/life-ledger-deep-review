@@ -20,7 +20,7 @@
   </p>
 </div>
 
-> **Stable release:** Life Ledger 1.0 is ready for personal use and self-hosting. Local records save automatically; complete JSON backups can be restored on another device or browser.
+> **Stable release:** Life Ledger 1.1 adds AI-assisted voice reflection to the self-hosted Cloudflare edition. Local records still save automatically, and complete JSON backups can be restored on another device or browser.
 
 ## Why Life Ledger
 
@@ -60,18 +60,19 @@ The purpose is perspective.
 
 Life Ledger records your journey. AI helps you understand it.
 
-Future versions are planned to let you connect your own AI provider with an API key and generate weekly, monthly, and yearly reflection reports based entirely on your own history.
+In a self-hosted Cloudflare deployment, **Quick record** turns a short spoken check-in into a clear, editable daily reflection. Cloudflare Workers AI transcribes the recording, removes verbal clutter, and reorganizes only what you said. You review the draft before it is appended to today's journal.
 
-Instead of uploading your life to someone else's platform, your own data becomes the foundation for your own insights.
+No separate AI API key is needed. The recording is processed transiently and is never stored in Life Ledger, D1, synchronization data, or backups. Only the draft you explicitly save becomes part of your history.
 
 AI is not here to replace reflection. It is here to make reflection more meaningful.
 
-> **Roadmap note:** AI-assisted reflection is a planned capability and is not included in the current stable release.
+> **Deployment note:** AI voice reflection is intentionally available only in the self-hosted Cloudflare edition. The local-only and CloudBase editions remain fully usable without AI.
 
 ## Highlights
 
 - Daily habits with adjustable targets and effective dates
 - Daily goals, mood, journal, and event notes
+- AI-assisted voice-to-journal reflection with editable review before saving
 - Weekly goals, checklist behavior, outputs, and archived notes
 - Monthly review with habit comparisons and line/bar charts
 - Validated JSON backup and guided restore, including earlier export formats
@@ -171,6 +172,8 @@ After deployment, enable Cloudflare Access:
 7. In the Worker's **Settings → Variables and Secrets**, add `TEAM_DOMAIN` as `https://<your-team>.cloudflareaccess.com` and `POLICY_AUD` as the copied AUD tag.
 8. Open the app and authenticate once. Cloud sync will then use the verified Access identity.
 
+The same deployment automatically includes the Workers AI binding used by **Quick record**. The app limits one account to three recordings and 20 recorded minutes per UTC day, with a maximum of 10 minutes per recording, to keep personal use predictable. Cloudflare allowances and pricing can change; review the provider dashboard before broad multi-user use.
+
 See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough.
 
 ### 5. Deploy with Tencent CloudBase in mainland China
@@ -238,8 +241,7 @@ For mainland China, CloudBase currently offers one Free environment with 3,000 r
 ## Roadmap
 
 - Print-ready weekly and monthly review reports
-- Optional BYOK AI-assisted reflection
-- Voice daily check-ins with review-before-apply
+- Optional AI-assisted weekly and monthly synthesis
 - Photo attachments with portable media backups
 - Optional weather context as a longer-term exploration
 - Safer conflict handling for concurrent offline edits

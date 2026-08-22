@@ -5,6 +5,7 @@ const root = new URL("../", import.meta.url);
 const required = [
   "public/index.html",
   "public/app.js",
+  "public/voice-checkin.js",
   "public/deployment-mode.js",
   "public/cloudbase-sync.js",
   "public/_init_tcb-env.js",
@@ -15,6 +16,7 @@ const required = [
   "public/manifest.webmanifest",
   "OPEN-LIFE-LEDGER.html",
   "src/index.js",
+  "src/voice.js",
   "migrations/0001_initial.sql",
   "README.md",
   "README.zh-CN.md",
@@ -71,6 +73,9 @@ for (const marker of ["life-ledger-backup", "previewImportFile", "restorePending
 }
 for (const marker of ['id="importFile"', 'id="importPreview"', 'id="restoreImport"']) {
   if (!index.includes(marker)) throw new Error(`Backup and restore interface is incomplete: ${marker}`);
+}
+for (const marker of ['id="voiceReflectionButton"', 'id="voiceReflectionDialog"', 'id="voiceDraft"']) {
+  if (!index.includes(marker)) throw new Error(`Voice reflection interface is incomplete: ${marker}`);
 }
 const launcher = await readFile(new URL("OPEN-LIFE-LEDGER.html", root), "utf8");
 if (!launcher.includes("public/index.html")) {

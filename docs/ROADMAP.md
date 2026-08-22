@@ -21,7 +21,13 @@ The first report should be able to include:
 
 The report must work locally, support English, Simplified Chinese, and German, and never mutate the source records. Private narrative fields remain opt-in. This report model is also the rendering foundation for future optional AI summaries.
 
-## Next: assisted reflection
+## Shipped foundation: assisted daily reflection
+
+### Voice daily reflection
+
+The Cloudflare self-hosted edition now provides a deliberately narrow voice flow: record a check-in, transcribe it, refine it into faithful prose, review the editable draft, and append it to today's journal. Audio is never stored, and the model cannot alter habits, moods, or goals.
+
+## Next: period reflection
 
 ### Privacy-preserving AI reflection
 
@@ -35,18 +41,6 @@ Guardrails:
 - source records are never silently rewritten;
 - generated claims remain traceable to the selected period;
 - the deterministic report remains fully useful without AI.
-
-### Voice daily check-in
-
-Reduce the friction of daily reflection with a short, user-initiated voice flow:
-
-1. record or dictate a check-in;
-2. review and edit the transcript;
-3. turn it into a structured draft containing habit completions, mood and reason, journal notes, completed goals, and tomorrow's goals;
-4. show every proposed change;
-5. apply the confirmed changes as one update.
-
-Voice recognition and AI parsing must have clear fallbacks. A reminder may open the check-in, but recording never starts in the background and inferred changes are never applied without confirmation.
 
 ## Explore: context and media
 

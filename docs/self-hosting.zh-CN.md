@@ -2,7 +2,7 @@
 
 Life Ledger 支持两条互相独立的私有云路线：
 
-- **Cloudflare Workers + D1**，步骤见下文；
+- **Cloudflare Workers + D1 + Workers AI**，步骤见下文，并包含 AI 语音复盘；
 - **腾讯云 CloudBase**，更适合中国大陆，完整步骤见[国内 CloudBase 部署指南](cloudbase-china.zh-CN.md)。
 
 ## 推荐方式：Deploy to Cloudflare
@@ -10,6 +10,8 @@ Life Ledger 支持两条互相独立的私有云路线：
 README 中的一键部署按钮会让 Cloudflare 把本仓库复制到你的 GitHub 账户，在你的 Cloudflare 账户中创建 Worker 与 D1 数据库，执行迁移并发布应用。部署配置中保留自动识别的 `npm run deploy` 命令即可。
 
 第一次部署之后，应先使用 Cloudflare Access 保护 Worker，再正式依赖云同步。在 Access 尚未启用时，网页仍然可以本地使用，云端 API 会有意返回 `401`。
+
+仓库中的 Wrangler 配置会自动创建 Workers AI 绑定，不需要 OpenAI 账号或另外填写 API Key。只有应用识别到 Cloudflare 部署模式时，每日复盘中才会出现**快速记录**；录音经 Access 保护的 Worker 转写并整理成可编辑草稿，原始音频随即释放。`0002_voice_usage.sql` 只新增每日计数：每位用户每天最多 3 次、累计 20 分钟。
 
 ## 手动部署
 
@@ -40,6 +42,6 @@ npm run deploy
 
 ## 免费额度行为
 
-Cloudflare 免费方案达到额度后，API 可能暂时拒绝同步请求，但浏览器本地保存仍然可用。只有在明确接受费用规则时才主动升级 Cloudflare 方案。
+Cloudflare 免费方案或 Workers AI 免费额度达到上限后，API 可能暂时拒绝同步或语音请求，但浏览器本地保存和手动输入仍然可用。只有在明确接受费用规则时才主动升级 Cloudflare 方案。如果要让很多用户共同使用同一个部署，应先查看 Cloudflare 用量面板；应用内的个人限额不能替代云账户的总额度限制。
 
 CloudBase 当前的免费体验环境不能开启按量付费。个人自用可使用系统分配的默认域名，不必购买域名；但腾讯云把默认域名定位为开发/测试用途。费用、续期和正式运营域名的边界见[国内方案费用说明](cloudbase-china.zh-CN.md#费用与域名决策)。

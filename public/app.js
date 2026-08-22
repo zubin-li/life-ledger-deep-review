@@ -1075,6 +1075,7 @@ let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
 let focusTimer = null;
+let voiceReflection = null;
 let focusWakeLock = null;
 let focusAudioContext = null;
 let pendingImport = null;
@@ -1929,6 +1930,42 @@ function renderHomeJournal() {
   textarea.disabled = future;
   $(".daily-journal-card").classList.toggle("future-locked", future);
   $("#journalAvailability").textContent = future ? tr("journal.futureLocked") : "";
+  voiceReflection?.setContext({
+    date: selectedPlanningDate,
+    isToday: selectedPlanningDate === isoDate(new Date()),
+    disabled: future,
+  });
+}
+
+async function saveVoiceReflection({ date, text }) {
+  const today = isoDate(new Date());
+  if (date !== today) throw new Error("Voice reflection can only be saved to today");
+  if (cloudMode && !authExpired) await pullCloudState();
+  const existing = getLog(date).note || "";
+  const note = window.LifeLedgerVoiceCheckin.appendReflection(existing, text);
+  state.logs[date] = { ...getLog(date), note };
+  saveState({ skipCloud: true });
+  renderHomeJournal();
+  if (cloudMode) await pushCloudState();
+}
+
+function initVoiceReflection() {
+  const button = $("#voiceReflectionButton");
+  const dialog = $("#voiceReflectionDialog");
+  if (!window.LifeLedgerVoiceCheckin || !button || !dialog) return;
+  voiceReflection = window.LifeLedgerVoiceCheckin.create({
+    button,
+    dialog,
+    enabled: hostedCloudMode,
+    language: currentLang,
+    context: {
+      date: selectedPlanningDate,
+      isToday: selectedPlanningDate === isoDate(new Date()),
+      disabled: isFutureDate(selectedPlanningDate),
+    },
+    onSave: saveVoiceReflection,
+    onToast: showToast,
+  });
 }
 
 function renderDailyGoalList(date, listSelector, progressSelector, emptyKey) {
@@ -3564,6 +3601,7 @@ function bindEvents() {
     document.body.classList.remove("language-changing");
     void document.body.offsetWidth;
     document.body.classList.add("language-changing");
+    voiceReflection?.setLanguage(currentLang);
     renderAll();
     if ($("#dayDrawer").classList.contains("open")) renderDrawer();
     window.setTimeout(() => document.body.classList.remove("language-changing"), 260);
@@ -3905,7 +3943,7 @@ function bindEvents() {
   }, true);
 }
 
-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); bindPointerMotion(); renderAll(); armReminderClock();
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); bindPointerMotion(); renderAll(); armReminderClock();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }
