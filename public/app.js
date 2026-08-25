@@ -105,8 +105,11 @@ const i18n = {
     },
     moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
     todayGoals: {
-      kicker: "DAY PLAN", title: "每日目标", desc: "左右选择日期，回看过去或提前规划。", placeholder: "为这一天添加一个目标…", addLabel: "添加目标",
+      kicker: "DAY PLAN", title: "今日计划", desc: "固定时间与灵活目标，一天之内各有位置。", placeholder: "为这一天添加一个灵活目标…", addLabel: "添加目标",
       empty: "这一天还没有具体目标。<br />先写下一件最重要的事。", added: "目标已添加", previous: "前一天", next: "后一天", futureStatus: "未来目标只能规划，到了当天才能勾选完成",
+    },
+    dayPlan: {
+      schedule: "日程安排", flexible: "灵活目标", open: "展开一天", close: "关闭完整日程", events: "{count} 项", noEvents: "这一天没有临时日程。", routinesHidden: "{count} 项固定日程已收起", routinesShown: "收起固定日程", routine: "固定", allDay: "全天", preview: "日历连接后的展示预览",
     },
     journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么？推进了什么？有什么值得记住？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存" },
     tomorrowGoals: {
@@ -172,6 +175,9 @@ const i18n = {
       outputStatus: "{count} 字 · 持续编辑中",
       savedToWeek: "文字会持续保存在当前周",
       added: "已加入本周目标",
+    },
+    longTerm: {
+      tabWeek: "本周目标", tabLong: "长期目标", kicker: "HORIZON", title: "长期目标", description: "保留方向，不必强塞进这一周。", activeCount: "{count} 个活跃", empty: "还没有长期目标。<br />写下一个值得持续推进的方向。", add: "添加长期目标", dialogKicker: "长期目标", addTitle: "添加一个方向", editTitle: "编辑长期目标", name: "目标", next: "下一步", review: "回顾日期", status: "状态", active: "活跃", paused: "暂停", completed: "完成", noNext: "还没有写下一步", noReview: "暂未设置回顾日期", reviewOn: "{date} 回顾", delete: "删除", cancel: "取消", save: "保存", added: "长期目标已添加", updated: "长期目标已更新", removed: "长期目标已删除",
     },
     review: {
       kicker: "MONTHLY REVIEW",
@@ -408,8 +414,11 @@ const i18n = {
     },
     moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
     todayGoals: {
-      kicker: "DAY PLAN", title: "Daily Goals", desc: "Move between days to review or plan ahead.", placeholder: "Add a goal for this day…", addLabel: "Add goal",
+      kicker: "DAY PLAN", title: "Day Plan", desc: "Fixed commitments and flexible goals, held in one calm view.", placeholder: "Add a flexible goal for this day…", addLabel: "Add goal",
       empty: "No concrete goals for this day yet.<br />Start with one thing that matters.", added: "Goal added", previous: "Previous day", next: "Next day", futureStatus: "Future goals can be planned now and completed when the day arrives",
+    },
+    dayPlan: {
+      schedule: "Schedule", flexible: "Flexible goals", open: "Open day", close: "Close full day", events: "{count} events", noEvents: "No one-off events for this day.", routinesHidden: "{count} routines hidden", routinesShown: "Hide routines", routine: "Routine", allDay: "All day", preview: "Preview of the connected calendar experience",
     },
     journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened today? What moved forward? What is worth remembering?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved" },
     tomorrowGoals: {
@@ -475,6 +484,9 @@ const i18n = {
       outputStatus: "{count} chars · editing",
       savedToWeek: "Text is saved to the selected week",
       added: "Added to weekly goals",
+    },
+    longTerm: {
+      tabWeek: "This week", tabLong: "Longer term", kicker: "HORIZON", title: "Long-term goals", description: "Keep the direction visible without forcing it into this week.", activeCount: "{count} active", empty: "No long-term goals yet.<br />Add one direction worth carrying forward.", add: "Add a long-term goal", dialogKicker: "LONG-TERM GOAL", addTitle: "Add direction", editTitle: "Edit long-term goal", name: "Goal", next: "Next step", review: "Review date", status: "Status", active: "Active", paused: "Paused", completed: "Completed", noNext: "No next step yet", noReview: "No review date", reviewOn: "Review {date}", delete: "Delete", cancel: "Cancel", save: "Save", added: "Long-term goal added", updated: "Long-term goal updated", removed: "Long-term goal deleted",
     },
     review: {
       kicker: "MONTHLY REVIEW",
@@ -711,8 +723,11 @@ const i18n = {
     },
     moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
     todayGoals: {
-      kicker: "TAGESPLAN", title: "Tagesziele", desc: "Wechsle zwischen Tagen, um zurückzublicken oder vorauszuplanen.", placeholder: "Ein Ziel für diesen Tag hinzufügen…", addLabel: "Ziel hinzufügen",
+      kicker: "TAGESPLAN", title: "Tagesplan", desc: "Feste Termine und flexible Ziele in einer ruhigen Übersicht.", placeholder: "Ein flexibles Ziel für diesen Tag hinzufügen…", addLabel: "Ziel hinzufügen",
       empty: "Für diesen Tag gibt es noch keine konkreten Ziele.<br />Beginne mit einer wichtigen Sache.", added: "Ziel hinzugefügt", previous: "Voriger Tag", next: "Nächster Tag", futureStatus: "Zukünftige Ziele können geplant und erst am jeweiligen Tag erledigt werden",
+    },
+    dayPlan: {
+      schedule: "Termine", flexible: "Flexible Ziele", open: "Tag öffnen", close: "Tagesansicht schließen", events: "{count} Termine", noEvents: "Keine einmaligen Termine an diesem Tag.", routinesHidden: "{count} Routinen ausgeblendet", routinesShown: "Routinen ausblenden", routine: "Routine", allDay: "Ganztägig", preview: "Vorschau der verbundenen Kalenderansicht",
     },
     journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist heute passiert? Was ging voran? Was ist erinnernswert?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert" },
     tomorrowGoals: {
@@ -778,6 +793,9 @@ const i18n = {
       outputStatus: "{count} Zeichen · in Bearbeitung",
       savedToWeek: "Text wird in der ausgewählten Woche gespeichert",
       added: "Zum Wochenplan hinzugefügt",
+    },
+    longTerm: {
+      tabWeek: "Diese Woche", tabLong: "Langfristig", kicker: "HORIZONT", title: "Langfristige Ziele", description: "Die Richtung bleibt sichtbar, ohne sie in diese Woche zu zwingen.", activeCount: "{count} aktiv", empty: "Noch keine langfristigen Ziele.<br />Lege eine Richtung fest, die du weiterverfolgen möchtest.", add: "Langfristiges Ziel hinzufügen", dialogKicker: "LANGFRISTIGES ZIEL", addTitle: "Richtung hinzufügen", editTitle: "Langfristiges Ziel bearbeiten", name: "Ziel", next: "Nächster Schritt", review: "Rückblick am", status: "Status", active: "Aktiv", paused: "Pausiert", completed: "Abgeschlossen", noNext: "Noch kein nächster Schritt", noReview: "Kein Rückblickdatum", reviewOn: "Rückblick am {date}", delete: "Löschen", cancel: "Abbrechen", save: "Speichern", added: "Langfristiges Ziel hinzugefügt", updated: "Langfristiges Ziel aktualisiert", removed: "Langfristiges Ziel gelöscht",
     },
     review: {
       kicker: "MONATSRÜCKBLICK",
@@ -1034,6 +1052,7 @@ const seed = {
   reviews: {},
   dailyGoals: {},
   weeklyGoals: {},
+  longTermGoals: [],
   weeklyOutputs: {},
   weeklyReviews: {},
   focusSessions: [],
@@ -1054,9 +1073,14 @@ let selectedReviewWeek = isoWeekKey(new Date());
 let focusReviewScope = "week";
 let selectedFocusReviewMonth = monthKey(new Date());
 let selectedWorkspaceWeek = isoWeekKey(new Date());
+let goalHorizon = "week";
+let editingLongTermGoalId = null;
+let dayPlanRoutinesExpanded = false;
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
+const previewName = new URLSearchParams(location.search).get("local-preview");
+const dayPlanPrototype = previewName === "day-plan-calendar-v1";
 const requestedMode = new URLSearchParams(location.search).get("mode");
 const deploymentMode = requestedMode === "local" || requestedMode === "cloudflare"
   ? requestedMode
@@ -1214,6 +1238,15 @@ function applyLanguage() {
   setAria(".daily-goal-form button", tr("todayGoals.addLabel"));
   setAria("#previousPlanDay", tr("todayGoals.previous"));
   setAria("#nextPlanDay", tr("todayGoals.next"));
+  setText("#dayScheduleTitle", tr("dayPlan.schedule"));
+  setText("#dayGoalsTitle", tr("dayPlan.flexible"));
+  setText("#openDayPlan span", tr("dayPlan.open"));
+  setAria("#openDayPlan", tr("dayPlan.open"));
+  setText("#dayPlanDialogKicker", tr("todayGoals.kicker"));
+  setText("#dayPlanDialogScheduleTitle", tr("dayPlan.schedule"));
+  setText("#dayPlanDialogGoalsTitle", tr("dayPlan.flexible"));
+  setText("#drawerScheduleTitle", tr("dayPlan.schedule"));
+  setAria(".close-day-plan", tr("dayPlan.close"));
   setText(".daily-journal-card .kicker", tr("journal.kicker"));
   setText(".daily-journal-card h3", tr("journal.title"));
   setText(".daily-journal-card .daily-goals-heading p", tr("journal.desc"));
@@ -1232,6 +1265,24 @@ function applyLanguage() {
   setAria("#nextWorkspaceWeek", tr("week.next"));
   setText(".weekly-card-heading .kicker", tr("week.checklist"));
   setText(".weekly-card-heading h3", tr("week.goalsTitle"));
+  setText('[data-goal-horizon="week"]', tr("longTerm.tabWeek"));
+  setText('[data-goal-horizon="long"]', tr("longTerm.tabLong"));
+  setAria("#goalHorizonSwitch", languageText("目标周期", "Goal horizon", "Zielhorizont"));
+  setText("#longTermKicker", tr("longTerm.kicker"));
+  setText("#longTermTitle", tr("longTerm.title"));
+  setText("#longTermDescription", tr("longTerm.description"));
+  setText("#addLongTermGoal b", tr("longTerm.add"));
+  setText("#longTermDialogKicker", tr("longTerm.dialogKicker"));
+  setText("#longTermNameLabel", tr("longTerm.name"));
+  setText("#longTermNextLabel", tr("longTerm.next"));
+  setText("#longTermReviewLabel", tr("longTerm.review"));
+  setText("#longTermStatusLabel", tr("longTerm.status"));
+  setText('#longTermGoalForm option[value="active"]', tr("longTerm.active"));
+  setText('#longTermGoalForm option[value="paused"]', tr("longTerm.paused"));
+  setText('#longTermGoalForm option[value="completed"]', tr("longTerm.completed"));
+  setText("#deleteLongTermGoal", tr("longTerm.delete"));
+  setText("#longTermGoalForm .secondary-button", tr("longTerm.cancel"));
+  setText("#saveLongTermGoal", tr("longTerm.save"));
   setText(".weekly-writing-heading .kicker", tr("week.outputKicker"));
   setText(".weekly-writing-heading h3", tr("week.outputTitle"));
   setText(".weekly-writing-heading .autosave", tr("week.autosave"));
@@ -1260,7 +1311,8 @@ function applyLanguage() {
   setText("#completeDay", tr("drawer.complete"));
   setAria("#closeDrawer", tr("drawer.close"));
   setText(".drawer-content section:nth-child(1) .drawer-section-title h3", tr("drawer.goalTitle"));
-  setText(".drawer-content section:nth-child(2) .drawer-section-title h3", tr("drawer.moodTitle"));
+  setText(".drawer-content section:nth-child(2) .drawer-section-title h3", tr("dayPlan.schedule"));
+  setText(".drawer-content section:nth-child(3) .drawer-section-title h3", tr("drawer.moodTitle"));
   setText('label[for="dayNote"] h3', tr("drawer.noteTitle"));
   setText('label[for="dayNote"] span', tr("drawer.markdown"));
   const drawerDate = parseDate(selectedDate);
@@ -1427,7 +1479,7 @@ function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!stored?.habits) return { ...cloneData(seed), meta: { updatedAt: 0, starterPackVersion: STARTER_PACK_VERSION } };
-    const hydrated = { ...cloneData(seed), ...stored, dailyGoals: stored.dailyGoals || {}, weeklyGoals: stored.weeklyGoals || {}, weeklyOutputs: stored.weeklyOutputs || {}, weeklyReviews: stored.weeklyReviews || {} };
+    const hydrated = { ...cloneData(seed), ...stored, dailyGoals: stored.dailyGoals || {}, weeklyGoals: stored.weeklyGoals || {}, longTermGoals: stored.longTermGoals || [], weeklyOutputs: stored.weeklyOutputs || {}, weeklyReviews: stored.weeklyReviews || {} };
     const migrated = migrateLocalStarterPack(hydrated);
     if (migrated !== hydrated) localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
     return migrated;
@@ -1578,7 +1630,7 @@ async function pullCloudState() {
       const remote = await cloudBaseAdapter.getState();
       if (!remote) { await pushCloudState(); return; }
       if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
-        state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
+        state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, longTermGoals: remote.payload.longTermGoals || [], weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         renderAll();
       }
@@ -1592,7 +1644,7 @@ async function pullCloudState() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const remote = await response.json();
     if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
-      state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
+      state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, longTermGoals: remote.payload.longTermGoals || [], weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
     }
@@ -1775,6 +1827,8 @@ function renderWeeklyWorkspace() {
   $("#weeklyOutputText").value = output;
   autoGrowTextarea($("#weeklyOutputText"));
   $("#weeklyOutputStatus").textContent = output.trim() ? tr("week.outputStatus", { count: output.trim().length }) : tr("week.outputEmpty");
+  renderLongTermGoals();
+  applyGoalHorizon();
   $$(".weekly-goal").forEach(row => row.addEventListener("click", event => {
     const action = event.target.closest("button")?.dataset.action;
     if (!action) return;
@@ -1784,6 +1838,87 @@ function renderWeeklyWorkspace() {
     if (action === "delete") list.splice(index, 1);
     state.weeklyGoals[key] = list; saveState(); renderWeeklyWorkspace();
   }));
+}
+
+function applyGoalHorizon() {
+  const isWeek = goalHorizon === "week";
+  $("#weeklyGoalsPane").hidden = !isWeek;
+  $("#longTermGoalsPane").hidden = isWeek;
+  $$('[data-goal-horizon]').forEach(button => {
+    const active = button.dataset.goalHorizon === goalHorizon;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+}
+
+function formatLongTermReviewDate(value) {
+  if (!value) return tr("longTerm.noReview");
+  const date = parseDate(value);
+  const locale = currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
+  return tr("longTerm.reviewOn", { date: new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", year: "numeric" }).format(date) });
+}
+
+function renderLongTermGoals() {
+  const goals = state.longTermGoals || [];
+  const active = goals.filter(goal => goal.status === "active").length;
+  $("#longTermGoalCount").textContent = tr("longTerm.activeCount", { count: active });
+  $("#longTermGoalList").innerHTML = goals.length ? goals.map(goal => `<button class="long-term-goal ${escapeHtml(goal.status || "active")}" type="button" data-id="${escapeHtml(goal.id)}">
+    <span class="long-term-status" aria-hidden="true"></span>
+    <span class="long-term-copy"><strong>${escapeHtml(goal.name)}</strong><small>${escapeHtml(goal.nextAction || tr("longTerm.noNext"))}</small></span>
+    <span class="long-term-meta"><b>${escapeHtml(tr(`longTerm.${goal.status || "active"}`))}</b><small>${escapeHtml(formatLongTermReviewDate(goal.reviewDate))}</small></span>
+    <span class="long-term-chevron" aria-hidden="true">›</span>
+  </button>`).join("") : `<p class="weekly-goal-empty long-term-empty">${tr("longTerm.empty")}</p>`;
+  $$("#longTermGoalList .long-term-goal").forEach(button => button.addEventListener("click", () => openLongTermGoalDialog(button.dataset.id)));
+}
+
+function openLongTermGoalDialog(id = null) {
+  editingLongTermGoalId = id;
+  const goal = (state.longTermGoals || []).find(item => item.id === id);
+  const form = $("#longTermGoalForm");
+  form.reset();
+  form.elements.name.value = goal?.name || "";
+  form.elements.nextAction.value = goal?.nextAction || "";
+  form.elements.reviewDate.value = goal?.reviewDate || "";
+  form.elements.status.value = goal?.status || "active";
+  $("#longTermDialogTitle").textContent = tr(goal ? "longTerm.editTitle" : "longTerm.addTitle");
+  $("#deleteLongTermGoal").hidden = !goal;
+  $("#longTermGoalDialog").showModal();
+  window.setTimeout(() => form.elements.name.focus(), 0);
+}
+
+function closeLongTermGoalDialog() {
+  if ($("#longTermGoalDialog").open) $("#longTermGoalDialog").close();
+  editingLongTermGoalId = null;
+}
+
+function saveLongTermGoal(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const values = {
+    name: form.elements.name.value.trim(),
+    nextAction: form.elements.nextAction.value.trim(),
+    reviewDate: form.elements.reviewDate.value || "",
+    status: form.elements.status.value || "active",
+  };
+  if (!values.name) return;
+  const goals = [...(state.longTermGoals || [])];
+  const index = goals.findIndex(goal => goal.id === editingLongTermGoalId);
+  if (index >= 0) goals[index] = { ...goals[index], ...values, updatedAt: Date.now() };
+  else goals.push({ id: createId(), ...values, createdAt: Date.now(), updatedAt: Date.now() });
+  state.longTermGoals = goals;
+  saveState();
+  closeLongTermGoalDialog();
+  renderWeeklyWorkspace();
+  showToast(tr(index >= 0 ? "longTerm.updated" : "longTerm.added"));
+}
+
+function deleteLongTermGoal() {
+  if (!editingLongTermGoalId) return;
+  state.longTermGoals = (state.longTermGoals || []).filter(goal => goal.id !== editingLongTermGoalId);
+  saveState();
+  closeLongTermGoalDialog();
+  renderWeeklyWorkspace();
+  showToast(tr("longTerm.removed"));
 }
 function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
@@ -1885,12 +2020,107 @@ function renderToday() {
 
 function renderDailyGoals() {
   renderDayRoll();
+  renderDaySchedule();
   renderDailyGoalList(selectedPlanningDate, "#dailyGoalList", "#dailyGoalProgress", "todayGoals.empty");
   const selected = parseDate(selectedPlanningDate);
   $("#todayPlanDate").textContent = formatDateChip(selected);
   $("#journalPlanDate").textContent = formatDateChip(selected);
   renderHomeJournal();
   renderFocusGoalOptions();
+}
+
+function calendarPreviewEvents(date) {
+  if (!dayPlanPrototype) return [];
+  const selected = parseDate(date);
+  const today = new Date(); today.setHours(12, 0, 0, 0);
+  const offset = Math.round((selected - today) / 86400000);
+  const routines = [
+    { id: "routine-morning", start: "06:30", end: "07:30", routine: true, title: languageText("早起与健身", "Morning routine & gym", "Morgenroutine & Training") },
+    { id: "routine-german", start: "08:00", end: "08:30", routine: true, title: languageText("德语听说", "German listening & speaking", "Deutsch hören & sprechen") },
+    { id: "routine-applications", start: "09:15", end: "09:35", routine: true, title: languageText("坚持投递", "Job applications", "Bewerbungen") },
+    { id: "routine-cat", start: "21:30", end: "21:40", routine: true, title: languageText("给猫零食", "Cat treat", "Katzensnack") },
+    { id: "routine-tidy", start: "22:00", end: "22:20", routine: true, title: languageText("每日整理", "Daily tidy", "Tägliches Aufräumen") },
+  ];
+  const oneOffByOffset = {
+    "-1": [{ id: "career-workshop", start: "16:00", end: "17:30", title: languageText("职业方向工作坊", "Career direction workshop", "Workshop zur Karriereplanung") }],
+    0: [
+      { id: "analyst-interview", start: "09:00", end: "09:45", title: languageText("数据分析师线上面试", "Data analyst interview", "Online-Interview Data Analyst") },
+      { id: "portfolio-review", start: "14:30", end: "15:15", title: languageText("作品集评审", "Portfolio review", "Portfolio-Review") },
+      { id: "release-prep", start: "18:00", end: "19:00", title: languageText("第一个 Project Release", "First project release", "Erstes Project Release") },
+    ],
+    2: [{ id: "onsite-interview", start: "08:00", end: "10:00", title: languageText("线下面试", "On-site interview", "Vor-Ort-Interview") }],
+    4: [{ id: "release-deadline", allDay: true, title: languageText("项目 Release 截止日", "Project release deadline", "Deadline für das Project Release") }],
+  };
+  return [...(oneOffByOffset[offset] || []), ...routines].map(event => ({ ...event, date }));
+}
+
+function eventDuration(event) {
+  if (event.allDay || !event.start || !event.end) return "";
+  const [startHour, startMinute] = event.start.split(":").map(Number);
+  const [endHour, endMinute] = event.end.split(":").map(Number);
+  const minutes = Math.max(0, (endHour * 60 + endMinute) - (startHour * 60 + startMinute));
+  if (!minutes) return "";
+  if (currentLang === "zh") return minutes >= 60 && minutes % 60 === 0 ? `${minutes / 60} 小时` : `${minutes} 分钟`;
+  if (currentLang === "de") return minutes >= 60 && minutes % 60 === 0 ? `${minutes / 60} Std.` : `${minutes} Min.`;
+  return minutes >= 60 && minutes % 60 === 0 ? `${minutes / 60} hr` : `${minutes} min`;
+}
+
+function scheduleEventMarkup(event, compact = false) {
+  const time = event.allDay ? tr("dayPlan.allDay") : event.start;
+  const duration = eventDuration(event);
+  return `<article class="day-schedule-event ${event.routine ? "routine" : ""} ${event.allDay ? "all-day" : ""}">
+    <time>${escapeHtml(time)}</time>
+    <div><strong>${escapeHtml(event.title)}</strong>${duration ? `<small>${escapeHtml(duration)}</small>` : ""}</div>
+    ${event.routine && !compact ? `<span class="routine-label">${escapeHtml(tr("dayPlan.routine"))}</span>` : ""}
+  </article>`;
+}
+
+function renderDaySchedule() {
+  const events = calendarPreviewEvents(selectedPlanningDate);
+  const important = events.filter(event => !event.routine);
+  const routines = events.filter(event => event.routine);
+  setText("#dayScheduleCount", tr("dayPlan.events", { count: important.length }));
+  $("#dayScheduleList").innerHTML = important.length
+    ? important.slice(0, 3).map(event => scheduleEventMarkup(event, true)).join("")
+    : `<p class="day-schedule-empty">${tr("dayPlan.noEvents")}</p>`;
+  const toggle = $("#toggleRoutineEvents");
+  toggle.hidden = !routines.length;
+  toggle.setAttribute("aria-expanded", String(dayPlanRoutinesExpanded));
+  $("span", toggle).textContent = dayPlanRoutinesExpanded ? tr("dayPlan.routinesShown") : tr("dayPlan.routinesHidden", { count: routines.length });
+  $("b", toggle).textContent = dayPlanRoutinesExpanded ? "⌃" : "⌄";
+  $("#routineEventList").hidden = !dayPlanRoutinesExpanded;
+  $("#routineEventList").innerHTML = routines.map(event => scheduleEventMarkup(event)).join("");
+}
+
+function formatDayPlanDialogDate(date) {
+  const value = parseDate(date);
+  if (currentLang === "zh") return `${value.getMonth() + 1}月${value.getDate()}日 · ${weekdayName(value.getDay())}`;
+  const locale = currentLang === "de" ? "de-DE" : "en-GB";
+  return `${new Intl.DateTimeFormat(locale, { month: "long", day: "numeric" }).format(value)} · ${weekdayName(value.getDay())}`;
+}
+
+function renderDayPlanDialog() {
+  const events = calendarPreviewEvents(selectedPlanningDate);
+  const ordered = [...events].sort((a, b) => Number(Boolean(b.allDay)) - Number(Boolean(a.allDay)) || String(a.start || "").localeCompare(String(b.start || "")));
+  $("#dayPlanDialogDate").textContent = formatDayPlanDialogDate(selectedPlanningDate);
+  $("#dayPlanTimeline").innerHTML = ordered.map(event => scheduleEventMarkup(event)).join("");
+  const goals = state.dailyGoals[selectedPlanningDate] || [];
+  $("#dayPlanDialogGoals").innerHTML = goals.length ? goals.map(goal => `<button class="day-plan-dialog-goal ${goal.done ? "done" : ""}" type="button" data-id="${escapeHtml(goal.id)}" ${isFutureDate(selectedPlanningDate) ? "disabled" : ""}><span>✓</span><b>${escapeHtml(goal.text)}</b></button>`).join("") : `<p class="day-schedule-empty">${tr("todayGoals.empty")}</p>`;
+  $$("#dayPlanDialogGoals .day-plan-dialog-goal").forEach(button => button.addEventListener("click", () => {
+    const list = state.dailyGoals[selectedPlanningDate] || [];
+    const goal = list.find(item => item.id === button.dataset.id);
+    if (!goal) return;
+    goal.done = !goal.done;
+    state.dailyGoals[selectedPlanningDate] = list;
+    saveState();
+    renderDayPlanDialog();
+    renderDailyGoals();
+  }));
+}
+
+function openDayPlanDialog() {
+  renderDayPlanDialog();
+  $("#dayPlanDialog").showModal();
 }
 
 function renderDayRoll() {
@@ -1909,6 +2139,7 @@ function renderDayRoll() {
 
 function selectPlanningDate(date, options = {}) {
   selectedPlanningDate = date;
+  dayPlanRoutinesExpanded = false;
   renderDailyGoals();
   if (options.scroll) $(".daily-planning-grid")?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
@@ -2631,8 +2862,9 @@ function renderDrawer() {
   $("#drawerProgress").textContent = `${log.completed.filter(id => scoredHabits.some(h => h.id === id)).length} / ${scoredHabits.length}`;
   const drawerTitles = $$("#dayDrawer .drawer-section-title h3");
   if (drawerTitles[0]) drawerTitles[0].textContent = tr("drawer.goalTitle");
-  if (drawerTitles[1]) drawerTitles[1].textContent = tr("drawer.moodTitle");
-  if (drawerTitles[2]) drawerTitles[2].textContent = tr("drawer.noteTitle");
+  if (drawerTitles[1]) drawerTitles[1].textContent = tr("dayPlan.schedule");
+  if (drawerTitles[2]) drawerTitles[2].textContent = tr("drawer.moodTitle");
+  if (drawerTitles[3]) drawerTitles[3].textContent = tr("drawer.noteTitle");
   setText("label.drawer-section-title span", tr("drawer.markdown"));
   const futureNotice = $("#drawerFutureNotice");
   futureNotice.hidden = !future;
@@ -2648,6 +2880,9 @@ function renderDrawer() {
     </details>`;
   }).join("");
   $$(".drawer-habit-toggle").forEach(button => button.addEventListener("click", () => toggleHabit(selectedDate, button.closest(".drawer-habit").dataset.id)));
+  const schedule = calendarPreviewEvents(selectedDate);
+  $("#drawerScheduleCount").textContent = tr("dayPlan.events", { count: schedule.length });
+  $("#drawerScheduleList").innerHTML = schedule.map(event => scheduleEventMarkup(event)).join("");
   $$("#drawerMood button").forEach(button => {
     button.classList.toggle("selected", button.dataset.mood === log.mood);
     button.disabled = future;
@@ -2919,7 +3154,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -3030,6 +3265,7 @@ function importedPayload(raw) {
     if (payload[key] !== undefined && !isRecord(payload[key])) throw new Error(`invalid-${key}`);
   }
   if (payload.focusSessions !== undefined && !Array.isArray(payload.focusSessions)) throw new Error("invalid-focusSessions");
+  if (payload.longTermGoals !== undefined && !Array.isArray(payload.longTermGoals)) throw new Error("invalid-longTermGoals");
   if (payload.focusSettings !== undefined && !isRecord(payload.focusSettings)) throw new Error("invalid-focusSettings");
   const scope = modern ? raw.scope : payload.exportMeta?.scope || "all";
   return {
@@ -3044,6 +3280,7 @@ function importedPayload(raw) {
       reviews: cloneData(payload.reviews || {}),
       dailyGoals: cloneData(payload.dailyGoals || {}),
       weeklyGoals: cloneData(payload.weeklyGoals || {}),
+      longTermGoals: cloneData(payload.longTermGoals || []),
       weeklyOutputs: cloneData(payload.weeklyOutputs || {}),
       weeklyReviews: cloneData(payload.weeklyReviews || {}),
       focusSessions: cloneData(payload.focusSessions || []),
@@ -3115,6 +3352,7 @@ function mergeBackupData(current, incoming) {
     reviews: { ...(current.reviews || {}), ...(incoming.reviews || {}) },
     dailyGoals: { ...(current.dailyGoals || {}), ...(incoming.dailyGoals || {}) },
     weeklyGoals: { ...(current.weeklyGoals || {}), ...(incoming.weeklyGoals || {}) },
+    longTermGoals: [...new Map([...(current.longTermGoals || []), ...(incoming.longTermGoals || [])].map(goal => [goal.id, cloneData(goal)])).values()],
     weeklyOutputs: { ...(current.weeklyOutputs || {}), ...(incoming.weeklyOutputs || {}) },
     weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
@@ -3703,6 +3941,13 @@ function bindEvents() {
   bindDailyGoalForm("#dailyGoalForm", "#dailyGoalInput", () => selectedPlanningDate, "todayGoals.added");
   $("#previousPlanDay").addEventListener("click", () => shiftPlanningDay(-1));
   $("#nextPlanDay").addEventListener("click", () => shiftPlanningDay(1));
+  $("#toggleRoutineEvents").addEventListener("click", () => {
+    dayPlanRoutinesExpanded = !dayPlanRoutinesExpanded;
+    renderDaySchedule();
+  });
+  $("#openDayPlan").addEventListener("click", openDayPlanDialog);
+  $$(".close-day-plan").forEach(button => button.addEventListener("click", () => $("#dayPlanDialog").close()));
+  $("#dayPlanDialog").addEventListener("cancel", event => { event.preventDefault(); $("#dayPlanDialog").close(); });
   $("#homeDayNote").addEventListener("input", event => {
     if (isFutureDate(selectedPlanningDate)) return;
     state.logs[selectedPlanningDate] = { ...getLog(selectedPlanningDate), note: event.target.value };
@@ -3781,6 +4026,15 @@ function bindEvents() {
     state.weeklyGoals[key] = [...(state.weeklyGoals[key] || []), { id: createId(), text, done: false }];
     input.value = ""; saveState(); renderWeeklyWorkspace(); showToast(tr("week.added"));
   });
+  $$('[data-goal-horizon]').forEach(button => button.addEventListener("click", () => {
+    goalHorizon = button.dataset.goalHorizon === "long" ? "long" : "week";
+    applyGoalHorizon();
+  }));
+  $("#addLongTermGoal").addEventListener("click", () => openLongTermGoalDialog());
+  $("#longTermGoalForm").addEventListener("submit", saveLongTermGoal);
+  $("#deleteLongTermGoal").addEventListener("click", deleteLongTermGoal);
+  $$(".close-long-term-dialog").forEach(button => button.addEventListener("click", closeLongTermGoalDialog));
+  $("#longTermGoalDialog").addEventListener("cancel", event => { event.preventDefault(); closeLongTermGoalDialog(); });
   $("#weeklyOutputText").addEventListener("input", event => {
     const key = selectedWorkspaceWeek;
     state.weeklyOutputs[key] = event.target.value; saveState();

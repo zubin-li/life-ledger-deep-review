@@ -197,18 +197,29 @@
             <article class="daily-goals-card" data-plan="selected-day">
               <div class="daily-goals-heading">
                 <div><span class="kicker">DAY PLAN</span><h3>Daily Goals</h3><p>Select a day to review or plan ahead.</p><small id="todayPlanDate"></small></div>
-                <strong id="dailyGoalProgress">0 / 0</strong>
+                <button class="day-plan-expand" id="openDayPlan" type="button"><span>Open day</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
               </div>
               <div class="day-roll-control">
                 <button class="day-roll-arrow" id="previousPlanDay" type="button" aria-label="Previous day">←</button>
                 <div class="day-roll" id="dayRoll"></div>
                 <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
               </div>
-              <div class="weekly-goal-list daily-goal-list" id="dailyGoalList"></div>
-              <form class="weekly-goal-form daily-goal-form" id="dailyGoalForm">
-                <input id="dailyGoalInput" maxlength="100" placeholder="Add something for this day…" />
-                <button aria-label="Add daily goal">＋</button>
-              </form>
+              <div class="day-plan-columns">
+                <section class="day-schedule-column" aria-labelledby="dayScheduleTitle">
+                  <div class="day-plan-section-heading"><div><span class="day-plan-dot" aria-hidden="true"></span><h4 id="dayScheduleTitle">Schedule</h4></div><span id="dayScheduleCount">0 events</span></div>
+                  <div class="day-schedule-list" id="dayScheduleList"></div>
+                  <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b>⌄</b></button>
+                  <div class="routine-event-list" id="routineEventList" hidden></div>
+                </section>
+                <section class="day-flexible-goals" aria-labelledby="dayGoalsTitle">
+                  <div class="day-plan-section-heading"><div><span class="goal-check-glyph" aria-hidden="true">✓</span><h4 id="dayGoalsTitle">Flexible goals</h4></div><strong id="dailyGoalProgress">0 / 0</strong></div>
+                  <div class="weekly-goal-list daily-goal-list" id="dailyGoalList"></div>
+                  <form class="weekly-goal-form daily-goal-form" id="dailyGoalForm">
+                    <input id="dailyGoalInput" maxlength="100" placeholder="Add something for this day…" />
+                    <button aria-label="Add daily goal">＋</button>
+                  </form>
+                </section>
+              </div>
             </article>
             <article class="daily-goals-card daily-journal-card">
               <div class="daily-goals-heading">
@@ -271,6 +282,11 @@
             <article class="weekly-goals-panel">
               <section class="weekly-goals-card">
                 <div class="week-stamp-row"><span id="currentWeekNumber">2026年6月22日 — 6月28日</span><span id="basketYear"></span></div>
+                  <div class="goal-horizon-switch" id="goalHorizonSwitch" role="tablist" aria-label="Goal horizon">
+                    <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
+                    <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
+                  </div>
+                <div id="weeklyGoalsPane">
                   <div class="weekly-card-heading">
                     <div><span class="kicker">CHECKLIST</span><h3>本周目标</h3></div>
                     <strong id="weeklyGoalProgress">0 / 0</strong>
@@ -280,6 +296,15 @@
                     <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" />
                     <button aria-label="添加本周目标">＋</button>
                   </form>
+                </div>
+                <div id="longTermGoalsPane" hidden>
+                  <div class="weekly-card-heading long-term-heading">
+                    <div><span class="kicker" id="longTermKicker">HORIZON</span><h3 id="longTermTitle">Long-term goals</h3><p id="longTermDescription">Keep the direction visible without forcing it into this week.</p></div>
+                    <strong id="longTermGoalCount">0 active</strong>
+                  </div>
+                  <div class="long-term-goal-list" id="longTermGoalList"></div>
+                  <button class="long-term-add-button" id="addLongTermGoal" type="button"><span>＋</span><b>Add a long-term goal</b></button>
+                </div>
               </section>
               <figure class="weekly-classical-image weekly-minimal-image">
                 <img src="./assets/weekly-minimal-still-life-v2.jpg" alt="Minimal journal, pencil and clock on a softly lit desk" />
@@ -375,6 +400,10 @@
           <div class="drawer-section-title"><h3>今日目标</h3><span id="drawerProgress">0 / 4</span></div>
           <div class="drawer-habits" id="drawerHabits"></div>
         </section>
+        <section class="drawer-schedule-section">
+          <div class="drawer-section-title"><h3 id="drawerScheduleTitle">日程安排</h3><span id="drawerScheduleCount">0 项</span></div>
+          <div class="drawer-schedule-list" id="drawerScheduleList"></div>
+        </section>
         <section>
           <div class="drawer-section-title"><h3>今日心情</h3></div>
           <div class="mood-options compact" id="drawerMood">
@@ -391,6 +420,40 @@
       </div>
       <footer><span id="saveState">修改将自动保存</span><button class="primary-button" id="completeDay">完成记录</button></footer>
     </aside>
+
+    <dialog class="day-plan-dialog" id="dayPlanDialog">
+      <div class="day-plan-dialog-shell">
+        <header>
+          <div><span class="kicker" id="dayPlanDialogKicker">DAY PLAN</span><h2 id="dayPlanDialogDate">August 25 · Tuesday</h2></div>
+          <button class="icon-button close-day-plan" type="button" aria-label="Close day plan">×</button>
+        </header>
+        <div class="day-plan-dialog-body">
+          <section>
+            <div class="day-plan-dialog-section"><span></span><h3 id="dayPlanDialogScheduleTitle">Schedule</h3></div>
+            <div class="day-plan-timeline" id="dayPlanTimeline"></div>
+          </section>
+          <section>
+            <div class="day-plan-dialog-section"><span class="goal-check-glyph">✓</span><h3 id="dayPlanDialogGoalsTitle">Flexible goals</h3></div>
+            <div class="day-plan-dialog-goals" id="dayPlanDialogGoals"></div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="long-term-dialog" id="longTermGoalDialog">
+      <form method="dialog" id="longTermGoalForm">
+        <header><div><span class="kicker" id="longTermDialogKicker">LONG-TERM GOAL</span><h2 id="longTermDialogTitle">Add direction</h2></div><button class="icon-button close-long-term-dialog" type="button" aria-label="Close">×</button></header>
+        <div class="long-term-dialog-body">
+          <label><span id="longTermNameLabel">Goal</span><input name="name" maxlength="120" required /></label>
+          <label><span id="longTermNextLabel">Next step</span><input name="nextAction" maxlength="160" /></label>
+          <div class="long-term-dialog-row">
+            <label><span id="longTermReviewLabel">Review date</span><input name="reviewDate" type="date" /></label>
+            <label><span id="longTermStatusLabel">Status</span><select name="status"><option value="active">Active</option><option value="paused">Paused</option><option value="completed">Completed</option></select></label>
+          </div>
+        </div>
+        <footer><button class="danger-button" id="deleteLongTermGoal" type="button" hidden>Delete</button><span class="dialog-footer-spacer"></span><button class="secondary-button close-long-term-dialog" type="button">Cancel</button><button class="primary-button" id="saveLongTermGoal" type="submit">Save</button></footer>
+      </form>
+    </dialog>
 
     <dialog id="habitDialog">
       <form method="dialog" id="habitForm">
