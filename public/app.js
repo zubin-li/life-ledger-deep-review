@@ -1076,6 +1076,7 @@ let selectedWorkspaceWeek = isoWeekKey(new Date());
 let goalHorizon = "week";
 let editingLongTermGoalId = null;
 let dayPlanRoutinesExpanded = false;
+let dayPlanActivePane = "schedule";
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
@@ -1240,6 +1241,9 @@ function applyLanguage() {
   setAria("#nextPlanDay", tr("todayGoals.next"));
   setText("#dayScheduleTitle", tr("dayPlan.schedule"));
   setText("#dayGoalsTitle", tr("dayPlan.flexible"));
+  setText("#dayScheduleTabLabel", tr("dayPlan.schedule"));
+  setText("#dayGoalsTabLabel", tr("dayPlan.flexible"));
+  setAria("#dayPlanViewSwitch", languageText("切换日程与目标", "Switch between schedule and goals", "Zwischen Terminen und Zielen wechseln"));
   setText("#openDayPlan span", tr("dayPlan.open"));
   setAria("#openDayPlan", tr("dayPlan.open"));
   setText("#dayPlanDialogKicker", tr("todayGoals.kicker"));
@@ -2022,11 +2026,24 @@ function renderDailyGoals() {
   renderDayRoll();
   renderDaySchedule();
   renderDailyGoalList(selectedPlanningDate, "#dailyGoalList", "#dailyGoalProgress", "todayGoals.empty");
+  setDayPlanPane(dayPlanActivePane);
   const selected = parseDate(selectedPlanningDate);
   $("#todayPlanDate").textContent = formatDateChip(selected);
   $("#journalPlanDate").textContent = formatDateChip(selected);
   renderHomeJournal();
   renderFocusGoalOptions();
+}
+
+function setDayPlanPane(pane) {
+  dayPlanActivePane = pane === "goals" ? "goals" : "schedule";
+  $$('[data-day-plan-pane]').forEach(button => {
+    const active = button.dataset.dayPlanPane === dayPlanActivePane;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
+  $("#daySchedulePanel").hidden = dayPlanActivePane !== "schedule";
+  $("#dayGoalsPanel").hidden = dayPlanActivePane !== "goals";
 }
 
 function calendarPreviewEvents(date) {
@@ -3944,6 +3961,13 @@ function bindEvents() {
   $("#toggleRoutineEvents").addEventListener("click", () => {
     dayPlanRoutinesExpanded = !dayPlanRoutinesExpanded;
     renderDaySchedule();
+  });
+  $$('[data-day-plan-pane]').forEach(button => button.addEventListener("click", () => setDayPlanPane(button.dataset.dayPlanPane)));
+  $("#dayPlanViewSwitch").addEventListener("keydown", event => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    setDayPlanPane(dayPlanActivePane === "schedule" ? "goals" : "schedule");
+    $(`[data-day-plan-pane="${dayPlanActivePane}"]`).focus();
   });
   $("#openDayPlan").addEventListener("click", openDayPlanDialog);
   $$(".close-day-plan").forEach(button => button.addEventListener("click", () => $("#dayPlanDialog").close()));

@@ -13,8 +13,13 @@ test("schedule and flexible goals share the existing Day Plan card", () => {
   assert.match(card[1], /id="dailyGoalList"/);
   assert.match(card[1], /id="toggleRoutineEvents"/);
   assert.match(card[1], /id="openDayPlan"/);
+  assert.match(card[1], /id="dayPlanViewSwitch"/);
+  assert.match(card[1], /data-day-plan-pane="schedule"/);
+  assert.match(card[1], /data-day-plan-pane="goals"/);
+  assert.match(card[1], /id="dayGoalsPanel"[^>]*hidden/);
   assert.match(app, /calendarPreviewEvents\(selectedPlanningDate\)/);
   assert.match(app, /event\.routine/);
+  assert.match(app, /function setDayPlanPane\(pane\)/);
 });
 
 test("weekly goals and long-term goals use progressive disclosure in one card", () => {
@@ -26,12 +31,22 @@ test("weekly goals and long-term goals use progressive disclosure in one card", 
   assert.match(app, /function saveLongTermGoal\(event\)/);
 });
 
-test("mobile Day Plan stacks schedule and goals without horizontal scrolling", () => {
+test("mobile Day Plan switches panes without horizontal scrolling", () => {
   const mobile = css.slice(css.lastIndexOf("/* Day Plan prototype"));
-  assert.match(mobile, /@media \(max-width: 760px\)[\s\S]*?\.day-plan-columns\s*\{\s*grid-template-columns:\s*1fr;/);
-  assert.match(mobile, /\.day-flexible-goals\s*\{[^}]*border-left:\s*0;[^}]*border-top:/);
+  assert.match(mobile, /\.day-plan-view-switch\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
+  assert.match(mobile, /\.day-plan-columns > section\[hidden\]\s*\{\s*display:\s*none;/);
+  assert.match(mobile, /@media \(max-width: 760px\)[\s\S]*?\.day-plan-view-switch button\s*\{[^}]*grid-template-columns:\s*18px minmax\(0, 1fr\);/);
   assert.match(mobile, /\.day-plan-dialog-body\s*\{\s*grid-template-columns:\s*1fr;/);
   assert.doesNotMatch(mobile, /overflow-x:\s*(auto|scroll)/);
+});
+
+test("focus and month calendar reflow instead of clipping on narrow screens", () => {
+  assert.match(css, /\.focus-overview-card\s*\{[\s\S]*?grid-template-columns:\s*repeat\(auto-fit, minmax\(min\(100%, 360px\), 1fr\)\);/);
+  const compactCalendar = css.slice(css.lastIndexOf("/* Compact month view"));
+  assert.match(compactCalendar, /@media \(min-width: 761px\) and \(max-width: 1100px\)[\s\S]*?\.calendar-card\s*\{[^}]*aspect-ratio:\s*1;/);
+  assert.match(compactCalendar, /\.calendar-card\s*\{[^}]*aspect-ratio:\s*1;/);
+  assert.match(compactCalendar, /\.calendar-grid\s*\{[^}]*grid-template-rows:\s*repeat\(6, minmax\(0, 1fr\)\);/);
+  assert.match(compactCalendar, /\.calendar-day\s*\{[^}]*min-height:\s*0;/);
 });
 
 test("long-term goals are included in backup and restore state", () => {

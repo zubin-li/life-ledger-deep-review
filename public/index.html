@@ -204,15 +204,23 @@
                 <div class="day-roll" id="dayRoll"></div>
                 <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
               </div>
+              <div class="day-plan-view-switch" id="dayPlanViewSwitch" role="tablist" aria-label="Day plan view">
+                <button class="active" id="dayScheduleTab" type="button" role="tab" aria-selected="true" aria-controls="daySchedulePanel" data-day-plan-pane="schedule">
+                  <span class="day-plan-dot" aria-hidden="true"></span><b id="dayScheduleTabLabel">Schedule</b><small id="dayScheduleCount">0 events</small>
+                </button>
+                <button id="dayGoalsTab" type="button" role="tab" aria-selected="false" aria-controls="dayGoalsPanel" data-day-plan-pane="goals">
+                  <span class="goal-check-glyph" aria-hidden="true">✓</span><b id="dayGoalsTabLabel">Flexible goals</b><small id="dailyGoalProgress">0 / 0</small>
+                </button>
+              </div>
               <div class="day-plan-columns">
-                <section class="day-schedule-column" aria-labelledby="dayScheduleTitle">
-                  <div class="day-plan-section-heading"><div><span class="day-plan-dot" aria-hidden="true"></span><h4 id="dayScheduleTitle">Schedule</h4></div><span id="dayScheduleCount">0 events</span></div>
+                <section class="day-schedule-column" id="daySchedulePanel" role="tabpanel" aria-labelledby="dayScheduleTab">
+                  <h4 class="sr-only" id="dayScheduleTitle">Schedule</h4>
                   <div class="day-schedule-list" id="dayScheduleList"></div>
                   <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b>⌄</b></button>
                   <div class="routine-event-list" id="routineEventList" hidden></div>
                 </section>
-                <section class="day-flexible-goals" aria-labelledby="dayGoalsTitle">
-                  <div class="day-plan-section-heading"><div><span class="goal-check-glyph" aria-hidden="true">✓</span><h4 id="dayGoalsTitle">Flexible goals</h4></div><strong id="dailyGoalProgress">0 / 0</strong></div>
+                <section class="day-flexible-goals" id="dayGoalsPanel" role="tabpanel" aria-labelledby="dayGoalsTab" hidden>
+                  <h4 class="sr-only" id="dayGoalsTitle">Flexible goals</h4>
                   <div class="weekly-goal-list daily-goal-list" id="dailyGoalList"></div>
                   <form class="weekly-goal-form daily-goal-form" id="dailyGoalForm">
                     <input id="dailyGoalInput" maxlength="100" placeholder="Add something for this day…" />
