@@ -1,5 +1,6 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { VoiceRequestError, handleVoiceReview } from "./voice.js";
+import { CalendarRequestError, handleCalendarRequest } from "./calendar.js";
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status,
@@ -159,6 +160,21 @@ async function handleVoiceApi(request, env) {
   }
 }
 
+async function handleCalendarApi(request, env) {
+  const identity = await identityOrResponse(request, env);
+  if (identity.response) return identity.response;
+  try {
+    return await handleCalendarRequest(request, env, identity.keyHash);
+  } catch (error) {
+    if (error instanceof CalendarRequestError) {
+      return json({ error: error.message, code: error.code }, error.status);
+    }
+    const requestId = crypto.randomUUID();
+    console.error("Calendar request failed", { requestId, name: error?.name || "Error" });
+    return json({ error: "Calendar request could not be completed", code: "CALENDAR_FAILED", requestId }, 502);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -167,6 +183,7 @@ export default {
     }
     if (url.pathname === "/api/state") return handleApi(request, env);
     if (url.pathname === "/api/voice-review") return handleVoiceApi(request, env);
+    if (url.pathname.startsWith("/api/calendar/")) return handleCalendarApi(request, env);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);
   },

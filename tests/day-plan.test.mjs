@@ -17,10 +17,25 @@ test("schedule and flexible goals share the existing Day Plan card", () => {
   assert.match(card[1], /data-day-plan-pane="schedule"/);
   assert.match(card[1], /data-day-plan-pane="goals"/);
   assert.match(card[1], /id="dayGoalsPanel"[^>]*hidden/);
-  assert.match(app, /calendarPreviewEvents\(selectedPlanningDate\)/);
+  assert.match(app, /calendarEventsForDate\(selectedPlanningDate\)/);
   assert.match(app, /event\.routine/);
   assert.match(app, /function setDayPlanPane\(pane\)/);
 });
+
+test("Google Calendar stays read-only and progressively disclosed inside Day Plan", () => {
+  assert.match(cardMarkup(), /id="calendarConnectionButton"/);
+  assert.match(html, /id="calendarSettingsDialog"/);
+  assert.match(html, /id="calendarHideRecurring"[^>]*checked/);
+  assert.match(app, /calendarApi\("calendars"\)/);
+  assert.match(app, /calendarApi\(`events\?\$\{query\}`\)/);
+  assert.match(app, /method: "DELETE"/);
+  assert.doesNotMatch(app, /calendarApi\("event"/);
+  assert.match(app, /day-calendar-status/);
+});
+
+function cardMarkup() {
+  return html.match(/<article class="daily-goals-card" data-plan="selected-day">([\s\S]*?)<\/article>/)?.[1] || "";
+}
 
 test("weekly goals and long-term goals use progressive disclosure in one card", () => {
   assert.match(html, /id="goalHorizonSwitch"/);

@@ -111,6 +111,13 @@ const i18n = {
     dayPlan: {
       schedule: "日程安排", flexible: "灵活目标", open: "展开一天", close: "关闭完整日程", events: "{count} 项", noEvents: "这一天没有临时日程。", routinesHidden: "{count} 项固定日程已收起", routinesShown: "收起固定日程", routine: "固定", allDay: "全天", preview: "日历连接后的展示预览",
     },
+    calendarSync: {
+      kicker: "日历连接", title: "Google 日历", trigger: "连接日历", connectedTrigger: "日历已连接", intro: "只读连接。Life Ledger 仅保留复盘所需的日程标题与时间。",
+      connectTitle: "让真实日程自然进入每一天。", connectHelp: "选择你想读取的日历。Life Ledger 永远不会修改或删除 Google 日历事件。", connect: "连接 Google 日历", connecting: "正在前往 Google…",
+      connected: "日历已连接", lastSync: "上次更新：{time}", neverSynced: "尚未读取日程", refresh: "刷新", refreshing: "正在读取日程…", choose: "选择要纳入的日历",
+      hideRecurring: "默认收起重复日程", hideRecurringHelp: "固定日程仍会被记录，但不会占满每日计划。", save: "保存选择", saving: "正在保存…", close: "关闭", disconnect: "断开连接", disconnectConfirm: "断开后将删除 Life Ledger 中缓存的日历内容。Google 日历本身不会受到影响。",
+      saved: "日历选择已保存", disconnected: "Google 日历已断开", stale: "暂时无法连接 Google，正在显示最近一次日程。", error: "日历暂时无法读取，请稍后重试。", authExpired: "Google 授权已失效，请重新连接。", noCalendars: "没有找到可读取的日历。", calendarEvents: "日程",
+    },
     journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么？推进了什么？有什么值得记住？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "明日目标", desc: "提前为明天留下一条清晰、从容的起点。", placeholder: "添加明天要完成的事情…", addLabel: "添加明日目标",
@@ -420,6 +427,13 @@ const i18n = {
     dayPlan: {
       schedule: "Schedule", flexible: "Flexible goals", open: "Open day", close: "Close full day", events: "{count} events", noEvents: "No one-off events for this day.", routinesHidden: "{count} routines hidden", routinesShown: "Hide routines", routine: "Routine", allDay: "All day", preview: "Preview of the connected calendar experience",
     },
+    calendarSync: {
+      kicker: "CALENDAR CONNECTION", title: "Google Calendar", trigger: "Connect calendar", connectedTrigger: "Calendar connected", intro: "Read-only access. Life Ledger only keeps the event title and time needed for your review.",
+      connectTitle: "Bring your real schedule into each day.", connectHelp: "Choose the calendars you want to read. Life Ledger never edits or deletes Google Calendar events.", connect: "Connect Google Calendar", connecting: "Opening Google…",
+      connected: "Calendar connected", lastSync: "Last updated: {time}", neverSynced: "No events loaded yet", refresh: "Refresh", refreshing: "Reading events…", choose: "Calendars to include",
+      hideRecurring: "Collapse recurring routines", hideRecurringHelp: "Routine events remain available without taking over the day.", save: "Save selection", saving: "Saving…", close: "Close", disconnect: "Disconnect", disconnectConfirm: "Disconnecting removes cached calendar details from Life Ledger. Your Google Calendar will not be changed.",
+      saved: "Calendar selection saved", disconnected: "Google Calendar disconnected", stale: "Google is unavailable, so the latest cached schedule is shown.", error: "Calendar could not be read. Please try again.", authExpired: "Google access expired. Please reconnect.", noCalendars: "No readable calendars were found.", calendarEvents: "Calendar events",
+    },
     journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened today? What moved forward? What is worth remembering?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "Tomorrow's Goals", desc: "Give tomorrow a clear and gentle starting point.", placeholder: "Add something for tomorrow…", addLabel: "Add tomorrow's goal",
@@ -728,6 +742,13 @@ const i18n = {
     },
     dayPlan: {
       schedule: "Termine", flexible: "Flexible Ziele", open: "Tag öffnen", close: "Tagesansicht schließen", events: "{count} Termine", noEvents: "Keine einmaligen Termine an diesem Tag.", routinesHidden: "{count} Routinen ausgeblendet", routinesShown: "Routinen ausblenden", routine: "Routine", allDay: "Ganztägig", preview: "Vorschau der verbundenen Kalenderansicht",
+    },
+    calendarSync: {
+      kicker: "KALENDERVERBINDUNG", title: "Google Kalender", trigger: "Kalender verbinden", connectedTrigger: "Kalender verbunden", intro: "Nur Lesezugriff. Life Ledger speichert nur Titel und Zeit, die für deine Rückschau nötig sind.",
+      connectTitle: "Bringe deinen echten Tagesplan in jeden Tag.", connectHelp: "Wähle die Kalender, die du lesen möchtest. Life Ledger ändert oder löscht niemals Google-Kalendertermine.", connect: "Google Kalender verbinden", connecting: "Google wird geöffnet…",
+      connected: "Kalender verbunden", lastSync: "Zuletzt aktualisiert: {time}", neverSynced: "Noch keine Termine geladen", refresh: "Aktualisieren", refreshing: "Termine werden gelesen…", choose: "Einbezogene Kalender",
+      hideRecurring: "Wiederkehrende Routinen einklappen", hideRecurringHelp: "Routinen bleiben verfügbar, ohne den Tagesplan zu überladen.", save: "Auswahl speichern", saving: "Wird gespeichert…", close: "Schließen", disconnect: "Trennen", disconnectConfirm: "Beim Trennen werden zwischengespeicherte Kalenderdaten aus Life Ledger entfernt. Dein Google Kalender bleibt unverändert.",
+      saved: "Kalenderauswahl gespeichert", disconnected: "Google Kalender getrennt", stale: "Google ist nicht erreichbar; der zuletzt geladene Tagesplan wird angezeigt.", error: "Der Kalender konnte nicht gelesen werden. Bitte versuche es erneut.", authExpired: "Der Google-Zugriff ist abgelaufen. Bitte erneut verbinden.", noCalendars: "Keine lesbaren Kalender gefunden.", calendarEvents: "Kalendertermine",
     },
     journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist heute passiert? Was ging voran? Was ist erinnernswert?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert" },
     tomorrowGoals: {
@@ -1101,6 +1122,18 @@ let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
 let focusTimer = null;
 let voiceReflection = null;
+let googleCalendar = {
+  configured: false,
+  connected: false,
+  hideRecurring: true,
+  selectedCalendarIds: [],
+  calendars: [],
+  lastSyncedAt: 0,
+  stale: false,
+};
+const googleCalendarEvents = new Map();
+const googleCalendarLoadedMonths = new Set();
+const googleCalendarLoadingMonths = new Set();
 let focusWakeLock = null;
 let focusAudioContext = null;
 let pendingImport = null;
@@ -1251,6 +1284,7 @@ function applyLanguage() {
   setText("#dayPlanDialogGoalsTitle", tr("dayPlan.flexible"));
   setText("#drawerScheduleTitle", tr("dayPlan.schedule"));
   setAria(".close-day-plan", tr("dayPlan.close"));
+  applyCalendarLanguage();
   setText(".daily-journal-card .kicker", tr("journal.kicker"));
   setText(".daily-journal-card h3", tr("journal.title"));
   setText(".daily-journal-card .daily-goals-heading p", tr("journal.desc"));
@@ -1663,6 +1697,276 @@ async function pullCloudState() {
     scheduleCloudRetry();
   }
 }
+
+function applyCalendarLanguage() {
+  const button = $("#calendarConnectionButton");
+  if (button) {
+    $("span", button).textContent = googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger");
+    button.setAttribute("aria-label", googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger"));
+  }
+  setText("#calendarSettingsKicker", tr("calendarSync.kicker"));
+  setText("#calendarSettingsTitle", tr("calendarSync.title"));
+  setText("#calendarSettingsIntro", tr("calendarSync.intro"));
+  setText("#calendarConnectTitle", tr("calendarSync.connectTitle"));
+  setText("#calendarConnectHelp", tr("calendarSync.connectHelp"));
+  setText("#calendarConnectButton", tr("calendarSync.connect"));
+  setText("#calendarConnectedLabel", tr("calendarSync.connected"));
+  setText("#calendarRefreshButton", tr("calendarSync.refresh"));
+  setText("#calendarPickerLegend", tr("calendarSync.choose"));
+  setText("#calendarHideRecurringLabel", tr("calendarSync.hideRecurring"));
+  setText("#calendarHideRecurringHelp", tr("calendarSync.hideRecurringHelp"));
+  setText("#calendarDisconnectButton", tr("calendarSync.disconnect"));
+  setText("#calendarSettingsCancel", tr("calendarSync.close"));
+  setText("#calendarPreferencesSave", tr("calendarSync.save"));
+  setAria(".close-calendar-settings", tr("calendarSync.close"));
+  renderCalendarConnection();
+}
+
+function formatCalendarSyncTime(timestamp) {
+  if (!timestamp) return tr("calendarSync.neverSynced");
+  const locale = currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
+  return tr("calendarSync.lastSync", {
+    time: new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(timestamp)),
+  });
+}
+
+function setCalendarSettingsStatus(message = "", isError = false) {
+  const status = $("#calendarSettingsStatus");
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle("error", isError);
+}
+
+function renderCalendarConnection() {
+  const available = cloudProvider === "cloudflare" && googleCalendar.configured;
+  const trigger = $("#calendarConnectionButton");
+  if (trigger) {
+    trigger.hidden = !available;
+    trigger.classList.toggle("connected", googleCalendar.connected);
+    $("span", trigger).textContent = googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger");
+  }
+  const disconnected = $("#calendarDisconnectedState");
+  const connected = $("#calendarConnectedState");
+  if (!disconnected || !connected) return;
+  disconnected.hidden = googleCalendar.connected;
+  connected.hidden = !googleCalendar.connected;
+  $("#calendarDisconnectButton").hidden = !googleCalendar.connected;
+  $("#calendarPreferencesSave").hidden = !googleCalendar.connected;
+  $("#calendarHideRecurring").checked = googleCalendar.hideRecurring;
+  $("#calendarLastSync").textContent = formatCalendarSyncTime(googleCalendar.lastSyncedAt);
+  if (googleCalendar.connected) renderCalendarPicker();
+}
+
+function renderCalendarPicker() {
+  const list = $("#calendarPickerList");
+  if (!list) return;
+  if (!googleCalendar.calendars.length) {
+    list.innerHTML = `<p class="calendar-picker-empty">${escapeHtml(tr("calendarSync.noCalendars"))}</p>`;
+    return;
+  }
+  const selected = new Set(googleCalendar.selectedCalendarIds);
+  list.innerHTML = googleCalendar.calendars.map(calendar => `<label class="calendar-picker-option">
+    <input type="checkbox" value="${escapeHtml(calendar.id)}" ${selected.has(calendar.id) ? "checked" : ""} />
+    <i style="--calendar-color:${escapeHtml(calendar.color || "#6f95c8")}" aria-hidden="true"></i>
+    <span><strong>${escapeHtml(calendar.name)}</strong>${calendar.primary ? `<small>${escapeHtml(languageText("主日历", "Primary", "Primär"))}</small>` : ""}</span>
+  </label>`).join("");
+}
+
+async function calendarApi(path, options = {}) {
+  const response = await fetch(`/api/calendar/${path}`, {
+    ...options,
+    headers: { accept: "application/json", ...(options.body ? { "content-type": "application/json" } : {}), ...(options.headers || {}) },
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(payload.error || `HTTP ${response.status}`);
+    error.code = payload.code || "CALENDAR_FAILED";
+    error.status = response.status;
+    throw error;
+  }
+  return payload;
+}
+
+function calendarMonthRange(date) {
+  const value = typeof date === "string" ? parseDate(date) : new Date(date);
+  const year = value.getFullYear();
+  const month = value.getMonth();
+  const first = new Date(year, month, 1, 0, 0, 0, 0);
+  const offset = (first.getDay() + 6) % 7;
+  const start = new Date(year, month, 1 - offset, 0, 0, 0, 0);
+  const end = new Date(start); end.setDate(start.getDate() + 42);
+  return { key: `${year}-${String(month + 1).padStart(2, "0")}`, start, end };
+}
+
+function resetCalendarEventCache() {
+  googleCalendarEvents.clear();
+  googleCalendarLoadedMonths.clear();
+  googleCalendarLoadingMonths.clear();
+}
+
+function calendarEventTime(value, allDay) {
+  if (allDay || !value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value).slice(11, 16);
+  return new Intl.DateTimeFormat(currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB", {
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  }).format(date);
+}
+
+function calendarEventsForDate(date) {
+  if (dayPlanPrototype) return calendarPreviewEvents(date);
+  return [...googleCalendarEvents.values()]
+    .filter(event => event.date === date)
+    .map(event => ({
+      ...event,
+      routine: Boolean(event.recurring),
+      start: calendarEventTime(event.start, event.allDay),
+      end: calendarEventTime(event.end, event.allDay),
+    }))
+    .sort((a, b) => Number(Boolean(b.allDay)) - Number(Boolean(a.allDay)) || String(a.start || "").localeCompare(String(b.start || "")));
+}
+
+async function loadGoogleCalendarMonth(date, options = {}) {
+  if (!googleCalendar.connected) return;
+  const range = calendarMonthRange(date);
+  if (!options.force && (googleCalendarLoadedMonths.has(range.key) || googleCalendarLoadingMonths.has(range.key))) return;
+  googleCalendarLoadingMonths.add(range.key);
+  renderDaySchedule();
+  try {
+    const query = new URLSearchParams({ timeMin: range.start.toISOString(), timeMax: range.end.toISOString() });
+    const payload = await calendarApi(`events?${query}`);
+    const startKey = isoDate(range.start), endKey = isoDate(range.end);
+    for (const [id, event] of googleCalendarEvents) {
+      if (event.date >= startKey && event.date < endKey) googleCalendarEvents.delete(id);
+    }
+    for (const event of payload.events || []) googleCalendarEvents.set(event.id, event);
+    googleCalendar.lastSyncedAt = Number(payload.syncedAt || Date.now());
+    googleCalendar.stale = Boolean(payload.stale);
+    googleCalendar.hideRecurring = payload.hideRecurring !== false;
+    googleCalendarLoadedMonths.add(range.key);
+    renderDailyGoals();
+    renderCalendar();
+    if ($("#dayDrawer").classList.contains("open")) renderDrawer();
+    if ($("#dayPlanDialog").open) renderDayPlanDialog();
+    renderCalendarConnection();
+    if (googleCalendar.stale) setCalendarSettingsStatus(tr("calendarSync.stale"));
+  } catch (error) {
+    console.warn("Calendar event load failed", { code: error.code, status: error.status });
+    if (error.code === "CALENDAR_RECONNECT_REQUIRED" || error.code === "CALENDAR_NOT_CONNECTED") {
+      googleCalendar.connected = false;
+      renderCalendarConnection();
+      setCalendarSettingsStatus(tr("calendarSync.authExpired"), true);
+    } else {
+      setCalendarSettingsStatus(tr("calendarSync.error"), true);
+    }
+  } finally {
+    googleCalendarLoadingMonths.delete(range.key);
+    renderDaySchedule();
+  }
+}
+
+async function loadGoogleCalendarChoices() {
+  if (!googleCalendar.connected) return;
+  try {
+    const payload = await calendarApi("calendars");
+    googleCalendar.calendars = payload.calendars || [];
+    googleCalendar.selectedCalendarIds = payload.selectedCalendarIds || [];
+    googleCalendar.hideRecurring = payload.hideRecurring !== false;
+    renderCalendarConnection();
+  } catch (error) {
+    console.warn("Calendar list failed", { code: error.code, status: error.status });
+    setCalendarSettingsStatus(error.code === "CALENDAR_RECONNECT_REQUIRED" ? tr("calendarSync.authExpired") : tr("calendarSync.error"), true);
+  }
+}
+
+async function initializeGoogleCalendar() {
+  if (cloudProvider !== "cloudflare") return;
+  try {
+    const status = await calendarApi("status");
+    googleCalendar = { ...googleCalendar, ...status, configured: Boolean(status.configured), connected: Boolean(status.connected) };
+    renderCalendarConnection();
+    if (!googleCalendar.configured || !googleCalendar.connected) return;
+    await Promise.all([loadGoogleCalendarChoices(), loadGoogleCalendarMonth(cursor), loadGoogleCalendarMonth(selectedPlanningDate)]);
+  } catch (error) {
+    console.warn("Calendar status failed", { code: error.code, status: error.status });
+  }
+}
+
+async function openGoogleCalendarSettings() {
+  renderCalendarConnection();
+  setCalendarSettingsStatus();
+  $("#calendarSettingsDialog").showModal();
+  if (googleCalendar.connected) await loadGoogleCalendarChoices();
+}
+
+async function connectGoogleCalendar() {
+  const button = $("#calendarConnectButton");
+  button.disabled = true;
+  button.textContent = tr("calendarSync.connecting");
+  try {
+    const payload = await calendarApi("connect", { method: "POST" });
+    location.assign(payload.authorizationUrl);
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = tr("calendarSync.connect");
+    setCalendarSettingsStatus(tr("calendarSync.error"), true);
+  }
+}
+
+async function saveGoogleCalendarPreferences() {
+  const selectedCalendarIds = $$("#calendarPickerList input:checked").map(input => input.value);
+  if (!selectedCalendarIds.length) {
+    setCalendarSettingsStatus(tr("calendarSync.noCalendars"), true);
+    return;
+  }
+  const button = $("#calendarPreferencesSave");
+  button.disabled = true;
+  button.textContent = tr("calendarSync.saving");
+  try {
+    const payload = await calendarApi("preferences", {
+      method: "PUT",
+      body: JSON.stringify({ selectedCalendarIds, hideRecurring: $("#calendarHideRecurring").checked }),
+    });
+    googleCalendar.selectedCalendarIds = payload.selectedCalendarIds;
+    googleCalendar.hideRecurring = payload.hideRecurring;
+    dayPlanRoutinesExpanded = !googleCalendar.hideRecurring;
+    resetCalendarEventCache();
+    await Promise.all([loadGoogleCalendarMonth(cursor, { force: true }), loadGoogleCalendarMonth(selectedPlanningDate, { force: true })]);
+    setCalendarSettingsStatus(tr("calendarSync.saved"));
+  } catch (error) {
+    setCalendarSettingsStatus(tr("calendarSync.error"), true);
+  } finally {
+    button.disabled = false;
+    button.textContent = tr("calendarSync.save");
+  }
+}
+
+async function refreshGoogleCalendar() {
+  const button = $("#calendarRefreshButton");
+  button.disabled = true;
+  button.textContent = tr("calendarSync.refreshing");
+  resetCalendarEventCache();
+  await Promise.all([loadGoogleCalendarMonth(cursor, { force: true }), loadGoogleCalendarMonth(selectedPlanningDate, { force: true })]);
+  button.disabled = false;
+  button.textContent = tr("calendarSync.refresh");
+}
+
+async function disconnectGoogleCalendar() {
+  if (!window.confirm(tr("calendarSync.disconnectConfirm"))) return;
+  try {
+    await calendarApi("disconnect", { method: "DELETE" });
+    resetCalendarEventCache();
+    googleCalendar = { ...googleCalendar, connected: false, calendars: [], selectedCalendarIds: [], lastSyncedAt: 0, stale: false };
+    $("#calendarSettingsDialog").close();
+    renderCalendarConnection();
+    renderDailyGoals();
+    renderCalendar();
+    showToast(tr("calendarSync.disconnected"));
+  } catch (error) {
+    setCalendarSettingsStatus(tr("calendarSync.error"), true);
+  }
+}
+
 function isoDate(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -1732,8 +2036,8 @@ function initSelects() {
   const year = $("#yearSelect"), month = $("#monthSelect");
   for (let y = 2026; y <= 2035; y++) year.add(new Option(y, y));
   for (let m = 1; m <= 12; m++) month.add(new Option(String(m).padStart(2, "0"), m - 1));
-  year.addEventListener("change", () => { cursor.setFullYear(+year.value); renderAll(); });
-  month.addEventListener("change", () => { cursor.setMonth(+month.value); renderAll(); });
+  year.addEventListener("change", () => { cursor.setFullYear(+year.value); renderAll(); void loadGoogleCalendarMonth(cursor); });
+  month.addEventListener("change", () => { cursor.setMonth(+month.value); renderAll(); void loadGoogleCalendarMonth(cursor); });
 }
 
 function renderAll() {
@@ -2085,15 +2389,15 @@ function eventDuration(event) {
 function scheduleEventMarkup(event, compact = false) {
   const time = event.allDay ? tr("dayPlan.allDay") : event.start;
   const duration = eventDuration(event);
-  return `<article class="day-schedule-event ${event.routine ? "routine" : ""} ${event.allDay ? "all-day" : ""}">
+  return `<article class="day-schedule-event ${event.routine ? "routine" : ""} ${event.allDay ? "all-day" : ""}" style="--event-color:${escapeHtml(event.calendarColor || "#6f95c8")}">
     <time>${escapeHtml(time)}</time>
-    <div><strong>${escapeHtml(event.title)}</strong>${duration ? `<small>${escapeHtml(duration)}</small>` : ""}</div>
+    <div><strong>${escapeHtml(event.title)}</strong>${duration || event.calendarName ? `<small>${[duration, event.calendarName].filter(Boolean).map(escapeHtml).join(" · ")}</small>` : ""}</div>
     ${event.routine && !compact ? `<span class="routine-label">${escapeHtml(tr("dayPlan.routine"))}</span>` : ""}
   </article>`;
 }
 
 function renderDaySchedule() {
-  const events = calendarPreviewEvents(selectedPlanningDate);
+  const events = calendarEventsForDate(selectedPlanningDate);
   const important = events.filter(event => !event.routine);
   const routines = events.filter(event => event.routine);
   setText("#dayScheduleCount", tr("dayPlan.events", { count: important.length }));
@@ -2117,7 +2421,7 @@ function formatDayPlanDialogDate(date) {
 }
 
 function renderDayPlanDialog() {
-  const events = calendarPreviewEvents(selectedPlanningDate);
+  const events = calendarEventsForDate(selectedPlanningDate);
   const ordered = [...events].sort((a, b) => Number(Boolean(b.allDay)) - Number(Boolean(a.allDay)) || String(a.start || "").localeCompare(String(b.start || "")));
   $("#dayPlanDialogDate").textContent = formatDayPlanDialogDate(selectedPlanningDate);
   $("#dayPlanTimeline").innerHTML = ordered.map(event => scheduleEventMarkup(event)).join("");
@@ -2158,6 +2462,7 @@ function selectPlanningDate(date, options = {}) {
   selectedPlanningDate = date;
   dayPlanRoutinesExpanded = false;
   renderDailyGoals();
+  void loadGoogleCalendarMonth(date);
   if (options.scroll) $(".daily-planning-grid")?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -2371,9 +2676,12 @@ function renderCalendar() {
     const completed = scoredHabits.filter(h => log.completed.includes(h.id)).length;
     const progress = scoredHabits.length ? Math.round(completed / scoredHabits.length * 100) : 0;
     if (d.getMonth() === month) monthProgressTotal += progress;
+    const schedule = calendarEventsForDate(key);
+    const scheduleColors = [...new Set(schedule.map(event => event.calendarColor || "#6f95c8"))].slice(0, 3);
     cells.push(`<button class="calendar-day ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${isoWeekKey(d) === currentWeek ? "current-week" : ""}" data-date="${key}">
       <span class="day-number">${d.getDate()}</span>${log.mood ? `<span class="day-mood">${moodIcons[log.mood]}</span>` : ""}
       <span class="day-status">${habits.map(h => `<i class="${log.completed.includes(h.id) ? "done" : ""}" style="${log.completed.includes(h.id) ? `background:${colors[h.color].solid}` : ""}"></i>`).join("")}</span>
+      ${schedule.length ? `<span class="day-calendar-status" title="${escapeHtml(tr("calendarSync.calendarEvents"))}">${scheduleColors.map(color => `<i style="background:${escapeHtml(color)}"></i>`).join("")}${schedule.length > 3 ? `<b>+${schedule.length - 3}</b>` : ""}</span>` : ""}
       ${progress ? `<span class="day-percent">${progress}%</span>` : ""}
       <span class="day-progress" style="--day-progress:${progress}"></span>
     </button>`);
@@ -2897,7 +3205,7 @@ function renderDrawer() {
     </details>`;
   }).join("");
   $$(".drawer-habit-toggle").forEach(button => button.addEventListener("click", () => toggleHabit(selectedDate, button.closest(".drawer-habit").dataset.id)));
-  const schedule = calendarPreviewEvents(selectedDate);
+  const schedule = calendarEventsForDate(selectedDate);
   $("#drawerScheduleCount").textContent = tr("dayPlan.events", { count: schedule.length });
   $("#drawerScheduleList").innerHTML = schedule.map(event => scheduleEventMarkup(event)).join("");
   $$("#drawerMood button").forEach(button => {
@@ -3869,9 +4177,9 @@ function bindEvents() {
     if (button.dataset.view === "week") renderWeeklyWorkspace();
     if (button.dataset.view === "review") renderReview();
   }));
-  $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); });
-  $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); });
-  $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); });
+  $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
+  $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
+  $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
   $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
   $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
@@ -3972,6 +4280,13 @@ function bindEvents() {
   $("#openDayPlan").addEventListener("click", openDayPlanDialog);
   $$(".close-day-plan").forEach(button => button.addEventListener("click", () => $("#dayPlanDialog").close()));
   $("#dayPlanDialog").addEventListener("cancel", event => { event.preventDefault(); $("#dayPlanDialog").close(); });
+  $("#calendarConnectionButton").addEventListener("click", openGoogleCalendarSettings);
+  $("#calendarConnectButton").addEventListener("click", connectGoogleCalendar);
+  $("#calendarRefreshButton").addEventListener("click", refreshGoogleCalendar);
+  $("#calendarPreferencesSave").addEventListener("click", saveGoogleCalendarPreferences);
+  $("#calendarDisconnectButton").addEventListener("click", disconnectGoogleCalendar);
+  $$(".close-calendar-settings").forEach(button => button.addEventListener("click", () => $("#calendarSettingsDialog").close()));
+  $("#calendarSettingsDialog").addEventListener("cancel", event => { event.preventDefault(); $("#calendarSettingsDialog").close(); });
   $("#homeDayNote").addEventListener("input", event => {
     if (isFutureDate(selectedPlanningDate)) return;
     state.logs[selectedPlanningDate] = { ...getLog(selectedPlanningDate), note: event.target.value };
@@ -4245,6 +4560,19 @@ async function initializeCloudSync() {
     }
   }
   await pullCloudState();
+  await initializeGoogleCalendar();
+  const calendarResult = new URLSearchParams(location.search).get("calendar");
+  if (calendarResult) {
+    const url = new URL(location.href);
+    url.searchParams.delete("calendar");
+    history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    if (calendarResult === "connected" && googleCalendar.connected) {
+      showToast(tr("calendarSync.connected"));
+      void openGoogleCalendarSettings();
+    } else if (calendarResult === "denied") {
+      showToast(tr("calendarSync.error"));
+    }
+  }
 }
 initializeCloudSync();
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
