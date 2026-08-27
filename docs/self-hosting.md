@@ -13,6 +13,34 @@ After the first deployment, protect the Worker with Cloudflare Access before rel
 
 The checked-in Wrangler configuration provisions the Workers AI binding automatically. No OpenAI account or separate API key is required. **Quick record** appears in Daily Reflection only after the app identifies itself as a Cloudflare deployment; it sends audio through the Access-protected Worker, creates an editable draft, and discards the recording. The `0002_voice_usage.sql` migration adds only daily counters for three requests and 20 recorded minutes per user.
 
+## Optional read-only Google Calendar
+
+Google Calendar is intentionally opt-in and available only from a Cloudflare deployment with a secure backend. Every self-hoster creates their own Google OAuth client; the project does not provide a shared client, proxy, or quota. Life Ledger asks only for calendar-list and event read access and cannot change Google Calendar.
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), create or select a project and enable **Google Calendar API**.
+2. Configure **Google Auth Platform → Branding** with your deployed Life Ledger home page, its `/privacy.html` page, and a developer contact email.
+3. Set the audience to **External**. For continuous personal use, publish the app to **In production**; a project left in Testing normally issues refresh tokens that expire after seven days.
+4. Create an **OAuth client ID → Web application**. Add exactly this authorized redirect URI, using your own deployment origin:
+
+   ```text
+   https://your-life-ledger.example/api/calendar/callback
+   ```
+
+5. Store the client values as encrypted Cloudflare secrets—never in source control or browser storage:
+
+   ```bash
+   npx wrangler secret put GOOGLE_CALENDAR_CLIENT_ID
+   npx wrangler secret put GOOGLE_CALENDAR_CLIENT_SECRET
+   npx wrangler secret put CALENDAR_TOKEN_KEY
+   npx wrangler secret put GOOGLE_CALENDAR_REDIRECT_URI
+   ```
+
+   `CALENDAR_TOKEN_KEY` must be a URL-safe base64 string containing exactly 32 random bytes. `GOOGLE_CALENDAR_REDIRECT_URI` must exactly match the URI registered in Google. For a Pages project, use `wrangler pages secret put <NAME> --project-name <PROJECT>` instead.
+
+6. Deploy again, open **Today → Day Plan → Connect Google Calendar**, grant the read-only permissions, and choose which calendars appear. Recurring routines are collapsed by default and can be revealed from the same settings panel.
+
+The `0003_google_calendar.sql` migration stores encrypted authorization data and a rebuildable, review-safe event cache outside the main Life Ledger state. The cache excludes descriptions, locations, attachments, and attendees. Disconnecting revokes Google access and deletes the stored connection and cache. See [Privacy](../PRIVACY.md) for the complete boundary.
+
 ## Manual deployment
 
 ```bash

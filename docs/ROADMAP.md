@@ -27,6 +27,10 @@ The report must work locally, support English, Simplified Chinese, and German, a
 
 The Cloudflare self-hosted edition now provides a deliberately narrow voice flow: record a check-in, transcribe it, refine it into faithful prose, review the editable draft, and append it to today's journal. Audio is never stored, and the model cannot alter habits, moods, or goals.
 
+### Read-only schedule context
+
+The Cloudflare self-hosted edition can now connect to selected Google calendars with read-only OAuth. One-off events appear inside Day Plan, recurring routines stay available without taking over the interface, and limited event data is cached separately from the user's Life Ledger state. Calendar events remain neutral context and never count as completed goals, habits, or focus time.
+
 ## Next: period reflection
 
 ### Privacy-preserving AI reflection

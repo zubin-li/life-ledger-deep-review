@@ -84,6 +84,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 浅色、深色和跟随系统模式
 - 可安装 PWA 与离线应用外壳
 - 可选的 Cloudflare Access + D1 跨设备同步
+- 可选的只读 Google 日历，在每日安排中呈现真实日程背景
 - 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面
 
@@ -177,6 +178,8 @@ npm run dev
 8. 打开应用并完成一次验证，之后云同步会使用经过验证的 Access 身份。
 
 同一次部署会自动包含“快速记录”使用的 Workers AI 绑定。为了让个人免费使用更可控，每个账号每天最多处理 3 段、累计 20 分钟的录音，单次最长 10 分钟。Cloudflare 的免费额度和价格可能调整；如果要开放给多人使用，请先查看自己的 Cloudflare 用量面板。
+
+Cloudflare 版本还可以以只读方式连接 Google 日历。每位使用者需要创建自己的 Google OAuth 网页客户端，并配置四个 Cloudflare Secret；仓库不会内置或共享任何 Google 凭据。完整步骤和隐私边界见[自托管说明](docs/self-hosting.zh-CN.md#可选的只读-google-日历)。
 
 完整步骤请看[自托管说明](docs/self-hosting.zh-CN.md)和[Cloudflare Access 设置](docs/cloudflare-access.zh-CN.md)。
 

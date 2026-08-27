@@ -80,6 +80,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Helles, dunkles und systemabhängiges Erscheinungsbild
 - Installierbare PWA mit offline verfügbarem App-Grundgerüst
 - Optionale geräteübergreifende Synchronisierung über Cloudflare Access und D1
+- Optionaler schreibgeschützter Google-Kalender als Tageskontext
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
@@ -173,6 +174,8 @@ Aktiviere nach der Bereitstellung Cloudflare Access:
 8. Öffne die App und authentifiziere dich einmal. Anschließend verwendet die Cloud-Synchronisierung die verifizierte Access-Identität.
 
 Dieselbe Bereitstellung enthält automatisch die Workers-AI-Bindung für **Schnell aufnehmen**. Pro Konto gelten drei Aufnahmen und insgesamt 20 Aufnahmeminuten pro UTC-Tag, bei höchstens 10 Minuten pro Aufnahme. Dadurch bleibt die persönliche Nutzung vorhersehbar. Cloudflare kann Freikontingente und Preise ändern; prüfe vor einer Nutzung mit vielen Personen das eigene Dashboard.
+
+Die Cloudflare-Ausgabe kann Google Calendar außerdem schreibgeschützt einbinden. Dafür werden ein eigener Google-OAuth-Webclient und vier Cloudflare-Secrets benötigt; das Repository enthält keine gemeinsamen Google-Zugangsdaten. Die vollständigen Schritte stehen unter [Self-Hosting](docs/self-hosting.md#optional-read-only-google-calendar).
 
 Die vollständige Anleitung findest du unter [Self-Hosting](docs/self-hosting.md) und [Cloudflare Access einrichten](docs/cloudflare-access.md).
 

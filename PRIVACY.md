@@ -20,6 +20,14 @@ Life Ledger does not persist the recording: it is held only long enough to proce
 
 The voice endpoint records only per-user daily request counts and reserved recording seconds for abuse and cost control. The identity remains the same one-way email hash used by synchronization. Local-only and CloudBase editions do not expose this AI voice function.
 
+## Optional Google Calendar connection
+
+The self-hosted Cloudflare edition can connect to Google Calendar after the user explicitly grants read-only access. Life Ledger requests only the permissions required to list calendars and read events. It cannot create, edit, or delete Google Calendar events.
+
+The deployment stores the Google refresh token encrypted with the self-hoster's `CALENDAR_TOKEN_KEY`; the token never enters browser storage, synchronized Life Ledger state, exports, or application logs. A limited event cache may contain calendar name and color, event title, start and end time, time zone, recurrence status, and provider identifiers. Life Ledger does not request or cache descriptions, locations, attachments, guests, or attendee email addresses.
+
+Disconnecting Google Calendar revokes the connection and deletes the stored credential, OAuth state, and cached calendar data. Calendar events are schedule context only: they do not automatically count as completed goals, habits, journal days, or focus time.
+
 ## Optional Tencent CloudBase sync
 
 The mainland-China build uses CloudBase email OTP authentication and the deployer's `life_ledger_states` document collection. The collection must be configured as **Only the creator can read and write**. CloudBase attaches ownership metadata to browser-created records and enforces the collection rule for client SDK requests.
@@ -28,7 +36,7 @@ The build contains the deployer's CloudBase environment ID and Publishable Key. 
 
 ## External services
 
-The repository contains no analytics, advertising, telemetry, or social tracking integrations. Cloudflare may process hosting, authentication, and explicitly submitted voice-reflection content; Tencent CloudBase may process hosting and authentication metadata according to the deployer's selected configuration and the provider's own terms.
+The repository contains no analytics, advertising, telemetry, or social tracking integrations. Cloudflare may process hosting, authentication, encrypted Google credentials, limited calendar cache data, and explicitly submitted voice-reflection content. Google processes OAuth authorization and Calendar API requests when the optional connection is enabled. Tencent CloudBase may process hosting and authentication metadata according to the deployer's selected configuration and the providers' own terms.
 
 ## Data control
 

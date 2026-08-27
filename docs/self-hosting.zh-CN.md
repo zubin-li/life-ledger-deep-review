@@ -13,6 +13,34 @@ README 中的一键部署按钮会让 Cloudflare 把本仓库复制到你的 Git
 
 仓库中的 Wrangler 配置会自动创建 Workers AI 绑定，不需要 OpenAI 账号或另外填写 API Key。只有应用识别到 Cloudflare 部署模式时，每日复盘中才会出现**快速记录**；录音经 Access 保护的 Worker 转写并整理成可编辑草稿，原始音频随即释放。`0002_voice_usage.sql` 只新增每日计数：每位用户每天最多 3 次、累计 20 分钟。
 
+## 可选的只读 Google 日历
+
+Google 日历是可选功能，并且只在具备安全后端的 Cloudflare 部署版开放。每位自托管用户都使用自己的 Google OAuth 客户端；本项目不会提供共享客户端、共享代理或共享额度。Life Ledger 只申请“读取日历列表”和“读取日程”权限，不能修改 Google 日历。
+
+1. 在 [Google Cloud Console](https://console.cloud.google.com/) 新建或选择项目，启用 **Google Calendar API**。
+2. 在 **Google Auth Platform → Branding** 填写已经部署的 Life Ledger 主页、`/privacy.html` 隐私页面和开发者联系邮箱。
+3. Audience 选择 **External**。如需长期个人使用，请把 Publishing status 设为 **In production**；如果一直停留在 Testing，刷新授权通常会在 7 天后失效。
+4. 新建 **OAuth client ID → Web application**，把自己的部署域名写进 Authorized redirect URI：
+
+   ```text
+   https://你的-Life-Ledger-域名/api/calendar/callback
+   ```
+
+5. 把凭据写入 Cloudflare 加密 Secret，绝不能放进仓库或浏览器存储：
+
+   ```bash
+   npx wrangler secret put GOOGLE_CALENDAR_CLIENT_ID
+   npx wrangler secret put GOOGLE_CALENDAR_CLIENT_SECRET
+   npx wrangler secret put CALENDAR_TOKEN_KEY
+   npx wrangler secret put GOOGLE_CALENDAR_REDIRECT_URI
+   ```
+
+   `CALENDAR_TOKEN_KEY` 必须是包含 32 个随机字节的 URL-safe Base64 字符串；`GOOGLE_CALENDAR_REDIRECT_URI` 必须与 Google 中登记的地址完全一致。如果部署的是 Pages 项目，请改用 `wrangler pages secret put <NAME> --project-name <PROJECT>`。
+
+6. 重新部署，打开**今日 → 每日安排 → 连接 Google 日历**，确认只读权限并选择要显示的日历。重复日程默认折叠，可在同一设置面板中展开。
+
+`0003_google_calendar.sql` 会把加密授权信息和可重建的日程缓存放在主 Life Ledger 状态之外。缓存不包含描述、地点、附件和参与者。断开连接会撤销 Google 授权，并删除凭据和缓存。完整边界见[隐私说明](../PRIVACY.md)。
+
 ## 手动部署
 
 ```bash

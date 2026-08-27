@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Privacy · Life Ledger</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        background: #f5f5f7;
+        color: #1d1d1f;
+      }
+
+      body {
+        margin: 0;
+        padding: 48px 20px 80px;
+        background: radial-gradient(circle at 90% 0%, #e8eef9 0, transparent 36%), #f5f5f7;
+      }
+
+      main {
+        width: min(760px, 100%);
+        margin: 0 auto;
+        padding: clamp(28px, 6vw, 64px);
+        box-sizing: border-box;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 32px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: 0 24px 70px rgba(31, 43, 64, 0.1);
+        backdrop-filter: blur(24px);
+      }
+
+      h1 { margin: 8px 0 12px; font-size: clamp(40px, 8vw, 68px); letter-spacing: -0.055em; }
+      h2 { margin: 36px 0 10px; font-size: 21px; letter-spacing: -0.02em; }
+      p, li { color: #515154; font-size: 16px; line-height: 1.65; }
+      a { color: #0066cc; }
+      .eyebrow { margin: 0; color: #69705f; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+      .summary { max-width: 620px; font-size: 19px; }
+      .updated { margin-top: 40px; font-size: 13px; }
+
+      @media (prefers-color-scheme: dark) {
+        :root { background: #0f1115; color: #f5f5f7; }
+        body { background: radial-gradient(circle at 90% 0%, #1d2a3e 0, transparent 38%), #0f1115; }
+        main { border-color: rgba(255,255,255,.1); background: rgba(28, 30, 35, .84); box-shadow: 0 24px 70px rgba(0,0,0,.38); }
+        p, li { color: #b7b7bc; }
+        a { color: #64a8ff; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Life Ledger</p>
+      <h1>Privacy</h1>
+      <p class="summary">Life Ledger is a local-first, self-hosted reflection tool. It has no advertising, analytics, or social tracking.</p>
+
+      <h2>Your records</h2>
+      <p>Local-only records stay in your browser. When you enable cloud sync, your Life Ledger state is stored in the database belonging to that self-hosted deployment. You can export and restore your data at any time.</p>
+
+      <h2>Google Calendar</h2>
+      <p>Calendar connection is optional and read-only. After you explicitly authorize it, Life Ledger requests permission to view the calendars and events you select. It cannot create, edit, or delete Google Calendar events.</p>
+      <p>To display and summarize your schedule, the deployment may temporarily cache limited event data: calendar name and color, event title, start and end time, time zone, recurrence status, and provider identifiers. It does not request or store event descriptions, locations, attachments, guests, or attendee email addresses.</p>
+      <p>Google OAuth refresh tokens are encrypted before storage and are never placed in browser storage, exports, or application logs. Disconnecting Google Calendar revokes the connection and removes its stored credentials and cached calendar data.</p>
+
+      <h2>Voice reflection</h2>
+      <p>On supported self-hosted Cloudflare deployments, a recording is sent only when you start voice reflection. It is processed for transcription and refinement, then discarded. Audio is not written to the database, browser storage, backups, or application logs. Only the reflection you confirm is saved.</p>
+
+      <h2>Data control</h2>
+      <p>The operator of a self-hosted deployment controls its cloud account and database. Life Ledger is a personal organization tool, not a medical device or healthcare service.</p>
+
+      <p><a href="/">Return to Life Ledger</a> · <a href="https://github.com/zubin-li/life-ledger-deep-review">Source code and support</a></p>
+      <p class="updated">Last updated: 27 August 2026</p>
+    </main>
+  </body>
+</html>

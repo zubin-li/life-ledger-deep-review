@@ -80,6 +80,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Light, dark, and system appearance
 - Installable PWA with offline app shell
 - Optional Cloudflare Access + D1 cross-device synchronization
+- Optional read-only Google Calendar context inside each day's plan
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
 
@@ -173,6 +174,8 @@ After deployment, enable Cloudflare Access:
 8. Open the app and authenticate once. Cloud sync will then use the verified Access identity.
 
 The same deployment automatically includes the Workers AI binding used by **Quick record**. The app limits one account to three recordings and 20 recorded minutes per UTC day, with a maximum of 10 minutes per recording, to keep personal use predictable. Cloudflare allowances and pricing can change; review the provider dashboard before broad multi-user use.
+
+The Cloudflare edition can also connect to Google Calendar in read-only mode. This requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md#optional-read-only-google-calendar).
 
 See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough.
 
