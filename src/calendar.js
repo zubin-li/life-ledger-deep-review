@@ -107,12 +107,47 @@ async function decryptToken(encryptedToken, nonce, env) {
   }
 }
 
-async function accountFor(env, keyHash) {
+const connectionColumns = `
+  connection_id, provider_account_id, account_label, encrypted_refresh_token,
+  token_nonce, scopes, selected_calendar_ids, hide_recurring, connected_at, updated_at
+`;
+
+async function connectionsFor(env, keyHash) {
+  const result = await env.DB.prepare(`
+    SELECT ${connectionColumns}
+    FROM calendar_connections
+    WHERE key_hash = ? AND provider = 'google'
+    ORDER BY connected_at ASC, connection_id ASC
+  `).bind(keyHash).all();
+  return result.results || [];
+}
+
+async function connectionFor(env, keyHash, connectionId) {
+  if (!connectionId) return null;
   return env.DB.prepare(`
-    SELECT encrypted_refresh_token, token_nonce, scopes, selected_calendar_ids,
-           hide_recurring, connected_at, updated_at
-    FROM calendar_accounts WHERE key_hash = ?
-  `).bind(keyHash).first();
+    SELECT ${connectionColumns}
+    FROM calendar_connections
+    WHERE key_hash = ? AND provider = 'google' AND connection_id = ?
+  `).bind(keyHash, connectionId).first();
+}
+
+async function connectionForProviderAccount(env, keyHash, providerAccountId) {
+  return env.DB.prepare(`
+    SELECT ${connectionColumns}
+    FROM calendar_connections
+    WHERE key_hash = ? AND provider = 'google' AND provider_account_id = ?
+  `).bind(keyHash, providerAccountId).first();
+}
+
+function publicConnection(connection) {
+  return {
+    connectionId: connection.connection_id,
+    accountLabel: connection.account_label || "Google Calendar",
+    selectedCalendarIds: parsedCalendarIds(connection.selected_calendar_ids),
+    hideRecurring: Boolean(connection.hide_recurring),
+    connectedAt: Number(connection.connected_at || 0),
+    updatedAt: Number(connection.updated_at || 0),
+  };
 }
 
 function parsedCalendarIds(value) {
@@ -191,11 +226,39 @@ async function listCalendars(accessToken) {
   return calendars.slice(0, MAX_CALENDARS);
 }
 
+function calendarAccountIdentity(calendars) {
+  const primary = calendars.find(calendar => calendar.primary) || calendars[0];
+  if (!primary) throw new CalendarRequestError("No readable calendars were found", 502, "CALENDAR_ACCOUNT_UNAVAILABLE");
+  return {
+    providerAccountId: primary.id,
+    accountLabel: primary.id.includes("@") ? primary.id : primary.name || "Google Calendar",
+  };
+}
+
+async function refreshConnectionIdentity(env, keyHash, connection, calendars) {
+  const identity = calendarAccountIdentity(calendars);
+  if (connection.provider_account_id === identity.providerAccountId && connection.account_label === identity.accountLabel) {
+    return connection;
+  }
+  try {
+    await env.DB.prepare(`
+      UPDATE calendar_connections
+      SET provider_account_id = ?, account_label = ?, updated_at = ?
+      WHERE key_hash = ? AND connection_id = ?
+    `).bind(identity.providerAccountId, identity.accountLabel, Date.now(), keyHash, connection.connection_id).run();
+    return { ...connection, provider_account_id: identity.providerAccountId, account_label: identity.accountLabel };
+  } catch {
+    // A duplicate means this Google account was already connected. Keep the existing
+    // row authoritative and let the caller expose the older legacy row until cleanup.
+    return connection;
+  }
+}
+
 function dateOnlyFromEvent(event) {
   return String(event.start?.date || event.start?.dateTime || "").slice(0, 10);
 }
 
-function normalizeCalendarEvent(event, calendar) {
+function normalizeCalendarEvent(event, calendar, connection = {}) {
   if (!event?.id || event.status === "cancelled") return null;
   const selfAttendance = (event.attendees || []).find(attendee => attendee.self);
   if (selfAttendance?.responseStatus === "declined") return null;
@@ -205,8 +268,10 @@ function normalizeCalendarEvent(event, calendar) {
   if (!startValue) return null;
   const originalStart = event.originalStartTime?.dateTime || event.originalStartTime?.date || startValue;
   return {
-    id: `${calendar.id}:${event.id}:${originalStart}`,
+    id: `${connection.connection_id || "google"}:${calendar.id}:${event.id}:${originalStart}`,
     providerEventId: event.id,
+    connectionId: connection.connection_id || "",
+    accountLabel: connection.account_label || "",
     calendarId: calendar.id,
     calendarName: calendar.name,
     calendarColor: calendar.color,
@@ -220,7 +285,7 @@ function normalizeCalendarEvent(event, calendar) {
   };
 }
 
-async function listEventsForCalendar(accessToken, calendar, range) {
+async function listEventsForCalendar(accessToken, calendar, range, connection) {
   const events = [];
   let pageToken = "";
   do {
@@ -234,7 +299,7 @@ async function listEventsForCalendar(accessToken, calendar, range) {
     if (pageToken) url.searchParams.set("pageToken", pageToken);
     const payload = await googleJson(url, accessToken);
     for (const item of payload.items || []) {
-      const normalized = normalizeCalendarEvent(item, calendar);
+      const normalized = normalizeCalendarEvent(item, calendar, connection);
       if (normalized) events.push(normalized);
     }
     pageToken = payload.nextPageToken || "";
@@ -254,26 +319,29 @@ function validatedRange(url) {
   return { timeMin: start.toISOString(), timeMax: end.toISOString(), startDate: timeMin.slice(0, 10), endDate: timeMax.slice(0, 10) };
 }
 
-async function writeEventCache(env, keyHash, calendar, range, events, syncedAt) {
+async function writeEventCache(env, keyHash, connection, calendar, range, events, syncedAt) {
   await env.DB.prepare(`
-    DELETE FROM calendar_event_cache
-    WHERE key_hash = ? AND calendar_id = ? AND start_date >= ? AND start_date < ?
-  `).bind(keyHash, calendar.id, range.startDate, range.endDate).run();
+    DELETE FROM calendar_event_cache_v2
+    WHERE key_hash = ? AND connection_id = ? AND calendar_id = ?
+      AND start_date >= ? AND start_date < ?
+  `).bind(keyHash, connection.connection_id, calendar.id, range.startDate, range.endDate).run();
 
   const statements = events.map(event => env.DB.prepare(`
-    INSERT INTO calendar_event_cache (
-      key_hash, calendar_id, instance_key, provider_event_id, title,
+    INSERT INTO calendar_event_cache_v2 (
+      key_hash, connection_id, account_label, calendar_id, instance_key, provider_event_id, title,
       start_value, end_value, start_date, all_day, recurring,
       calendar_name, calendar_color, provider_updated_at, synced_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(key_hash, calendar_id, instance_key) DO UPDATE SET
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(key_hash, connection_id, calendar_id, instance_key) DO UPDATE SET
+      account_label = excluded.account_label,
       title = excluded.title, start_value = excluded.start_value,
       end_value = excluded.end_value, start_date = excluded.start_date,
       all_day = excluded.all_day, recurring = excluded.recurring,
       calendar_name = excluded.calendar_name, calendar_color = excluded.calendar_color,
       provider_updated_at = excluded.provider_updated_at, synced_at = excluded.synced_at
   `).bind(
-    keyHash, calendar.id, event.id, event.providerEventId, event.title,
+    keyHash, connection.connection_id, connection.account_label, calendar.id,
+    event.id, event.providerEventId, event.title,
     event.start, event.end, event.date, event.allDay ? 1 : 0, event.recurring ? 1 : 0,
     event.calendarName, event.calendarColor, event.updatedAt, syncedAt,
   ));
@@ -284,18 +352,25 @@ async function writeEventCache(env, keyHash, calendar, range, events, syncedAt) 
   }
 }
 
-async function cachedEvents(env, keyHash, range) {
+async function cachedEvents(env, keyHash, range, connectionId = "") {
+  const connectionClause = connectionId ? " AND connection_id = ?" : "";
+  const bindings = connectionId
+    ? [keyHash, range.startDate, range.endDate, connectionId]
+    : [keyHash, range.startDate, range.endDate];
   const result = await env.DB.prepare(`
-    SELECT calendar_id, instance_key, provider_event_id, title, start_value,
+    SELECT connection_id, account_label, calendar_id, instance_key, provider_event_id, title, start_value,
            end_value, start_date, all_day, recurring, calendar_name,
            calendar_color, provider_updated_at, synced_at
-    FROM calendar_event_cache
+    FROM calendar_event_cache_v2
     WHERE key_hash = ? AND start_date >= ? AND start_date < ?
+      ${connectionClause}
     ORDER BY start_value ASC
-  `).bind(keyHash, range.startDate, range.endDate).all();
+  `).bind(...bindings).all();
   return (result.results || []).map(row => ({
     id: row.instance_key,
     providerEventId: row.provider_event_id,
+    connectionId: row.connection_id,
+    accountLabel: row.account_label,
     calendarId: row.calendar_id,
     calendarName: row.calendar_name,
     calendarColor: row.calendar_color,
@@ -312,6 +387,9 @@ async function cachedEvents(env, keyHash, range) {
 
 async function connect(request, env, keyHash) {
   if (!configured(env)) throw new CalendarRequestError("Google Calendar is not configured", 503, "CALENDAR_NOT_CONFIGURED");
+  if ((await connectionsFor(env, keyHash)).length >= 2) {
+    throw new CalendarRequestError("Only two Google accounts can be connected", 409, "CALENDAR_ACCOUNT_LIMIT");
+  }
   const state = randomToken(32);
   const verifier = randomToken(48);
   const stateHash = await sha256Base64Url(state);
@@ -361,102 +439,152 @@ async function callback(request, env, keyHash) {
     code_verifier: record.code_verifier,
     redirect_uri: redirectUri(request, env),
   }, env);
+  const calendarItems = await listCalendars(tokens.access_token);
+  const identity = calendarAccountIdentity(calendarItems);
+  const existing = await connectionForProviderAccount(env, keyHash, identity.providerAccountId);
+  const connections = await connectionsFor(env, keyHash);
+  if (!existing && connections.length >= 2) {
+    throw new CalendarRequestError("Only two Google accounts can be connected", 409, "CALENDAR_ACCOUNT_LIMIT");
+  }
   let refreshToken = tokens.refresh_token || "";
-  if (!refreshToken) {
-    const existing = await accountFor(env, keyHash);
-    if (existing) refreshToken = await decryptToken(existing.encrypted_refresh_token, existing.token_nonce, env);
+  if (!refreshToken && existing) {
+    refreshToken = await decryptToken(existing.encrypted_refresh_token, existing.token_nonce, env);
   }
   if (!refreshToken) throw new CalendarRequestError("Google did not return a refresh token", 502, "CALENDAR_REFRESH_TOKEN_MISSING");
   const encrypted = await encryptToken(refreshToken, env);
   const now = Date.now();
+  const connectionId = existing?.connection_id || randomToken(18);
+  const selectedCalendarIds = existing
+    ? parsedCalendarIds(existing.selected_calendar_ids)
+    : calendarItems.filter(item => item.primary || item.selected).map(item => item.id);
   await env.DB.prepare(`
-    INSERT INTO calendar_accounts (
-      key_hash, encrypted_refresh_token, token_nonce, scopes,
-      selected_calendar_ids, hide_recurring, connected_at, updated_at
-    ) VALUES (?, ?, ?, ?, '[]', 1, ?, ?)
-    ON CONFLICT(key_hash) DO UPDATE SET
+    INSERT INTO calendar_connections (
+      connection_id, key_hash, provider, provider_account_id, account_label,
+      encrypted_refresh_token, token_nonce, scopes, selected_calendar_ids,
+      hide_recurring, connected_at, updated_at
+    ) VALUES (?, ?, 'google', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(key_hash, provider, provider_account_id) DO UPDATE SET
+      account_label = excluded.account_label,
       encrypted_refresh_token = excluded.encrypted_refresh_token,
       token_nonce = excluded.token_nonce,
       scopes = excluded.scopes,
       updated_at = excluded.updated_at
-  `).bind(keyHash, encrypted.encryptedToken, encrypted.nonce, CALENDAR_SCOPES.join(" "), now, now).run();
+  `).bind(
+    connectionId, keyHash, identity.providerAccountId, identity.accountLabel,
+    encrypted.encryptedToken, encrypted.nonce, CALENDAR_SCOPES.join(" "),
+    JSON.stringify(selectedCalendarIds), existing?.hide_recurring === 0 ? 0 : 1,
+    Number(existing?.connected_at || now), now,
+  ).run();
   return Response.redirect(`${url.origin}${record.return_to || "/?calendar=connected&view=today"}`, 302);
 }
 
 async function status(env, keyHash) {
   if (!configured(env)) return json({ configured: false, connected: false });
-  const account = await accountFor(env, keyHash);
+  const accounts = await connectionsFor(env, keyHash);
   return json({
     configured: true,
-    connected: Boolean(account),
-    selectedCalendarIds: account ? parsedCalendarIds(account.selected_calendar_ids) : [],
-    hideRecurring: account ? Boolean(account.hide_recurring) : true,
-    connectedAt: Number(account?.connected_at || 0),
-    updatedAt: Number(account?.updated_at || 0),
+    connected: accounts.length > 0,
+    accounts: accounts.map(publicConnection),
+    hideRecurring: accounts.every(account => Boolean(account.hide_recurring)),
+    connectedAt: accounts.length ? Math.min(...accounts.map(account => Number(account.connected_at || 0)).filter(Boolean)) : 0,
+    updatedAt: Math.max(...accounts.map(account => Number(account.updated_at || 0)), 0),
   });
 }
 
 async function calendars(env, keyHash) {
-  const account = await accountFor(env, keyHash);
-  if (!account) throw new CalendarRequestError("Connect Google Calendar first", 401, "CALENDAR_NOT_CONNECTED");
-  const { accessToken } = await accessTokenFor(env, account);
-  const items = await listCalendars(accessToken);
-  let selectedCalendarIds = parsedCalendarIds(account.selected_calendar_ids);
-  if (!selectedCalendarIds.length) {
-    selectedCalendarIds = items.filter(item => item.primary || item.selected).map(item => item.id);
-    await env.DB.prepare(`
-      UPDATE calendar_accounts SET selected_calendar_ids = ?, updated_at = ? WHERE key_hash = ?
-    `).bind(JSON.stringify(selectedCalendarIds), Date.now(), keyHash).run();
+  const connections = await connectionsFor(env, keyHash);
+  if (!connections.length) throw new CalendarRequestError("Connect Google Calendar first", 401, "CALENDAR_NOT_CONNECTED");
+  const accounts = [];
+  for (const original of connections) {
+    try {
+      const { accessToken } = await accessTokenFor(env, original);
+      const items = await listCalendars(accessToken);
+      const connection = await refreshConnectionIdentity(env, keyHash, original, items);
+      let selectedCalendarIds = parsedCalendarIds(connection.selected_calendar_ids);
+      if (!selectedCalendarIds.length) {
+        selectedCalendarIds = items.filter(item => item.primary || item.selected).map(item => item.id);
+        await env.DB.prepare(`
+          UPDATE calendar_connections SET selected_calendar_ids = ?, updated_at = ?
+          WHERE key_hash = ? AND connection_id = ?
+        `).bind(JSON.stringify(selectedCalendarIds), Date.now(), keyHash, connection.connection_id).run();
+      }
+      accounts.push({ ...publicConnection(connection), calendars: items, selectedCalendarIds });
+    } catch (error) {
+      accounts.push({ ...publicConnection(original), calendars: [], errorCode: error.code || "CALENDAR_GOOGLE_ERROR" });
+    }
   }
-  return json({ calendars: items, selectedCalendarIds, hideRecurring: Boolean(account.hide_recurring) });
+  return json({ accounts, hideRecurring: connections.every(account => Boolean(account.hide_recurring)) });
 }
 
 async function updatePreferences(request, env, keyHash) {
-  const account = await accountFor(env, keyHash);
-  if (!account) throw new CalendarRequestError("Connect Google Calendar first", 401, "CALENDAR_NOT_CONNECTED");
+  const connections = await connectionsFor(env, keyHash);
+  if (!connections.length) throw new CalendarRequestError("Connect Google Calendar first", 401, "CALENDAR_NOT_CONNECTED");
   const body = await request.json().catch(() => null);
-  const selectedCalendarIds = Array.isArray(body?.selectedCalendarIds)
-    ? [...new Set(body.selectedCalendarIds.filter(id => typeof id === "string" && id.length <= 512))].slice(0, MAX_CALENDARS)
-    : null;
-  if (!selectedCalendarIds?.length) {
+  const requested = Array.isArray(body?.accounts) ? body.accounts : [];
+  const owned = new Map(connections.map(connection => [connection.connection_id, connection]));
+  const updates = requested.map(account => ({
+    connectionId: String(account?.connectionId || ""),
+    selectedCalendarIds: [...new Set((Array.isArray(account?.selectedCalendarIds) ? account.selectedCalendarIds : [])
+      .filter(id => typeof id === "string" && id.length <= 512))].slice(0, MAX_CALENDARS),
+  })).filter(account => owned.has(account.connectionId));
+  if (updates.length !== connections.length || !updates.some(account => account.selectedCalendarIds.length)) {
     throw new CalendarRequestError("Select at least one calendar", 400, "CALENDAR_SELECTION_REQUIRED");
   }
   const hideRecurring = body.hideRecurring !== false;
-  await env.DB.prepare(`
-    UPDATE calendar_accounts
+  await env.DB.batch(updates.map(account => env.DB.prepare(`
+    UPDATE calendar_connections
     SET selected_calendar_ids = ?, hide_recurring = ?, updated_at = ?
-    WHERE key_hash = ?
-  `).bind(JSON.stringify(selectedCalendarIds), hideRecurring ? 1 : 0, Date.now(), keyHash).run();
-  return json({ ok: true, selectedCalendarIds, hideRecurring });
+    WHERE key_hash = ? AND connection_id = ?
+  `).bind(JSON.stringify(account.selectedCalendarIds), hideRecurring ? 1 : 0, Date.now(), keyHash, account.connectionId)));
+  return json({ ok: true, accounts: updates, hideRecurring });
 }
 
 async function events(request, env, keyHash) {
   const range = validatedRange(new URL(request.url));
-  const account = await accountFor(env, keyHash);
-  if (!account) throw new CalendarRequestError("Connect Google Calendar first", 401, "CALENDAR_NOT_CONNECTED");
-  const selectedIds = parsedCalendarIds(account.selected_calendar_ids);
+  const connections = await connectionsFor(env, keyHash);
+  if (!connections.length) throw new CalendarRequestError("Connect Google Calendar first", 401, "CALENDAR_NOT_CONNECTED");
   const syncedAt = Date.now();
-  try {
-    const { accessToken } = await accessTokenFor(env, account);
-    const available = await listCalendars(accessToken);
-    const selected = available.filter(item => selectedIds.length ? selectedIds.includes(item.id) : item.primary);
-    const eventGroups = await Promise.all(selected.map(calendar => listEventsForCalendar(accessToken, calendar, range)));
-    for (let index = 0; index < selected.length; index += 1) {
-      await writeEventCache(env, keyHash, selected[index], range, eventGroups[index], syncedAt);
+  const items = [];
+  const accountErrors = [];
+  let stale = false;
+  for (const original of connections) {
+    const selectedIds = parsedCalendarIds(original.selected_calendar_ids);
+    if (!selectedIds.length) continue;
+    try {
+      const { accessToken } = await accessTokenFor(env, original);
+      const available = await listCalendars(accessToken);
+      const connection = await refreshConnectionIdentity(env, keyHash, original, available);
+      const selected = available.filter(item => selectedIds.includes(item.id));
+      const groups = await Promise.all(selected.map(calendar => listEventsForCalendar(accessToken, calendar, range, connection)));
+      for (let index = 0; index < selected.length; index += 1) {
+        await writeEventCache(env, keyHash, connection, selected[index], range, groups[index], syncedAt);
+      }
+      items.push(...groups.flat());
+    } catch (error) {
+      accountErrors.push({ connectionId: original.connection_id, code: error.code || "CALENDAR_GOOGLE_ERROR" });
+      const cached = await cachedEvents(env, keyHash, range, original.connection_id);
+      if (cached.length) {
+        stale = true;
+        items.push(...cached);
+      }
     }
-    const items = eventGroups.flat().sort((a, b) => a.start.localeCompare(b.start));
-    return json({ events: items, stale: false, syncedAt, hideRecurring: Boolean(account.hide_recurring) });
-  } catch (error) {
-    if (error instanceof CalendarRequestError && error.code === "CALENDAR_RECONNECT_REQUIRED") throw error;
-    const cached = await cachedEvents(env, keyHash, range);
-    if (!cached.length) throw error;
-    return json({ events: cached, stale: true, syncedAt: Math.max(...cached.map(item => item.syncedAt || 0)), hideRecurring: Boolean(account.hide_recurring) });
   }
+  items.sort((a, b) => a.start.localeCompare(b.start));
+  return json({
+    events: items,
+    stale,
+    syncedAt: stale && items.length ? Math.max(...items.map(item => item.syncedAt || 0), 0) : syncedAt,
+    hideRecurring: connections.every(account => Boolean(account.hide_recurring)),
+    accountErrors,
+  });
 }
 
-async function disconnect(env, keyHash) {
-  const account = await accountFor(env, keyHash);
-  if (account) {
+async function disconnect(request, env, keyHash) {
+  const connectionId = new URL(request.url).searchParams.get("connectionId") || "";
+  const accounts = connectionId
+    ? [await connectionFor(env, keyHash, connectionId)].filter(Boolean)
+    : await connectionsFor(env, keyHash);
+  for (const account of accounts) {
     try {
       const refreshToken = await decryptToken(account.encrypted_refresh_token, account.token_nonce, env);
       await fetch(`${GOOGLE_REVOKE_URL}?token=${encodeURIComponent(refreshToken)}`, {
@@ -467,12 +595,14 @@ async function disconnect(env, keyHash) {
       // Local deletion is authoritative even when Google revocation is temporarily unavailable.
     }
   }
-  await env.DB.batch([
-    env.DB.prepare("DELETE FROM calendar_event_cache WHERE key_hash = ?").bind(keyHash),
-    env.DB.prepare("DELETE FROM calendar_oauth_states WHERE key_hash = ?").bind(keyHash),
-    env.DB.prepare("DELETE FROM calendar_accounts WHERE key_hash = ?").bind(keyHash),
+  const statements = accounts.flatMap(account => [
+    env.DB.prepare("DELETE FROM calendar_event_cache_v2 WHERE key_hash = ? AND connection_id = ?").bind(keyHash, account.connection_id),
+    env.DB.prepare("DELETE FROM calendar_connections WHERE key_hash = ? AND connection_id = ?").bind(keyHash, account.connection_id),
   ]);
-  return json({ ok: true });
+  if (!connectionId) statements.push(env.DB.prepare("DELETE FROM calendar_oauth_states WHERE key_hash = ?").bind(keyHash));
+  if (statements.length) await env.DB.batch(statements);
+  const remaining = await connectionsFor(env, keyHash);
+  return json({ ok: true, connected: remaining.length > 0, accounts: remaining.map(publicConnection) });
 }
 
 async function handleCalendarRequest(request, env, keyHash) {
@@ -485,7 +615,7 @@ async function handleCalendarRequest(request, env, keyHash) {
   if (route === "calendars" && request.method === "GET") return calendars(env, keyHash);
   if (route === "preferences" && request.method === "PUT") return updatePreferences(request, env, keyHash);
   if (route === "events" && request.method === "GET") return events(request, env, keyHash);
-  if (route === "disconnect" && request.method === "DELETE") return disconnect(env, keyHash);
+  if (route === "disconnect" && request.method === "DELETE") return disconnect(request, env, keyHash);
   throw new CalendarRequestError("Calendar endpoint not found", 404, "CALENDAR_NOT_FOUND");
 }
 

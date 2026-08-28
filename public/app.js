@@ -114,7 +114,7 @@ const i18n = {
     calendarSync: {
       kicker: "日历连接", title: "Google 日历", trigger: "连接日历", connectedTrigger: "日历已连接", intro: "只读连接。Life Ledger 仅保留复盘所需的日程标题与时间。",
       connectTitle: "让真实日程自然进入每一天。", connectHelp: "选择你想读取的日历。Life Ledger 永远不会修改或删除 Google 日历事件。", connect: "连接 Google 日历", connecting: "正在前往 Google…",
-      connected: "日历已连接", lastSync: "上次更新：{time}", neverSynced: "尚未读取日程", refresh: "刷新", refreshing: "正在读取日程…", choose: "选择要纳入的日历",
+      connected: "已连接 {count} 个 Google 账号", lastSync: "上次更新：{time}", neverSynced: "尚未读取日程", refresh: "刷新", refreshing: "正在读取日程…", choose: "选择要纳入的日历", addAccount: "＋ 添加另一个 Google 账号", accountCalendars: "此账号的日历", accountLimit: "最多连接两个 Google 账号", disconnectAccount: "断开此账号", accountNeedsReconnect: "此账号需要重新连接",
       hideRecurring: "默认收起重复日程", hideRecurringHelp: "固定日程仍会被记录，但不会占满每日计划。", save: "保存选择", saving: "正在保存…", close: "关闭", disconnect: "断开连接", disconnectConfirm: "断开后将删除 Life Ledger 中缓存的日历内容。Google 日历本身不会受到影响。",
       saved: "日历选择已保存", disconnected: "Google 日历已断开", stale: "暂时无法连接 Google，正在显示最近一次日程。", error: "日历暂时无法读取，请稍后重试。", authExpired: "Google 授权已失效，请重新连接。", noCalendars: "没有找到可读取的日历。", calendarEvents: "日程",
     },
@@ -430,7 +430,7 @@ const i18n = {
     calendarSync: {
       kicker: "CALENDAR CONNECTION", title: "Google Calendar", trigger: "Connect calendar", connectedTrigger: "Calendar connected", intro: "Read-only access. Life Ledger only keeps the event title and time needed for your review.",
       connectTitle: "Bring your real schedule into each day.", connectHelp: "Choose the calendars you want to read. Life Ledger never edits or deletes Google Calendar events.", connect: "Connect Google Calendar", connecting: "Opening Google…",
-      connected: "Calendar connected", lastSync: "Last updated: {time}", neverSynced: "No events loaded yet", refresh: "Refresh", refreshing: "Reading events…", choose: "Calendars to include",
+      connected: "{count} Google accounts connected", lastSync: "Last updated: {time}", neverSynced: "No events loaded yet", refresh: "Refresh", refreshing: "Reading events…", choose: "Calendars to include", addAccount: "＋ Add another Google account", accountCalendars: "Calendars from this account", accountLimit: "You can connect up to two Google accounts", disconnectAccount: "Disconnect this account", accountNeedsReconnect: "This account needs to reconnect",
       hideRecurring: "Collapse recurring routines", hideRecurringHelp: "Routine events remain available without taking over the day.", save: "Save selection", saving: "Saving…", close: "Close", disconnect: "Disconnect", disconnectConfirm: "Disconnecting removes cached calendar details from Life Ledger. Your Google Calendar will not be changed.",
       saved: "Calendar selection saved", disconnected: "Google Calendar disconnected", stale: "Google is unavailable, so the latest cached schedule is shown.", error: "Calendar could not be read. Please try again.", authExpired: "Google access expired. Please reconnect.", noCalendars: "No readable calendars were found.", calendarEvents: "Calendar events",
     },
@@ -746,7 +746,7 @@ const i18n = {
     calendarSync: {
       kicker: "KALENDERVERBINDUNG", title: "Google Kalender", trigger: "Kalender verbinden", connectedTrigger: "Kalender verbunden", intro: "Nur Lesezugriff. Life Ledger speichert nur Titel und Zeit, die für deine Rückschau nötig sind.",
       connectTitle: "Bringe deinen echten Tagesplan in jeden Tag.", connectHelp: "Wähle die Kalender, die du lesen möchtest. Life Ledger ändert oder löscht niemals Google-Kalendertermine.", connect: "Google Kalender verbinden", connecting: "Google wird geöffnet…",
-      connected: "Kalender verbunden", lastSync: "Zuletzt aktualisiert: {time}", neverSynced: "Noch keine Termine geladen", refresh: "Aktualisieren", refreshing: "Termine werden gelesen…", choose: "Einbezogene Kalender",
+      connected: "{count} Google-Konten verbunden", lastSync: "Zuletzt aktualisiert: {time}", neverSynced: "Noch keine Termine geladen", refresh: "Aktualisieren", refreshing: "Termine werden gelesen…", choose: "Einbezogene Kalender", addAccount: "＋ Weiteres Google-Konto hinzufügen", accountCalendars: "Kalender dieses Kontos", accountLimit: "Du kannst bis zu zwei Google-Konten verbinden", disconnectAccount: "Dieses Konto trennen", accountNeedsReconnect: "Dieses Konto muss erneut verbunden werden",
       hideRecurring: "Wiederkehrende Routinen einklappen", hideRecurringHelp: "Routinen bleiben verfügbar, ohne den Tagesplan zu überladen.", save: "Auswahl speichern", saving: "Wird gespeichert…", close: "Schließen", disconnect: "Trennen", disconnectConfirm: "Beim Trennen werden zwischengespeicherte Kalenderdaten aus Life Ledger entfernt. Dein Google Kalender bleibt unverändert.",
       saved: "Kalenderauswahl gespeichert", disconnected: "Google Kalender getrennt", stale: "Google ist nicht erreichbar; der zuletzt geladene Tagesplan wird angezeigt.", error: "Der Kalender konnte nicht gelesen werden. Bitte versuche es erneut.", authExpired: "Der Google-Zugriff ist abgelaufen. Bitte erneut verbinden.", noCalendars: "Keine lesbaren Kalender gefunden.", calendarEvents: "Kalendertermine",
     },
@@ -1126,8 +1126,7 @@ let googleCalendar = {
   configured: false,
   connected: false,
   hideRecurring: true,
-  selectedCalendarIds: [],
-  calendars: [],
+  accounts: [],
   lastSyncedAt: 0,
   stale: false,
 };
@@ -1710,12 +1709,11 @@ function applyCalendarLanguage() {
   setText("#calendarConnectTitle", tr("calendarSync.connectTitle"));
   setText("#calendarConnectHelp", tr("calendarSync.connectHelp"));
   setText("#calendarConnectButton", tr("calendarSync.connect"));
-  setText("#calendarConnectedLabel", tr("calendarSync.connected"));
   setText("#calendarRefreshButton", tr("calendarSync.refresh"));
   setText("#calendarPickerLegend", tr("calendarSync.choose"));
+  setText("#calendarAddAccountButton", tr("calendarSync.addAccount"));
   setText("#calendarHideRecurringLabel", tr("calendarSync.hideRecurring"));
   setText("#calendarHideRecurringHelp", tr("calendarSync.hideRecurringHelp"));
-  setText("#calendarDisconnectButton", tr("calendarSync.disconnect"));
   setText("#calendarSettingsCancel", tr("calendarSync.close"));
   setText("#calendarPreferencesSave", tr("calendarSync.save"));
   setAria(".close-calendar-settings", tr("calendarSync.close"));
@@ -1750,26 +1748,37 @@ function renderCalendarConnection() {
   if (!disconnected || !connected) return;
   disconnected.hidden = googleCalendar.connected;
   connected.hidden = !googleCalendar.connected;
-  $("#calendarDisconnectButton").hidden = !googleCalendar.connected;
   $("#calendarPreferencesSave").hidden = !googleCalendar.connected;
   $("#calendarHideRecurring").checked = googleCalendar.hideRecurring;
+  $("#calendarConnectedLabel").textContent = tr("calendarSync.connected", { count: googleCalendar.accounts.length });
+  $("#calendarAddAccountButton").hidden = googleCalendar.accounts.length >= 2;
   $("#calendarLastSync").textContent = formatCalendarSyncTime(googleCalendar.lastSyncedAt);
   if (googleCalendar.connected) renderCalendarPicker();
 }
 
 function renderCalendarPicker() {
-  const list = $("#calendarPickerList");
+  const list = $("#calendarAccountsList");
   if (!list) return;
-  if (!googleCalendar.calendars.length) {
+  if (!googleCalendar.accounts.length) {
     list.innerHTML = `<p class="calendar-picker-empty">${escapeHtml(tr("calendarSync.noCalendars"))}</p>`;
     return;
   }
-  const selected = new Set(googleCalendar.selectedCalendarIds);
-  list.innerHTML = googleCalendar.calendars.map(calendar => `<label class="calendar-picker-option">
-    <input type="checkbox" value="${escapeHtml(calendar.id)}" ${selected.has(calendar.id) ? "checked" : ""} />
-    <i style="--calendar-color:${escapeHtml(calendar.color || "#6f95c8")}" aria-hidden="true"></i>
-    <span><strong>${escapeHtml(calendar.name)}</strong>${calendar.primary ? `<small>${escapeHtml(languageText("主日历", "Primary", "Primär"))}</small>` : ""}</span>
-  </label>`).join("");
+  list.innerHTML = googleCalendar.accounts.map(account => {
+    const selected = new Set(account.selectedCalendarIds || []);
+    const calendars = account.calendars || [];
+    return `<section class="calendar-account-card" data-connection-id="${escapeHtml(account.connectionId)}">
+      <header><div><strong>${escapeHtml(account.accountLabel || "Google Calendar")}</strong><small>${escapeHtml(account.errorCode ? tr("calendarSync.accountNeedsReconnect") : tr("calendarSync.accountCalendars"))}</small></div><button type="button" class="calendar-account-disconnect" aria-label="${escapeHtml(tr("calendarSync.disconnectAccount"))}">×</button></header>
+      <div class="calendar-picker-list">${calendars.length ? calendars.map(calendar => `<label class="calendar-picker-option">
+        <input type="checkbox" value="${escapeHtml(calendar.id)}" ${selected.has(calendar.id) ? "checked" : ""} />
+        <i style="--calendar-color:${escapeHtml(calendar.color || "#6f95c8")}" aria-hidden="true"></i>
+        <span><strong>${escapeHtml(calendar.name)}</strong>${calendar.primary ? `<small>${escapeHtml(languageText("主日历", "Primary", "Primär"))}</small>` : ""}</span>
+      </label>`).join("") : `<p class="calendar-picker-empty">${escapeHtml(account.errorCode ? tr("calendarSync.accountNeedsReconnect") : tr("calendarSync.noCalendars"))}</p>`}</div>
+    </section>`;
+  }).join("");
+  $$(".calendar-account-disconnect", list).forEach(button => button.addEventListener("click", () => {
+    const connectionId = button.closest(".calendar-account-card")?.dataset.connectionId;
+    if (connectionId) disconnectGoogleCalendar(connectionId);
+  }));
 }
 
 async function calendarApi(path, options = {}) {
@@ -1843,6 +1852,9 @@ async function loadGoogleCalendarMonth(date, options = {}) {
     googleCalendar.lastSyncedAt = Number(payload.syncedAt || Date.now());
     googleCalendar.stale = Boolean(payload.stale);
     googleCalendar.hideRecurring = payload.hideRecurring !== false;
+    if (Array.isArray(payload.accountErrors) && payload.accountErrors.length) {
+      setCalendarSettingsStatus(tr("calendarSync.accountNeedsReconnect"), true);
+    }
     googleCalendarLoadedMonths.add(range.key);
     renderDailyGoals();
     renderCalendar();
@@ -1852,7 +1864,7 @@ async function loadGoogleCalendarMonth(date, options = {}) {
     if (googleCalendar.stale) setCalendarSettingsStatus(tr("calendarSync.stale"));
   } catch (error) {
     console.warn("Calendar event load failed", { code: error.code, status: error.status });
-    if (error.code === "CALENDAR_RECONNECT_REQUIRED" || error.code === "CALENDAR_NOT_CONNECTED") {
+    if (error.code === "CALENDAR_NOT_CONNECTED") {
       googleCalendar.connected = false;
       renderCalendarConnection();
       setCalendarSettingsStatus(tr("calendarSync.authExpired"), true);
@@ -1869,8 +1881,8 @@ async function loadGoogleCalendarChoices() {
   if (!googleCalendar.connected) return;
   try {
     const payload = await calendarApi("calendars");
-    googleCalendar.calendars = payload.calendars || [];
-    googleCalendar.selectedCalendarIds = payload.selectedCalendarIds || [];
+    googleCalendar.accounts = payload.accounts || [];
+    googleCalendar.connected = googleCalendar.accounts.length > 0;
     googleCalendar.hideRecurring = payload.hideRecurring !== false;
     renderCalendarConnection();
   } catch (error) {
@@ -1883,7 +1895,7 @@ async function initializeGoogleCalendar() {
   if (cloudProvider !== "cloudflare") return;
   try {
     const status = await calendarApi("status");
-    googleCalendar = { ...googleCalendar, ...status, configured: Boolean(status.configured), connected: Boolean(status.connected) };
+    googleCalendar = { ...googleCalendar, ...status, accounts: status.accounts || [], configured: Boolean(status.configured), connected: Boolean(status.connected) };
     renderCalendarConnection();
     if (!googleCalendar.configured || !googleCalendar.connected) return;
     await Promise.all([loadGoogleCalendarChoices(), loadGoogleCalendarMonth(cursor), loadGoogleCalendarMonth(selectedPlanningDate)]);
@@ -1900,7 +1912,11 @@ async function openGoogleCalendarSettings() {
 }
 
 async function connectGoogleCalendar() {
-  const button = $("#calendarConnectButton");
+  if (googleCalendar.accounts.length >= 2) {
+    setCalendarSettingsStatus(tr("calendarSync.accountLimit"), true);
+    return;
+  }
+  const button = googleCalendar.connected ? $("#calendarAddAccountButton") : $("#calendarConnectButton");
   button.disabled = true;
   button.textContent = tr("calendarSync.connecting");
   try {
@@ -1908,14 +1924,17 @@ async function connectGoogleCalendar() {
     location.assign(payload.authorizationUrl);
   } catch (error) {
     button.disabled = false;
-    button.textContent = tr("calendarSync.connect");
+    button.textContent = googleCalendar.connected ? tr("calendarSync.addAccount") : tr("calendarSync.connect");
     setCalendarSettingsStatus(tr("calendarSync.error"), true);
   }
 }
 
 async function saveGoogleCalendarPreferences() {
-  const selectedCalendarIds = $$("#calendarPickerList input:checked").map(input => input.value);
-  if (!selectedCalendarIds.length) {
+  const accounts = $$(".calendar-account-card", $("#calendarAccountsList")).map(card => ({
+    connectionId: card.dataset.connectionId,
+    selectedCalendarIds: $$('input:checked', card).map(input => input.value),
+  }));
+  if (!accounts.some(account => account.selectedCalendarIds.length)) {
     setCalendarSettingsStatus(tr("calendarSync.noCalendars"), true);
     return;
   }
@@ -1925,9 +1944,12 @@ async function saveGoogleCalendarPreferences() {
   try {
     const payload = await calendarApi("preferences", {
       method: "PUT",
-      body: JSON.stringify({ selectedCalendarIds, hideRecurring: $("#calendarHideRecurring").checked }),
+      body: JSON.stringify({ accounts, hideRecurring: $("#calendarHideRecurring").checked }),
     });
-    googleCalendar.selectedCalendarIds = payload.selectedCalendarIds;
+    googleCalendar.accounts = googleCalendar.accounts.map(account => ({
+      ...account,
+      selectedCalendarIds: payload.accounts.find(item => item.connectionId === account.connectionId)?.selectedCalendarIds || account.selectedCalendarIds,
+    }));
     googleCalendar.hideRecurring = payload.hideRecurring;
     dayPlanRoutinesExpanded = !googleCalendar.hideRecurring;
     resetCalendarEventCache();
@@ -1951,13 +1973,14 @@ async function refreshGoogleCalendar() {
   button.textContent = tr("calendarSync.refresh");
 }
 
-async function disconnectGoogleCalendar() {
+async function disconnectGoogleCalendar(connectionId) {
   if (!window.confirm(tr("calendarSync.disconnectConfirm"))) return;
   try {
-    await calendarApi("disconnect", { method: "DELETE" });
+    const payload = await calendarApi(`disconnect?connectionId=${encodeURIComponent(connectionId)}`, { method: "DELETE" });
     resetCalendarEventCache();
-    googleCalendar = { ...googleCalendar, connected: false, calendars: [], selectedCalendarIds: [], lastSyncedAt: 0, stale: false };
-    $("#calendarSettingsDialog").close();
+    googleCalendar = { ...googleCalendar, connected: Boolean(payload.connected), accounts: payload.accounts || [], lastSyncedAt: 0, stale: false };
+    if (!googleCalendar.connected) $("#calendarSettingsDialog").close();
+    else await loadGoogleCalendarChoices();
     renderCalendarConnection();
     renderDailyGoals();
     renderCalendar();
@@ -2389,9 +2412,10 @@ function eventDuration(event) {
 function scheduleEventMarkup(event, compact = false) {
   const time = event.allDay ? tr("dayPlan.allDay") : event.start;
   const duration = eventDuration(event);
+  const details = [...new Set([duration, event.calendarName, event.accountLabel].filter(Boolean))];
   return `<article class="day-schedule-event ${event.routine ? "routine" : ""} ${event.allDay ? "all-day" : ""}" style="--event-color:${escapeHtml(event.calendarColor || "#6f95c8")}">
     <time>${escapeHtml(time)}</time>
-    <div><strong>${escapeHtml(event.title)}</strong>${duration || event.calendarName ? `<small>${[duration, event.calendarName].filter(Boolean).map(escapeHtml).join(" · ")}</small>` : ""}</div>
+    <div><strong>${escapeHtml(event.title)}</strong>${details.length ? `<small>${details.map(escapeHtml).join(" · ")}</small>` : ""}</div>
     ${event.routine && !compact ? `<span class="routine-label">${escapeHtml(tr("dayPlan.routine"))}</span>` : ""}
   </article>`;
 }
@@ -4282,9 +4306,9 @@ function bindEvents() {
   $("#dayPlanDialog").addEventListener("cancel", event => { event.preventDefault(); $("#dayPlanDialog").close(); });
   $("#calendarConnectionButton").addEventListener("click", openGoogleCalendarSettings);
   $("#calendarConnectButton").addEventListener("click", connectGoogleCalendar);
+  $("#calendarAddAccountButton").addEventListener("click", connectGoogleCalendar);
   $("#calendarRefreshButton").addEventListener("click", refreshGoogleCalendar);
   $("#calendarPreferencesSave").addEventListener("click", saveGoogleCalendarPreferences);
-  $("#calendarDisconnectButton").addEventListener("click", disconnectGoogleCalendar);
   $$(".close-calendar-settings").forEach(button => button.addEventListener("click", () => $("#calendarSettingsDialog").close()));
   $("#calendarSettingsDialog").addEventListener("cancel", event => { event.preventDefault(); $("#calendarSettingsDialog").close(); });
   $("#homeDayNote").addEventListener("input", event => {

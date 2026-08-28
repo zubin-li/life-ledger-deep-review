@@ -1604,7 +1604,15 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 .calendar-connected-summary strong { font-size: 11px; }
 .calendar-connected-summary small { margin-top: 4px; color: var(--muted); font-size: 8px; }
 .calendar-picker-fieldset { margin: 20px 0 0; padding: 0; border: 0; }
-.calendar-picker-fieldset legend { margin-bottom: 10px; color: var(--muted); font-size: 8px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+.calendar-picker-legend { margin: 0 0 10px; color: var(--muted); font-size: 8px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+.calendar-accounts-list { display: grid; gap: 10px; }
+.calendar-account-card { padding: 12px; border: 1px solid var(--line); border-radius: 15px; background: color-mix(in srgb, var(--card) 76%, transparent); }
+.calendar-account-card > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
+.calendar-account-card > header strong, .calendar-account-card > header small { display: block; }
+.calendar-account-card > header strong { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.calendar-account-card > header small { margin-top: 3px; color: var(--muted); font-size: 7px; }
+.calendar-account-disconnect { width: 30px; height: 30px; flex: 0 0 30px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 16px; cursor: pointer; }
+.calendar-add-account { width: 100%; min-height: 42px; margin-top: 11px; border: 1px dashed color-mix(in srgb, #6f95c8 48%, var(--line)); border-radius: 13px; background: color-mix(in srgb, #6f95c8 5%, transparent); color: #567cae; font: 700 9px var(--font-body); cursor: pointer; }
 .calendar-picker-list { display: grid; gap: 5px; }
 .calendar-picker-option { min-height: 48px; display: grid; grid-template-columns: 20px 10px minmax(0, 1fr); align-items: center; gap: 10px; padding: 8px 11px; border: 1px solid transparent; border-radius: 12px; cursor: pointer; }
 .calendar-picker-option:has(input:checked) { border-color: color-mix(in srgb, #6f95c8 23%, var(--line)); background: color-mix(in srgb, #6f95c8 6%, transparent); }

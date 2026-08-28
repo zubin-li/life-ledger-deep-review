@@ -37,7 +37,7 @@ Google Calendar is intentionally opt-in and available only from a Cloudflare dep
 
    `CALENDAR_TOKEN_KEY` must be a URL-safe base64 string containing exactly 32 random bytes. `GOOGLE_CALENDAR_REDIRECT_URI` must exactly match the URI registered in Google. For a Pages project, use `wrangler pages secret put <NAME> --project-name <PROJECT>` instead.
 
-6. Deploy again, open **Today → Day Plan → Connect Google Calendar**, grant the read-only permissions, and choose which calendars appear. Recurring routines are collapsed by default and can be revealed from the same settings panel.
+6. Deploy again, open **Today → Day Plan → Connect Google Calendar**, grant the read-only permissions, and choose which calendars appear. Use **Add another Google account** to connect one additional personal or work account. Recurring routines are collapsed by default and can be revealed from the same settings panel.
 
 The `0003_google_calendar.sql` migration stores encrypted authorization data and a rebuildable, review-safe event cache outside the main Life Ledger state. The cache excludes descriptions, locations, attachments, and attendees. Disconnecting revokes Google access and deletes the stored connection and cache. See [Privacy](../PRIVACY.md) for the complete boundary.
 

@@ -33,6 +33,15 @@ test("Google Calendar stays read-only and progressively disclosed inside Day Pla
   assert.match(app, /day-calendar-status/);
 });
 
+test("calendar settings connect two accounts without adding another page", () => {
+  assert.match(html, /id="calendarAddAccountButton"/);
+  assert.match(html, /id="calendarAccountsList"/);
+  assert.match(app, /googleCalendar\.accounts\.length >= 2/);
+  assert.match(app, /disconnect\?connectionId=/);
+  assert.match(app, /body: JSON\.stringify\(\{ accounts, hideRecurring:/);
+  assert.doesNotMatch(html, /id="calendarDisconnectButton"/);
+});
+
 function cardMarkup() {
   return html.match(/<article class="daily-goals-card" data-plan="selected-day">([\s\S]*?)<\/article>/)?.[1] || "";
 }

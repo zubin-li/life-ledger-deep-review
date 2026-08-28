@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   CALENDAR_SCOPES,
   CalendarRequestError,
@@ -88,4 +89,14 @@ test("calendar connection uses offline read-only OAuth with PKCE", async () => {
   assert.equal(url.searchParams.get("code_challenge_method"), "S256");
   assert.deepEqual(url.searchParams.get("scope").split(" "), CALENDAR_SCOPES);
   assert.ok(DB.calls.some(call => call.sql.includes("INSERT INTO calendar_oauth_states")));
+});
+
+test("calendar storage supports exactly two independent Google connections", () => {
+  const source = readFileSync(new URL("../src/calendar.js", import.meta.url), "utf8");
+  const migration = readFileSync(new URL("../migrations/0004_google_calendar_multi_account.sql", import.meta.url), "utf8");
+  assert.match(source, /connections\.length >= 2/);
+  assert.match(source, /Only two Google accounts can be connected/);
+  assert.match(source, /calendar_event_cache_v2/);
+  assert.match(migration, /UNIQUE \(key_hash, provider, provider_account_id\)/);
+  assert.match(migration, /PRIMARY KEY \(key_hash, connection_id, calendar_id, instance_key\)/);
 });

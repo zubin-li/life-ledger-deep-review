@@ -37,7 +37,7 @@ Google 日历是可选功能，并且只在具备安全后端的 Cloudflare 部�
 
    `CALENDAR_TOKEN_KEY` 必须是包含 32 个随机字节的 URL-safe Base64 字符串；`GOOGLE_CALENDAR_REDIRECT_URI` 必须与 Google 中登记的地址完全一致。如果部署的是 Pages 项目，请改用 `wrangler pages secret put <NAME> --project-name <PROJECT>`。
 
-6. 重新部署，打开**今日 → 每日安排 → 连接 Google 日历**，确认只读权限并选择要显示的日历。重复日程默认折叠，可在同一设置面板中展开。
+6. 重新部署，打开**今日 → 每日安排 → 连接 Google 日历**，确认只读权限并选择要显示的日历。需要工作账号时，点击**添加另一个 Google 账号**再连接一个账号。重复日程默认折叠，可在同一设置面板中展开。
 
 `0003_google_calendar.sql` 会把加密授权信息和可重建的日程缓存放在主 Life Ledger 状态之外。缓存不包含描述、地点、附件和参与者。断开连接会撤销 Google 授权，并删除凭据和缓存。完整边界见[隐私说明](../PRIVACY.md)。
 

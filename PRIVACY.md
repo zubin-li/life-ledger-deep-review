@@ -24,7 +24,7 @@ The voice endpoint records only per-user daily request counts and reserved recor
 
 The self-hosted Cloudflare edition can connect to Google Calendar after the user explicitly grants read-only access. Life Ledger requests only the permissions required to list calendars and read events. It cannot create, edit, or delete Google Calendar events.
 
-The deployment stores the Google refresh token encrypted with the self-hoster's `CALENDAR_TOKEN_KEY`; the token never enters browser storage, synchronized Life Ledger state, exports, or application logs. A limited event cache may contain calendar name and color, event title, start and end time, time zone, recurrence status, and provider identifiers. Life Ledger does not request or cache descriptions, locations, attachments, guests, or attendee email addresses.
+The deployment can keep up to two Google account connections. It stores each Google refresh token encrypted with the self-hoster's `CALENDAR_TOKEN_KEY`; tokens never enter browser storage, synchronized Life Ledger state, exports, or application logs. The connected account label and a limited event cache may contain calendar name and color, event title, start and end time, time zone, recurrence status, and provider identifiers. Life Ledger does not request or cache descriptions, locations, attachments, guests, or attendee email addresses.
 
 Disconnecting Google Calendar revokes the connection and deletes the stored credential, OAuth state, and cached calendar data. Calendar events are schedule context only: they do not automatically count as completed goals, habits, journal days, or focus time.
 

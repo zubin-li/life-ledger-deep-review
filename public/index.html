@@ -476,10 +476,11 @@
               <div><strong id="calendarConnectedLabel">Calendar connected</strong><small id="calendarLastSync"></small></div>
               <button class="secondary-button" id="calendarRefreshButton" type="button">Refresh</button>
             </div>
-            <fieldset class="calendar-picker-fieldset">
-              <legend id="calendarPickerLegend">Calendars to include</legend>
-              <div class="calendar-picker-list" id="calendarPickerList"></div>
-            </fieldset>
+            <div class="calendar-picker-fieldset">
+              <p class="calendar-picker-legend" id="calendarPickerLegend">Calendars to include</p>
+              <div class="calendar-accounts-list" id="calendarAccountsList"></div>
+            </div>
+            <button class="calendar-add-account" id="calendarAddAccountButton" type="button">＋ Add another Google account</button>
             <label class="calendar-routine-setting">
               <input id="calendarHideRecurring" type="checkbox" checked />
               <span><strong id="calendarHideRecurringLabel">Collapse recurring routines</strong><small id="calendarHideRecurringHelp">Keep routine events available without letting them dominate the day.</small></span>
@@ -488,7 +489,6 @@
           </section>
         </div>
         <footer>
-          <button class="danger-button" id="calendarDisconnectButton" type="button" hidden>Disconnect</button>
           <span class="dialog-footer-spacer"></span>
           <button class="secondary-button close-calendar-settings" id="calendarSettingsCancel" type="button">Close</button>
           <button class="primary-button" id="calendarPreferencesSave" type="button" hidden>Save selection</button>
