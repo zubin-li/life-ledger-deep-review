@@ -22,6 +22,14 @@
 
 > **Stabile Version:** Life Ledger 1.1 ergänzt die selbst bereitgestellte Cloudflare-Version um KI-gestützte Sprachreflexion. Lokale Einträge werden weiterhin automatisch gespeichert; vollständige JSON-Sicherungen lassen sich auf einem anderen Gerät oder in einem anderen Browser wiederherstellen.
 
+## Neu in Life Ledger 1.1
+
+- **Schnell aufnehmen:** Sprich einige Minuten, prüfe den von der KI geordneten Entwurf und füge ihn der Tagesreflexion hinzu.
+- **Zwei Google-Konten:** Verbinde bis zu zwei Google-Calendar-Konten und wähle aus, welche Kalender in Life Ledger erscheinen.
+- **Schreibgeschützter Tageskalender:** Einmalige Termine bleiben sichtbar, wiederkehrende Routinen können eingeklappt bleiben; Life Ledger verändert Google Calendar nicht.
+- **Ruhigere Heute-Ansicht:** Tageskalender und Reflexion teilen sich den Raum gleichmäßig, ohne ein doppeltes Tagesziele-Modul.
+- **Übertragbare Historie:** Validierter JSON-Export und Wiederherstellung erleichtern den Wechsel zwischen Geräten und Browsern.
+
 ## Warum Life Ledger?
 
 Die meisten Produktivitätswerkzeuge fragen, was du als Nächstes tun solltest.
@@ -71,7 +79,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 ## Funktionen
 
 - Tägliche Gewohnheiten mit anpassbaren Zielen und Gültigkeitsdatum
-- Tagesziele, Stimmung, Journal und Ereignisnotizen
+- Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen
 - Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
 - Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen
 - Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen
@@ -80,7 +88,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Helles, dunkles und systemabhängiges Erscheinungsbild
 - Installierbare PWA mit offline verfügbarem App-Grundgerüst
 - Optionale geräteübergreifende Synchronisierung über Cloudflare Access und D1
-- Optionaler schreibgeschützter Google-Kalender als Tageskontext
+- Optionaler schreibgeschützter Google-Kalender aus bis zu zwei Konten
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
@@ -98,7 +106,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
     <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick" /></td>
   </tr>
   <tr>
-    <td><strong>Klarheit für den Tag</strong><br />Plane den Tag, erledige eine überschaubare Zahl an Zielen und halte deine Gedanken direkt neben dem Kalender fest.</td>
+    <td><strong>Klarheit für den Tag</strong><br />Sieh den echten Tageskalender und halte deine Gedanken direkt daneben fest, ohne Pläne doppelt zu pflegen.</td>
     <td><strong>Richtung für die Woche</strong><br />Verbinde wichtige Aufgaben und den schriftlichen Wochenrückblick in einem ruhigen Arbeitsbereich.</td>
   </tr>
 </table>

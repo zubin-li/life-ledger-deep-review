@@ -22,6 +22,14 @@
 
 > **Stable release:** Life Ledger 1.1 adds AI-assisted voice reflection to the self-hosted Cloudflare edition. Local records still save automatically, and complete JSON backups can be restored on another device or browser.
 
+## What's new in Life Ledger 1.1
+
+- **Quick record:** speak for a few minutes, review the AI-organized draft, and append it to the daily reflection.
+- **Two Google accounts:** connect up to two Google Calendar accounts and choose which calendars appear in Life Ledger.
+- **Read-only daily calendar:** one-off events stay visible while recurring routines can remain collapsed; Life Ledger never edits Google Calendar.
+- **A calmer Today view:** the daily calendar and reflection now share an equal, focused layout without a duplicate daily-goals panel.
+- **Portable history:** validated JSON export and restore make it easier to move records between devices and browsers.
+
 ## Why Life Ledger
 
 Most productivity tools focus on what you should do next.
@@ -71,7 +79,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 ## Highlights
 
 - Daily habits with adjustable targets and effective dates
-- Daily goals, mood, journal, and event notes
+- Read-only daily calendar, mood, journal, and event notes
 - AI-assisted voice-to-journal reflection with editable review before saving
 - Weekly goals, checklist behavior, outputs, and archived notes
 - Monthly review with habit comparisons and line/bar charts
@@ -80,7 +88,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Light, dark, and system appearance
 - Installable PWA with offline app shell
 - Optional Cloudflare Access + D1 cross-device synchronization
-- Optional read-only Google Calendar context inside each day's plan
+- Optional read-only Google Calendar context from up to two accounts
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
 
@@ -98,7 +106,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
     <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v2.png" alt="Weekly goals and output" /></td>
   </tr>
   <tr>
-    <td><strong>Daily clarity</strong><br />Plan the day, complete a small set of goals, and leave a reflection beside the calendar.</td>
+    <td><strong>Daily clarity</strong><br />See the day's real calendar and leave a reflection beside it, without duplicating plans.</td>
     <td><strong>Weekly direction</strong><br />Keep must-finish work and the week's written output in one calm workspace.</td>
   </tr>
 </table>

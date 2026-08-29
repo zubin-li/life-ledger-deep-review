@@ -8,6 +8,7 @@ Thanks for helping improve Life Ledger.
 2. Keep privacy and local-first behavior intact.
 3. Avoid adding trackers, hosted dependencies, or mandatory accounts.
 4. Keep English, Chinese, and German interface strings aligned.
+5. Document every user-facing feature in all three README files in the same change; keep small fixes out of the homepage changelog unless they materially affect usage.
 
 ## Local workflow
 
