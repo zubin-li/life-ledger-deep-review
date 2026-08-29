@@ -1097,7 +1097,6 @@ let selectedWorkspaceWeek = isoWeekKey(new Date());
 let goalHorizon = "week";
 let editingLongTermGoalId = null;
 let dayPlanRoutinesExpanded = false;
-let dayPlanActivePane = "schedule";
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
@@ -1267,20 +1266,13 @@ function applyLanguage() {
   setText('[data-plan="selected-day"] .kicker', tr("todayGoals.kicker"));
   setText('[data-plan="selected-day"] .daily-goals-heading h3', tr("todayGoals.title"));
   setText('[data-plan="selected-day"] .daily-goals-heading p', tr("todayGoals.desc"));
-  setPlaceholder("#dailyGoalInput", tr("todayGoals.placeholder"));
-  setAria(".daily-goal-form button", tr("todayGoals.addLabel"));
   setAria("#previousPlanDay", tr("todayGoals.previous"));
   setAria("#nextPlanDay", tr("todayGoals.next"));
   setText("#dayScheduleTitle", tr("dayPlan.schedule"));
-  setText("#dayGoalsTitle", tr("dayPlan.flexible"));
-  setText("#dayScheduleTabLabel", tr("dayPlan.schedule"));
-  setText("#dayGoalsTabLabel", tr("dayPlan.flexible"));
-  setAria("#dayPlanViewSwitch", languageText("切换日程与目标", "Switch between schedule and goals", "Zwischen Terminen und Zielen wechseln"));
   setText("#openDayPlan span", tr("dayPlan.open"));
   setAria("#openDayPlan", tr("dayPlan.open"));
   setText("#dayPlanDialogKicker", tr("todayGoals.kicker"));
   setText("#dayPlanDialogScheduleTitle", tr("dayPlan.schedule"));
-  setText("#dayPlanDialogGoalsTitle", tr("dayPlan.flexible"));
   setText("#drawerScheduleTitle", tr("dayPlan.schedule"));
   setAria(".close-day-plan", tr("dayPlan.close"));
   applyCalendarLanguage();
@@ -1431,7 +1423,6 @@ function applyFocusLanguage() {
   setAria("#focusQuickPresets", tr("focus.presetSummary", { focus: 25, break: 5 }));
   setText("#focusDialogKicker", tr("focus.dialogKicker"));
   setText("#focusDialogTitle", tr("focus.dialogTitle"));
-  setText("#focusGoalLabel", tr("focus.goalLabel"));
   setText("#focusCustomLabelText", tr("focus.customLabel"));
   setPlaceholder("#focusCustomLabel", tr("focus.customPlaceholder"));
   setText("#focusCustomPresetLabel", tr("focus.custom"));
@@ -1453,7 +1444,6 @@ function applyFocusLanguage() {
   $$('[data-focus-review-scope]').forEach(button => { button.textContent = tr(`focus.${button.dataset.focusReviewScope === "week" ? "scopeWeek" : "scopeMonth"}`); });
   setText("#focusReviewUnit", tr("focus.reviewUnit"));
   setAria("#focusReviewBars", tr("focus.reviewChart"));
-  renderFocusGoalOptions();
   renderFocusOverview();
   renderFocusTimer(focusTimer?.snapshot() || null);
 }
@@ -2352,25 +2342,10 @@ function renderToday() {
 function renderDailyGoals() {
   renderDayRoll();
   renderDaySchedule();
-  renderDailyGoalList(selectedPlanningDate, "#dailyGoalList", "#dailyGoalProgress", "todayGoals.empty");
-  setDayPlanPane(dayPlanActivePane);
   const selected = parseDate(selectedPlanningDate);
   $("#todayPlanDate").textContent = formatDateChip(selected);
   $("#journalPlanDate").textContent = formatDateChip(selected);
   renderHomeJournal();
-  renderFocusGoalOptions();
-}
-
-function setDayPlanPane(pane) {
-  dayPlanActivePane = pane === "goals" ? "goals" : "schedule";
-  $$('[data-day-plan-pane]').forEach(button => {
-    const active = button.dataset.dayPlanPane === dayPlanActivePane;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-    button.tabIndex = active ? 0 : -1;
-  });
-  $("#daySchedulePanel").hidden = dayPlanActivePane !== "schedule";
-  $("#dayGoalsPanel").hidden = dayPlanActivePane !== "goals";
 }
 
 function calendarPreviewEvents(date) {
@@ -2449,18 +2424,6 @@ function renderDayPlanDialog() {
   const ordered = [...events].sort((a, b) => Number(Boolean(b.allDay)) - Number(Boolean(a.allDay)) || String(a.start || "").localeCompare(String(b.start || "")));
   $("#dayPlanDialogDate").textContent = formatDayPlanDialogDate(selectedPlanningDate);
   $("#dayPlanTimeline").innerHTML = ordered.map(event => scheduleEventMarkup(event)).join("");
-  const goals = state.dailyGoals[selectedPlanningDate] || [];
-  $("#dayPlanDialogGoals").innerHTML = goals.length ? goals.map(goal => `<button class="day-plan-dialog-goal ${goal.done ? "done" : ""}" type="button" data-id="${escapeHtml(goal.id)}" ${isFutureDate(selectedPlanningDate) ? "disabled" : ""}><span>✓</span><b>${escapeHtml(goal.text)}</b></button>`).join("") : `<p class="day-schedule-empty">${tr("todayGoals.empty")}</p>`;
-  $$("#dayPlanDialogGoals .day-plan-dialog-goal").forEach(button => button.addEventListener("click", () => {
-    const list = state.dailyGoals[selectedPlanningDate] || [];
-    const goal = list.find(item => item.id === button.dataset.id);
-    if (!goal) return;
-    goal.done = !goal.done;
-    state.dailyGoals[selectedPlanningDate] = list;
-    saveState();
-    renderDayPlanDialog();
-    renderDailyGoals();
-  }));
 }
 
 function openDayPlanDialog() {
@@ -2543,40 +2506,6 @@ function initVoiceReflection() {
     onSave: saveVoiceReflection,
     onToast: showToast,
   });
-}
-
-function renderDailyGoalList(date, listSelector, progressSelector, emptyKey) {
-  const goals = state.dailyGoals[date] || [];
-  const future = isFutureDate(date);
-  const focusAvailable = date === isoDate(new Date());
-  const done = goals.filter(goal => goal.done).length;
-  $(progressSelector).textContent = `${done} / ${goals.length}`;
-  $(listSelector).innerHTML = goals.length ? goals.map(goal => `
-    <div class="weekly-goal ${focusAvailable ? "focus-linked" : ""} ${goal.done ? "done" : ""} ${future ? "future-plan" : ""}" data-id="${goal.id}">
-      <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}" ${future ? "disabled" : ""}>✓</button>
-      <button class="weekly-goal-text" ${future ? "" : 'data-action="toggle"'}>${escapeHtml(goal.text)}</button>
-      ${focusAvailable ? `<button class="weekly-goal-focus" data-action="focus" aria-label="${escapeHtml(tr("focus.goalAction"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3"/></svg></button>` : ""}
-      <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}">×</button>
-    </div>`).join("") : `<p class="weekly-goal-empty">${tr(emptyKey)}</p>`;
-  const status = $("#dailyGoalList").parentElement.querySelector(".future-plan-status");
-  if (status) status.remove();
-  if (future && listSelector === "#dailyGoalList") $(listSelector).insertAdjacentHTML("afterend", `<p class="future-plan-status">${tr("todayGoals.futureStatus")}</p>`);
-  $$(`${listSelector} .weekly-goal`).forEach(row => row.addEventListener("click", event => {
-    const action = event.target.closest("button")?.dataset.action;
-    if (!action) return;
-    const list = state.dailyGoals[date] || [];
-    const index = list.findIndex(goal => goal.id === row.dataset.id);
-    if (index < 0) return;
-    if (action === "focus") {
-      openFocusTimerDialog(row.dataset.id);
-      return;
-    }
-    if (action === "toggle") list[index].done = !list[index].done;
-    if (action === "delete") list.splice(index, 1);
-    state.dailyGoals[date] = list;
-    saveState();
-    renderDailyGoalList(date, listSelector, progressSelector, emptyKey);
-  }));
 }
 
 function habitCard(habit, date, done) {
@@ -3762,21 +3691,6 @@ function loadReminderSettings() {
   }
 }
 
-function bindDailyGoalForm(formSelector, inputSelector, dateProvider, toastKey) {
-  $(formSelector).addEventListener("submit", event => {
-    event.preventDefault();
-    const input = $(inputSelector);
-    const text = input.value.trim();
-    if (!text) return;
-    const date = dateProvider();
-    state.dailyGoals[date] = [...(state.dailyGoals[date] || []), { id: createId(), text, done: false }];
-    input.value = "";
-    saveState();
-    renderDailyGoals();
-    showToast(tr(toastKey));
-  });
-}
-
 function reminderPermission() {
   return "Notification" in window ? Notification.permission : "unsupported";
 }
@@ -3913,19 +3827,6 @@ function formatFocusTime(milliseconds) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-}
-
-function focusGoalFor(id) {
-  return (state.dailyGoals[isoDate(new Date())] || []).find(goal => goal.id === id);
-}
-
-function renderFocusGoalOptions(preferred = "") {
-  const select = $("#focusGoalSelect");
-  if (!select) return;
-  const current = preferred || select.value;
-  const goals = state.dailyGoals[isoDate(new Date())] || [];
-  select.innerHTML = `<option value="">${escapeHtml(tr("focus.chooseGoal"))}</option>${goals.map(goal => `<option value="${escapeHtml(goal.id)}">${goal.done ? "✓ " : ""}${escapeHtml(goal.text)}</option>`).join("")}`;
-  if (goals.some(goal => goal.id === current)) select.value = current;
 }
 
 function focusPresetValues(preset) {
@@ -4073,9 +3974,8 @@ function renderFocusTimer(snapshot) {
   }
 }
 
-function openFocusTimerDialog(linkedGoalId = "") {
+function openFocusTimerDialog() {
   const snapshot = focusTimer?.snapshot();
-  renderFocusGoalOptions(snapshot?.linkedGoalId || linkedGoalId);
   if (!snapshot) {
     $("#focusCustomLabel").value = state.focusSettings?.defaultTopic || "";
     $("#focusMinutes").value = state.focusSettings?.focusMinutes || 25;
@@ -4092,9 +3992,7 @@ function openFocusTimerDialog(linkedGoalId = "") {
 async function startFocusSession() {
   const preset = $('[data-focus-preset].active')?.dataset.focusPreset || "classic";
   const values = focusPresetValues(preset);
-  const goalId = $("#focusGoalSelect").value;
-  const goal = focusGoalFor(goalId);
-  const label = $("#focusCustomLabel").value.trim() || goal?.text || tr("focus.untitled");
+  const label = $("#focusCustomLabel").value.trim() || tr("focus.untitled");
   state.focusSettings = {
     preset,
     ...values,
@@ -4105,7 +4003,7 @@ async function startFocusSession() {
   };
   saveState();
   if (state.focusSettings.notify) requestNotificationPermission();
-  focusTimer.start({ date: isoDate(new Date()), label, linkedGoalId: goalId, preset, durationMinutes: values.focusMinutes, breakMinutes: values.breakMinutes });
+  focusTimer.start({ date: isoDate(new Date()), label, linkedGoalId: "", preset, durationMinutes: values.focusMinutes, breakMinutes: values.breakMinutes });
   acquireFocusWakeLock();
 }
 
@@ -4287,19 +4185,11 @@ function bindEvents() {
     event.preventDefault();
     closeMoodReasonDialog();
   });
-  bindDailyGoalForm("#dailyGoalForm", "#dailyGoalInput", () => selectedPlanningDate, "todayGoals.added");
   $("#previousPlanDay").addEventListener("click", () => shiftPlanningDay(-1));
   $("#nextPlanDay").addEventListener("click", () => shiftPlanningDay(1));
   $("#toggleRoutineEvents").addEventListener("click", () => {
     dayPlanRoutinesExpanded = !dayPlanRoutinesExpanded;
     renderDaySchedule();
-  });
-  $$('[data-day-plan-pane]').forEach(button => button.addEventListener("click", () => setDayPlanPane(button.dataset.dayPlanPane)));
-  $("#dayPlanViewSwitch").addEventListener("keydown", event => {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-    event.preventDefault();
-    setDayPlanPane(dayPlanActivePane === "schedule" ? "goals" : "schedule");
-    $(`[data-day-plan-pane="${dayPlanActivePane}"]`).focus();
   });
   $("#openDayPlan").addEventListener("click", openDayPlanDialog);
   $$(".close-day-plan").forEach(button => button.addEventListener("click", () => $("#dayPlanDialog").close()));

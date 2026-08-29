@@ -210,28 +210,14 @@
                 <div class="day-roll" id="dayRoll"></div>
                 <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
               </div>
-              <div class="day-plan-view-switch" id="dayPlanViewSwitch" role="tablist" aria-label="Day plan view">
-                <button class="active" id="dayScheduleTab" type="button" role="tab" aria-selected="true" aria-controls="daySchedulePanel" data-day-plan-pane="schedule">
-                  <span class="day-plan-dot" aria-hidden="true"></span><b id="dayScheduleTabLabel">Schedule</b><small id="dayScheduleCount">0 events</small>
-                </button>
-                <button id="dayGoalsTab" type="button" role="tab" aria-selected="false" aria-controls="dayGoalsPanel" data-day-plan-pane="goals">
-                  <span class="goal-check-glyph" aria-hidden="true">✓</span><b id="dayGoalsTabLabel">Flexible goals</b><small id="dailyGoalProgress">0 / 0</small>
-                </button>
+              <div class="day-schedule-summary">
+                <span class="day-plan-dot" aria-hidden="true"></span><b id="dayScheduleTitle">Schedule</b><small id="dayScheduleCount">0 events</small>
               </div>
               <div class="day-plan-columns">
-                <section class="day-schedule-column" id="daySchedulePanel" role="tabpanel" aria-labelledby="dayScheduleTab">
-                  <h4 class="sr-only" id="dayScheduleTitle">Schedule</h4>
+                <section class="day-schedule-column" id="daySchedulePanel" aria-labelledby="dayScheduleTitle">
                   <div class="day-schedule-list" id="dayScheduleList"></div>
                   <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b>⌄</b></button>
                   <div class="routine-event-list" id="routineEventList" hidden></div>
-                </section>
-                <section class="day-flexible-goals" id="dayGoalsPanel" role="tabpanel" aria-labelledby="dayGoalsTab" hidden>
-                  <h4 class="sr-only" id="dayGoalsTitle">Flexible goals</h4>
-                  <div class="weekly-goal-list daily-goal-list" id="dailyGoalList"></div>
-                  <form class="weekly-goal-form daily-goal-form" id="dailyGoalForm">
-                    <input id="dailyGoalInput" maxlength="100" placeholder="Add something for this day…" />
-                    <button aria-label="Add daily goal">＋</button>
-                  </form>
                 </section>
               </div>
             </article>
@@ -446,10 +432,6 @@
             <div class="day-plan-dialog-section"><span></span><h3 id="dayPlanDialogScheduleTitle">Schedule</h3></div>
             <div class="day-plan-timeline" id="dayPlanTimeline"></div>
           </section>
-          <section>
-            <div class="day-plan-dialog-section"><span class="goal-check-glyph">✓</span><h3 id="dayPlanDialogGoalsTitle">Flexible goals</h3></div>
-            <div class="day-plan-dialog-goals" id="dayPlanDialogGoals"></div>
-          </section>
         </div>
       </div>
     </dialog>
@@ -606,7 +588,6 @@
             <div class="focus-clock-copy"><span id="focusPhase">Focus</span><strong id="focusTime">25:00</strong><small id="focusCurrentLabel">Ready when you are</small></div>
           </div>
           <section class="focus-setup" id="focusSetup">
-            <label><span id="focusGoalLabel">Focus on</span><select id="focusGoalSelect"><option value="">Choose a daily goal</option></select></label>
             <label><span id="focusCustomLabelText">Focus topic</span><input id="focusCustomLabel" list="focusTopicSuggestions" maxlength="100" placeholder="What deserves your attention?" /><datalist id="focusTopicSuggestions"></datalist></label>
             <div class="focus-preset-group" id="focusPresetGroup" role="group" aria-label="Timer length">
               <button class="active" type="button" data-focus-preset="classic"><strong>25</strong><small>+ 5</small></button>

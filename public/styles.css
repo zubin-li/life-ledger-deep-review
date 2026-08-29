@@ -1490,7 +1490,7 @@ html[data-theme="dark"] .setting-row.habit-dragging { box-shadow: 0 20px 46px rg
 html[data-theme="dark"] .habit-reminder-card { border-color: var(--edge-soft); background: var(--surface-1); }
 html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1); color: #9bc2ab; }
 
-/* Day Plan prototype: schedule and flexible goals share one calm surface. */
+/* Day Plan: one calm, read-only schedule surface. */
 @media (min-width: 1101px) {
   .daily-planning-grid { grid-template-columns: minmax(0, 1.42fr) minmax(320px, .58fr); }
 }
@@ -1502,17 +1502,13 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 .day-plan-expand { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--card) 82%, transparent); color: var(--ink); font-size: 9px; font-weight: 700; white-space: nowrap; }
 .day-plan-expand svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .day-plan-expand:active { transform: scale(.97); }
-.day-plan-view-switch { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin-top: 16px; padding: 4px; border-radius: 15px; background: var(--paper-deep); }
-.day-plan-view-switch button { min-width: 0; min-height: 46px; padding: 8px 11px; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 8px; border: 0; border-radius: 11px; background: transparent; color: var(--muted); text-align: left; transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 140ms var(--ease-enter); }
-.day-plan-view-switch button b { min-width: 0; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.day-plan-view-switch button small { font: 650 8px var(--font-body); white-space: nowrap; }
-.day-plan-view-switch button.active { color: var(--ink); background: var(--card); box-shadow: 0 5px 16px rgba(25,31,28,.08), inset 0 1px 0 rgba(255,255,255,.7); }
-.day-plan-view-switch button:active { transform: scale(.985); }
-.day-plan-view-switch .goal-check-glyph { width: 18px; height: 18px; }
+.day-schedule-summary { min-height: 42px; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 8px; margin-top: 16px; padding: 8px 11px; border-radius: 13px; background: var(--paper-deep); color: var(--ink); }
+.day-schedule-summary b { min-width: 0; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.day-schedule-summary small { color: var(--muted); font: 650 8px var(--font-body); white-space: nowrap; }
 .day-plan-columns { min-width: 0; flex: 1; display: block; margin-top: 14px; }
 .day-plan-columns > section { min-width: 0; display: flex; flex-direction: column; }
 .day-plan-columns > section[hidden] { display: none; }
-.day-schedule-column, .day-flexible-goals { padding: 0; border: 0; }
+.day-schedule-column { padding: 0; border: 0; }
 .day-plan-section-heading { min-height: 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
 .day-plan-section-heading > div { min-width: 0; display: flex; align-items: center; gap: 8px; }
 .day-plan-section-heading h4 { margin: 0; font: 650 11px var(--font-body); }
@@ -1534,8 +1530,6 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 .routine-disclosure b { font-size: 12px; font-weight: 500; }
 .routine-event-list { padding-top: 3px; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
 .routine-event-list[hidden] { display: none; }
-.day-flexible-goals .daily-goal-list { margin: 2px 0 13px; }
-.day-flexible-goals .daily-goal-form { margin-top: auto; }
 
 /* Goal horizon is progressive disclosure inside the existing weekly card. */
 .goal-horizon-switch { align-self: flex-start; display: inline-flex; gap: 3px; margin-bottom: 22px; padding: 3px; border-radius: 12px; background: var(--paper-deep); }
@@ -1566,7 +1560,7 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 .day-plan-dialog-shell { max-height: calc(100dvh - 28px); display: flex; flex-direction: column; }
 .day-plan-dialog-shell > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px; border-bottom: 1px solid var(--line); }
 .day-plan-dialog-shell > header h2 { margin: 6px 0 0; font: 650 23px var(--font-display); }
-.day-plan-dialog-body { min-height: 0; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(240px, .85fr); overflow: auto; }
+.day-plan-dialog-body { min-height: 0; display: grid; grid-template-columns: 1fr; overflow: auto; }
 .day-plan-dialog-body > section { min-width: 0; padding: 24px; }
 .day-plan-dialog-body > section + section { border-left: 1px solid var(--line); }
 .day-plan-dialog-section { display: flex; align-items: center; gap: 9px; margin-bottom: 15px; }
@@ -1575,12 +1569,6 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 .day-plan-timeline { display: grid; gap: 4px; }
 .day-plan-timeline .day-schedule-event { grid-template-columns: 54px minmax(0, 1fr) auto; padding: 11px 8px; }
 .day-plan-timeline .day-schedule-event + .day-schedule-event { border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
-.day-plan-dialog-goals { display: grid; gap: 6px; }
-.day-plan-dialog-goal { min-height: 44px; width: 100%; display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 10px; padding: 8px 5px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); text-align: left; }
-.day-plan-dialog-goal span { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 7px; color: transparent; }
-.day-plan-dialog-goal b { font-size: 10px; }
-.day-plan-dialog-goal.done span { background: var(--ink); color: white; }
-.day-plan-dialog-goal.done b { color: var(--muted); text-decoration: line-through; }
 .drawer-schedule-list { display: grid; gap: 3px; }
 .drawer-schedule-list .day-schedule-event { padding-inline: 4px; }
 .drawer-schedule-list .day-schedule-event + .day-schedule-event { border-top: 1px solid color-mix(in srgb, var(--line) 58%, transparent); }
@@ -1641,7 +1629,6 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 
 html[data-theme="dark"] .day-plan-expand,
 html[data-theme="dark"] .calendar-sync-trigger,
-html[data-theme="dark"] .day-plan-view-switch button.active,
 html[data-theme="dark"] .goal-horizon-switch button.active,
 html[data-theme="dark"] .long-term-dialog-body input,
 html[data-theme="dark"] .long-term-dialog-body select { border-color: var(--edge-soft); background: var(--surface-2); }
@@ -1670,9 +1657,7 @@ html[data-theme="dark"] .calendar-routine-setting { background: var(--surface-1)
   .calendar-sync-trigger span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .day-plan-expand { width: 44px; flex: 0 0 44px; justify-content: center; padding: 0; }
   .day-plan-expand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .day-plan-view-switch { margin-top: 14px; }
-  .day-plan-view-switch button { min-height: 44px; padding-inline: 9px; grid-template-columns: 18px minmax(0, 1fr); }
-  .day-plan-view-switch button small { display: none; }
+  .day-schedule-summary { margin-top: 14px; }
   .day-plan-columns { margin-top: 12px; }
   .day-schedule-event { min-height: 44px; grid-template-columns: 48px minmax(0, 1fr) auto; padding-inline: 4px; }
   .day-schedule-event strong { white-space: normal; }

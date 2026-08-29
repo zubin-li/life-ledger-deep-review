@@ -6,20 +6,22 @@ const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf
 const css = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 
-test("schedule and flexible goals share the existing Day Plan card", () => {
+test("Day Plan keeps the schedule and removes daily flexible goals", () => {
   const card = html.match(/<article class="daily-goals-card" data-plan="selected-day">([\s\S]*?)<\/article>/);
   assert.ok(card, "Day Plan card is missing");
   assert.match(card[1], /id="dayScheduleList"/);
-  assert.match(card[1], /id="dailyGoalList"/);
   assert.match(card[1], /id="toggleRoutineEvents"/);
   assert.match(card[1], /id="openDayPlan"/);
-  assert.match(card[1], /id="dayPlanViewSwitch"/);
-  assert.match(card[1], /data-day-plan-pane="schedule"/);
-  assert.match(card[1], /data-day-plan-pane="goals"/);
-  assert.match(card[1], /id="dayGoalsPanel"[^>]*hidden/);
+  assert.match(card[1], /id="dayScheduleCount"/);
+  assert.doesNotMatch(card[1], /id="dayPlanViewSwitch"/);
+  assert.doesNotMatch(card[1], /id="dayGoalsPanel"/);
+  assert.doesNotMatch(card[1], /id="dailyGoalList"/);
+  assert.doesNotMatch(card[1], /id="dailyGoalForm"/);
+  assert.doesNotMatch(html, /id="dayPlanDialogGoals"/);
+  assert.doesNotMatch(html, /id="focusGoalSelect"/);
   assert.match(app, /calendarEventsForDate\(selectedPlanningDate\)/);
   assert.match(app, /event\.routine/);
-  assert.match(app, /function setDayPlanPane\(pane\)/);
+  assert.doesNotMatch(app, /function setDayPlanPane\(pane\)/);
 });
 
 test("Google Calendar stays read-only and progressively disclosed inside Day Plan", () => {
@@ -55,11 +57,9 @@ test("weekly goals and long-term goals use progressive disclosure in one card", 
   assert.match(app, /function saveLongTermGoal\(event\)/);
 });
 
-test("mobile Day Plan switches panes without horizontal scrolling", () => {
-  const mobile = css.slice(css.lastIndexOf("/* Day Plan prototype"));
-  assert.match(mobile, /\.day-plan-view-switch\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
-  assert.match(mobile, /\.day-plan-columns > section\[hidden\]\s*\{\s*display:\s*none;/);
-  assert.match(mobile, /@media \(max-width: 760px\)[\s\S]*?\.day-plan-view-switch button\s*\{[^}]*grid-template-columns:\s*18px minmax\(0, 1fr\);/);
+test("mobile Day Plan keeps one responsive schedule without horizontal scrolling", () => {
+  const mobile = css.slice(css.lastIndexOf("/* Day Plan:"));
+  assert.match(css, /\.day-schedule-summary\s*\{[^}]*grid-template-columns:\s*18px minmax\(0, 1fr\) auto;/);
   assert.match(mobile, /\.day-plan-dialog-body\s*\{\s*grid-template-columns:\s*1fr;/);
   assert.doesNotMatch(mobile, /overflow-x:\s*(auto|scroll)/);
 });
