@@ -22,6 +22,7 @@ test("Day Plan keeps the schedule and removes daily flexible goals", () => {
   assert.match(app, /calendarEventsForDate\(selectedPlanningDate\)/);
   assert.match(app, /event\.routine/);
   assert.doesNotMatch(app, /function setDayPlanPane\(pane\)/);
+  assert.doesNotMatch(app, /const dailyGoals = dates\.flatMap/);
 });
 
 test("Google Calendar stays read-only and progressively disclosed inside Day Plan", () => {

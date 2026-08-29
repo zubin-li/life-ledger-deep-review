@@ -3316,7 +3316,7 @@ function reviewEvidence(scope, key) {
   const dates = datesForReview(scope, key);
   const dateSet = new Set(dates);
   const logs = dates.map(date => ({ date, log: getLog(date) }));
-  const recordedDays = logs.filter(({ date, log }) => log.completed?.length || log.mood || log.moodReason || log.note?.trim() || (state.dailyGoals[date] || []).length).length;
+  const recordedDays = logs.filter(({ log }) => log.completed?.length || log.mood || log.moodReason || log.note?.trim()).length;
   const habitStats = state.habits.map(habit => {
     const eligible = dates.filter(date => activeHabits(date).some(item => item.id === habit.id));
     const count = eligible.filter(date => getLog(date).completed?.includes(habit.id)).length;
@@ -3325,10 +3325,9 @@ function reviewEvidence(scope, key) {
   const habitCheckins = habitStats.reduce((sum, item) => sum + item.count, 0);
   const sessions = dates.length ? focusSessionsBetween(dates[0], dates.at(-1)) : [];
   const focusMinutes = Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0));
-  const dailyGoals = dates.flatMap(date => state.dailyGoals[date] || []);
   const weekKeys = [...new Set(dates.map(date => isoWeekKey(parseDate(date))))];
   const weeklyGoals = weekKeys.flatMap(week => state.weeklyGoals[week] || []);
-  const goals = [...dailyGoals, ...weeklyGoals];
+  const goals = weeklyGoals;
   const goalsDone = goals.filter(goal => goal.done).length;
   const unfinishedGoals = goals.filter(goal => !goal.done).map(goal => goal.text).filter(Boolean);
   const moodCounts = logs.reduce((counts, { log }) => {
