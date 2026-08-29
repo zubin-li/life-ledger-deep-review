@@ -193,10 +193,10 @@
             </div>
           </section>
 
-          <section class="daily-planning-grid" aria-label="Daily planning">
+          <section class="daily-planning-grid" aria-label="Daily calendar and reflection">
             <article class="daily-goals-card" data-plan="selected-day">
               <div class="daily-goals-heading">
-                <div><span class="kicker">DAY PLAN</span><h3>Daily Goals</h3><p>Select a day to review or plan ahead.</p><small id="todayPlanDate"></small></div>
+                <div><span class="kicker">CALENDAR</span><h3>Daily Calendar</h3><p>Calendar events for the selected day.</p><small id="todayPlanDate"></small></div>
                 <div class="day-plan-heading-actions">
                   <button class="calendar-sync-trigger" id="calendarConnectionButton" type="button" hidden>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><circle cx="17" cy="16" r="2.5"/></svg>
@@ -210,11 +210,8 @@
                 <div class="day-roll" id="dayRoll"></div>
                 <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
               </div>
-              <div class="day-schedule-summary">
-                <span class="day-plan-dot" aria-hidden="true"></span><b id="dayScheduleTitle">Schedule</b><small id="dayScheduleCount">0 events</small>
-              </div>
               <div class="day-plan-columns">
-                <section class="day-schedule-column" id="daySchedulePanel" aria-labelledby="dayScheduleTitle">
+                <section class="day-schedule-column" id="daySchedulePanel">
                   <div class="day-schedule-list" id="dayScheduleList"></div>
                   <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b>⌄</b></button>
                   <div class="routine-event-list" id="routineEventList" hidden></div>

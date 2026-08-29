@@ -1492,9 +1492,8 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 
 /* Day Plan: one calm, read-only schedule surface. */
 @media (min-width: 1101px) {
-  .daily-planning-grid { grid-template-columns: minmax(0, 1.42fr) minmax(320px, .58fr); }
+  .daily-planning-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.daily-goals-card[data-plan="selected-day"] { min-height: 390px; }
 .day-plan-heading-actions { display: flex; align-items: center; gap: 7px; }
 .calendar-sync-trigger { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, #6f95c8 7%, var(--card)); color: #567cae; font-size: 9px; font-weight: 750; white-space: nowrap; }
 .calendar-sync-trigger svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
@@ -1502,9 +1501,6 @@ html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1);
 .day-plan-expand { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--card) 82%, transparent); color: var(--ink); font-size: 9px; font-weight: 700; white-space: nowrap; }
 .day-plan-expand svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .day-plan-expand:active { transform: scale(.97); }
-.day-schedule-summary { min-height: 42px; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 8px; margin-top: 16px; padding: 8px 11px; border-radius: 13px; background: var(--paper-deep); color: var(--ink); }
-.day-schedule-summary b { min-width: 0; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
-.day-schedule-summary small { color: var(--muted); font: 650 8px var(--font-body); white-space: nowrap; }
 .day-plan-columns { min-width: 0; flex: 1; display: block; margin-top: 14px; }
 .day-plan-columns > section { min-width: 0; display: flex; flex-direction: column; }
 .day-plan-columns > section[hidden] { display: none; }
@@ -1657,7 +1653,6 @@ html[data-theme="dark"] .calendar-routine-setting { background: var(--surface-1)
   .calendar-sync-trigger span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .day-plan-expand { width: 44px; flex: 0 0 44px; justify-content: center; padding: 0; }
   .day-plan-expand span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .day-schedule-summary { margin-top: 14px; }
   .day-plan-columns { margin-top: 12px; }
   .day-schedule-event { min-height: 44px; grid-template-columns: 48px minmax(0, 1fr) auto; padding-inline: 4px; }
   .day-schedule-event strong { white-space: normal; }

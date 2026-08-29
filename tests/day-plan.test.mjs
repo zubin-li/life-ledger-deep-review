@@ -12,7 +12,8 @@ test("Day Plan keeps the schedule and removes daily flexible goals", () => {
   assert.match(card[1], /id="dayScheduleList"/);
   assert.match(card[1], /id="toggleRoutineEvents"/);
   assert.match(card[1], /id="openDayPlan"/);
-  assert.match(card[1], /id="dayScheduleCount"/);
+  assert.doesNotMatch(card[1], /id="dayScheduleCount"/);
+  assert.doesNotMatch(card[1], /class="day-schedule-summary"/);
   assert.doesNotMatch(card[1], /id="dayPlanViewSwitch"/);
   assert.doesNotMatch(card[1], /id="dayGoalsPanel"/);
   assert.doesNotMatch(card[1], /id="dailyGoalList"/);
@@ -60,7 +61,7 @@ test("weekly goals and long-term goals use progressive disclosure in one card", 
 
 test("mobile Day Plan keeps one responsive schedule without horizontal scrolling", () => {
   const mobile = css.slice(css.lastIndexOf("/* Day Plan:"));
-  assert.match(css, /\.day-schedule-summary\s*\{[^}]*grid-template-columns:\s*18px minmax\(0, 1fr\) auto;/);
+  assert.match(css, /@media \(min-width: 1101px\)\s*\{\s*\.daily-planning-grid\s*\{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(mobile, /\.day-plan-dialog-body\s*\{\s*grid-template-columns:\s*1fr;/);
   assert.doesNotMatch(mobile, /overflow-x:\s*(auto|scroll)/);
 });

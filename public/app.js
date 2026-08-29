@@ -105,11 +105,10 @@ const i18n = {
     },
     moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
     todayGoals: {
-      kicker: "DAY PLAN", title: "今日计划", desc: "固定时间与灵活目标，一天之内各有位置。", placeholder: "为这一天添加一个灵活目标…", addLabel: "添加目标",
-      empty: "这一天还没有具体目标。<br />先写下一件最重要的事。", added: "目标已添加", previous: "前一天", next: "后一天", futureStatus: "未来目标只能规划，到了当天才能勾选完成",
+      kicker: "日历", title: "每日日程", desc: "查看所选日期的日历安排。", previous: "前一天", next: "后一天",
     },
     dayPlan: {
-      schedule: "日程安排", flexible: "灵活目标", open: "展开一天", close: "关闭完整日程", events: "{count} 项", noEvents: "这一天没有临时日程。", routinesHidden: "{count} 项固定日程已收起", routinesShown: "收起固定日程", routine: "固定", allDay: "全天", preview: "日历连接后的展示预览",
+      schedule: "日程安排", open: "展开一天", close: "关闭完整日程", events: "{count} 项", noEvents: "这一天没有临时日程。", routinesHidden: "{count} 项固定日程已收起", routinesShown: "收起固定日程", routine: "固定", allDay: "全天", preview: "日历连接后的展示预览",
     },
     calendarSync: {
       kicker: "日历连接", title: "Google 日历", trigger: "连接日历", connectedTrigger: "日历已连接", intro: "只读连接。Life Ledger 仅保留复盘所需的日程标题与时间。",
@@ -421,11 +420,10 @@ const i18n = {
     },
     moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
     todayGoals: {
-      kicker: "DAY PLAN", title: "Day Plan", desc: "Fixed commitments and flexible goals, held in one calm view.", placeholder: "Add a flexible goal for this day…", addLabel: "Add goal",
-      empty: "No concrete goals for this day yet.<br />Start with one thing that matters.", added: "Goal added", previous: "Previous day", next: "Next day", futureStatus: "Future goals can be planned now and completed when the day arrives",
+      kicker: "CALENDAR", title: "Daily Calendar", desc: "Calendar events for the selected day.", previous: "Previous day", next: "Next day",
     },
     dayPlan: {
-      schedule: "Schedule", flexible: "Flexible goals", open: "Open day", close: "Close full day", events: "{count} events", noEvents: "No one-off events for this day.", routinesHidden: "{count} routines hidden", routinesShown: "Hide routines", routine: "Routine", allDay: "All day", preview: "Preview of the connected calendar experience",
+      schedule: "Schedule", open: "Open day", close: "Close full day", events: "{count} events", noEvents: "No one-off events for this day.", routinesHidden: "{count} routines hidden", routinesShown: "Hide routines", routine: "Routine", allDay: "All day", preview: "Preview of the connected calendar experience",
     },
     calendarSync: {
       kicker: "CALENDAR CONNECTION", title: "Google Calendar", trigger: "Connect calendar", connectedTrigger: "Calendar connected", intro: "Read-only access. Life Ledger only keeps the event title and time needed for your review.",
@@ -737,11 +735,10 @@ const i18n = {
     },
     moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
     todayGoals: {
-      kicker: "TAGESPLAN", title: "Tagesplan", desc: "Feste Termine und flexible Ziele in einer ruhigen Übersicht.", placeholder: "Ein flexibles Ziel für diesen Tag hinzufügen…", addLabel: "Ziel hinzufügen",
-      empty: "Für diesen Tag gibt es noch keine konkreten Ziele.<br />Beginne mit einer wichtigen Sache.", added: "Ziel hinzugefügt", previous: "Voriger Tag", next: "Nächster Tag", futureStatus: "Zukünftige Ziele können geplant und erst am jeweiligen Tag erledigt werden",
+      kicker: "KALENDER", title: "Tageskalender", desc: "Kalendertermine für den ausgewählten Tag.", previous: "Voriger Tag", next: "Nächster Tag",
     },
     dayPlan: {
-      schedule: "Termine", flexible: "Flexible Ziele", open: "Tag öffnen", close: "Tagesansicht schließen", events: "{count} Termine", noEvents: "Keine einmaligen Termine an diesem Tag.", routinesHidden: "{count} Routinen ausgeblendet", routinesShown: "Routinen ausblenden", routine: "Routine", allDay: "Ganztägig", preview: "Vorschau der verbundenen Kalenderansicht",
+      schedule: "Termine", open: "Tag öffnen", close: "Tagesansicht schließen", events: "{count} Termine", noEvents: "Keine einmaligen Termine an diesem Tag.", routinesHidden: "{count} Routinen ausgeblendet", routinesShown: "Routinen ausblenden", routine: "Routine", allDay: "Ganztägig", preview: "Vorschau der verbundenen Kalenderansicht",
     },
     calendarSync: {
       kicker: "KALENDERVERBINDUNG", title: "Google Kalender", trigger: "Kalender verbinden", connectedTrigger: "Kalender verbunden", intro: "Nur Lesezugriff. Life Ledger speichert nur Titel und Zeit, die für deine Rückschau nötig sind.",
@@ -1268,7 +1265,6 @@ function applyLanguage() {
   setText('[data-plan="selected-day"] .daily-goals-heading p', tr("todayGoals.desc"));
   setAria("#previousPlanDay", tr("todayGoals.previous"));
   setAria("#nextPlanDay", tr("todayGoals.next"));
-  setText("#dayScheduleTitle", tr("dayPlan.schedule"));
   setText("#openDayPlan span", tr("dayPlan.open"));
   setAria("#openDayPlan", tr("dayPlan.open"));
   setText("#dayPlanDialogKicker", tr("todayGoals.kicker"));
@@ -2399,7 +2395,6 @@ function renderDaySchedule() {
   const events = calendarEventsForDate(selectedPlanningDate);
   const important = events.filter(event => !event.routine);
   const routines = events.filter(event => event.routine);
-  setText("#dayScheduleCount", tr("dayPlan.events", { count: important.length }));
   $("#dayScheduleList").innerHTML = important.length
     ? important.slice(0, 3).map(event => scheduleEventMarkup(event, true)).join("")
     : `<p class="day-schedule-empty">${tr("dayPlan.noEvents")}</p>`;
