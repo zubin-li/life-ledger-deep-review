@@ -2,6 +2,14 @@
 
 All notable changes are documented here.
 
+## [1.1.2] - 2026-08-30
+
+### Fixed
+
+- Makes photo preparation resilient across Safari and other browsers by verifying the actual encoded format, falling back to JPEG, and progressively reducing dimensions when necessary.
+- Shows clearer photo errors for expired sessions, network failures, processing failures, and temporary storage errors.
+- Gives one, two, and three-photo timeline entries distinct responsive compositions, so a single portrait photo no longer appears as a narrow vertical strip.
+
 ## [1.1.1] - 2026-08-30
 
 ### Added

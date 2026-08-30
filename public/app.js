@@ -2374,7 +2374,7 @@ async function renderTimeline() {
       ? `<span class="memory-entry-mood">${moodCalendarIcon(entry.log.mood)}${escapeHtml(moodLabel(entry.log.mood))}</span>`
       : `<span class="memory-entry-mood">${escapeHtml(tr("timeline.noMood"))}</span>`;
     const reason = String(entry.log.moodReason || "").trim();
-    const gallery = entry.photos.length ? `<div class="memory-entry-photos">${entry.photos.map(photo => `<img src="${photo.url}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" />`).join("")}</div>` : "";
+    const gallery = entry.photos.length ? `<div class="memory-entry-photos" data-count="${entry.photos.length}">${entry.photos.map(photo => `<figure class="memory-entry-photo"><img src="${photo.url}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" /></figure>`).join("")}</div>` : "";
     return `<article class="memory-entry ${moodClass}" data-date="${entry.date}">
       <header class="memory-entry-header"><button class="memory-entry-date" type="button"><strong>${escapeHtml(label.main)}</strong><small>${escapeHtml(label.detail)}</small></button>${mood}</header>
       ${reason ? `<p class="memory-entry-reason">${escapeHtml(reason)}</p>` : ""}${gallery}

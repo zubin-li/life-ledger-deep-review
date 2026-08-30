@@ -414,8 +414,12 @@ dialog form > footer { justify-content: flex-end; gap: 8px; }
 .memory-entry-mood { min-height: 38px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 12px; background: color-mix(in srgb, var(--mood-color) 10%, transparent); color: var(--mood-color); font-size: 9px; font-weight: 700; }
 .memory-entry-mood svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .memory-entry-reason { margin: 16px 0 0; color: var(--ink); font: 11px/1.75 var(--font-display); white-space: pre-wrap; }
-.memory-entry-photos { margin-top: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.memory-entry-photos img { width: 100%; aspect-ratio: 1; display: block; object-fit: cover; border-radius: 16px; background: var(--paper-deep); }
+.memory-entry-photos { width: 100%; margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.memory-entry-photo { min-width: 0; margin: 0; overflow: hidden; aspect-ratio: 1; border-radius: 16px; background: var(--paper-deep); }
+.memory-entry-photo img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.memory-entry-photos[data-count="1"] { width: min(100%, 620px); grid-template-columns: minmax(0, 1fr); }
+.memory-entry-photos[data-count="1"] .memory-entry-photo { aspect-ratio: 16 / 10; }
+.memory-entry-photos[data-count="3"] .memory-entry-photo:first-child { grid-column: span 2; aspect-ratio: 16 / 9; }
 .memory-empty { min-height: 280px; display: grid; place-items: center; padding: 36px; border: 1px dashed var(--line); border-radius: 24px; color: var(--muted); text-align: center; }
 .memory-empty div { max-width: 340px; }
 .memory-empty svg { width: 38px; height: 38px; margin-bottom: 16px; fill: none; stroke: var(--sage); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
@@ -596,8 +600,7 @@ dialog { border-radius: 28px; }
   .memory-timeline::before { left: 14px; }
   .memory-entry { padding: 17px; border-radius: 20px; }
   .memory-entry::before { left: -36px; }
-  .memory-entry-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .memory-entry-photos img:first-child:nth-last-child(3) { grid-column: span 2; aspect-ratio: 1.7; }
+  .memory-entry-photos[data-count="1"] { width: 100%; }
   .weekly-heading { display: block; }
   .week-navigator { width: 100%; margin-top: 0; grid-template-columns: 40px 1fr 40px; }
 }
