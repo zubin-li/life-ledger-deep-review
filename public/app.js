@@ -2618,8 +2618,7 @@ function renderHomeJournal() {
 }
 
 async function saveVoiceReflection({ date, text }) {
-  const today = isoDate(new Date());
-  if (date !== today) throw new Error("Voice reflection can only be saved to today");
+  if (isFutureDate(date)) throw new Error("Voice reflection cannot be saved to a future date");
   if (cloudMode && !authExpired) await pullCloudState();
   const existing = getLog(date).note || "";
   const note = window.LifeLedgerVoiceCheckin.appendReflection(existing, text);

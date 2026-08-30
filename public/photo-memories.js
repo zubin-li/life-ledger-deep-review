@@ -5,27 +5,29 @@
   const MAX_OUTPUT_BYTES = 1_200_000;
   const MAX_EDGE = 1600;
   const MAX_PER_DAY = 3;
+  const HEIC_CONVERTER_URL = "./vendor/heic2any.min.js?v=0.0.4";
+  let heicConverterPromise = null;
 
   const copy = {
     en: {
       title: "Photo memories", help: "Up to three private photos for this day.", add: "Add photo", count: "{count} of 3",
       processing: "Preparing photo…", uploading: "Saving privately…", saved: "Photo saved", delete: "Remove photo", deleting: "Removing…",
       confirmDelete: "Remove this photo from the day?", unavailable: "Photo memories are available in the deployed Cloudflare app.",
-      format: "Choose a JPEG, PNG, or WebP photo.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
+      format: "Choose a supported photo, including JPEG, PNG, WebP, HEIC, or HEIF.", heic: "This HEIC photo could not be decoded. Try the original file again.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
       dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", monthlyLimit: "The private photo allowance is paused until next month.", generic: "The photo could not be saved. Try again.",
     },
     zh: {
       title: "照片记忆", help: "为这一天留下最多三张私人照片。", add: "添加照片", count: "{count} / 3",
       processing: "正在处理照片……", uploading: "正在私密保存……", saved: "照片已保存", delete: "删除照片", deleting: "正在删除……",
       confirmDelete: "从这一天删除这张照片吗？", unavailable: "照片记忆仅在已部署的 Cloudflare 版本中开放。",
-      format: "请选择 JPEG、PNG 或 WebP 照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
+      format: "请选择支持的照片，包括 JPEG、PNG、WebP、HEIC 或 HEIF。", heic: "这张 HEIC 照片未能解码，请重新选择原始照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
       dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", monthlyLimit: "本月私人照片额度已暂停，下月自动恢复。", generic: "照片未能保存，请重试。",
     },
     de: {
       title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", add: "Foto hinzufügen", count: "{count} von 3",
       processing: "Foto wird vorbereitet …", uploading: "Wird privat gespeichert …", saved: "Foto gespeichert", delete: "Foto entfernen", deleting: "Wird entfernt …",
       confirmDelete: "Dieses Foto aus dem Tag entfernen?", unavailable: "Fotoerinnerungen sind in der bereitgestellten Cloudflare-App verfügbar.",
-      format: "Wähle ein JPEG-, PNG- oder WebP-Foto.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
+      format: "Wähle ein unterstütztes Foto, einschließlich JPEG, PNG, WebP, HEIC oder HEIF.", heic: "Dieses HEIC-Foto konnte nicht dekodiert werden. Wähle die Originaldatei erneut.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
       dayLimit: "Für diesen Tag sind bereits drei Fotos gespeichert.", libraryFull: "Der private Fotospeicher ist voll.", monthlyLimit: "Das private Fotokontingent ist bis zum nächsten Monat pausiert.", generic: "Das Foto konnte nicht gespeichert werden. Versuche es erneut.",
     },
   };
@@ -34,7 +36,35 @@
     return new Promise(resolve => canvas.toBlob(resolve, type, quality));
   }
 
-  async function decodeImage(file) {
+  function isHeicFile(file) {
+    const type = String(file?.type || "").toLowerCase();
+    const name = String(file?.name || "").toLowerCase();
+    return type === "image/heic" || type === "image/heif" || type === "image/heic-sequence" || type === "image/heif-sequence"
+      || /\.(heic|heif)$/i.test(name);
+  }
+
+  function isPhotoFile(file) {
+    return String(file?.type || "").startsWith("image/") || /\.(jpe?g|png|webp|gif|avif|heic|heif)$/i.test(String(file?.name || ""));
+  }
+
+  function loadHeicConverter() {
+    if (typeof root.heic2any === "function") return Promise.resolve(root.heic2any);
+    if (heicConverterPromise) return heicConverterPromise;
+    heicConverterPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = HEIC_CONVERTER_URL;
+      script.async = true;
+      script.onload = () => typeof root.heic2any === "function" ? resolve(root.heic2any) : reject(new Error("HEIC converter unavailable"));
+      script.onerror = () => reject(new Error("HEIC converter unavailable"));
+      document.head.append(script);
+    }).catch(error => {
+      heicConverterPromise = null;
+      throw error;
+    });
+    return heicConverterPromise;
+  }
+
+  async function decodeBrowserImage(file) {
     if (root.createImageBitmap) {
       try { return await root.createImageBitmap(file, { imageOrientation: "from-image" }); }
       catch { /* Fall through to the image element for broader Safari compatibility. */ }
@@ -51,11 +81,33 @@
     }
   }
 
+  async function decodeImage(file) {
+    try {
+      return await decodeBrowserImage(file);
+    } catch (nativeError) {
+      if (!isHeicFile(file)) throw nativeError;
+      try {
+        const convert = await loadHeicConverter();
+        const result = await convert({ blob: file, toType: "image/jpeg", quality: .9, multiple: false });
+        const converted = Array.isArray(result) ? result[0] : result;
+        if (!(converted instanceof Blob)) throw new Error("HEIC conversion failed");
+        return await decodeBrowserImage(converted);
+      } catch {
+        throw Object.assign(new Error("HEIC photo could not be decoded"), { code: "PHOTO_HEIC_UNSUPPORTED" });
+      }
+    }
+  }
+
   async function compressPhoto(file) {
     if (!(file instanceof File)) throw Object.assign(new Error("Photo required"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
     if (file.size > MAX_SOURCE_BYTES) throw Object.assign(new Error("Source photo too large"), { code: "PHOTO_SOURCE_TOO_LARGE" });
-    if (!String(file.type).startsWith("image/")) throw Object.assign(new Error("Unsupported photo"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
-    const image = await decodeImage(file);
+    if (!isPhotoFile(file)) throw Object.assign(new Error("Unsupported photo"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
+    let image;
+    try { image = await decodeImage(file); }
+    catch (error) {
+      if (error?.code === "PHOTO_HEIC_UNSUPPORTED") throw error;
+      throw Object.assign(new Error("Unreadable photo"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
+    }
     const sourceWidth = image.width || image.naturalWidth;
     const sourceHeight = image.height || image.naturalHeight;
     if (!sourceWidth || !sourceHeight) throw Object.assign(new Error("Unreadable photo"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
@@ -132,6 +184,7 @@
 
     function errorText(error) {
       if (error?.code === "PHOTO_FORMAT_UNSUPPORTED" || error?.code === "PHOTO_SIGNATURE_INVALID") return t("format");
+      if (error?.code === "PHOTO_HEIC_UNSUPPORTED") return t("heic");
       if (error?.code === "PHOTO_SOURCE_TOO_LARGE") return t("sourceLarge");
       if (error?.code === "PHOTO_TOO_LARGE") return t("outputLarge");
       if (error?.code === "PHOTO_DAY_LIMIT") return t("dayLimit");
@@ -239,5 +292,5 @@
     };
   }
 
-  root.LifeLedgerPhotoMemories = { MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create };
+  root.LifeLedgerPhotoMemories = { MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile };
 })(window);

@@ -96,7 +96,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 可选的 Cloudflare Access + D1 跨设备同步
 - 可选的只读 Google 日历，最多连接两个账号
 - 心情颜色日历与可切换的完成度热力图
-- Cloudflare 版本的私人照片记忆、时间轴和按月 `.llmedia` 照片备份
+- Cloudflare 版本的私人照片记忆（支持 JPEG、PNG、WebP、HEIC、HEIF）、时间轴和按月 `.llmedia` 照片备份
 - 桌面侧边栏中的精简长期待办
 - 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面

@@ -11,14 +11,14 @@
 
   const copy = {
     en: {
-      button: "Quick record", unavailable: "Voice reflection is available for today in the deployed Cloudflare app.",
+      button: "Quick record", unavailable: "Voice reflection is available for today and past days in the deployed Cloudflare app.",
       kicker: "VOICE REFLECTION", title: "Speak freely. Keep what matters.", close: "Close voice reflection",
       ready: "Ready when you are", readyHelp: "Up to 10 minutes. Your audio is discarded after processing.",
       record: "Start recording", recording: "Listening…", pause: "Pause", resume: "Resume", finish: "Finish & refine", cancel: "Cancel",
       paused: "Recording paused", pausedHelp: "Resume when you are ready, or refine what you already said.",
       transcribing: "Turning your voice into text", refining: "Shaping a clear daily reflection", processingHelp: "Keep this window open for a moment.",
       draftKicker: "YOUR DRAFT", draftTitle: "A clearer version of your day", transcript: "View original transcript",
-      save: "Add to today’s reflection", saving: "Saving…", retry: "Try again", again: "Record again",
+      save: "Add to this day’s reflection", saving: "Saving…", retry: "Try again", again: "Record again",
       saved: "Voice reflection added", noMic: "Microphone access is unavailable. Check your browser permission and try again.",
       interrupted: "Recording paused because the app moved to the background.", genericError: "Voice reflection could not be completed. Your existing journal was not changed.",
       authError: "Your Cloudflare session needs attention. Reload the app and sign in again.", dailyLimit: "Today’s voice allowance has been reached. Try again tomorrow.",
@@ -27,14 +27,14 @@
       minutesLeft: "{minutes} min of today’s allowance remain", draftPlaceholder: "Your refined reflection will appear here.",
     },
     zh: {
-      button: "快速记录", unavailable: "语音复盘仅在已部署的 Cloudflare 版本中对今天开放。",
+      button: "快速记录", unavailable: "语音复盘可用于已部署 Cloudflare 版本中的今天和过去日期。",
       kicker: "语音复盘", title: "自在地说，留下真正重要的。", close: "关闭语音复盘",
       ready: "准备好就开始", readyHelp: "最长 10 分钟；处理完成后原始音频会立即删除。",
       record: "开始录音", recording: "正在聆听……", pause: "暂停", resume: "继续", finish: "结束并整理", cancel: "取消",
       paused: "录音已暂停", pausedHelp: "可以继续说，也可以直接整理已经记录的内容。",
       transcribing: "正在把语音转换成文字", refining: "正在整理成清晰的每日复盘", processingHelp: "请暂时保持此窗口打开。",
       draftKicker: "复盘草稿", draftTitle: "这一天，更清晰的表达", transcript: "查看原始转写",
-      save: "添加到今日复盘", saving: "正在保存……", retry: "重试", again: "重新录制",
+      save: "添加到这一天的复盘", saving: "正在保存……", retry: "重试", again: "重新录制",
       saved: "语音复盘已添加", noMic: "无法使用麦克风，请检查浏览器权限后重试。",
       interrupted: "应用进入后台，录音已自动暂停。", genericError: "未能完成语音复盘，原有日记没有被修改。",
       authError: "Cloudflare 登录状态需要刷新，请重新载入并登录。", dailyLimit: "今天的免费语音额度已用完，请明天再试。",
@@ -43,14 +43,14 @@
       minutesLeft: "今日还可使用约 {minutes} 分钟", draftPlaceholder: "整理后的复盘会显示在这里。",
     },
     de: {
-      button: "Schnell aufnehmen", unavailable: "Die Sprachreflexion ist heute in der bereitgestellten Cloudflare-App verfügbar.",
+      button: "Schnell aufnehmen", unavailable: "Die Sprachreflexion ist für heute und vergangene Tage in der Cloudflare-App verfügbar.",
       kicker: "SPRACHREFLEXION", title: "Sprich frei. Bewahre, was zählt.", close: "Sprachreflexion schließen",
       ready: "Beginne, wenn du bereit bist", readyHelp: "Bis zu 10 Minuten. Die Aufnahme wird nach der Verarbeitung gelöscht.",
       record: "Aufnahme starten", recording: "Ich höre zu …", pause: "Pause", resume: "Fortsetzen", finish: "Beenden & ordnen", cancel: "Abbrechen",
       paused: "Aufnahme pausiert", pausedHelp: "Sprich weiter oder ordne das bisher Gesagte.",
       transcribing: "Sprache wird in Text umgewandelt", refining: "Eine klare Tagesreflexion entsteht", processingHelp: "Lass dieses Fenster bitte kurz geöffnet.",
       draftKicker: "DEIN ENTWURF", draftTitle: "Dein Tag, klarer formuliert", transcript: "Originaltranskript anzeigen",
-      save: "Zur heutigen Reflexion hinzufügen", saving: "Wird gespeichert …", retry: "Erneut versuchen", again: "Neu aufnehmen",
+      save: "Zur Reflexion dieses Tages hinzufügen", saving: "Wird gespeichert …", retry: "Erneut versuchen", again: "Neu aufnehmen",
       saved: "Sprachreflexion hinzugefügt", noMic: "Das Mikrofon ist nicht verfügbar. Prüfe die Browserberechtigung.",
       interrupted: "Die Aufnahme wurde pausiert, weil die App in den Hintergrund wechselte.", genericError: "Die Sprachreflexion konnte nicht erstellt werden. Dein bestehender Eintrag blieb unverändert.",
       authError: "Deine Cloudflare-Sitzung muss erneuert werden. Lade die App neu und melde dich erneut an.", dailyLimit: "Das heutige Sprachkontingent ist erreicht. Versuche es morgen erneut.",
@@ -332,7 +332,7 @@
 
     function setContext(context) {
       currentContext = { ...currentContext, ...context };
-      const available = options.enabled !== false && currentContext.isToday && !currentContext.disabled;
+      const available = options.enabled !== false && !currentContext.disabled;
       button.hidden = options.enabled === false;
       button.disabled = !available;
       button.title = available ? t("button") : t("unavailable");

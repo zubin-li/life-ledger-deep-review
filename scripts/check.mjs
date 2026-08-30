@@ -13,6 +13,7 @@ const required = [
   "public/_init_tcb-env.js",
   "public/vendor/cloudbase-sdk.js",
   "public/vendor/cloudbase-sdk.js.LEGAL.txt",
+  "public/vendor/heic2any.min.js",
   "public/styles.css",
   "public/sw.js",
   "public/manifest.webmanifest",

@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 await import("../public/voice-checkin.js");
 
@@ -16,4 +17,12 @@ test("voice duration and journal append stay deterministic", () => {
   assert.equal(voice.formatDuration(65_900), "01:05");
   assert.equal(voice.appendReflection("Earlier note", "Voice draft"), "Earlier note\n\nVoice draft");
   assert.equal(voice.appendReflection("", "Voice draft"), "Voice draft");
+});
+
+test("voice entry is not restricted to today", () => {
+  const voiceSource = readFileSync(new URL("../public/voice-checkin.js", import.meta.url), "utf8");
+  const appSource = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(voiceSource, /options\.enabled !== false && !currentContext\.disabled/);
+  assert.doesNotMatch(voiceSource, /currentContext\.isToday &&/);
+  assert.match(appSource, /Voice reflection cannot be saved to a future date/);
 });

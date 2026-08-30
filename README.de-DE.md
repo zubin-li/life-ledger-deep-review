@@ -92,7 +92,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Optionale geräteübergreifende Synchronisierung über Cloudflare Access und D1
 - Optionaler schreibgeschützter Google-Kalender aus bis zu zwei Konten
 - Stimmungsfarbiger Kalender und optionale Erledigungs-Heatmap
-- Private Fotoerinnerungen, Zeitleiste und monatliche `.llmedia`-Sicherung in der Cloudflare-Version
+- Private Fotoerinnerungen mit JPEG-, PNG-, WebP-, HEIC- und HEIF-Unterstützung, Zeitleiste und monatliche `.llmedia`-Sicherung in der Cloudflare-Version
 - Kompakte langfristige Einträge in der Desktop-Seitenleiste
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte

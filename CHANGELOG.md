@@ -2,7 +2,7 @@
 
 All notable changes are documented here.
 
-## Unreleased
+## [1.1.1] - 2026-08-30
 
 ### Added
 
@@ -17,6 +17,12 @@ All notable changes are documented here.
 - Photos are re-encoded in the browser, never published through an R2 public URL, and remain behind the existing Cloudflare Access identity.
 - Media metadata and objects stay outside the whole-state JSON payload; local-only and CloudBase editions do not expose photo upload.
 - Deployment-wide storage and monthly R2-operation ceilings keep application traffic well below the published Standard free allowances.
+
+### Fixed
+
+- Apple HEIC/HEIF photos now use native browser decoding when available and a locally bundled client-side fallback otherwise; only the compressed JPEG/WebP result is uploaded.
+- The photo picker now accepts common browser-readable image formats instead of excluding iPhone originals before processing.
+- Quick record now works for today and past reflection dates while future dates remain locked.
 
 ## [1.1.0] - 2026-08-22
 

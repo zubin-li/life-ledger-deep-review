@@ -15,6 +15,9 @@ test("deployed photo memories live inside the mood note", () => {
   assert.match(app, /enabled: hostedCloudMode/);
   assert.match(photos, /MAX_PER_DAY = 3/);
   assert.match(photos, /MAX_OUTPUT_BYTES = 1_200_000/);
+  assert.match(html, /accept="image\/\*,\.heic,\.heif"/);
+  assert.match(photos, /heic2any\.min\.js/);
+  assert.match(photos, /PHOTO_HEIC_UNSUPPORTED/);
   assert.match(css, /\.mood-photo-list/);
 });
 

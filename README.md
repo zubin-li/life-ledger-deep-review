@@ -92,7 +92,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Optional Cloudflare Access + D1 cross-device synchronization
 - Optional read-only Google Calendar context from up to two accounts
 - Mood-colored calendar days and an optional completion heatmap
-- Private photo memories, chronological timeline, and portable monthly `.llmedia` backups in the Cloudflare edition
+- Private photo memories with JPEG/PNG/WebP/HEIC/HEIF support, a chronological timeline, and portable monthly `.llmedia` backups in the Cloudflare edition
 - Compact long-term items in the desktop sidebar
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
