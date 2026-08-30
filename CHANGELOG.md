@@ -2,6 +2,19 @@
 
 All notable changes are documented here.
 
+## [1.1.4] - 2026-08-30
+
+### Fixed
+
+- Lets macOS choose a compatible static image representation from Photos with a single `image/*` request, avoiding zero-byte placeholders caused by over-constrained media types.
+- Makes the mood-and-photo dialog internally scrollable in Android Firefox and avoids forcing the mobile keyboard open.
+- Replaces clusters of calendar-event dots with one compact calendar/count badge.
+
+### Added
+
+- Adds lightweight photo and mood-reason markers to the month calendar.
+- Shows the selected day's private photo thumbnails and mood reason together in the day drawer, with one consistent edit entry point.
+
 ## [1.1.3] - 2026-08-30
 
 ### Fixed

@@ -20,6 +20,10 @@ test("calendar removes per-habit dots and uses icon-backed mood colors", () => {
   const calendarRenderer = app.match(/function renderCalendar\(\) \{([\s\S]*?)\n\}\n\nfunction renderReview/);
   assert.ok(calendarRenderer, "calendar renderer is missing");
   assert.doesNotMatch(calendarRenderer[1], /class="day-status"/);
+  assert.doesNotMatch(calendarRenderer[1], /scheduleColors/);
+  assert.match(calendarRenderer[1], /class="day-photo-marker"/);
+  assert.match(calendarRenderer[1], /class="day-reason-marker"/);
+  assert.match(calendarRenderer[1], /class="day-calendar-status"[\s\S]*?<svg/);
   assert.match(app, /平静: '<path d="M20 4C10\.4 4\.5/);
   assert.match(app, /moodCalendarIcons/);
   assert.match(css, /\.calendar-grid\[data-mode="mood"\] \.calendar-day\.mood-low/);

@@ -16,8 +16,7 @@ test("deployed photo memories live inside the mood note", () => {
   assert.match(app, /enabled: hostedCloudMode/);
   assert.match(photos, /MAX_PER_DAY = 3/);
   assert.match(photos, /MAX_OUTPUT_BYTES = 1_200_000/);
-  assert.match(html, /accept="image\/jpeg,image\/png,image\/webp,image\/heic,image\/heif/);
-  assert.doesNotMatch(moodDialog[1], /accept="image\/\*/);
+  assert.match(moodDialog[1], /accept="image\/\*"/);
   assert.match(photos, /heic2any\.min\.js/);
   assert.match(photos, /PHOTO_HEIC_UNSUPPORTED/);
   assert.match(photos, /PHOTO_PROCESSING_FAILED/);
@@ -27,6 +26,10 @@ test("deployed photo memories live inside the mood note", () => {
   assert.match(css, /\.memory-entry-photos\[data-count="1"\]/);
   assert.match(css, /\.memory-entry-photo img \{ width: 100%; height: 100%/);
   assert.match(app, /memory-entry-photos" data-count=/);
+  assert.match(html, /id="drawerMemoryPhotos"/);
+  assert.match(app, /loadCalendarPhotoMonth/);
+  assert.match(css, /#moodReasonForm \{[^}]*grid-template-rows: auto minmax\(0, 1fr\) auto/);
+  assert.match(css, /\.mood-reason-body \{[^}]*overflow-y: auto/);
 });
 
 test("timeline and long-term sidebar reuse existing private records", () => {

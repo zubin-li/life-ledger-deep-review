@@ -311,6 +311,8 @@ const i18n = {
       markComplete: "标记完成",
       undoComplete: "取消完成",
       futureLocked: "未来日期只用于规划目标，习惯、心情与复盘将在当天开放。",
+      memoryEdit: "照片与原因",
+      photoCount: "{count} 张照片",
     },
     dialog: {
       kicker: "HABIT",
@@ -640,6 +642,8 @@ const i18n = {
       markComplete: "Mark complete",
       undoComplete: "Undo completion",
       futureLocked: "Future dates are for planning only. Habits, mood and reflection open on the day.",
+      memoryEdit: "Photos & reason",
+      photoCount: "{count} photos",
     },
     dialog: {
       kicker: "HABIT",
@@ -969,6 +973,8 @@ const i18n = {
       markComplete: "Als erledigt markieren",
       undoComplete: "Erledigung zurücknehmen",
       futureLocked: "Zukünftige Tage dienen nur der Planung. Gewohnheiten, Stimmung und Reflexion öffnen am jeweiligen Tag.",
+      memoryEdit: "Fotos & Grund",
+      photoCount: "{count} Fotos",
     },
     dialog: {
       kicker: "GEWOHNHEIT",
@@ -1168,6 +1174,9 @@ let reminderTimer = null;
 let focusTimer = null;
 let voiceReflection = null;
 let photoMemories = null;
+const calendarPhotosByDate = new Map();
+const calendarPhotoLoadedMonths = new Set();
+const calendarPhotoLoadingMonths = new Set();
 let timelineCursor = new Date();
 timelineCursor.setDate(1);
 timelineCursor.setHours(12, 0, 0, 0);
@@ -2654,10 +2663,37 @@ function initPhotoMemories() {
     enabled: hostedCloudMode,
     language: currentLang,
     onToast: showToast,
-    onChange: () => {
+    onChange: ({ date, photos }) => {
+      calendarPhotosByDate.set(date, photos);
+      calendarPhotoLoadedMonths.delete(date.slice(0, 7));
+      renderCalendar();
+      if ($("#dayDrawer")?.classList.contains("open") && selectedDate === date) renderDrawerMemory(date);
       if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
     },
   });
+}
+
+async function loadCalendarPhotoMonth(date) {
+  if (!photoMemories || !hostedCloudMode) return;
+  const key = monthKey(date);
+  if (calendarPhotoLoadedMonths.has(key) || calendarPhotoLoadingMonths.has(key)) return;
+  calendarPhotoLoadingMonths.add(key);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const from = isoDate(new Date(year, month, 1, 12));
+  const to = isoDate(new Date(year, month + 1, 0, 12));
+  try {
+    const photos = await photoMemories.listRange(from, to);
+    [...calendarPhotosByDate.keys()].filter(day => day >= from && day <= to).forEach(day => calendarPhotosByDate.delete(day));
+    photos.forEach(photo => calendarPhotosByDate.set(photo.date, [...(calendarPhotosByDate.get(photo.date) || []), photo]));
+    calendarPhotoLoadedMonths.add(key);
+    if (monthKey(cursor) === key) renderCalendar();
+    if ($("#dayDrawer")?.classList.contains("open") && selectedDate.slice(0, 7) === key) renderDrawerMemory(selectedDate);
+  } catch {
+    // Calendar memory markers are optional; the photo editor keeps its own actionable status.
+  } finally {
+    calendarPhotoLoadingMonths.delete(key);
+  }
 }
 
 function habitCard(habit, date, done) {
@@ -2739,7 +2775,9 @@ function openMoodReasonDialog(date, mood) {
   applyMoodReasonLanguage();
   void photoMemories?.load(date);
   $("#moodReasonDialog").showModal();
-  window.setTimeout(() => $("#moodReasonText").focus({ preventScroll: true }), 60);
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    window.setTimeout(() => $("#moodReasonText").focus({ preventScroll: true }), 60);
+  }
 }
 
 function setMood(date, mood, promptReason = true) {
@@ -2816,14 +2854,17 @@ function renderCalendar() {
     const progress = scoredHabits.length ? Math.round(completed / scoredHabits.length * 100) : 0;
     if (d.getMonth() === month) monthProgressTotal += progress;
     const schedule = calendarEventsForDate(key);
-    const scheduleColors = [...new Set(schedule.map(event => event.calendarColor || "#6f95c8"))].slice(0, 3);
+    const dayPhotos = calendarPhotosByDate.get(key) || [];
+    const reason = String(log.moodReason || "").trim();
     const moodClass = calendarViewMode === "mood" ? moodCalendarClass(log.mood) : "";
     const heatClass = calendarViewMode === "heatmap" ? `heat-${calendarHeatLevel(progress)}` : "";
     const moodText = log.mood ? moodLabel(log.mood) : tr("calendar.empty");
-    const accessibleStatus = calendarViewMode === "mood" ? moodText : `${progress}%`;
+    const memoryStatus = [reason ? tr("moodReason.summary", { reason }) : "", dayPhotos.length ? tr("drawer.photoCount", { count: dayPhotos.length }) : ""].filter(Boolean).join(" · ");
+    const accessibleStatus = [calendarViewMode === "mood" ? moodText : `${progress}%`, memoryStatus].filter(Boolean).join(" · ");
     cells.push(`<button class="calendar-day ${moodClass} ${heatClass} ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${isoWeekKey(d) === currentWeek ? "current-week" : ""}" data-date="${key}" aria-label="${escapeHtml(formatDateChip(d))} · ${escapeHtml(accessibleStatus)}">
       <span class="day-number">${d.getDate()}</span>${calendarViewMode === "mood" && log.mood ? `<span class="day-mood mood-${log.mood === "低落" ? "low" : log.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(log.mood)}</span>` : ""}
-      ${schedule.length ? `<span class="day-calendar-status" title="${escapeHtml(tr("calendarSync.calendarEvents"))}">${scheduleColors.map(color => `<i style="background:${escapeHtml(color)}"></i>`).join("")}${schedule.length > 3 ? `<b>+${schedule.length - 3}</b>` : ""}</span>` : ""}
+      ${reason || dayPhotos.length ? `<span class="day-memory-status">${dayPhotos.length ? `<i class="day-photo-marker" title="${escapeHtml(tr("drawer.photoCount", { count: dayPhotos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><b>${dayPhotos.length}</b></i>` : ""}${reason ? `<i class="day-reason-marker" title="${escapeHtml(reason)}">“</i>` : ""}</span>` : ""}
+      ${schedule.length ? `<span class="day-calendar-status" title="${escapeHtml(tr("calendarSync.calendarEvents"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 9.5h17"/></svg><b>${schedule.length}</b></span>` : ""}
       ${calendarViewMode === "heatmap" ? `<span class="day-percent">${progress}%</span>` : ""}
     </button>`);
   }
@@ -2838,6 +2879,7 @@ function renderCalendar() {
     button.setAttribute("aria-pressed", String(active));
   });
   renderCalendarLegend();
+  void loadCalendarPhotoMonth(cursor);
   $$(".calendar-day").forEach(day => day.addEventListener("click", () => {
     if (isFutureDate(day.dataset.date)) selectPlanningDate(day.dataset.date, { scroll: true });
     else openDrawer(day.dataset.date);
@@ -3328,6 +3370,17 @@ function closeDrawer() {
   $("#dayDrawer").setAttribute("aria-hidden", "true");
   renderDailyGoals();
 }
+function renderDrawerMemory(date) {
+  const log = getLog(date);
+  const memoryPhotos = calendarPhotosByDate.get(date) || [];
+  const memoryContainer = $("#drawerMemoryPhotos");
+  memoryContainer.innerHTML = memoryPhotos.map(photo => `<img src="${photo.url}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" />`).join("");
+  memoryContainer.hidden = !memoryPhotos.length;
+  const memoryEdit = $("#drawerMemoryEdit");
+  memoryEdit.textContent = tr("drawer.memoryEdit");
+  memoryEdit.hidden = isFutureDate(date) || !log.mood;
+  memoryEdit.title = memoryPhotos.length ? tr("drawer.photoCount", { count: memoryPhotos.length }) : tr("drawer.memoryEdit");
+}
 function renderDrawer() {
   const d = parseDate(selectedDate), log = getLog(selectedDate), habits = activeHabits(selectedDate), scoredHabits = dailyHabits(selectedDate), future = isFutureDate(selectedDate);
   $("#drawerWeekday").textContent = weekdayName(d.getDay()).toUpperCase();
@@ -3361,6 +3414,8 @@ function renderDrawer() {
     button.disabled = future;
   });
   renderMoodReasonSummary("#drawerMoodReason", log);
+  renderDrawerMemory(selectedDate);
+  void loadCalendarPhotoMonth(d);
   $("#dayNote").value = log.note || "";
   $("#dayNote").disabled = future;
   $("#completeDay").disabled = future;
@@ -4425,6 +4480,10 @@ function bindEvents() {
   $("#drawerMoodReason").addEventListener("click", () => {
     const log = getLog(selectedDate);
     if (log.mood) openMoodReasonDialog(selectedDate, log.mood);
+  });
+  $("#drawerMemoryEdit").addEventListener("click", () => {
+    const mood = getLog(selectedDate).mood;
+    if (mood) openMoodReasonDialog(selectedDate, mood);
   });
   $$(".close-mood-reason").forEach(button => button.addEventListener("click", closeMoodReasonDialog));
   $("#moodReasonForm").addEventListener("submit", saveMoodReason);
