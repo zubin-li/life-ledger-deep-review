@@ -21,6 +21,13 @@
       "migrations_dir": "migrations"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "life-ledger-deep-review-photos",
+      "preview_bucket_name": "life-ledger-deep-review-photos-preview"
+    }
+  ],
   "observability": {
     "enabled": true
   }

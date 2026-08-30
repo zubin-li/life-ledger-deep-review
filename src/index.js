@@ -1,6 +1,7 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { VoiceRequestError, handleVoiceReview } from "./voice.js";
 import { CalendarRequestError, handleCalendarRequest } from "./calendar.js";
+import { PhotoRequestError, handlePhotoRequest } from "./photos.js";
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status,
@@ -175,6 +176,21 @@ async function handleCalendarApi(request, env) {
   }
 }
 
+async function handlePhotoApi(request, env) {
+  const identity = await identityOrResponse(request, env);
+  if (identity.response) return identity.response;
+  try {
+    return await handlePhotoRequest(request, env, identity.keyHash);
+  } catch (error) {
+    if (error instanceof PhotoRequestError) {
+      return json({ error: error.message, code: error.code }, error.status);
+    }
+    const requestId = crypto.randomUUID();
+    console.error("Photo request failed", { requestId, name: error?.name || "Error" });
+    return json({ error: "Photo request could not be completed", code: "PHOTO_FAILED", requestId }, 502);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -184,6 +200,7 @@ export default {
     if (url.pathname === "/api/state") return handleApi(request, env);
     if (url.pathname === "/api/voice-review") return handleVoiceApi(request, env);
     if (url.pathname.startsWith("/api/calendar/")) return handleCalendarApi(request, env);
+    if (url.pathname.startsWith("/api/photos")) return handlePhotoApi(request, env);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);
   },
