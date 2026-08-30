@@ -135,7 +135,7 @@
               </div>
               <div class="mood-options" id="quickMood">
                 <button data-mood="低落"><span>☂</span>低落</button>
-                <button data-mood="平静"><span>◌</span>平静</button>
+                <button data-mood="平静"><span>≈</span>平静</button>
                 <button data-mood="很好"><span>☀</span>很好</button>
               </div>
               <button class="mood-reason-summary" id="quickMoodReason" type="button" hidden></button>
@@ -242,8 +242,14 @@
               <p>点开任意一天，完成打卡或补上一段记录。</p>
             </div>
             <div class="calendar-controls">
-              <button class="icon-button" id="prevMonth" aria-label="上个月">←</button>
-              <button class="icon-button" id="nextMonth" aria-label="下个月">→</button>
+              <div class="calendar-view-switch" id="calendarViewSwitch" role="group" aria-label="日历显示方式">
+                <button class="active" type="button" data-calendar-view="mood"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>心情</span></button>
+                <button type="button" data-calendar-view="heatmap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>热力图</span></button>
+              </div>
+              <div class="calendar-month-nav">
+                <button class="icon-button" id="prevMonth" aria-label="上个月">←</button>
+                <button class="icon-button" id="nextMonth" aria-label="下个月">→</button>
+              </div>
             </div>
             </div>
             <div class="calendar-card">
@@ -256,9 +262,9 @@
               <div class="calendar-grid" id="calendarGrid"></div>
             </div>
             <div class="calendar-legend">
-              <span><i class="legend-dot complete"></i>全部完成</span>
-              <span><i class="legend-dot partial"></i>部分完成</span>
-              <span><i class="legend-dot empty"></i>尚未记录</span>
+              <span><i class="legend-mood mood-low">☂</i>低落</span>
+              <span><i class="legend-mood mood-calm">≈</i>平静</span>
+              <span><i class="legend-mood mood-good">☀</i>很好</span>
             </div>
           </section>
         </section>
@@ -405,7 +411,7 @@
           <div class="drawer-section-title"><h3>今日心情</h3></div>
           <div class="mood-options compact" id="drawerMood">
             <button data-mood="低落"><span>☂</span>低落</button>
-            <button data-mood="平静"><span>◌</span>平静</button>
+            <button data-mood="平静"><span>≈</span>平静</button>
             <button data-mood="很好"><span>☀</span>很好</button>
           </div>
           <button class="mood-reason-summary drawer-mood-reason" id="drawerMoodReason" type="button" hidden></button>

@@ -3,6 +3,7 @@ const LANGUAGE_KEY = "life-ledger-language";
 const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
 const THEME_KEY = "life-ledger-theme";
 const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
+const CALENDAR_VIEW_KEY = "life-ledger-calendar-view";
 const REMINDER_KEY = "life-ledger-reminder";
 const RESTORE_SAFETY_KEY = "life-ledger-restore-safety-v1";
 const FOCUS_ACTIVE_KEY = "life-ledger-focus-active";
@@ -18,7 +19,12 @@ const colors = {
   violet: { solid: "#8b79c6", soft: "#e7e0f4" },
   cyan: { solid: "#4d9db3", soft: "#d9eef3" },
 };
-const moodIcons = { 低落: "☂", 平静: "◌", 很好: "☀" };
+const moodIcons = { 低落: "☂", 平静: "≈", 很好: "☀" };
+const moodCalendarIcons = {
+  低落: '<path d="M4 12a8 8 0 0 1 16 0H4Z"/><path d="M12 4v13a3 3 0 0 0 6 0"/>',
+  平静: '<path d="M3 9c2.2 0 2.2-1.7 4.4-1.7S9.6 9 11.8 9s2.2-1.7 4.4-1.7S18.4 9 20.6 9"/><path d="M3 15c2.2 0 2.2-1.7 4.4-1.7s2.2 1.7 4.4 1.7 2.2-1.7 4.4-1.7 2.2 1.7 4.4 1.7"/>',
+  很好: '<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>',
+};
 const iconCatalog = {
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   footprints: '<path d="M4 16v-2.4C4 10.5 6.5 8 9.6 8H12M12 8 9 5m3 3-3 3"/><path d="M20 8v2.4c0 3.1-2.5 5.6-5.6 5.6H12m0 0 3 3m-3-3 3-3"/>',
@@ -145,6 +151,16 @@ const i18n = {
       next: "下个月",
       weekdays: ["一", "二", "三", "四", "五", "六", "日"],
       monthCompletion: "本月完成度",
+      viewMode: "日历显示方式",
+      viewMood: "心情",
+      viewHeatmap: "热力图",
+      moodLow: "低落",
+      moodCalm: "平静",
+      moodGood: "很好",
+      heatNone: "未完成",
+      heatLow: "较少",
+      heatMedium: "过半",
+      heatHigh: "接近完成",
       complete: "全部完成",
       partial: "部分完成",
       empty: "尚未记录",
@@ -460,6 +476,16 @@ const i18n = {
       next: "Next month",
       weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       monthCompletion: "month completion",
+      viewMode: "Calendar display",
+      viewMood: "Mood",
+      viewHeatmap: "Heatmap",
+      moodLow: "Low",
+      moodCalm: "Calm",
+      moodGood: "Good",
+      heatNone: "None",
+      heatLow: "A little",
+      heatMedium: "More than half",
+      heatHigh: "Nearly complete",
       complete: "All done",
       partial: "Partial",
       empty: "No record",
@@ -775,6 +801,16 @@ const i18n = {
       next: "Nächster Monat",
       weekdays: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
       monthCompletion: "Monatsfortschritt",
+      viewMode: "Kalenderdarstellung",
+      viewMood: "Stimmung",
+      viewHeatmap: "Heatmap",
+      moodLow: "Schwer",
+      moodCalm: "Ruhig",
+      moodGood: "Gut",
+      heatNone: "Nichts",
+      heatLow: "Wenig",
+      heatMedium: "Mehr als die Hälfte",
+      heatHigh: "Fast vollständig",
       complete: "Alles erledigt",
       partial: "Teilweise",
       empty: "Kein Eintrag",
@@ -1096,6 +1132,7 @@ let editingLongTermGoalId = null;
 let dayPlanRoutinesExpanded = false;
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
+let calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
 const previewName = new URLSearchParams(location.search).get("local-preview");
 const dayPlanPrototype = previewName === "day-plan-calendar-v1";
@@ -1281,10 +1318,12 @@ function applyLanguage() {
   setText(".calendar-toolbar p", tr("calendar.desc"));
   setAria("#prevMonth", tr("calendar.prev"));
   setAria("#nextMonth", tr("calendar.next"));
+  setAria("#calendarViewSwitch", tr("calendar.viewMode"));
+  setText('[data-calendar-view="mood"] span', tr("calendar.viewMood"));
+  setText('[data-calendar-view="heatmap"] span', tr("calendar.viewHeatmap"));
   const weekdayRow = $(".weekdays");
   if (weekdayRow) weekdayRow.innerHTML = i18n[currentLang].calendar.weekdays.map(day => `<span>${day}</span>`).join("");
-  const legend = $(".calendar-legend");
-  if (legend) legend.innerHTML = `<span><i class="legend-dot complete"></i>${tr("calendar.complete")}</span><span><i class="legend-dot partial"></i>${tr("calendar.partial")}</span><span><i class="legend-dot empty"></i>${tr("calendar.empty")}</span>`;
+  renderCalendarLegend();
   setText("#weeklyWorkspaceTitle", tr("week.title"));
   setAria("#previousWorkspaceWeek", tr("week.previous"));
   setAria("#nextWorkspaceWeek", tr("week.next"));
@@ -2608,6 +2647,38 @@ function saveMoodReason(event) {
   showToast(tr("toast.moodReason"));
 }
 
+function moodCalendarIcon(mood) {
+  const paths = moodCalendarIcons[mood];
+  return paths ? `<svg viewBox="0 0 24 24" aria-hidden="true">${paths}</svg>` : "";
+}
+
+function moodCalendarClass(mood) {
+  return mood === "低落" ? "mood-low" : mood === "平静" ? "mood-calm" : mood === "很好" ? "mood-good" : "mood-none";
+}
+
+function calendarHeatLevel(progress) {
+  if (!progress) return 0;
+  if (progress < 34) return 1;
+  if (progress < 67) return 2;
+  if (progress < 100) return 3;
+  return 4;
+}
+
+function renderCalendarLegend() {
+  const legend = $(".calendar-legend");
+  if (!legend) return;
+  legend.dataset.mode = calendarViewMode;
+  legend.innerHTML = calendarViewMode === "mood"
+    ? `<span><i class="legend-mood mood-low">${moodCalendarIcon("低落")}</i>${tr("calendar.moodLow")}</span><span><i class="legend-mood mood-calm">${moodCalendarIcon("平静")}</i>${tr("calendar.moodCalm")}</span><span><i class="legend-mood mood-good">${moodCalendarIcon("很好")}</i>${tr("calendar.moodGood")}</span>`
+    : `<span><i class="legend-heat heat-0"></i>${tr("calendar.heatNone")}</span><span><i class="legend-heat heat-1"></i>${tr("calendar.heatLow")}</span><span><i class="legend-heat heat-2"></i>${tr("calendar.heatMedium")}</span><span><i class="legend-heat heat-4"></i>${tr("calendar.heatHigh")}</span>`;
+}
+
+function setCalendarViewMode(mode) {
+  calendarViewMode = mode === "heatmap" ? "heatmap" : "mood";
+  localStorage.setItem(CALENDAR_VIEW_KEY, calendarViewMode);
+  renderCalendar();
+}
+
 function renderCalendar() {
   const year = cursor.getFullYear(), month = cursor.getMonth();
   $("#calendarTitle").textContent = tr("calendar.title", { year, month: month + 1, monthName: monthName(month) });
@@ -2620,24 +2691,33 @@ function renderCalendar() {
   let monthProgressTotal = 0;
   for (let i = 0; i < 42; i++) {
     const d = new Date(start); d.setDate(start.getDate() + i);
-    const key = isoDate(d), log = getLog(key), habits = activeHabits(key), scoredHabits = dailyHabits(key);
+    const key = isoDate(d), log = getLog(key), scoredHabits = dailyHabits(key);
     const completed = scoredHabits.filter(h => log.completed.includes(h.id)).length;
     const progress = scoredHabits.length ? Math.round(completed / scoredHabits.length * 100) : 0;
     if (d.getMonth() === month) monthProgressTotal += progress;
     const schedule = calendarEventsForDate(key);
     const scheduleColors = [...new Set(schedule.map(event => event.calendarColor || "#6f95c8"))].slice(0, 3);
-    cells.push(`<button class="calendar-day ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${isoWeekKey(d) === currentWeek ? "current-week" : ""}" data-date="${key}">
-      <span class="day-number">${d.getDate()}</span>${log.mood ? `<span class="day-mood">${moodIcons[log.mood]}</span>` : ""}
-      <span class="day-status">${habits.map(h => `<i class="${log.completed.includes(h.id) ? "done" : ""}" style="${log.completed.includes(h.id) ? `background:${colors[h.color].solid}` : ""}"></i>`).join("")}</span>
+    const moodClass = calendarViewMode === "mood" ? moodCalendarClass(log.mood) : "";
+    const heatClass = calendarViewMode === "heatmap" ? `heat-${calendarHeatLevel(progress)}` : "";
+    const moodText = log.mood ? moodLabel(log.mood) : tr("calendar.empty");
+    const accessibleStatus = calendarViewMode === "mood" ? moodText : `${progress}%`;
+    cells.push(`<button class="calendar-day ${moodClass} ${heatClass} ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${isoWeekKey(d) === currentWeek ? "current-week" : ""}" data-date="${key}" aria-label="${escapeHtml(formatDateChip(d))} · ${escapeHtml(accessibleStatus)}">
+      <span class="day-number">${d.getDate()}</span>${calendarViewMode === "mood" && log.mood ? `<span class="day-mood mood-${log.mood === "低落" ? "low" : log.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(log.mood)}</span>` : ""}
       ${schedule.length ? `<span class="day-calendar-status" title="${escapeHtml(tr("calendarSync.calendarEvents"))}">${scheduleColors.map(color => `<i style="background:${escapeHtml(color)}"></i>`).join("")}${schedule.length > 3 ? `<b>+${schedule.length - 3}</b>` : ""}</span>` : ""}
-      ${progress ? `<span class="day-percent">${progress}%</span>` : ""}
-      <span class="day-progress" style="--day-progress:${progress}"></span>
+      ${calendarViewMode === "heatmap" ? `<span class="day-percent">${progress}%</span>` : ""}
     </button>`);
   }
   $("#calendarMonthMark").textContent = String(month + 1).padStart(2, "0");
   $("#monthCompletion").textContent = `${Math.round(monthProgressTotal / new Date(year, month + 1, 0).getDate())}%`;
   $("#monthCompletion").parentElement.lastChild.textContent = ` ${tr("calendar.monthCompletion")}`;
+  $("#calendarGrid").dataset.mode = calendarViewMode;
   $("#calendarGrid").innerHTML = cells.join("");
+  $$('[data-calendar-view]').forEach(button => {
+    const active = button.dataset.calendarView === calendarViewMode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  renderCalendarLegend();
   $$(".calendar-day").forEach(day => day.addEventListener("click", () => {
     if (isFutureDate(day.dataset.date)) selectPlanningDate(day.dataset.date, { scroll: true });
     else openDrawer(day.dataset.date);
@@ -4095,6 +4175,7 @@ function bindEvents() {
   }));
   $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
+  $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
   $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
   $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
