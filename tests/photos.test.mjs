@@ -2,10 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   MAX_LIBRARY_BYTES,
+  MAX_MONTHLY_R2_READS,
+  MAX_MONTHLY_R2_WRITES,
   MAX_PHOTO_BYTES,
   MAX_PHOTOS_PER_DAY,
   hasExpectedSignature,
   publicPhoto,
+  usagePeriod,
   validDate,
 } from "../src/photos.js";
 
@@ -13,6 +16,9 @@ test("photo limits keep the deployment inside a private free-tier budget", () =>
   assert.equal(MAX_PHOTOS_PER_DAY, 3);
   assert.equal(MAX_PHOTO_BYTES, 1_200_000);
   assert.equal(MAX_LIBRARY_BYTES, 8_000_000_000);
+  assert.equal(MAX_MONTHLY_R2_WRITES, 10_000);
+  assert.equal(MAX_MONTHLY_R2_READS, 1_000_000);
+  assert.equal(usagePeriod(new Date("2026-08-30T23:59:59Z")), "2026-08");
 });
 
 test("photo validation accepts only real supported signatures", () => {

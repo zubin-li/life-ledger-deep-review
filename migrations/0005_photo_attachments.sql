@@ -22,3 +22,10 @@ CREATE TABLE IF NOT EXISTS photo_usage (
   total_bytes INTEGER NOT NULL DEFAULT 0,
   updated_at INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS photo_operation_usage (
+  period TEXT PRIMARY KEY,
+  write_operations INTEGER NOT NULL DEFAULT 0,
+  read_operations INTEGER NOT NULL DEFAULT 0,
+  updated_at INTEGER NOT NULL
+);

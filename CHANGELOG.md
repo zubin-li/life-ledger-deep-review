@@ -16,6 +16,7 @@ All notable changes are documented here.
 
 - Photos are re-encoded in the browser, never published through an R2 public URL, and remain behind the existing Cloudflare Access identity.
 - Media metadata and objects stay outside the whole-state JSON payload; local-only and CloudBase editions do not expose photo upload.
+- Deployment-wide storage and monthly R2-operation ceilings keep application traffic well below the published Standard free allowances.
 
 ## [1.1.0] - 2026-08-22
 

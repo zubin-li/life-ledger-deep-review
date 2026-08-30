@@ -21,7 +21,7 @@ Photo memories require Cloudflare R2. Enable R2 once in the Cloudflare dashboard
 npx wrangler r2 bucket create life-ledger-deep-review-photos
 ```
 
-The app compresses each photo in the browser, stores at most three photos per day, limits each compressed file to 1.2 MB, and enforces an 8 GB library ceiling per account. R2 objects are never exposed through a public bucket URL; authenticated Worker endpoints enforce ownership on every operation. The Timeline then presents photos beside the mood and reason for each day. Monthly `.llmedia` export and restore keep the media portable.
+The app compresses each photo in the browser, stores at most three photos per day, limits each compressed file to 1.2 MB, and enforces an 8 GB ceiling across the deployment. It also stops before 10,000 writes or 1,000,000 reads in one UTC calendar month—1% and 10% of R2's published Standard free allowances. R2 objects are never exposed through a public bucket URL; authenticated Worker endpoints enforce ownership on every operation. The Timeline then presents photos beside the mood and reason for each day. Monthly `.llmedia` export and restore keep the media portable.
 
 ## Optional read-only Google Calendar
 

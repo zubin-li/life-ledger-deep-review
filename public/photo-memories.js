@@ -12,21 +12,21 @@
       processing: "Preparing photo…", uploading: "Saving privately…", saved: "Photo saved", delete: "Remove photo", deleting: "Removing…",
       confirmDelete: "Remove this photo from the day?", unavailable: "Photo memories are available in the deployed Cloudflare app.",
       format: "Choose a JPEG, PNG, or WebP photo.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
-      dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", generic: "The photo could not be saved. Try again.",
+      dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", monthlyLimit: "The private photo allowance is paused until next month.", generic: "The photo could not be saved. Try again.",
     },
     zh: {
       title: "照片记忆", help: "为这一天留下最多三张私人照片。", add: "添加照片", count: "{count} / 3",
       processing: "正在处理照片……", uploading: "正在私密保存……", saved: "照片已保存", delete: "删除照片", deleting: "正在删除……",
       confirmDelete: "从这一天删除这张照片吗？", unavailable: "照片记忆仅在已部署的 Cloudflare 版本中开放。",
       format: "请选择 JPEG、PNG 或 WebP 照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
-      dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", generic: "照片未能保存，请重试。",
+      dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", monthlyLimit: "本月私人照片额度已暂停，下月自动恢复。", generic: "照片未能保存，请重试。",
     },
     de: {
       title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", add: "Foto hinzufügen", count: "{count} von 3",
       processing: "Foto wird vorbereitet …", uploading: "Wird privat gespeichert …", saved: "Foto gespeichert", delete: "Foto entfernen", deleting: "Wird entfernt …",
       confirmDelete: "Dieses Foto aus dem Tag entfernen?", unavailable: "Fotoerinnerungen sind in der bereitgestellten Cloudflare-App verfügbar.",
       format: "Wähle ein JPEG-, PNG- oder WebP-Foto.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
-      dayLimit: "Für diesen Tag sind bereits drei Fotos gespeichert.", libraryFull: "Der private Fotospeicher ist voll.", generic: "Das Foto konnte nicht gespeichert werden. Versuche es erneut.",
+      dayLimit: "Für diesen Tag sind bereits drei Fotos gespeichert.", libraryFull: "Der private Fotospeicher ist voll.", monthlyLimit: "Das private Fotokontingent ist bis zum nächsten Monat pausiert.", generic: "Das Foto konnte nicht gespeichert werden. Versuche es erneut.",
     },
   };
 
@@ -136,6 +136,7 @@
       if (error?.code === "PHOTO_TOO_LARGE") return t("outputLarge");
       if (error?.code === "PHOTO_DAY_LIMIT") return t("dayLimit");
       if (error?.code === "PHOTO_LIBRARY_FULL") return t("libraryFull");
+      if (error?.code === "PHOTO_MONTHLY_LIMIT") return t("monthlyLimit");
       return t("generic");
     }
 

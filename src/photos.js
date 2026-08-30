@@ -1,6 +1,9 @@
 const MAX_PHOTO_BYTES = 1_200_000;
 const MAX_LIBRARY_BYTES = 8_000_000_000;
 const MAX_PHOTOS_PER_DAY = 3;
+const MAX_MONTHLY_R2_WRITES = 10_000;
+const MAX_MONTHLY_R2_READS = 1_000_000;
+const BUCKET_USAGE_KEY = "__life_ledger_photo_bucket__";
 const ALLOWED_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 class PhotoRequestError extends Error {
@@ -53,7 +56,28 @@ function publicPhoto(row) {
   };
 }
 
-async function reserveStorage(env, keyHash, bytes) {
+function usagePeriod(now = new Date()) {
+  return now.toISOString().slice(0, 7);
+}
+
+async function reserveOperation(env, type) {
+  const write = type === "write" ? 1 : 0;
+  const read = type === "read" ? 1 : 0;
+  const result = await env.DB.prepare(`
+    INSERT INTO photo_operation_usage (period, write_operations, read_operations, updated_at)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(period) DO UPDATE SET
+      write_operations = photo_operation_usage.write_operations + excluded.write_operations,
+      read_operations = photo_operation_usage.read_operations + excluded.read_operations,
+      updated_at = excluded.updated_at
+    WHERE photo_operation_usage.write_operations + excluded.write_operations <= ?
+      AND photo_operation_usage.read_operations + excluded.read_operations <= ?
+  `).bind(usagePeriod(), write, read, Date.now(), MAX_MONTHLY_R2_WRITES, MAX_MONTHLY_R2_READS).run();
+  if (!result.success) throw new PhotoRequestError("Unable to reserve photo operation", 503, "PHOTO_STORAGE_UNAVAILABLE");
+  if (!result.meta?.changes) throw new PhotoRequestError("Monthly private photo allowance reached", 429, "PHOTO_MONTHLY_LIMIT");
+}
+
+async function reserveStorage(env, bytes) {
   const result = await env.DB.prepare(`
     INSERT INTO photo_usage (key_hash, total_bytes, updated_at)
     VALUES (?, ?, ?)
@@ -61,17 +85,17 @@ async function reserveStorage(env, keyHash, bytes) {
       total_bytes = photo_usage.total_bytes + excluded.total_bytes,
       updated_at = excluded.updated_at
     WHERE photo_usage.total_bytes + excluded.total_bytes <= ?
-  `).bind(keyHash, bytes, Date.now(), MAX_LIBRARY_BYTES).run();
+  `).bind(BUCKET_USAGE_KEY, bytes, Date.now(), MAX_LIBRARY_BYTES).run();
   if (!result.success) throw new PhotoRequestError("Unable to reserve photo storage", 503, "PHOTO_STORAGE_UNAVAILABLE");
   if (!result.meta?.changes) throw new PhotoRequestError("Photo library storage limit reached", 413, "PHOTO_LIBRARY_FULL");
 }
 
-async function releaseStorage(env, keyHash, bytes) {
+async function releaseStorage(env, bytes) {
   await env.DB.prepare(`
     UPDATE photo_usage
     SET total_bytes = MAX(0, total_bytes - ?), updated_at = ?
     WHERE key_hash = ?
-  `).bind(bytes, Date.now(), keyHash).run();
+  `).bind(bytes, Date.now(), BUCKET_USAGE_KEY).run();
 }
 
 async function uploadPhoto(request, env, keyHash) {
@@ -118,7 +142,8 @@ async function uploadPhoto(request, env, keyHash) {
   const height = integerInRange(form.get("height"), 1, 10000);
   const createdAt = Date.now();
 
-  await reserveStorage(env, keyHash, file.size);
+  await reserveOperation(env, "write");
+  await reserveStorage(env, file.size);
   try {
     await env.PHOTOS.put(objectKey, body, {
       httpMetadata: { contentType: file.type, cacheControl: "private, no-store" },
@@ -131,7 +156,7 @@ async function uploadPhoto(request, env, keyHash) {
     if (!inserted.success) throw new Error("Photo metadata insert failed");
   } catch (error) {
     await env.PHOTOS.delete(objectKey).catch(() => {});
-    await releaseStorage(env, keyHash, file.size).catch(() => {});
+    await releaseStorage(env, file.size).catch(() => {});
     throw error;
   }
 
@@ -163,7 +188,7 @@ async function listPhotos(url, env, keyHash) {
     `).bind(keyHash, from, to);
   }
   const result = await statement.all();
-  const usage = await env.DB.prepare("SELECT total_bytes FROM photo_usage WHERE key_hash = ?").bind(keyHash).first();
+  const usage = await env.DB.prepare("SELECT total_bytes FROM photo_usage WHERE key_hash = ?").bind(BUCKET_USAGE_KEY).first();
   return json({
     photos: (result.results || []).map(publicPhoto),
     usage: { bytes: Number(usage?.total_bytes || 0), limit: MAX_LIBRARY_BYTES },
@@ -175,6 +200,7 @@ async function getPhoto(id, env, keyHash) {
     SELECT object_key, content_type FROM photo_attachments WHERE id = ? AND key_hash = ?
   `).bind(id, keyHash).first();
   if (!row) throw new PhotoRequestError("Photo not found", 404, "PHOTO_NOT_FOUND");
+  await reserveOperation(env, "read");
   const object = await env.PHOTOS.get(row.object_key);
   if (!object) throw new PhotoRequestError("Photo file is unavailable", 404, "PHOTO_OBJECT_MISSING");
   return new Response(object.body, {
@@ -198,7 +224,7 @@ async function deletePhoto(id, env, keyHash) {
   const removed = await env.DB.prepare("DELETE FROM photo_attachments WHERE id = ? AND key_hash = ?")
     .bind(id, keyHash).run();
   if (!removed.success) throw new PhotoRequestError("Photo could not be deleted", 500, "PHOTO_DELETE_FAILED");
-  await releaseStorage(env, keyHash, Number(row.size_bytes));
+  await releaseStorage(env, Number(row.size_bytes));
   return json({ ok: true });
 }
 
@@ -220,11 +246,14 @@ async function handlePhotoRequest(request, env, keyHash) {
 export {
   ALLOWED_PHOTO_TYPES,
   MAX_LIBRARY_BYTES,
+  MAX_MONTHLY_R2_READS,
+  MAX_MONTHLY_R2_WRITES,
   MAX_PHOTO_BYTES,
   MAX_PHOTOS_PER_DAY,
   PhotoRequestError,
   handlePhotoRequest,
   hasExpectedSignature,
   publicPhoto,
+  usagePeriod,
   validDate,
 };
