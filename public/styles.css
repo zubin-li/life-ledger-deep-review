@@ -801,6 +801,13 @@ html[data-theme="dark"] .tracking-mode-choice label { border-color: var(--edge-s
 .export-options span { display: grid; gap: 3px; }
 .export-options strong { font-size: 12px; }
 .export-options small { color: var(--muted); font-size: 9px; }
+.media-backup-option { margin: 2px 0 14px; display: flex; align-items: center; gap: 12px; padding: 13px 15px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-radius: 17px; background: color-mix(in srgb, var(--accent) 7%, transparent); cursor: pointer; }
+.media-backup-option[hidden] { display: none !important; }
+.media-backup-option input { width: 18px; height: 18px; accent-color: var(--accent); }
+.media-backup-option span { display: grid; gap: 3px; }
+.media-backup-option strong { font-size: 12px; }
+.media-backup-option small { color: var(--muted); font-size: 9px; line-height: 1.45; }
+.media-backup-option:has(input:disabled) { opacity: .48; cursor: default; }
 .export-date-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; }
 .export-date-fields input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
 .export-date-fields input[hidden] { display: none; }

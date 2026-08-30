@@ -22,6 +22,8 @@
 
 > **正式版说明：** Life Ledger 1.1 为自己部署的 Cloudflare 版本加入了 AI 语音复盘。本机记录仍会自动保存，完整 JSON 备份可以在另一台设备或另一个浏览器中恢复。
 
+> **主分支最新功能：** 心情颜色日历、私人记忆时间轴、侧边栏长期待办，以及带按月便携备份的照片记忆。照片仅保存在使用者自己部署的 Cloudflare 空间中。
+
 ## Life Ledger 1.1 本版本新增
 
 - **快速记录：** 口述几分钟，确认 AI 整理后的草稿，再追加到当日复盘。
@@ -93,6 +95,9 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 可安装 PWA 与离线应用外壳
 - 可选的 Cloudflare Access + D1 跨设备同步
 - 可选的只读 Google 日历，最多连接两个账号
+- 心情颜色日历与可切换的完成度热力图
+- Cloudflare 版本的私人照片记忆、时间轴和按月 `.llmedia` 照片备份
+- 桌面侧边栏中的精简长期待办
 - 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面
 
@@ -187,7 +192,7 @@ npm run dev
 
 同一次部署会自动包含“快速记录”使用的 Workers AI 绑定。为了让个人免费使用更可控，每个账号每天最多处理 3 段、累计 20 分钟的录音，单次最长 10 分钟。Cloudflare 的免费额度和价格可能调整；如果要开放给多人使用，请先查看自己的 Cloudflare 用量面板。
 
-Cloudflare 版本还可以以只读方式连接 Google 日历。每位使用者需要创建自己的 Google OAuth 网页客户端，并配置四个 Cloudflare Secret；仓库不会内置或共享任何 Google 凭据。完整步骤和隐私边界见[自托管说明](docs/self-hosting.zh-CN.md#可选的只读-google-日历)。
+Cloudflare 版本还可以以只读方式连接 Google 日历，并把压缩后的照片记忆保存在自己的私有 R2 存储中。Google 日历需要使用者创建自己的 OAuth 网页客户端，并配置四个 Cloudflare Secret；仓库不会内置或共享任何 Google 凭据。完整步骤和隐私边界见[自托管说明](docs/self-hosting.zh-CN.md)。
 
 完整步骤请看[自托管说明](docs/self-hosting.zh-CN.md)和[Cloudflare Access 设置](docs/cloudflare-access.zh-CN.md)。
 
@@ -257,7 +262,7 @@ Life Ledger 面向个人或小型家庭使用，两种云方案都运行在部�
 
 - 可打印、可保存为 PDF 的周度与月度复盘报告
 - 可选的 AI 周度与月度复盘整理
-- 支持完整备份与恢复的照片附件
+- 可打印的周度与月度报告
 - 作为长期探索方向的可选天气信息
 - 更安全地处理多设备离线编辑冲突
 - 为超长期日记提供按月拆分存储

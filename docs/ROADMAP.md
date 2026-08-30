@@ -46,11 +46,11 @@ Guardrails:
 - generated claims remain traceable to the selected period;
 - the deterministic report remains fully useful without AI.
 
-## Explore: context and media
+## Shipped foundation: context and media
 
 ### Photo attachments and portable backups
 
-Photos require a storage and portability design before a visible attachment button becomes a complete feature. A future design should cover image resizing, metadata handling, browser quota feedback, IndexedDB or equivalent binary storage, object storage for self-hosted sync, and a backup archive that restores both records and media.
+The Cloudflare self-hosted edition now supports private photo memories inside the mood note. The browser resizes and re-encodes photos, R2 stores the compressed objects behind the existing Access identity, the Timeline combines them with mood context, and monthly `.llmedia` files restore both records and media without duplicating photos.
 
 Social posters are a possible later output, not part of the first storage milestone.
 

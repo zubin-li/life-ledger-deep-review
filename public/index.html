@@ -659,10 +659,11 @@
           <label><input type="radio" name="exportScope" value="day" /><span><strong id="exportDayTitle">指定一天</strong><small id="exportDayHelp">仅导出当天内容</small></span></label>
           <div class="export-date-fields"><input id="exportMonth" type="month" /><input id="exportDate" type="date" /></div>
         </div>
+        <label class="media-backup-option" id="mediaBackupOption" hidden><input id="includePhotos" type="checkbox" /><span><strong id="mediaBackupTitle">包含照片</strong><small id="mediaBackupHelp">照片备份按月份生成独立的便携文件。</small></span></label>
         </section>
         <section class="backup-section restore-section" id="backupImportPanel" role="tabpanel" aria-labelledby="backupImportTab" data-backup-panel="import" hidden>
           <div class="backup-section-heading"><div><span class="kicker">RESTORE</span><h3 id="restoreSectionTitle">从备份恢复</h3></div><small id="restoreSectionHelp">支持新版备份和早期导出的 JSON。</small></div>
-          <input id="importFile" type="file" accept="application/json,.json" hidden />
+          <input id="importFile" type="file" accept="application/json,.json,application/x-life-ledger-media,.llmedia" hidden />
           <button class="restore-file-button" id="chooseImportFile" type="button">
             <span class="restore-file-icon" aria-hidden="true">＋</span>
             <span><strong id="chooseImportTitle">选择备份文件</strong><small id="chooseImportHelp">文件会先在本机检查，不会上传。</small></span>
@@ -753,6 +754,7 @@
     <script src="./focus-timer.js?v=1.1.0"></script>
     <script src="./voice-checkin.js?v=1.1.0"></script>
     <script src="./photo-memories.js?v=1.1.0"></script>
+    <script src="./media-backup.js?v=1.1.0"></script>
     <script src="./app.js?v=1.1.0"></script>
   </body>
 </html>

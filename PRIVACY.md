@@ -12,6 +12,12 @@ When a deployment is protected by Cloudflare Access, the Worker validates the Ac
 
 The application does not provide application-layer end-to-end encryption. Anyone with administrative access to that Cloudflare account may be able to inspect the stored payload.
 
+## Optional private photo memories
+
+In the self-hosted Cloudflare edition, a user may attach up to three photos to a day from the mood-note dialog. Before upload, the browser resizes and re-encodes the image, removing ordinary EXIF metadata. The compressed file is stored in the deployer's private R2 bucket and a small metadata record is stored in D1. Photo objects are never public: every list, read, upload, and delete request passes through the same Cloudflare Access identity boundary as synchronized records.
+
+Photos are not inserted into the main JSON state. The application enforces a 1.2 MB limit per compressed image and an 8 GB per-account library limit. The original image stays under the user's control and is not uploaded after the compressed copy has been produced. A user can delete an individual photo or export a selected month as a portable `.llmedia` file containing that month's Life Ledger records and compressed photos. Such backup files are private readable data and must be protected like journal exports.
+
 ## Optional Cloudflare AI voice reflection
 
 In a self-hosted Cloudflare deployment, a user may explicitly record a daily reflection. The browser sends that recording to the deployer's authenticated Worker, which passes it to Cloudflare Workers AI for speech transcription and text refinement. This is a user-initiated external processing step.
@@ -40,6 +46,6 @@ The repository contains no analytics, advertising, telemetry, or social tracking
 
 ## Data control
 
-Users can export a selected day, week, month, or complete history as JSON and restore compatible backups entirely in the browser. Restore files are parsed locally and are not uploaded by the import flow. A self-hoster can delete the D1 database, CloudBase collection, or individual records through their own cloud account.
+Users can export a selected day, week, month, or complete history as JSON and restore compatible backups entirely in the browser. Cloudflare photo users can additionally export and restore one month at a time as `.llmedia`. Restore files are parsed locally; only the compressed photo records from an explicitly confirmed media restore are uploaded into that user's own private R2 bucket. A self-hoster can delete the D1 database, R2 objects, CloudBase collection, or individual records through their own cloud account.
 
 Life Ledger is a personal organization tool, not a medical device or healthcare service.

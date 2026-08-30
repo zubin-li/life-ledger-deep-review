@@ -13,6 +13,16 @@ After the first deployment, protect the Worker with Cloudflare Access before rel
 
 The checked-in Wrangler configuration provisions the Workers AI binding automatically. No OpenAI account or separate API key is required. **Quick record** appears in Daily Reflection only after the app identifies itself as a Cloudflare deployment; it sends audio through the Access-protected Worker, creates an editable draft, and discards the recording. The `0002_voice_usage.sql` migration adds only daily counters for three requests and 20 recorded minutes per user.
 
+## Optional private photo memories
+
+Photo memories require Cloudflare R2. Enable R2 once in the Cloudflare dashboard, then create the private bucket declared in `wrangler.jsonc` before deployment:
+
+```bash
+npx wrangler r2 bucket create life-ledger-deep-review-photos
+```
+
+The app compresses each photo in the browser, stores at most three photos per day, limits each compressed file to 1.2 MB, and enforces an 8 GB library ceiling per account. R2 objects are never exposed through a public bucket URL; authenticated Worker endpoints enforce ownership on every operation. The Timeline then presents photos beside the mood and reason for each day. Monthly `.llmedia` export and restore keep the media portable.
+
 ## Optional read-only Google Calendar
 
 Google Calendar is intentionally opt-in and available only from a Cloudflare deployment with a secure backend. Every self-hoster creates their own Google OAuth client; the project does not provide a shared client, proxy, or quota. Life Ledger asks only for calendar-list and event read access and cannot change Google Calendar.
@@ -47,6 +57,7 @@ The `0003_google_calendar.sql` migration stores encrypted authorization data and
 npm install
 npx wrangler login
 npx wrangler d1 create life-ledger-deep-review-db
+npx wrangler r2 bucket create life-ledger-deep-review-photos
 ```
 
 Copy the returned database ID into `wrangler.jsonc`, replacing the placeholder `database_id`, then run:

@@ -13,6 +13,12 @@ The file contains habits and their historical versions, check-ins, moods, journa
 
 Day, week, and month exports remain available for analysis or selective transfer. They are partial backups rather than a complete replacement for your history.
 
+### Back up photo memories
+
+Photo memories exist only in the self-hosted Cloudflare edition. Choose **One month**, enable **Include photos**, and export a `.llmedia` file. It contains that month's normal records plus the already-compressed private photos. Repeat for each month that contains photos; the ordinary **All history** JSON remains the complete backup for non-media records.
+
+Keep `.llmedia` files private. They are portable and intentionally readable by Life Ledger without a cloud-account dependency.
+
 ## Restore on another device
 
 1. Open Life Ledger on the new device. If you plan to install it as a PWA, install it first and then open the installed app.
@@ -24,6 +30,8 @@ Day, week, and month exports remain available for analysis or selective transfer
 A complete backup replaces the records in the current browser. A day, week, or month backup merges its records into the current history. Before either operation, Life Ledger keeps the previous state as a safety copy in the same browser; **Undo last restore** restores it.
 
 The importer validates the structure before changing anything and accepts both the current versioned backup format and JSON files exported by earlier beta releases. Files larger than 10 MB are rejected in the browser as a safety limit.
+
+For a `.llmedia` restore, use the same Import tab in a Cloudflare deployment. Life Ledger restores the month's records and then uploads the compressed photos into your own private R2 bucket. Re-importing the same media backup is idempotent and does not duplicate photos. Media bundles larger than 160 MB are rejected.
 
 ## What local-only means
 

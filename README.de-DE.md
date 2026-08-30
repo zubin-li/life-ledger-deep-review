@@ -22,6 +22,8 @@
 
 > **Stabile Version:** Life Ledger 1.1 ergänzt die selbst bereitgestellte Cloudflare-Version um KI-gestützte Sprachreflexion. Lokale Einträge werden weiterhin automatisch gespeichert; vollständige JSON-Sicherungen lassen sich auf einem anderen Gerät oder in einem anderen Browser wiederherstellen.
 
+> **Neu auf main:** stimmungsfarbiger Kalender, private Erinnerungs-Zeitleiste, langfristige Einträge in der Seitenleiste und optionale Fotoerinnerungen mit übertragbarer Monatssicherung. Fotospeicherung ist nur in der eigenen Cloudflare-Bereitstellung aktiv.
+
 ## Neu in Life Ledger 1.1
 
 - **Schnell aufnehmen:** Sprich einige Minuten, prüfe den von der KI geordneten Entwurf und füge ihn der Tagesreflexion hinzu.
@@ -89,6 +91,9 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Installierbare PWA mit offline verfügbarem App-Grundgerüst
 - Optionale geräteübergreifende Synchronisierung über Cloudflare Access und D1
 - Optionaler schreibgeschützter Google-Kalender aus bis zu zwei Konten
+- Stimmungsfarbiger Kalender und optionale Erledigungs-Heatmap
+- Private Fotoerinnerungen, Zeitleiste und monatliche `.llmedia`-Sicherung in der Cloudflare-Version
+- Kompakte langfristige Einträge in der Desktop-Seitenleiste
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 

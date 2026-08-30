@@ -42,6 +42,7 @@ function hasExpectedSignature(bytes, contentType) {
 function publicPhoto(row) {
   return {
     id: row.id,
+    backupId: row.source_id || row.id,
     date: row.entry_date,
     contentType: row.content_type,
     size: Number(row.size_bytes),
@@ -82,10 +83,20 @@ async function uploadPhoto(request, env, keyHash) {
   }
   const file = form.get("photo");
   const date = String(form.get("date") || "");
+  const requestedSourceId = String(form.get("sourceId") || "");
   if (!(file instanceof File)) throw new PhotoRequestError("Photo file is required");
   if (!validDate(date)) throw new PhotoRequestError("A valid entry date is required");
   if (!ALLOWED_PHOTO_TYPES.has(file.type)) throw new PhotoRequestError("Unsupported photo format", 415, "PHOTO_FORMAT_UNSUPPORTED");
   if (!file.size || file.size > MAX_PHOTO_BYTES) throw new PhotoRequestError("Photo is too large", 413, "PHOTO_TOO_LARGE");
+  if (requestedSourceId && !/^[0-9a-f-]{36}$/i.test(requestedSourceId)) throw new PhotoRequestError("Invalid backup photo identifier");
+
+  if (requestedSourceId) {
+    const existing = await env.DB.prepare(`
+      SELECT id, source_id, entry_date, content_type, size_bytes, width, height, created_at
+      FROM photo_attachments WHERE key_hash = ? AND source_id = ?
+    `).bind(keyHash, requestedSourceId).first();
+    if (existing) return json({ photo: publicPhoto(existing), restored: false });
+  }
 
   const count = await env.DB.prepare(`
     SELECT COUNT(*) AS count FROM photo_attachments WHERE key_hash = ? AND entry_date = ?
@@ -100,6 +111,7 @@ async function uploadPhoto(request, env, keyHash) {
   }
 
   const id = crypto.randomUUID();
+  const sourceId = requestedSourceId || id;
   const extension = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
   const objectKey = `${keyHash.slice(0, 24)}/${date}/${id}.${extension}`;
   const width = integerInRange(form.get("width"), 1, 10000);
@@ -113,9 +125,9 @@ async function uploadPhoto(request, env, keyHash) {
     });
     const inserted = await env.DB.prepare(`
       INSERT INTO photo_attachments
-        (id, key_hash, entry_date, object_key, content_type, size_bytes, width, height, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(id, keyHash, date, objectKey, file.type, file.size, width, height, createdAt).run();
+        (id, source_id, key_hash, entry_date, object_key, content_type, size_bytes, width, height, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(id, sourceId, keyHash, date, objectKey, file.type, file.size, width, height, createdAt).run();
     if (!inserted.success) throw new Error("Photo metadata insert failed");
   } catch (error) {
     await env.PHOTOS.delete(objectKey).catch(() => {});
@@ -124,7 +136,7 @@ async function uploadPhoto(request, env, keyHash) {
   }
 
   return json({ photo: publicPhoto({
-    id, entry_date: date, content_type: file.type, size_bytes: file.size,
+    id, source_id: sourceId, entry_date: date, content_type: file.type, size_bytes: file.size,
     width, height, created_at: createdAt,
   }) }, 201);
 }
@@ -137,13 +149,13 @@ async function listPhotos(url, env, keyHash) {
   if (date) {
     if (!validDate(date)) throw new PhotoRequestError("Invalid date");
     statement = env.DB.prepare(`
-      SELECT id, entry_date, content_type, size_bytes, width, height, created_at
+      SELECT id, source_id, entry_date, content_type, size_bytes, width, height, created_at
       FROM photo_attachments WHERE key_hash = ? AND entry_date = ? ORDER BY created_at
     `).bind(keyHash, date);
   } else {
     if (!validDate(from) || !validDate(to) || from > to) throw new PhotoRequestError("A valid date range is required");
     statement = env.DB.prepare(`
-      SELECT id, entry_date, content_type, size_bytes, width, height, created_at
+      SELECT id, source_id, entry_date, content_type, size_bytes, width, height, created_at
       FROM photo_attachments
       WHERE key_hash = ? AND entry_date >= ? AND entry_date <= ?
       ORDER BY entry_date DESC, created_at

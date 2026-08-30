@@ -209,12 +209,29 @@
       return data.photos || [];
     }
 
+    async function restorePhoto(photo, blob) {
+      if (!enabled) throw new Error(t("unavailable"));
+      const form = new FormData();
+      form.set("photo", blob, `life-ledger-${photo.date}.${blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg"}`);
+      form.set("date", photo.date);
+      form.set("width", String(photo.width || 1));
+      form.set("height", String(photo.height || 1));
+      form.set("sourceId", photo.backupId || photo.id);
+      const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
+      if (date === photo.date && !photos.some(item => item.id === data.photo.id)) {
+        photos.push(data.photo);
+        render();
+      }
+      return data.photo;
+    }
+
     add.addEventListener("click", () => input.click());
     input.addEventListener("change", () => input.files?.[0] && upload(input.files[0]));
     render();
     return {
       load,
       listRange,
+      restorePhoto,
       setLanguage(next) { language = copy[next] ? next : "en"; render(); },
       setEnabled(next) { enabled = Boolean(next); render(); },
       photos() { return [...photos]; },

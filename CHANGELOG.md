@@ -4,6 +4,19 @@ All notable changes are documented here.
 
 ## Unreleased
 
+### Added
+
+- Mood-colored calendar days with an optional completion heatmap.
+- Private Cloudflare R2 photo memories inside the mood-note flow, limited to three compressed photos per day.
+- A chronological Timeline combining mood, reasons, and photo memories.
+- Compact long-term items in the desktop sidebar without a second source of truth.
+- Portable monthly `.llmedia` export and idempotent restore for records plus compressed photos.
+
+### Privacy and safety
+
+- Photos are re-encoded in the browser, never published through an R2 public URL, and remain behind the existing Cloudflare Access identity.
+- Media metadata and objects stay outside the whole-state JSON payload; local-only and CloudBase editions do not expose photo upload.
+
 ## [1.1.0] - 2026-08-22
 
 ### Added

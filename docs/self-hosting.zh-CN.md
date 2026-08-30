@@ -13,6 +13,16 @@ README 中的一键部署按钮会让 Cloudflare 把本仓库复制到你的 Git
 
 仓库中的 Wrangler 配置会自动创建 Workers AI 绑定，不需要 OpenAI 账号或另外填写 API Key。只有应用识别到 Cloudflare 部署模式时，每日复盘中才会出现**快速记录**；录音经 Access 保护的 Worker 转写并整理成可编辑草稿，原始音频随即释放。`0002_voice_usage.sql` 只新增每日计数：每位用户每天最多 3 次、累计 20 分钟。
 
+## 可选的私人照片记忆
+
+照片记忆使用 Cloudflare R2。第一次使用前，先在 Cloudflare 控制台启用 R2，再创建 `wrangler.jsonc` 已声明的私有存储桶：
+
+```bash
+npx wrangler r2 bucket create life-ledger-deep-review-photos
+```
+
+照片会先在浏览器中压缩，每天最多三张，压缩后单张最大 1.2 MB，每个账号的照片库上限为 8 GB。R2 不开放公共链接；所有查看、上传和删除都必须经过 Worker 的身份验证。时间轴会把照片与当天心情、原因放在一起；按月 `.llmedia` 导入导出保证照片仍然可以迁移。
+
 ## 可选的只读 Google 日历
 
 Google 日历是可选功能，并且只在具备安全后端的 Cloudflare 部署版开放。每位自托管用户都使用自己的 Google OAuth 客户端；本项目不会提供共享客户端、共享代理或共享额度。Life Ledger 只申请“读取日历列表”和“读取日程”权限，不能修改 Google 日历。
@@ -47,6 +57,7 @@ Google 日历是可选功能，并且只在具备安全后端的 Cloudflare 部�
 npm install
 npx wrangler login
 npx wrangler d1 create life-ledger-deep-review-db
+npx wrangler r2 bucket create life-ledger-deep-review-photos
 ```
 
 把命令返回的数据库 ID 写入 `wrangler.jsonc`，替换其中的 `database_id` 占位值，然后执行：

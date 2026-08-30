@@ -10,6 +10,7 @@ const FOCUS_ACTIVE_KEY = "life-ledger-focus-active";
 const BACKUP_FORMAT = "life-ledger-backup";
 const BACKUP_SCHEMA_VERSION = 2;
 const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
+const MAX_MEDIA_IMPORT_BYTES = 160 * 1024 * 1024;
 const CLOUD_API = "./api/state";
 const colors = {
   sage: { solid: "#6f8f7d", soft: "#dbe6dc" },
@@ -362,6 +363,7 @@ const i18n = {
       safety: "恢复前会在本机保留一份安全副本。完整备份将替换当前记录，部分备份将合并到现有记录。",
       invalid: "无法读取这个备份。请选择 Life Ledger 导出的 JSON 文件。", tooLarge: "备份文件过大，无法安全导入。", confirmFull: "这会用备份替换当前记录。是否继续？", confirmPartial: "这会把备份内容合并到当前记录。是否继续？",
       cloudWarning: "恢复后的内容也会同步到你的云端空间。",
+      mediaTitle: "包含照片", mediaHelp: "按月份生成一个可迁移的照片备份文件。", mediaOnlyMonth: "照片备份仅支持指定月份。", mediaExporting: "正在整理照片备份……", mediaRestoring: "正在恢复照片……", mediaInvalid: "无法读取这个照片备份。请选择 Life Ledger 导出的 .llmedia 文件。",
       summary: "{scope} · {habits} 个习惯 · {days} 天记录 · 导出于 {date}", scopeAll: "完整备份", scopePartial: "部分备份", legacy: "早期版本备份",
     },
     defaultHabits: {
@@ -690,6 +692,7 @@ const i18n = {
       safety: "A safety copy stays on this device before restoration. Complete backups replace current records; partial backups merge with them.",
       invalid: "This backup could not be read. Choose a JSON file exported by Life Ledger.", tooLarge: "This backup is too large to import safely.", confirmFull: "This will replace the records currently on this device. Continue?", confirmPartial: "This will merge the backup into the records on this device. Continue?",
       cloudWarning: "The restored records will also sync to your cloud space.",
+      mediaTitle: "Include photos", mediaHelp: "Create one portable photo backup for the selected month.", mediaOnlyMonth: "Photo backups are available for one selected month at a time.", mediaExporting: "Preparing photo backup…", mediaRestoring: "Restoring photos…", mediaInvalid: "This photo backup could not be read. Choose a .llmedia file exported by Life Ledger.",
       summary: "{scope} · {habits} habits · {days} recorded days · exported {date}", scopeAll: "Complete backup", scopePartial: "Partial backup", legacy: "Earlier backup format",
     },
     defaultHabits: {
@@ -1018,6 +1021,7 @@ const i18n = {
       safety: "Vorher bleibt eine Sicherheitskopie auf diesem Gerät. Vollständige Sicherungen ersetzen bestehende Einträge; Teilsicherungen werden zusammengeführt.",
       invalid: "Diese Sicherung konnte nicht gelesen werden. Wähle eine von Life Ledger exportierte JSON-Datei.", tooLarge: "Diese Sicherung ist zu groß für einen sicheren Import.", confirmFull: "Die aktuellen Einträge auf diesem Gerät werden ersetzt. Fortfahren?", confirmPartial: "Die Sicherung wird mit den Einträgen auf diesem Gerät zusammengeführt. Fortfahren?",
       cloudWarning: "Die wiederhergestellten Einträge werden auch mit deinem Cloud-Speicher synchronisiert.",
+      mediaTitle: "Fotos einschließen", mediaHelp: "Erstellt eine übertragbare Fotosicherung für den gewählten Monat.", mediaOnlyMonth: "Fotosicherungen sind jeweils für einen ausgewählten Monat verfügbar.", mediaExporting: "Fotosicherung wird vorbereitet …", mediaRestoring: "Fotos werden wiederhergestellt …", mediaInvalid: "Diese Fotosicherung konnte nicht gelesen werden. Wähle eine von Life Ledger exportierte .llmedia-Datei.",
       summary: "{scope} · {habits} Gewohnheiten · {days} Tage mit Einträgen · exportiert {date}", scopeAll: "Vollständige Sicherung", scopePartial: "Teilsicherung", legacy: "Früheres Sicherungsformat",
     },
     defaultHabits: {
@@ -1182,6 +1186,7 @@ const googleCalendarLoadingMonths = new Set();
 let focusWakeLock = null;
 let focusAudioContext = null;
 let pendingImport = null;
+let pendingMediaImport = null;
 let pendingMoodDate = null;
 let pendingMood = "";
 let reviewCanvasScope = "week";
@@ -1429,6 +1434,8 @@ function applyLanguage() {
   setText("#restoreImport", tr("backup.restore"));
   setText("#importSafetyNote", tr("backup.safety"));
   setText("#undoRestore", tr("backup.undo"));
+  setText("#mediaBackupTitle", tr("backup.mediaTitle"));
+  setText("#mediaBackupHelp", tr("backup.mediaHelp"));
   setText("#exportAllTitle", tr("export.all"));
   setText("#exportAllHelp", tr("export.allHelp"));
   setText("#exportMonthTitle", tr("export.month"));
@@ -3645,6 +3652,11 @@ function updateExportFields() {
   const scope = $('#exportForm input[name="exportScope"]:checked')?.value || "all";
   $("#exportMonth").hidden = scope !== "month";
   $("#exportDate").hidden = !["week", "day"].includes(scope);
+  const includePhotos = $("#includePhotos");
+  if (includePhotos) {
+    includePhotos.disabled = scope !== "month";
+    if (scope !== "month") includePhotos.checked = false;
+  }
 }
 function setBackupTab(tab = "export") {
   const selected = tab === "import" ? "import" : "export";
@@ -3663,6 +3675,7 @@ function openBackupDialog() {
   updateExportFields();
   clearImportSelection();
   $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
+  $("#mediaBackupOption").hidden = !hostedCloudMode;
   setBackupTab("export");
   $("#exportDialog").showModal();
 }
@@ -3709,13 +3722,33 @@ function triggerFileDownload(blob, filename) {
   // WebKit may cancel a download when a Blob URL is revoked immediately.
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
-function downloadExport(event) {
+async function downloadExport(event) {
   event.preventDefault();
   const scope = $('#exportForm input[name="exportScope"]:checked').value;
   const backup = createBackup(scope);
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  triggerFileDownload(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
-  showToast(tr("toast.exported"));
+  const includePhotos = hostedCloudMode && $("#includePhotos")?.checked;
+  const confirmButton = $("#exportConfirm");
+  const originalLabel = confirmButton.textContent;
+  confirmButton.disabled = true;
+  try {
+    if (includePhotos) {
+      if (scope !== "month") throw new Error("photo-backup-month-only");
+      confirmButton.textContent = tr("backup.mediaExporting");
+      const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
+      const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
+      triggerFileDownload(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
+    } else {
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      triggerFileDownload(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
+    }
+    showToast(tr("toast.exported"));
+  } catch (error) {
+    console.warn("Backup export failed", error);
+    window.alert(error?.message === "photo-backup-month-only" ? tr("backup.mediaOnlyMonth") : tr("backup.mediaInvalid"));
+  } finally {
+    confirmButton.disabled = false;
+    confirmButton.textContent = originalLabel;
+  }
 }
 
 function isRecord(value) {
@@ -3771,6 +3804,7 @@ function importStats(candidate) {
 }
 function clearImportSelection() {
   pendingImport = null;
+  pendingMediaImport = null;
   $("#importFile").value = "";
   $("#importPreview").hidden = true;
   $("#importError").hidden = true;
@@ -3779,21 +3813,27 @@ function clearImportSelection() {
 async function previewImportFile(file) {
   clearImportSelection();
   if (!file) return;
-  if (file.size > MAX_IMPORT_BYTES) {
+  const mediaBundle = await window.LifeLedgerMediaBackup?.isBundle(file).catch(() => false);
+  const limit = mediaBundle ? MAX_MEDIA_IMPORT_BYTES : MAX_IMPORT_BYTES;
+  if (file.size > limit) {
     $("#importError").textContent = tr("backup.tooLarge");
     $("#importError").hidden = false;
     return;
   }
   try {
-    const candidate = importedPayload(JSON.parse(await file.text()));
+    const media = mediaBundle ? await window.LifeLedgerMediaBackup.parseBundle(file) : null;
+    if (media && !hostedCloudMode) throw new Error("media-cloud-only");
+    const candidate = importedPayload(media ? media.manifest.backup : JSON.parse(await file.text()));
     pendingImport = candidate;
+    pendingMediaImport = media;
     $("#importFileName").textContent = file.name;
     $("#importSummary").textContent = importStats(candidate);
+    $(".import-file-badge").textContent = media ? "MEDIA" : "JSON";
     $("#chooseImportFile").hidden = true;
     $("#importPreview").hidden = false;
   } catch (error) {
     console.warn("Backup validation failed", error);
-    $("#importError").textContent = tr("backup.invalid");
+    $("#importError").textContent = mediaBundle ? tr("backup.mediaInvalid") : tr("backup.invalid");
     $("#importError").hidden = false;
   }
 }
@@ -3825,20 +3865,35 @@ function mergeBackupData(current, incoming) {
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
   };
 }
-function restorePendingImport() {
+async function restorePendingImport() {
   if (!pendingImport) return;
   const isComplete = pendingImport.scope === "all";
   const warning = `${tr(isComplete ? "backup.confirmFull" : "backup.confirmPartial")}${cloudMode ? `\n\n${tr("backup.cloudWarning")}` : ""}`;
   if (!window.confirm(warning)) return;
+  const media = pendingMediaImport;
+  const restoreButton = $("#restoreImport");
+  const originalLabel = restoreButton.textContent;
+  restoreButton.disabled = true;
   localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
   state = isComplete ? cloneData(pendingImport.data) : mergeBackupData(state, pendingImport.data);
   saveState();
+  if (media?.entries?.length) {
+    restoreButton.textContent = tr("backup.mediaRestoring");
+    try {
+      for (const entry of media.entries) await photoMemories.restorePhoto(entry.photo, entry.blob);
+    } catch (error) {
+      console.warn("Photo restore failed", error);
+      window.alert(tr("backup.mediaInvalid"));
+    }
+  }
   selectedAnalyticsHabitIds = [];
   clearImportSelection();
   $("#undoRestore").hidden = false;
   $("#exportDialog").close();
   renderAll();
   showToast(tr("toast.restored"));
+  restoreButton.disabled = false;
+  restoreButton.textContent = originalLabel;
 }
 function undoLastRestore() {
   try {

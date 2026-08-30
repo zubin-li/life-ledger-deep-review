@@ -22,6 +22,8 @@
 
 > **Stable release:** Life Ledger 1.1 adds AI-assisted voice reflection to the self-hosted Cloudflare edition. Local records still save automatically, and complete JSON backups can be restored on another device or browser.
 
+> **Latest on main:** mood-colored calendars, a private memory timeline, long-term items in the sidebar, and optional photo memories with portable monthly media backups are now included. Photo storage is available only in a self-hosted Cloudflare deployment.
+
 ## What's new in Life Ledger 1.1
 
 - **Quick record:** speak for a few minutes, review the AI-organized draft, and append it to the daily reflection.
@@ -89,6 +91,9 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Installable PWA with offline app shell
 - Optional Cloudflare Access + D1 cross-device synchronization
 - Optional read-only Google Calendar context from up to two accounts
+- Mood-colored calendar days and an optional completion heatmap
+- Private photo memories, chronological timeline, and portable monthly `.llmedia` backups in the Cloudflare edition
+- Compact long-term items in the desktop sidebar
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
 
@@ -183,7 +188,7 @@ After deployment, enable Cloudflare Access:
 
 The same deployment automatically includes the Workers AI binding used by **Quick record**. The app limits one account to three recordings and 20 recorded minutes per UTC day, with a maximum of 10 minutes per recording, to keep personal use predictable. Cloudflare allowances and pricing can change; review the provider dashboard before broad multi-user use.
 
-The Cloudflare edition can also connect to Google Calendar in read-only mode. This requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md#optional-read-only-google-calendar).
+The Cloudflare edition can also connect to Google Calendar in read-only mode and keep compressed photo memories in a private R2 bucket. Google Calendar requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md).
 
 See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough.
 
@@ -253,7 +258,7 @@ For mainland China, CloudBase currently offers one Free environment with 3,000 r
 
 - Print-ready weekly and monthly review reports
 - Optional AI-assisted weekly and monthly synthesis
-- Photo attachments with portable media backups
+- Print-ready weekly and monthly reports
 - Optional weather context as a longer-term exploration
 - Safer conflict handling for concurrent offline edits
 - Optional monthly partitioning for very long journal histories

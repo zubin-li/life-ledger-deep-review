@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS photo_attachments (
   id TEXT PRIMARY KEY,
+  source_id TEXT NOT NULL,
   key_hash TEXT NOT NULL,
   entry_date TEXT NOT NULL,
   object_key TEXT NOT NULL UNIQUE,
@@ -12,6 +13,9 @@ CREATE TABLE IF NOT EXISTS photo_attachments (
 
 CREATE INDEX IF NOT EXISTS idx_photo_attachments_date
   ON photo_attachments(key_hash, entry_date DESC, created_at DESC);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_photo_attachments_source
+  ON photo_attachments(key_hash, source_id);
 
 CREATE TABLE IF NOT EXISTS photo_usage (
   key_hash TEXT PRIMARY KEY,

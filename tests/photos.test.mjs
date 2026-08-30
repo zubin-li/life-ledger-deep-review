@@ -27,6 +27,7 @@ test("photo validation accepts only real supported signatures", () => {
 test("public photo metadata never exposes an R2 object key", () => {
   const photo = publicPhoto({
     id: "33f37f4e-0c52-4cf0-bde8-76932e283a7a",
+    source_id: "4f72318a-9478-4dfa-8c93-07f4980f1f4d",
     entry_date: "2026-08-30",
     content_type: "image/webp",
     size_bytes: 12345,
@@ -36,5 +37,6 @@ test("public photo metadata never exposes an R2 object key", () => {
     object_key: "private/secret.webp",
   });
   assert.equal(photo.objectKey, undefined);
+  assert.equal(photo.backupId, "4f72318a-9478-4dfa-8c93-07f4980f1f4d");
   assert.equal(photo.url, "/api/photos/33f37f4e-0c52-4cf0-bde8-76932e283a7a");
 });

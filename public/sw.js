@@ -7,6 +7,7 @@ const APP_SHELL = [
   "./focus-timer.js?v=1.1.0",
   "./voice-checkin.js?v=1.1.0",
   "./photo-memories.js?v=1.1.0",
+  "./media-backup.js?v=1.1.0",
   "./deployment-mode.js?v=1.1.0",
   "./cloudbase-sync.js?v=1.1.0",
   "./vendor/cloudbase-sdk.js",
@@ -57,7 +58,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+  const networkFirst = ["/app.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
     .some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(
