@@ -16,7 +16,8 @@ test("deployed photo memories live inside the mood note", () => {
   assert.match(app, /enabled: hostedCloudMode/);
   assert.match(photos, /MAX_PER_DAY = 3/);
   assert.match(photos, /MAX_OUTPUT_BYTES = 1_200_000/);
-  assert.match(html, /accept="image\/\*,\.heic,\.heif"/);
+  assert.match(html, /accept="image\/jpeg,image\/png,image\/webp,image\/heic,image\/heif/);
+  assert.doesNotMatch(moodDialog[1], /accept="image\/\*/);
   assert.match(photos, /heic2any\.min\.js/);
   assert.match(photos, /PHOTO_HEIC_UNSUPPORTED/);
   assert.match(photos, /PHOTO_PROCESSING_FAILED/);
@@ -68,4 +69,21 @@ test("photo compression falls back from false WebP support and reduces dimension
   assert.equal(result.blob.type, "image/jpeg");
   assert.ok(result.blob.size <= 1_200_000);
   assert.ok(Math.max(result.width, result.height) < 1600);
+});
+
+test("photo compression rejects an unavailable Photos-library placeholder", async () => {
+  const window = {};
+  vm.runInNewContext(photos, {
+    window,
+    document: { createElement() { return {}; }, head: { append() {} } },
+    Blob,
+    File,
+    URL,
+    Image: class {},
+  });
+  const placeholder = new File([], "IMG_0001.HEIC", { type: "image/heic" });
+  await assert.rejects(
+    window.LifeLedgerPhotoMemories.compressPhoto(placeholder),
+    error => error.code === "PHOTO_SOURCE_UNAVAILABLE",
+  );
 });

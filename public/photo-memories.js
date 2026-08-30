@@ -14,7 +14,7 @@
       processing: "Preparing photo…", uploading: "Saving privately…", saved: "Photo saved", delete: "Remove photo", deleting: "Removing…",
       confirmDelete: "Remove this photo from the day?", unavailable: "Photo memories are available in the deployed Cloudflare app.",
       format: "Choose a supported photo, including JPEG, PNG, WebP, HEIC, or HEIF.", heic: "This HEIC photo could not be decoded. Try the original file again.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
-      processingFailed: "This browser could not prepare the photo. Try the original or export it as JPEG.", session: "Your session has expired. Refresh the page and sign in again.", service: "Private photo storage is temporarily unavailable. Try again shortly.", network: "The photo could not reach private storage. Check your connection and try again.",
+      sourceUnavailable: "macOS did not finish making this photo available. Wait for any iCloud download, then select it again.", processingFailed: "This browser could not prepare the photo. Try the original or export it as JPEG.", session: "Your session has expired. Refresh the page and sign in again.", service: "Private photo storage is temporarily unavailable. Try again shortly.", network: "The photo could not reach private storage. Check your connection and try again.",
       dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", monthlyLimit: "The private photo allowance is paused until next month.", generic: "The photo could not be saved. Try again.",
     },
     zh: {
@@ -22,7 +22,7 @@
       processing: "正在处理照片……", uploading: "正在私密保存……", saved: "照片已保存", delete: "删除照片", deleting: "正在删除……",
       confirmDelete: "从这一天删除这张照片吗？", unavailable: "照片记忆仅在已部署的 Cloudflare 版本中开放。",
       format: "请选择支持的照片，包括 JPEG、PNG、WebP、HEIC 或 HEIF。", heic: "这张 HEIC 照片未能解码，请重新选择原始照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
-      processingFailed: "当前浏览器未能处理这张照片，请尝试原图或先导出为 JPEG。", session: "登录状态已过期，请刷新页面并重新登录。", service: "私人照片存储暂时不可用，请稍后重试。", network: "照片未能连接到私人存储，请检查网络后重试。",
+      sourceUnavailable: "macOS 尚未完成照片准备；请等待 iCloud 下载完成后重新选择。", processingFailed: "当前浏览器未能处理这张照片，请尝试原图或先导出为 JPEG。", session: "登录状态已过期，请刷新页面并重新登录。", service: "私人照片存储暂时不可用，请稍后重试。", network: "照片未能连接到私人存储，请检查网络后重试。",
       dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", monthlyLimit: "本月私人照片额度已暂停，下月自动恢复。", generic: "照片未能保存，请重试。",
     },
     de: {
@@ -30,7 +30,7 @@
       processing: "Foto wird vorbereitet …", uploading: "Wird privat gespeichert …", saved: "Foto gespeichert", delete: "Foto entfernen", deleting: "Wird entfernt …",
       confirmDelete: "Dieses Foto aus dem Tag entfernen?", unavailable: "Fotoerinnerungen sind in der bereitgestellten Cloudflare-App verfügbar.",
       format: "Wähle ein unterstütztes Foto, einschließlich JPEG, PNG, WebP, HEIC oder HEIF.", heic: "Dieses HEIC-Foto konnte nicht dekodiert werden. Wähle die Originaldatei erneut.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
-      processingFailed: "Der Browser konnte das Foto nicht vorbereiten. Versuche das Original oder exportiere es als JPEG.", session: "Deine Sitzung ist abgelaufen. Lade die Seite neu und melde dich erneut an.", service: "Der private Fotospeicher ist vorübergehend nicht verfügbar. Versuche es später erneut.", network: "Das Foto konnte den privaten Speicher nicht erreichen. Prüfe deine Verbindung und versuche es erneut.",
+      sourceUnavailable: "macOS hat das Foto noch nicht bereitgestellt. Warte auf den iCloud-Download und wähle es erneut aus.", processingFailed: "Der Browser konnte das Foto nicht vorbereiten. Versuche das Original oder exportiere es als JPEG.", session: "Deine Sitzung ist abgelaufen. Lade die Seite neu und melde dich erneut an.", service: "Der private Fotospeicher ist vorübergehend nicht verfügbar. Versuche es später erneut.", network: "Das Foto konnte den privaten Speicher nicht erreichen. Prüfe deine Verbindung und versuche es erneut.",
       dayLimit: "Für diesen Tag sind bereits drei Fotos gespeichert.", libraryFull: "Der private Fotospeicher ist voll.", monthlyLimit: "Das private Fotokontingent ist bis zum nächsten Monat pausiert.", generic: "Das Foto konnte nicht gespeichert werden. Versuche es erneut.",
     },
   };
@@ -73,6 +73,30 @@
 
   function isPhotoFile(file) {
     return String(file?.type || "").startsWith("image/") || /\.(jpe?g|png|webp|gif|avif|heic|heif)$/i.test(String(file?.name || ""));
+  }
+
+  function inferredPhotoType(file) {
+    const type = String(file?.type || "").toLowerCase();
+    if (type.startsWith("image/")) return type;
+    const name = String(file?.name || "").toLowerCase();
+    if (/\.png$/i.test(name)) return "image/png";
+    if (/\.webp$/i.test(name)) return "image/webp";
+    if (/\.hei[cf]$/i.test(name)) return name.endsWith(".heif") ? "image/heif" : "image/heic";
+    return "image/jpeg";
+  }
+
+  async function materializePhoto(file) {
+    if (!file.size) throw Object.assign(new Error("Photo source unavailable"), { code: "PHOTO_SOURCE_UNAVAILABLE" });
+    try {
+      const bytes = await file.arrayBuffer();
+      if (!bytes.byteLength || bytes.byteLength !== file.size) throw new Error("Incomplete photo source");
+      return new File([bytes], file.name || "photo", {
+        type: inferredPhotoType(file),
+        lastModified: file.lastModified || Date.now(),
+      });
+    } catch (error) {
+      throw Object.assign(new Error("Photo source unavailable"), { code: "PHOTO_SOURCE_UNAVAILABLE", cause: error });
+    }
   }
 
   function loadHeicConverter() {
@@ -130,8 +154,9 @@
     if (!(file instanceof File)) throw Object.assign(new Error("Photo required"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
     if (file.size > MAX_SOURCE_BYTES) throw Object.assign(new Error("Source photo too large"), { code: "PHOTO_SOURCE_TOO_LARGE" });
     if (!isPhotoFile(file)) throw Object.assign(new Error("Unsupported photo"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
+    const sourceFile = await materializePhoto(file);
     let image;
-    try { image = await decodeImage(file); }
+    try { image = await decodeImage(sourceFile); }
     catch (error) {
       if (error?.code === "PHOTO_HEIC_UNSUPPORTED") throw error;
       throw Object.assign(new Error("Unreadable photo"), { code: "PHOTO_FORMAT_UNSUPPORTED" });
@@ -228,6 +253,7 @@
     function errorText(error) {
       if (error?.code === "PHOTO_FORMAT_UNSUPPORTED" || error?.code === "PHOTO_SIGNATURE_INVALID") return t("format");
       if (error?.code === "PHOTO_HEIC_UNSUPPORTED") return t("heic");
+      if (error?.code === "PHOTO_SOURCE_UNAVAILABLE") return t("sourceUnavailable");
       if (error?.code === "PHOTO_PROCESSING_FAILED") return t("processingFailed");
       if (error?.code === "PHOTO_SOURCE_TOO_LARGE") return t("sourceLarge");
       if (error?.code === "PHOTO_TOO_LARGE") return t("outputLarge");

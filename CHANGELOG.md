@@ -2,6 +2,14 @@
 
 All notable changes are documented here.
 
+## [1.1.3] - 2026-08-30
+
+### Fixed
+
+- Prevents macOS Safari from needlessly converting Photos-library PNG/JPEG selections to HEIC by using an explicit accepted-format list.
+- Materializes picker-provided photos in browser memory before decoding, avoiding WebKit failures with temporary or disk-backed Photos-library files.
+- Reports an actionable message when an iCloud photo has not finished becoming locally available.
+
 ## [1.1.2] - 2026-08-30
 
 ### Fixed
