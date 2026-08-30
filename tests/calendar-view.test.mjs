@@ -28,6 +28,15 @@ test("calendar removes per-habit dots and uses icon-backed mood colors", () => {
   assert.match(css, /\.calendar-grid\[data-mode="heatmap"\] \.calendar-day\.heat-4/);
 });
 
+test("mood choices keep the positive-to-low visual order", () => {
+  for (const id of ["quickMood", "drawerMood"]) {
+    const block = html.match(new RegExp(`id="${id}"[\\s\\S]*?<\\/div>`));
+    assert.ok(block, `${id} is missing`);
+    assert.ok(block[0].indexOf('data-mood="很好"') < block[0].indexOf('data-mood="平静"'));
+    assert.ok(block[0].indexOf('data-mood="平静"') < block[0].indexOf('data-mood="低落"'));
+  }
+});
+
 test("calendar visualization controls remain touch friendly on mobile", () => {
   assert.match(css, /\.calendar-view-switch button\s*\{[^}]*min-height:\s*44px;/);
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.calendar-controls\s*\{[^}]*width:\s*100%;[^}]*justify-content:\s*space-between;/);
