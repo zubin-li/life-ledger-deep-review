@@ -19,10 +19,9 @@ const colors = {
   violet: { solid: "#8b79c6", soft: "#e7e0f4" },
   cyan: { solid: "#4d9db3", soft: "#d9eef3" },
 };
-const moodIcons = { 低落: "☂", 平静: "≈", 很好: "☀" };
 const moodCalendarIcons = {
   低落: '<path d="M4 12a8 8 0 0 1 16 0H4Z"/><path d="M12 4v13a3 3 0 0 0 6 0"/>',
-  平静: '<path d="M3 9c2.2 0 2.2-1.7 4.4-1.7S9.6 9 11.8 9s2.2-1.7 4.4-1.7S18.4 9 20.6 9"/><path d="M3 15c2.2 0 2.2-1.7 4.4-1.7s2.2 1.7 4.4 1.7 2.2-1.7 4.4-1.7 2.2 1.7 4.4 1.7"/>',
+  平静: '<path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/>',
   很好: '<circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/>',
 };
 const iconCatalog = {
@@ -1284,8 +1283,7 @@ function applyLanguage() {
   if (moodNote) moodNote.innerHTML = `${escapeHtml(moodQuote.text)}<small>${escapeHtml(moodQuote.source)}</small>`;
   applyMoodReasonLanguage();
   $$("#quickMood button, #drawerMood button").forEach(button => {
-    const icon = $("span", button)?.textContent || moodIcons[button.dataset.mood] || "";
-    button.innerHTML = `<span>${icon}</span>${moodLabel(button.dataset.mood)}`;
+    button.innerHTML = `<span class="mood-option-icon mood-${button.dataset.mood === "低落" ? "low" : button.dataset.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(button.dataset.mood)}</span>${moodLabel(button.dataset.mood)}`;
   });
   setText(".habits-heading .kicker", tr("foundations.kicker"));
   setText(".habits-heading h2", tr("foundations.title"));
@@ -2613,7 +2611,8 @@ function openMoodReasonDialog(date, mood) {
   pendingMoodDate = date;
   pendingMood = mood;
   const log = getLog(date);
-  $("#moodReasonIcon").textContent = moodIcons[mood] || "◌";
+  $("#moodReasonIcon").innerHTML = moodCalendarIcon(mood);
+  $("#moodReasonIcon").dataset.mood = mood === "低落" ? "low" : mood === "平静" ? "calm" : "good";
   $("#moodReasonMood").textContent = moodLabel(mood);
   $("#moodReasonDate").textContent = formatDateChip(parseDate(date));
   $("#moodReasonText").value = log.mood === mood ? log.moodReason || "" : "";

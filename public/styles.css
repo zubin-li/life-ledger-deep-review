@@ -109,6 +109,11 @@ button { cursor: pointer; }
 .mood-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 25px 0; }
 .mood-options button { border: 1px solid var(--line); border-radius: 12px; background: transparent; padding: 15px 7px; font-size: 11px; transition: transform 140ms var(--ease-enter), background-color 160ms ease, border-color 160ms ease; }
 .mood-options button span { display: block; font-size: 21px; margin-bottom: 7px; }
+.mood-options button .mood-option-icon { width: 34px; height: 34px; margin: 0 auto 7px; display: grid; place-items: center; border-radius: 11px; }
+.mood-option-icon svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 2.05; stroke-linecap: round; stroke-linejoin: round; }
+.mood-option-icon.mood-low { color: #2f80ed; background: rgba(47,128,237,.1); }
+.mood-option-icon.mood-calm { color: #1fb76a; background: rgba(31,183,106,.1); }
+.mood-option-icon.mood-good { color: #f4a900; background: rgba(244,169,0,.11); }
 .mood-options button.selected { background: var(--sage-light); border-color: var(--sage); }
 .mood-options button[data-mood="低落"].selected { color: #4f7fad; background: #eaf3fc; border-color: rgba(93,143,197,.46); }
 .mood-options button[data-mood="平静"].selected { color: #567963; background: #edf5ef; border-color: rgba(100,138,113,.44); }
@@ -228,13 +233,13 @@ html.habit-reordering::view-transition-new(root) { animation: none; mix-blend-mo
 .calendar-day.today .day-number { background: var(--ink); color: white; }
 .day-number { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 11px var(--font-body); }
 .day-mood { width: 30px; height: 30px; position: absolute; right: 8px; top: 9px; display: grid; place-items: center; border-radius: 11px; }
-.day-mood svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
+.day-mood svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.05; stroke-linecap: round; stroke-linejoin: round; }
 .calendar-grid[data-mode="mood"] .calendar-day.mood-low { background: linear-gradient(145deg, rgba(130,178,228,.2), rgba(130,178,228,.07)); }
 .calendar-grid[data-mode="mood"] .calendar-day.mood-calm { background: linear-gradient(145deg, rgba(132,179,145,.19), rgba(132,179,145,.06)); }
 .calendar-grid[data-mode="mood"] .calendar-day.mood-good { background: linear-gradient(145deg, rgba(239,195,91,.23), rgba(239,195,91,.07)); }
-.day-mood.mood-low { color: #5d8fc5; background: rgba(255,255,255,.46); }
-.day-mood.mood-calm { color: #648a71; background: rgba(255,255,255,.44); }
-.day-mood.mood-good { color: #b68125; background: rgba(255,255,255,.48); }
+.day-mood.mood-low { color: #2f80ed; background: rgba(255,255,255,.58); }
+.day-mood.mood-calm { color: #1fb76a; background: rgba(255,255,255,.56); }
+.day-mood.mood-good { color: #f4a900; background: rgba(255,255,255,.6); }
 .calendar-grid[data-mode="heatmap"] .calendar-day.heat-0 { background: color-mix(in srgb, var(--paper-deep) 28%, transparent); }
 .calendar-grid[data-mode="heatmap"] .calendar-day.heat-1 { background: color-mix(in srgb, var(--sage) 10%, transparent); }
 .calendar-grid[data-mode="heatmap"] .calendar-day.heat-2 { background: color-mix(in srgb, var(--sage) 20%, transparent); }
@@ -244,10 +249,10 @@ html.habit-reordering::view-transition-new(root) { animation: none; mix-blend-mo
 .calendar-legend { min-height: 30px; display: flex; flex-wrap: wrap; align-items: center; gap: 9px 18px; justify-content: flex-end; margin-top: 14px; color: var(--muted); font-size: 10px; }
 .calendar-legend > span { display: inline-flex; align-items: center; gap: 6px; }
 .legend-mood { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 8px; font-size: 11px; }
-.legend-mood svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.legend-mood.mood-low { color: #5d8fc5; background: rgba(130,178,228,.18); }
-.legend-mood.mood-calm { color: #648a71; background: rgba(132,179,145,.17); }
-.legend-mood.mood-good { color: #b68125; background: rgba(239,195,91,.2); }
+.legend-mood svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.legend-mood.mood-low { color: #2f80ed; background: rgba(47,128,237,.12); }
+.legend-mood.mood-calm { color: #1fb76a; background: rgba(31,183,106,.12); }
+.legend-mood.mood-good { color: #f4a900; background: rgba(244,169,0,.14); }
 .legend-heat { width: 14px; height: 14px; display: inline-block; border-radius: 5px; border: 1px solid color-mix(in srgb, var(--sage) 18%, var(--line)); }
 .legend-heat.heat-0 { background: color-mix(in srgb, var(--paper-deep) 38%, transparent); }
 .legend-heat.heat-1 { background: color-mix(in srgb, var(--sage) 12%, transparent); }
@@ -353,6 +358,10 @@ dialog form > footer { justify-content: flex-end; gap: 8px; }
 .mood-reason-body { padding: 24px 26px 26px; display: grid; gap: 17px; }
 .mood-reason-selection { display: flex; align-items: center; gap: 13px; }
 .mood-reason-selection > span { width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 16px; background: linear-gradient(145deg, color-mix(in srgb, var(--sage-light) 78%, white), var(--card)); color: var(--sage); font-size: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.9); }
+.mood-reason-selection > span svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.05; stroke-linecap: round; stroke-linejoin: round; }
+.mood-reason-selection > span[data-mood="low"] { color: #2f80ed; background: linear-gradient(145deg, #eaf3ff, #d9eaff); }
+.mood-reason-selection > span[data-mood="calm"] { color: #1fb76a; background: linear-gradient(145deg, #e6f8ed, #ccefdc); }
+.mood-reason-selection > span[data-mood="good"] { color: #f4a900; background: linear-gradient(145deg, #fff7dc, #ffebad); }
 .mood-reason-selection > div { display: grid; gap: 4px; }
 .mood-reason-selection strong { font-size: 15px; }
 .mood-reason-selection small { color: var(--muted); font: 9px var(--font-body); }
@@ -857,6 +866,9 @@ html[data-theme="dark"] .mood-options button[data-mood="平静"].selected { colo
 html[data-theme="dark"] .mood-options button[data-mood="很好"].selected { color: #ffe2a2; background: rgba(182,129,37,.2); border-color: rgba(240,185,110,.42); }
 html[data-theme="dark"] .mood-reason-summary { color: #b7bdc8; background: rgba(155,194,171,.07); border-color: rgba(155,194,171,.2); }
 html[data-theme="dark"] .mood-reason-selection > span { color: #b6dcc3; background: var(--surface-2); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+html[data-theme="dark"] .mood-reason-selection > span[data-mood="low"] { color: #5aa4ff; background: rgba(47,128,237,.18); }
+html[data-theme="dark"] .mood-reason-selection > span[data-mood="calm"] { color: #43d785; background: rgba(31,183,106,.18); }
+html[data-theme="dark"] .mood-reason-selection > span[data-mood="good"] { color: #ffc13a; background: rgba(244,169,0,.18); }
 html[data-theme="dark"] .mood-reason-body textarea { color: var(--ink); background: var(--surface-2); border-color: var(--edge-soft); }
 html[data-theme="dark"] .mood-reason-body textarea:focus { background: var(--surface-3); border-color: rgba(125,183,255,.48); box-shadow: 0 0 0 4px rgba(125,183,255,.08); }
 html[data-theme="dark"] .habit-icon { color: color-mix(in srgb, var(--habit-color) 72%, white); background: color-mix(in srgb, var(--habit-color) 18%, var(--surface-2)); border: 1px solid color-mix(in srgb, var(--habit-color) 28%, transparent); }
@@ -875,9 +887,9 @@ html[data-theme="dark"] .calendar-grid[data-mode="mood"] .calendar-day.mood-low 
 html[data-theme="dark"] .calendar-grid[data-mode="mood"] .calendar-day.mood-calm { background: linear-gradient(145deg, rgba(100,138,113,.22), rgba(100,138,113,.07)); }
 html[data-theme="dark"] .calendar-grid[data-mode="mood"] .calendar-day.mood-good { background: linear-gradient(145deg, rgba(182,129,37,.24), rgba(182,129,37,.07)); }
 html[data-theme="dark"] .day-mood { background: rgba(18,21,26,.28); }
-html[data-theme="dark"] .day-mood.mood-low { color: #9cc7ff; }
-html[data-theme="dark"] .day-mood.mood-calm { color: #a8d3b5; }
-html[data-theme="dark"] .day-mood.mood-good { color: #f0b96e; }
+html[data-theme="dark"] .day-mood.mood-low { color: #5aa4ff; }
+html[data-theme="dark"] .day-mood.mood-calm { color: #43d785; }
+html[data-theme="dark"] .day-mood.mood-good { color: #ffc13a; }
 html[data-theme="dark"] .calendar-grid[data-mode="heatmap"] .calendar-day.heat-0 { background: rgba(255,255,255,.015); }
 html[data-theme="dark"] .calendar-grid[data-mode="heatmap"] .calendar-day.heat-1 { background: rgba(143,182,160,.09); }
 html[data-theme="dark"] .calendar-grid[data-mode="heatmap"] .calendar-day.heat-2 { background: rgba(143,182,160,.17); }
