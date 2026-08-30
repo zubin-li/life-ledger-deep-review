@@ -59,7 +59,7 @@ const i18n = {
     metaDescription: "一套会随着你成长的私人习惯与深度复盘系统。",
     brand: "Life Ledger",
     brandSmall: "深度复盘",
-    nav: { today: "今日", week: "本周", review: "复盘", habits: "习惯设置" },
+    nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", habits: "习惯设置" },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
     profileName: "个人复盘空间",
     exportTitle: "导入与导出",
@@ -92,6 +92,7 @@ const i18n = {
     viewTitles: {
       today: "今日",
       week: "本周",
+      timeline: "时间轴",
       review: "月度复盘",
       habits: "习惯",
     },
@@ -109,6 +110,8 @@ const i18n = {
       source: "苏轼《水调歌头》",
     },
     moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
+    timeline: { kicker: "记忆时间轴", title: "时间轴", description: "沿着心情与照片，重新看见走过的日子。", previous: "上个月", next: "下个月", loading: "正在整理这段记忆……", summary: "{days} 个留下记录的日子 · {photos} 张照片", emptyTitle: "这个月还没有留下记忆", emptyHelp: "心情、原因或照片会沿着时间轴出现在这里。", noMood: "一日记忆" },
+    sidebarLongTerm: { title: "长期待办", open: "查看全部长期待办", empty: "还没有进行中的长期事项。" },
     todayGoals: {
       kicker: "日历", title: "每日日程", desc: "查看所选日期的日历安排。", previous: "前一天", next: "后一天",
     },
@@ -384,7 +387,7 @@ const i18n = {
     metaDescription: "A private habit and deep-review system that grows with you.",
     brand: "Life Ledger",
     brandSmall: "DEEP REVIEW",
-    nav: { today: "Today", week: "Week", review: "Review", habits: "Habits" },
+    nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", habits: "Habits" },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
     profileName: "Personal Ledger",
     exportTitle: "Import & export",
@@ -417,6 +420,7 @@ const i18n = {
     viewTitles: {
       today: "Today",
       week: "Week",
+      timeline: "Timeline",
       review: "Monthly Review",
       habits: "Habits",
     },
@@ -434,6 +438,8 @@ const i18n = {
       source: "Attributed to the Buddha",
     },
     moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
+    timeline: { kicker: "MEMORY LINE", title: "Timeline", description: "Follow your moods and photos back through the days you lived.", previous: "Previous month", next: "Next month", loading: "Gathering this month’s memories…", summary: "{days} recorded days · {photos} photos", emptyTitle: "No memories here yet", emptyHelp: "Moods, reasons, and photos will appear here as the month unfolds.", noMood: "Daily memory" },
+    sidebarLongTerm: { title: "Long-term list", open: "View all long-term items", empty: "No active long-term items yet." },
     todayGoals: {
       kicker: "CALENDAR", title: "Daily Calendar", desc: "Calendar events for the selected day.", previous: "Previous day", next: "Next day",
     },
@@ -709,7 +715,7 @@ const i18n = {
     metaDescription: "Ein privates System für Gewohnheiten und tiefgehende Rückblicke, das mit dir wächst.",
     brand: "Life Ledger",
     brandSmall: "TIEFE REFLEXION",
-    nav: { today: "Heute", week: "Woche", review: "Rückblick", habits: "Gewohnheiten" },
+    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", habits: "Gewohnheiten" },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
     profileName: "Persönliches Journal",
     exportTitle: "Import & Export",
@@ -742,6 +748,7 @@ const i18n = {
     viewTitles: {
       today: "Heute",
       week: "Woche",
+      timeline: "Zeitleiste",
       review: "Monatsrückblick",
       habits: "Gewohnheiten",
     },
@@ -759,6 +766,8 @@ const i18n = {
       source: "Albert Schweitzer",
     },
     moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
+    timeline: { kicker: "ERINNERUNGSLINIE", title: "Zeitleiste", description: "Folge deinen Stimmungen und Fotos zurück durch die gelebten Tage.", previous: "Vormonat", next: "Nächster Monat", loading: "Erinnerungen dieses Monats werden gesammelt …", summary: "{days} festgehaltene Tage · {photos} Fotos", emptyTitle: "Noch keine Erinnerungen in diesem Monat", emptyHelp: "Stimmungen, Gründe und Fotos erscheinen hier im Lauf des Monats.", noMood: "Tageserinnerung" },
+    sidebarLongTerm: { title: "Langfristig", open: "Alle langfristigen Punkte anzeigen", empty: "Noch keine aktiven langfristigen Punkte." },
     todayGoals: {
       kicker: "KALENDER", title: "Tageskalender", desc: "Kalendertermine für den ausgewählten Tag.", previous: "Voriger Tag", next: "Nächster Tag",
     },
@@ -1154,6 +1163,11 @@ let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
 let focusTimer = null;
 let voiceReflection = null;
+let photoMemories = null;
+let timelineCursor = new Date();
+timelineCursor.setDate(1);
+timelineCursor.setHours(12, 0, 0, 0);
+let timelineRenderVersion = 0;
 let googleCalendar = {
   configured: false,
   connected: false,
@@ -1282,9 +1296,17 @@ function applyLanguage() {
   const moodQuote = quoteFor(2);
   if (moodNote) moodNote.innerHTML = `${escapeHtml(moodQuote.text)}<small>${escapeHtml(moodQuote.source)}</small>`;
   applyMoodReasonLanguage();
+  photoMemories?.setLanguage(currentLang);
   $$("#quickMood button, #drawerMood button").forEach(button => {
     button.innerHTML = `<span class="mood-option-icon mood-${button.dataset.mood === "低落" ? "low" : button.dataset.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(button.dataset.mood)}</span>${moodLabel(button.dataset.mood)}`;
   });
+  setText("#timelineKicker", tr("timeline.kicker"));
+  setText("#timelineTitle", tr("timeline.title"));
+  setText("#timelineDescription", tr("timeline.description"));
+  setAria("#timelinePreviousMonth", tr("timeline.previous"));
+  setAria("#timelineNextMonth", tr("timeline.next"));
+  setText("#sidebarLongTermTitle", tr("sidebarLongTerm.title"));
+  setAria("#sidebarLongTermOpen", tr("sidebarLongTerm.open"));
   setText(".habits-heading .kicker", tr("foundations.kicker"));
   setText(".habits-heading h2", tr("foundations.title"));
   const settingsButton = $("[data-open-settings]");
@@ -2096,6 +2118,8 @@ function renderAll() {
   renderCalendar();
   renderReview();
   renderHabitSettings();
+  renderSidebarLongTermGoals();
+  if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
   decorateMotionSurfaces();
 }
 
@@ -2273,6 +2297,83 @@ function deleteLongTermGoal() {
   closeLongTermGoalDialog();
   renderWeeklyWorkspace();
   showToast(tr("longTerm.removed"));
+}
+
+function renderSidebarLongTermGoals() {
+  const list = $("#sidebarLongTermList");
+  if (!list) return;
+  const goals = (state.longTermGoals || [])
+    .filter(goal => (goal.status || "active") === "active")
+    .sort((a, b) => Number(b.updatedAt || b.createdAt || 0) - Number(a.updatedAt || a.createdAt || 0))
+    .slice(0, 3);
+  list.innerHTML = goals.length
+    ? goals.map(goal => `<button class="sidebar-long-term-item" type="button" data-id="${escapeHtml(goal.id)}"><i aria-hidden="true"></i><span>${escapeHtml(goal.name)}</span></button>`).join("")
+    : `<p class="sidebar-long-term-empty">${tr("sidebarLongTerm.empty")}</p>`;
+  list.querySelectorAll("button").forEach(button => button.addEventListener("click", () => openLongTermGoalDialog(button.dataset.id)));
+}
+
+function openLongTermWorkspace() {
+  goalHorizon = "long";
+  $(".nav-item[data-view='week']")?.click();
+  applyGoalHorizon();
+}
+
+function timelineRange(date) {
+  const from = isoDate(new Date(date.getFullYear(), date.getMonth(), 1, 12));
+  const to = isoDate(new Date(date.getFullYear(), date.getMonth() + 1, 0, 12));
+  return { from, to };
+}
+
+function timelineDateLabel(value) {
+  const date = parseDate(value);
+  const locale = currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
+  return {
+    main: new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date),
+    detail: new Intl.DateTimeFormat(locale, { weekday: "long", year: "numeric" }).format(date),
+  };
+}
+
+async function renderTimeline() {
+  const container = $("#memoryTimeline");
+  if (!container) return;
+  const version = ++timelineRenderVersion;
+  const { from, to } = timelineRange(timelineCursor);
+  setText("#timelineMonthLabel", tr("calendar.title", { year: timelineCursor.getFullYear(), month: timelineCursor.getMonth() + 1, monthName: monthName(timelineCursor.getMonth()) }));
+  container.innerHTML = `<div class="memory-loading">${tr("timeline.loading")}</div>`;
+  let photos = [];
+  try {
+    photos = await photoMemories?.listRange(from, to) || [];
+  } catch {
+    photos = [];
+  }
+  if (version !== timelineRenderVersion) return;
+  const photosByDate = new Map();
+  photos.forEach(photo => photosByDate.set(photo.date, [...(photosByDate.get(photo.date) || []), photo]));
+  const dates = new Set(Object.keys(state.logs || {}).filter(date => date >= from && date <= to));
+  photos.forEach(photo => dates.add(photo.date));
+  const entries = [...dates]
+    .map(date => ({ date, log: getLog(date), photos: photosByDate.get(date) || [] }))
+    .filter(entry => entry.log.mood || entry.log.moodReason || entry.photos.length)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  setText("#timelineSummary", tr("timeline.summary", { days: entries.length, photos: photos.length }));
+  if (!entries.length) {
+    container.innerHTML = `<div class="memory-empty"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/></svg><strong>${tr("timeline.emptyTitle")}</strong><span>${tr("timeline.emptyHelp")}</span></div></div>`;
+    return;
+  }
+  container.innerHTML = entries.map(entry => {
+    const label = timelineDateLabel(entry.date);
+    const moodClass = moodCalendarClass(entry.log.mood);
+    const mood = entry.log.mood
+      ? `<span class="memory-entry-mood">${moodCalendarIcon(entry.log.mood)}${escapeHtml(moodLabel(entry.log.mood))}</span>`
+      : `<span class="memory-entry-mood">${escapeHtml(tr("timeline.noMood"))}</span>`;
+    const reason = String(entry.log.moodReason || "").trim();
+    const gallery = entry.photos.length ? `<div class="memory-entry-photos">${entry.photos.map(photo => `<img src="${photo.url}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" />`).join("")}</div>` : "";
+    return `<article class="memory-entry ${moodClass}" data-date="${entry.date}">
+      <header class="memory-entry-header"><button class="memory-entry-date" type="button"><strong>${escapeHtml(label.main)}</strong><small>${escapeHtml(label.detail)}</small></button>${mood}</header>
+      ${reason ? `<p class="memory-entry-reason">${escapeHtml(reason)}</p>` : ""}${gallery}
+    </article>`;
+  }).join("");
+  container.querySelectorAll(".memory-entry-date").forEach(button => button.addEventListener("click", () => openDrawer(button.closest(".memory-entry").dataset.date)));
 }
 function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
@@ -2540,6 +2641,19 @@ function initVoiceReflection() {
   });
 }
 
+function initPhotoMemories() {
+  if (!window.LifeLedgerPhotoMemories) return;
+  photoMemories = window.LifeLedgerPhotoMemories.create({
+    section: $("#moodPhotoSection"),
+    enabled: hostedCloudMode,
+    language: currentLang,
+    onToast: showToast,
+    onChange: () => {
+      if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
+    },
+  });
+}
+
 function habitCard(habit, date, done) {
   const v = versionFor(habit, date);
   const target = habitMetaLabel(v);
@@ -2617,6 +2731,7 @@ function openMoodReasonDialog(date, mood) {
   $("#moodReasonDate").textContent = formatDateChip(parseDate(date));
   $("#moodReasonText").value = log.mood === mood ? log.moodReason || "" : "";
   applyMoodReasonLanguage();
+  void photoMemories?.load(date);
   $("#moodReasonDialog").showModal();
   window.setTimeout(() => $("#moodReasonText").focus({ preventScroll: true }), 60);
 }
@@ -4170,8 +4285,12 @@ function bindEvents() {
     $(`#${button.dataset.view}View`).classList.add("active");
     $("#viewTitle").textContent = tr(`viewTitles.${button.dataset.view}`);
     if (button.dataset.view === "week") renderWeeklyWorkspace();
+    if (button.dataset.view === "timeline") void renderTimeline();
     if (button.dataset.view === "review") renderReview();
   }));
+  $("#timelinePreviousMonth").addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() - 1); void renderTimeline(); });
+  $("#timelineNextMonth").addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() + 1); void renderTimeline(); });
+  $("#sidebarLongTermOpen").addEventListener("click", openLongTermWorkspace);
   $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
@@ -4524,7 +4643,7 @@ function bindEvents() {
   }, true);
 }
 
-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); bindPointerMotion(); renderAll(); armReminderClock();
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); bindPointerMotion(); renderAll(); armReminderClock();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }

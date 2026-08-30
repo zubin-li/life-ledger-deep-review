@@ -44,14 +44,15 @@
         <nav class="main-nav" aria-label="主导航">
           <button class="nav-item active" data-view="today"><span class="nav-icon">▦</span><span class="nav-label">今日</span></button>
           <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
+          <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
           <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
         </nav>
 
-        <div class="sidebar-note">
-          <span class="pulse-dot"></span>
-          <p>不积跬步，<br />无以至千里。<small>《荀子·劝学》</small></p>
-        </div>
+        <section class="sidebar-long-term" id="sidebarLongTerm">
+          <header><span id="sidebarLongTermTitle">长期待办</span><button id="sidebarLongTermOpen" type="button" aria-label="查看全部长期待办">→</button></header>
+          <div id="sidebarLongTermList"></div>
+        </section>
 
         <div class="profile">
           <div class="profile-identity">
@@ -325,6 +326,19 @@
           </section>
         </section>
 
+        <section class="view" id="timelineView">
+          <header class="timeline-intro">
+            <div><span class="kicker" id="timelineKicker">MEMORY LINE</span><h2 id="timelineTitle">时间轴</h2><p id="timelineDescription">沿着心情与照片，重新看见走过的日子。</p></div>
+            <div class="timeline-month-nav">
+              <button class="icon-button" id="timelinePreviousMonth" type="button" aria-label="上个月">←</button>
+              <strong id="timelineMonthLabel">2026年8月</strong>
+              <button class="icon-button" id="timelineNextMonth" type="button" aria-label="下个月">→</button>
+            </div>
+          </header>
+          <div class="timeline-summary" id="timelineSummary"></div>
+          <div class="memory-timeline" id="memoryTimeline" aria-live="polite"></div>
+        </section>
+
         <section class="view" id="reviewView">
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
@@ -542,6 +556,13 @@
           <div class="mood-reason-selection"><span id="moodReasonIcon" aria-hidden="true">☀</span><div><strong id="moodReasonMood">很好</strong><small id="moodReasonDate"></small></div></div>
           <p id="moodReasonHelp">这完全是可选的。留下一句话，未来回看时会更容易理解这一天。</p>
           <label for="moodReasonText"><span id="moodReasonLabel">今天为什么会有这样的感受？</span><textarea id="moodReasonText" maxlength="800" placeholder="例如：完成了一件拖了很久的事情……"></textarea></label>
+          <section class="mood-photo-section" id="moodPhotoSection" hidden>
+            <div class="mood-photo-heading"><div><strong id="moodPhotoTitle">照片记忆</strong><small id="moodPhotoHelp">为这一天留下最多三张私人照片。</small></div><span id="moodPhotoCount">0 / 3</span></div>
+            <div class="mood-photo-list" id="moodPhotoList"></div>
+            <button class="mood-photo-add" id="moodPhotoAdd" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>添加照片</span></button>
+            <input id="moodPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+            <p class="mood-photo-status" id="moodPhotoStatus" role="status" hidden></p>
+          </section>
         </div>
         <footer><button class="secondary-button close-mood-reason" id="skipMoodReason" type="button">暂不记录</button><button class="primary-button" id="saveMoodReason" type="submit">保存原因</button></footer>
       </form>
@@ -731,6 +752,7 @@
     <script src="./cloudbase-sync.js?v=1.1.0"></script>
     <script src="./focus-timer.js?v=1.1.0"></script>
     <script src="./voice-checkin.js?v=1.1.0"></script>
+    <script src="./photo-memories.js?v=1.1.0"></script>
     <script src="./app.js?v=1.1.0"></script>
   </body>
 </html>

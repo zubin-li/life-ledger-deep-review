@@ -6,6 +6,7 @@ const required = [
   "public/index.html",
   "public/app.js",
   "public/voice-checkin.js",
+  "public/photo-memories.js",
   "public/deployment-mode.js",
   "public/cloudbase-sync.js",
   "public/_init_tcb-env.js",
