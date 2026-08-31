@@ -160,40 +160,6 @@
             </nav>
           </section>
 
-          <section class="focus-overview-card" id="focusOverview" aria-labelledby="focusOverviewTitle">
-            <div class="focus-overview-copy">
-              <span class="kicker" id="focusOverviewKicker">FOCUS</span>
-              <h2 id="focusOverviewTitle">Focus Time</h2>
-              <p id="focusOverviewHint">Choose one thing. Give it your full attention.</p>
-              <p class="focus-today-summary" id="focusTodaySummary">0 min focused today</p>
-              <div class="focus-today-breakdown" id="focusTodayBreakdown" hidden></div>
-              <div class="focus-quick-settings">
-                <div class="focus-quick-presets" id="focusQuickPresets" role="group" aria-label="Quick timer length">
-                  <button type="button" data-quick-focus-preset="classic">25</button>
-                  <button type="button" data-quick-focus-preset="deep">50</button>
-                </div>
-                <span id="focusPresetSummary">25 min focus · 5 min break</span>
-                <button class="focus-settings-button" id="openFocusTimer" type="button" aria-label="Focus settings">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
-                  <span id="focusSettingsLabel">Settings</span>
-                </button>
-              </div>
-            </div>
-            <div class="focus-inline-timer" id="focusInlineTimer" style="--focus-inline-progress:0">
-              <span class="focus-inline-ring" aria-hidden="true"><i></i></span>
-              <div class="focus-inline-copy">
-                <span id="focusInlinePhase">Ready</span>
-                <strong id="focusInlineTime">25:00</strong>
-                <small id="focusInlineLabel">Open focus</small>
-              </div>
-              <div class="focus-inline-actions">
-                <button class="primary-button" id="focusQuickPrimary" type="button">Start focus</button>
-                <button class="secondary-button" id="focusQuickFinish" type="button" hidden>Finish</button>
-                <button class="text-button" id="focusQuickSkip" type="button" hidden>Skip break</button>
-              </div>
-            </div>
-          </section>
-
           <section class="daily-planning-grid" aria-label="Daily calendar and reflection">
             <article class="daily-goals-card" data-plan="selected-day">
               <div class="daily-goals-heading">
@@ -219,19 +185,81 @@
                 </section>
               </div>
             </article>
-            <article class="daily-goals-card daily-journal-card">
-              <div class="daily-goals-heading">
-                <div><span class="kicker">JOURNAL & EVENTS</span><h3>Daily Reflection</h3><p>Capture what happened, what moved, and what matters.</p><small id="journalPlanDate"></small></div>
-                <div class="journal-heading-actions">
-                  <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
-                    <span>Quick record</span>
+            <article class="daily-goals-card daily-tool-card">
+              <header class="daily-tool-header">
+                <div class="daily-tool-tabs" id="dailyToolTabs" role="tablist" aria-label="Reflection and focus">
+                  <button class="active" id="journalToolTab" type="button" role="tab" aria-selected="true" aria-controls="journalToolPanel" data-daily-tool="journal">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>
+                    <span>Reflection</span>
                   </button>
-                  <span class="autosave" id="homeJournalSave">● autosaved</span>
+                  <button id="focusToolTab" type="button" role="tab" aria-selected="false" aria-controls="focusToolPanel" data-daily-tool="focus">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+                    <span>Focus</span>
+                  </button>
+                </div>
+                <button class="focus-mini-status" id="focusMiniStatus" type="button" hidden>
+                  <span class="focus-mini-pulse" aria-hidden="true"></span>
+                  <strong id="focusMiniTime">25:00</strong>
+                  <small id="focusMiniLabel">Focus</small>
+                </button>
+              </header>
+              <div class="daily-tool-viewport" id="dailyToolViewport" tabindex="0">
+                <div class="daily-tool-track">
+                  <section class="daily-tool-page daily-journal-card" id="journalToolPanel" role="tabpanel" aria-labelledby="journalToolTab">
+                    <div class="daily-goals-heading">
+                      <div><span class="kicker">JOURNAL & EVENTS</span><h3>Daily Reflection</h3><p>Capture what happened, what moved, and what matters.</p><small id="journalPlanDate"></small></div>
+                      <div class="journal-heading-actions">
+                        <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
+                          <span>Quick record</span>
+                        </button>
+                        <span class="autosave" id="homeJournalSave">● autosaved</span>
+                      </div>
+                    </div>
+                    <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
+                    <p class="journal-availability" id="journalAvailability"></p>
+                  </section>
+                  <section class="daily-tool-page daily-focus-page" id="focusToolPanel" role="tabpanel" aria-labelledby="focusToolTab" aria-hidden="true">
+                    <div class="focus-overview-card" id="focusOverview" aria-labelledby="focusOverviewTitle">
+                      <div class="focus-overview-copy">
+                        <span class="kicker" id="focusOverviewKicker">FOCUS</span>
+                        <h2 id="focusOverviewTitle">Focus Time</h2>
+                        <p id="focusOverviewHint">Choose one thing. Give it your full attention.</p>
+                        <p class="focus-today-summary" id="focusTodaySummary">0 min focused today</p>
+                        <div class="focus-today-breakdown" id="focusTodayBreakdown" hidden></div>
+                        <div class="focus-quick-settings">
+                          <div class="focus-quick-presets" id="focusQuickPresets" role="group" aria-label="Quick timer length">
+                            <button type="button" data-quick-focus-preset="classic">25</button>
+                            <button type="button" data-quick-focus-preset="deep">50</button>
+                          </div>
+                          <span id="focusPresetSummary">25 min focus · 5 min break</span>
+                          <button class="focus-settings-button" id="openFocusTimer" type="button" aria-label="Focus settings">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+                            <span id="focusSettingsLabel">Settings</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="focus-inline-timer" id="focusInlineTimer" style="--focus-inline-progress:0">
+                        <span class="focus-inline-ring" aria-hidden="true"><i></i></span>
+                        <div class="focus-inline-copy">
+                          <span id="focusInlinePhase">Ready</span>
+                          <strong id="focusInlineTime">25:00</strong>
+                          <small id="focusInlineLabel">Open focus</small>
+                        </div>
+                        <div class="focus-inline-actions">
+                          <button class="primary-button" id="focusQuickPrimary" type="button">Start focus</button>
+                          <button class="secondary-button" id="focusQuickFinish" type="button" hidden>Finish</button>
+                          <button class="text-button" id="focusQuickSkip" type="button" hidden>Skip break</button>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               </div>
-              <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
-              <p class="journal-availability" id="journalAvailability"></p>
+              <nav class="daily-tool-pagination" aria-label="Switch reflection or focus">
+                <button class="active" type="button" data-daily-tool-page="journal" aria-label="Show reflection"><span></span></button>
+                <button type="button" data-daily-tool-page="focus" aria-label="Show focus"><span></span></button>
+              </nav>
             </article>
           </section>
 

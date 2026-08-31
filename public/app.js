@@ -126,7 +126,7 @@ const i18n = {
       hideRecurring: "默认收起重复日程", hideRecurringHelp: "固定日程仍会被记录，但不会占满每日计划。", save: "保存选择", saving: "正在保存…", close: "关闭", disconnect: "断开连接", disconnectConfirm: "断开后将删除 Life Ledger 中缓存的日历内容。Google 日历本身不会受到影响。",
       saved: "日历选择已保存", disconnected: "Google 日历已断开", stale: "暂时无法连接 Google，正在显示最近一次日程。", error: "日历暂时无法读取，请稍后重试。", authExpired: "Google 授权已失效，请重新连接。", noCalendars: "没有找到可读取的日历。", calendarEvents: "日程",
     },
-    journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么？推进了什么？有什么值得记住？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存" },
+    journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么？推进了什么？有什么值得记住？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存", tabReflection: "复盘", tabFocus: "专注", switchAria: "切换每日复盘与专注计时", showReflection: "显示每日复盘", showFocus: "显示专注计时" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "明日目标", desc: "提前为明天留下一条清晰、从容的起点。", placeholder: "添加明天要完成的事情…", addLabel: "添加明日目标",
       empty: "明天还没有安排具体目标。<br />提前写下一件最重要的事。", added: "已加入明日目标",
@@ -457,7 +457,7 @@ const i18n = {
       hideRecurring: "Collapse recurring routines", hideRecurringHelp: "Routine events remain available without taking over the day.", save: "Save selection", saving: "Saving…", close: "Close", disconnect: "Disconnect", disconnectConfirm: "Disconnecting removes cached calendar details from Life Ledger. Your Google Calendar will not be changed.",
       saved: "Calendar selection saved", disconnected: "Google Calendar disconnected", stale: "Google is unavailable, so the latest cached schedule is shown.", error: "Calendar could not be read. Please try again.", authExpired: "Google access expired. Please reconnect.", noCalendars: "No readable calendars were found.", calendarEvents: "Calendar events",
     },
-    journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened today? What moved forward? What is worth remembering?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved" },
+    journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened today? What moved forward? What is worth remembering?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved", tabReflection: "Reflection", tabFocus: "Focus", switchAria: "Switch between daily reflection and focus timer", showReflection: "Show daily reflection", showFocus: "Show focus timer" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "Tomorrow's Goals", desc: "Give tomorrow a clear and gentle starting point.", placeholder: "Add something for tomorrow…", addLabel: "Add tomorrow's goal",
       empty: "Nothing planned for tomorrow yet.<br />Give it one meaningful starting point.", added: "Added to tomorrow's goals",
@@ -788,7 +788,7 @@ const i18n = {
       hideRecurring: "Wiederkehrende Routinen einklappen", hideRecurringHelp: "Routinen bleiben verfügbar, ohne den Tagesplan zu überladen.", save: "Auswahl speichern", saving: "Wird gespeichert…", close: "Schließen", disconnect: "Trennen", disconnectConfirm: "Beim Trennen werden zwischengespeicherte Kalenderdaten aus Life Ledger entfernt. Dein Google Kalender bleibt unverändert.",
       saved: "Kalenderauswahl gespeichert", disconnected: "Google Kalender getrennt", stale: "Google ist nicht erreichbar; der zuletzt geladene Tagesplan wird angezeigt.", error: "Der Kalender konnte nicht gelesen werden. Bitte versuche es erneut.", authExpired: "Der Google-Zugriff ist abgelaufen. Bitte erneut verbinden.", noCalendars: "Keine lesbaren Kalender gefunden.", calendarEvents: "Kalendertermine",
     },
-    journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist heute passiert? Was ging voran? Was ist erinnernswert?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert" },
+    journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist heute passiert? Was ging voran? Was ist erinnernswert?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert", tabReflection: "Reflexion", tabFocus: "Fokus", switchAria: "Zwischen Tagesreflexion und Fokus-Timer wechseln", showReflection: "Tagesreflexion anzeigen", showFocus: "Fokus-Timer anzeigen" },
     tomorrowGoals: {
       kicker: "PLAN FÜR MORGEN", title: "Ziele für morgen", desc: "Gib dem morgigen Tag einen klaren und ruhigen Anfang.", placeholder: "Ein Ziel für morgen hinzufügen…", addLabel: "Ziel für morgen hinzufügen",
       empty: "Für morgen ist noch nichts geplant.<br />Setze einen sinnvollen Anfangspunkt.", added: "Zu den Zielen für morgen hinzugefügt",
@@ -1205,6 +1205,8 @@ let mobileToolbarOpen = false;
 const HABITS_PER_PAGE = 4;
 let todayHabitPage = 0;
 let habitCarouselScrollFrame = 0;
+let dailyToolPage = "journal";
+let dailyToolScrollFrame = 0;
 let habitCarouselDrag = null;
 let suppressHabitCardClick = false;
 let habitDrag = null;
@@ -1348,6 +1350,14 @@ function applyLanguage() {
   setText(".daily-journal-card .daily-goals-heading p", tr("journal.desc"));
   setText("#homeJournalSave", tr("journal.autosaved"));
   setPlaceholder("#homeDayNote", tr("journal.placeholder"));
+  setText("#journalToolTab span", tr("journal.tabReflection"));
+  setText("#focusToolTab span", tr("journal.tabFocus"));
+  setAria("#dailyToolTabs", tr("journal.switchAria"));
+  setAria('#dailyToolTabs [data-daily-tool="journal"]', tr("journal.showReflection"));
+  setAria('#dailyToolTabs [data-daily-tool="focus"]', tr("journal.showFocus"));
+  setAria('[data-daily-tool-page="journal"]', tr("journal.showReflection"));
+  setAria('[data-daily-tool-page="focus"]', tr("journal.showFocus"));
+  setAria(".daily-tool-pagination", tr("journal.switchAria"));
   setText(".calendar-toolbar .kicker", tr("calendar.kicker"));
   setText(".calendar-toolbar p", tr("calendar.desc"));
   setAria("#prevMonth", tr("calendar.prev"));
@@ -2129,6 +2139,7 @@ function renderAll() {
   $("#yearSelect").value = cursor.getFullYear();
   $("#monthSelect").value = cursor.getMonth();
   renderToday();
+  updateDailyToolControls(dailyToolPage);
   renderFocusOverview();
   renderWeeklyWorkspace();
   renderCalendar();
@@ -2139,7 +2150,7 @@ function renderAll() {
   decorateMotionSurfaces();
 }
 
-const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .focus-overview-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
+const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
 const tiltSurfaceSelector = ".mood-card, .habit-card, .daily-goals-card, .score-card, .setting-row";
 function motionAllowed() {
   return matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2610,6 +2621,47 @@ function shiftPlanningDay(amount) {
 
 function isFutureDate(date) {
   return date > isoDate(new Date());
+}
+
+function updateDailyToolControls(page) {
+  dailyToolPage = page === "focus" ? "focus" : "journal";
+  const card = $(".daily-tool-card");
+  if (card) card.dataset.toolPage = dailyToolPage;
+  $$('[data-daily-tool]').forEach(button => {
+    const active = button.dataset.dailyTool === dailyToolPage;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  $$('[data-daily-tool-page]').forEach(button => {
+    const active = button.dataset.dailyToolPage === dailyToolPage;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-current", active ? "true" : "false");
+  });
+  const journal = $("#journalToolPanel");
+  const focus = $("#focusToolPanel");
+  journal?.setAttribute("aria-hidden", String(dailyToolPage !== "journal"));
+  focus?.setAttribute("aria-hidden", String(dailyToolPage !== "focus"));
+  if (journal) journal.inert = dailyToolPage !== "journal";
+  if (focus) focus.inert = dailyToolPage !== "focus";
+}
+
+function setDailyToolPage(page, options = {}) {
+  const nextPage = page === "focus" ? "focus" : "journal";
+  updateDailyToolControls(nextPage);
+  const viewport = $("#dailyToolViewport");
+  if (!viewport) return;
+  const left = nextPage === "focus" ? viewport.clientWidth : 0;
+  if (typeof viewport.scrollTo === "function") {
+    viewport.scrollTo({ left, behavior: options.smooth === false ? "auto" : "smooth" });
+  } else {
+    viewport.scrollLeft = left;
+  }
+}
+
+function syncDailyToolPageFromScroll() {
+  const viewport = $("#dailyToolViewport");
+  if (!viewport?.clientWidth) return;
+  updateDailyToolControls(viewport.scrollLeft >= viewport.clientWidth / 2 ? "focus" : "journal");
 }
 
 function renderHomeJournal() {
@@ -4263,6 +4315,14 @@ function renderFocusTimer(snapshot) {
   $("#focusQuickFinish").hidden = !isFocus;
   $("#focusQuickSkip").hidden = !isBreak;
   $("#focusQuickPrimary").disabled = isBreak && !readyBreak && !running && !paused;
+  const miniStatus = $("#focusMiniStatus");
+  if (miniStatus) {
+    miniStatus.hidden = !snapshot;
+    miniStatus.classList.toggle("running", running);
+    miniStatus.setAttribute("aria-label", snapshot ? `${formatFocusTime(remaining)} · ${snapshot.label || state.focusSettings?.defaultTopic || tr("focus.untitled")}` : tr("journal.showFocus"));
+  }
+  setText("#focusMiniTime", formatFocusTime(remaining));
+  setText("#focusMiniLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
   renderFocusOverview();
   if (snapshot) {
     document.title = `${formatFocusTime(remaining)} · ${tr("title")}`;
@@ -4301,6 +4361,7 @@ async function startFocusSession() {
   saveState();
   if (state.focusSettings.notify) requestNotificationPermission();
   focusTimer.start({ date: isoDate(new Date()), label, linkedGoalId: "", preset, durationMinutes: values.focusMinutes, breakMinutes: values.breakMinutes });
+  setDailyToolPage("focus");
   acquireFocusWakeLock();
 }
 
@@ -4314,6 +4375,7 @@ async function startQuickFocusSession() {
     durationMinutes: settings.focusMinutes,
     breakMinutes: settings.breakMinutes,
   });
+  setDailyToolPage("focus");
   acquireFocusWakeLock();
 }
 
@@ -4406,6 +4468,18 @@ function bindEvents() {
   $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
   $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
+  $$('[data-daily-tool]').forEach(button => button.addEventListener("click", () => setDailyToolPage(button.dataset.dailyTool)));
+  $$('[data-daily-tool-page]').forEach(button => button.addEventListener("click", () => setDailyToolPage(button.dataset.dailyToolPage)));
+  $("#focusMiniStatus").addEventListener("click", () => setDailyToolPage("focus"));
+  $("#dailyToolViewport").addEventListener("scroll", () => {
+    cancelAnimationFrame(dailyToolScrollFrame);
+    dailyToolScrollFrame = requestAnimationFrame(syncDailyToolPageFromScroll);
+  }, { passive: true });
+  $("#dailyToolViewport").addEventListener("keydown", event => {
+    if (event.target !== event.currentTarget || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+    event.preventDefault();
+    setDailyToolPage(event.key === "ArrowRight" ? "focus" : "journal");
+  });
   $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
   $$('[data-quick-focus-preset]').forEach(button => button.addEventListener("click", () => selectQuickFocusPreset(button.dataset.quickFocusPreset)));
   $("#focusQuickPrimary").addEventListener("click", handleFocusQuickPrimary);
@@ -4734,6 +4808,7 @@ function bindEvents() {
     syncExportButtonPlacement();
     syncMobileToolbar();
     autoGrowTextarea($("#weeklyOutputText"));
+    setDailyToolPage(dailyToolPage, { smooth: false });
   }, { passive: true });
   document.addEventListener("pointerdown", event => {
     if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;

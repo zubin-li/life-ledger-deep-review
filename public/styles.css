@@ -1247,6 +1247,38 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .weekly-goal.future-plan .weekly-goal-check { opacity: .34; cursor: default; }
 .weekly-goal.future-plan .weekly-goal-text { cursor: default; }
 .daily-journal-card { background: linear-gradient(145deg, rgba(125,174,255,.055), transparent 54%), var(--card); }
+.daily-tool-card { min-height: 0; padding: 0; overflow: hidden; background: var(--card); }
+.daily-tool-header { min-height: 58px; padding: 12px 14px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.daily-tool-tabs { min-width: 0; padding: 3px; display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--line); border-radius: 13px; background: color-mix(in srgb, var(--paper-deep) 62%, transparent); }
+.daily-tool-tabs button { min-height: 36px; padding: 7px 11px; display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 9px; font-weight: 750; white-space: nowrap; transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 160ms var(--ease-enter); }
+.daily-tool-tabs button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.daily-tool-tabs button.active { color: var(--ink); background: var(--card); box-shadow: 0 5px 16px rgba(29,29,31,.08), inset 0 1px 0 rgba(255,255,255,.72); }
+.daily-tool-tabs button:active { transform: scale(.97); }
+.focus-mini-status { max-width: 170px; min-height: 36px; padding: 7px 10px; display: inline-grid; grid-template-columns: 7px auto minmax(0, 1fr); align-items: center; gap: 6px; border: 1px solid color-mix(in srgb, var(--sage) 28%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--sage-light) 52%, var(--card)); color: var(--ink); }
+.focus-mini-status[hidden] { display: none; }
+.focus-mini-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sage) 12%, transparent); }
+.focus-mini-status.running .focus-mini-pulse { animation: focusMiniPulse 1.8s ease-in-out infinite; }
+.focus-mini-status strong { font: 700 10px var(--font-body); font-variant-numeric: tabular-nums; }
+.focus-mini-status small { overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes focusMiniPulse { 50% { opacity: .48; transform: scale(.72); } }
+.daily-tool-viewport { min-width: 0; overflow-x: auto; overflow-y: hidden; outline: none; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.daily-tool-viewport::-webkit-scrollbar { display: none; }
+.daily-tool-viewport:focus-visible { box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--sage) 24%, transparent); }
+.daily-tool-track { min-width: 0; display: flex; align-items: stretch; }
+.daily-tool-page { min-width: 100%; padding: 17px 25px 18px; display: flex; flex: 0 0 100%; flex-direction: column; scroll-snap-align: start; scroll-snap-stop: always; }
+.daily-tool-card .daily-journal-card { min-height: 350px; }
+.daily-tool-card .focus-overview-card { min-height: 350px; margin: 0; padding: 0; grid-template-columns: 1fr; align-content: center; gap: 18px; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+.daily-tool-card .focus-overview-card::after { opacity: .72; right: -90px; top: -112px; }
+.daily-tool-card .focus-inline-timer { min-height: 118px; padding: 14px; grid-template-columns: 64px minmax(0, 1fr) minmax(92px, auto); }
+.daily-tool-card .focus-inline-ring { width: 64px; height: 64px; }
+.daily-tool-card .focus-inline-ring i { width: 54px; height: 54px; }
+.daily-tool-card .focus-inline-copy strong { font-size: 32px; }
+.daily-tool-card .focus-inline-actions .primary-button,
+.daily-tool-card .focus-inline-actions .secondary-button { min-width: 96px; }
+.daily-tool-pagination { min-height: 29px; padding: 0 0 12px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.daily-tool-pagination button { width: 21px; height: 20px; padding: 0; display: grid; place-items: center; border: 0; background: transparent; }
+.daily-tool-pagination span { width: 5px; height: 5px; border-radius: 99px; background: var(--line); transition: width 180ms var(--ease-enter), background-color 180ms ease; }
+.daily-tool-pagination button.active span { width: 16px; background: var(--sage); }
 .journal-heading-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 .voice-reflection-button { min-height: 34px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 6%, var(--card)); color: var(--accent); font-size: 10px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.66); transition: transform 160ms var(--ease-enter), border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
 .voice-reflection-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
@@ -1388,6 +1420,11 @@ html[data-theme="dark"] .voice-transcript { border-color: var(--edge-soft); back
 @keyframes focusReviewBarIn { from { opacity: .3; transform: scaleY(.04); } }
 
 html[data-theme="dark"] .daily-journal-card { background: linear-gradient(145deg, rgba(125,183,255,.07), transparent 52%), var(--surface-1); }
+html[data-theme="dark"] .daily-tool-card { border-color: var(--edge-soft); background: var(--surface-1); }
+html[data-theme="dark"] .daily-tool-tabs { border-color: var(--edge-soft); background: var(--surface-3); }
+html[data-theme="dark"] .daily-tool-tabs button.active { color: #fff; background: var(--surface-2); box-shadow: 0 5px 18px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.06); }
+html[data-theme="dark"] .focus-mini-status { border-color: rgba(155,194,171,.2); background: rgba(155,194,171,.08); }
+html[data-theme="dark"] .daily-tool-card .daily-journal-card { background: linear-gradient(145deg, rgba(125,183,255,.07), transparent 52%), transparent; }
 html[data-theme="dark"] .day-roll-item.active { background: #79b8ff; color: #101318; box-shadow: 0 8px 20px rgba(47,121,216,.24); }
 html[data-theme="dark"] .drawer-habit-toggle,
 html[data-theme="dark"] .review-week-select select { border-color: var(--edge-soft); background: var(--surface-2); }
@@ -1938,4 +1975,27 @@ html[data-theme="dark"] .review-scope-switch button.active, html[data-theme="dar
   .day-calendar-status { right: 2px; bottom: 2px; min-width: 19px; height: 17px; border-radius: 6px; }
   .day-calendar-status svg { width: 10px; height: 10px; }
   .day-calendar-status b { display: none; }
+}
+
+/* Daily reflection and the optional timer share one calm, swipeable surface. */
+@media (max-width: 760px) {
+  .daily-tool-header { min-height: 56px; padding: 10px 11px 0; }
+  .daily-tool-tabs button { min-height: 35px; padding-inline: 9px; }
+  .focus-mini-status { max-width: 112px; padding-inline: 8px; grid-template-columns: 7px auto; }
+  .focus-mini-status small { display: none; }
+  .daily-tool-page { padding: 15px 18px 16px; }
+  .daily-tool-card .daily-journal-card { min-height: 390px; }
+  .daily-tool-card .focus-overview-card { min-height: 390px; padding: 0; gap: 16px; }
+  .daily-tool-card .focus-inline-timer { min-height: 0; padding: 15px; grid-template-columns: 60px minmax(0, 1fr); gap: 13px; }
+  .daily-tool-card .focus-inline-ring { width: 60px; height: 60px; }
+  .daily-tool-card .focus-inline-ring i { width: 50px; height: 50px; }
+  .daily-tool-card .focus-inline-actions { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) auto; width: 100%; }
+  .daily-tool-card .focus-inline-actions .primary-button { min-width: 0; }
+  .daily-tool-card .focus-inline-actions .secondary-button { min-width: 92px; }
+  .daily-tool-card .focus-inline-actions .text-button { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daily-tool-viewport { scroll-behavior: auto; }
+  .focus-mini-status.running .focus-mini-pulse { animation: none; }
 }
