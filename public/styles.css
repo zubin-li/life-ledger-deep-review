@@ -1279,8 +1279,9 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .daily-tool-pagination button { width: 21px; height: 20px; padding: 0; display: grid; place-items: center; border: 0; background: transparent; }
 .daily-tool-pagination span { width: 5px; height: 5px; border-radius: 99px; background: var(--line); transition: width 180ms var(--ease-enter), background-color 180ms ease; }
 .daily-tool-pagination button.active span { width: 16px; background: var(--sage); }
-.journal-heading-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
-.voice-reflection-button { min-height: 34px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 6%, var(--card)); color: var(--accent); font-size: 10px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.66); transition: transform 160ms var(--ease-enter), border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
+.daily-journal-card .daily-goals-heading > div:first-child { min-width: 0; }
+.journal-heading-actions { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.voice-reflection-button { min-height: 34px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--accent) 6%, var(--card)); color: var(--accent); font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255,255,255,.66); transition: transform 160ms var(--ease-enter), border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
 .voice-reflection-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 .voice-reflection-button:disabled { opacity: .36; cursor: default; filter: grayscale(.5); }
 .voice-reflection-button:not(:disabled):active { transform: scale(.97); }
@@ -1452,8 +1453,8 @@ html[data-theme="dark"] .pointer-aura { background: radial-gradient(250px circle
   .day-roll { gap: 3px; }
   .day-roll-item { padding: 0; }
   .daily-journal-card textarea { min-height: 220px; }
-  .daily-journal-card .daily-goals-heading { align-items: flex-start; gap: 12px; }
-  .journal-heading-actions { flex-direction: column-reverse; align-items: flex-end; gap: 7px; }
+  .daily-journal-card .daily-goals-heading { width: 100%; align-items: stretch; flex-direction: column; gap: 12px; }
+  .journal-heading-actions { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; gap: 9px; }
   .voice-reflection-button { min-height: 33px; padding: 7px 10px; }
   .voice-reflection-dialog { width: calc(100vw - 14px); max-height: calc(100dvh - 14px); border-radius: 26px; }
   .voice-dialog-shell { max-height: calc(100dvh - 16px); }

@@ -2692,20 +2692,34 @@ async function saveVoiceReflection({ date, text }) {
 function initVoiceReflection() {
   const button = $("#voiceReflectionButton");
   const dialog = $("#voiceReflectionDialog");
-  if (!window.LifeLedgerVoiceCheckin || !button || !dialog) return;
-  voiceReflection = window.LifeLedgerVoiceCheckin.create({
-    button,
-    dialog,
-    enabled: hostedCloudMode,
-    language: currentLang,
-    context: {
-      date: selectedPlanningDate,
-      isToday: selectedPlanningDate === isoDate(new Date()),
-      disabled: isFutureDate(selectedPlanningDate),
-    },
-    onSave: saveVoiceReflection,
-    onToast: showToast,
-  });
+  if (!button) return;
+  button.hidden = !hostedCloudMode;
+  if (!hostedCloudMode) return;
+  if (!window.LifeLedgerVoiceCheckin || !dialog) {
+    button.disabled = true;
+    button.querySelector("span").textContent = languageText("语音服务正在载入", "Voice service loading", "Sprachdienst wird geladen");
+    console.warn("Voice reflection UI could not initialize");
+    return;
+  }
+  try {
+    voiceReflection = window.LifeLedgerVoiceCheckin.create({
+      button,
+      dialog,
+      enabled: true,
+      language: currentLang,
+      context: {
+        date: selectedPlanningDate,
+        isToday: selectedPlanningDate === isoDate(new Date()),
+        disabled: isFutureDate(selectedPlanningDate),
+      },
+      onSave: saveVoiceReflection,
+      onToast: showToast,
+    });
+  } catch (error) {
+    button.hidden = false;
+    button.disabled = true;
+    console.warn("Voice reflection UI could not initialize", error);
+  }
 }
 
 function initPhotoMemories() {

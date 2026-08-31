@@ -22,7 +22,11 @@ test("voice duration and journal append stay deterministic", () => {
 test("voice entry is not restricted to today", () => {
   const voiceSource = readFileSync(new URL("../public/voice-checkin.js", import.meta.url), "utf8");
   const appSource = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const stylesSource = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
   assert.match(voiceSource, /options\.enabled !== false && !currentContext\.disabled/);
   assert.doesNotMatch(voiceSource, /currentContext\.isToday &&/);
   assert.match(appSource, /Voice reflection cannot be saved to a future date/);
+  assert.match(appSource, /button\.hidden = !hostedCloudMode/);
+  assert.match(stylesSource, /\.daily-journal-card \.daily-goals-heading \{ width: 100%; align-items: stretch; flex-direction: column/);
+  assert.match(stylesSource, /\.journal-heading-actions \{ width: 100%; flex-direction: row; align-items: center; justify-content: space-between/);
 });
