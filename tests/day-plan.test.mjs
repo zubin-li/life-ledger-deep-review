@@ -26,6 +26,16 @@ test("Day Plan keeps the schedule and removes daily flexible goals", () => {
   assert.doesNotMatch(app, /const dailyGoals = dates\.flatMap/);
 });
 
+test("the selected Day Plan date drives the complete Today workspace", () => {
+  assert.match(app, /function renderToday\(\)\s*\{\s*const date = selectedPlanningDate;/);
+  assert.match(app, /renderHabitCarousel\(habits, date, log\.completed, future\)/);
+  assert.match(app, /setMood\(selectedPlanningDate, b\.dataset\.mood\)/);
+  assert.match(app, /const date = selectedPlanningDate;\s*const log = getLog\(date\);/);
+  assert.match(app, /selectedPlanningDate = isoDate\(cursor\);/);
+  assert.match(app, /cursor = new Date\(selected\);\s*setDailyToolPage\("journal"/);
+  assert.match(css, /\.habit-card\.future-locked\s*\{/);
+});
+
 test("Google Calendar stays read-only and progressively disclosed inside Day Plan", () => {
   assert.match(cardMarkup(), /id="calendarConnectionButton"/);
   assert.match(html, /id="calendarSettingsDialog"/);

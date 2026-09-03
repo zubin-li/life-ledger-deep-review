@@ -127,6 +127,7 @@ button { cursor: pointer; }
 .mood-options button[data-mood="平静"].selected { color: #567963; background: #edf5ef; border-color: rgba(100,138,113,.44); }
 .mood-options button[data-mood="很好"].selected { color: #9b6c1d; background: #fff5d9; border-color: rgba(182,129,37,.42); }
 .mood-options button:active { transform: scale(.96); }
+.mood-options button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 .mood-reason-summary { width: 100%; margin: -12px 0 18px; padding: 9px 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--sage) 22%, var(--line)); border-radius: 12px; background: color-mix(in srgb, var(--sage-light) 46%, transparent); color: var(--muted); font-size: 10px; line-height: 1.45; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .mood-reason-summary[hidden] { display: none; }
 .drawer-mood-reason { margin: 10px 0 0; }
@@ -155,6 +156,7 @@ button { cursor: pointer; }
 .habit-card { position: relative; min-height: 172px; border: 1px solid var(--line); background: var(--card); border-radius: 17px; padding: 21px; cursor: pointer; overflow: hidden; transition: transform 180ms var(--ease-enter), border-color 180ms ease, background-color 180ms ease; }
 .habit-card::after { content: ""; position: absolute; inset: auto -30px -54px auto; width: 100px; height: 100px; border-radius: 50%; background: var(--habit-soft); opacity: .55; }
 .habit-card.completed { background: var(--habit-soft); border-color: var(--habit-color); }
+.habit-card.future-locked { opacity: .48; cursor: not-allowed; filter: saturate(.55); }
 .habit-card-top { display: flex; justify-content: space-between; align-items: center; }
 .habit-icon { width: 37px; height: 37px; border-radius: 50%; display: grid; place-items: center; background: var(--habit-soft); color: var(--habit-color); }
 .habit-check { width: 23px; height: 23px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-size: 12px; color: transparent; transition: transform 160ms var(--ease-enter), color 160ms ease, background-color 160ms ease; }

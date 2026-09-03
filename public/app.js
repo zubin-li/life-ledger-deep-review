@@ -101,11 +101,13 @@ const i18n = {
       quote: "不积小流，\n无以成江海。",
       source: "《荀子·劝学》",
       progress: "今日完成",
+      selectedProgress: "当日完成",
       progressText: "{done} / {total} 项完成",
     },
     mood: {
       kicker: "MOOD",
       title: "今天整体感觉如何？",
+      selectedTitle: "这一天整体感觉如何？",
       values: { 低落: "低落", 平静: "平静", 很好: "很好" },
       note: "人有悲欢离合，月有阴晴圆缺。",
       source: "苏轼《水调歌头》",
@@ -145,7 +147,7 @@ const i18n = {
       custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
       caveat: "切换到后台后计时仍会按真实时间校准；专注时长会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", todaySummary: "今日专注 {minutes} 分钟", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewScope: "选择专注复盘周期", scopeWeek: "周", scopeMonth: "月", reviewWeek: "选择一周", reviewMonth: "选择月份", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这个周期还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", moreThanPreviousMonth: "比上个月多 {minutes} 分钟", lessThanPreviousMonth: "比上个月少 {minutes} 分钟", sameAsPreviousMonth: "与上个月相同", monthTotal: "{month} · 共 {minutes} 分钟", monthActivity: "{days} 天有专注记录 · 日均 {average} 分钟",
     },
-    foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
+    foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", selectedTitle: "当日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
     calendar: {
       kicker: "MONTH IN VIEW",
       title: "{year}年 {month}月",
@@ -432,11 +434,13 @@ const i18n = {
       quote: "The secret of getting ahead\nis getting started.",
       source: "Mark Twain",
       progress: "Completed today",
+      selectedProgress: "Completed that day",
       progressText: "{done} / {total} done",
     },
     mood: {
       kicker: "MOOD",
       title: "How do you feel today?",
+      selectedTitle: "How did this day feel?",
       values: { 低落: "Low", 平静: "Calm", 很好: "Good" },
       note: "The mind is everything. What you think you become.",
       source: "Attributed to the Buddha",
@@ -476,7 +480,7 @@ const i18n = {
       custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
       caveat: "The timer stays accurate in the background. Focused minutes become part of your review.", goalAction: "Focus on this goal", untitled: "Open focus", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus now? The time you invested will still be recorded.", todaySummary: "{minutes} min focused today", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewScope: "Choose focus review period", scopeWeek: "Week", scopeMonth: "Month", reviewWeek: "Choose week", reviewMonth: "Choose month", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded in this period.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", moreThanPreviousMonth: "{minutes} min more than last month", lessThanPreviousMonth: "{minutes} min less than last month", sameAsPreviousMonth: "Same as last month", monthTotal: "{month} · {minutes} min total", monthActivity: "{days} focused days · {average} min daily average",
     },
-    foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
+    foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", selectedTitle: "Foundations for This Day", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
     calendar: {
       kicker: "MONTH IN VIEW",
       title: "{monthName} {year}",
@@ -763,11 +767,13 @@ const i18n = {
       quote: "Es ist nicht genug zu wollen,\nman muss auch tun.",
       source: "Johann Wolfgang von Goethe, Wilhelm Meisters Wanderjahre",
       progress: "Heute erledigt",
+      selectedProgress: "An diesem Tag erledigt",
       progressText: "{done} / {total} erledigt",
     },
     mood: {
       kicker: "STIMMUNG",
       title: "Wie fühlst du dich heute?",
+      selectedTitle: "Wie hat sich dieser Tag angefühlt?",
       values: { 低落: "Schwer", 平静: "Ruhig", 很好: "Gut" },
       note: "Das Glück ist das einzige, das sich verdoppelt, wenn man es teilt.",
       source: "Albert Schweitzer",
@@ -807,7 +813,7 @@ const i18n = {
       custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
       caveat: "Der Timer bleibt im Hintergrund zeitgenau. Fokusminuten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diesen Fokus jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", todaySummary: "Heute {minutes} Fokusminuten", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewScope: "Zeitraum für Fokusrückblick wählen", scopeWeek: "Woche", scopeMonth: "Monat", reviewWeek: "Woche wählen", reviewMonth: "Monat wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diesen Zeitraum gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", moreThanPreviousMonth: "{minutes} Min. mehr als im Vormonat", lessThanPreviousMonth: "{minutes} Min. weniger als im Vormonat", sameAsPreviousMonth: "Wie im Vormonat", monthTotal: "{month} · insgesamt {minutes} Min.", monthActivity: "{days} Fokustage · Ø {average} Min. pro Tag",
     },
-    foundations: { kicker: "BASIS", title: "Tägliche Basisziele", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
+    foundations: { kicker: "BASIS", title: "Tägliche Basisziele", selectedTitle: "Basisziele dieses Tages", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
     calendar: {
       kicker: "MONATSANSICHT",
       title: "{monthName} {year}",
@@ -2447,7 +2453,7 @@ function syncHabitCarouselPageFromScroll() {
   updateHabitCarouselNavigation(pageCount);
 }
 
-function renderHabitCarousel(habits, date, completedIds) {
+function renderHabitCarousel(habits, date, completedIds, locked = false) {
   const ordered = orderedTodayHabits(habits, completedIds);
   const pageCount = Math.max(1, Math.ceil(ordered.length / HABITS_PER_PAGE));
   todayHabitPage = Math.min(todayHabitPage, pageCount - 1);
@@ -2456,7 +2462,7 @@ function renderHabitCarousel(habits, date, completedIds) {
   carousel.dataset.pageCount = String(pageCount);
   $("#todayHabits").innerHTML = Array.from({ length: pageCount }, (_, page) => {
     const group = ordered.slice(page * HABITS_PER_PAGE, (page + 1) * HABITS_PER_PAGE);
-    return `<div class="habit-page" data-page="${page}" aria-label="${escapeHtml(tr("foundations.page", { page: page + 1, total: pageCount }))}">${group.map(habit => habitCard(habit, date, completedIds.includes(habit.id))).join("")}</div>`;
+    return `<div class="habit-page" data-page="${page}" aria-label="${escapeHtml(tr("foundations.page", { page: page + 1, total: pageCount }))}">${group.map(habit => habitCard(habit, date, completedIds.includes(habit.id), locked)).join("")}</div>`;
   }).join("");
   if (viewport) viewport.scrollLeft = viewport.clientWidth * todayHabitPage;
   updateHabitCarouselNavigation(pageCount);
@@ -2476,14 +2482,20 @@ function renderHabitCarousel(habits, date, completedIds) {
 
 
 function renderToday() {
-  const date = isoDate(new Date());
+  const date = selectedPlanningDate;
+  const selected = parseDate(date);
+  const viewingToday = date === isoDate(new Date());
+  const future = isFutureDate(date);
   const log = getLog(date);
   const habits = activeHabits(date);
   const scoredHabits = dailyHabits(date);
   const complete = log.completed.filter(id => scoredHabits.some(h => h.id === id)).length;
   const progress = scoredHabits.length ? Math.round(complete / scoredHabits.length * 100) : 0;
-  $("#todayDateChip").textContent = formatDateChip(new Date());
+  $("#todayDateChip").textContent = formatDateChip(selected);
   $("#heroProgressText").textContent = tr("hero.progressText", { done: complete, total: scoredHabits.length });
+  setText(".progress-orbit-label", tr(viewingToday ? "hero.progress" : "hero.selectedProgress"));
+  setText(".mood-card h3", tr(viewingToday ? "mood.title" : "mood.selectedTitle"));
+  setText(".habits-heading h2", tr(viewingToday ? "foundations.title" : "foundations.selectedTitle"));
   const progressNumber = $("#progressNumber");
   const progressCount = `${complete} / ${scoredHabits.length}`;
   if (progressNumber.dataset.value !== progressCount) {
@@ -2494,8 +2506,11 @@ function renderToday() {
     progressNumber.classList.add("number-pop");
   }
   $("#progressOrbit").style.setProperty("--progress", progress);
-  renderHabitCarousel(habits, date, log.completed);
-  $$("#quickMood button").forEach(b => b.classList.toggle("selected", b.dataset.mood === log.mood));
+  renderHabitCarousel(habits, date, log.completed, future);
+  $$("#quickMood button").forEach(button => {
+    button.classList.toggle("selected", button.dataset.mood === log.mood);
+    button.disabled = future;
+  });
   renderMoodReasonSummary("#quickMoodReason", log);
   renderDailyGoals();
 }
@@ -2608,8 +2623,11 @@ function renderDayRoll() {
 function selectPlanningDate(date, options = {}) {
   selectedPlanningDate = date;
   dayPlanRoutinesExpanded = false;
-  renderDailyGoals();
-  void loadGoogleCalendarMonth(date);
+  const selected = parseDate(date);
+  cursor = new Date(selected);
+  setDailyToolPage("journal", { smooth: false });
+  renderAll();
+  void loadGoogleCalendarMonth(selected);
   if (options.scroll) $(".daily-planning-grid")?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -2762,12 +2780,12 @@ async function loadCalendarPhotoMonth(date) {
   }
 }
 
-function habitCard(habit, date, done) {
+function habitCard(habit, date, done, locked = false) {
   const v = versionFor(habit, date);
   const target = habitMetaLabel(v);
   const periodNote = countsTowardDaily(habit, date) ? "" : `<span class="period-note">${tr("foundations.periodNote")}</span>`;
   const transitionName = `habit-${String(habit.id).replace(/[^a-z0-9_-]/gi, "-")}`;
-  return `<article class="habit-card ${done ? "completed" : ""}" data-id="${habit.id}" role="button" tabindex="0" aria-pressed="${done}" style="${habitStyle(habit)};view-transition-name:${transitionName}">
+  return `<article class="habit-card ${done ? "completed" : ""} ${locked ? "future-locked" : ""}" data-id="${habit.id}" role="button" tabindex="${locked ? "-1" : "0"}" aria-pressed="${done}" ${locked ? 'aria-disabled="true"' : ""} style="${habitStyle(habit)};view-transition-name:${transitionName}">
     <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check">✓</span></div>
     <h3>${escapeHtml(displayHabitName(habit))}</h3><p>${target}</p>${periodNote}
   </article>`;
@@ -4479,7 +4497,14 @@ function bindEvents() {
   $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
-  $("#todayButton").addEventListener("click", () => { cursor = new Date(); renderAll(); void loadGoogleCalendarMonth(cursor); });
+  $("#todayButton").addEventListener("click", () => {
+    cursor = new Date();
+    cursor.setHours(12, 0, 0, 0);
+    selectedPlanningDate = isoDate(cursor);
+    setDailyToolPage("journal", { smooth: false });
+    renderAll();
+    void loadGoogleCalendarMonth(cursor);
+  });
   $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
   $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
   $$('[data-daily-tool]').forEach(button => button.addEventListener("click", () => setDailyToolPage(button.dataset.dailyTool)));
@@ -4558,10 +4583,10 @@ function bindEvents() {
   };
   $("#todayHabitViewport").addEventListener("pointerup", finishHabitDrag);
   $("#todayHabitViewport").addEventListener("pointercancel", finishHabitDrag);
-  $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(isoDate(new Date()), b.dataset.mood)));
+  $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(selectedPlanningDate, b.dataset.mood)));
   $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood)));
   $("#quickMoodReason").addEventListener("click", () => {
-    const date = isoDate(new Date());
+    const date = selectedPlanningDate;
     const log = getLog(date);
     if (log.mood) openMoodReasonDialog(date, log.mood);
   });
