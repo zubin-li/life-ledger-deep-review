@@ -20,17 +20,16 @@
   </p>
 </div>
 
-> **Stable release:** Life Ledger 1.1 adds AI-assisted voice reflection to the self-hosted Cloudflare edition. Local records still save automatically, and complete JSON backups can be restored on another device or browser.
+> **Stable release:** Life Ledger 1.2 connects each selected day with its calendar, habits, mood, reflection, and private memories. Local records still save automatically, and complete backups can be restored on another device or browser.
 
-> **Latest on main:** mood-colored calendars, a private memory timeline, long-term items in the sidebar, and optional photo memories with portable monthly media backups are now included. Photo storage is available only in a self-hosted Cloudflare deployment.
+## What's new in Life Ledger 1.2
 
-## What's new in Life Ledger 1.1
-
-- **Quick record:** speak for a few minutes, review the AI-organized draft, and append it to the daily reflection.
-- **Two Google accounts:** connect up to two Google Calendar accounts and choose which calendars appear in Life Ledger.
-- **Read-only daily calendar:** one-off events stay visible while recurring routines can remain collapsed; Life Ledger never edits Google Calendar.
-- **A calmer Today view:** the daily calendar and reflection now share an equal, focused layout without a duplicate daily-goals panel.
-- **Portable history:** validated JSON export and restore make it easier to move records between devices and browsers.
+- **One selected day, one workspace:** choosing a date now moves the hero, habits, mood, schedule, and reflection together.
+- **Read-only calendar context:** connect up to two Google accounts, choose which calendars appear, and keep routine events collapsed when they are not useful.
+- **Mood at a glance:** mood-colored month cells and an optional completion heatmap reveal patterns without crowding the calendar.
+- **Private photo memories:** add compressed daily photos, revisit them on a chronological Timeline, and move them with monthly `.llmedia` backups.
+- **A calmer Today view:** calendar and reflection share an equal layout, while Focus stays available inside the reflection carousel instead of occupying permanent space.
+- **Quick record remains deliberate:** speak for a few minutes, review the AI-organized draft, and append it without silently changing habits, mood, or goals.
 
 ## Why Life Ledger
 

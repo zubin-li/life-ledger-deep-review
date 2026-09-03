@@ -20,17 +20,16 @@
   </p>
 </div>
 
-> **Stabile Version:** Life Ledger 1.1 ergänzt die selbst bereitgestellte Cloudflare-Version um KI-gestützte Sprachreflexion. Lokale Einträge werden weiterhin automatisch gespeichert; vollständige JSON-Sicherungen lassen sich auf einem anderen Gerät oder in einem anderen Browser wiederherstellen.
+> **Stabile Version:** Life Ledger 1.2 verbindet den ausgewählten Tag vollständig mit Kalender, Gewohnheiten, Stimmung, Reflexion und privaten Erinnerungen. Lokale Einträge werden weiterhin automatisch gespeichert; vollständige Sicherungen lassen sich auf einem anderen Gerät oder in einem anderen Browser wiederherstellen.
 
-> **Neu auf main:** stimmungsfarbiger Kalender, private Erinnerungs-Zeitleiste, langfristige Einträge in der Seitenleiste und optionale Fotoerinnerungen mit übertragbarer Monatssicherung. Fotospeicherung ist nur in der eigenen Cloudflare-Bereitstellung aktiv.
+## Neu in Life Ledger 1.2
 
-## Neu in Life Ledger 1.1
-
-- **Schnell aufnehmen:** Sprich einige Minuten, prüfe den von der KI geordneten Entwurf und füge ihn der Tagesreflexion hinzu.
-- **Zwei Google-Konten:** Verbinde bis zu zwei Google-Calendar-Konten und wähle aus, welche Kalender in Life Ledger erscheinen.
-- **Schreibgeschützter Tageskalender:** Einmalige Termine bleiben sichtbar, wiederkehrende Routinen können eingeklappt bleiben; Life Ledger verändert Google Calendar nicht.
-- **Ruhigere Heute-Ansicht:** Tageskalender und Reflexion teilen sich den Raum gleichmäßig, ohne ein doppeltes Tagesziele-Modul.
-- **Übertragbare Historie:** Validierter JSON-Export und Wiederherstellung erleichtern den Wechsel zwischen Geräten und Browsern.
+- **Ein Tag, ein vollständiger Arbeitsbereich:** Mit dem Datum wechseln Fortschritt, Gewohnheiten, Stimmung, Termine und Reflexion gemeinsam.
+- **Schreibgeschützter Kalenderkontext:** Verbinde bis zu zwei Google-Konten, wähle sichtbare Kalender aus und klappe wenig hilfreiche Routinetermine ein.
+- **Stimmung auf einen Blick:** Stimmungsfarben und eine optionale Erledigungs-Heatmap machen Muster sichtbar, ohne den Monatskalender zu überladen.
+- **Private Fotoerinnerungen:** Speichere komprimierte Tagesfotos, betrachte sie auf einer chronologischen Zeitleiste und übertrage sie mit monatlichen `.llmedia`-Sicherungen.
+- **Ruhigere Heute-Ansicht:** Kalender und Reflexion teilen sich den Raum gleichmäßig; Focus bleibt im Reflexionskarussell erreichbar, ohne dauerhaft Platz zu belegen.
+- **Schnellaufnahme bleibt kontrollierbar:** Sprich einige Minuten, prüfe den von der KI geordneten Entwurf und füge ihn bewusst hinzu, ohne Gewohnheiten, Stimmung oder Ziele still zu verändern.
 
 ## Warum Life Ledger?
 

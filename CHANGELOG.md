@@ -2,56 +2,45 @@
 
 All notable changes are documented here.
 
-## [1.1.4] - 2026-08-30
+## [Unreleased]
 
-### Fixed
+No unreleased changes yet.
 
-- Lets macOS choose a compatible static image representation from Photos with a single `image/*` request, avoiding zero-byte placeholders caused by over-constrained media types.
-- Makes the mood-and-photo dialog internally scrollable in Android Firefox and avoids forcing the mobile keyboard open.
-- Replaces clusters of calendar-event dots with one compact calendar/count badge.
+## [1.2.0] - 2026-09-03
 
 ### Added
 
-- Adds lightweight photo and mood-reason markers to the month calendar.
-- Shows the selected day's private photo thumbnails and mood reason together in the day drawer, with one consistent edit entry point.
+- Read-only Google Calendar context inside the daily workspace, including calendar selection, recurring-event filtering, and support for connecting up to two Google accounts.
+- Mood-colored month cells with an optional habit-completion heatmap and compact calendar-event counts.
+- Private Cloudflare R2 photo memories inside the mood flow, limited to three compressed photos per day.
+- A chronological Timeline that combines mood, mood reasons, journal context, and photo memories.
+- Compact long-term items in the desktop sidebar without introducing a second source of truth.
+- Portable monthly `.llmedia` export and idempotent restore for records and compressed photos.
 
-## [1.1.3] - 2026-08-30
+### Changed
 
-### Fixed
-
-- Prevents macOS Safari from needlessly converting Photos-library PNG/JPEG selections to HEIC by using an explicit accepted-format list.
-- Materializes picker-provided photos in browser memory before decoding, avoiding WebKit failures with temporary or disk-backed Photos-library files.
-- Reports an actionable message when an iCloud photo has not finished becoming locally available.
-
-## [1.1.2] - 2026-08-30
-
-### Fixed
-
-- Makes photo preparation resilient across Safari and other browsers by verifying the actual encoded format, falling back to JPEG, and progressively reducing dimensions when necessary.
-- Shows clearer photo errors for expired sessions, network failures, processing failures, and temporary storage errors.
-- Gives one, two, and three-photo timeline entries distinct responsive compositions, so a single portrait photo no longer appears as a narrow vertical strip.
-
-## [1.1.1] - 2026-08-30
-
-### Added
-
-- Mood-colored calendar days with an optional completion heatmap.
-- Private Cloudflare R2 photo memories inside the mood-note flow, limited to three compressed photos per day.
-- A chronological Timeline combining mood, reasons, and photo memories.
-- Compact long-term items in the desktop sidebar without a second source of truth.
-- Portable monthly `.llmedia` export and idempotent restore for records plus compressed photos.
+- Reworked Today into a calmer daily workspace where schedule and reflection share an equal layout.
+- Moved Focus into the Daily Reflection carousel so the primary page stays focused when the timer is not in use.
+- Linked the Today workspace to the selected calendar date: hero progress, mood, habits, schedule, and reflection now move together.
+- Removed the redundant flexible-goals panel and excluded retired daily goals from review evidence.
+- Updated all three README languages with Google Calendar, photo-memory, Timeline, and backup guidance.
 
 ### Privacy and safety
 
 - Photos are re-encoded in the browser, never published through an R2 public URL, and remain behind the existing Cloudflare Access identity.
 - Media metadata and objects stay outside the whole-state JSON payload; local-only and CloudBase editions do not expose photo upload.
 - Deployment-wide storage and monthly R2-operation ceilings keep application traffic well below the published Standard free allowances.
+- Google Calendar access is read-only; credentials remain server-side and calendar events are not treated as completed habits or goals.
 
 ### Fixed
 
-- Apple HEIC/HEIF photos now use native browser decoding when available and a locally bundled client-side fallback otherwise; only the compressed JPEG/WebP result is uploaded.
-- The photo picker now accepts common browser-readable image formats instead of excluding iPhone originals before processing.
-- Quick record now works for today and past reflection dates while future dates remain locked.
+- Made macOS Photos-library selection resilient to temporary and zero-byte picker files while avoiding unnecessary HEIC conversion.
+- Added native decoding and a bundled fallback for HEIC/HEIF, with format verification, JPEG fallback, and progressive resizing before upload.
+- Improved photo errors for incomplete iCloud downloads, expired sessions, network failures, and temporary storage failures.
+- Added responsive one-, two-, and three-photo Timeline compositions so portrait images no longer render as narrow strips.
+- Made the mood-and-photo dialog scroll correctly in Android Firefox without forcing the mobile keyboard open.
+- Kept Quick record visible in the reflection carousel and available for today and past entries while future dates remain locked.
+- Replaced crowded event-dot clusters with one compact calendar/count badge.
 
 ## [1.1.0] - 2026-08-22
 
