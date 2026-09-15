@@ -4,7 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-No unreleased changes yet.
+### Documentation and community
+
+- Reworked the English, Simplified Chinese, and German README introductions around a concise product promise, an immediate product preview, and clear paths to try or contribute.
+- Opened public roadmap issues for cross-platform apps, deterministic PDF reports, privacy-preserving AI, editable AI report drafts, frontend modularization, and accessibility checks.
+- Added GitHub Discussions, support guidance, a pull request template, and contributor routing for early ideas, self-hosting questions, and scoped implementation work.
 
 ## [1.2.0] - 2026-09-03
 

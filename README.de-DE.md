@@ -20,16 +20,28 @@
   </p>
 </div>
 
-> **Stabile Version:** Life Ledger 1.2 verbindet den ausgewählten Tag vollständig mit Kalender, Gewohnheiten, Stimmung, Reflexion und privaten Erinnerungen. Lokale Einträge werden weiterhin automatisch gespeichert; vollständige Sicherungen lassen sich auf einem anderen Gerät oder in einem anderen Browser wiederherstellen.
+<p align="center">
+  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger" />
+</p>
 
-## Neu in Life Ledger 1.2
+<p align="center">
+  <strong>Sprich drei Minuten. Verwandle Kalender, Gewohnheiten, Stimmung und Erinnerungen in eine private Reflexion.</strong><br />
+  <sub>Nutze Life Ledger sofort in einem Browser oder hoste es selbst für eine private Synchronisierung.</sub>
+</p>
 
-- **Ein Tag, ein vollständiger Arbeitsbereich:** Mit dem Datum wechseln Fortschritt, Gewohnheiten, Stimmung, Termine und Reflexion gemeinsam.
-- **Schreibgeschützter Kalenderkontext:** Verbinde bis zu zwei Google-Konten, wähle sichtbare Kalender aus und klappe wenig hilfreiche Routinetermine ein.
-- **Stimmung auf einen Blick:** Stimmungsfarben und eine optionale Erledigungs-Heatmap machen Muster sichtbar, ohne den Monatskalender zu überladen.
-- **Private Fotoerinnerungen:** Speichere komprimierte Tagesfotos, betrachte sie auf einer chronologischen Zeitleiste und übertrage sie mit monatlichen `.llmedia`-Sicherungen.
-- **Ruhigere Heute-Ansicht:** Kalender und Reflexion teilen sich den Raum gleichmäßig; Focus bleibt im Reflexionskarussell erreichbar, ohne dauerhaft Platz zu belegen.
-- **Schnellaufnahme bleibt kontrollierbar:** Sprich einige Minuten, prüfe den von der KI geordneten Entwurf und füge ihn bewusst hinzu, ohne Gewohnheiten, Stimmung oder Ziele still zu verändern.
+<table>
+  <tr>
+    <td width="33%"><strong>Mühelos festhalten</strong><br />Hake Gewohnheiten ab, lies Kalenderkontext ein oder verwandle eine kurze Sprachnotiz in eine bearbeitbare Reflexion.</td>
+    <td width="33%"><strong>Den ganzen Weg sehen</strong><br />Verbinde einen Tag mit der Woche und dem Monat, ohne den menschlichen Zusammenhang hinter den Trends zu verlieren.</td>
+    <td width="33%"><strong>Die Kontrolle behalten</strong><br />Bleibe lokal, hoste deine Synchronisierung selbst und exportiere deine vollständige Historie jederzeit.</td>
+  </tr>
+</table>
+
+<p align="center">
+  <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&amp;lang=de"><strong>Private Demo ausprobieren</strong></a> ·
+  <a href="https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"><strong>Am nächsten Release mitbauen</strong></a> ·
+  <a href="https://github.com/zubin-li/life-ledger-deep-review/discussions"><strong>Mitdiskutieren</strong></a>
+</p>
 
 ## Warum Life Ledger?
 
@@ -96,13 +108,20 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
+<details>
+<summary><strong>Was Life Ledger 1.2 gebracht hat</strong></summary>
+
+- Ein ausgewähltes Datum bewegt Fortschritt, Gewohnheiten, Stimmung, Termine und Reflexion gemeinsam.
+- Bis zu zwei schreibgeschützte Google-Kalenderkonten liefern Tageskontext, ohne externe Termine zu verändern.
+- Stimmungsfarben, Erledigungs-Heatmap, komprimierte Fotoerinnerungen und Zeitleiste machen Muster leichter sichtbar.
+- Kalender und Reflexion teilen sich eine ruhigere Heute-Ansicht; Focus liegt im Reflexionskarussell.
+- Schnell aufnehmen erzeugt einen bearbeitbaren KI-Entwurf, ohne Gewohnheiten, Stimmung oder Ziele still zu verändern.
+
+[Vollständige Versionshinweise lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.0)
+
+</details>
+
 ## Produkt-Tour
-
-<p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger auf dem Desktop" />
-</p>
-
-<p align="center"><sub>Ein Monat auf einen Blick: Rhythmus, Gewohnheitsvergleich und eine Reflexion, die den Zahlen ihren Zusammenhang gibt.</sub></p>
 
 <table>
   <tr>
@@ -255,20 +274,22 @@ Für Festlandchina bietet CloudBase derzeit eine kostenlose Umgebung mit monatli
 
 ## Roadmap
 
-- Druckfertige Wochen- und Monatsrückblicke mit PDF-Speicherung
-- Optionale KI-gestützte Wochen- und Monatsauswertung
-- Fotoanhänge mit vollständiger Sicherung und Wiederherstellung
-- Optionaler Wetterkontext als langfristige Erkundung
-- Sicherere Konfliktbehandlung bei gleichzeitigen Offline-Änderungen
-- Optionale monatliche Aufteilung für sehr lange Journalverläufe
-- Automatisierte Barrierefreiheits- und Browser-Regressionstests
-- Weitere Übersetzungen aus der Community
+- [Druckfertige Wochen- und Monatsberichte als PDF](https://github.com/zubin-li/life-ledger-deep-review/issues/2)
+- [Datenschutzfreundliche KI-Architektur](https://github.com/zubin-li/life-ledger-deep-review/issues/3) und [bearbeitbare Zeitraum-Entwürfe](https://github.com/zubin-li/life-ledger-deep-review/issues/4)
+- [Ein nachhaltig wartbarer Weg zur plattformübergreifenden App](https://github.com/zubin-li/life-ledger-deep-review/issues/1)
+- Sicherere Konfliktbehandlung, Skalierung langer Verläufe, Barrierefreiheitstests und Community-Übersetzungen
 
 Prioritäten, Datenschutzleitplanken und ausdrückliche Nicht-Ziele stehen in der [Produkt-Roadmap](docs/ROADMAP.md). Die Roadmap beschreibt eine Richtung und kein zugesagtes Veröffentlichungsdatum.
 
 ## Mitwirken
 
-Issues und klar abgegrenzte Pull Requests sind willkommen. Bitte lies [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) und das [Changelog](CHANGELOG.md). Lade niemals private Journalexporte in öffentliche Issues hoch.
+Life Ledger sucht Mitwirkende mit Interesse an Local-first-Software, verantwortungsvoller KI, plattformübergreifender UX, Datenvisualisierung, Barrierefreiheit und mehrsprachigem Design.
+
+- Wähle eine klar abgegrenzte Aufgabe mit dem Label [`help wanted`](https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+- Für den ersten Beitrag eignen sich Aufgaben unter [`good first issue`](https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+- Nutze [Discussions](https://github.com/zubin-li/life-ledger-deep-review/discussions) für offene Produktideen und Issues für klar definierte Arbeiten.
+
+Bitte lies vor einem Beitrag [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) und das [Changelog](CHANGELOG.md). Lade niemals private Journalexporte in öffentliche Issues hoch.
 
 ## Lizenz
 

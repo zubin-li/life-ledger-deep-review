@@ -20,16 +20,28 @@
   </p>
 </div>
 
-> **Stable release:** Life Ledger 1.2 connects each selected day with its calendar, habits, mood, reflection, and private memories. Local records still save automatically, and complete backups can be restored on another device or browser.
+<p align="center">
+  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v2.png" width="100%" alt="Life Ledger monthly review dashboard" />
+</p>
 
-## What's new in Life Ledger 1.2
+<p align="center">
+  <strong>Speak for three minutes. Turn your calendar, habits, mood, and memories into a private reflection.</strong><br />
+  <sub>Use it immediately in one browser, or self-host it for private cross-device sync.</sub>
+</p>
 
-- **One selected day, one workspace:** choosing a date now moves the hero, habits, mood, schedule, and reflection together.
-- **Read-only calendar context:** connect up to two Google accounts, choose which calendars appear, and keep routine events collapsed when they are not useful.
-- **Mood at a glance:** mood-colored month cells and an optional completion heatmap reveal patterns without crowding the calendar.
-- **Private photo memories:** add compressed daily photos, revisit them on a chronological Timeline, and move them with monthly `.llmedia` backups.
-- **A calmer Today view:** calendar and reflection share an equal layout, while Focus stays available inside the reflection carousel instead of occupying permanent space.
-- **Quick record remains deliberate:** speak for a few minutes, review the AI-organized draft, and append it without silently changing habits, mood, or goals.
+<table>
+  <tr>
+    <td width="33%"><strong>Capture effortlessly</strong><br />Check habits, import calendar context, or turn a short voice note into an editable reflection.</td>
+    <td width="33%"><strong>See the whole story</strong><br />Move from one day to weekly direction and monthly patterns without losing the human context.</td>
+    <td width="33%"><strong>Keep ownership</strong><br />Stay local, self-host your sync, and export a complete portable history whenever you choose.</td>
+  </tr>
+</table>
+
+<p align="center">
+  <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&amp;lang=en"><strong>Try the private demo</strong></a> ·
+  <a href="https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"><strong>Help build the next release</strong></a> ·
+  <a href="https://github.com/zubin-li/life-ledger-deep-review/discussions"><strong>Join the discussion</strong></a>
+</p>
 
 ## Why Life Ledger
 
@@ -96,13 +108,20 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
 
+<details>
+<summary><strong>What shipped in Life Ledger 1.2</strong></summary>
+
+- One selected date now moves the hero, habits, mood, schedule, and reflection together.
+- Up to two read-only Google Calendar accounts can provide daily context without editing external events.
+- Mood colors, a completion heatmap, compressed photo memories, and a chronological Timeline make patterns easier to revisit.
+- Calendar and reflection share a calmer Today layout, with Focus tucked into the reflection carousel.
+- Quick record produces an editable AI-organized draft without silently changing habits, mood, or goals.
+
+[Read the complete release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.0)
+
+</details>
+
 ## Product tour
-
-<p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v2.png" width="100%" alt="Life Ledger monthly review dashboard on desktop" />
-</p>
-
-<p align="center"><sub>One month, seen clearly: completion rhythm, habit comparisons, and a reflection that keeps the numbers in context.</sub></p>
 
 <table>
   <tr>
@@ -255,20 +274,22 @@ For mainland China, CloudBase currently offers one Free environment with 3,000 r
 
 ## Roadmap
 
-- Print-ready weekly and monthly review reports
-- Optional AI-assisted weekly and monthly synthesis
-- Print-ready weekly and monthly reports
-- Optional weather context as a longer-term exploration
-- Safer conflict handling for concurrent offline edits
-- Optional monthly partitioning for very long journal histories
-- Automated accessibility and browser regression coverage
-- Community-contributed translations
+- [Print-ready weekly and monthly PDF reports](https://github.com/zubin-li/life-ledger-deep-review/issues/2)
+- [Privacy-preserving AI-assisted reflection](https://github.com/zubin-li/life-ledger-deep-review/issues/3) and [editable period drafts](https://github.com/zubin-li/life-ledger-deep-review/issues/4)
+- [A sustainable cross-platform app path](https://github.com/zubin-li/life-ledger-deep-review/issues/1)
+- Safer conflict handling, long-history scaling, accessibility coverage, and community-contributed translations
 
 See the [product roadmap](docs/ROADMAP.md) for priorities, privacy guardrails, and explicit non-goals. Roadmap items describe direction rather than a promised release date.
 
 ## Contributing
 
-Issues and focused pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the [changelog](CHANGELOG.md). Never attach private journal exports to public issues.
+Life Ledger is looking for contributors who care about local-first software, thoughtful AI, cross-platform UX, data visualization, accessibility, and multilingual design.
+
+- Pick a scoped task from [`help wanted`](https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+- Start with [`good first issue`](https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) if this is your first contribution.
+- Use [Discussions](https://github.com/zubin-li/life-ledger-deep-review/discussions) for open-ended product ideas and Issues for scoped work.
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the [changelog](CHANGELOG.md). Never attach private journal exports to public issues.
 
 ## License
 

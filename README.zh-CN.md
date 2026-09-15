@@ -20,16 +20,28 @@
   </p>
 </div>
 
-> **正式版说明：** Life Ledger 1.2 将选中的日期与日历、习惯、心情、复盘和私人记忆完整联动。本机记录仍会自动保存，完整备份可以在另一台设备或另一个浏览器中恢复。
+<p align="center">
+  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v2.png" width="100%" alt="Life Ledger 中文月度复盘界面" />
+</p>
 
-## Life Ledger 1.2 本版本新增
+<p align="center">
+  <strong>用三分钟说下今天，让日历、习惯、心情与记忆沉淀成一份私人复盘。</strong><br />
+  <sub>可以立即在一个浏览器中使用，也可以自己部署，实现私密的跨设备同步。</sub>
+</p>
 
-- **一天，一个完整工作区：** 选择日期后，顶部进度、习惯、心情、日程与复盘会一起切换。
-- **只读日历背景：** 最多连接两个 Google 账号，自行选择显示的日历，并可收起价值较低的重复日程。
-- **一眼看见心情：** 心情颜色月历与可选完成度热力图，让变化更直观，同时避免日历被圆点挤满。
-- **私人照片记忆：** 保存压缩后的每日照片，在时间轴重新查看，并通过按月 `.llmedia` 备份迁移。
-- **更安静的今日页面：** 日历与复盘各占一半；不常用的专注计时收进复盘轮播，不再长期占据主页面。
-- **快速记录保持可控：** 口述几分钟，检查 AI 整理后的草稿，再主动追加；AI 不会静默修改习惯、心情或目标。
+<table>
+  <tr>
+    <td width="33%"><strong>轻松留下记录</strong><br />勾选习惯、读取日历背景，或把一段短语音整理成可编辑的复盘。</td>
+    <td width="33%"><strong>看见完整轨迹</strong><br />从一天走到一周与一个月，在趋势之外保留真实的生活背景。</td>
+    <td width="33%"><strong>始终掌握数据</strong><br />只存在本机、自己部署同步，或随时导出完整且可迁移的历史。</td>
+  </tr>
+</table>
+
+<p align="center">
+  <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&amp;lang=zh"><strong>立即体验私密版本</strong></a> ·
+  <a href="https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22"><strong>一起共建下一版本</strong></a> ·
+  <a href="https://github.com/zubin-li/life-ledger-deep-review/discussions"><strong>参与讨论</strong></a>
+</p>
 
 ## 为什么是 Life Ledger？
 
@@ -100,13 +112,20 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面
 
+<details>
+<summary><strong>Life Ledger 1.2 已经带来了什么</strong></summary>
+
+- 选择一个日期，顶部进度、习惯、心情、日程与复盘会一起切换。
+- 最多连接两个只读 Google 日历账号，在不修改外部日程的前提下补充当天背景。
+- 心情颜色、完成度热力图、压缩照片记忆与时间轴，让长期变化更容易被看见。
+- 日历与复盘共享更安静的今日布局，专注计时收进复盘轮播。
+- 快速记录生成可编辑的 AI 整理草稿，不会静默修改习惯、心情或目标。
+
+[查看完整版本说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.0)
+
+</details>
+
 ## 产品展示
-
-<p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v2.png" width="100%" alt="Life Ledger 中文桌面版月度复盘" />
-</p>
-
-<p align="center"><sub>一个月的节奏、习惯趋势和文字复盘集中呈现，让数字始终服务于真实生活。</sub></p>
 
 <table>
   <tr>
@@ -259,20 +278,22 @@ Life Ledger 面向个人或小型家庭使用，两种云方案都运行在部�
 
 ## 后续计划
 
-- 可打印、可保存为 PDF 的周度与月度复盘报告
-- 可选的 AI 周度与月度复盘整理
-- 可打印的周度与月度报告
-- 作为长期探索方向的可选天气信息
-- 更安全地处理多设备离线编辑冲突
-- 为超长期日记提供按月拆分存储
-- 自动化无障碍与多浏览器回归测试
-- 社区贡献的更多语言
+- [可打印、可保存为 PDF 的周度与月度报告](https://github.com/zubin-li/life-ledger-deep-review/issues/2)
+- [保护隐私的 AI 架构](https://github.com/zubin-li/life-ledger-deep-review/issues/3)与[可编辑的阶段复盘草稿](https://github.com/zubin-li/life-ledger-deep-review/issues/4)
+- [可持续维护的全平台 App 路线](https://github.com/zubin-li/life-ledger-deep-review/issues/1)
+- 更安全的编辑冲突处理、长期数据扩展、无障碍测试与社区翻译
 
 完整的优先级、隐私边界和明确不做的事项，请参阅[产品路线图](docs/ROADMAP.md)。路线图表达的是产品方向，不代表已经承诺发布日期。
 
 ## 参与贡献
 
-欢迎提交 Issue 和范围清晰的 Pull Request。请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)、[SECURITY.md](SECURITY.md)和[更新记录](CHANGELOG.md)。不要在公开 Issue 中上传私人日记导出文件。
+Life Ledger 正在寻找关注本地优先软件、谨慎使用 AI、全平台体验、数据可视化、无障碍和多语言设计的贡献者。
+
+- 从带有 [`help wanted`](https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) 标签且范围清晰的任务开始。
+- 第一次参与时，可以选择 [`good first issue`](https://github.com/zubin-li/life-ledger-deep-review/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)。
+- 开放式产品想法请放在 [Discussions](https://github.com/zubin-li/life-ledger-deep-review/discussions)，明确的开发任务请使用 Issues。
+
+提交前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)、[SECURITY.md](SECURITY.md)和[更新记录](CHANGELOG.md)。不要在公开 Issue 中上传私人日记导出文件。
 
 ## 开源协议
 

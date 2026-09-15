@@ -8,6 +8,8 @@ This document describes direction, not a delivery promise. Focused GitHub issues
 
 ### Print-ready weekly and monthly reports
 
+Tracked in [#2](https://github.com/zubin-li/life-ledger-deep-review/issues/2).
+
 Build one deterministic report model for a selected week or month, then render it as a calm, print-ready page that the browser can print or save as PDF.
 
 The first report should be able to include:
@@ -34,6 +36,8 @@ The Cloudflare self-hosted edition can now connect to selected Google calendars 
 ## Next: period reflection
 
 ### Privacy-preserving AI reflection
+
+Architecture is tracked in [#3](https://github.com/zubin-li/life-ledger-deep-review/issues/3); the editable review experience is tracked separately in [#4](https://github.com/zubin-li/life-ledger-deep-review/issues/4).
 
 Explore an optional bring-your-own-key integration that turns an already aggregated period into a structured reflection. AI output should appear as an editable preview before it can be saved or exported through the standard report renderer.
 
@@ -62,6 +66,9 @@ Machine-learning analysis is not planned until the product has enough trustworth
 
 ## Ongoing foundations
 
+- Cross-platform app direction ([#1](https://github.com/zubin-li/life-ledger-deep-review/issues/1))
+- Contributor-friendly frontend boundaries ([#5](https://github.com/zubin-li/life-ledger-deep-review/issues/5))
+- A repeatable accessibility and browser smoke check ([#6](https://github.com/zubin-li/life-ledger-deep-review/issues/6))
 - Safer conflict handling for concurrent offline edits
 - Optional monthly partitioning for very long journal histories
 - Automated accessibility and browser regression coverage

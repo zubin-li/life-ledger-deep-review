@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Product ideas and design feedback
+    url: https://github.com/zubin-li/life-ledger-deep-review/discussions/categories/ideas
+    about: Explore an early idea with the community before turning it into scoped work.
+  - name: Questions and self-hosting help
+    url: https://github.com/zubin-li/life-ledger-deep-review/discussions/categories/q-a
+    about: Ask for help without sharing private journal, calendar, account, or photo data.
