@@ -11,6 +11,8 @@ Thanks for helping improve Life Ledger.
 
 Code is not the only useful contribution. Product feedback, UX, privacy review, accessibility, localization, documentation, and cross-browser testing are all welcome.
 
+Before submitting layout, theme, or interaction changes, run through the [Accessibility & Cross-Browser Smoke-Check Guide](docs/accessibility-and-browser-checks.md).
+
 ## Before opening a change
 
 1. Search existing issues and discussions.
