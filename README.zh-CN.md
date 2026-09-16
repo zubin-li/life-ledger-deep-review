@@ -139,8 +139,13 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 </table>
 
 <p align="center">
+  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v3.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
+</p>
+<p align="center"><strong>一条只属于自己的记忆线。</strong> 回看心情、语境和压缩后的照片记忆，而不是把生活变成公开动态。</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/zh-mobile/zh-01-today-planning-v2.png" width="30%" alt="手机版每日规划" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-02-daily-review-v2.png" width="30%" alt="手机版单日复盘" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v3.png" width="30%" alt="手机版私人时间轴" />
   <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v2.png" width="30%" alt="手机版月度复盘" />
 </p>
 

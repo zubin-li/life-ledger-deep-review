@@ -7,8 +7,13 @@ All notable changes are documented here.
 ### Documentation and community
 
 - Reworked the English, Simplified Chinese, and German README introductions around a concise product promise, an immediate product preview, and clear paths to try or contribute.
+- Added current Timeline desktop and mobile product images in English, Simplified Chinese, and German, plus a maintenance check that keeps this visible feature represented in every showcase.
 - Opened public roadmap issues for cross-platform apps, deterministic PDF reports, privacy-preserving AI, editable AI report drafts, frontend modularization, and accessibility checks.
 - Added GitHub Discussions, support guidance, a pull request template, and contributor routing for early ideas, self-hosting questions, and scoped implementation work.
+
+### Fixed
+
+- Removed the duplicate Timeline heading and localized the singular one-photo summary in all three interface languages.
 
 ## [1.2.0] - 2026-09-03
 

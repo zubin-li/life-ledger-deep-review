@@ -36,6 +36,12 @@ Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地�
 
 按主题比较专注分钟数，并通过月度热力图观察节奏，不再用 Session 数量替代真实投入时间。
 
+### 时间轴：重新看见走过的日子
+
+<img src="images/demo-preview/zh-desktop/zh-07-timeline-v3.png" alt="Life Ledger 中文时间轴中的心情、复盘与私人照片记忆" />
+
+沿时间顺序回看心情、原因、日记语境和经过压缩的私人照片记忆。图中的记录与图片均为虚构演示数据。
+
 ### 习惯：规则可以成长
 
 <img src="images/demo-preview/zh-desktop/zh-06-habit-settings-v2.png" alt="中文桌面版习惯设置" />
@@ -68,6 +74,11 @@ Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地�
     <td align="center"><strong>习惯</strong></td>
   </tr>
 </table>
+
+<p align="center">
+  <img src="images/demo-preview/zh-mobile/zh-07-timeline-v3.png" width="33%" alt="Life Ledger 中文手机版时间轴" />
+</p>
+<p align="center"><strong>时间轴</strong> · 在小屏幕上也能清楚回看心情、语境与照片记忆。</p>
 
 ## 继续了解
 

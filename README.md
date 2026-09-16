@@ -135,8 +135,13 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 </table>
 
 <p align="center">
+  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v3.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
+</p>
+<p align="center"><strong>A private memory line.</strong> Revisit mood, context, and compressed photo memories without turning them into a public feed.</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/en-mobile/en-01-today-planning-v2.png" width="30%" alt="Daily planning on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-02-daily-review-v2.png" width="30%" alt="Daily review drawer on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v3.png" width="30%" alt="Private Timeline on mobile" />
   <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v2.png" width="30%" alt="Monthly review on mobile" />
 </p>
 

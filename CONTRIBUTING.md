@@ -19,6 +19,7 @@ Code is not the only useful contribution. Product feedback, UX, privacy review, 
 4. Keep English, Chinese, and German interface strings aligned.
 5. Document every user-facing feature in all three README files in the same change; keep small fixes out of the homepage changelog unless they materially affect usage.
 6. Never put real journal text, calendar details, email addresses, access tokens, or personal photos in an Issue, Discussion, test fixture, or screenshot.
+7. If a visible feature changes, refresh the fictional English, Chinese, and German desktop/mobile screenshots and the corresponding product-showcase sections.
 
 ## Local workflow
 
@@ -53,9 +54,10 @@ For every stable release:
 1. Move completed entries from `Unreleased` into a dated version in `CHANGELOG.md`.
 2. Update the package version, PWA cache name, and asset query versions together.
 3. Update user-facing feature documentation in English, Simplified Chinese, and German.
-4. Add `.github/releases/vX.Y.Z.md` with a readable summary, upgrade notes, privacy considerations, and rollback information.
-5. Run the complete test suite before tagging.
-6. Push the annotated tag and verify the GitHub Release, CI, GitHub Pages, and production deployment.
+4. Verify that the multilingual product screenshots still show the current visible feature set.
+5. Add `.github/releases/vX.Y.Z.md` with a readable summary, upgrade notes, privacy considerations, and rollback information.
+6. Run the complete test suite before tagging.
+7. Push the annotated tag and verify the GitHub Release, CI, GitHub Pages, and production deployment.
 
 ## Design principles
 

@@ -36,6 +36,12 @@ Die Auswertung berücksichtigt alle aktiven Gewohnheiten, auch periodische Ziele
 
 Vergleiche Fokusminuten nach Thema und erkenne deinen Rhythmus in einer Monats-Heatmap – ohne Fortschritt auf Session-Zahlen zu reduzieren.
 
+### Zeitleiste: gelebte Tage wiedersehen
+
+<img src="images/demo-preview/de-desktop/de-07-timeline-v3.png" alt="Stimmung, Reflexion und private Fotoerinnerungen in der Life-Ledger-Zeitleiste" />
+
+Durchlaufe eine private Chronik aus Stimmungen, Gründen, Journal-Kontext und komprimierten Fotoerinnerungen. Beispieldaten und Bild sind vollständig fiktiv.
+
 ### Gewohnheiten: Regeln dürfen sich entwickeln
 
 <img src="images/demo-preview/de-desktop/de-06-habit-settings-v2.png" alt="Gewohnheitseinstellungen auf dem Desktop" />
@@ -68,6 +74,11 @@ Die mobile Oberfläche verwendet eine feste Navigation am unteren Rand und macht
     <td align="center"><strong>Gewohnheiten</strong></td>
   </tr>
 </table>
+
+<p align="center">
+  <img src="images/demo-preview/de-mobile/de-07-timeline-v3.png" width="33%" alt="Life-Ledger-Zeitleiste auf dem Smartphone" />
+</p>
+<p align="center"><strong>Zeitleiste</strong> · Stimmung, Kontext und Fotoerinnerungen bleiben auch auf kleinen Bildschirmen gut lesbar.</p>
 
 ## Weiter
 

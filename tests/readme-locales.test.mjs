@@ -51,8 +51,16 @@ test("each language document references only its own versioned screenshots", asy
       assert.ok(paths.length > 0, `${document} must include product screenshots`);
       for (const path of paths) {
         assert.ok(path.includes(`/${lang}-desktop/${lang}-`) || path.includes(`/${lang}-mobile/${lang}-`), `${document} has a cross-language screenshot: ${path}`);
-        assert.ok(path.endsWith("-v2.png"), `${document} must use cache-busted screenshots: ${path}`);
+        assert.match(path, /-v\d+\.png$/, `${document} must use a versioned screenshot: ${path}`);
       }
     }
+  }
+});
+
+test("every localized showcase includes the current Timeline feature", async () => {
+  for (const { lang, showcase } of docs) {
+    const source = await readFile(resolve(root, showcase), "utf8");
+    assert.match(source, new RegExp(`images/demo-preview/${lang}-desktop/${lang}-07-timeline-v\\d+\\.png`));
+    assert.match(source, new RegExp(`images/demo-preview/${lang}-mobile/${lang}-07-timeline-v\\d+\\.png`));
   }
 });

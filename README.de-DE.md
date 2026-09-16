@@ -135,8 +135,13 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 </table>
 
 <p align="center">
+  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v3.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
+</p>
+<p align="center"><strong>Eine private Erinnerungslinie.</strong> Stimmung, Kontext und komprimierte Fotoerinnerungen wiedersehen, ohne das Leben in einen öffentlichen Feed zu verwandeln.</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v2.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-02-daily-review-v2.png" width="30%" alt="Tagesrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v3.png" width="30%" alt="Private Zeitleiste auf dem Smartphone" />
   <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v2.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
 </p>
 

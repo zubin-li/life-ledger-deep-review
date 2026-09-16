@@ -36,6 +36,12 @@ Monthly statistics include every active habit, including period-based goals such
 
 Compare focus minutes by topic and see the month as a heatmap, without reducing progress to session counts.
 
+### Timeline: revisit lived days
+
+<img src="images/demo-preview/en-desktop/en-07-timeline-v3.png" alt="Mood, reflection, and private photo memories on the Life Ledger Timeline" />
+
+Move through a private chronological record of moods, reasons, journal context, and compressed photo memories. The example data and image are fictional.
+
 ### Habits: rules that can evolve
 
 <img src="images/demo-preview/en-desktop/en-06-habit-settings-v2.png" alt="Habit settings on desktop" />
@@ -68,6 +74,11 @@ The mobile layout uses persistent bottom navigation and turns the daily drawer i
     <td align="center"><strong>Habits</strong></td>
   </tr>
 </table>
+
+<p align="center">
+  <img src="images/demo-preview/en-mobile/en-07-timeline-v3.png" width="33%" alt="Life Ledger Timeline on mobile" />
+</p>
+<p align="center"><strong>Timeline</strong> · Mood, context, and photo memories remain readable on a small screen.</p>
 
 ## Continue
 
