@@ -67,6 +67,7 @@ button { cursor: pointer; }
 .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; margin-bottom: 42px; }
 .eyebrow, .kicker { margin: 0; font: 500 10px/1.2 var(--font-body); letter-spacing: .18em; color: var(--sage); }
 .topbar h1 { max-width: 760px; font: 700 clamp(25px, 2.7vw, 38px)/1.24 var(--font-display); margin: 0; letter-spacing: -.035em; overflow-wrap: anywhere; text-wrap: balance; }
+body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
 .top-actions, .date-jump { display: flex; align-items: center; gap: 9px; }
 .mobile-toolbar-toggle { display: none; }
 .save-mode { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font: 9px var(--font-body); }

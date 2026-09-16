@@ -113,7 +113,7 @@ const i18n = {
       source: "苏轼《水调歌头》",
     },
     moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
-    timeline: { kicker: "记忆时间轴", title: "时间轴", description: "沿着心情与照片，重新看见走过的日子。", previous: "上个月", next: "下个月", loading: "正在整理这段记忆……", summary: "{days} 个留下记录的日子 · {photos} 张照片", emptyTitle: "这个月还没有留下记忆", emptyHelp: "心情、原因或照片会沿着时间轴出现在这里。", noMood: "一日记忆" },
+    timeline: { kicker: "记忆时间轴", title: "时间轴", description: "沿着心情与照片，重新看见走过的日子。", previous: "上个月", next: "下个月", loading: "正在整理这段记忆……", summary: "{days} 个留下记录的日子 · {photos} 张照片", summaryOnePhoto: "{days} 个留下记录的日子 · 1 张照片", emptyTitle: "这个月还没有留下记忆", emptyHelp: "心情、原因或照片会沿着时间轴出现在这里。", noMood: "一日记忆" },
     sidebarLongTerm: { title: "长期待办", open: "查看全部长期待办", empty: "还没有进行中的长期事项。" },
     todayGoals: {
       kicker: "日历", title: "每日日程", desc: "查看所选日期的日历安排。", previous: "前一天", next: "后一天",
@@ -446,7 +446,7 @@ const i18n = {
       source: "Attributed to the Buddha",
     },
     moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
-    timeline: { kicker: "MEMORY LINE", title: "Timeline", description: "Follow your moods and photos back through the days you lived.", previous: "Previous month", next: "Next month", loading: "Gathering this month’s memories…", summary: "{days} recorded days · {photos} photos", emptyTitle: "No memories here yet", emptyHelp: "Moods, reasons, and photos will appear here as the month unfolds.", noMood: "Daily memory" },
+    timeline: { kicker: "MEMORY LINE", title: "Timeline", description: "Follow your moods and photos back through the days you lived.", previous: "Previous month", next: "Next month", loading: "Gathering this month’s memories…", summary: "{days} recorded days · {photos} photos", summaryOnePhoto: "{days} recorded days · 1 photo", emptyTitle: "No memories here yet", emptyHelp: "Moods, reasons, and photos will appear here as the month unfolds.", noMood: "Daily memory" },
     sidebarLongTerm: { title: "Long-term list", open: "View all long-term items", empty: "No active long-term items yet." },
     todayGoals: {
       kicker: "CALENDAR", title: "Daily Calendar", desc: "Calendar events for the selected day.", previous: "Previous day", next: "Next day",
@@ -779,7 +779,7 @@ const i18n = {
       source: "Albert Schweitzer",
     },
     moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
-    timeline: { kicker: "ERINNERUNGSLINIE", title: "Zeitleiste", description: "Folge deinen Stimmungen und Fotos zurück durch die gelebten Tage.", previous: "Vormonat", next: "Nächster Monat", loading: "Erinnerungen dieses Monats werden gesammelt …", summary: "{days} festgehaltene Tage · {photos} Fotos", emptyTitle: "Noch keine Erinnerungen in diesem Monat", emptyHelp: "Stimmungen, Gründe und Fotos erscheinen hier im Lauf des Monats.", noMood: "Tageserinnerung" },
+    timeline: { kicker: "ERINNERUNGSLINIE", title: "Zeitleiste", description: "Folge deinen Stimmungen und Fotos zurück durch die gelebten Tage.", previous: "Vormonat", next: "Nächster Monat", loading: "Erinnerungen dieses Monats werden gesammelt …", summary: "{days} festgehaltene Tage · {photos} Fotos", summaryOnePhoto: "{days} festgehaltene Tage · 1 Foto", emptyTitle: "Noch keine Erinnerungen in diesem Monat", emptyHelp: "Stimmungen, Gründe und Fotos erscheinen hier im Lauf des Monats.", noMood: "Tageserinnerung" },
     sidebarLongTerm: { title: "Langfristig", open: "Alle langfristigen Punkte anzeigen", empty: "Noch keine aktiven langfristigen Punkte." },
     todayGoals: {
       kicker: "KALENDER", title: "Tageskalender", desc: "Kalendertermine für den ausgewählten Tag.", previous: "Voriger Tag", next: "Nächster Tag",
@@ -1299,6 +1299,7 @@ function applyLanguage() {
   if (languageFlag) languageFlag.textContent = currentLang === "zh" ? "🇨🇳" : currentLang === "de" ? "🇩🇪" : "🇬🇧";
   setAria("#languageSelect", currentLang === "zh" ? "选择界面语言" : currentLang === "de" ? "Sprache der Oberfläche wählen" : "Select interface language");
   const activeView = $(".nav-item.active")?.dataset.view || "today";
+  document.body.dataset.activeView = activeView;
   setText("#viewTitle", tr(`viewTitles.${activeView}`));
   setText(".date-jump span:first-of-type", tr("yearSuffix"));
   setText(".date-jump span:last-of-type", tr("monthSuffix"));
@@ -2388,7 +2389,7 @@ async function renderTimeline() {
     .map(date => ({ date, log: getLog(date), photos: photosByDate.get(date) || [] }))
     .filter(entry => entry.log.mood || entry.log.moodReason || entry.photos.length)
     .sort((a, b) => b.date.localeCompare(a.date));
-  setText("#timelineSummary", tr("timeline.summary", { days: entries.length, photos: photos.length }));
+  setText("#timelineSummary", tr(photos.length === 1 ? "timeline.summaryOnePhoto" : "timeline.summary", { days: entries.length, photos: photos.length }));
   if (!entries.length) {
     container.innerHTML = `<div class="memory-empty"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/></svg><strong>${tr("timeline.emptyTitle")}</strong><span>${tr("timeline.emptyHelp")}</span></div></div>`;
     return;
@@ -4486,6 +4487,7 @@ function bindEvents() {
     $$(".nav-item").forEach(b => b.classList.toggle("active", b === button));
     $$(".view").forEach(v => v.classList.remove("active"));
     $(`#${button.dataset.view}View`).classList.add("active");
+    document.body.dataset.activeView = button.dataset.view;
     $("#viewTitle").textContent = tr(`viewTitles.${button.dataset.view}`);
     if (button.dataset.view === "week") renderWeeklyWorkspace();
     if (button.dataset.view === "timeline") void renderTimeline();
