@@ -24,6 +24,7 @@
       authError: "Your Cloudflare session needs attention. Reload the app and sign in again.", dailyLimit: "Today’s voice allowance has been reached. Try again tomorrow.",
       serviceUnavailable: "Voice processing is temporarily unavailable. Try again in a moment.",
       noSpeech: "No clear speech was found. Try again a little closer to the microphone.", unsupported: "This browser cannot record audio for Life Ledger.",
+      tooQuiet: "Your voice is very quiet. Move a little closer to the microphone.",
       minutesLeft: "{minutes} min of today’s allowance remain", draftPlaceholder: "Your refined reflection will appear here.",
     },
     zh: {
@@ -40,6 +41,7 @@
       authError: "Cloudflare 登录状态需要刷新，请重新载入并登录。", dailyLimit: "今天的免费语音额度已用完，请明天再试。",
       serviceUnavailable: "语音处理服务暂时不可用，请稍后重试。",
       noSpeech: "没有识别到清晰语音，请靠近麦克风后重试。", unsupported: "当前浏览器无法为 Life Ledger 录音。",
+      tooQuiet: "声音有些轻，请稍微靠近麦克风。",
       minutesLeft: "今日还可使用约 {minutes} 分钟", draftPlaceholder: "整理后的复盘会显示在这里。",
     },
     de: {
@@ -56,6 +58,7 @@
       authError: "Deine Cloudflare-Sitzung muss erneuert werden. Lade die App neu und melde dich erneut an.", dailyLimit: "Das heutige Sprachkontingent ist erreicht. Versuche es morgen erneut.",
       serviceUnavailable: "Die Sprachverarbeitung ist vorübergehend nicht verfügbar. Versuche es gleich noch einmal.",
       noSpeech: "Es wurde keine klare Sprache erkannt. Sprich näher am Mikrofon und versuche es erneut.", unsupported: "Dieser Browser kann für Life Ledger kein Audio aufnehmen.",
+      tooQuiet: "Deine Stimme ist sehr leise. Geh etwas näher ans Mikrofon.",
       minutesLeft: "Heute bleiben etwa {minutes} Minuten", draftPlaceholder: "Deine überarbeitete Reflexion erscheint hier.",
     },
   };
@@ -77,6 +80,16 @@
     const before = String(existing || "").trim();
     const next = String(draft || "").trim();
     return before && next ? `${before}\n\n${next}` : before || next;
+  }
+
+  function calculateInputLevel(samples) {
+    if (!samples?.length) return 0;
+    let energy = 0;
+    for (const sample of samples) {
+      const normalized = (Number(sample) - 128) / 128;
+      energy += normalized * normalized;
+    }
+    return Math.min(1, Math.sqrt(energy / samples.length) * 4.5);
   }
 
   function create(options) {
@@ -104,8 +117,14 @@
     let recordedMs = 0;
     let segmentStartedAt = 0;
     let abortController = null;
-    let currentContext = { date: "", isToday: false, disabled: true };
+    let currentContext = { date: "", isToday: false, disabled: true, terms: [] };
     let stoppedByCancel = false;
+    let audioContext = null;
+    let audioSource = null;
+    let analyser = null;
+    let levelSamples = null;
+    let quietSince = 0;
+    const meterBars = [...elements.orb.querySelectorAll("i")];
 
     const t = (key, values = {}) => (copy[language]?.[key] || copy.en[key] || key)
       .replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
@@ -123,8 +142,40 @@
       stopTimer();
       stream?.getTracks?.().forEach(track => track.stop());
       stream = null;
+      audioSource?.disconnect?.();
+      analyser?.disconnect?.();
+      audioContext?.close?.().catch?.(() => {});
+      audioSource = null;
+      analyser = null;
+      audioContext = null;
+      levelSamples = null;
+      quietSince = 0;
+      elements.orb.classList.remove("metering", "quiet");
+      meterBars.forEach(bar => { bar.style.height = ""; });
       recorder = null;
       segmentStartedAt = 0;
+    }
+
+    async function attachInputMeter(mediaStream) {
+      const AudioContextClass = root.AudioContext || root.webkitAudioContext;
+      if (!AudioContextClass) return;
+      try {
+        audioContext = new AudioContextClass();
+        audioSource = audioContext.createMediaStreamSource(mediaStream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.72;
+        levelSamples = new Uint8Array(analyser.fftSize);
+        audioSource.connect(analyser);
+        if (audioContext.state === "suspended") await audioContext.resume();
+        elements.orb.classList.add("metering");
+      } catch {
+        audioSource = null;
+        analyser = null;
+        levelSamples = null;
+        audioContext?.close?.().catch?.(() => {});
+        audioContext = null;
+      }
     }
 
     function discardAudio() {
@@ -184,6 +235,25 @@
       const value = elapsed();
       elements.time.textContent = formatDuration(value);
       elements.orb.style.setProperty("--voice-progress", Math.min(1, value / MAX_DURATION_MS));
+      if (phase === "recording" && analyser && levelSamples) {
+        analyser.getByteTimeDomainData(levelSamples);
+        const level = calculateInputLevel(levelSamples);
+        const pattern = [0.62, 0.86, 1, 0.78, 0.55];
+        meterBars.forEach((bar, index) => {
+          bar.style.height = `${Math.round(4 + level * 18 * pattern[index])}px`;
+        });
+        if (level < 0.025) {
+          quietSince ||= Date.now();
+          if (Date.now() - quietSince >= 3000) {
+            elements.help.textContent = t("tooQuiet");
+            elements.orb.classList.add("quiet");
+          }
+        } else {
+          quietSince = 0;
+          elements.orb.classList.remove("quiet");
+          if (elements.help.textContent === t("tooQuiet")) elements.help.textContent = t("readyHelp");
+        }
+      }
       if (value >= MAX_DURATION_MS && phase === "recording") finishRecording();
     }
 
@@ -198,8 +268,9 @@
       stoppedByCancel = false;
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+        await attachInputMeter(stream);
         const mimeType = chooseMimeType();
-        try { recorder = mimeType ? new root.MediaRecorder(stream, { mimeType, audioBitsPerSecond: 64000 }) : new root.MediaRecorder(stream); }
+        try { recorder = mimeType ? new root.MediaRecorder(stream, { mimeType, audioBitsPerSecond: 96000 }) : new root.MediaRecorder(stream); }
         catch { recorder = new root.MediaRecorder(stream); }
         chunks = [];
         recorder.addEventListener("dataavailable", event => { if (event.data?.size) chunks.push(event.data); });
@@ -254,6 +325,7 @@
       form.append("durationMs", String(Math.max(1000, Math.min(recordedMs, MAX_DURATION_MS))));
       form.append("language", language);
       form.append("date", currentContext.date);
+      form.append("contextTerms", JSON.stringify(Array.isArray(currentContext.terms) ? currentContext.terms : []));
       try {
         refinementTimer = setTimeout(() => { if (phase === "transcribing") setPhase("refining"); }, 900);
         const response = await fetch(options.endpoint || "/api/voice-review", {
@@ -362,5 +434,5 @@
     return { setLanguage: applyLanguage, setContext, reset, open: () => button.click() };
   }
 
-  root.LifeLedgerVoiceCheckin = { MAX_DURATION_MS, appendReflection, chooseMimeType, create, formatDuration };
+  root.LifeLedgerVoiceCheckin = { MAX_DURATION_MS, appendReflection, calculateInputLevel, chooseMimeType, create, formatDuration };
 })(globalThis);

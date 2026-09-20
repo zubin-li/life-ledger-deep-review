@@ -19,14 +19,23 @@ test("voice duration and journal append stay deterministic", () => {
   assert.equal(voice.appendReflection("", "Voice draft"), "Voice draft");
 });
 
+test("voice input level distinguishes silence from audible speech", () => {
+  assert.equal(voice.calculateInputLevel(new Uint8Array(64).fill(128)), 0);
+  const speech = Uint8Array.from({ length: 64 }, (_, index) => index % 2 ? 158 : 98);
+  assert.ok(voice.calculateInputLevel(speech) > 0.5);
+});
+
 test("voice entry is not restricted to today", () => {
   const voiceSource = readFileSync(new URL("../public/voice-checkin.js", import.meta.url), "utf8");
   const appSource = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const stylesSource = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
   assert.match(voiceSource, /options\.enabled !== false && !currentContext\.disabled/);
+  assert.match(voiceSource, /audioBitsPerSecond: 96000/);
+  assert.match(voiceSource, /form\.append\("contextTerms"/);
   assert.doesNotMatch(voiceSource, /currentContext\.isToday &&/);
   assert.match(appSource, /Voice reflection cannot be saved to a future date/);
   assert.match(appSource, /button\.hidden = !hostedCloudMode/);
+  assert.match(appSource, /terms: voiceContextTerms\(selectedPlanningDate\)/);
   assert.match(stylesSource, /\.daily-journal-card \.daily-goals-heading \{ width: 100%; align-items: stretch; flex-direction: column/);
   assert.match(stylesSource, /\.journal-heading-actions \{ width: 100%; flex-direction: row; align-items: center; justify-content: space-between/);
 });

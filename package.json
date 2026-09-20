@@ -1,6 +1,6 @@
 {
   "name": "life-ledger-deep-review",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A calm, multilingual, local-first habit tracker and deep-review PWA.",
   "private": true,
   "type": "module",

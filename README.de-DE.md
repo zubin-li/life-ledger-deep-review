@@ -81,7 +81,7 @@ Es geht um Perspektive.
 
 Life Ledger hält deinen Weg fest. KI hilft dir, ihn zu verstehen.
 
-In einer selbst bereitgestellten Cloudflare-Version verwandelt **Schnell aufnehmen** einen gesprochenen Check-in in eine klare, bearbeitbare Tagesreflexion. Cloudflare Workers AI transkribiert die Aufnahme, entfernt sprachliche Wiederholungen und ordnet ausschließlich das, was du tatsächlich gesagt hast. Erst nach deiner Bestätigung wird der Entwurf zum heutigen Journal hinzugefügt.
+In einer selbst bereitgestellten Cloudflare-Version verwandelt **Schnell aufnehmen** einen gesprochenen Check-in in eine klare, bearbeitbare Tagesreflexion. Eine Live-Pegelanzeige warnt vor einem zu leisen Mikrofon; aktuelle Gewohnheiten, Fokusthemen und Ziele dienen als privater Wortschatzkontext. Cloudflare Workers AI entfernt sprachliche Wiederholungen, korrigiert wahrscheinliche Erkennungsfehler nur bei eindeutigem Kontext und ordnet ausschließlich das, was du tatsächlich gesagt hast. Erst nach deiner Bestätigung wird der Entwurf zum heutigen Journal hinzugefügt.
 
 Ein zusätzlicher AI-API-Schlüssel ist nicht erforderlich. Die Aufnahme wird nur vorübergehend verarbeitet und weder in Life Ledger noch in D1, Synchronisierungsdaten oder Sicherungen gespeichert. Nur der von dir bestätigte Text wird Teil deiner Historie.
 
@@ -117,7 +117,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Kalender und Reflexion teilen sich eine ruhigere Heute-Ansicht; Focus liegt im Reflexionskarussell.
 - Schnell aufnehmen erzeugt einen bearbeitbaren KI-Entwurf, ohne Gewohnheiten, Stimmung oder Ziele still zu verändern.
 
-[Vollständige Versionshinweise lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.0)
+[Vollständige Versionshinweise lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.1)
 
 </details>
 

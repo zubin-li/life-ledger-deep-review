@@ -85,7 +85,7 @@ Deep Review 是 Life Ledger 的核心理念。
 
 Life Ledger 负责记录，AI 帮助理解。
 
-在自己部署的 Cloudflare 版本中，点击每日复盘里的**快速记录**，就可以把一段口述整理成清晰、可编辑的当日复盘。Cloudflare Workers AI 负责转写，删除口语赘词，并且只基于你真正说过的内容重新组织表达；确认草稿后才会追加到今日日记。
+在自己部署的 Cloudflare 版本中，点击每日复盘里的**快速记录**，就可以把一段口述整理成清晰、可编辑的当日复盘。实时音量反馈会提示麦克风声音是否过轻；转写会把当前习惯、专注主题与目标作为私有词汇背景。Cloudflare Workers AI 会删除口语赘词，只在上下文高度明确时谨慎修正疑似识别错误，并且只基于你真正说过的内容重新组织表达；确认草稿后才会追加到今日日记。
 
 不需要另外填写 AI API Key。录音只在处理期间短暂存在，不会进入 Life Ledger、D1、同步数据或备份；只有你主动确认保存的文字才会成为历史记录。
 
@@ -121,7 +121,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 日历与复盘共享更安静的今日布局，专注计时收进复盘轮播。
 - 快速记录生成可编辑的 AI 整理草稿，不会静默修改习惯、心情或目标。
 
-[查看完整版本说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.0)
+[查看完整版本说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.1)
 
 </details>
 

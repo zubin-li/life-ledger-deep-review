@@ -81,7 +81,7 @@ The purpose is perspective.
 
 Life Ledger records your journey. AI helps you understand it.
 
-In a self-hosted Cloudflare deployment, **Quick record** turns a short spoken check-in into a clear, editable daily reflection. Cloudflare Workers AI transcribes the recording, removes verbal clutter, and reorganizes only what you said. You review the draft before it is appended to today's journal.
+In a self-hosted Cloudflare deployment, **Quick record** turns a short spoken check-in into a clear, editable daily reflection. Live input feedback helps catch a quiet microphone, while the transcription uses your current habits, focus topics, and goals as private vocabulary context. Cloudflare Workers AI removes verbal clutter, conservatively corrects likely recognition errors, and reorganizes only what you said. You review the draft before it is appended to today's journal.
 
 No separate AI API key is needed. The recording is processed transiently and is never stored in Life Ledger, D1, synchronization data, or backups. Only the draft you explicitly save becomes part of your history.
 
@@ -117,7 +117,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Calendar and reflection share a calmer Today layout, with Focus tucked into the reflection carousel.
 - Quick record produces an editable AI-organized draft without silently changing habits, mood, or goals.
 
-[Read the complete release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.0)
+[Read the complete release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.1)
 
 </details>
 

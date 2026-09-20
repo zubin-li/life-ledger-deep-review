@@ -1316,6 +1316,8 @@ html[data-theme="dark"] .period-point.met { fill: var(--dashboard-color); }
 .voice-orb.active i { opacity: .72; animation: voiceLevel 760ms ease-in-out infinite alternate; }
 .voice-orb.active i:nth-of-type(2), .voice-orb.active i:nth-of-type(5) { animation-delay: -420ms; }
 .voice-orb.active i:nth-of-type(3) { animation-delay: -170ms; }
+.voice-orb.active.metering i { animation: none; transition: height 80ms linear, opacity 160ms ease; }
+.voice-orb.active.quiet { color: #c37618; box-shadow: 0 28px 78px rgba(195,118,24,.16), 0 0 0 12px rgba(195,118,24,.05); }
 .voice-orb.processing { animation: voiceBreathe 1.4s ease-in-out infinite; }
 @keyframes voiceLevel { from { height: 4px; } to { height: 17px; } }
 @keyframes voiceBreathe { 50% { transform: scale(1.045); box-shadow: 0 30px 82px rgba(0,113,227,.23); } }

@@ -2683,6 +2683,22 @@ function syncDailyToolPageFromScroll() {
   updateDailyToolControls(viewport.scrollLeft >= viewport.clientWidth / 2 ? "focus" : "journal");
 }
 
+function voiceContextTerms(date) {
+  const terms = [];
+  const add = value => {
+    const term = String(value || "").replace(/\s+/g, " ").trim();
+    if (!term || terms.some(existing => existing.toLocaleLowerCase() === term.toLocaleLowerCase())) return;
+    if (terms.length < 16) terms.push(term.slice(0, 64));
+  };
+
+  activeHabits(date).forEach(habit => add(habit.name));
+  add(state.focusSettings?.defaultTopic);
+  [...(state.focusSessions || [])].reverse().slice(0, 12).forEach(session => add(session.label));
+  (state.weeklyGoals[isoWeekKey(parseDate(date))] || []).forEach(goal => add(goal.text));
+  (state.longTermGoals || []).filter(goal => (goal.status || "active") === "active").forEach(goal => add(goal.name));
+  return terms;
+}
+
 function renderHomeJournal() {
   const future = isFutureDate(selectedPlanningDate);
   const textarea = $("#homeDayNote");
@@ -2694,6 +2710,7 @@ function renderHomeJournal() {
     date: selectedPlanningDate,
     isToday: selectedPlanningDate === isoDate(new Date()),
     disabled: future,
+    terms: voiceContextTerms(selectedPlanningDate),
   });
 }
 
@@ -2730,6 +2747,7 @@ function initVoiceReflection() {
         date: selectedPlanningDate,
         isToday: selectedPlanningDate === isoDate(new Date()),
         disabled: isFutureDate(selectedPlanningDate),
+        terms: voiceContextTerms(selectedPlanningDate),
       },
       onSave: saveVoiceReflection,
       onToast: showToast,

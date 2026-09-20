@@ -32,6 +32,34 @@ function contentTypeBase(value) {
   return String(value || "").toLowerCase().split(";", 1)[0].trim();
 }
 
+function normalizeVoiceContext(value) {
+  let candidates = value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      candidates = Array.isArray(parsed) ? parsed : value.split(/[\n,;|]/);
+    } catch {
+      candidates = value.split(/[\n,;|]/);
+    }
+  }
+  if (!Array.isArray(candidates)) return [];
+
+  const unique = [];
+  let totalLength = 0;
+  for (const item of candidates) {
+    const term = String(item || "")
+      .replace(/[\u0000-\u001f\u007f]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 64);
+    if (!term || unique.some(existing => existing.toLocaleLowerCase() === term.toLocaleLowerCase())) continue;
+    if (totalLength + term.length > 600 || unique.length >= 16) break;
+    unique.push(term);
+    totalLength += term.length;
+  }
+  return unique;
+}
+
 function validateVoiceForm(form) {
   const audio = form.get("audio");
   if (!(audio instanceof File)) throw new VoiceRequestError("Audio file is required");
@@ -54,6 +82,7 @@ function validateVoiceForm(form) {
     durationSeconds,
     language: normalizedLanguage(String(form.get("language") || "")),
     date: /^\d{4}-\d{2}-\d{2}$/.test(String(form.get("date") || "")) ? String(form.get("date")) : "",
+    contextTerms: normalizeVoiceContext(form.get("contextTerms")),
   };
 }
 
@@ -63,11 +92,22 @@ function languageInstruction(language) {
   return "Write in natural English.";
 }
 
-function buildRefinementMessages({ transcript, language, date }) {
+function transcriptionPrompt(language, contextTerms = []) {
+  const base = language === "zh"
+    ? "个人每日复盘。准确保留具体活动、运动名称、项目、人名、地点、数字、时间和专业词汇。"
+    : language === "de"
+      ? "Persönliche Tagesreflexion. Konkrete Aktivitäten, Sportarten, Projekte, Namen, Orte, Zahlen, Zeiten und Fachbegriffe exakt bewahren."
+      : "Personal daily reflection. Preserve specific activities, sports, projects, names, places, numbers, times, and technical terms accurately.";
+  return contextTerms.length ? `${base} Relevant personal vocabulary: ${contextTerms.join(", ")}.` : base;
+}
+
+function buildRefinementMessages({ transcript, language, date, contextTerms = [] }) {
   const system = [
     "You edit a private spoken daily reflection into a faithful written journal entry.",
     languageInstruction(language),
     "Keep the first-person voice and every material fact, uncertainty, emotion, decision, and lesson the speaker expressed.",
+    "Preserve concrete activity names, sports, projects, people, places, quantities, times, and technical terms instead of replacing them with generic wording.",
+    "Correct a likely speech-recognition homophone or malformed term only when the surrounding sentence and supplied personal vocabulary make the intended wording highly likely. If it is ambiguous, preserve the transcript rather than guessing.",
     "Remove filler words, false starts, repetition, and verbal clutter. Reorder ideas only when it improves clarity.",
     "Do not invent events, motives, achievements, emotions, advice, or conclusions. Do not intensify the tone.",
     "Produce two to five concise paragraphs. Use short bullet points only when the speaker clearly listed several distinct items.",
@@ -75,9 +115,10 @@ function buildRefinementMessages({ transcript, language, date }) {
     "If the transcript is already concise, make only light edits.",
   ].join(" ");
   const context = date ? `Reflection date: ${date}.\n\n` : "";
+  const vocabulary = contextTerms.length ? `Personal vocabulary and current context: ${contextTerms.join(", ")}\n\n` : "";
   return [
     { role: "system", content: system },
-    { role: "user", content: `${context}Spoken transcript:\n${transcript}` },
+    { role: "user", content: `${context}${vocabulary}Spoken transcript:\n${transcript}` },
   ];
 }
 
@@ -132,16 +173,18 @@ async function reserveVoiceUsage(env, keyHash, durationSeconds, now = new Date()
   };
 }
 
-async function transcribe(env, audio, language) {
+async function transcribe(env, audio, language, contextTerms = []) {
   const bytes = Buffer.from(await audio.arrayBuffer()).toString("base64");
   const result = await env.AI.run(TRANSCRIPTION_MODEL, {
     audio: bytes,
     task: "transcribe",
     language,
+    beam_size: 8,
     vad_filter: true,
+    no_speech_threshold: 0.8,
     condition_on_previous_text: true,
     hallucination_silence_threshold: 2,
-    initial_prompt: "Life Ledger personal daily reflection. Preserve names, projects, decisions, emotions, and concrete details.",
+    initial_prompt: transcriptionPrompt(language, contextTerms),
   });
   const transcript = String(result?.text || "").trim();
   if (!transcript) throw new VoiceRequestError("No speech could be transcribed", 422, "VOICE_NO_SPEECH");
@@ -191,11 +234,12 @@ async function handleVoiceReview(request, env, keyHash) {
   }
   const input = validateVoiceForm(form);
   const allowance = await reserveVoiceUsage(env, keyHash, input.durationSeconds);
-  const { transcript, detectedLanguage } = await transcribe(env, input.audio, input.language);
+  const { transcript, detectedLanguage } = await transcribe(env, input.audio, input.language, input.contextTerms);
   const reflection = await refine(env, {
     transcript,
     language: input.language,
     date: input.date,
+    contextTerms: input.contextTerms,
   });
   return {
     transcript,
@@ -215,8 +259,10 @@ export {
   VoiceRequestError,
   buildRefinementMessages,
   handleVoiceReview,
+  normalizeVoiceContext,
   normalizedLanguage,
   parseReflection,
   reserveVoiceUsage,
+  transcriptionPrompt,
   validateVoiceForm,
 };

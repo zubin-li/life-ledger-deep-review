@@ -4,6 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-09-20
+
+### Improved
+
+- Improved Quick record with higher-fidelity capture, a real microphone-level meter, and a quiet-input warning in English, Simplified Chinese, and German.
+- Added bounded personal vocabulary context from active habits, focus topics, weekly goals, and active long-term items to improve recognition of specific activities and project names.
+- Made AI cleanup preserve concrete terms and correct likely speech-recognition errors only when the surrounding context is strong, without adding another inference call or storing audio.
+
 ### Documentation and community
 
 - Reworked the English, Simplified Chinese, and German README introductions around a concise product promise, an immediate product preview, and clear paths to try or contribute.
