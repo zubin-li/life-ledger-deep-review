@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Life Ledger · Deep Review</title>
+    <link rel="stylesheet" href="./launcher.css" />
+  </head>
+  <body>
+    <main class="launcher">
+      <header class="launcher-header">
+        <img src="./assets/app-icon.svg" alt="" width="48" height="48" />
+        <div>
+          <h1 id="title">Life Ledger · Deep Review</h1>
+          <p id="subtitle"></p>
+        </div>
+        <label for="languageSelect" class="launcher-language">
+          <span id="languageLabel">Language</span>
+          <select id="languageSelect" aria-label="Launcher language">
+            <option value="en">English</option>
+            <option value="zh">简体中文</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </label>
+      </header>
+
+      <section class="card">
+        <h2 id="localTitle"></h2>
+        <p id="localDesc"></p>
+        <button id="openLocal" class="primary" type="button"></button>
+      </section>
+
+      <section class="card">
+        <h2 id="cloudTitle"></h2>
+        <p id="cloudDesc"></p>
+        <label for="cloudUrl" id="cloudLabel"></label>
+        <input id="cloudUrl" type="url" placeholder="https://your-life-ledger.example.com" />
+        <p id="cloudError" role="alert" hidden></p>
+        <div class="actions">
+          <button id="openCloud" class="primary" type="button"></button>
+          <button id="forgetCloud" class="secondary" type="button"></button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./launcher.js"></script>
+  </body>
+</html>

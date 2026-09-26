@@ -1,6 +1,6 @@
 {
   "name": "life-ledger-deep-review",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "A calm, multilingual, local-first habit tracker and deep-review PWA.",
   "private": true,
   "type": "module",
@@ -22,7 +22,11 @@
     "check": "node --check public/app.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/index.js && node scripts/check.mjs",
     "test": "npm run check && node --test tests/*.test.mjs",
     "db:migrations:apply": "wrangler d1 migrations apply DB --remote",
-    "deploy": "npm run db:migrations:apply && wrangler deploy"
+    "deploy": "npm run db:migrations:apply && wrangler deploy",
+    "desktop:prepare": "node scripts/desktop-prepare.mjs",
+    "desktop:dev": "npm run desktop:prepare && tauri dev",
+    "desktop:check": "node --test tests/desktop-*.test.mjs",
+    "desktop:build": "tauri build"
   },
   "cloudflare": {
     "bindings": {
@@ -40,6 +44,8 @@
     "jose": "^6.1.0"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^2.8.0",
+    "@tauri-apps/cli": "^2.8.5",
     "esbuild": "^0.25.9",
     "wrangler": "^4.122.0"
   },

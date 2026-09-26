@@ -1,0 +1,75 @@
+name: macOS Desktop Verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "desktop/**"
+      - "src-tauri/**"
+      - "public/app.js"
+      - "scripts/desktop-prepare.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "docs/macos-desktop.md"
+      - "tests/desktop-*.test.mjs"
+      - ".github/workflows/macos-desktop.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  macos-desktop:
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run web test suite
+        run: npm test
+
+      - name: Run desktop checks
+        run: npm run desktop:check
+
+      - name: Prepare desktop assets
+        run: npm run desktop:prepare
+
+      - name: Run Tauri Rust tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+      - name: Build unsigned macOS desktop bundles
+        run: npm run desktop:build
+
+      - name: Package app bundle zip
+        run: |
+          cd "src-tauri/target/release/bundle/macos"
+          ditto -c -k --sequesterRsrc --keepParent "Life Ledger Deep Review.app" "Life-Ledger-Deep-Review.app.zip"
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: life-ledger-macos-desktop-bundles
+          path: |
+            src-tauri/target/release/bundle/dmg/*.dmg
+            src-tauri/target/release/bundle/macos/Life-Ledger-Deep-Review.app.zip
+          if-no-files-found: error

@@ -1160,7 +1160,11 @@ let calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
 const previewName = new URLSearchParams(location.search).get("local-preview");
 const dayPlanPrototype = previewName === "day-plan-calendar-v1";
-const requestedMode = new URLSearchParams(location.search).get("mode");
+const searchParams = new URLSearchParams(location.search);
+const requestedMode = searchParams.get("mode");
+const desktopMode = searchParams.get("desktop");
+const desktopBridge = desktopMode === "tauri-local" ? window.LifeLedgerDesktopBridge : null;
+const desktopNativeBackup = Boolean(desktopBridge?.saveBackupJson && desktopBridge?.openBackupJson);
 const deploymentMode = requestedMode === "local" || requestedMode === "cloudflare"
   ? requestedMode
   : window.LIFE_LEDGER_DEPLOYMENT_MODE || "local";
@@ -3879,6 +3883,16 @@ function triggerFileDownload(blob, filename) {
   // WebKit may cancel a download when a Blob URL is revoked immediately.
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
+async function saveBackupBlob(blob, filename) {
+  if (!desktopNativeBackup || blob.type !== "application/json") {
+    triggerFileDownload(blob, filename);
+    showToast(tr("toast.exported"));
+    return;
+  }
+  const contents = await blob.text();
+  const result = await desktopBridge.saveBackupJson({ filename, contents });
+  if (!result?.cancelled) showToast(tr("toast.exported"));
+}
 async function downloadExport(event) {
   event.preventDefault();
   const scope = $('#exportForm input[name="exportScope"]:checked').value;
@@ -3894,11 +3908,11 @@ async function downloadExport(event) {
       const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
       const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
       triggerFileDownload(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
+      showToast(tr("toast.exported"));
     } else {
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-      triggerFileDownload(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
+      await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
     }
-    showToast(tr("toast.exported"));
   } catch (error) {
     console.warn("Backup export failed", error);
     window.alert(error?.message === "photo-backup-month-only" ? tr("backup.mediaOnlyMonth") : tr("backup.mediaInvalid"));
@@ -4823,10 +4837,29 @@ function bindEvents() {
   $$('[data-install-app]').forEach(button => button.addEventListener("click", installApp));
   $$('#exportForm input[name="exportScope"]').forEach(input => input.addEventListener("change", updateExportFields));
   $("#exportForm").addEventListener("submit", downloadExport);
-  $("#chooseImportFile").addEventListener("click", () => $("#importFile").click());
+  $("#chooseImportFile").addEventListener("click", async () => {
+    if (!desktopNativeBackup) {
+      $("#importFile").click();
+      return;
+    }
+    try {
+      const selected = await desktopBridge.openBackupJson();
+      if (!selected || selected.cancelled || !selected.contents) return;
+      const name = selected.name || `life-ledger-backup-${isoDate(new Date())}.json`;
+      const file = new File([selected.contents], name, { type: "application/json" });
+      await previewImportFile(file);
+    } catch (error) {
+      console.warn("Native backup import failed", error);
+      clearImportSelection();
+      $("#importError").textContent = String(error?.message || "").includes("file-too-large")
+        ? tr("backup.tooLarge")
+        : tr("backup.invalid");
+      $("#importError").hidden = false;
+    }
+  });
   $("#clearImportFile").addEventListener("click", () => {
     clearImportSelection();
-    $("#importFile").click();
+    if (!desktopNativeBackup) $("#importFile").click();
   });
   $("#importFile").addEventListener("change", event => previewImportFile(event.target.files?.[0]));
   $("#restoreImport").addEventListener("click", restorePendingImport);

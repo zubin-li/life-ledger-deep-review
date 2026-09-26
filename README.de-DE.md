@@ -14,6 +14,9 @@
     <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&amp;lang=de">
       <img src="https://img.shields.io/badge/Jetzt_verwenden-Nur_lokal-1f6f54?style=for-the-badge" alt="Life Ledger jetzt im lokalen Modus verwenden" />
     </a>
+    <a href="https://github.com/zubin-li/life-ledger-deep-review/releases/latest">
+      <img src="https://img.shields.io/badge/Download-macOS_Apple_Silicon-1d1d1f?style=for-the-badge&amp;logo=apple&amp;logoColor=white" alt="Apple-Silicon-App für macOS herunterladen" />
+    </a>
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
       <img src="https://deploy.workers.cloudflare.com/button" alt="Auf Cloudflare bereitstellen" />
     </a>
@@ -100,6 +103,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Benutzeroberfläche auf Englisch, vereinfachtem Chinesisch und Deutsch
 - Helles, dunkles und systemabhängiges Erscheinungsbild
 - Installierbare PWA mit offline verfügbarem App-Grundgerüst
+- Optionale Apple-Silicon-App für macOS mit lokalem und verbundenem Cloud-Modus
 - Optionale geräteübergreifende Synchronisierung über Cloudflare Access und D1
 - Optionaler schreibgeschützter Google-Kalender aus bis zu zwei Konten
 - Stimmungsfarbiger Kalender und optionale Erledigungs-Heatmap
@@ -109,15 +113,16 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
 <details>
-<summary><strong>Was Life Ledger 1.2 gebracht hat</strong></summary>
+<summary><strong>Was Life Ledger 1.3 gebracht hat</strong></summary>
 
 - Ein ausgewähltes Datum bewegt Fortschritt, Gewohnheiten, Stimmung, Termine und Reflexion gemeinsam.
 - Bis zu zwei schreibgeschützte Google-Kalenderkonten liefern Tageskontext, ohne externe Termine zu verändern.
 - Stimmungsfarben, Erledigungs-Heatmap, komprimierte Fotoerinnerungen und Zeitleiste machen Muster leichter sichtbar.
 - Kalender und Reflexion teilen sich eine ruhigere Heute-Ansicht; Focus liegt im Reflexionskarussell.
 - Schnell aufnehmen erzeugt einen bearbeitbaren KI-Entwurf, ohne Gewohnheiten, Stimmung oder Ziele still zu verändern.
+- Die optionale Apple-Silicon-App für macOS bleibt vollständig lokal oder öffnet eine selbst kontrollierte Life-Ledger-Bereitstellung; im lokalen Modus stehen native JSON-Sicherungsdialoge bereit.
 
-[Vollständige Versionshinweise lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.1)
+[Vollständige Versionshinweise lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.3.0)
 
 </details>
 
@@ -158,6 +163,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 | Nur lokale PWA | Ein Gerät, keine Einrichtung | Nein | Kostenlos |
 | Cloudflare + D1 | Internationales Self-Hosting | Nein | Kostenloses Kontingent |
 | Tencent CloudBase | Zugriff und private Synchronisierung in Festlandchina | Für persönliche Tests nicht nötig | Kostenlose Umgebung |
+| macOS-Desktop-MVP (Tauri) | Native Mac-Hülle mit Lokal/Cloud-Auswahl | Nein | Lokaler Build |
 
 ### 1. Jetzt verwenden – ohne Einrichtung
 
@@ -231,6 +237,17 @@ Das Repository enthält:
 Einmalig sind drei Sicherheitseinstellungen in der Konsole erforderlich: eine kostenlose Dokumentdatenbank-Umgebung anlegen, E-Mail-OTP aktivieren und `life_ledger_states` mit der Berechtigung **Nur der Ersteller darf lesen und schreiben** erstellen. Diese Schritte dürfen nicht durch Browsercode automatisiert werden, weil dafür Administrator-Zugangsdaten offengelegt werden müssten.
 
 Die vollständige Anleitung steht im [CloudBase-Leitfaden für Festlandchina](docs/cloudbase-china.md); eine ausführliche chinesische Fassung gibt es [hier](docs/cloudbase-china.zh-CN.md).
+
+### 6. macOS-Desktop-MVP (optionale Hülle)
+
+Das Repository enthält jetzt eine erste Tauri-v2-macOS-Hülle mit zwei klaren Optionen:
+
+- **Lokal auf diesem Mac**: gebündeltes Frontend, kein Konto, lokale Speicherung.
+- **Mit Cloud verbinden**: öffnet nur deine eigene validierte Life-Ledger-Deployment-URL.
+
+Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern. Das ist Datei-Backup, keine Live-Synchronisierung, Konfliktauflösung oder automatische Zwei-Wege-Synchronisierung.
+
+Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
 
 ## Datenhoheit
 

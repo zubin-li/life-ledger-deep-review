@@ -14,6 +14,9 @@
     <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=zh">
       <img src="https://img.shields.io/badge/立即使用-仅本机保存-1f6f54?style=for-the-badge" alt="立即使用 Life Ledger 仅本机版" />
     </a>
+    <a href="https://github.com/zubin-li/life-ledger-deep-review/releases/latest">
+      <img src="https://img.shields.io/badge/下载-macOS_Apple芯片-1d1d1f?style=for-the-badge&amp;logo=apple&amp;logoColor=white" alt="下载 Apple 芯片 macOS 应用" />
+    </a>
     <a href="docs/cloudbase-china.zh-CN.md">
       <img src="https://img.shields.io/badge/Deploy_to_CloudBase-006EFF?style=for-the-badge&logo=tencentcloud&logoColor=white" alt="Deploy to CloudBase" />
     </a>
@@ -104,6 +107,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 英文、简体中文和德语界面
 - 浅色、深色和跟随系统模式
 - 可安装 PWA 与离线应用外壳
+- 可选的 Apple Silicon macOS 应用，支持纯本机与连接自有云端两种模式
 - 可选的 Cloudflare Access + D1 跨设备同步
 - 可选的只读 Google 日历，最多连接两个账号
 - 心情颜色日历与可切换的完成度热力图
@@ -113,15 +117,16 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 面向电脑与手机的响应式 Apple 风格界面
 
 <details>
-<summary><strong>Life Ledger 1.2 已经带来了什么</strong></summary>
+<summary><strong>Life Ledger 1.3 已经带来了什么</strong></summary>
 
 - 选择一个日期，顶部进度、习惯、心情、日程与复盘会一起切换。
 - 最多连接两个只读 Google 日历账号，在不修改外部日程的前提下补充当天背景。
 - 心情颜色、完成度热力图、压缩照片记忆与时间轴，让长期变化更容易被看见。
 - 日历与复盘共享更安静的今日布局，专注计时收进复盘轮播。
 - 快速记录生成可编辑的 AI 整理草稿，不会静默修改习惯、心情或目标。
+- 可选的 Apple Silicon macOS 应用既可以完全本机使用，也可以打开自己部署的 Life Ledger；本机模式提供原生 JSON 备份窗口。
 
-[查看完整版本说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.1)
+[查看完整版本说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.3.0)
 
 </details>
 
@@ -162,6 +167,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 | 仅本机 PWA | 单设备、无需配置 | 否 | 0 元 |
 | Cloudflare + D1 | 国际网络环境下自托管 | 否 | 免费额度 |
 | 腾讯云 CloudBase | 中国大陆访问与跨设备同步 | 个人体验不需要 | 免费体验环境 |
+| macOS 桌面 MVP（Tauri） | 原生 Mac 外壳 + 本机/云端二选一 | 否 | 本地构建 |
 
 ### 1. 立即使用——无需配置
 
@@ -235,6 +241,17 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 首次只需在自己的控制台完成三项安全配置：创建免费文档数据库环境、开启邮箱验证码、创建 `life_ledger_states` 并选择**仅创建者可读写**。这三步涉及账户管理权限，不能安全地放到网页代码中自动执行，否则就必须暴露管理员密钥。
 
 请按[中国大陆 CloudBase 完整部署指南](docs/cloudbase-china.zh-CN.md)操作；英文说明见 [Mainland China deployment guide](docs/cloudbase-china.md)。
+
+### 6. macOS 桌面 MVP（可选外壳）
+
+仓库已包含首个 Tauri v2 的 macOS 外壳，提供两个明确入口：
+
+- **本机模式**：打开内置前端，不需要账号，保持本地优先存储。
+- **连接云端**：只打开你自己填写并通过校验的 Life Ledger 部署地址。
+
+在桌面本机窗口中，JSON 备份导入/导出使用 macOS 原生文件对话框，可直接选择 iCloud Drive 文件夹。这里的能力是“文件备份转移”，不是实时同步、冲突合并或自动双向同步。
+
+构建命令与未签名应用的 Gatekeeper 处理见 [docs/macos-desktop.md](docs/macos-desktop.md)。
 
 ## 数据归属
 
