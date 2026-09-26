@@ -4,6 +4,20 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-26
+
+### Added
+
+- Added a first macOS Tauri v2 desktop MVP shell with a localized launcher that separates **Local on this Mac** from **Connected cloud** and keeps remote windows outside local IPC permissions.
+- Added native macOS JSON backup save/open dialogs for the local desktop window as a progressive enhancement, while preserving browser/PWA download and file-input behavior unchanged.
+- Added desktop build scripts (`desktop:prepare`, `desktop:dev`, `desktop:check`, `desktop:build`), Tauri capability checks, cloud URL validation tests, and desktop documentation.
+
+### Security and compatibility
+
+- Restricted connected cloud windows to normal HTTPS URLs (plus localhost development) and kept them outside the native IPC capability list.
+- Limited native JSON imports to 10 MiB and preserved the existing validated backup preview and restore flow.
+- Added a GitHub-hosted Apple Silicon verification workflow that tests and builds unsigned `.app` and `.dmg` artifacts without using a contributor's Mac.
+
 ## [1.2.1] - 2026-09-20
 
 ### Improved

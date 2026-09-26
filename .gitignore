@@ -10,3 +10,13 @@ coverage/
 test-results/
 playwright-report/
 *.log
+desktop-dist/
+src-tauri/target/
+src-tauri/gen/
+src-tauri/icons/android/
+src-tauri/icons/ios/
+src-tauri/icons/Square*.png
+src-tauri/icons/StoreLogo.png
+src-tauri/icons/64x64.png
+src-tauri/icons/icon.ico
+src-tauri/icons/icon.png

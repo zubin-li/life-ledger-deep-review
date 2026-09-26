@@ -14,6 +14,9 @@
     <a href="https://zubin-li.github.io/life-ledger-deep-review/?mode=local&amp;lang=en">
       <img src="https://img.shields.io/badge/Use_now-Local_only-1f6f54?style=for-the-badge" alt="Use Life Ledger now in local-only mode" />
     </a>
+    <a href="https://github.com/zubin-li/life-ledger-deep-review/releases/latest">
+      <img src="https://img.shields.io/badge/Download-macOS_Apple_Silicon-1d1d1f?style=for-the-badge&amp;logo=apple&amp;logoColor=white" alt="Download the Apple Silicon macOS app" />
+    </a>
     <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/zubin-li/life-ledger-deep-review">
       <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
     </a>
@@ -100,6 +103,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - English, Simplified Chinese, and German interfaces
 - Light, dark, and system appearance
 - Installable PWA with offline app shell
+- Optional Apple Silicon macOS app with local and connected-cloud modes
 - Optional Cloudflare Access + D1 cross-device synchronization
 - Optional read-only Google Calendar context from up to two accounts
 - Mood-colored calendar days and an optional completion heatmap
@@ -109,15 +113,16 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Responsive Apple-inspired interface for desktop and mobile
 
 <details>
-<summary><strong>What shipped in Life Ledger 1.2</strong></summary>
+<summary><strong>What shipped in Life Ledger 1.3</strong></summary>
 
 - One selected date now moves the hero, habits, mood, schedule, and reflection together.
 - Up to two read-only Google Calendar accounts can provide daily context without editing external events.
 - Mood colors, a completion heatmap, compressed photo memories, and a chronological Timeline make patterns easier to revisit.
 - Calendar and reflection share a calmer Today layout, with Focus tucked into the reflection carousel.
 - Quick record produces an editable AI-organized draft without silently changing habits, mood, or goals.
+- The optional Apple Silicon macOS app can stay entirely local or open a Life Ledger deployment you control, with native JSON backup dialogs in local mode.
 
-[Read the complete release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.2.1)
+[Read the complete release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.3.0)
 
 </details>
 
@@ -158,6 +163,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 | Local-only PWA | One device, no setup | No | Free |
 | Cloudflare + D1 | International self-hosting | No | Free tier |
 | Tencent CloudBase | Mainland China access and private sync | No for personal evaluation | Free environment |
+| macOS desktop MVP (Tauri) | Native Mac app shell with local/cloud choice | No | Local build |
 
 ### 1. Use now — no setup
 
@@ -218,6 +224,17 @@ See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/clou
 ### 5. Deploy with Tencent CloudBase in mainland China
 
 CloudBase is the recommended mainland-China path. It uses Tencent-hosted static files, email OTP authentication, and a creator-only document collection in **your own** CloudBase environment.
+
+### 6. macOS desktop MVP (optional shell)
+
+The repository now includes a first Tauri v2 macOS shell with two explicit choices:
+
+- **Local on this Mac**: bundled frontend, no account, local-first storage.
+- **Connected cloud**: open only your own validated Life Ledger deployment URL.
+
+JSON backup in the local desktop window uses native macOS file dialogs, including iCloud Drive folder selection as file backup. This is backup transfer, not live sync or conflict resolution.
+
+Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 
