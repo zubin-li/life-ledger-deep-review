@@ -5,7 +5,14 @@ import WidgetSharedKit
 /// templating — `scripts/build-widget.sh` substitutes `LifeLedgerAppGroupIdentifier` in
 /// `Info.plist` from the `APP_GROUP_ID` environment variable at packaging time. The fallback
 /// below only matters for previews/local iteration before that substitution has ever run.
-enum WidgetConfiguration {
+///
+/// Deliberately named `LifeLedgerWidgetConfig`, not `WidgetConfiguration`: WidgetKit/SwiftUI
+/// already declare a protocol named `WidgetConfiguration` (what `Widget.body` must return), and
+/// a same-module type of that exact name shadows it, so `some WidgetConfiguration` in
+/// `LifeLedgerWidgetBundle.swift` resolves to this type instead of the framework protocol —
+/// which fails to compile ("a 'some' type must specify only Any...") and makes the widget not
+/// conform to `Widget`. Keep this name unique from any WidgetKit/SwiftUI symbol.
+enum LifeLedgerWidgetConfig {
     static let appGroupIdentifier: String = {
         (Bundle.main.object(forInfoDictionaryKey: "LifeLedgerAppGroupIdentifier") as? String)
             .flatMap { $0.isEmpty ? nil : $0 }

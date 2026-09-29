@@ -137,6 +137,45 @@ test("LifeLedgerWidgetExtension's target compiles and links with -application-ex
   );
 });
 
+test("no project type shadows the WidgetKit/SwiftUI WidgetConfiguration protocol", () => {
+  // Regression guard: a same-module `enum`/`struct`/`class`/`protocol` literally named
+  // `WidgetConfiguration` shadows WidgetKit's own `WidgetConfiguration` protocol, so
+  // `var body: some WidgetConfiguration` in LifeLedgerWidgetBundle.swift silently resolves to
+  // the project's type instead of the framework one — which fails to compile ("a 'some' type
+  // must specify only Any...") and makes the Widget not conform to `Widget`. This previously
+  // happened for real (first GitHub macOS-14 compile) via an `enum WidgetConfiguration` in what
+  // is now LifeLedgerWidgetConfig.swift.
+  const extensionSourceFiles = [
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Color+Hex.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Formatting.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/LifeLedgerWidgetBundle.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/LifeLedgerWidgetConfig.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Provider.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/ToggleHabitIntent.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Views/MediumWidgetView.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Views/SmallWidgetView.swift",
+  ];
+  const declarationPattern = /\b(enum|struct|class|protocol)\s+WidgetConfiguration\b/;
+  for (const path of extensionSourceFiles) {
+    const source = read(path);
+    assert.doesNotMatch(source, declarationPattern, `${path} must not declare a type literally named WidgetConfiguration`);
+  }
+  // The project's own build-time config type must exist, under its unique name, and be what the
+  // views/provider/intent actually use.
+  const configSource = read("src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/LifeLedgerWidgetConfig.swift");
+  assert.match(configSource, /enum LifeLedgerWidgetConfig \{/);
+  const bundleSource = read("src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/LifeLedgerWidgetBundle.swift");
+  assert.match(bundleSource, /var body: some WidgetConfiguration \{/, "Widget.body must still resolve to WidgetKit's own WidgetConfiguration protocol");
+  for (const path of [
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Provider.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/ToggleHabitIntent.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Views/SmallWidgetView.swift",
+    "src-tauri/widget/LifeLedgerWidgetExtension/Sources/LifeLedgerWidgetExtension/Views/MediumWidgetView.swift",
+  ]) {
+    assert.match(read(path), /LifeLedgerWidgetConfig\./, `${path} must reference LifeLedgerWidgetConfig, not the removed WidgetConfiguration enum`);
+  }
+});
+
 test("serde_json is a direct dependency (already present transitively; no new crate added)", () => {
   assert.match(cargoToml, /serde_json = "1"/);
   const lockfile = read("src-tauri/Cargo.lock");

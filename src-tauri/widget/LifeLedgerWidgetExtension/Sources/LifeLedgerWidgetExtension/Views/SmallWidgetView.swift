@@ -8,7 +8,7 @@ import WidgetSharedKit
 struct SmallWidgetView: View {
     let entry: HabitEntry
 
-    private var snapshot: WidgetSnapshot { entry.snapshot ?? WidgetConfiguration.placeholderSnapshot }
+    private var snapshot: WidgetSnapshot { entry.snapshot ?? LifeLedgerWidgetConfig.placeholderSnapshot }
 
     var body: some View {
         VStack(spacing: 6) {

@@ -6,7 +6,7 @@ struct MediumWidgetView: View {
     let entry: HabitEntry
     private let maxVisibleRows = 4
 
-    private var snapshot: WidgetSnapshot { entry.snapshot ?? WidgetConfiguration.placeholderSnapshot }
+    private var snapshot: WidgetSnapshot { entry.snapshot ?? LifeLedgerWidgetConfig.placeholderSnapshot }
 
     var body: some View {
         HStack(alignment: .top, spacing: 14) {

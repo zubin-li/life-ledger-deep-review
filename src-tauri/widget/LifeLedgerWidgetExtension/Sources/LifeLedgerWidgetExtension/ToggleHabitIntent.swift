@@ -37,7 +37,7 @@ struct ToggleHabitIntent: AppIntent {
         // Best-effort: if the shared container can't be written to (e.g. entitlement
         // misconfiguration), fail quietly rather than crash the widget's host process — the
         // toggle simply won't take effect and the row's next render reflects that.
-        _ = try? GroupContainer.writePendingMutations(groupIdentifier: WidgetConfiguration.appGroupIdentifier) { queue in
+        _ = try? GroupContainer.writePendingMutations(groupIdentifier: LifeLedgerWidgetConfig.appGroupIdentifier) { queue in
             MutationQueue.upsert(mutation, into: &queue)
         }
         // No manual WidgetCenter.reloadTimelines() call: per Apple's WidgetKit interactivity

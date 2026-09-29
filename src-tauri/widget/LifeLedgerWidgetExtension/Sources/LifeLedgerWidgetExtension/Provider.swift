@@ -4,13 +4,13 @@ import WidgetSharedKit
 struct HabitEntry: TimelineEntry {
     let date: Date
     /// `nil` only means "the app has never published a snapshot yet" (fresh install before
-    /// first launch) — the view falls back to `WidgetConfiguration.placeholderSnapshot`.
+    /// first launch) — the view falls back to `LifeLedgerWidgetConfig.placeholderSnapshot`.
     let snapshot: WidgetSnapshot?
 }
 
 struct HabitTimelineProvider: TimelineProvider {
     func placeholder(in context: Context) -> HabitEntry {
-        HabitEntry(date: Date(), snapshot: WidgetConfiguration.placeholderSnapshot)
+        HabitEntry(date: Date(), snapshot: LifeLedgerWidgetConfig.placeholderSnapshot)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (HabitEntry) -> Void) {
@@ -29,10 +29,10 @@ struct HabitTimelineProvider: TimelineProvider {
     }
 
     private func currentEntry() -> HabitEntry {
-        guard let base = GroupContainer.readSnapshot(groupIdentifier: WidgetConfiguration.appGroupIdentifier) else {
+        guard let base = GroupContainer.readSnapshot(groupIdentifier: LifeLedgerWidgetConfig.appGroupIdentifier) else {
             return HabitEntry(date: Date(), snapshot: nil)
         }
-        let pending = GroupContainer.readPendingMutations(groupIdentifier: WidgetConfiguration.appGroupIdentifier)
+        let pending = GroupContainer.readPendingMutations(groupIdentifier: LifeLedgerWidgetConfig.appGroupIdentifier)
         let merged = EffectiveSnapshot.merge(snapshot: base, pending: pending)
         return HabitEntry(date: Date(), snapshot: merged)
     }
