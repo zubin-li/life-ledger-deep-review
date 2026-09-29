@@ -20,3 +20,6 @@ src-tauri/icons/StoreLogo.png
 src-tauri/icons/64x64.png
 src-tauri/icons/icon.ico
 src-tauri/icons/icon.png
+src-tauri/widget/build/
+src-tauri/widget/*/.build/
+src-tauri/widget/*/.swiftpm/

@@ -247,6 +247,10 @@ Das Repository enthält jetzt eine erste Tauri-v2-macOS-Hülle mit zwei klaren O
 
 Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern. Das ist Datei-Backup, keine Live-Synchronisierung, Konfliktauflösung oder automatische Zwei-Wege-Synchronisierung.
 
+Die lokale Desktop-App kann die heutigen Gewohnheiten außerdem an ein echtes natives macOS-WidgetKit-Widget veröffentlichen (Schreibtisch oder Mitteilungszentrale), mit einer nativen Checkbox, die auch bei geschlossener App funktioniert. Das Widget zeigt niemals Tagebuchnotizen oder Stimmungsgründe und verändert nicht die Sicherheitsgrenze des verbundenen Cloud-Fensters. Architektur und Build-Schritte stehen in [docs/macos-widget.md](docs/macos-widget.md) (Englisch).
+
+Die Hülle zeigt die App selbst mit nativem macOS-Look: echte Ampel-Fensterknöpfe sitzen in einer transparenten Titelleiste, die Seitenleiste liegt randständig ohne Web-Karten-Rahmen, und ein dezentes **Lokaler Mac** / **Verbundene Cloud**-Statuslabel ersetzt den PWA-Installationshinweis, der außerhalb des Browsers verborgen bleibt. Standard-Tastenkürzel funktionieren außerhalb editierbarer Felder – Cmd+1–5 für Heute/Woche/Zeitleiste/Rückblick/Gewohnheiten, Cmd+B zum Ein-/Ausblenden der Seitenleiste, Cmd+, für die Gewohnheiten-Einstellungen und Cmd+Umschalt+E für Sicherung/Export – ohne ein Tastenkürzel der öffentlichen PWA zu verändern. Der Launcher ist jetzt eine kompakte native Arbeitsbereichsauswahl, und Fensterposition sowie -größe werden je Fenster über Neustarts hinweg gemerkt.
+
 Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
 
 ## Datenhoheit

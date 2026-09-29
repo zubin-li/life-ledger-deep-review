@@ -2034,6 +2034,7 @@ version = "1.3.0"
 dependencies = [
  "rfd",
  "serde",
+ "serde_json",
  "tauri",
  "tauri-build",
  "url",

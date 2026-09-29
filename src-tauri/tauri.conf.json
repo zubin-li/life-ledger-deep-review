@@ -25,7 +25,12 @@
       "icons/icon.icns"
     ],
     "macOS": {
-      "minimumSystemVersion": "12.0"
+      "minimumSystemVersion": "12.0",
+      "entitlements": "./widget/build/_plists/App.entitlements",
+      "files": {
+        "PlugIns/LifeLedgerWidgetExtension.appex": "./widget/build/PlugIns/LifeLedgerWidgetExtension.appex",
+        "Resources/life-ledger-widget-reload": "./widget/build/Resources/life-ledger-widget-reload"
+      }
     }
   }
 }

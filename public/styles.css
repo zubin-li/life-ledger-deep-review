@@ -18,6 +18,11 @@
   --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Source Sans 3", "Noto Sans SC", sans-serif;
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+  --duration-slow: 300ms;
+  --duration-exit: 130ms;
+  --desktop-inset: 38px;
   --mobile-nav-safe-bottom: env(safe-area-max-inset-bottom, env(safe-area-inset-bottom, 0px));
 }
 
@@ -30,9 +35,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 .grain { position: fixed; inset: 0; pointer-events: none; opacity: .06; z-index: 20; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
 .app-shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; transition: grid-template-columns 280ms var(--ease-enter); }
+html.motion-off .app-shell { transition: none; }
 .sidebar { position: sticky; top: 16px; height: calc(100vh - 32px); margin: 16px 0 16px 16px; padding: 28px 20px 20px; display: flex; flex-direction: column; background: linear-gradient(155deg, rgba(41,49,44,.96), rgba(25,29,27,.97)); color: #f7f7f7; border: 1px solid rgba(255,255,255,.12); border-radius: 30px; box-shadow: 0 24px 70px rgba(21,25,23,.18); backdrop-filter: blur(28px) saturate(145%); }
 .sidebar-toggle { position: absolute; z-index: 2; top: 29px; right: 14px; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 1px solid rgba(255,255,255,.08); border-radius: 11px; background: rgba(255,255,255,.055); color: rgba(255,255,255,.68); box-shadow: inset 0 1px 0 rgba(255,255,255,.055); backdrop-filter: blur(18px); transition: color 160ms ease, background-color 160ms ease, transform 220ms var(--ease-enter); }
 .sidebar-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: transform 240ms var(--ease-enter); }
+html.motion-off .sidebar-toggle svg { transition: none; }
 .brand { display: flex; align-items: center; gap: 13px; color: inherit; text-decoration: none; padding: 0 42px 34px 8px; }
 .brand-mark { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.24); display: grid; place-items: center; background: linear-gradient(145deg, #ffb34f, #df7e2f); color: #fff; font-family: var(--font-display); border-radius: 13px; box-shadow: 0 8px 22px rgba(184,107,61,.28), inset 0 1px 0 rgba(255,255,255,.34); }
 .brand strong, .brand small { display: block; }
@@ -75,6 +82,8 @@ body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
 .save-mode.cloud i { background: var(--sage); box-shadow: 0 0 0 4px rgba(111,143,125,.1); }
 .save-mode.syncing i { animation: syncDot 800ms ease infinite alternate; }
 @keyframes syncDot { to { opacity: .35; transform: scale(.75); } }
+.desktop-mode-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font: 700 9px var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--sage); background: color-mix(in srgb, var(--sage) 16%, transparent); border: 1px solid color-mix(in srgb, var(--sage) 26%, transparent); }
+.desktop-mode-badge[hidden] { display: none; }
 .language-switcher { display: grid; grid-template-columns: auto auto; align-items: center; gap: 7px; min-height: 42px; padding: 4px 10px; border: 1px solid rgba(255,255,255,.62); border-radius: 15px; background: rgba(255,255,255,.64); box-shadow: 0 8px 24px rgba(29,29,31,.06), inset 0 1px 0 rgba(255,255,255,.92); backdrop-filter: blur(18px) saturate(150%); transition: border-color 180ms ease, background-color 180ms ease, transform 160ms var(--ease-enter), box-shadow 180ms ease; }
 .language-switcher:focus-within { border-color: color-mix(in srgb, var(--amber) 70%, var(--line)); background: var(--card); }
 .language-flag { font-size: 16px; line-height: 1; filter: saturate(.9); }
@@ -89,7 +98,8 @@ body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
 .icon-button { width: 38px; height: 38px; padding: 0; display: grid; place-items: center; border-radius: 13px; border: 1px solid var(--line); background: rgba(255,255,255,.42); color: inherit; transition: transform 140ms var(--ease-enter), background-color 160ms ease, box-shadow 160ms ease; }
 .cloud-account-button[hidden] { display: none !important; }
 .view { display: none; opacity: 0; transform: translateY(10px); }
-.view.active { display: block; animation: viewIn 320ms var(--ease-enter) forwards; }
+.view.active { display: block; animation: viewIn var(--duration-slow) var(--ease-enter) forwards; }
+html.motion-off .view.active { animation: none; opacity: 1; transform: none; }
 @keyframes viewIn { to { opacity: 1; transform: translateY(0); } }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(280px, .8fr); gap: 18px; }
 .hero-card, .mood-card, .panel, .calendar-card, .daily-goals-card { border: 1px solid rgba(255,255,255,.66); background: var(--card); border-radius: 26px; box-shadow: 0 18px 55px rgba(29,29,31,.075), inset 0 1px 0 rgba(255,255,255,.88); backdrop-filter: blur(24px) saturate(145%); }
@@ -335,6 +345,7 @@ dialog { border: 0; border-radius: 20px; background: #f9f6ee; color: var(--ink);
 #habitDialog { max-height: min(900px, calc(100dvh - 24px)); overflow: auto; }
 dialog::backdrop { background: rgba(6,18,14,.45); backdrop-filter: blur(3px); }
 dialog[open] { animation: dialogIn 250ms var(--ease-enter); }
+html.motion-off dialog[open] { animation: none; }
 @keyframes dialogIn { from { opacity: 0; transform: scale(.95) translateY(8px); } }
 dialog form > header, dialog form > footer { padding: 23px 26px; display: flex; justify-content: space-between; align-items: center; }
 dialog form > header { border-bottom: 1px solid var(--line); }
@@ -1018,6 +1029,19 @@ html[data-theme="dark"] .pwa-install-button.ready { color: #9bc2ab; border-color
 .mobile-install-button.ready { border-color: color-mix(in srgb, var(--sage) 55%, var(--line)); }
 @media (display-mode: standalone) { .pwa-install-button, .mobile-install-button { display: none !important; } }
 
+/* Desktop shell (Tauri) — full-bleed, edge-attached chrome for the native macOS app.
+   Scoped entirely to html[data-desktop]; unset in normal web/PWA mode. */
+html[data-desktop] body { padding-top: var(--desktop-inset); }
+html[data-desktop] .app-shell { min-height: calc(100vh - var(--desktop-inset)); }
+html[data-desktop] .sidebar { position: sticky; top: 0; height: calc(100vh - var(--desktop-inset)); margin: 0; border-radius: 0; box-shadow: none; border-width: 0 1px 0 0; }
+html[data-desktop] .main-content { max-width: none; margin: 0; padding: 20px clamp(20px, 3vw, 48px) 48px; }
+html[data-desktop] .topbar { margin-bottom: 28px; }
+html[data-desktop] [data-install-app] { display: none !important; }
+html[data-desktop] .icon-button { width: 44px; height: 44px; }
+html[data-desktop] .nav-item { min-height: 44px; }
+html[data-desktop] .primary-button,
+html[data-desktop] .secondary-button { min-height: 44px; }
+
 @media (min-width: 761px) {
   body.sidebar-collapsed .app-shell { grid-template-columns: 88px minmax(0, 1fr); }
   body.sidebar-collapsed .sidebar { padding-inline: 11px; }
@@ -1668,6 +1692,13 @@ html[data-theme="dark"] .setting-row.habit-dragging { box-shadow: 0 20px 46px rg
 .habit-reminder-card:active .habit-reminder-arrow { transform: translateX(3px); }
 html[data-theme="dark"] .habit-reminder-card { border-color: var(--edge-soft); background: var(--surface-1); }
 html[data-theme="dark"] .habit-reminder-icon { background: rgba(155,194,171,.1); color: #9bc2ab; }
+.widget-status-card { margin: 0 0 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+.widget-status-card[hidden] { display: none; }
+.widget-status-copy { display: grid; gap: 4px; }
+.widget-status-copy strong { font-size: 13px; }
+.widget-status-copy p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.widget-status-copy small { color: var(--sage); font-size: 10px; font-weight: 600; }
+html[data-theme="dark"] .widget-status-card { border-color: var(--edge-soft); background: var(--surface-1); }
 
 /* Day Plan: one calm, read-only schedule surface. */
 @media (min-width: 1101px) {

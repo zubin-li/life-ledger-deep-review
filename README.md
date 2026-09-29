@@ -234,6 +234,10 @@ The repository now includes a first Tauri v2 macOS shell with two explicit choic
 
 JSON backup in the local desktop window uses native macOS file dialogs, including iCloud Drive folder selection as file backup. This is backup transfer, not live sync or conflict resolution.
 
+The local desktop app can also publish today's habits to a real native macOS WidgetKit widget on the desktop or Notification Center — with a native checkbox that works even when the app is closed. It never shows journal notes or mood reasons, and it never touches the connected-cloud window's security boundary. See [docs/macos-widget.md](docs/macos-widget.md) for the architecture and build steps.
+
+The shell presents the app itself with native macOS chrome: real traffic lights sit in a transparent titlebar, the sidebar is edge-attached with no embedded-card framing, and an unobtrusive **Local Mac** / **Connected Cloud** status label replaces the PWA install prompt, which stays hidden outside the browser. Standard shortcuts work outside editable fields — Cmd+1–5 for Today/Week/Timeline/Review/Habits, Cmd+B to toggle the sidebar, Cmd+, for Habits Settings, and Cmd+Shift+E for backup/export — without changing any shortcut in the public PWA. The launcher is a compact native workspace chooser, and window position and size are remembered per window across launches.
+
 Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.

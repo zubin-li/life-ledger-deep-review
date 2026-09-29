@@ -23,6 +23,14 @@
         document.documentElement.dataset.theme = dark ? "dark" : "light";
       })();
     </script>
+    <script>
+      (() => {
+        const desktopMode = new URLSearchParams(location.search).get("desktop");
+        if (desktopMode === "tauri-local" || desktopMode === "tauri-cloud") {
+          document.documentElement.dataset.desktop = desktopMode;
+        }
+      })();
+    </script>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="./styles.css?v=1.3.0" />
     <title>Life Ledger · Deep Review</title>
@@ -42,7 +50,7 @@
         </a>
 
         <nav class="main-nav" aria-label="主导航">
-          <button class="nav-item active" data-view="today"><span class="nav-icon">▦</span><span class="nav-label">今日</span></button>
+          <button class="nav-item active" data-view="today" aria-current="page"><span class="nav-icon">▦</span><span class="nav-label">今日</span></button>
           <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
@@ -85,6 +93,7 @@
           </button>
           <div class="top-actions" id="mobileTopActions">
             <span class="save-mode" id="saveMode"><i></i><span>本地预览</span></span>
+            <span class="desktop-mode-badge" id="desktopModeBadge" hidden></span>
             <button class="secondary-button mobile-install-button" type="button" data-install-app>
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
               <span id="mobileInstallLabel">安装应用</span>
@@ -428,6 +437,13 @@
             <span class="habit-reminder-copy"><small id="habitReminderKicker">DAILY RHYTHM</small><strong id="habitReminderTitle">Daily review reminder</strong><span id="habitReminderStatus">Off</span></span>
             <span class="habit-reminder-arrow" aria-hidden="true">→</span>
           </button>
+          <div class="widget-status-card" id="widgetStatusCard" hidden>
+            <div class="widget-status-copy">
+              <strong id="widgetStatusTitle"></strong>
+              <p id="widgetStatusDesc"></p>
+              <small id="widgetStatusState"></small>
+            </div>
+          </div>
           <div class="habit-settings-list" id="habitSettingsList"></div>
         </section>
       </main>
@@ -785,6 +801,7 @@
     <script src="./voice-checkin.js?v=1.3.0"></script>
     <script src="./photo-memories.js?v=1.3.0"></script>
     <script src="./media-backup.js?v=1.3.0"></script>
+    <script type="module" src="./widget-contract.js?v=1.3.0"></script>
     <script src="./app.js?v=1.3.0"></script>
   </body>
 </html>

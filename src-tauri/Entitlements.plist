@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The main app is NOT sandboxed here (unchanged from before the widget): it is distributed
+	     directly (bundle.macOS.targets = ["app", "dmg"]), not through the Mac App Store, and
+	     enabling com.apple.security.app-sandbox would be an unrelated, much larger behavioral
+	     change to how the whole existing app accesses the filesystem/network. App Group
+	     container access does not require the host app to be sandboxed; only the widget
+	     extension (see LifeLedgerWidgetExtension.entitlements) needs that. -->
+
+	<!-- Substituted by scripts/build-widget.sh from the APP_GROUP_ID environment variable at
+	     packaging time; must exactly match the same key in the widget extension's entitlements,
+	     or the two processes will resolve to different (non-communicating) containers. -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>__APP_GROUP_ID__</string>
+	</array>
+</dict>
+</plist>

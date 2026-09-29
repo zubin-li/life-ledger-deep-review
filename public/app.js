@@ -65,6 +65,16 @@ const i18n = {
     profileName: "个人复盘空间",
     exportTitle: "导入与导出",
     pwa: { install: "安装为应用", ready: "可安装", manual: "请使用浏览器菜单中的“添加到主屏幕”或“安装应用”。", installed: "Life Ledger 已安装" },
+    desktop: { statusLocal: "本地 Mac", statusCloud: "已连接云端" },
+    widget: {
+      title: "桌面小组件",
+      desc: "在 Mac 桌面上查看今日习惯与完成度，并可直接勾选完成——无需打开应用。小组件不会显示日记、心情原因等私密内容。添加方法：右键点击桌面，选择“编辑小组件”，搜索“Life Ledger”。",
+      connected: "已连接 · 上次同步 {time}",
+      idle: "尚未同步",
+      error: "同步失败，将自动重试",
+      justNow: "刚刚",
+      minutesAgo: "{minutes} 分钟前",
+    },
     theme: { label: "外观", system: "跟随系统", light: "浅色模式", dark: "深色模式" },
     toolbar: { open: "展开工具", close: "收起工具", short: "工具" },
     yearSuffix: "年",
@@ -398,6 +408,16 @@ const i18n = {
     profileName: "Personal Ledger",
     exportTitle: "Import & export",
     pwa: { install: "Install app", ready: "Ready to install", manual: "Use your browser menu and choose Add to Home Screen or Install app.", installed: "Life Ledger installed" },
+    desktop: { statusLocal: "Local Mac", statusCloud: "Connected Cloud" },
+    widget: {
+      title: "Desktop widget",
+      desc: "See today's habits and progress on your Mac desktop, and check one off directly — no need to open the app. The widget never shows journal notes or mood reasons. To add it: right-click your Desktop, choose “Edit Widgets”, and search for “Life Ledger”.",
+      connected: "Connected · last synced {time}",
+      idle: "Not synced yet",
+      error: "Sync failed, retrying automatically",
+      justNow: "just now",
+      minutesAgo: "{minutes} min ago",
+    },
     theme: { label: "Appearance", system: "Follow system", light: "Light mode", dark: "Dark mode" },
     toolbar: { open: "Show tools", close: "Hide tools", short: "Tools" },
     yearSuffix: "",
@@ -731,6 +751,16 @@ const i18n = {
     profileName: "Persönliches Journal",
     exportTitle: "Import & Export",
     pwa: { install: "App installieren", ready: "Installationsbereit", manual: "Wähle im Browsermenü „Zum Home-Bildschirm“ oder „App installieren“.", installed: "Life Ledger wurde installiert" },
+    desktop: { statusLocal: "Lokaler Mac", statusCloud: "Verbundene Cloud" },
+    widget: {
+      title: "Desktop-Widget",
+      desc: "Zeigt die heutigen Gewohnheiten und den Fortschritt auf dem Mac-Schreibtisch und lässt dich eine direkt abhaken – ganz ohne die App zu öffnen. Das Widget zeigt niemals Tagebuchnotizen oder Stimmungsgründe. Hinzufügen: Rechtsklick auf den Schreibtisch, „Widgets bearbeiten“ wählen und nach „Life Ledger“ suchen.",
+      connected: "Verbunden · zuletzt synchronisiert {time}",
+      idle: "Noch nicht synchronisiert",
+      error: "Synchronisierung fehlgeschlagen, wird automatisch wiederholt",
+      justNow: "gerade eben",
+      minutesAgo: "vor {minutes} Min.",
+    },
     theme: { label: "Darstellung", system: "Systemeinstellung", light: "Heller Modus", dark: "Dunkler Modus" },
     toolbar: { open: "Werkzeuge anzeigen", close: "Werkzeuge ausblenden", short: "Werkzeuge" },
     yearSuffix: "",
@@ -1269,9 +1299,145 @@ function applySidebarState() {
   button.setAttribute("title", label);
   button.setAttribute("aria-expanded", String(!sidebarCollapsed));
 }
+function withoutMotion(run) {
+  document.documentElement.classList.add("motion-off");
+  run();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove("motion-off")));
+}
+function switchToView(view, { animate = true } = {}) {
+  const button = $(`.nav-item[data-view="${view}"]`);
+  const section = $(`#${view}View`);
+  if (!button || !section) return;
+  const run = () => {
+    $$(".nav-item").forEach(item => {
+      const active = item === button;
+      item.classList.toggle("active", active);
+      if (active) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
+    });
+    $$(".view").forEach(v => v.classList.remove("active"));
+    section.classList.add("active");
+    document.body.dataset.activeView = view;
+    $("#viewTitle").textContent = tr(`viewTitles.${view}`);
+    if (view === "week") renderWeeklyWorkspace();
+    if (view === "timeline") void renderTimeline();
+    if (view === "review") renderReview();
+  };
+  if (animate) run();
+  else withoutMotion(run);
+}
+function applyDesktopStatus() {
+  const badge = $("#desktopModeBadge");
+  if (!badge) return;
+  if (desktopMode === "tauri-local") {
+    badge.hidden = false;
+    badge.textContent = tr("desktop.statusLocal");
+  } else if (desktopMode === "tauri-cloud") {
+    badge.hidden = false;
+    badge.textContent = tr("desktop.statusCloud");
+  } else {
+    badge.hidden = true;
+  }
+}
+const widgetBridgeActive = desktopMode === "tauri-local"
+  && Boolean(desktopBridge?.publishWidgetSnapshot && desktopBridge?.readPendingWidgetMutations && desktopBridge?.ackWidgetMutations);
+const WIDGET_RECONCILE_INTERVAL_MS = 20000;
+let widgetSnapshotRevision = 0;
+let widgetLastSyncAt = 0;
+let widgetLastError = "";
+let widgetReconcileInFlight = null;
+function buildWidgetSnapshot(date) {
+  const log = getLog(date);
+  const habitsForDate = activeHabits(date).map(habit => ({
+    id: habit.id,
+    name: displayHabitName(habit),
+    icon: iconKey(habit),
+    color: colors[habit.color] ? habit.color : "sage",
+    countsTowardDaily: countsTowardDaily(habit, date),
+  }));
+  const scored = dailyHabits(date);
+  const scoredCompleted = scored.filter(habit => log.completed.includes(habit.id)).length;
+  widgetSnapshotRevision += 1;
+  return window.LifeLedgerWidgetContract.buildWidgetSnapshotFromHabits(habitsForDate, log.completed, {
+    date,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    revision: widgetSnapshotRevision,
+    scoredTotal: scored.length,
+    scoredCompleted,
+  });
+}
+function updateWidgetStatusUI() {
+  const card = $("#widgetStatusCard");
+  if (!card) return;
+  if (!widgetBridgeActive) {
+    card.hidden = true;
+    return;
+  }
+  card.hidden = false;
+  setText("#widgetStatusTitle", tr("widget.title"));
+  setText("#widgetStatusDesc", tr("widget.desc"));
+  const statusLine = $("#widgetStatusState");
+  if (!statusLine) return;
+  if (widgetLastError) {
+    statusLine.textContent = tr("widget.error");
+  } else if (!widgetLastSyncAt) {
+    statusLine.textContent = tr("widget.idle");
+  } else {
+    const elapsedMinutes = Math.floor((Date.now() - widgetLastSyncAt) / 60000);
+    const time = elapsedMinutes < 1 ? tr("widget.justNow") : tr("widget.minutesAgo", { minutes: elapsedMinutes });
+    statusLine.textContent = tr("widget.connected", { time });
+  }
+}
+async function publishWidgetSnapshot() {
+  if (!widgetBridgeActive) return;
+  try {
+    await desktopBridge.publishWidgetSnapshot(buildWidgetSnapshot(isoDate(new Date())));
+    widgetLastSyncAt = Date.now();
+    widgetLastError = "";
+  } catch (error) {
+    console.warn("Widget snapshot publish failed", error);
+    widgetLastError = String(error?.message || error || "error");
+  }
+  updateWidgetStatusUI();
+}
+async function reconcileWidgetMutations() {
+  if (!widgetBridgeActive) return;
+  if (widgetReconcileInFlight) return widgetReconcileInFlight;
+  widgetReconcileInFlight = (async () => {
+    try {
+      const queue = await desktopBridge.readPendingWidgetMutations();
+      const { toApply, ackIds } = window.LifeLedgerWidgetContract.planMutationApplication(
+        queue?.mutations,
+        (habitId, date) => getLog(date).completed.includes(habitId)
+      );
+      for (const mutation of toApply) toggleHabit(mutation.date, mutation.habitId);
+      if (ackIds.length > 0) await desktopBridge.ackWidgetMutations(ackIds);
+      await publishWidgetSnapshot();
+      widgetLastError = "";
+    } catch (error) {
+      console.warn("Widget mutation reconciliation failed", error);
+      widgetLastError = String(error?.message || error || "error");
+    }
+    updateWidgetStatusUI();
+  })();
+  try {
+    await widgetReconcileInFlight;
+  } finally {
+    widgetReconcileInFlight = null;
+  }
+}
+function initWidgetBridge() {
+  if (!widgetBridgeActive) return;
+  document.addEventListener("DOMContentLoaded", () => {
+    void reconcileWidgetMutations();
+    window.setInterval(() => { void reconcileWidgetMutations(); }, WIDGET_RECONCILE_INTERVAL_MS);
+  });
+}
 function applyLanguage() {
   document.documentElement.lang = i18n[currentLang].locale;
   document.body.dataset.language = currentLang;
+  applyDesktopStatus();
+  updateWidgetStatusUI();
   document.title = tr("title");
   document.querySelector('meta[name="description"]')?.setAttribute("content", tr("metaDescription"));
   setText(".brand strong", tr("brand"));
@@ -2825,6 +2991,7 @@ function toggleHabit(date, id) {
     saveState();
     renderAll();
     if ($("#dayDrawer").classList.contains("open")) renderDrawer();
+    if (date === isoDate(new Date())) void publishWidgetSnapshot();
   };
   const animateReorder = date === isoDate(new Date())
     && $("#todayView").classList.contains("active")
@@ -4515,16 +4682,7 @@ function bindEvents() {
     if ($("#dayDrawer").classList.contains("open")) renderDrawer();
     window.setTimeout(() => document.body.classList.remove("language-changing"), 260);
   });
-  $$(".nav-item").forEach(button => button.addEventListener("click", () => {
-    $$(".nav-item").forEach(b => b.classList.toggle("active", b === button));
-    $$(".view").forEach(v => v.classList.remove("active"));
-    $(`#${button.dataset.view}View`).classList.add("active");
-    document.body.dataset.activeView = button.dataset.view;
-    $("#viewTitle").textContent = tr(`viewTitles.${button.dataset.view}`);
-    if (button.dataset.view === "week") renderWeeklyWorkspace();
-    if (button.dataset.view === "timeline") void renderTimeline();
-    if (button.dataset.view === "review") renderReview();
-  }));
+  $$(".nav-item").forEach(button => button.addEventListener("click", () => switchToView(button.dataset.view)));
   $("#timelinePreviousMonth").addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() - 1); void renderTimeline(); });
   $("#timelineNextMonth").addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() + 1); void renderTimeline(); });
   $("#sidebarLongTermOpen").addEventListener("click", openLongTermWorkspace);
@@ -4881,6 +5039,7 @@ function bindEvents() {
     if (!document.hidden) {
       maybeSendDailyReminder();
       if (focusTimer?.snapshot()?.status === "running") acquireFocusWakeLock();
+      void reconcileWidgetMutations();
     }
   });
   window.addEventListener("beforeinstallprompt", event => {
@@ -4923,7 +5082,40 @@ function bindEvents() {
   }, true);
 }
 
-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); bindPointerMotion(); renderAll(); armReminderClock();
+const DESKTOP_SHORTCUT_VIEWS = ["today", "week", "timeline", "review", "habits"];
+function isEditableTarget(target) {
+  return Boolean(target?.closest?.("input, textarea, select, [contenteditable='true']"));
+}
+function initDesktopShortcuts() {
+  if (desktopMode !== "tauri-local" && desktopMode !== "tauri-cloud") return;
+  document.addEventListener("keydown", event => {
+    if (!event.metaKey || event.repeat || isEditableTarget(event.target)) return;
+    if (/^[1-5]$/.test(event.key)) {
+      event.preventDefault();
+      switchToView(DESKTOP_SHORTCUT_VIEWS[Number(event.key) - 1], { animate: false });
+      return;
+    }
+    if (!event.shiftKey && event.key.toLowerCase() === "b") {
+      event.preventDefault();
+      withoutMotion(() => {
+        sidebarCollapsed = !sidebarCollapsed;
+        localStorage.setItem(SIDEBAR_KEY, String(sidebarCollapsed));
+        applySidebarState();
+      });
+      return;
+    }
+    if (!event.shiftKey && event.key === ",") {
+      event.preventDefault();
+      switchToView("habits", { animate: false });
+      return;
+    }
+    if (event.shiftKey && event.key.toLowerCase() === "e") {
+      event.preventDefault();
+      withoutMotion(() => openBackupDialog());
+    }
+  });
+}
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); bindPointerMotion(); renderAll(); armReminderClock(); initDesktopShortcuts(); initWidgetBridge();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }

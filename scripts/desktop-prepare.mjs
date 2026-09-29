@@ -21,4 +21,16 @@ await cp(resolve(desktop, "url-validation.js"), resolve(dist, "url-validation.js
 await mkdir(resolve(root, "src-tauri", "icons"), { recursive: true });
 await execFileAsync("npx", ["tauri", "icon", resolve(root, "public/assets/app-icon.svg"), "--output", resolve(root, "src-tauri/icons")], { cwd: root });
 
+// Builds the WidgetKit extension when a Swift/Xcode toolchain is available (macOS only); on any
+// other host it exits 0 after a clear "skipped" message, so this never breaks desktop:prepare
+// itself — see scripts/build-widget.sh for the full CI-safe/unsigned-build contract.
+await execFileAsync("bash", [resolve(root, "scripts/build-widget.sh")], { cwd: root }).then(
+  ({ stdout }) => process.stdout.write(stdout),
+  error => {
+    process.stdout.write(error.stdout || "");
+    process.stderr.write(error.stderr || "");
+    throw error;
+  }
+);
+
 console.log("Desktop assets prepared in desktop-dist and src-tauri/icons.");

@@ -4,6 +4,23 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Added a real native macOS WidgetKit habit widget (systemSmall/systemMedium) with an interactive `AppIntent` checkbox that marks a habit complete directly from the desktop, without opening the app, and keeps working while the app is closed.
+- Bridged the local desktop app to the widget through a versioned, size-bounded JSON contract in a shared App Group container (atomic temp-file-plus-rename writes on both the Rust and Swift sides), with an idempotent, replay-safe pending-mutation queue keyed by habit id + date + desired state so a duplicate tap or intent retry can never double-toggle.
+- Added a Foundation-only `WidgetSharedKit` Swift package (models, palette, mutation-queue coalescing, atomic I/O) with its own `XCTest` suite, kept separate from the Apple-SDK-only WidgetKit extension so the shared logic can be built/tested independently of Xcode.
+- Added a deterministic `scripts/build-widget.sh` that assembles and (optionally, given `APPLE_DEVELOPMENT_TEAM`) signs the `.appex` and a small `WidgetReloadHelper` binary into the exact layout `tauri.conf.json`'s `bundle.macOS.files` expects, with a CI-safe unsigned path and a clear failure when a signed build is requested without the required environment variables.
+- Added a concise, localized (English, Simplified Chinese, German) widget status card in Habits settings, local-desktop-only, explaining the widget and how to add it — the widget bridge never runs in the public web/PWA or the connected-cloud window, which keeps its existing zero-IPC boundary unchanged.
+
+### Improved
+
+- Refined the macOS Tauri shell to feel native rather than a website in a window: real traffic lights in a transparent/overlay titlebar, an edge-attached sidebar with full-bleed content instead of embedded-card framing, and an unobtrusive Local Mac / Connected Cloud status label in English, Simplified Chinese, and German.
+- Added desktop-only keyboard shortcuts (Cmd+1–5 for the five main views, Cmd+B to toggle the sidebar, Cmd+, for Habits Settings, Cmd+Shift+E for backup/export) that skip editable fields, preserve focus, and leave the public web/PWA's shortcuts untouched.
+- Added a shared, restrained motion system (150–300ms, transform/opacity only, no `transition: all`) that suppresses motion for keyboard-triggered actions while keeping mouse-driven navigation and dialogs subtly animated, and that continues to respect `prefers-reduced-motion`.
+- Redesigned the desktop launcher as a compact native workspace chooser with inline SVG icons, explicit Local/Cloud choice, busy/disabled/error states, and Enter-to-submit on the cloud URL field, while keeping its localized copy, saved-URL affordance, and strict cloud URL validation unchanged.
+- Remembered each desktop window's position and size across launches using only the existing Tauri/stdlib dependency set (no new crate or plugin).
+- The launcher now hides automatically when a local or cloud window opens, and reappears when that window closes; reopening an already-open mode reuses and focuses its window instead of duplicating it.
+
 ## [1.3.0] - 2026-09-26
 
 ### Added
