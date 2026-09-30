@@ -240,6 +240,10 @@ The shell presents the app itself with native macOS chrome: real traffic lights 
 
 Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
 
+### 7. Life Ledger 2.0 — a calm instrument panel
+
+Version 2.0 carries a full interface redesign across the web app, PWA, and the macOS shell alike — this is not a desktop-only skin. The sidebar, toolbar, and every view (Today, Week, Timeline, Review, Habits/Settings) now share one restrained system: system typography (no decorative serif or a network font for the interface chrome), a 4px spacing scale, a 6–14px radius scale in place of the previous 18–30px "card" look, and shadows reserved for floating dialogs, popovers, and the day drawer rather than every inline card. Every remaining glyph/emoji icon (navigation, mood picker, dialog close buttons, disclosure chevrons, carousel and calendar arrows) is now a coherent local inline SVG icon set, and hover/press feedback is immediate border or background changes instead of a mouse-following tilt/glow effect. Light and dark appearance are both deliberately tuned, independently of each other, and motion continues to respect `prefers-reduced-motion`. No existing data, local/connected-cloud modes, backup/import/export, language, theme, keyboard shortcut, calendar, habit, focus, or review behavior changed.
+
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 
 The repository includes:

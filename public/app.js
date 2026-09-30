@@ -1286,7 +1286,11 @@ function applyTheme() {
   document.documentElement.dataset.theme = resolved;
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", resolved === "dark" ? "#17191d" : "#f5f5f7");
   if ($("#themeSelect")) $("#themeSelect").value = themeChoice;
-  setText("#themeCurrentIcon", { system: "◐", light: "☀", dark: "☾" }[themeChoice]);
+  $("#themeCurrentIcon").innerHTML = {
+    system: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18Z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>',
+    light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>',
+    dark: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>',
+  }[themeChoice];
 }
 function applySidebarState() {
   document.body.classList.toggle("sidebar-collapsed", sidebarCollapsed);
@@ -1503,7 +1507,7 @@ function applyLanguage() {
   setText(".habits-heading .kicker", tr("foundations.kicker"));
   setText(".habits-heading h2", tr("foundations.title"));
   const settingsButton = $("[data-open-settings]");
-  if (settingsButton) settingsButton.innerHTML = `${tr("foundations.adjust")} <span>→</span>`;
+  if (settingsButton) settingsButton.innerHTML = `${tr("foundations.adjust")} <span><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></span>`;
   setAria("#todayHabitCarousel", tr("foundations.carousel"));
   setAria("#todayHabitViewport", tr("foundations.carousel"));
   setAria("#habitCarouselNav", tr("foundations.carousel"));
@@ -2015,7 +2019,7 @@ function renderCalendarPicker() {
     const selected = new Set(account.selectedCalendarIds || []);
     const calendars = account.calendars || [];
     return `<section class="calendar-account-card" data-connection-id="${escapeHtml(account.connectionId)}">
-      <header><div><strong>${escapeHtml(account.accountLabel || "Google Calendar")}</strong><small>${escapeHtml(account.errorCode ? tr("calendarSync.accountNeedsReconnect") : tr("calendarSync.accountCalendars"))}</small></div><button type="button" class="calendar-account-disconnect" aria-label="${escapeHtml(tr("calendarSync.disconnectAccount"))}">×</button></header>
+      <header><div><strong>${escapeHtml(account.accountLabel || "Google Calendar")}</strong><small>${escapeHtml(account.errorCode ? tr("calendarSync.accountNeedsReconnect") : tr("calendarSync.accountCalendars"))}</small></div><button type="button" class="calendar-account-disconnect" aria-label="${escapeHtml(tr("calendarSync.disconnectAccount"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
       <div class="calendar-picker-list">${calendars.length ? calendars.map(calendar => `<label class="calendar-picker-option">
         <input type="checkbox" value="${escapeHtml(calendar.id)}" ${selected.has(calendar.id) ? "checked" : ""} />
         <i style="--calendar-color:${escapeHtml(calendar.color || "#6f95c8")}" aria-hidden="true"></i>
@@ -2324,57 +2328,6 @@ function renderAll() {
   renderHabitSettings();
   renderSidebarLongTermGoals();
   if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
-  decorateMotionSurfaces();
-}
-
-const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
-const tiltSurfaceSelector = ".mood-card, .habit-card, .daily-goals-card, .score-card, .setting-row";
-function motionAllowed() {
-  return matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-function decorateMotionSurfaces() {
-  if (!motionAllowed()) return;
-  $$(motionSurfaceSelector).forEach(surface => {
-    surface.classList.add("apple-interactive");
-    if (surface.matches(tiltSurfaceSelector)) surface.classList.add("apple-tilt");
-    if (!surface.querySelector(":scope > .pointer-aura")) {
-      const aura = document.createElement("span");
-      aura.className = "pointer-aura";
-      aura.setAttribute("aria-hidden", "true");
-      surface.prepend(aura);
-    }
-  });
-}
-function bindPointerMotion() {
-  if (!motionAllowed()) return;
-  let pendingFrame = 0;
-  let pointerEvent = null;
-  document.addEventListener("pointermove", event => {
-    const surface = event.target.closest?.(motionSurfaceSelector);
-    if (!surface) return;
-    pointerEvent = { surface, clientX: event.clientX, clientY: event.clientY };
-    if (pendingFrame) return;
-    pendingFrame = requestAnimationFrame(() => {
-      pendingFrame = 0;
-      if (!pointerEvent) return;
-      const { surface: activeSurface, clientX, clientY } = pointerEvent;
-      const rect = activeSurface.getBoundingClientRect();
-      const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
-      const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
-      activeSurface.style.setProperty("--pointer-x", `${x}px`);
-      activeSurface.style.setProperty("--pointer-y", `${y}px`);
-      if (activeSurface.matches(tiltSurfaceSelector)) {
-        activeSurface.style.setProperty("--tilt-x", `${((rect.height / 2 - y) / rect.height * 2.2).toFixed(2)}deg`);
-        activeSurface.style.setProperty("--tilt-y", `${((x - rect.width / 2) / rect.width * 2.2).toFixed(2)}deg`);
-      }
-    });
-  }, { passive: true });
-  document.addEventListener("pointerout", event => {
-    const surface = event.target.closest?.(motionSurfaceSelector);
-    if (!surface || surface.contains(event.relatedTarget)) return;
-    surface.style.setProperty("--tilt-x", "0deg");
-    surface.style.setProperty("--tilt-y", "0deg");
-  }, { passive: true });
 }
 
 function autoGrowTextarea(textarea) {
@@ -2398,9 +2351,9 @@ function renderWeeklyWorkspace() {
   $("#weeklyGoalProgress").textContent = `${done} / ${goals.length}`;
   $("#weeklyGoalList").innerHTML = goals.length ? goals.map(goal => `
     <div class="weekly-goal ${goal.done ? "done" : ""}" data-id="${goal.id}">
-      <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}">✓</button>
+      <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
       <button class="weekly-goal-text" data-action="toggle">${escapeHtml(goal.text)}</button>
-      <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}">×</button>
+      <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </div>`).join("") : `<p class="weekly-goal-empty">${tr("week.emptyGoals")}</p>`;
   $("#currentWeekNumber").textContent = range;
   $("#basketYear").textContent = "";
@@ -2753,7 +2706,6 @@ function renderDaySchedule() {
   toggle.hidden = !routines.length;
   toggle.setAttribute("aria-expanded", String(dayPlanRoutinesExpanded));
   $("span", toggle).textContent = dayPlanRoutinesExpanded ? tr("dayPlan.routinesShown") : tr("dayPlan.routinesHidden", { count: routines.length });
-  $("b", toggle).textContent = dayPlanRoutinesExpanded ? "⌃" : "⌄";
   $("#routineEventList").hidden = !dayPlanRoutinesExpanded;
   $("#routineEventList").innerHTML = routines.map(event => scheduleEventMarkup(event)).join("");
 }
@@ -2975,7 +2927,7 @@ function habitCard(habit, date, done, locked = false) {
   const periodNote = countsTowardDaily(habit, date) ? "" : `<span class="period-note">${tr("foundations.periodNote")}</span>`;
   const transitionName = `habit-${String(habit.id).replace(/[^a-z0-9_-]/gi, "-")}`;
   return `<article class="habit-card ${done ? "completed" : ""} ${locked ? "future-locked" : ""}" data-id="${habit.id}" role="button" tabindex="${locked ? "-1" : "0"}" aria-pressed="${done}" ${locked ? 'aria-disabled="true"' : ""} style="${habitStyle(habit)};view-transition-name:${transitionName}">
-    <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check">✓</span></div>
+    <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></span></div>
     <h3>${escapeHtml(displayHabitName(habit))}</h3><p>${target}</p>${periodNote}
   </article>`;
 }
@@ -3587,7 +3539,7 @@ function renderColorPicker() {
     <button type="button" class="color-choice ${key === selected ? "selected" : ""}" data-color="${key}">
       <i style="--choice-color:${value.solid};--choice-soft:${value.soft}" aria-hidden="true"></i>
       <span>${escapeHtml(tr(`dialog.colors.${key}`))}</span>
-      <b aria-hidden="true">${key === selected ? "✓" : ""}</b>
+      <b aria-hidden="true">${key === selected ? '<svg viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg>' : ""}</b>
     </button>`).join("");
   $$(".color-choice", popover).forEach(button => button.addEventListener("click", () => {
     input.value = button.dataset.color;
@@ -3675,7 +3627,7 @@ function renderDrawer() {
     const habitNote = String(v?.note || "").trim();
     const target = habitMetaLabel(v);
     return `<details class="drawer-habit ${done ? "done" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
-      <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? "✓" : "⌄"}</span></summary>
+      <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'}</span></summary>
       <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${habitNote ? `<p class="drawer-habit-note">${escapeHtml(habitNote)}</p>` : ""}${periodNote}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
     </details>`;
   }).join("");
@@ -5115,7 +5067,7 @@ function initDesktopShortcuts() {
     }
   });
 }
-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); bindPointerMotion(); renderAll(); armReminderClock(); initDesktopShortcuts(); initWidgetBridge();
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); renderAll(); armReminderClock(); initDesktopShortcuts(); initWidgetBridge();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }

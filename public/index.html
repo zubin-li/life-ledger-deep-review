@@ -32,11 +32,10 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=1.3.0" />
+    <link rel="stylesheet" href="./styles.css?v=2.0.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
-    <div class="grain" aria-hidden="true"></div>
     <div class="app-shell">
       <aside class="sidebar">
         <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
@@ -50,15 +49,15 @@
         </a>
 
         <nav class="main-nav" aria-label="主导航">
-          <button class="nav-item active" data-view="today" aria-current="page"><span class="nav-icon">▦</span><span class="nav-label">今日</span></button>
-          <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
-          <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
-          <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
-          <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
+          <button class="nav-item active" data-view="today" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">今日</span></button>
+          <button class="nav-item" data-view="week"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/><path d="m16 16 1.5 1.5L21 14"/></svg></span><span class="nav-label">本周</span></button>
+          <button class="nav-item" data-view="timeline"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><circle cx="7" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">时间轴</span></button>
+          <button class="nav-item" data-view="review"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg></span><span class="nav-label">复盘</span></button>
+          <button class="nav-item" data-view="habits"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><span class="nav-label">习惯设置</span></button>
         </nav>
 
         <section class="sidebar-long-term" id="sidebarLongTerm">
-          <header><span id="sidebarLongTermTitle">长期待办</span><button id="sidebarLongTermOpen" type="button" aria-label="查看全部长期待办">→</button></header>
+          <header><span id="sidebarLongTermTitle">长期待办</span><button id="sidebarLongTermOpen" type="button" aria-label="查看全部长期待办"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button></header>
           <div id="sidebarLongTermList"></div>
         </section>
 
@@ -144,9 +143,9 @@
                 <div><span class="kicker">MOOD</span><h3>此刻感觉如何？</h3></div>
               </div>
               <div class="mood-options" id="quickMood">
-                <button data-mood="很好"><span>☀</span>很好</button>
+                <button data-mood="很好"><span class="mood-option-icon mood-good"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></span>很好</button>
                 <button data-mood="平静"><span class="mood-option-icon mood-calm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/></svg></span>平静</button>
-                <button data-mood="低落"><span>☂</span>低落</button>
+                <button data-mood="低落"><span class="mood-option-icon mood-low"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 16 0H4Z"/><path d="M12 4v13a3 3 0 0 0 6 0"/></svg></span>低落</button>
               </div>
               <button class="mood-reason-summary" id="quickMoodReason" type="button" hidden></button>
               <p class="mood-note" id="moodNote">人有悲欢离合，月有阴晴圆缺。<small>苏轼《水调歌头》</small></p>
@@ -155,17 +154,17 @@
 
           <div class="section-heading habits-heading">
             <div><span class="kicker">FOUNDATIONS</span><h2>今日基础目标</h2></div>
-            <button class="text-button" data-open-settings>调整目标 <span>→</span></button>
+            <button class="text-button" data-open-settings>调整目标 <span><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></span></button>
           </div>
           <section class="habit-carousel" id="todayHabitCarousel" aria-label="今日习惯">
             <div class="habit-carousel-viewport" id="todayHabitViewport" tabindex="0">
               <div class="habit-carousel-track" id="todayHabits"></div>
             </div>
             <nav class="habit-carousel-nav" id="habitCarouselNav" aria-label="切换习惯组" hidden>
-              <button class="habit-carousel-arrow" id="previousHabitPage" type="button" aria-label="上一组习惯">←</button>
+              <button class="habit-carousel-arrow" id="previousHabitPage" type="button" aria-label="上一组习惯"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
               <div class="habit-carousel-pages" id="habitCarouselPages"></div>
               <span class="habit-carousel-status" id="habitCarouselStatus" aria-live="polite">1 / 1</span>
-              <button class="habit-carousel-arrow" id="nextHabitPage" type="button" aria-label="下一组习惯">→</button>
+              <button class="habit-carousel-arrow" id="nextHabitPage" type="button" aria-label="下一组习惯"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
             </nav>
           </section>
 
@@ -182,14 +181,14 @@
                 </div>
               </div>
               <div class="day-roll-control">
-                <button class="day-roll-arrow" id="previousPlanDay" type="button" aria-label="Previous day">←</button>
+                <button class="day-roll-arrow" id="previousPlanDay" type="button" aria-label="Previous day"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
                 <div class="day-roll" id="dayRoll"></div>
-                <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
+                <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
               </div>
               <div class="day-plan-columns">
                 <section class="day-schedule-column" id="daySchedulePanel">
                   <div class="day-schedule-list" id="dayScheduleList"></div>
-                  <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b>⌄</b></button>
+                  <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></b></button>
                   <div class="routine-event-list" id="routineEventList" hidden></div>
                 </section>
               </div>
@@ -285,8 +284,8 @@
                 <button type="button" data-calendar-view="heatmap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>热力图</span></button>
               </div>
               <div class="calendar-month-nav">
-                <button class="icon-button" id="prevMonth" aria-label="上个月">←</button>
-                <button class="icon-button" id="nextMonth" aria-label="下个月">→</button>
+                <button class="icon-button" id="prevMonth" aria-label="上个月"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
+                <button class="icon-button" id="nextMonth" aria-label="下个月"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
               </div>
             </div>
             </div>
@@ -300,9 +299,9 @@
               <div class="calendar-grid" id="calendarGrid"></div>
             </div>
             <div class="calendar-legend">
-              <span><i class="legend-mood mood-good">☀</i>很好</span>
+              <span><i class="legend-mood mood-good"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></i>很好</span>
               <span><i class="legend-mood mood-calm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/></svg></i>平静</span>
-              <span><i class="legend-mood mood-low">☂</i>低落</span>
+              <span><i class="legend-mood mood-low"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 16 0H4Z"/><path d="M12 4v13a3 3 0 0 0 6 0"/></svg></i>低落</span>
             </div>
           </section>
         </section>
@@ -312,12 +311,12 @@
             <div class="section-heading weekly-heading">
               <h2 class="sr-only" id="weeklyWorkspaceTitle">Weekly Plan</h2>
               <div class="week-navigator" aria-label="切换计划周">
-                <button class="week-nav-button" id="previousWorkspaceWeek" type="button" aria-label="上一周">←</button>
+                <button class="week-nav-button" id="previousWorkspaceWeek" type="button" aria-label="上一周"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
                 <button class="week-current-button" id="currentWorkspaceWeek" type="button">
                   <strong id="weekRange"></strong>
                   <span id="weekRelativeLabel">本周</span>
                 </button>
-                <button class="week-nav-button" id="nextWorkspaceWeek" type="button" aria-label="下一周">→</button>
+                <button class="week-nav-button" id="nextWorkspaceWeek" type="button" aria-label="下一周"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
               </div>
             </div>
             <article class="weekly-goals-panel">
@@ -335,7 +334,7 @@
                   <div class="weekly-goal-list" id="weeklyGoalList"></div>
                   <form class="weekly-goal-form" id="weeklyGoalForm">
                     <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" />
-                    <button aria-label="添加本周目标">＋</button>
+                    <button aria-label="添加本周目标"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
                   </form>
                 </div>
                 <div id="longTermGoalsPane" hidden>
@@ -344,7 +343,7 @@
                     <strong id="longTermGoalCount">0 active</strong>
                   </div>
                   <div class="long-term-goal-list" id="longTermGoalList"></div>
-                  <button class="long-term-add-button" id="addLongTermGoal" type="button"><span>＋</span><b>Add a long-term goal</b></button>
+                  <button class="long-term-add-button" id="addLongTermGoal" type="button"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><b>Add a long-term goal</b></button>
                 </div>
               </section>
               <figure class="weekly-classical-image weekly-minimal-image">
@@ -367,9 +366,9 @@
           <header class="timeline-intro">
             <div><span class="kicker" id="timelineKicker">MEMORY LINE</span><h2 id="timelineTitle">时间轴</h2><p id="timelineDescription">沿着心情与照片，重新看见走过的日子。</p></div>
             <div class="timeline-month-nav">
-              <button class="icon-button" id="timelinePreviousMonth" type="button" aria-label="上个月">←</button>
+              <button class="icon-button" id="timelinePreviousMonth" type="button" aria-label="上个月"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
               <strong id="timelineMonthLabel">2026年8月</strong>
-              <button class="icon-button" id="timelineNextMonth" type="button" aria-label="下个月">→</button>
+              <button class="icon-button" id="timelineNextMonth" type="button" aria-label="下个月"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
             </div>
           </header>
           <div class="timeline-summary" id="timelineSummary"></div>
@@ -435,7 +434,7 @@
           <button class="habit-reminder-card" id="habitReminderCard" type="button">
             <span class="habit-reminder-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>
             <span class="habit-reminder-copy"><small id="habitReminderKicker">DAILY RHYTHM</small><strong id="habitReminderTitle">Daily review reminder</strong><span id="habitReminderStatus">Off</span></span>
-            <span class="habit-reminder-arrow" aria-hidden="true">→</span>
+            <span class="habit-reminder-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></span>
           </button>
           <div class="widget-status-card" id="widgetStatusCard" hidden>
             <div class="widget-status-copy">
@@ -453,7 +452,7 @@
     <aside class="day-drawer" id="dayDrawer" aria-hidden="true">
       <header>
         <div><span class="kicker" id="drawerWeekday">SUNDAY</span><h2 id="drawerDate">6月28日</h2></div>
-        <button class="icon-button" id="closeDrawer" aria-label="关闭">×</button>
+        <button class="icon-button" id="closeDrawer" aria-label="关闭"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       </header>
       <div class="drawer-content">
         <p class="drawer-future-notice" id="drawerFutureNotice" hidden></p>
@@ -468,9 +467,9 @@
         <section>
           <div class="drawer-section-title"><h3>今日心情</h3></div>
           <div class="mood-options compact" id="drawerMood">
-            <button data-mood="很好"><span>☀</span>很好</button>
+            <button data-mood="很好"><span class="mood-option-icon mood-good"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></span>很好</button>
             <button data-mood="平静"><span class="mood-option-icon mood-calm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/></svg></span>平静</button>
-            <button data-mood="低落"><span>☂</span>低落</button>
+            <button data-mood="低落"><span class="mood-option-icon mood-low"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 16 0H4Z"/><path d="M12 4v13a3 3 0 0 0 6 0"/></svg></span>低落</button>
           </div>
           <button class="mood-reason-summary drawer-mood-reason" id="drawerMoodReason" type="button" hidden></button>
           <div class="drawer-memory-photos" id="drawerMemoryPhotos" hidden></div>
@@ -488,7 +487,7 @@
       <div class="day-plan-dialog-shell">
         <header>
           <div><span class="kicker" id="dayPlanDialogKicker">DAY PLAN</span><h2 id="dayPlanDialogDate">August 25 · Tuesday</h2></div>
-          <button class="icon-button close-day-plan" type="button" aria-label="Close day plan">×</button>
+          <button class="icon-button close-day-plan" type="button" aria-label="Close day plan"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </header>
         <div class="day-plan-dialog-body">
           <section>
@@ -503,7 +502,7 @@
       <div class="calendar-settings-shell">
         <header>
           <div><span class="kicker" id="calendarSettingsKicker">CALENDAR CONNECTION</span><h2 id="calendarSettingsTitle">Google Calendar</h2></div>
-          <button class="icon-button close-calendar-settings" type="button" aria-label="Close calendar settings">×</button>
+          <button class="icon-button close-calendar-settings" type="button" aria-label="Close calendar settings"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </header>
         <div class="calendar-settings-body">
           <p class="calendar-privacy-note" id="calendarSettingsIntro">Read-only access. Life Ledger only keeps the title and time needed for your review.</p>
@@ -543,7 +542,7 @@
 
     <dialog class="long-term-dialog" id="longTermGoalDialog">
       <form method="dialog" id="longTermGoalForm">
-        <header><div><span class="kicker" id="longTermDialogKicker">LONG-TERM GOAL</span><h2 id="longTermDialogTitle">Add direction</h2></div><button class="icon-button close-long-term-dialog" type="button" aria-label="Close">×</button></header>
+        <header><div><span class="kicker" id="longTermDialogKicker">LONG-TERM GOAL</span><h2 id="longTermDialogTitle">Add direction</h2></div><button class="icon-button close-long-term-dialog" type="button" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="long-term-dialog-body">
           <label><span id="longTermNameLabel">Goal</span><input name="name" maxlength="120" required /></label>
           <label><span id="longTermNextLabel">Next step</span><input name="nextAction" maxlength="160" /></label>
@@ -558,12 +557,12 @@
 
     <dialog id="habitDialog">
       <form method="dialog" id="habitForm">
-        <header><div><span class="kicker">HABIT VERSION</span><h2 id="habitDialogTitle">新增习惯</h2></div><button class="icon-button close-habit-dialog" type="button" aria-label="取消并关闭">×</button></header>
+        <header><div><span class="kicker">HABIT VERSION</span><h2 id="habitDialogTitle">新增习惯</h2></div><button class="icon-button close-habit-dialog" type="button" aria-label="取消并关闭"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="form-grid">
           <label class="full"><span id="habitNameLabel">习惯名称</span><input name="name" required placeholder="例如：阅读" /></label>
           <label class="full"><span id="habitNoteLabel">备注（可选）</span><textarea name="note" maxlength="500" rows="3" placeholder="这项习惯具体意味着什么？"></textarea></label>
-          <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="iconPickerPopover"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" role="dialog" aria-label="选择图标" hidden></div></label>
-          <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="colorPickerPopover"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" role="dialog" aria-label="选择强调色" hidden></div></label>
+          <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="iconPickerPopover"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></b></button><div class="icon-picker-popover" id="iconPickerPopover" role="dialog" aria-label="选择图标" hidden></div></label>
+          <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="colorPickerPopover"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></b></button><div class="color-picker-popover" id="colorPickerPopover" role="dialog" aria-label="选择强调色" hidden></div></label>
           <fieldset class="full tracking-mode-choice">
             <legend id="habitTrackingModeLabel">打卡方式</legend>
             <label><input name="trackingMode" type="radio" value="check" checked /><span><strong id="habitTrackingCheckLabel">简单打卡</strong><small id="habitTrackingCheckHelp">完成或未完成，不需要数值。</small></span></label>
@@ -581,7 +580,7 @@
           <div class="habit-live-preview full" id="habitLivePreview" style="--habit-color:#6f8f7d;--habit-soft:#dbe6dc">
             <span class="habit-icon" id="habitPreviewIcon"></span>
             <div><small id="habitPreviewKicker">即时预览</small><strong id="habitPreviewName">新习惯</strong><span id="habitPreviewMeta">每日</span><p id="habitPreviewNote" hidden></p></div>
-            <i aria-hidden="true">✓</i>
+            <i aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></i>
           </div>
           <label class="full"><span id="habitEffectiveDateLabel">生效日期</span><input name="effectiveDate" required type="date" /></label>
         </div>
@@ -597,9 +596,9 @@
 
     <dialog id="moodReasonDialog" class="mood-reason-dialog">
       <form method="dialog" id="moodReasonForm">
-        <header><div><span class="kicker" id="moodReasonKicker">MOOD NOTE</span><h2 id="moodReasonTitle">为什么今天感觉很好？</h2></div><button class="icon-button close-mood-reason" type="button" aria-label="关闭">×</button></header>
+        <header><div><span class="kicker" id="moodReasonKicker">MOOD NOTE</span><h2 id="moodReasonTitle">为什么今天感觉很好？</h2></div><button class="icon-button close-mood-reason" type="button" aria-label="关闭"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="mood-reason-body">
-          <div class="mood-reason-selection"><span id="moodReasonIcon" aria-hidden="true">☀</span><div><strong id="moodReasonMood">很好</strong><small id="moodReasonDate"></small></div></div>
+          <div class="mood-reason-selection"><span id="moodReasonIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></span><div><strong id="moodReasonMood">很好</strong><small id="moodReasonDate"></small></div></div>
           <p id="moodReasonHelp">这完全是可选的。留下一句话，未来回看时会更容易理解这一天。</p>
           <label for="moodReasonText"><span id="moodReasonLabel">今天为什么会有这样的感受？</span><textarea id="moodReasonText" maxlength="800" placeholder="例如：完成了一件拖了很久的事情……"></textarea></label>
           <section class="mood-photo-section" id="moodPhotoSection" hidden>
@@ -618,7 +617,7 @@
       <div class="voice-dialog-shell">
         <header>
           <div><span class="kicker" id="voiceKicker">VOICE REFLECTION</span><h2 id="voiceTitle">Speak freely. Keep what matters.</h2></div>
-          <button class="icon-button" id="voiceClose" type="button" aria-label="Close voice reflection">×</button>
+          <button class="icon-button" id="voiceClose" type="button" aria-label="Close voice reflection"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </header>
         <section class="voice-capture-panel">
           <div class="voice-orb" id="voiceOrb" style="--voice-progress:0" aria-hidden="true">
@@ -650,7 +649,7 @@
       <div class="focus-dialog-content">
         <header>
           <div><span class="kicker" id="focusDialogKicker">FOCUS TIMER</span><h2 id="focusDialogTitle">Make this time count.</h2></div>
-          <button class="icon-button close-focus-dialog" type="button" aria-label="Close focus timer">×</button>
+          <button class="icon-button close-focus-dialog" type="button" aria-label="Close focus timer"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </header>
         <div class="focus-dialog-body">
           <div class="focus-clock" id="focusClock" style="--focus-progress:0">
@@ -687,9 +686,9 @@
 
     <dialog id="exportDialog" class="export-dialog">
       <form method="dialog" id="exportForm">
-        <header><div><span class="kicker" id="backupKicker">YOUR DATA</span><h2 id="exportDialogTitle">导入与导出</h2></div><button class="icon-button close-export-dialog" type="button" aria-label="关闭">×</button></header>
+        <header><div><span class="kicker" id="backupKicker">YOUR DATA</span><h2 id="exportDialogTitle">导入与导出</h2></div><button class="icon-button close-export-dialog" type="button" aria-label="关闭"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="backup-intro">
-          <span class="backup-intro-icon" aria-hidden="true">✓</span>
+          <span class="backup-intro-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></span>
           <div><strong id="backupIntroTitle">记录保存在这台设备</strong><small id="backupIntroHelp">定期导出完整备份，即可在换设备或换浏览器后恢复。</small></div>
         </div>
         <div class="backup-tabs" role="tablist" aria-label="选择数据操作">
@@ -711,7 +710,7 @@
           <div class="backup-section-heading"><div><span class="kicker">RESTORE</span><h3 id="restoreSectionTitle">从备份恢复</h3></div><small id="restoreSectionHelp">支持新版备份和早期导出的 JSON。</small></div>
           <input id="importFile" type="file" accept="application/json,.json,application/x-life-ledger-media,.llmedia" hidden />
           <button class="restore-file-button" id="chooseImportFile" type="button">
-            <span class="restore-file-icon" aria-hidden="true">＋</span>
+            <span class="restore-file-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
             <span><strong id="chooseImportTitle">选择备份文件</strong><small id="chooseImportHelp">文件会先在本机检查，不会上传。</small></span>
           </button>
           <p class="import-error" id="importError" role="alert" hidden></p>
@@ -731,7 +730,7 @@
 
     <dialog id="reminderDialog" class="reminder-dialog">
       <div class="reminder-dialog-content">
-        <header><div><span class="kicker" id="reminderKicker">DAILY RHYTHM</span><h2 id="reminderDialogTitle">Daily review reminder</h2></div><button class="icon-button close-reminder-dialog" type="button" aria-label="Close">×</button></header>
+        <header><div><span class="kicker" id="reminderKicker">DAILY RHYTHM</span><h2 id="reminderDialogTitle">Daily review reminder</h2></div><button class="icon-button close-reminder-dialog" type="button" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="reminder-body">
           <label class="reminder-toggle"><input id="reminderEnabled" type="checkbox" /><span><strong id="reminderEnableTitle">Remind me every day</strong><small id="reminderEnableHelp">A quiet prompt to close the day with intention.</small></span></label>
           <label class="reminder-time"><span id="reminderTimeLabel">Reminder time</span><input id="reminderTime" type="time" value="21:00" /></label>
@@ -744,7 +743,7 @@
 
     <dialog id="reviewCanvasDialog" class="review-canvas-dialog">
       <div class="review-canvas-shell">
-        <header><div><span class="kicker" id="reviewCanvasKicker">DEEP REVIEW</span><h2 id="reviewCanvasTitle">Review Canvas</h2></div><button class="icon-button close-review-canvas" type="button" aria-label="Close">×</button></header>
+        <header><div><span class="kicker" id="reviewCanvasKicker">DEEP REVIEW</span><h2 id="reviewCanvasTitle">Review Canvas</h2></div><button class="icon-button close-review-canvas" type="button" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="review-canvas-toolbar">
           <div class="review-scope-switch" id="reviewScopeSwitch" role="group" aria-label="Review period">
             <button type="button" data-review-scope="week">Weekly</button>
@@ -771,7 +770,7 @@
 
     <dialog id="cloudbaseAuthDialog" class="cloudbase-auth-dialog">
       <form method="dialog" id="cloudbaseAuthForm">
-        <header><div><span class="kicker" id="cloudbaseAuthKicker">PRIVATE SYNC</span><h2 id="cloudbaseAuthTitle">连接腾讯云同步</h2></div><button class="icon-button close-cloudbase-auth" type="button" aria-label="关闭">×</button></header>
+        <header><div><span class="kicker" id="cloudbaseAuthKicker">PRIVATE SYNC</span><h2 id="cloudbaseAuthTitle">连接腾讯云同步</h2></div><button class="icon-button close-cloudbase-auth" type="button" aria-label="关闭"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
         <div class="cloudbase-auth-body">
           <p id="cloudbaseAuthIntro">使用邮箱验证码登录。会话有效期间无需重复验证，数据只写入你自己的 CloudBase 环境。</p>
           <label><span id="cloudbaseEmailLabel">邮箱</span><input id="cloudbaseEmail" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
@@ -791,17 +790,17 @@
       </form>
     </dialog>
 
-    <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
+    <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
-    <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=1.3.0"></script>
-    <script src="./_init_tcb-env.js?v=1.3.0"></script>
-    <script src="./cloudbase-sync.js?v=1.3.0"></script>
-    <script src="./focus-timer.js?v=1.3.0"></script>
-    <script src="./voice-checkin.js?v=1.3.0"></script>
-    <script src="./photo-memories.js?v=1.3.0"></script>
-    <script src="./media-backup.js?v=1.3.0"></script>
-    <script type="module" src="./widget-contract.js?v=1.3.0"></script>
-    <script src="./app.js?v=1.3.0"></script>
+    <div class="toast" id="toast"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></span><p>已保存</p></div>
+    <script src="./deployment-mode.js?v=2.0.0"></script>
+    <script src="./_init_tcb-env.js?v=2.0.0"></script>
+    <script src="./cloudbase-sync.js?v=2.0.0"></script>
+    <script src="./focus-timer.js?v=2.0.0"></script>
+    <script src="./voice-checkin.js?v=2.0.0"></script>
+    <script src="./photo-memories.js?v=2.0.0"></script>
+    <script src="./media-backup.js?v=2.0.0"></script>
+    <script type="module" src="./widget-contract.js?v=2.0.0"></script>
+    <script src="./app.js?v=2.0.0"></script>
   </body>
 </html>

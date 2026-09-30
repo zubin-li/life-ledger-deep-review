@@ -245,7 +245,7 @@
       count.textContent = t("count", { count: photos.length });
       list.innerHTML = photos.map(photo => `<figure class="mood-photo-thumb" data-photo-id="${photo.id}">
         <img src="${photo.url}" alt="" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" />
-        <button type="button" aria-label="${t("delete")}" title="${t("delete")}">×</button>
+        <button type="button" aria-label="${t("delete")}" title="${t("delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       </figure>`).join("");
       list.querySelectorAll("button").forEach(button => button.addEventListener("click", () => removePhoto(button.closest("figure").dataset.photoId)));
     }

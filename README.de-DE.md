@@ -253,6 +253,10 @@ Die Hülle zeigt die App selbst mit nativem macOS-Look: echte Ampel-Fensterknöp
 
 Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
 
+### 7. Life Ledger 2.0 — ein ruhiges Instrumentenbrett
+
+Version 2.0 bringt eine vollständige Neugestaltung der Oberfläche über Web-App, PWA und macOS-Hülle hinweg mit sich — nicht nur eine Desktop-Optik. Seitenleiste, Werkzeugleiste und alle fünf Ansichten (Heute, Woche, Zeitleiste, Rückblick, Gewohnheiten/Einstellungen) teilen sich jetzt ein zurückhaltendes System: Systemschrift (keine dekorative Serifenschrift oder Web-Schriftart mehr für die Oberfläche selbst), eine 4px-Abstandsskala, eine Rundungsskala von 6–14px statt der bisherigen 18–30px großen „Karten"-Optik, und Schatten sind jetzt schwebenden Dialogen, Popovers und der Tages-Schublade vorbehalten statt jeder einzelnen Karte. Jedes verbliebene Text-/Emoji-Symbol (Navigation, Stimmungsauswahl, Schließen-Schaltflächen in Dialogen, Auf-/Zuklapp-Pfeile, Karussell- und Kalenderpfeile) ist jetzt ein einheitliches, lokal eingebettetes SVG-Icon-System; Hover- und Klick-Feedback sind jetzt sofortige Rahmen- oder Hintergrundänderungen statt eines der Maus folgenden Neige-/Leuchteffekts. Helles und dunkles Erscheinungsbild sind jeweils eigenständig abgestimmt, und Bewegungseffekte respektieren weiterhin `prefers-reduced-motion`. Bestehende Daten, der lokale/verbundene Cloud-Modus, Sicherung/Import/Export, Sprache, Theme, Tastenkürzel, Kalender-, Gewohnheits-, Fokus- und Rückblick-Verhalten bleiben unverändert.
+
 ## Datenhoheit
 
 ```text

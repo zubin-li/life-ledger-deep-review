@@ -13,12 +13,15 @@ test("desktop mode is detected before the stylesheet loads, from the desktop que
   assert.match(headSection, /document\.documentElement\.dataset\.desktop = desktopMode/);
 });
 
-test("desktop presentation CSS is scoped under html[data-desktop] and does not touch the base web layout", () => {
-  assert.match(styles, /html\[data-desktop\] \.sidebar \{[^}]*margin: 0;[^}]*border-radius: 0;/s);
+test("desktop presentation CSS is scoped under html[data-desktop] and layers a titlebar-inset adjustment onto the shared base layout", () => {
+  assert.match(styles, /html\[data-desktop\] \.sidebar \{[^}]*height: calc\(100vh - var\(--desktop-inset\)\);/s);
   assert.match(styles, /html\[data-desktop\] \.main-content \{[^}]*max-width: none;/s);
-  // The unscoped base selectors must keep their original embedded-card look for normal web/PWA mode.
-  assert.match(styles, /^\.sidebar \{ position: sticky; top: 16px; height: calc\(100vh - 32px\); margin: 16px 0 16px 16px;/m);
-  assert.match(styles, /^\.main-content \{ min-width: 0; padding: 42px clamp\(28px, 5vw, 76px\) 70px; max-width: 1500px;/m);
+  // Since Life Ledger 2.0, the base (non-desktop) sidebar and main content are already the
+  // edge-attached, full-bleed "calm instrument panel" layout shared by web/PWA and desktop —
+  // html[data-desktop] only layers the titlebar-inset height and full-bleed content padding
+  // on top of it, it no longer switches between two different visual designs.
+  assert.match(styles, /^\.sidebar \{ position: sticky; top: 0; height: 100vh; margin: 0;/m);
+  assert.match(styles, /^\.main-content \{ min-width: 0; padding: var\(--space-6\)/m);
 });
 
 test("PWA install affordances are hidden only in desktop mode", () => {
