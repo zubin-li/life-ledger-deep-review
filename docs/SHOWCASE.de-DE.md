@@ -24,11 +24,11 @@ Konkrete Ziele und eine bearbeitbare Tagesreflexion stehen nebeneinander; der vo
 
 Erledigte Wochenziele bleiben als sichtbarer Fortschritt erhalten. Der Rückblick bietet ausreichend Raum für zusammenhängende Gedanken.
 
-### Monatsrückblick: Zahlen im Zusammenhang
+### Monatsrückblick: ein geschriebener Monat
 
-<img src="images/demo-preview/de-desktop/de-04-monthly-review-v3.png" alt="Monatsrückblick mit Gewohnheitsvergleich und Diagrammen" />
+<img src="images/demo-preview/de-desktop/de-04-monthly-review-v3.png" alt="Monatsrückblick als Dokument mit kurzem Erledigungstrend" />
 
-Die Auswertung berücksichtigt alle aktiven Gewohnheiten, auch periodische Ziele wie Krafttraining. Bis zu zwei Gewohnheiten lassen sich als Linien- oder Balkendiagramm vergleichen.
+Der Monat beginnt als Dokument: eine Statuszeile, die Reflexion, danach der kurze Erledigungstrend. Gewohnheitswerte und Fokuszeit bleiben im Inspektor. Vergleichsdiagramme liegen unter „Detaillierte Werte“.
 
 ### Fokus: sehen, wohin die Zeit geflossen ist
 

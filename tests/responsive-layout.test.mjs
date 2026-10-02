@@ -25,6 +25,20 @@ test("mobile navigation uses a stable safe-area inset while the page scrolls", (
   assert.doesNotMatch(css, /\.sidebar\s*\{[^}]*bottom:\s*max\(10px,\s*env\(safe-area-inset-bottom\)\)/);
 });
 
+test("desktop review reads as a document and the five panes stay list-density", () => {
+  const review = html.slice(html.indexOf('id="reviewView"'), html.indexOf('id="habitsView"'));
+  assert.ok(review.indexOf('id="reviewText"') < review.indexOf('id="reviewTrendChart"'));
+  assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewDetailedMetrics"'));
+  assert.match(css, /html\[data-desktop\] \.review-insights \{ display: flex;/);
+  assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 13px\/1\.35/);
+  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: var\(--text-section-title\)/);
+  assert.match(css, /html\[data-desktop\] body\[data-active-view="today"\] \.main-content \{ max-width: none;/);
+  assert.match(css, /html\[data-desktop\] \.habit-settings-list \{ gap: 0; \}/);
+  assert.match(css, /html\[data-desktop\] \.timeline-habit-list \{ display: grid;/);
+  assert.match(app, /class="timeline-habit-list"/);
+  assert.match(css, /@media \(max-width: 979px\) \{\s*#reviewView\.active \{ display: flex;/);
+});
+
 test("inspector collapses before sidebar on narrow desktop widths", () => {
   assert.match(css, /@media \(max-width: 1179px\)/);
   assert.match(css, /body\.inspector-collapsed \.inspector/);

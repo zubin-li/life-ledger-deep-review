@@ -139,6 +139,9 @@ body.inspector-collapsed .inspector { opacity: 0; transform: translateX(12px); p
 .timeline-detail { min-width: 0; }
 .timeline-detail-date { margin: 0 0 var(--space-4); font: 600 clamp(20px, 2.2vw, 24px)/1.2 var(--font-display); }
 .timeline-detail-note { max-width: 640px; font: 400 15px/1.55 var(--font-body); white-space: pre-wrap; }
+.timeline-habit-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.timeline-habit-row { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--habit-color, var(--sage)) 12%, transparent); font-size: var(--text-caption); }
+.timeline-habit-row .lucide-icon { width: 14px; height: 14px; flex: 0 0 auto; }
 .review-insight-block { display: grid; gap: 4px; }
 .review-insight-value { font: 600 22px/1.1 var(--font-body); }
 .review-insight-label,
@@ -1216,7 +1219,11 @@ html[data-theme="dark"][data-desktop] {
   --selectedContentBackground: #2c3a30;
   --controlAccent: #9bc2ab;
 }
-html[data-desktop] body { padding-top: var(--desktop-inset); color: var(--label); }
+html[data-desktop] body { padding-top: var(--desktop-inset); color: var(--label); overflow: hidden; }
+html[data-desktop] .app-shell { height: calc(100vh - var(--desktop-inset)); min-height: 0; overflow: hidden; }
+html[data-desktop] .workspace-pane { height: 100%; min-height: 0; overflow: hidden; }
+html[data-desktop] .content-split { min-height: 0; overflow: hidden; }
+html[data-desktop] .main-content { overflow: auto; }
 html[data-desktop] .muted,
 html[data-desktop] .today-summary,
 html[data-desktop] .today-date-secondary,
@@ -1234,12 +1241,14 @@ html[data-desktop] .sidebar-sync-status { flex: 0 0 auto; }
 html[data-desktop] .sidebar-sync-status i { width: 7px; height: 7px; }
 html[data-desktop] .sidebar-footer { flex-wrap: nowrap; white-space: nowrap; }
 html[data-desktop] .toolbar-date-label[hidden] { display: none; }
-html[data-desktop] body[data-active-view="today"] .main-content { max-width: 720px; padding-left: var(--space-6); padding-right: var(--space-6); }
-html[data-desktop] .today-header { margin-bottom: var(--space-5); }
-html[data-desktop] .today-date-heading { margin: 0; font: var(--text-large-title); letter-spacing: -0.02em; color: var(--label); }
-html[data-desktop] .today-date-secondary { margin: 4px 0 0; font: var(--text-secondary-ui); color: var(--secondaryLabel); }
+html[data-desktop] body[data-active-view="today"] .main-content { max-width: none; padding-left: var(--space-5); padding-right: var(--space-5); }
+html[data-desktop] .today-header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-2); }
+html[data-desktop] .today-date-heading { margin: 0; font: var(--text-section-title); letter-spacing: -0.01em; color: var(--label); }
+html[data-desktop] .today-date-secondary { margin: 0; font: var(--text-secondary-ui); color: var(--secondaryLabel); }
 html[data-desktop] .today-summary { display: none; }
-html[data-desktop] .today-habit-list { margin-top: var(--space-5); border-top: 1px solid var(--separator); }
+html[data-desktop] .today-events-strip { flex-direction: column; gap: 0; overflow: visible; margin-bottom: var(--space-2); }
+html[data-desktop] .today-event-chip { border: 0; border-radius: 0; background: transparent; padding: 6px 0; border-bottom: 1px solid var(--separator); }
+html[data-desktop] .today-habit-list { margin-top: var(--space-2); border-top: 1px solid var(--separator); }
 html[data-desktop] .today-habit-row { grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; min-height: 36px; padding: 0 var(--space-2); margin: 0; border: 0; border-radius: var(--radius-row); transition: background-color 120ms ease; }
 html[data-desktop] .today-habit-row:hover { background: color-mix(in srgb, var(--controlAccent) 8%, transparent); }
 html[data-desktop] .today-habit-row.selected { background: color-mix(in srgb, var(--controlAccent) 12%, transparent); margin-inline: var(--space-2); }
@@ -1282,7 +1291,7 @@ html[data-desktop] .sidebar-habit-check { width: 14px; height: 14px; display: gr
 html[data-desktop] .sidebar-habit-check svg { width: 9px; height: 9px; stroke: #fff; stroke-width: 2.2; fill: none; }
 html[data-desktop] .sidebar-habit-item.done .sidebar-habit-check { background: var(--habit-color, var(--controlAccent)); border-color: var(--habit-color, var(--controlAccent)); }
 html[data-desktop] .inspector-context-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font: var(--text-body-ui); }
-html[data-desktop] .week-agenda-row { grid-template-columns: 96px 80px 20px minmax(0, 1fr); gap: var(--space-3); padding: 8px var(--space-2); margin: 0 calc(var(--space-2) * -1); border: 0; border-radius: var(--radius-row); align-items: center; }
+html[data-desktop] .week-agenda-row { grid-template-columns: 96px 80px 20px minmax(0, 1fr); gap: var(--space-3); padding: 8px var(--space-2); margin: 0 calc(var(--space-2) * -1); border: 0; border-radius: var(--radius-row); align-items: center; transition: background-color 120ms ease; }
 html[data-desktop] .week-agenda-day { display: grid; gap: 1px; min-width: 0; }
 html[data-desktop] .week-agenda-weekday { font: 500 13px/1.3 var(--font-body); color: var(--label); }
 html[data-desktop] .week-agenda-date { font: var(--text-secondary-ui); color: var(--secondaryLabel); }
@@ -1293,7 +1302,10 @@ html[data-desktop] .week-agenda-mood { display: grid; place-items: center; width
 html[data-desktop] .week-agenda-mood svg { width: 16px; height: 16px; }
 html[data-desktop] .week-agenda-note { font: var(--text-body-ui); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 html[data-desktop] .week-agenda-note.empty { color: var(--tertiaryLabel); }
-html[data-desktop] .weekly-goals-section { margin-top: var(--space-5); max-width: 680px; }
+html[data-desktop] .weekly-goals-section { margin-top: var(--space-5); max-width: none; }
+html[data-desktop] .goal-horizon-switch { align-self: center; margin: 0; padding: 2px; border: 1px solid var(--separator); border-radius: var(--radius-control); background: color-mix(in srgb, var(--label) 4%, transparent); box-shadow: none; }
+html[data-desktop] .goal-horizon-switch button { min-height: 22px; padding: 2px 10px; border-radius: calc(var(--radius-control) - 2px); background: transparent; color: var(--secondaryLabel); font: 600 11px/1.3 var(--font-body); box-shadow: none; }
+html[data-desktop] .goal-horizon-switch button.active { background: var(--surface-1); color: var(--label); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--label) 8%, transparent); }
 html[data-desktop] .weekly-goals-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-2); }
 html[data-desktop] .weekly-goal-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--separator); background: transparent; color: transparent; }
 html[data-desktop] .weekly-goal-check svg { width: 11px; height: 11px; stroke: #fff; stroke-width: 2.2; fill: none; }
@@ -1329,33 +1341,62 @@ html[data-desktop] .timeline-calendar-card .calendar-grid[data-mode="mood"] .cal
 html[data-desktop] .timeline-calendar-legend { display: flex; flex-wrap: nowrap; gap: 10px; margin: var(--space-3) 0 0; font: 500 11px/1.35 var(--font-body); color: var(--secondaryLabel); justify-content: flex-start; min-height: 0; }
 html[data-desktop] .timeline-calendar-legend .legend-mood svg { width: 10px; height: 10px; }
 html[data-desktop] .timeline-entry-list { margin-top: var(--space-4); border-top: 1px solid var(--separator); }
-html[data-desktop] .timeline-entry-row { grid-template-columns: 56px minmax(0, 1fr) auto; padding: 10px 0; border-bottom: 1px solid var(--separator); align-items: start; }
+html[data-desktop] .timeline-entry-row { grid-template-columns: 56px minmax(0, 1fr) auto; padding: 10px 0; border-bottom: 1px solid var(--separator); align-items: start; transition: background-color 120ms ease; }
 html[data-desktop] .timeline-entry-trailing { display: inline-flex; align-items: center; gap: 4px; }
 html[data-desktop] .timeline-entry-date strong { display: block; font: 600 11px/1.2 var(--font-body); }
 html[data-desktop] .timeline-entry-date span { font: var(--text-secondary-ui); color: var(--secondaryLabel); }
 html[data-desktop] .timeline-entry-note { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font: var(--text-body-ui); line-height: 1.45; }
 html[data-desktop] .timeline-entry-mood svg { width: 16px; height: 16px; }
 html[data-desktop] .timeline-detail { min-width: 0; padding: 0 var(--space-6); max-width: 704px; }
-html[data-desktop] .timeline-detail-date { margin: 0 0 var(--space-3); font: 600 22px/1.25 var(--font-body); letter-spacing: -0.02em; }
+html[data-desktop] .timeline-detail-date { margin: 0 0 var(--space-3); font: var(--text-section-title); letter-spacing: -0.01em; }
+html[data-desktop] .timeline-habit-list { display: grid; gap: 0; margin-top: var(--space-2); }
+html[data-desktop] .timeline-habit-row { display: flex; width: 100%; padding: 6px 0; border: 0; border-bottom: 1px solid var(--separator); border-radius: 0; background: transparent; font: var(--text-body-ui); }
 html[data-desktop] .timeline-detail-mood { display: flex; align-items: center; gap: 8px; margin: 0 0 var(--space-4); font: var(--text-body-ui); }
 html[data-desktop] .timeline-detail-mood-glyph svg { width: 16px; height: 16px; }
 html[data-desktop] .timeline-detail-note { max-width: 640px; font: 400 15px/1.6 var(--font-body); white-space: pre-wrap; }
-html[data-desktop] .timeline-habit-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-html[data-desktop] .timeline-habit-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--habit-color, var(--controlAccent)) 12%, transparent); font: var(--text-secondary-ui); white-space: nowrap; }
-html[data-desktop] .timeline-habit-chip .lucide-icon { width: 14px; height: 14px; flex: 0 0 auto; }
+html[data-desktop] .timeline-habit-row .lucide-icon { width: 14px; height: 14px; flex: 0 0 auto; }
 html[data-desktop] body.timeline-no-inspector .content-split { grid-template-columns: minmax(0, 1fr) 0; }
 html[data-desktop] body.timeline-no-inspector .inspector { opacity: 0; pointer-events: none; }
-html[data-desktop] .review-insights { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-bottom: var(--space-5); border: 0; background: transparent; }
-html[data-desktop] .review-insight-block { display: grid; gap: 4px; padding: 0 var(--space-4); border-left: 1px solid var(--separator); }
-html[data-desktop] .review-insight-block:first-child { border-left: 0; padding-left: 0; }
-html[data-desktop] .review-insight-value { font: 600 24px/1.1 var(--font-body); color: var(--label); }
+html[data-desktop] #reviewView > .review-trend-chart,
+html[data-desktop] #reviewView > .review-detailed-metrics,
+html[data-desktop] #reviewView > .review-narrative { order: 0; }
+html[data-desktop] .review-intro { align-items: baseline; margin-bottom: var(--space-2); }
+html[data-desktop] .review-intro #reviewTitle { margin: 0; font: var(--text-section-title); letter-spacing: -0.01em; }
+html[data-desktop] .review-insights { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 0; margin: 0 0 var(--space-4); border: 0; background: transparent; }
+html[data-desktop] .review-insight-block { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 6px; margin: 0; padding: 0 0 0 12px; border: 0; border-left: 1px solid var(--separator); }
+html[data-desktop] .review-insight-block:first-child { padding-left: 0; border-left: 0; }
+html[data-desktop] .review-insight-block + .review-insight-block { margin-left: 12px; }
+html[data-desktop] .review-insight-value { font: 600 13px/1.35 var(--font-body); color: var(--label); }
 html[data-desktop] .review-insight-label { font: 500 12px/1.35 var(--font-body); color: var(--secondaryLabel); }
-html[data-desktop] .review-insight-delta { font: 500 11px/1.35 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .review-insight-delta { font: 500 12px/1.35 var(--font-body); color: var(--secondaryLabel); }
 html[data-desktop] .review-insight-delta.up { color: var(--controlAccent); }
 html[data-desktop] .review-insight-delta.down { color: #c46a5a; }
 html[data-desktop] .review-trend-title { margin: 0 0 var(--space-2); font: 600 13px/1.35 var(--font-body); color: var(--label); }
 html[data-desktop] .review-trend-range { margin-left: var(--space-2); font-weight: 400; color: var(--secondaryLabel); }
-html[data-desktop] .review-trend-chart svg { height: 160px; }
+html[data-desktop] .review-trend-chart { margin-top: var(--space-4); }
+html[data-desktop] .review-trend-chart svg { width: 100%; height: 112px; }
+html[data-desktop] .review-narrative { margin-top: 0; }
+html[data-desktop] .review-narrative-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-2); }
+html[data-desktop] .review-narrative-header h3 { margin: 0; font: var(--text-section-title); }
+html[data-desktop] #reviewDetailedMetrics .panel,
+html[data-desktop] #reviewDetailedMetrics .focus-review-panel { border: 0; background: transparent; border-radius: 0; padding: 0; box-shadow: none; }
+html[data-desktop] #reviewDetailedMetrics .score-grid { grid-template-columns: 1fr; gap: 0; }
+html[data-desktop] #reviewDetailedMetrics .score-card { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: var(--space-3); padding: 8px 0; border: 0; border-bottom: 1px solid var(--separator); border-radius: 0; background: transparent; }
+html[data-desktop] #reviewDetailedMetrics .score-card-header { display: contents; }
+html[data-desktop] #reviewDetailedMetrics .score-card p { grid-column: 1 / -1; margin: 0; }
+html[data-desktop] #reviewDetailedMetrics .score-card strong { margin: 0; font: 600 13px/1.3 var(--font-body); }
+html[data-desktop] #reviewDetailedMetrics .review-grid { grid-template-columns: 1fr; gap: var(--space-5); }
+html[data-desktop] #reviewDetailedMetrics .focus-review-summary { border: 0; border-radius: 0; background: transparent; padding: 0; }
+html[data-desktop] #reviewDetailedMetrics .focus-review-summary > strong { margin: 4px 0; }
+html[data-desktop] #reviewDetailedMetrics .focus-review-summary > strong b { font: 600 22px/1.1 var(--font-body); letter-spacing: -0.02em; }
+html[data-desktop] #reviewDetailedMetrics .focus-review-content { min-height: 0; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr); gap: var(--space-4); padding-top: var(--space-2); align-items: start; }
+html[data-desktop] #reviewDetailedMetrics .focus-review-chart:not(.month-view) { height: 120px; background: none; }
+html[data-desktop] #reviewDetailedMetrics .focus-review-chart.month-view { height: auto; min-height: 0; background: none; }
+html[data-desktop] #reviewDetailedMetrics .focus-heatmap-day { min-height: 32px; border-radius: var(--radius-control); }
+html[data-desktop] #reviewDetailedMetrics .focus-review-scope { padding: 2px; border: 1px solid var(--separator); border-radius: var(--radius-control); background: color-mix(in srgb, var(--label) 4%, transparent); }
+html[data-desktop] #reviewDetailedMetrics .focus-review-scope button { min-height: 22px; padding: 2px 8px; border-radius: calc(var(--radius-control) - 2px); font: 600 11px/1.3 var(--font-body); box-shadow: none; }
+html[data-desktop] #reviewDetailedMetrics .focus-review-scope button.active { background: var(--surface-1); color: var(--label); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--label) 8%, transparent); }
+html[data-desktop] #reviewDetailedMetrics .kicker { font: 600 11px/1.3 var(--font-body); letter-spacing: 0; text-transform: none; color: var(--secondaryLabel); }
 html[data-desktop] .inspector-review-table td:first-child { max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 html[data-desktop] .inspector-review-table th:not(:first-child), html[data-desktop] .inspector-review-table td:not(:first-child) { width: 1%; white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
 html[data-desktop] .inspector-review-focus-title { margin: var(--space-3) 0 var(--space-2); font: 600 11px/1.35 var(--font-body); color: var(--secondaryLabel); }
@@ -1364,8 +1405,9 @@ html[data-desktop] .review-trend-axis { fill: var(--secondaryLabel); font: 500 9
 html[data-desktop] .review-trend-bar { fill: color-mix(in srgb, var(--controlAccent) 45%, var(--separator)); }
 html[data-desktop] .review-trend-bar.high,
 html[data-desktop] .review-trend-bar.today { fill: var(--controlAccent); }
-html[data-desktop] .review-narrative textarea { width: 100%; min-height: 160px; resize: none; border: 0; background: transparent; font: var(--text-body-ui); line-height: 1.55; }
+html[data-desktop] .review-narrative textarea { width: 100%; max-width: 68ch; min-height: 168px; resize: none; border: 0; background: transparent; font: 400 15px/1.6 var(--font-body); line-height: 1.6; padding: 0; }
 html[data-desktop] .review-detailed-metrics summary { font: var(--text-secondary-ui); color: var(--secondaryLabel); }
+html[data-desktop] .habit-settings-list { gap: 0; }
 html[data-desktop] .habits-view-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-3); }
 html[data-desktop] .habits-view-summary { margin: 0; font: var(--text-secondary-ui); color: var(--secondaryLabel); }
 html[data-desktop] .habit-settings-header,
@@ -1426,10 +1468,9 @@ html[data-desktop] .settings-panel textarea:focus-visible { outline: 3px solid c
   html[data-desktop] .timeline-layout { grid-template-columns: 260px minmax(0, 1fr); }
 }
 @media (max-width: 979px) {
-  html[data-desktop] .review-insights { grid-template-columns: 1fr; }
   html[data-desktop] .habit-settings-header { display: none; }
 }
-html[data-desktop] .app-shell { min-height: calc(100vh - var(--desktop-inset)); }
+html[data-desktop] .app-shell { height: calc(100vh - var(--desktop-inset)); min-height: 0; overflow: hidden; }
 html[data-desktop] .sidebar { position: sticky; top: 0; height: calc(100vh - var(--desktop-inset)); margin: 0; border-radius: 0; box-shadow: none; border-width: 0 1px 0 0; }
 html[data-desktop] .main-content { max-width: none; margin: 0; padding: 16px clamp(16px, 2.5vw, 36px) 32px; }
 html[data-desktop] .app-toolbar { min-height: 52px; padding-block: 0; }
@@ -1440,10 +1481,10 @@ html[data-desktop] .toolbar-inspector-toggle { width: 28px; height: 28px; paddin
 html[data-desktop] .toolbar-inspector-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
 html[data-desktop] .toolbar-inspector-toggle:disabled { opacity: .4; cursor: default; }
 html[data-desktop] [data-install-app] { display: none !important; }
-html[data-desktop] .icon-button { width: 44px; height: 44px; }
-html[data-desktop] .nav-item { min-height: 44px; }
+html[data-desktop] .icon-button { width: 28px; height: 28px; }
+html[data-desktop] .nav-item { min-height: 28px; padding-block: 4px; }
 html[data-desktop] .primary-button:not(.focus-start-btn),
-html[data-desktop] .secondary-button:not(.focus-inline-secondary) { min-height: 44px; }
+html[data-desktop] .secondary-button:not(.focus-inline-secondary) { min-height: 28px; padding-block: 4px; }
 
 @media (min-width: 761px) {
   body.sidebar-collapsed .app-shell { grid-template-columns: 64px minmax(0, 1fr); }
@@ -1497,6 +1538,13 @@ html[data-desktop] .habit-context-menu:not([hidden]) { animation: popoverIn var(
   html[data-theme="dark"] .primary-button:hover { background: color-mix(in srgb, var(--accent) 88%, white); }
 }
 
+/* Narrow web/PWA keeps the chart before the reflection. Desktop source order is the document. */
+@media (max-width: 979px) {
+  #reviewView.active { display: flex; flex-direction: column; }
+  #reviewView > .review-trend-chart { order: 3; }
+  #reviewView > .review-detailed-metrics { order: 4; }
+  #reviewView > .review-narrative { order: 5; }
+}
 @media (max-width: 760px) {
   .theme-switcher { order: 2; }
   .sidebar-toggle { display: none; }

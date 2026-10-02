@@ -1772,7 +1772,7 @@ function applyLanguage() {
   $$("#drawerMood button").forEach(button => {
     button.textContent = moodLabel(button.dataset.mood);
   });
-  setText("#sidebarHabitsHeading", languageText("习惯", "Habits", "Gewohnheiten"));
+  setText("#sidebarHabitsHeading", languageText("今日习惯", "Today's habits", "Heutige Gewohnheiten"));
   setText("#habitColName", tr("habits.colName"));
   setText("#habitColTarget", tr("habits.colTarget"));
   setText("#habitColActive", tr("habits.colActive"));
@@ -2899,7 +2899,7 @@ async function renderTimelineDetail() {
     ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<p class="timeline-detail-empty-note">${escapeHtml(tr("timeline.noNote"))}</p>`}
     <div class="timeline-detail-photos" id="timelineDetailPhotos"></div>
     ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
-    ${habits.length ? `<section class="timeline-detail-habits"><h3>${escapeHtml(tr("timeline.habitsHeading"))}</h3><div class="timeline-habit-chips">${habits.map(habit => `<span class="timeline-habit-chip" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))} ${escapeHtml(displayHabitName(habit))}</span>`).join("")}</div></section>` : ""}`;
+    ${habits.length ? `<section class="timeline-detail-habits"><h3>${escapeHtml(tr("timeline.habitsHeading"))}</h3><ul class="timeline-habit-list">${habits.map(habit => `<li class="timeline-habit-row" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul></section>` : ""}`;
   await renderInspectorPhotosInto("#timelineDetailPhotos", date);
 }
 
@@ -3794,7 +3794,7 @@ function renderReviewTrendChart(monthDates) {
     `Last ${elapsed.length} days, averaging ${avg}% completion.`,
     `Letzte ${elapsed.length} Tage, durchschnittlich ${avg} % Erledigung.`,
   );
-  chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))} <span class="review-trend-range">${escapeHtml(`${formatLocalizedDate(parseDate(elapsed[0]), { day: "numeric", month: "short" })} – ${formatLocalizedDate(parseDate(elapsed[elapsed.length - 1]), { day: "numeric", month: "short" })}`)}</span></h3><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${gridLines}${bars}${xLabels}</svg>`;
+  chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))} <span class="review-trend-range">${escapeHtml(`${formatLocalizedDate(parseDate(elapsed[0]), { day: "numeric", month: "short" })} – ${formatLocalizedDate(parseDate(elapsed[elapsed.length - 1]), { day: "numeric", month: "short" })}`)}</span></h3><svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${gridLines}${bars}${xLabels}</svg>`;
 }
 
 function renderReviewInspectorTable(habits, elapsedDates, monthDates) {
@@ -5527,8 +5527,7 @@ function bindEvents() {
   $("#toolbarPrimaryAction")?.addEventListener("click", () => {
     const view = document.body.dataset.activeView || "today";
     if (view === "timeline") return;
-    if (view === "habits") $("#addHabitButton")?.click();
-    else toggleInspector();
+    toggleInspector();
   });
   $("#openSettingsButton")?.addEventListener("click", openSettings);
   $("#closeSettingsPane")?.addEventListener("click", () => {

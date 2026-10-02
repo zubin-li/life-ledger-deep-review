@@ -24,11 +24,11 @@ Open any past or current calendar day to review habit check-ins, mood, and journ
 
 Weekly goals behave like a reminder list: completed work stays visible as evidence. The output area provides room for a narrative review.
 
-### Review: numbers with context
+### Review: a written month
 
-<img src="images/demo-preview/en-desktop/en-04-monthly-review-v3.png" alt="Monthly review, completion rhythm, and habit comparison dashboard" />
+<img src="images/demo-preview/en-desktop/en-04-monthly-review-v3.png" alt="Monthly review written as a document, with a short completion trend" />
 
-Monthly statistics include every active habit, including period-based goals such as resistance training. Compare up to two habits with line or bar views, then write the reflection beneath the data.
+The month opens as a document: one status line, the reflection, then the completion trend. Habit scores and focus time stay in the inspector. Comparison charts remain under Detailed metrics.
 
 ### Focus: see where the time went
 

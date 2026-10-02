@@ -183,6 +183,13 @@
             <h2 id="reviewTitle">June 2026</h2>
           </div>
           <div class="review-insights" id="reviewInsights" aria-live="polite"></div>
+          <section class="review-narrative monthly-reflection-panel">
+            <header class="review-narrative-header">
+              <h3 id="reviewNarrativeTitle">Monthly reflection</h3>
+              <div class="reflection-actions"><span class="review-narrative-autosave" id="reviewNarrativeAutosave">Autosaved</span><button class="secondary-button review-generate-button" id="generateReview" type="button">Start guided review</button></div>
+            </header>
+            <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
+          </section>
           <div class="review-trend-chart" id="reviewTrendChart" aria-label="Monthly completion trend"></div>
           <details class="review-detailed-metrics" id="reviewDetailedMetrics">
             <summary id="reviewDetailedSummary">Detailed metrics</summary>
@@ -228,14 +235,6 @@
               </article>
             </div>
           </details>
-          <section class="review-narrative monthly-reflection-panel">
-            <header class="review-narrative-header">
-              <h3 id="reviewNarrativeTitle">Monthly reflection</h3>
-              <div class="reflection-actions"><button class="secondary-button review-generate-button" id="generateReview" type="button">Start guided review</button></div>
-            </header>
-            <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
-            <span class="review-narrative-autosave" id="reviewNarrativeAutosave">Autosaved</span>
-          </section>
         </section>
 
         <section class="view" id="habitsView">
