@@ -16,6 +16,7 @@
       format: "Choose a supported photo, including JPEG, PNG, WebP, HEIC, or HEIF.", heic: "This HEIC photo could not be decoded. Try the original file again.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
       sourceUnavailable: "macOS did not finish making this photo available. Wait for any iCloud download, then select it again.", processingFailed: "This browser could not prepare the photo. Try the original or export it as JPEG.", session: "Your session has expired. Refresh the page and sign in again.", service: "Private photo storage is temporarily unavailable. Try again shortly.", network: "The photo could not reach private storage. Check your connection and try again.",
       dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", monthlyLimit: "The private photo allowance is paused until next month.", generic: "The photo could not be saved. Try again.",
+      caption: "Caption", replace: "Replace photo", remove: "Remove photo", preview: "Preview photo", drop: "Drop a photo here, or choose a file.", empty: "No photo for this day yet.", undo: "Undo", removed: "Photo removed", loading: "Loading photos…", reorder: "Drag to reorder",
     },
     zh: {
       title: "照片记忆", help: "为这一天留下最多三张私人照片。", add: "添加照片", count: "{count} / 3",
@@ -24,6 +25,7 @@
       format: "请选择支持的照片，包括 JPEG、PNG、WebP、HEIC 或 HEIF。", heic: "这张 HEIC 照片未能解码，请重新选择原始照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
       sourceUnavailable: "macOS 尚未完成照片准备；请等待 iCloud 下载完成后重新选择。", processingFailed: "当前浏览器未能处理这张照片，请尝试原图或先导出为 JPEG。", session: "登录状态已过期，请刷新页面并重新登录。", service: "私人照片存储暂时不可用，请稍后重试。", network: "照片未能连接到私人存储，请检查网络后重试。",
       dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", monthlyLimit: "本月私人照片额度已暂停，下月自动恢复。", generic: "照片未能保存，请重试。",
+      caption: "说明", replace: "替换照片", remove: "移除照片", preview: "预览照片", drop: "把照片拖到这里，或选择文件。", empty: "这一天还没有照片。", undo: "撤销", removed: "已移除照片", loading: "正在载入照片……", reorder: "拖动调整顺序",
     },
     de: {
       title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", add: "Foto hinzufügen", count: "{count} von 3",
@@ -32,6 +34,7 @@
       format: "Wähle ein unterstütztes Foto, einschließlich JPEG, PNG, WebP, HEIC oder HEIF.", heic: "Dieses HEIC-Foto konnte nicht dekodiert werden. Wähle die Originaldatei erneut.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
       sourceUnavailable: "macOS hat das Foto noch nicht bereitgestellt. Warte auf den iCloud-Download und wähle es erneut aus.", processingFailed: "Der Browser konnte das Foto nicht vorbereiten. Versuche das Original oder exportiere es als JPEG.", session: "Deine Sitzung ist abgelaufen. Lade die Seite neu und melde dich erneut an.", service: "Der private Fotospeicher ist vorübergehend nicht verfügbar. Versuche es später erneut.", network: "Das Foto konnte den privaten Speicher nicht erreichen. Prüfe deine Verbindung und versuche es erneut.",
       dayLimit: "Für diesen Tag sind bereits drei Fotos gespeichert.", libraryFull: "Der private Fotospeicher ist voll.", monthlyLimit: "Das private Fotokontingent ist bis zum nächsten Monat pausiert.", generic: "Das Foto konnte nicht gespeichert werden. Versuche es erneut.",
+      caption: "Bildtext", replace: "Foto ersetzen", remove: "Foto entfernen", preview: "Foto ansehen", drop: "Foto hierher ziehen oder eine Datei wählen.", empty: "Noch kein Foto für diesen Tag.", undo: "Widerrufen", removed: "Foto entfernt", loading: "Fotos werden geladen …", reorder: "Ziehen zum Sortieren",
     },
   };
 
@@ -210,45 +213,246 @@
     return data;
   }
 
-  function create(options) {
-    const section = options.section;
-    if (!section) return null;
-    const list = section.querySelector("#moodPhotoList");
-    const input = section.querySelector("#moodPhotoInput");
-    const add = section.querySelector("#moodPhotoAdd");
-    const title = section.querySelector("#moodPhotoTitle");
-    const help = section.querySelector("#moodPhotoHelp");
-    const count = section.querySelector("#moodPhotoCount");
-    const status = section.querySelector("#moodPhotoStatus");
+  const MAX_LIBRARY_PHOTOS = 2000;
+  const CAPTION_LIMIT = 240;
+  const objectUrls = new Map();
+
+  function memoryStore() {
+    const rows = new Map();
+    return {
+      async all() { return [...rows.values()].map(row => ({ ...row })); },
+      async get(id) { return rows.has(id) ? { ...rows.get(id) } : null; },
+      async put(row) { rows.set(row.id, { ...row }); },
+      async delete(id) { rows.delete(id); },
+    };
+  }
+
+  function idbStore() {
+    let dbPromise;
+    function open() {
+      if (!dbPromise) {
+        dbPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open("life-ledger-photos", 1);
+          request.onupgradeneeded = () => {
+            const database = request.result;
+            if (!database.objectStoreNames.contains("photos")) database.createObjectStore("photos", { keyPath: "id" });
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+      return dbPromise;
+    }
+    function run(mode, fn) {
+      return open().then(database => new Promise((resolve, reject) => {
+        const transaction = database.transaction("photos", mode);
+        const store = transaction.objectStore("photos");
+        let request;
+        try { request = fn(store); }
+        catch (error) { reject(error); return; }
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      }));
+    }
+    return {
+      all: () => run("readonly", store => store.getAll()),
+      get: id => run("readonly", store => store.get(id)),
+      put: row => run("readwrite", store => store.put(row)),
+      delete: id => run("readwrite", store => store.delete(id)),
+    };
+  }
+
+  function rememberUrl(id, blob) {
+    const existing = objectUrls.get(id);
+    if (existing) return existing;
+    const url = URL.createObjectURL(blob);
+    objectUrls.set(id, url);
+    return url;
+  }
+
+  function publicRecord(row) {
+    const blob = row.blob instanceof Blob ? row.blob : new Blob([row.blob], { type: row.contentType || "image/jpeg" });
+    return {
+      id: row.id,
+      backupId: row.backupId || row.id,
+      date: row.date,
+      contentType: row.contentType || blob.type,
+      size: Number(row.size || blob.size),
+      width: Number(row.width || 0),
+      height: Number(row.height || 0),
+      createdAt: Number(row.createdAt || 0),
+      caption: String(row.caption || "").slice(0, CAPTION_LIMIT),
+      order: Number(row.order || 0),
+      url: rememberUrl(row.id, blob),
+    };
+  }
+
+  function sortPhotos(rows) {
+    return [...rows].sort((a, b) => (a.order - b.order) || (a.createdAt - b.createdAt));
+  }
+
+  function createLocalLibrary(store = typeof indexedDB === "undefined" ? memoryStore() : idbStore()) {
+    async function rowsFor(date) {
+      const rows = await store.all();
+      return sortPhotos(rows.filter(row => row.date === date));
+    }
+    return {
+      async listRange(from, to) {
+        const rows = await store.all();
+        return sortPhotos(rows.filter(row => row.date >= from && row.date <= to)).map(publicRecord);
+      },
+      async addPrepared(input) {
+        const date = String(input.date || "");
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw Object.assign(new Error("A valid entry date is required"), { code: "PHOTO_REQUEST_INVALID" });
+        const existing = await rowsFor(date);
+        if (existing.length >= MAX_PER_DAY) throw Object.assign(new Error("Day limit"), { code: "PHOTO_DAY_LIMIT" });
+        const all = await store.all();
+        if (all.length >= MAX_LIBRARY_PHOTOS) throw Object.assign(new Error("Library full"), { code: "PHOTO_LIBRARY_FULL" });
+        const blob = input.blob;
+        if (!(blob instanceof Blob) || !blob.size) throw Object.assign(new Error("Photo source unavailable"), { code: "PHOTO_SOURCE_UNAVAILABLE" });
+        const id = input.id || (crypto.randomUUID?.() || `photo-${Date.now()}`);
+        const row = {
+          id,
+          backupId: input.backupId || id,
+          date,
+          contentType: input.contentType || blob.type || "image/jpeg",
+          size: blob.size,
+          width: Number(input.width || 0),
+          height: Number(input.height || 0),
+          createdAt: Number(input.createdAt || Date.now()),
+          caption: String(input.caption || "").slice(0, CAPTION_LIMIT),
+          order: Number.isFinite(input.order) ? input.order : existing.length,
+          blob,
+        };
+        await store.put(row);
+        return publicRecord(row);
+      },
+      async addFile(file, date) {
+        const compressed = await compressPhoto(file);
+        return this.addPrepared({
+          date,
+          blob: compressed.blob,
+          width: compressed.width,
+          height: compressed.height,
+          contentType: compressed.blob.type,
+        });
+      },
+      async updateCaption(id, caption) {
+        const row = await store.get(id);
+        if (!row) return null;
+        row.caption = String(caption || "").slice(0, CAPTION_LIMIT);
+        await store.put(row);
+        return publicRecord(row);
+      },
+      async reorder(date, ids) {
+        const rows = await rowsFor(date);
+        const rank = new Map(ids.map((id, index) => [id, index]));
+        await Promise.all(rows.map(row => {
+          row.order = rank.has(row.id) ? rank.get(row.id) : row.order;
+          return store.put(row);
+        }));
+        return (await rowsFor(date)).map(publicRecord);
+      },
+      async remove(id) {
+        const row = await store.get(id);
+        if (!row) return null;
+        await store.delete(id);
+        const url = objectUrls.get(id);
+        if (url) URL.revokeObjectURL(url);
+        objectUrls.delete(id);
+        return row;
+      },
+      async restoreRecord(row) {
+        if (!row?.id || !row.date) throw Object.assign(new Error("Photo required"), { code: "PHOTO_REQUEST_INVALID" });
+        const existing = await rowsFor(row.date);
+        if (!existing.some(item => item.id === row.id) && existing.length >= MAX_PER_DAY) {
+          throw Object.assign(new Error("Day limit"), { code: "PHOTO_DAY_LIMIT" });
+        }
+        await store.put(row);
+        return publicRecord(row);
+      },
+      async replaceFile(id, file) {
+        const row = await store.get(id);
+        if (!row) return null;
+        const compressed = await compressPhoto(file);
+        row.blob = compressed.blob;
+        row.contentType = compressed.blob.type;
+        row.size = compressed.blob.size;
+        row.width = compressed.width;
+        row.height = compressed.height;
+        const previous = objectUrls.get(id);
+        if (previous) URL.revokeObjectURL(previous);
+        objectUrls.delete(id);
+        await store.put(row);
+        return publicRecord(row);
+      },
+    };
+  }
+
+  function createCloudLibrary() {
+    const captions = new Map();
+    const orders = new Map();
+    function decorate(photo, index) {
+      return { ...photo, caption: captions.get(photo.id) || "", order: orders.get(photo.id) ?? index };
+    }
+    return {
+      async listRange(from, to) {
+        const data = await responseJson(await fetch(`/api/photos?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { credentials: "same-origin" }));
+        return (data.photos || []).map(decorate);
+      },
+      async addFile(file, date) {
+        const compressed = await compressPhoto(file);
+        const form = new FormData();
+        form.set("photo", compressed.blob, `life-ledger-${date}.${compressed.blob.type === "image/webp" ? "webp" : "jpg"}`);
+        form.set("date", date);
+        form.set("width", String(compressed.width));
+        form.set("height", String(compressed.height));
+        const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
+        return decorate(data.photo, 0);
+      },
+      async updateCaption(id, caption) {
+        captions.set(id, String(caption || "").slice(0, CAPTION_LIMIT));
+        return { id, caption: captions.get(id) };
+      },
+      async reorder(date, ids) {
+        ids.forEach((id, index) => orders.set(id, index));
+        const data = await responseJson(await fetch(`/api/photos?date=${encodeURIComponent(date)}`, { credentials: "same-origin" }));
+        return (data.photos || []).map(decorate).sort((a, b) => a.order - b.order);
+      },
+      async remove(id) {
+        await responseJson(await fetch(`/api/photos/${encodeURIComponent(id)}`, { method: "DELETE", credentials: "same-origin" }));
+        captions.delete(id);
+        return { id };
+      },
+      async restoreRecord() { return null; },
+      async replaceFile(id, file, date) {
+        await this.remove(id);
+        return this.addFile(file, date);
+      },
+    };
+  }
+
+  function openLightbox(photo) {
+    const dialog = document.getElementById("photoLightbox");
+    const image = document.getElementById("photoLightboxImage");
+    const caption = document.getElementById("photoLightboxCaption");
+    if (!dialog || !image) return;
+    image.src = photo.url;
+    image.width = photo.width || 720;
+    image.height = photo.height || 720;
+    if (caption) caption.textContent = photo.caption || "";
+    if (!dialog.open) dialog.showModal();
+  }
+
+  function create(options = {}) {
+    const transport = options.transport || "local";
+    const library = transport === "cloud" ? createCloudLibrary() : createLocalLibrary(options.store);
     let language = options.language || "en";
-    let enabled = Boolean(options.enabled);
-    let date = "";
-    let photos = [];
-    let busy = false;
-    let requestVersion = 0;
+    let enabled = options.enabled !== false;
+    const mounts = new Set();
 
     const t = (key, values = {}) => (copy[language]?.[key] || copy.en[key] || key)
       .replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
-
-    function setStatus(message = "", error = false) {
-      status.textContent = message;
-      status.classList.toggle("error", error);
-      status.hidden = !message;
-    }
-
-    function render() {
-      section.hidden = !enabled;
-      title.textContent = t("title");
-      help.textContent = enabled ? t("help") : t("unavailable");
-      add.querySelector("span").textContent = t("add");
-      add.disabled = busy || photos.length >= MAX_PER_DAY;
-      count.textContent = t("count", { count: photos.length });
-      list.innerHTML = photos.map(photo => `<figure class="mood-photo-thumb" data-photo-id="${photo.id}">
-        <img src="${photo.url}" alt="" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" />
-        <button type="button" aria-label="${t("delete")}" title="${t("delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-      </figure>`).join("");
-      list.querySelectorAll("button").forEach(button => button.addEventListener("click", () => removePhoto(button.closest("figure").dataset.photoId)));
-    }
 
     function errorText(error) {
       if (error?.code === "PHOTO_FORMAT_UNSUPPORTED" || error?.code === "PHOTO_SIGNATURE_INVALID") return t("format");
@@ -266,104 +470,304 @@
       return t("generic");
     }
 
-    async function load(nextDate) {
-      date = nextDate;
-      const version = ++requestVersion;
-      photos = [];
-      setStatus("");
-      render();
-      if (!enabled || !date) return [];
-      try {
-        const data = await responseJson(await fetch(`/api/photos?date=${encodeURIComponent(date)}`, { credentials: "same-origin" }));
-        if (version !== requestVersion) return photos;
-        photos = data.photos || [];
-        render();
-        return photos;
-      } catch (error) {
-        if (version === requestVersion) setStatus(errorText(error), true);
-        return [];
-      }
-    }
+    function mount(section) {
+      if (!section) return null;
+      const list = section.querySelector("[data-photo-list]");
+      const input = section.querySelector("[data-photo-input]");
+      const add = section.querySelector("[data-photo-add]");
+      const title = section.querySelector("[data-photo-title]");
+      const help = section.querySelector("[data-photo-help]");
+      const count = section.querySelector("[data-photo-count]");
+      const status = section.querySelector("[data-photo-status]");
+      const empty = section.querySelector("[data-photo-empty]");
+      const drop = section.querySelector("[data-photo-drop]");
+      const replaceInput = section.querySelector("[data-photo-replace]");
+      let date = "";
+      let photos = [];
+      let busy = false;
+      let requestVersion = 0;
+      let selectedId = "";
+      let replaceId = "";
 
-    async function upload(file) {
-      if (!enabled || busy || !date || photos.length >= MAX_PER_DAY) return;
-      busy = true;
-      setStatus(t("processing"));
-      render();
-      try {
-        const compressed = await compressPhoto(file);
-        setStatus(t("uploading"));
-        const form = new FormData();
-        form.set("photo", compressed.blob, `life-ledger-${date}.${compressed.blob.type === "image/webp" ? "webp" : "jpg"}`);
-        form.set("date", date);
-        form.set("width", String(compressed.width));
-        form.set("height", String(compressed.height));
-        const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
-        photos.push(data.photo);
-        setStatus(t("saved"));
+      function setStatus(message = "", error = false) {
+        if (!status) return;
+        status.textContent = message;
+        status.classList.toggle("error", error);
+        status.hidden = !message;
+      }
+
+      function notify() {
         options.onChange?.({ date, photos: [...photos] });
-        options.onToast?.(t("saved"));
-      } catch (error) {
-        setStatus(errorText(error), true);
-      } finally {
-        busy = false;
-        input.value = "";
+        mounts.forEach(handle => {
+          if (handle !== self && handle.currentDate() === date) handle.load(date, { force: true });
+        });
+      }
+
+      function render() {
+        section.hidden = !enabled;
+        if (title) title.textContent = t("title");
+        if (help) help.textContent = enabled ? t("help") : t("unavailable");
+        if (add) {
+          const label = add.querySelector("span");
+          if (label) label.textContent = t("add");
+          add.disabled = busy || photos.length >= MAX_PER_DAY || !date;
+        }
+        if (count) count.textContent = t("count", { count: photos.length });
+        if (empty) {
+          empty.hidden = photos.length > 0;
+          empty.textContent = t("empty");
+        }
+        if (!list) return;
+        list.innerHTML = photos.map(photo => `<figure class="photo-thumb mood-photo-thumb ${photo.id === selectedId ? "is-selected" : ""}" data-photo-id="${photo.id}" draggable="true" tabindex="0">
+          <button type="button" class="photo-thumb-open" aria-label="${t("preview")}"><img src="${photo.url}" alt="${escapeAttr(photo.caption)}" width="${photo.width || 720}" height="${photo.height || 720}" /></button>
+          <input class="photo-caption" data-photo-caption maxlength="${CAPTION_LIMIT}" value="${escapeAttr(photo.caption)}" aria-label="${t("caption")}" placeholder="${t("caption")}" />
+          <div class="photo-thumb-actions">
+            <button type="button" data-photo-action="replace" aria-label="${t("replace")}">${t("replace")}</button>
+            <button type="button" data-photo-action="remove" aria-label="${t("remove")}">${t("remove")}</button>
+          </div>
+        </figure>`).join("");
+      }
+
+      async function refresh() {
+        const version = ++requestVersion;
+        if (!enabled || !date) {
+          photos = [];
+          render();
+          return [];
+        }
+        setStatus(t("loading"));
+        try {
+          photos = sortPhotos(await library.listRange(date, date));
+          if (version !== requestVersion) return photos;
+          setStatus("");
+          render();
+          return photos;
+        } catch (error) {
+          if (version === requestVersion) setStatus(errorText(error), true);
+          return [];
+        }
+      }
+
+      async function load(nextDate, { force = false } = {}) {
+        if (!force && nextDate === date) return photos;
+        date = nextDate;
+        selectedId = "";
+        return refresh();
+      }
+
+      async function upload(file, fromKeyboard = false) {
+        if (!enabled || busy || !date || photos.length >= MAX_PER_DAY || !file) return;
+        busy = true;
+        setStatus(t("processing"));
+        render();
+        try {
+          const photo = await library.addFile(file, date);
+          photos = sortPhotos([...photos, photo]);
+          setStatus(t("saved"));
+          notify();
+          options.onToast?.(t("saved"));
+          if (!fromKeyboard) section.querySelector(`[data-photo-id="${photo.id}"]`)?.classList.add("photo-enter");
+        } catch (error) {
+          setStatus(errorText(error), true);
+        } finally {
+          busy = false;
+          if (input) input.value = "";
+          render();
+        }
+      }
+
+      async function removePhoto(id, fromKeyboard = false) {
+        if (busy || !id) return;
+        const removed = photos.find(photo => photo.id === id);
+        busy = true;
+        setStatus(t("deleting"));
+        try {
+          const record = await library.remove(id);
+          photos = photos.filter(photo => photo.id !== id);
+          setStatus("");
+          notify();
+          if (record && transport === "local") {
+            options.onUndo?.({
+              message: t("removed"),
+              label: t("undo"),
+              restore: async () => {
+                const restored = await library.restoreRecord(record);
+                if (date === removed?.date) {
+                  photos = sortPhotos([...photos.filter(photo => photo.id !== restored.id), restored]);
+                  render();
+                  notify();
+                }
+              },
+            });
+          }
+          if (fromKeyboard) selectedId = photos[0]?.id || "";
+        } catch (error) {
+          setStatus(errorText(error), true);
+        } finally {
+          busy = false;
+          render();
+        }
+      }
+
+      function bind() {
+        add?.addEventListener("click", event => {
+          if (event.detail === 0) section.classList.add("photo-from-keyboard");
+          input?.click();
+        });
+        input?.addEventListener("change", () => upload(input.files?.[0], section.classList.contains("photo-from-keyboard")));
+        replaceInput?.addEventListener("change", async () => {
+          const file = replaceInput.files?.[0];
+          const id = replaceId;
+          replaceInput.value = "";
+          if (!file || !id) return;
+          busy = true;
+          setStatus(t("processing"));
+          try {
+            const photo = await library.replaceFile(id, file, date);
+            photos = photos.map(item => item.id === id ? photo : item).filter(Boolean);
+            if (photo && photo.id !== id) photos = sortPhotos(photos.filter(item => item.id !== id).concat(photo));
+            setStatus(t("saved"));
+            notify();
+          } catch (error) {
+            setStatus(errorText(error), true);
+          } finally {
+            busy = false;
+            render();
+          }
+        });
+        drop?.addEventListener("dragover", event => {
+          event.preventDefault();
+          drop.classList.add("is-dropping");
+        });
+        drop?.addEventListener("dragleave", () => drop.classList.remove("is-dropping"));
+        drop?.addEventListener("drop", event => {
+          event.preventDefault();
+          drop.classList.remove("is-dropping");
+          const file = [...(event.dataTransfer?.files || [])].find(isPhotoFile);
+          if (!file) {
+            setStatus(t("format"), true);
+            return;
+          }
+          upload(file);
+        });
+        list?.addEventListener("click", event => {
+          const figure = event.target.closest("[data-photo-id]");
+          if (!figure) return;
+          selectedId = figure.dataset.photoId;
+          const action = event.target.closest("[data-photo-action]")?.dataset.photoAction;
+          if (action === "remove") removePhoto(selectedId, event.detail === 0);
+          else if (action === "replace") {
+            replaceId = selectedId;
+            replaceInput?.click();
+          } else if (event.target.closest(".photo-thumb-open")) {
+            const photo = photos.find(item => item.id === selectedId);
+            if (photo) openLightbox(photo);
+          }
+        });
+        list?.addEventListener("change", event => {
+          const caption = event.target.closest("[data-photo-caption]");
+          const figure = caption?.closest("[data-photo-id]");
+          if (!caption || !figure) return;
+          const photo = photos.find(item => item.id === figure.dataset.photoId);
+          if (!photo) return;
+          photo.caption = caption.value.slice(0, CAPTION_LIMIT);
+          library.updateCaption(photo.id, photo.caption).catch(error => setStatus(errorText(error), true));
+        });
+        list?.addEventListener("dragstart", event => {
+          const figure = event.target.closest("[data-photo-id]");
+          if (!figure) return;
+          event.dataTransfer?.setData("text/plain", figure.dataset.photoId);
+        });
+        list?.addEventListener("dragover", event => event.preventDefault());
+        list?.addEventListener("drop", async event => {
+          const target = event.target.closest("[data-photo-id]");
+          const sourceId = event.dataTransfer?.getData("text/plain");
+          if (!target || !sourceId || target.dataset.photoId === sourceId) return;
+          event.preventDefault();
+          event.stopPropagation();
+          const ids = photos.map(photo => photo.id);
+          const from = ids.indexOf(sourceId);
+          const to = ids.indexOf(target.dataset.photoId);
+          if (from < 0 || to < 0) return;
+          ids.splice(to, 0, ids.splice(from, 1)[0]);
+          photos = await library.reorder(date, ids);
+          render();
+          notify();
+        });
+        list?.addEventListener("keydown", event => {
+          const figures = [...list.querySelectorAll("[data-photo-id]")];
+          if (!figures.length) return;
+          const current = figures.findIndex(figure => figure.dataset.photoId === selectedId);
+          if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowUp") {
+            event.preventDefault();
+            const next = current < 0 ? 0 : current + (event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1);
+            const figure = figures[(next + figures.length) % figures.length];
+            selectedId = figure.dataset.photoId;
+            render();
+            list.querySelector(`[data-photo-id="${selectedId}"]`)?.focus();
+          } else if (event.key === "Enter") {
+            const photo = photos.find(item => item.id === selectedId);
+            if (photo) openLightbox(photo);
+          } else if (event.key === "Backspace" || event.key === "Delete") {
+            if (event.target.matches("input, textarea")) return;
+            event.preventDefault();
+            removePhoto(selectedId, true);
+          }
+        });
         render();
       }
+
+      const handle = { load, photos: () => [...photos], render, section, currentDate: () => date };
+      const self = handle;
+      mounts.add(handle);
+      bind();
+      return handle;
     }
 
-    async function removePhoto(id) {
-      if (busy || !root.confirm(t("confirmDelete"))) return;
-      busy = true;
-      setStatus(t("deleting"));
-      render();
-      try {
-        await responseJson(await fetch(`/api/photos/${encodeURIComponent(id)}`, { method: "DELETE", credentials: "same-origin" }));
-        photos = photos.filter(photo => photo.id !== id);
-        setStatus("");
-        options.onChange?.({ date, photos: [...photos] });
-      } catch (error) {
-        setStatus(errorText(error), true);
-      } finally {
-        busy = false;
-        render();
-      }
-    }
-
-    async function listRange(from, to) {
-      if (!enabled) return [];
-      const data = await responseJson(await fetch(`/api/photos?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { credentials: "same-origin" }));
-      return data.photos || [];
-    }
-
-    async function restorePhoto(photo, blob) {
-      if (!enabled) throw new Error(t("unavailable"));
-      const form = new FormData();
-      form.set("photo", blob, `life-ledger-${photo.date}.${blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg"}`);
-      form.set("date", photo.date);
-      form.set("width", String(photo.width || 1));
-      form.set("height", String(photo.height || 1));
-      form.set("sourceId", photo.backupId || photo.id);
-      const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
-      if (date === photo.date && !photos.some(item => item.id === data.photo.id)) {
-        photos.push(data.photo);
-        render();
-      }
-      return data.photo;
-    }
-
-    add.addEventListener("click", () => input.click());
-    input.addEventListener("change", () => input.files?.[0] && upload(input.files[0]));
-    render();
+    const primary = options.section ? mount(options.section) : null;
     return {
-      load,
-      listRange,
-      restorePhoto,
-      setLanguage(next) { language = copy[next] ? next : "en"; render(); },
-      setEnabled(next) { enabled = Boolean(next); render(); },
-      photos() { return [...photos]; },
+      load: date => primary ? primary.load(date) : Promise.resolve([]),
+      listRange: (from, to) => enabled ? library.listRange(from, to) : Promise.resolve([]),
+      async restorePhoto(photo, blob) {
+        if (!enabled) throw new Error(t("unavailable"));
+        if (transport === "cloud") {
+          const form = new FormData();
+          form.set("photo", blob, `life-ledger-${photo.date}.${blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg"}`);
+          form.set("date", photo.date);
+          form.set("width", String(photo.width || 1));
+          form.set("height", String(photo.height || 1));
+          form.set("sourceId", photo.backupId || photo.id);
+          const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
+          return data.photo;
+        }
+        const restored = await library.addPrepared({
+          id: photo.backupId || photo.id,
+          backupId: photo.backupId || photo.id,
+          date: photo.date,
+          blob,
+          width: photo.width,
+          height: photo.height,
+          contentType: photo.contentType || blob.type,
+          caption: photo.caption,
+          order: photo.order,
+          createdAt: photo.createdAt,
+        });
+        mounts.forEach(handle => { if (handle.section.isConnected && handle.currentDate()) handle.load(handle.currentDate()); });
+        return restored;
+      },
+      setLanguage(next) { language = copy[next] ? next : "en"; mounts.forEach(handle => handle.render()); },
+      setEnabled(next) { enabled = Boolean(next); mounts.forEach(handle => handle.render()); },
+      photos: () => primary?.photos() || [],
+      mount,
     };
   }
 
-  root.LifeLedgerPhotoMemories = { MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile };
+  function escapeAttr(value) {
+    return String(value || "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+  }
+
+  root.LifeLedgerPhotoMemories = {
+    MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile,
+    createLocalLibrary, memoryStore,
+  };
 })(window);

@@ -28,7 +28,7 @@ Weekly goals behave like a reminder list: completed work stays visible as eviden
 
 <img src="images/demo-preview/en-desktop/en-04-monthly-review-v3.png" alt="Monthly review written as a document, with a short completion trend" />
 
-The month opens as a document: one status line, the reflection, then the completion trend. Habit scores and focus time stay in the inspector. Comparison charts remain under Detailed metrics.
+The month opens as a document: one status line, the reflection, then the completion trend. Habit scores and focus time stay in the inspector. Comparison charts remain under Detailed metrics. Today and Timeline can hold up to three private photos for a day; they stay on this device.
 
 ### Focus: see where the time went
 

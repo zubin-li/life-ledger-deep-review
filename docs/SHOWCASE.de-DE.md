@@ -28,7 +28,7 @@ Erledigte Wochenziele bleiben als sichtbarer Fortschritt erhalten. Der Rückblic
 
 <img src="images/demo-preview/de-desktop/de-04-monthly-review-v3.png" alt="Monatsrückblick als Dokument mit kurzem Erledigungstrend" />
 
-Der Monat beginnt als Dokument: eine Statuszeile, die Reflexion, danach der kurze Erledigungstrend. Gewohnheitswerte und Fokuszeit bleiben im Inspektor. Vergleichsdiagramme liegen unter „Detaillierte Werte“.
+Der Monat beginnt als Dokument: eine Statuszeile, die Reflexion, danach der kurze Erledigungstrend. Gewohnheitswerte und Fokuszeit bleiben im Inspektor. Vergleichsdiagramme liegen unter „Detaillierte Werte“. Heute und die Zeitleiste können bis zu drei private Fotos für einen Tag aufbewahren; sie bleiben auf diesem Gerät.
 
 ### Fokus: sehen, wohin die Zeit geflossen ist
 

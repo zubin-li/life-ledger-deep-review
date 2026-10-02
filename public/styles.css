@@ -56,6 +56,9 @@
 
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
+  --motion-button: 140ms;
+  --motion-popover: 160ms;
+  --motion-panel: 240ms;
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   /* Motion: micro 110-140ms, normal 180-220ms, macro 240-300ms — new tokens for 2.0 rules. */
   --duration-micro: 120ms;
@@ -2421,4 +2424,42 @@ html[data-theme="dark"] .review-scope-switch button.active, html[data-theme="dar
 @media (prefers-reduced-motion: reduce) {
   .daily-tool-viewport { scroll-behavior: auto; }
   .focus-mini-status.running .focus-mini-pulse { animation: none; }
+  .photo-thumb, .photo-lightbox, .timeline-filter button, .photo-drop { animation: none !important; transition: none !important; }
 }
+
+/* v4: journal, local photos, week lede, streak calendar */
+html[data-desktop] .today-journal { margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--separator); display: grid; gap: 18px; }
+html[data-desktop] .today-journal .inspector-section { padding: 0; }
+.week-plan-lede { margin: 0 0 12px; color: var(--secondaryLabel, var(--muted)); font: 500 12px/1.45 var(--font-body); }
+.timeline-filter { display: flex; gap: 4px; margin: 8px 0; }
+.timeline-filter button { min-height: 22px; padding: 2px 8px; border: 0; border-radius: var(--radius-control, 6px); background: transparent; color: var(--secondaryLabel, var(--muted)); font: 600 11px/1.3 var(--font-body); transition: background-color var(--motion-button) var(--ease-enter), color var(--motion-button) var(--ease-enter); }
+.timeline-filter button.active { background: color-mix(in srgb, var(--label, var(--ink)) 8%, transparent); color: var(--label, var(--ink)); }
+.photo-drop { min-height: 64px; border-radius: var(--radius-row, 8px); transition: outline-color var(--motion-button) var(--ease-enter); }
+.photo-drop.is-dropping { outline: 1px solid var(--controlAccent, var(--sage)); outline-offset: 2px; }
+.photo-drop-empty { margin: 0; color: var(--secondaryLabel, var(--muted)); font-size: 12px; }
+.mood-photo-list, [data-photo-list] { display: flex; flex-wrap: wrap; gap: 10px; }
+.photo-library .photo-thumb { position: relative; aspect-ratio: auto; overflow: visible; width: 168px; margin: 0; border: 0; background: transparent; display: grid; gap: 6px; transition: opacity var(--motion-button) var(--ease-enter); }
+.photo-library .photo-thumb .photo-thumb-open,
+.photo-library .photo-thumb .photo-thumb-actions button { position: static; width: auto; height: auto; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--secondaryLabel, var(--muted)); backdrop-filter: none; }
+.photo-library .photo-thumb .photo-thumb-open { width: 100%; }
+.photo-library .photo-thumb img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; display: block; border-radius: 8px; }
+.photo-library-story .photo-thumb:first-child { width: min(100%, 480px); }
+.photo-library-story .photo-thumb:first-child img { aspect-ratio: 16 / 10; }
+.photo-thumb.is-selected { outline: 1px solid var(--controlAccent, var(--sage)); outline-offset: 2px; border-radius: 8px; }
+.photo-thumb img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; background: var(--surface-2); }
+.photo-thumb-open { padding: 0; border: 0; background: transparent; }
+.photo-caption { width: 100%; border: 0; border-bottom: 1px solid var(--separator, var(--line)); background: transparent; font-size: 12px; }
+.photo-thumb-actions { display: flex; gap: 8px; }
+.photo-thumb-actions button { padding: 0; border: 0; background: transparent; color: var(--secondaryLabel, var(--muted)); font-size: 11px; }
+.photo-library-story .photo-thumb:first-child { width: min(100%, 520px); }
+.photo-library-story .photo-thumb:first-child img { aspect-ratio: 16 / 10; }
+.photo-enter { animation: photoIn var(--motion-button) var(--ease-enter); }
+@keyframes photoIn { from { opacity: 0; } to { opacity: 1; } }
+.photo-lightbox { width: min(860px, calc(100vw - 48px)); border: 0; border-radius: 12px; padding: 16px; background: var(--surface-0, var(--paper)); color: inherit; }
+.photo-lightbox img { display: block; width: 100%; max-height: 70vh; object-fit: contain; background: var(--surface-2); }
+.photo-lightbox p { margin: 8px 0 0; font-size: 13px; }
+.habit-streak-calendar { margin: 8px 0 12px; }
+.habit-streak-calendar p { margin: 0 0 8px; font-size: 12px; color: var(--secondaryLabel, var(--muted)); }
+.habit-streak-grid { display: grid; grid-template-columns: repeat(7, 12px); gap: 3px; }
+.habit-streak-grid i { width: 12px; height: 12px; border-radius: 2px; background: var(--surface-3, var(--paper-deep)); }
+.habit-streak-grid i.done { background: var(--controlAccent, var(--sage)); }

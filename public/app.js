@@ -1376,6 +1376,7 @@ let timelineCursor = new Date();
 timelineCursor.setDate(1);
 timelineCursor.setHours(12, 0, 0, 0);
 let timelineRenderVersion = 0;
+let timelineRendering = false;
 let googleCalendar = {
   configured: false,
   connected: false,
@@ -1773,6 +1774,14 @@ function applyLanguage() {
     button.textContent = moodLabel(button.dataset.mood);
   });
   setText("#sidebarHabitsHeading", languageText("今日习惯", "Today's habits", "Heutige Gewohnheiten"));
+  $$("[data-timeline-filter]").forEach(button => {
+    const key = button.dataset.timelineFilter;
+    button.textContent = key === "photos"
+      ? languageText("有照片", "Photos", "Fotos")
+      : key === "notes"
+        ? languageText("有笔记", "Notes", "Notizen")
+        : languageText("全部", "All", "Alle");
+  });
   setText("#habitColName", tr("habits.colName"));
   setText("#habitColTarget", tr("habits.colTarget"));
   setText("#habitColActive", tr("habits.colActive"));
@@ -2632,6 +2641,8 @@ function renderWeekAgenda() {
   if (!agenda) return;
   const { monday } = weekDatesFromKey(selectedWorkspaceWeek);
   const todayKey = isoDate(new Date());
+  let weekDone = 0;
+  let weekTotal = 0;
   agenda.innerHTML = Array.from({ length: 7 }, (_, index) => {
     const date = new Date(monday);
     date.setDate(monday.getDate() + index);
@@ -2640,6 +2651,10 @@ function renderWeekAgenda() {
     const scored = dailyHabits(key);
     const completed = scored.filter(habit => log.completed.includes(habit.id)).length;
     const future = key > todayKey;
+    if (!future) {
+      weekDone += completed;
+      weekTotal += scored.length;
+    }
     const progressLabel = future ? "—" : (scored.length ? `${completed}/${scored.length}` : "0/0");
     const moodGlyph = log.mood ? `<span class="week-agenda-mood" aria-label="${escapeHtml(moodLabel(log.mood))}">${moodCalendarIcon(log.mood)}</span>` : "<span class=\"week-agenda-mood empty\" aria-hidden=\"true\"></span>";
     const note = String(log.note || "").trim().split("\n")[0] || tr("week.noEntry");
@@ -2674,6 +2689,14 @@ function renderWeekAgenda() {
       }
     });
   });
+  const lede = $("#weekPlanLede");
+  if (lede) {
+    lede.textContent = languageText(
+      `本周已完成 ${weekDone} / ${weekTotal}。点一天查看，双击进入今日。`,
+      `${weekDone} of ${weekTotal} done this week. Select a day, or press Enter to open it in Today.`,
+      `${weekDone} von ${weekTotal} diese Woche erledigt. Tag wählen oder mit Enter in Heute öffnen.`,
+    );
+  }
 }
 
 function renderWeeklyWorkspace() {
@@ -2897,10 +2920,17 @@ async function renderTimelineDetail() {
       ${log.mood ? `<p class="timeline-detail-mood"><span class="timeline-detail-mood-glyph">${moodCalendarIcon(log.mood)}</span><span>${escapeHtml(moodLabel(log.mood))}</span></p>` : ""}
     </header>
     ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<p class="timeline-detail-empty-note">${escapeHtml(tr("timeline.noNote"))}</p>`}
-    <div class="timeline-detail-photos" id="timelineDetailPhotos"></div>
+    <section class="photo-library photo-library-story" id="timelineDetailPhotos" data-photo-editor>
+      <div class="mood-photo-heading"><div><strong data-photo-title></strong><small data-photo-help></small></div><span data-photo-count></span></div>
+      <div class="photo-drop" data-photo-drop><p class="photo-drop-empty" data-photo-empty></p><div class="mood-photo-list" data-photo-list></div></div>
+      <button class="mood-photo-add" data-photo-add type="button"><span></span></button>
+      <input data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+      <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+      <p class="mood-photo-status" data-photo-status role="status" hidden></p>
+    </section>
     ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
     ${habits.length ? `<section class="timeline-detail-habits"><h3>${escapeHtml(tr("timeline.habitsHeading"))}</h3><ul class="timeline-habit-list">${habits.map(habit => `<li class="timeline-habit-row" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul></section>` : ""}`;
-  await renderInspectorPhotosInto("#timelineDetailPhotos", date);
+  photoMemories?.mount($("#timelineDetailPhotos"))?.load(date);
 }
 
 function renderTimelineInspector() {
@@ -2918,8 +2948,15 @@ async function renderInspectorPhotosInto(selector, date) {
   }
 }
 
+function applyTimelineFilter(entries) {
+  if (timelineFilter === "photos") return entries.filter(entry => (calendarPhotosByDate.get(entry.date) || []).length);
+  if (timelineFilter === "notes") return entries.filter(entry => String(entry.log.note || "").trim());
+  return entries;
+}
+
 async function renderTimeline() {
   const version = ++timelineRenderVersion;
+  timelineRendering = true;
   cursor = new Date(timelineCursor);
   cursor.setHours(12, 0, 0, 0);
   renderCalendar();
@@ -2930,19 +2967,26 @@ async function renderTimeline() {
   } catch {
     photos = [];
   }
-  if (version !== timelineRenderVersion) return;
+  if (version !== timelineRenderVersion) {
+    timelineRendering = false;
+    return;
+  }
+  [...calendarPhotosByDate.keys()].filter(day => day >= from && day <= to).forEach(day => calendarPhotosByDate.delete(day));
+  photos.forEach(photo => calendarPhotosByDate.set(photo.date, [...(calendarPhotosByDate.get(photo.date) || []), photo]));
   const photoDates = new Set(photos.map(photo => photo.date));
   const entries = timelineEntriesForMonth(timelineCursor);
   photoDates.forEach(date => {
     if (!entries.some(entry => entry.date === date)) entries.push({ date, log: getLog(date) });
   });
   entries.sort((a, b) => b.date.localeCompare(a.date));
-  if (!entries.some(entry => entry.date === selectedTimelineDate)) {
-    selectedTimelineDate = entries[0]?.date || isoDate(new Date());
+  const visibleEntries = applyTimelineFilter(entries);
+  if (!visibleEntries.some(entry => entry.date === selectedTimelineDate)) {
+    selectedTimelineDate = visibleEntries[0]?.date || "";
   }
-  renderTimelineEntryList(entries);
+  renderTimelineEntryList(visibleEntries);
   void renderTimelineDetail();
   $$(".calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
+  timelineRendering = false;
 }
 function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
@@ -3140,6 +3184,7 @@ function renderToday() {
   bindTodayHabitRows();
   renderTodayEventsStrip();
   renderHomeJournal();
+  void todayPhotoMount?.load(date);
 }
 
 function renderInspector() {
@@ -3156,31 +3201,20 @@ function renderInspector() {
   const events = calendarEventsForDate(date).filter(event => !event.routine);
   const contextList = $("#inspectorContextList");
   if (contextList) {
-    const photoCount = ($("#inspectorDayPhotos")?.querySelectorAll("img") || []).length;
+    const photoCount = (calendarPhotosByDate.get(date) || []).length || todayPhotoMount?.photos?.().filter(photo => photo.date === date).length || 0;
     contextList.innerHTML = [
       `<li>${escapeHtml(tr("today.eventsCount", { count: events.length }))}</li>`,
       photoCount ? `<li>${escapeHtml(tr("drawer.photoCount", { count: photoCount }))}</li>` : "",
     ].filter(Boolean).join("");
   }
   setText("#inspectorEventsCount", tr("today.eventsCount", { count: events.length }));
-  void renderInspectorPhotos(date);
+  const inspectorPhotos = $("#inspectorDayPhotos");
+  if (inspectorPhotos) {
+    inspectorPhotos.hidden = true;
+    inspectorPhotos.innerHTML = "";
+  }
   const stats = focusStatsForToday();
   setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
-}
-
-async function renderInspectorPhotos(date) {
-  const container = $("#inspectorDayPhotos");
-  await renderInspectorPhotosInto("#inspectorDayPhotos", date);
-  if (container) container.hidden = !container.innerHTML;
-  const events = calendarEventsForDate(date).filter(event => !event.routine);
-  const photoCount = container?.querySelectorAll("img").length || 0;
-  const contextList = $("#inspectorContextList");
-  if (contextList) {
-    contextList.innerHTML = [
-      `<li>${escapeHtml(tr("today.eventsCount", { count: events.length }))}</li>`,
-      photoCount ? `<li>${escapeHtml(tr("drawer.photoCount", { count: photoCount }))}</li>` : "",
-    ].filter(Boolean).join("");
-  }
 }
 
 function renderToolbarDateNav() {
@@ -3417,25 +3451,31 @@ function initVoiceReflection() {
   }
 }
 
+let todayPhotoMount = null;
+let timelineFilter = "all";
+
 function initPhotoMemories() {
   if (!window.LifeLedgerPhotoMemories) return;
   photoMemories = window.LifeLedgerPhotoMemories.create({
     section: $("#moodPhotoSection"),
-    enabled: hostedCloudMode,
+    transport: hostedCloudMode ? "cloud" : "local",
+    enabled: true,
     language: currentLang,
     onToast: showToast,
+    onUndo: ({ message, label, restore }) => showToast(message, { actionLabel: label, onAction: () => { void restore(); } }),
     onChange: ({ date, photos }) => {
       calendarPhotosByDate.set(date, photos);
       calendarPhotoLoadedMonths.delete(date.slice(0, 7));
       renderCalendar();
       if ($("#dayDrawer")?.classList.contains("open") && selectedDate === date) renderDrawerMemory(date);
-      if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
+      if ($("#timelineView")?.classList.contains("active") && !timelineRendering) void renderTimeline();
     },
   });
+  todayPhotoMount = photoMemories.mount($("#todayPhotoSection"));
 }
 
 async function loadCalendarPhotoMonth(date) {
-  if (!photoMemories || !hostedCloudMode) return;
+  if (!photoMemories) return;
   const key = monthKey(date);
   if (calendarPhotoLoadedMonths.has(key) || calendarPhotoLoadingMonths.has(key)) return;
   calendarPhotoLoadingMonths.add(key);
@@ -4183,6 +4223,28 @@ function populateHabitInspectorForm(id) {
   updateHabitInspectorRules();
   renderInspectorColorSwatches();
   renderInspectorIconPicker();
+  renderHabitStreakCalendar(id);
+}
+
+function renderHabitStreakCalendar(habitId) {
+  const host = $("#habitStreakCalendar");
+  if (!host) return;
+  if (!habitId) {
+    host.innerHTML = "";
+    return;
+  }
+  const today = isoDate(new Date());
+  const start = parseDate(today);
+  start.setDate(start.getDate() - 27);
+  const cells = Array.from({ length: 28 }, (_, index) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
+    const key = isoDate(date);
+    const done = getLog(key).completed.includes(habitId);
+    return `<i class="${done ? "done" : ""}" title="${key}"></i>`;
+  }).join("");
+  const streak = habitStreak(habitId, today);
+  host.innerHTML = `<p>${escapeHtml(languageText(`${streak} 天连续`, `${streak}-day streak`, `${streak} Tage in Folge`))}</p><div class="habit-streak-grid" aria-hidden="true">${cells}</div>`;
 }
 
 function updateHabitInspectorRules() {
@@ -4833,7 +4895,7 @@ function openBackupDialog(tab = "export") {
   updateExportFields();
   clearImportSelection();
   $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
-  $("#mediaBackupOption").hidden = !hostedCloudMode;
+  $("#mediaBackupOption").hidden = !photoMemories;
   setBackupTab(tab === "import" ? "import" : "export");
   $("#exportDialog").showModal();
 }
@@ -4943,7 +5005,7 @@ async function downloadExport(event) {
   event.preventDefault();
   const scope = $('#exportForm input[name="exportScope"]:checked').value;
   const backup = createBackup(scope);
-  const includePhotos = hostedCloudMode && $("#includePhotos")?.checked;
+  const includePhotos = Boolean(photoMemories) && $("#includePhotos")?.checked;
   const confirmButton = $("#exportConfirm");
   const originalLabel = confirmButton.textContent;
   confirmButton.disabled = true;
@@ -5039,7 +5101,7 @@ async function previewImportFile(file) {
   }
   try {
     const media = mediaBundle ? await window.LifeLedgerMediaBackup.parseBundle(file) : null;
-    if (media && !hostedCloudMode) throw new Error("media-cloud-only");
+    if (media && !photoMemories) throw new Error("media-cloud-only");
     const candidate = importedPayload(media ? media.manifest.backup : JSON.parse(await file.text()));
     pendingImport = candidate;
     pendingMediaImport = media;
@@ -5539,6 +5601,15 @@ function bindEvents() {
   $("#dateNavPrev")?.addEventListener("click", () => navigateToolbarDate(-1));
   $("#dateNavNext")?.addEventListener("click", () => navigateToolbarDate(1));
   $("#dateNavLabel")?.addEventListener("click", goToToday);
+  $$("[data-timeline-filter]").forEach(button => button.addEventListener("click", () => {
+    timelineFilter = button.dataset.timelineFilter || "all";
+    $$("[data-timeline-filter]").forEach(item => {
+      const active = item === button;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
+    void renderTimeline();
+  }));
   $("#quickFind")?.addEventListener("input", event => {
     quickFindQuery = event.target.value;
     renderToday();

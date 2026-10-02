@@ -13,10 +13,15 @@ test("deployed photo memories live inside the mood note", () => {
   assert.ok(moodDialog);
   assert.match(moodDialog[1], /id="moodPhotoSection"/);
   assert.match(moodDialog[1], /id="moodPhotoInput"/);
-  assert.match(app, /enabled: hostedCloudMode/);
+  assert.match(moodDialog[1], /data-photo-drop/);
+  assert.match(app, /transport: hostedCloudMode \? "cloud" : "local"/);
+  assert.match(app, /enabled: true/);
+  assert.match(html, /id="todayPhotoSection"/);
+  assert.match(html, /id="photoLightbox"/);
+  assert.match(html, /id="todayJournal"/);
   assert.match(photos, /MAX_PER_DAY = 3/);
   assert.match(photos, /MAX_OUTPUT_BYTES = 1_200_000/);
-  assert.match(moodDialog[1], /accept="image\/\*"/);
+  assert.match(moodDialog[1], /accept="image\/jpeg,image\/png,image\/webp,image\/heic,image\/heif/);
   assert.match(photos, /heic2any\.min\.js/);
   assert.match(photos, /PHOTO_HEIC_UNSUPPORTED/);
   assert.match(photos, /PHOTO_PROCESSING_FAILED/);

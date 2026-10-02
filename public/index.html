@@ -99,9 +99,46 @@
             <summary id="todayNotTodaySummary">Not scheduled today</summary>
             <ul class="today-habit-list not-today" id="todayNotTodayList" role="list"></ul>
           </details>
+          <section class="today-journal" id="todayJournal" aria-labelledby="inspectorReflectionHeading">
+            <section class="inspector-section inspector-mood" id="inspectorMoodSection">
+              <h3 class="inspector-heading" id="inspectorMoodHeading">Mood</h3>
+              <div class="mood-segmented" id="quickMood" role="group">
+                <button type="button" data-mood="很好" aria-pressed="false">很好</button>
+                <button type="button" data-mood="平静" aria-pressed="false">平静</button>
+                <button type="button" data-mood="低落" aria-pressed="false">低落</button>
+              </div>
+              <button class="mood-reason-summary" id="inspectorMoodReason" type="button" hidden></button>
+            </section>
+            <section class="inspector-section inspector-reflection">
+              <div class="inspector-reflection-header">
+                <h3 class="inspector-heading" id="inspectorReflectionHeading">Reflection</h3>
+                <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
+                  <span id="voiceReflectionLabel">Quick record</span>
+                </button>
+              </div>
+              <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
+              <span class="autosave" id="homeJournalSave">● autosaved</span>
+            </section>
+            <section class="photo-library" id="todayPhotoSection" data-photo-editor>
+              <div class="mood-photo-heading">
+                <div><strong id="todayPhotoTitle" data-photo-title>Photo memories</strong><small id="todayPhotoHelp" data-photo-help>Up to three private photos for this day.</small></div>
+                <span id="todayPhotoCount" data-photo-count>0 of 3</span>
+              </div>
+              <div class="photo-drop" data-photo-drop>
+                <p class="photo-drop-empty" data-photo-empty>No photo for this day yet.</p>
+                <div class="mood-photo-list" id="todayPhotoList" data-photo-list></div>
+              </div>
+              <button class="mood-photo-add" id="todayPhotoAdd" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>Add photo</span></button>
+              <input id="todayPhotoInput" data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+              <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+              <p class="mood-photo-status" id="todayPhotoStatus" data-photo-status role="status" hidden></p>
+            </section>
+          </section>
         </section>
 
         <section class="view" id="weekView">
+          <p class="week-plan-lede" id="weekPlanLede"></p>
           <section class="weekly-workspace" aria-labelledby="weeklyWorkspaceTitle">
             <h2 class="sr-only" id="weeklyWorkspaceTitle">Weekly Plan</h2>
             <ol class="week-agenda" id="weekAgenda" role="list" aria-label="Week agenda"></ol>
@@ -161,6 +198,11 @@
                   <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
                   <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
+                <div class="timeline-filter" id="timelineFilter" role="group" aria-label="Timeline filter">
+                  <button type="button" class="active" data-timeline-filter="all">All</button>
+                  <button type="button" data-timeline-filter="photos">Photos</button>
+                  <button type="button" data-timeline-filter="notes">Notes</button>
+                </div>
                 <div class="timeline-entry-list" id="timelineEntryList" role="list" aria-label="Timeline entries"></div>
                 <div class="calendar-legend timeline-calendar-legend"></div>
                 <span id="calendarMonthMark" hidden></span>
@@ -178,7 +220,7 @@
           <span id="timelineSummary" hidden></span>
         </section>
 
-        <section class="view" id="reviewView">
+        <section class="view review-document" id="reviewView">
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
           </div>
@@ -264,26 +306,6 @@
 
           <aside class="inspector" id="inspectorPane" aria-label="Inspector">
             <section class="inspector-section inspector-view-panel" data-inspector-for="today">
-              <section class="inspector-section inspector-mood" id="inspectorMoodSection">
-                <h3 class="inspector-heading" id="inspectorMoodHeading">Mood</h3>
-                <div class="mood-segmented" id="quickMood" role="group">
-                  <button type="button" data-mood="很好" aria-pressed="false">很好</button>
-                  <button type="button" data-mood="平静" aria-pressed="false">平静</button>
-                  <button type="button" data-mood="低落" aria-pressed="false">低落</button>
-                </div>
-                <button class="mood-reason-summary" id="inspectorMoodReason" type="button" hidden></button>
-              </section>
-              <section class="inspector-section inspector-reflection">
-                <div class="inspector-reflection-header">
-                  <h3 class="inspector-heading" id="inspectorReflectionHeading">Reflection</h3>
-                  <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
-                    <span id="voiceReflectionLabel">Quick record</span>
-                  </button>
-                </div>
-                <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
-                <span class="autosave" id="homeJournalSave">● autosaved</span>
-              </section>
               <section class="inspector-section inspector-focus" id="inspectorFocusSection">
                 <h3 class="inspector-heading" id="inspectorFocusHeading">Focus</h3>
                 <p class="inspector-focus-summary" id="focusTodaySummary"></p>
@@ -355,6 +377,7 @@
                   <label class="habit-form-row habit-switch-row"><span id="habitInspectorCountsLabel">Counts toward score</span><input class="desktop-switch" name="countsTowardDaily" type="checkbox" role="switch" /></label>
                   <label class="habit-form-row habit-switch-row"><span id="habitInspectorActiveLabel">Active</span><input class="desktop-switch" name="active" type="checkbox" role="switch" checked /></label>
                 </fieldset>
+                <div class="habit-streak-calendar" id="habitStreakCalendar" aria-label="Habit streak"></div>
                 <div class="habit-inspector-actions">
                   <button class="danger-button text-destructive" id="inspectorDeleteHabitButton" type="button">Delete</button>
                   <button class="primary-button" id="inspectorSaveHabitButton" type="submit">Save</button>
@@ -587,12 +610,16 @@
           <div class="mood-reason-selection"><span id="moodReasonIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></span><div><strong id="moodReasonMood">很好</strong><small id="moodReasonDate"></small></div></div>
           <p id="moodReasonHelp">这完全是可选的。留下一句话，未来回看时会更容易理解这一天。</p>
           <label for="moodReasonText"><span id="moodReasonLabel">今天为什么会有这样的感受？</span><textarea id="moodReasonText" maxlength="800" placeholder="例如：完成了一件拖了很久的事情……"></textarea></label>
-          <section class="mood-photo-section" id="moodPhotoSection" hidden>
-            <div class="mood-photo-heading"><div><strong id="moodPhotoTitle">照片记忆</strong><small id="moodPhotoHelp">为这一天留下最多三张私人照片。</small></div><span id="moodPhotoCount">0 / 3</span></div>
-            <div class="mood-photo-list" id="moodPhotoList"></div>
-            <button class="mood-photo-add" id="moodPhotoAdd" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>添加照片</span></button>
-            <input id="moodPhotoInput" type="file" accept="image/*" hidden />
-            <p class="mood-photo-status" id="moodPhotoStatus" role="status" hidden></p>
+          <section class="mood-photo-section photo-library" id="moodPhotoSection" data-photo-editor hidden>
+            <div class="mood-photo-heading"><div><strong id="moodPhotoTitle" data-photo-title>照片记忆</strong><small id="moodPhotoHelp" data-photo-help>为这一天留下最多三张私人照片。</small></div><span id="moodPhotoCount" data-photo-count>0 / 3</span></div>
+            <div class="photo-drop" data-photo-drop>
+              <p class="photo-drop-empty" data-photo-empty hidden>这一天还没有照片。</p>
+              <div class="mood-photo-list" id="moodPhotoList" data-photo-list></div>
+            </div>
+            <button class="mood-photo-add" id="moodPhotoAdd" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>添加照片</span></button>
+            <input id="moodPhotoInput" data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+            <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+            <p class="mood-photo-status" id="moodPhotoStatus" data-photo-status role="status" hidden></p>
           </section>
         </div>
         <footer><button class="secondary-button close-mood-reason" id="skipMoodReason" type="button">暂不记录</button><button class="primary-button" id="saveMoodReason" type="submit">保存原因</button></footer>
@@ -778,6 +805,11 @@
 
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
+    <dialog class="photo-lightbox" id="photoLightbox" aria-label="Photo preview">
+      <form method="dialog"><button class="icon-button" type="submit" aria-label="Close">×</button></form>
+      <img id="photoLightboxImage" alt="" />
+      <p id="photoLightboxCaption"></p>
+    </dialog>
     <div class="toast" id="toast"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></span><p>已保存</p><button type="button" class="toast-action" id="toastAction" hidden>Undo</button></div>
     <div class="habit-context-menu" id="habitContextMenu" role="menu" hidden>
       <button type="button" role="menuitem" data-habit-context="toggle" id="habitContextToggle">Mark done</button>
