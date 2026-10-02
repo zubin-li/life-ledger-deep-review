@@ -1,7 +1,7 @@
 {
   "$schema": "./gen/schemas/desktop-schema.json",
   "productName": "Life Ledger Deep Review",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "identifier": "app.zubinli.lifeledger",
   "build": {
     "beforeDevCommand": "npm run desktop:prepare",
@@ -12,7 +12,7 @@
     "withGlobalTauri": true,
     "windows": [],
     "security": {
-      "capabilities": ["default", "local-only"]
+      "capabilities": ["default", "local-only", "settings-window"]
     }
   },
   "bundle": {

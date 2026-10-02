@@ -6,38 +6,45 @@ const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf
 const css = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 
-test("Day Plan keeps the schedule and removes daily flexible goals", () => {
-  const card = html.match(/<article class="daily-goals-card" data-plan="selected-day">([\s\S]*?)<\/article>/);
-  assert.ok(card, "Day Plan card is missing");
-  assert.match(card[1], /id="dayScheduleList"/);
-  assert.match(card[1], /id="toggleRoutineEvents"/);
-  assert.match(card[1], /id="openDayPlan"/);
-  assert.doesNotMatch(card[1], /id="dayScheduleCount"/);
-  assert.doesNotMatch(card[1], /class="day-schedule-summary"/);
-  assert.doesNotMatch(card[1], /id="dayPlanViewSwitch"/);
-  assert.doesNotMatch(card[1], /id="dayGoalsPanel"/);
-  assert.doesNotMatch(card[1], /id="dailyGoalList"/);
-  assert.doesNotMatch(card[1], /id="dailyGoalForm"/);
+test("Today keeps the compact event strip and removes daily flexible goals", () => {
+  const todayView = html.match(/<section class="view active" id="todayView">([\s\S]*?)<\/section>\s*<section class="view" id="weekView">/);
+  assert.ok(todayView, "Today view is missing");
+  assert.match(todayView[1], /class="today-events-strip" id="todayEventsStrip"/);
+  assert.match(todayView[1], /class="today-habit-list" id="todayHabitList"/);
+  assert.doesNotMatch(todayView[1], /id="dayScheduleList"/);
+  assert.doesNotMatch(todayView[1], /id="toggleRoutineEvents"/);
+  assert.doesNotMatch(todayView[1], /id="openDayPlan"/);
+  assert.doesNotMatch(todayView[1], /id="dayScheduleCount"/);
+  assert.doesNotMatch(todayView[1], /class="day-schedule-summary"/);
+  assert.doesNotMatch(todayView[1], /id="dayPlanViewSwitch"/);
+  assert.doesNotMatch(todayView[1], /id="dayGoalsPanel"/);
+  assert.doesNotMatch(todayView[1], /id="dailyGoalList"/);
+  assert.doesNotMatch(todayView[1], /id="dailyGoalForm"/);
+  assert.doesNotMatch(todayView[1], /calendar-embedded/);
   assert.doesNotMatch(html, /id="dayPlanDialogGoals"/);
   assert.doesNotMatch(html, /id="focusGoalSelect"/);
+  assert.match(app, /function renderTodayEventsStrip\(/);
   assert.match(app, /calendarEventsForDate\(selectedPlanningDate\)/);
   assert.match(app, /event\.routine/);
   assert.doesNotMatch(app, /function setDayPlanPane\(pane\)/);
   assert.doesNotMatch(app, /const dailyGoals = dates\.flatMap/);
+  assert.doesNotMatch(app, /function renderDaySchedule\(/);
 });
 
 test("the selected Day Plan date drives the complete Today workspace", () => {
   assert.match(app, /function renderToday\(\)\s*\{\s*const date = selectedPlanningDate;/);
-  assert.match(app, /renderHabitCarousel\(habits, date, log\.completed, future\)/);
+  assert.match(app, /todayHabitRowMarkup\(/);
   assert.match(app, /setMood\(selectedPlanningDate, b\.dataset\.mood\)/);
   assert.match(app, /const date = selectedPlanningDate;\s*const log = getLog\(date\);/);
   assert.match(app, /selectedPlanningDate = isoDate\(cursor\);/);
-  assert.match(app, /cursor = new Date\(selected\);\s*setDailyToolPage\("journal"/);
-  assert.match(css, /\.habit-card\.future-locked\s*\{/);
+  assert.match(css, /\.today-habit-row\.future-locked\s*\{/);
 });
 
-test("Google Calendar stays read-only and progressively disclosed inside Day Plan", () => {
-  assert.match(cardMarkup(), /id="calendarConnectionButton"/);
+test("Google Calendar stays read-only and lives in Settings", () => {
+  const start = html.indexOf('id="settingsPane"');
+  assert.ok(start >= 0, "Settings pane is missing");
+  const settings = html.slice(start, html.indexOf("</section>", html.indexOf('data-settings-panel="habits"')));
+  assert.match(settings, /id="calendarConnectionButton"/);
   assert.match(html, /id="calendarSettingsDialog"/);
   assert.match(html, /id="calendarHideRecurring"[^>]*checked/);
   assert.match(app, /calendarApi\("calendars"\)/);
@@ -55,10 +62,6 @@ test("calendar settings connect two accounts without adding another page", () =>
   assert.match(app, /body: JSON\.stringify\(\{ accounts, hideRecurring:/);
   assert.doesNotMatch(html, /id="calendarDisconnectButton"/);
 });
-
-function cardMarkup() {
-  return html.match(/<article class="daily-goals-card" data-plan="selected-day">([\s\S]*?)<\/article>/)?.[1] || "";
-}
 
 test("weekly goals and long-term goals use progressive disclosure in one card", () => {
   assert.match(html, /id="goalHorizonSwitch"/);

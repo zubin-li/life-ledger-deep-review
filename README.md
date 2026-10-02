@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v2.png" width="100%" alt="Life Ledger monthly review dashboard" />
+  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v3.png" width="100%" alt="Life Ledger monthly review dashboard" />
 </p>
 
 <p align="center">
@@ -130,8 +130,8 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v2.png" alt="Daily planning and reflection" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v2.png" alt="Weekly goals and output" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v3.png" alt="Daily planning and reflection" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v3.png" alt="Weekly goals and output" /></td>
   </tr>
   <tr>
     <td><strong>Daily clarity</strong><br />See the day's real calendar and leave a reflection beside it, without duplicating plans.</td>
@@ -140,7 +140,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v3.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
+  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v4.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
 </p>
 <p align="center"><strong>A private memory line.</strong> Revisit mood, context, and compressed photo memories without turning them into a public feed.</p>
 
@@ -236,11 +236,13 @@ JSON backup in the local desktop window uses native macOS file dialogs, includin
 
 The local desktop app can also publish today's habits to a real native macOS WidgetKit widget on the desktop or Notification Center — with a native checkbox that works even when the app is closed. It never shows journal notes or mood reasons, and it never touches the connected-cloud window's security boundary. See [docs/macos-widget.md](docs/macos-widget.md) for the architecture and build steps.
 
-The shell presents the app itself with native macOS chrome: real traffic lights sit in a transparent titlebar, the sidebar is edge-attached with no embedded-card framing, and an unobtrusive **Local Mac** / **Connected Cloud** status label replaces the PWA install prompt, which stays hidden outside the browser. Standard shortcuts work outside editable fields — Cmd+1–5 for Today/Week/Timeline/Review/Habits, Cmd+B to toggle the sidebar, Cmd+, for Habits Settings, and Cmd+Shift+E for backup/export — without changing any shortcut in the public PWA. The launcher is a compact native workspace chooser, and window position and size are remembered per window across launches.
+The shell presents the app itself with native macOS chrome: real traffic lights sit in a transparent titlebar, the sidebar is edge-attached with no embedded-card framing, and an unobtrusive **Local Mac** / **Connected Cloud** status label replaces the PWA install prompt, which stays hidden outside the browser. Standard shortcuts work outside editable fields — Cmd+1–5 for Today/Week/Timeline/Review/Habits, Cmd+B to toggle the sidebar, Cmd+, for the Settings window, and Cmd+Shift+E for backup/export — without changing any shortcut in the public PWA. The launcher is a compact native workspace chooser, and window position and size are remembered per window across launches.
 
 Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
 
 ### 7. Life Ledger 2.0 — a calm instrument panel
+
+Version 3.0 rebuilds the desktop app (window widths of 980px and up) as a native-style macOS split view instead of a dashboard of cards. A compact sidebar holds the five views and a short habits list; a unified toolbar carries the title, centered date or period navigation, and search; a hideable inspector on the right shows context for the current view and collapses before the sidebar in narrow windows. Today is a list of habit rows with a round check control, collapsible Completed group, and Undo, with Mood, Reflection, and Focus in the inspector. Week is a seven-day agenda with weekly goals; Timeline pairs a month calendar and entry list with a day detail pane in the style of Day One; Review shows up to three insights, one daily-completion chart, and the monthly narrative; Habits is a reorderable table with an editor in the inspector. The Mac app now has a real application menu (App, File, Edit, View, Window, Help) with Cmd+, for a separate Settings window, Cmd+N for a new habit, Cmd+F for search, Cmd+1–5 for views, Cmd+B for the sidebar, Cmd+Option+0 for the inspector, Cmd+T / Cmd+[ / Cmd+] for dates, and Cmd+Shift+E for backup/export; it also reopens your last workspace (Local or Connected Cloud) directly, with File → Switch Workspace… to change it. Phone and narrow browser layouts, data, backups, sync, languages, and themes are unchanged.
 
 Version 2.0 carries a full interface redesign across the web app, PWA, and the macOS shell alike — this is not a desktop-only skin. The sidebar, toolbar, and every view (Today, Week, Timeline, Review, Habits/Settings) now share one restrained system: system typography (no decorative serif or a network font for the interface chrome), a 4px spacing scale, a 6–14px radius scale in place of the previous 18–30px "card" look, and shadows reserved for floating dialogs, popovers, and the day drawer rather than every inline card. Every remaining glyph/emoji icon (navigation, mood picker, dialog close buttons, disclosure chevrons, carousel and calendar arrows) is now a coherent local inline SVG icon set, and hover/press feedback is immediate border or background changes instead of a mouse-following tilt/glow effect. Light and dark appearance are both deliberately tuned, independently of each other, and motion continues to respect `prefers-reduced-motion`. No existing data, local/connected-cloud modes, backup/import/export, language, theme, keyboard shortcut, calendar, habit, focus, or review behavior changed.
 

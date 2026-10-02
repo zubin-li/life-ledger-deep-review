@@ -21,14 +21,13 @@ test("desktop presentation CSS is scoped under html[data-desktop] and layers a t
   // html[data-desktop] only layers the titlebar-inset height and full-bleed content padding
   // on top of it, it no longer switches between two different visual designs.
   assert.match(styles, /^\.sidebar \{ position: sticky; top: 0; height: 100vh; margin: 0;/m);
-  assert.match(styles, /^\.main-content \{ min-width: 0; padding: var\(--space-6\)/m);
+  assert.match(styles, /^\.main-content \{ min-width: 0; max-width: 100%; padding: var\(--space-5\)/m);
 });
 
-test("PWA install affordances are hidden only in desktop mode", () => {
+test("PWA install affordances are hidden only in desktop mode and live in Settings", () => {
   assert.match(styles, /html\[data-desktop\] \[data-install-app\] \{ display: none !important; \}/);
-  // Confirm the selector actually targets the real install buttons in the markup.
   assert.match(indexHtml, /id="installAppButton"[^>]*data-install-app/);
-  assert.match(indexHtml, /class="secondary-button mobile-install-button"[^>]*data-install-app/);
+  assert.match(indexHtml, /id="settingsPane"/);
 });
 
 test("an unobtrusive localized desktop status badge exists and is translated in all three languages", () => {

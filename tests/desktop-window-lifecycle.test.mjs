@@ -42,7 +42,7 @@ test("the tauri-cloud literal that the Rust shell appends matches the literal th
 
 test("macOS-only overlay titlebar APIs are cfg-gated so non-macOS builds still compile", () => {
   const macosBlocks = libRs.match(/#\[cfg\(target_os = "macos"\)\]\s*\{\s*builder = builder\.title_bar_style\(tauri::TitleBarStyle::Overlay\)\.hidden_title\(true\);\s*\}/g) || [];
-  assert.equal(macosBlocks.length, 3, "expected one cfg-gated overlay titlebar block per window (launcher, local, cloud)");
+  assert.equal(macosBlocks.length, 4, "expected one cfg-gated overlay titlebar block per window (launcher, local, cloud, settings)");
 });
 
 test("window position/size persistence uses only existing dependencies (no new crate) and rejects corrupt state", () => {

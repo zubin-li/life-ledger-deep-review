@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger" />
+  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v3.png" width="100%" alt="Monatsrückblick von Life Ledger" />
 </p>
 
 <p align="center">
@@ -130,8 +130,8 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesplanung und Reflexion" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v3.png" alt="Tagesplanung und Reflexion" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v3.png" alt="Wochenziele und Wochenrückblick" /></td>
   </tr>
   <tr>
     <td><strong>Klarheit für den Tag</strong><br />Sieh den echten Tageskalender und halte deine Gedanken direkt daneben fest, ohne Pläne doppelt zu pflegen.</td>
@@ -140,7 +140,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v3.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
+  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v4.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
 </p>
 <p align="center"><strong>Eine private Erinnerungslinie.</strong> Stimmung, Kontext und komprimierte Fotoerinnerungen wiedersehen, ohne das Leben in einen öffentlichen Feed zu verwandeln.</p>
 
@@ -249,11 +249,13 @@ Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, i
 
 Die lokale Desktop-App kann die heutigen Gewohnheiten außerdem an ein echtes natives macOS-WidgetKit-Widget veröffentlichen (Schreibtisch oder Mitteilungszentrale), mit einer nativen Checkbox, die auch bei geschlossener App funktioniert. Das Widget zeigt niemals Tagebuchnotizen oder Stimmungsgründe und verändert nicht die Sicherheitsgrenze des verbundenen Cloud-Fensters. Architektur und Build-Schritte stehen in [docs/macos-widget.md](docs/macos-widget.md) (Englisch).
 
-Die Hülle zeigt die App selbst mit nativem macOS-Look: echte Ampel-Fensterknöpfe sitzen in einer transparenten Titelleiste, die Seitenleiste liegt randständig ohne Web-Karten-Rahmen, und ein dezentes **Lokaler Mac** / **Verbundene Cloud**-Statuslabel ersetzt den PWA-Installationshinweis, der außerhalb des Browsers verborgen bleibt. Standard-Tastenkürzel funktionieren außerhalb editierbarer Felder – Cmd+1–5 für Heute/Woche/Zeitleiste/Rückblick/Gewohnheiten, Cmd+B zum Ein-/Ausblenden der Seitenleiste, Cmd+, für die Gewohnheiten-Einstellungen und Cmd+Umschalt+E für Sicherung/Export – ohne ein Tastenkürzel der öffentlichen PWA zu verändern. Der Launcher ist jetzt eine kompakte native Arbeitsbereichsauswahl, und Fensterposition sowie -größe werden je Fenster über Neustarts hinweg gemerkt.
+Die Hülle zeigt die App selbst mit nativem macOS-Look: echte Ampel-Fensterknöpfe sitzen in einer transparenten Titelleiste, die Seitenleiste liegt randständig ohne Web-Karten-Rahmen, und ein dezentes **Lokaler Mac** / **Verbundene Cloud**-Statuslabel ersetzt den PWA-Installationshinweis, der außerhalb des Browsers verborgen bleibt. Standard-Tastenkürzel funktionieren außerhalb editierbarer Felder – Cmd+1–5 für Heute/Woche/Zeitleiste/Rückblick/Gewohnheiten, Cmd+B zum Ein-/Ausblenden der Seitenleiste, Cmd+, für das Einstellungsfenster und Cmd+Umschalt+E für Sicherung/Export – ohne ein Tastenkürzel der öffentlichen PWA zu verändern. Der Launcher ist jetzt eine kompakte native Arbeitsbereichsauswahl, und Fensterposition sowie -größe werden je Fenster über Neustarts hinweg gemerkt.
 
 Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
 
 ### 7. Life Ledger 2.0 — ein ruhiges Instrumentenbrett
+
+Version 3.0 baut die Desktop-App (Fensterbreiten ab 980px) als native macOS-Split-View statt als Karten-Dashboard neu auf. Eine kompakte Seitenleiste enthält die fünf Ansichten und eine kurze Gewohnheitsliste; eine einheitliche Werkzeugleiste trägt Titel, zentrierte Datums- oder Zeitraumnavigation und Suche; ein ausblendbarer Inspektor rechts zeigt Kontext zur aktuellen Ansicht und klappt in schmalen Fenstern vor der Seitenleiste ein. Heute ist eine Liste von Gewohnheitszeilen mit rundem Abhak-Steuerelement, einklappbarer Gruppe „Erledigt“ und Rückgängig; Stimmung, Reflexion und Fokus liegen im Inspektor. Woche ist eine Sieben-Tage-Agenda mit Wochenzielen; die Zeitleiste kombiniert nach dem Vorbild von Day One Monatskalender und Eintragsliste mit einem Tagesdetail; Rückblick zeigt höchstens drei Erkenntnisse, ein Diagramm der täglichen Erledigung und den Monatsrückblick; Gewohnheiten ist eine sortierbare Tabelle mit Editor im Inspektor. Die Mac-App hat jetzt ein echtes Programmmenü (App, Ablage, Bearbeiten, Darstellung, Fenster, Hilfe): Cmd+, öffnet ein eigenes Einstellungsfenster, Cmd+N eine neue Gewohnheit, Cmd+F die Suche, Cmd+1–5 die Ansichten, Cmd+B die Seitenleiste, Cmd+Wahl+0 den Inspektor, Cmd+T / Cmd+[ / Cmd+] die Datumsnavigation und Cmd+Umschalt+E Sicherung/Export; außerdem öffnet sie direkt den zuletzt genutzten Arbeitsbereich (Lokal oder Verbundene Cloud), änderbar über Ablage → Arbeitsbereich wechseln…. Handy- und schmale Browser-Layouts, Daten, Sicherungen, Synchronisierung, Sprachen und Themes bleiben unverändert.
 
 Version 2.0 bringt eine vollständige Neugestaltung der Oberfläche über Web-App, PWA und macOS-Hülle hinweg mit sich — nicht nur eine Desktop-Optik. Seitenleiste, Werkzeugleiste und alle fünf Ansichten (Heute, Woche, Zeitleiste, Rückblick, Gewohnheiten/Einstellungen) teilen sich jetzt ein zurückhaltendes System: Systemschrift (keine dekorative Serifenschrift oder Web-Schriftart mehr für die Oberfläche selbst), eine 4px-Abstandsskala, eine Rundungsskala von 6–14px statt der bisherigen 18–30px großen „Karten"-Optik, und Schatten sind jetzt schwebenden Dialogen, Popovers und der Tages-Schublade vorbehalten statt jeder einzelnen Karte. Jedes verbliebene Text-/Emoji-Symbol (Navigation, Stimmungsauswahl, Schließen-Schaltflächen in Dialogen, Auf-/Zuklapp-Pfeile, Karussell- und Kalenderpfeile) ist jetzt ein einheitliches, lokal eingebettetes SVG-Icon-System; Hover- und Klick-Feedback sind jetzt sofortige Rahmen- oder Hintergrundänderungen statt eines der Maus folgenden Neige-/Leuchteffekts. Helles und dunkles Erscheinungsbild sind jeweils eigenständig abgestimmt, und Bewegungseffekte respektieren weiterhin `prefers-reduced-motion`. Bestehende Daten, der lokale/verbundene Cloud-Modus, Sicherung/Import/Export, Sprache, Theme, Tastenkürzel, Kalender-, Gewohnheits-, Fokus- und Rückblick-Verhalten bleiben unverändert.
 

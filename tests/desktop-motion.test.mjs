@@ -48,6 +48,16 @@ test("reduced motion is respected globally, independent of the motion-off shortc
   assert.match(launcherCss, /@media \(prefers-reduced-motion: reduce\) \{/);
 });
 
+test("desktop phase-3 motion tokens stay within mandated durations", () => {
+  assert.match(styles, /--duration-habit-check: 200ms;/);
+  assert.match(styles, /--duration-date-shift: 160ms;/);
+  assert.match(styles, /--duration-inspector: 180ms;/);
+  assert.match(styles, /--duration-popover: 120ms;/);
+  assert.match(styles, /@keyframes dateShiftForward/);
+  assert.match(styles, /@keyframes popoverIn/);
+  assert.match(styles, /html\[data-desktop\] \.main-content\.date-shift-forward \{ animation: dateShiftForward var\(--duration-date-shift\)/);
+});
+
 test("no keyframe or transition animates a layout-triggering property on the newly added selectors", () => {
   const start = styles.indexOf("/* Desktop shell (Tauri)");
   const end = styles.indexOf("@media (min-width: 761px) {", start);
@@ -55,4 +65,14 @@ test("no keyframe or transition animates a layout-triggering property on the new
   assert.ok(addedBlock.length > 0);
   assert.doesNotMatch(addedBlock, /transition:\s*(width|height|top|left)\b/);
   assert.doesNotMatch(addedBlock, /animation:/);
+});
+
+test("desktop motion keyframes animate only opacity and transform", () => {
+  for (const name of ["dateShiftForward", "dateShiftBack", "popoverIn"]) {
+    const body = styles.match(new RegExp(`@keyframes ${name} \\{([^\\n]*)\\}`))?.[1];
+    assert.ok(body, `missing keyframes ${name}`);
+    const props = [...body.matchAll(/([a-z-]+):/g)].map(match => match[1]);
+    assert.ok(props.length > 0);
+    assert.deepEqual([...new Set(props)].sort(), ["opacity", "transform"]);
+  }
 });

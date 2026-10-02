@@ -32,11 +32,15 @@ test("deployed photo memories live inside the mood note", () => {
   assert.match(css, /\.mood-reason-body \{[^}]*overflow-y: auto/);
 });
 
-test("timeline and long-term sidebar reuse existing private records", () => {
+test("timeline and week workspace reuse long-term goals after sidebar removal", () => {
   assert.match(html, /data-view="timeline"/);
   assert.match(html, /id="timelineView"/);
-  assert.match(html, /id="sidebarLongTermList"/);
+  assert.doesNotMatch(html, /id="sidebarLongTermList"/);
+  assert.doesNotMatch(html, /class="sidebar-long-term"/);
+  assert.match(html, /id="longTermGoalsPane"/);
+  assert.match(html, /id="longTermGoalList"/);
   assert.match(app, /function renderTimeline\(\)/);
+  assert.match(app, /function renderLongTermGoals\(/);
   assert.match(app, /state\.longTermGoals/);
   assert.match(css, /\.main-nav \{ grid-template-columns: repeat\(5, 1fr\); \}/);
 });

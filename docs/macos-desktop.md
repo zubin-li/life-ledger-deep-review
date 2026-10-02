@@ -43,16 +43,22 @@ Local and cloud windows detect their mode from a `desktop=tauri-local` or `deskt
 
 ## Keyboard shortcuts
 
-Outside editable fields (inputs, textareas, selects, `contenteditable`), the desktop shell adds:
+The desktop shell installs a native macOS application menu (App, File, Edit, View, Window, Help). Menu items are routed to the web layer, so the accelerators work from any focus state and are listed where Mac users expect them:
 
 | Shortcut | Action |
 | --- | --- |
+| Cmd+, | Open the separate Settings window |
+| Cmd+N | New habit |
+| Cmd+Shift+E | Export backup |
+| Cmd+F | Search |
 | Cmd+1 – Cmd+5 | Today / Week / Timeline / Review / Habits |
 | Cmd+B | Toggle the sidebar |
-| Cmd+, | Open Habits Settings |
-| Cmd+Shift+E | Open backup/export |
+| Cmd+Option+0 | Toggle the inspector |
+| Cmd+T / Cmd+[ / Cmd+] | Go to today / previous / next day or period |
 
-These shortcuts are wired up only when the desktop query parameter is present, so they never change behavior in the public web/PWA. Keyboard-triggered actions skip routine motion (view fades, dialog entrance, sidebar-icon rotation); mouse-driven navigation keeps its existing subtle motion. All UI motion respects `prefers-reduced-motion` and never uses `transition: all` or animates layout properties (width/height/top/left) for routine interactions.
+File → Switch Workspace… returns to the launcher. The launcher remembers the last workspace (Local, or a validated Connected Cloud URL) and reopens it directly on the next launch.
+
+The menu bridge is wired up only when the desktop query parameter is present, so they never change behavior in the public web/PWA. Keyboard-triggered actions skip routine motion (view fades, dialog entrance, sidebar-icon rotation); mouse-driven navigation keeps its existing subtle motion. All UI motion respects `prefers-reduced-motion` and never uses `transition: all` or animates layout properties (width/height/top/left) for routine interactions.
 
 ## Window chrome and lifecycle
 
