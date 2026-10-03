@@ -8,43 +8,43 @@ Life Ledger brings daily habits, practical planning, and long-form reflection in
 
 ### Today: plan and reflect
 
-<img src="images/demo-preview/en-desktop/en-01-today-planning-v2.png" alt="Daily goals, reflection, and calendar on desktop" />
+<img src="images/demo-preview/en-desktop/en-01-today-planning-v5.png" alt="Daily goals, reflection, and calendar on desktop" />
 
 The selected day keeps concrete goals and an editable reflection side by side, with the month remaining visible underneath.
 
 ### Daily review
 
-<img src="images/demo-preview/en-desktop/en-02-daily-review-v2.png" alt="Daily habit check-ins, mood, and journal drawer" />
+<img src="images/demo-preview/en-desktop/en-02-daily-review-v5.png" alt="Daily habit check-ins, mood, and journal drawer" />
 
 Open any past or current calendar day to review habit check-ins, mood, and journal notes without leaving the month.
 
 ### Week: commitments and output
 
-<img src="images/demo-preview/en-desktop/en-03-weekly-plan-v2.png" alt="Weekly goals and written output on desktop" />
+<img src="images/demo-preview/en-desktop/en-03-weekly-plan-v5.png" alt="Weekly goals and written output on desktop" />
 
 Weekly goals behave like a reminder list: completed work stays visible as evidence. The output area provides room for a narrative review.
 
-### Review: numbers with context
+### Review: a written month
 
-<img src="images/demo-preview/en-desktop/en-04-monthly-review-v2.png" alt="Monthly review, completion rhythm, and habit comparison dashboard" />
+<img src="images/demo-preview/en-desktop/en-04-monthly-review-v5.png" alt="Monthly review written as a document, with a short completion trend" />
 
-Monthly statistics include every active habit, including period-based goals such as resistance training. Compare up to two habits with line or bar views, then write the reflection beneath the data.
+The month opens with a 7/30/90-day completion rate, streaks, and a trend, then the reflection. Habit scores stay in the inspector. Today is a two-column desk and Timeline keeps the journal page beside the month. Up to three private photos for a day stay on this device.
 
 ### Focus: see where the time went
 
-<img src="images/demo-preview/en-desktop/en-05-focus-month-v2.png" alt="Monthly focus-time analytics on desktop" />
+<img src="images/demo-preview/en-desktop/en-05-focus-month-v5.png" alt="Monthly focus-time analytics on desktop" />
 
 Compare focus minutes by topic and see the month as a heatmap, without reducing progress to session counts.
 
 ### Timeline: revisit lived days
 
-<img src="images/demo-preview/en-desktop/en-07-timeline-v3.png" alt="Mood, reflection, and private photo memories on the Life Ledger Timeline" />
+<img src="images/demo-preview/en-desktop/en-07-timeline-v5.png" alt="Mood, reflection, and private photo memories on the Life Ledger Timeline" />
 
 Move through a private chronological record of moods, reasons, journal context, and compressed photo memories. The example data and image are fictional.
 
 ### Habits: rules that can evolve
 
-<img src="images/demo-preview/en-desktop/en-06-habit-settings-v2.png" alt="Habit settings on desktop" />
+<img src="images/demo-preview/en-desktop/en-06-habit-settings-v5.png" alt="Habit settings on desktop" />
 
 Habits can use daily, weekly, or monthly rules, include or exclude themselves from the daily score, and change from an effective date without rewriting history.
 
@@ -54,9 +54,9 @@ The mobile layout uses persistent bottom navigation and turns the daily drawer i
 
 <table>
   <tr>
-    <td width="33%"><img src="images/demo-preview/en-mobile/en-01-today-planning-v2.png" alt="Daily planning on mobile" /></td>
-    <td width="33%"><img src="images/demo-preview/en-mobile/en-02-daily-review-v2.png" alt="Daily review on mobile" /></td>
-    <td width="33%"><img src="images/demo-preview/en-mobile/en-03-weekly-plan-v2.png" alt="Weekly plan on mobile" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-01-today-planning-v5.png" alt="Daily planning on mobile" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-02-daily-review-v5.png" alt="Daily review on mobile" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-03-weekly-plan-v5.png" alt="Weekly plan on mobile" /></td>
   </tr>
   <tr>
     <td align="center"><strong>Today</strong></td>
@@ -64,9 +64,9 @@ The mobile layout uses persistent bottom navigation and turns the daily drawer i
     <td align="center"><strong>Week</strong></td>
   </tr>
   <tr>
-    <td width="33%"><img src="images/demo-preview/en-mobile/en-04-monthly-review-v2.png" alt="Monthly review on mobile" /></td>
-    <td width="33%"><img src="images/demo-preview/en-mobile/en-05-focus-month-v2.png" alt="Focus review on mobile" /></td>
-    <td width="33%"><img src="images/demo-preview/en-mobile/en-06-habit-settings-v2.png" alt="Habit settings on mobile" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-04-monthly-review-v5.png" alt="Monthly review on mobile" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-05-focus-month-v5.png" alt="Focus review on mobile" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-06-habit-settings-v5.png" alt="Habit settings on mobile" /></td>
   </tr>
   <tr>
     <td align="center"><strong>Review</strong></td>
@@ -76,7 +76,7 @@ The mobile layout uses persistent bottom navigation and turns the daily drawer i
 </table>
 
 <p align="center">
-  <img src="images/demo-preview/en-mobile/en-07-timeline-v3.png" width="33%" alt="Life Ledger Timeline on mobile" />
+  <img src="images/demo-preview/en-mobile/en-07-timeline-v5.png" width="33%" alt="Life Ledger Timeline on mobile" />
 </p>
 <p align="center"><strong>Timeline</strong> · Mood, context, and photo memories remain readable on a small screen.</p>
 

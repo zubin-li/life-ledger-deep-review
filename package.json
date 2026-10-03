@@ -1,6 +1,6 @@
 {
   "name": "life-ledger-deep-review",
-  "version": "1.3.0",
+  "version": "3.1.0",
   "description": "A calm, multilingual, local-first habit tracker and deep-review PWA.",
   "private": true,
   "type": "module",
@@ -19,14 +19,16 @@
     "build:heic-vendor": "node scripts/build-heic-vendor.mjs",
     "build:cloudbase": "npm run build:cloudbase-sdk && node scripts/build-cloudbase.mjs",
     "deploy:cloudbase": "node scripts/deploy-cloudbase.mjs",
-    "check": "node --check public/app.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/index.js && node scripts/check.mjs",
+    "check": "node --check public/app.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/widget-contract.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/index.js && node scripts/check.mjs",
     "test": "npm run check && node --test tests/*.test.mjs",
     "db:migrations:apply": "wrangler d1 migrations apply DB --remote",
     "deploy": "npm run db:migrations:apply && wrangler deploy",
     "desktop:prepare": "node scripts/desktop-prepare.mjs",
     "desktop:dev": "npm run desktop:prepare && tauri dev",
     "desktop:check": "node --test tests/desktop-*.test.mjs",
-    "desktop:build": "tauri build"
+    "desktop:build": "tauri build",
+    "desktop:widget:build": "bash scripts/build-widget.sh",
+    "desktop:widget:sanity": "node scripts/swift-static-sanity-check.mjs"
   },
   "cloudflare": {
     "bindings": {

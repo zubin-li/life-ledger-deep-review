@@ -6,10 +6,11 @@ const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 
 test("week and review introductions avoid repeated visible headings", () => {
-  const weeklyHeading = html.match(/<div class="section-heading weekly-heading">([\s\S]*?)<\/div>\s*<article/);
-  assert.ok(weeklyHeading);
-  assert.doesNotMatch(weeklyHeading[1], /THIS WEEK/);
-  assert.match(weeklyHeading[1], /class="sr-only" id="weeklyWorkspaceTitle"/);
+  const weekView = html.match(/<section class="view week-board" id="weekView">([\s\S]*?)<section class="view timeline-journal" id="timelineView">/);
+  assert.ok(weekView, "Week view is missing");
+  assert.doesNotMatch(weekView[1], /THIS WEEK|weekly-writing-panel|weekly-classical-image/);
+  assert.match(weekView[1], /class="sr-only" id="weeklyWorkspaceTitle"/);
+  assert.match(weekView[1], /id="weekAgenda"/);
 
   const reviewIntro = html.match(/<div class="review-intro quiet-intro">([\s\S]*?)<\/div>/);
   assert.ok(reviewIntro);

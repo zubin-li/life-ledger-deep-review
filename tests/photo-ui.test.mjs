@@ -13,10 +13,15 @@ test("deployed photo memories live inside the mood note", () => {
   assert.ok(moodDialog);
   assert.match(moodDialog[1], /id="moodPhotoSection"/);
   assert.match(moodDialog[1], /id="moodPhotoInput"/);
-  assert.match(app, /enabled: hostedCloudMode/);
+  assert.match(moodDialog[1], /data-photo-drop/);
+  assert.match(app, /transport: hostedCloudMode \? "cloud" : "local"/);
+  assert.match(app, /enabled: true/);
+  assert.match(html, /id="todayPhotoSection"/);
+  assert.match(html, /id="photoLightbox"/);
+  assert.match(html, /id="todayJournal"/);
   assert.match(photos, /MAX_PER_DAY = 3/);
   assert.match(photos, /MAX_OUTPUT_BYTES = 1_200_000/);
-  assert.match(moodDialog[1], /accept="image\/\*"/);
+  assert.match(moodDialog[1], /accept="image\/jpeg,image\/png,image\/webp,image\/heic,image\/heif/);
   assert.match(photos, /heic2any\.min\.js/);
   assert.match(photos, /PHOTO_HEIC_UNSUPPORTED/);
   assert.match(photos, /PHOTO_PROCESSING_FAILED/);
@@ -32,11 +37,15 @@ test("deployed photo memories live inside the mood note", () => {
   assert.match(css, /\.mood-reason-body \{[^}]*overflow-y: auto/);
 });
 
-test("timeline and long-term sidebar reuse existing private records", () => {
+test("timeline and week workspace reuse long-term goals after sidebar removal", () => {
   assert.match(html, /data-view="timeline"/);
   assert.match(html, /id="timelineView"/);
-  assert.match(html, /id="sidebarLongTermList"/);
+  assert.doesNotMatch(html, /id="sidebarLongTermList"/);
+  assert.doesNotMatch(html, /class="sidebar-long-term"/);
+  assert.match(html, /id="longTermGoalsPane"/);
+  assert.match(html, /id="longTermGoalList"/);
   assert.match(app, /function renderTimeline\(\)/);
+  assert.match(app, /function renderLongTermGoals\(/);
   assert.match(app, /state\.longTermGoals/);
   assert.match(css, /\.main-nav \{ grid-template-columns: repeat\(5, 1fr\); \}/);
 });

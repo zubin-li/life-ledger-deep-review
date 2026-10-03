@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v2.png" width="100%" alt="Life Ledger 中文月度复盘界面" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v3.png" width="100%" alt="Life Ledger 中文月度复盘界面" />
 </p>
 
 <p align="center">
@@ -134,8 +134,8 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-01-today-planning-v2.png" alt="每日目标与每日复盘" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-03-weekly-plan-v2.png" alt="本周目标与本周输出" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-01-today-planning-v3.png" alt="每日目标与每日复盘" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-03-weekly-plan-v3.png" alt="本周目标与本周输出" /></td>
   </tr>
   <tr>
     <td><strong>每日更清楚</strong><br />直接查看当天真实日程，并在旁边留下复盘，不再重复规划。</td>
@@ -144,7 +144,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v3.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v4.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
 </p>
 <p align="center"><strong>一条只属于自己的记忆线。</strong> 回看心情、语境和压缩后的照片记忆，而不是把生活变成公开动态。</p>
 
@@ -251,7 +251,17 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 
 在桌面本机窗口中，JSON 备份导入/导出使用 macOS 原生文件对话框，可直接选择 iCloud Drive 文件夹。这里的能力是“文件备份转移”，不是实时同步、冲突合并或自动双向同步。
 
+本机桌面应用还可以把今日习惯发布到一个真正原生的 macOS WidgetKit 小组件（桌面或通知中心），带有原生勾选框，即使应用未打开也能使用。小组件永远不会显示日记或心情原因，也不会改变已连接云端窗口的安全边界。架构与构建步骤见 [docs/macos-widget.md](docs/macos-widget.md)（英文）。
+
+应用外壳呈现原生 macOS 观感：真实的交通灯按钮位于透明标题栏中，侧边栏贴边展示，不再有“网页嵌套卡片”的边框；一个低调的 **本地 Mac** / **已连接云端** 状态标签取代了 PWA 安装提示，后者在浏览器外始终保持隐藏。标准快捷键在非可编辑区域可用——Cmd+1 至 Cmd+5 分别对应今日/本周/时间轴/复盘/习惯设置，Cmd+B 切换侧边栏，Cmd+, 打开设置窗口，Cmd+Shift+E 打开备份与导出——且不会更改公开 PWA 中的任何快捷键。启动器改为紧凑的原生工作区选择界面，窗口位置与大小会在每次启动时被记住。
+
 构建命令与未签名应用的 Gatekeeper 处理见 [docs/macos-desktop.md](docs/macos-desktop.md)。
+
+### 7. Life Ledger 2.0——一套安静的仪表盘式设计
+
+3.1 版本保留桌面三栏结构（宽度 980px 及以上），并恢复冷静的鼠尾草绿与纸色。安装版本只出现在设置的关于里。今日是左右两栏：左侧是习惯列表，右侧更宽的纸页放当天的照片、心情和文字。本周是横跨窗格的七天列。时间轴把日记页放在左侧、月历放在右侧。复盘先给出本地的 7/30/90 天统计：完成数除以可计入的天数、连续天数、趋势和一致性热力，然后才是月度感想。习惯是一组可管理的行。语言可以跟随系统、English、简体中文或 Deutsch，选择后立即生效。照片仍默认留在这台设备上；登录的是 Cloudflare 工作区时仍走原来的照片接口，选定月份也可以连同照片导出。本机 Mac 窗口会注销旧的 Service Worker，并只删除应用自己的缓存，日记、习惯和照片都保留。Mac 应用保留应用菜单（App、文件、编辑、显示、窗口、帮助）：Cmd+, 打开独立设置窗口，Cmd+N 新建习惯，Cmd+F 搜索，Cmd+1–5 切换视图，Cmd+B 切换侧边栏，Cmd+Option+0 切换检查器，Cmd+T / Cmd+[ / Cmd+] 切换日期，Cmd+Shift+E 备份与导出；启动时直接打开上次工作区（本机或已连接云端），可通过“文件 → 切换工作区…”更换。手机与窄屏浏览器布局、数据、备份、同步、语言和主题保持兼容。
+
+2.0 版本带来了一次覆盖网页版、PWA 与 macOS 外壳的完整界面重新设计，而不只是桌面端的一层皮肤。侧边栏、工具栏，以及今日、本周、时间轴、复盘、习惯设置这五个视图，现在共享同一套克制的设计系统：系统字体排版（界面本身不再使用装饰性衬线字体或网络字体）、4px 间距刻度、6–14px 的圆角刻度取代此前 18–30px 的"卡片"观感，阴影只保留给悬浮的对话框、弹出面板与日记抽屉，不再铺满每一张内嵌卡片。此前残留的文字符号/表情图标（导航、心情选择、对话框关闭按钮、展开折叠箭头、轮播与日历箭头）现在统一替换为本地内联 SVG 图标系统；鼠标悬停与按下的反馈也改为即时的边框或背景变化，去掉了此前跟随鼠标的倾斜/光晕效果。浅色与深色外观各自独立调校，动效继续遵循 `prefers-reduced-motion`。现有数据、本地/连接云端模式、备份导入导出、语言、主题、键盘快捷键、日历、习惯、专注与复盘的行为均未改变。
 
 ## 数据归属
 
