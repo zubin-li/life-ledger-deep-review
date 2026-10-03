@@ -29,12 +29,29 @@ body {
 }
 
 .launcher {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 8px 22px 22px;
+  max-width: none;
+  margin: 0;
+  min-height: calc(100vh - var(--desktop-inset));
+  padding: 0;
   display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 0;
+  background: #f3eee4;
+  color: #1c1914;
+}
+.launcher-source {
+  background: #241f1a;
+  color: #f4efe6;
+  padding: 36px 24px;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
 }
+.launcher-source .launcher-brand { color: #f4efe6; }
+.launcher-version { margin: 0; font: 600 28px/1 var(--font, inherit); letter-spacing: -.04em; }
+.launcher-source .launcher-subtitle,
+.launcher-source .launcher-footnote { color: #cfc6b8; }
+.launcher-work { padding: 28px 32px 32px; display: grid; align-content: start; gap: 16px; }
 
 .launcher-bar {
   display: flex;

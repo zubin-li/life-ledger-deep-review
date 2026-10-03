@@ -49,10 +49,10 @@ test("reduced motion is respected globally, independent of the motion-off shortc
 });
 
 test("desktop phase-3 motion tokens stay within mandated durations", () => {
-  assert.match(styles, /--duration-habit-check: 200ms;/);
+  assert.match(styles, /--duration-habit-check: 140ms;/);
   assert.match(styles, /--duration-date-shift: 160ms;/);
-  assert.match(styles, /--duration-inspector: 180ms;/);
-  assert.match(styles, /--duration-popover: 120ms;/);
+  assert.match(styles, /--duration-inspector: 240ms;/);
+  assert.match(styles, /--duration-popover: 160ms;/);
   assert.match(styles, /@keyframes dateShiftForward/);
   assert.match(styles, /@keyframes popoverIn/);
   assert.match(styles, /html\[data-desktop\] \.main-content\.date-shift-forward \{ animation: dateShiftForward var\(--duration-date-shift\)/);

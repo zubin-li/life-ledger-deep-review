@@ -1774,6 +1774,7 @@ function applyLanguage() {
     button.textContent = moodLabel(button.dataset.mood);
   });
   setText("#sidebarHabitsHeading", languageText("今日习惯", "Today's habits", "Heutige Gewohnheiten"));
+  setText("#todayKicker", tr("viewTitles.today"));
   $$("[data-timeline-filter]").forEach(button => {
     const key = button.dataset.timelineFilter;
     button.textContent = key === "photos"
@@ -6106,7 +6107,21 @@ async function initializeCloudSync() {
   }
 }
 initializeCloudSync();
-if ("serviceWorker" in navigator && location.protocol !== "file:") {
+async function retireDesktopServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(registration => registration.unregister()));
+  }
+  if (typeof caches !== "undefined" && caches.keys) {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key.startsWith("life-ledger-pwa-")).map(key => caches.delete(key)));
+  }
+}
+if (document.documentElement.dataset.desktop === "tauri-local") {
+  window.addEventListener("load", () => {
+    retireDesktopServiceWorker().catch(error => console.warn("Desktop service worker retirement failed", error));
+  });
+} else if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
       .then(registration => registration.update())

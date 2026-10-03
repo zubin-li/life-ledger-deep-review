@@ -32,13 +32,20 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=3.0.0" />
+    <link rel="stylesheet" href="./styles.css?v=4.0.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
     <div class="app-shell" id="appShell">
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-resize-handle" id="sidebarResizeHandle" aria-hidden="true"></div>
+        <div class="sidebar-identity">
+          <span class="sidebar-mark" aria-hidden="true">L</span>
+          <span class="sidebar-identity-copy">
+            <strong>Life Ledger</strong>
+            <small id="appVersionLabel">4.0.0</small>
+          </span>
+        </div>
         <nav class="main-nav" aria-label="主导航">
           <button class="nav-item active" data-view="today" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">今日</span></button>
           <button class="nav-item" data-view="week"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/><path d="m16 16 1.5 1.5L21 14"/></svg></span><span class="nav-label">本周</span></button>
@@ -83,8 +90,11 @@
 
         <div class="content-split">
           <main class="main-content">
-        <section class="view active" id="todayView">
+        <section class="view active today-desk" id="todayView">
+          <div class="today-desk-grid">
+          <div class="today-rail">
           <header class="today-header">
+            <p class="today-kicker" id="todayKicker">Today</p>
             <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
             <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
             <p class="today-summary" id="todaySummary">0 of 0 done</p>
@@ -99,7 +109,22 @@
             <summary id="todayNotTodaySummary">Not scheduled today</summary>
             <ul class="today-habit-list not-today" id="todayNotTodayList" role="list"></ul>
           </details>
-          <section class="today-journal" id="todayJournal" aria-labelledby="inspectorReflectionHeading">
+          </div>
+          <section class="today-sheet today-journal" id="todayJournal" aria-labelledby="inspectorReflectionHeading">
+            <section class="photo-library today-sheet-photos" id="todayPhotoSection" data-photo-editor>
+              <div class="mood-photo-heading">
+                <div><strong id="todayPhotoTitle" data-photo-title>Photo memories</strong><small id="todayPhotoHelp" data-photo-help>Up to three private photos for this day.</small></div>
+                <span id="todayPhotoCount" data-photo-count>0 of 3</span>
+              </div>
+              <div class="photo-drop" data-photo-drop>
+                <p class="photo-drop-empty" data-photo-empty>No photo for this day yet.</p>
+                <div class="mood-photo-list" id="todayPhotoList" data-photo-list></div>
+              </div>
+              <button class="mood-photo-add" id="todayPhotoAdd" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>Add photo</span></button>
+              <input id="todayPhotoInput" data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+              <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+              <p class="mood-photo-status" id="todayPhotoStatus" data-photo-status role="status" hidden></p>
+            </section>
             <section class="inspector-section inspector-mood" id="inspectorMoodSection">
               <h3 class="inspector-heading" id="inspectorMoodHeading">Mood</h3>
               <div class="mood-segmented" id="quickMood" role="group">
@@ -120,24 +145,11 @@
               <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
               <span class="autosave" id="homeJournalSave">● autosaved</span>
             </section>
-            <section class="photo-library" id="todayPhotoSection" data-photo-editor>
-              <div class="mood-photo-heading">
-                <div><strong id="todayPhotoTitle" data-photo-title>Photo memories</strong><small id="todayPhotoHelp" data-photo-help>Up to three private photos for this day.</small></div>
-                <span id="todayPhotoCount" data-photo-count>0 of 3</span>
-              </div>
-              <div class="photo-drop" data-photo-drop>
-                <p class="photo-drop-empty" data-photo-empty>No photo for this day yet.</p>
-                <div class="mood-photo-list" id="todayPhotoList" data-photo-list></div>
-              </div>
-              <button class="mood-photo-add" id="todayPhotoAdd" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>Add photo</span></button>
-              <input id="todayPhotoInput" data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-              <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-              <p class="mood-photo-status" id="todayPhotoStatus" data-photo-status role="status" hidden></p>
-            </section>
           </section>
+          </div>
         </section>
 
-        <section class="view" id="weekView">
+        <section class="view week-board" id="weekView">
           <p class="week-plan-lede" id="weekPlanLede"></p>
           <section class="weekly-workspace" aria-labelledby="weeklyWorkspaceTitle">
             <h2 class="sr-only" id="weeklyWorkspaceTitle">Weekly Plan</h2>
@@ -177,7 +189,7 @@
           </section>
         </section>
 
-        <section class="view" id="timelineView">
+        <section class="view timeline-journal" id="timelineView">
           <div class="timeline-layout">
             <aside class="timeline-sidebar">
               <section class="calendar-embedded timeline-calendar-column" aria-labelledby="calendarTitle">
@@ -220,7 +232,7 @@
           <span id="timelineSummary" hidden></span>
         </section>
 
-        <section class="view review-document" id="reviewView">
+        <section class="view review-document review-manuscript" id="reviewView">
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
           </div>
@@ -279,7 +291,7 @@
           </details>
         </section>
 
-        <section class="view" id="habitsView">
+        <section class="view habit-library" id="habitsView">
           <header class="habits-view-header">
             <p class="habits-view-summary" id="habitSummary">4 active habits</p>
             <button class="primary-button" id="addHabitButton">＋ Add habit</button>
@@ -429,6 +441,7 @@
           </label>
           <button class="secondary-button" id="installAppButton" type="button" data-install-app>Install app</button>
           <span class="desktop-mode-badge" id="desktopModeBadge" hidden></span>
+          <p class="about-build" id="aboutBuild">Life Ledger 4.0.0</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
           <p class="settings-save-mode" id="saveMode"><i></i><span>Local preview</span></p>
@@ -817,14 +830,14 @@
       <button type="button" role="menuitem" data-habit-context="disable" id="habitContextDisable">Disable</button>
       <button type="button" role="menuitem" data-habit-context="delete" id="habitContextDelete">Delete</button>
     </div>
-    <script src="./deployment-mode.js?v=3.0.0"></script>
-    <script src="./_init_tcb-env.js?v=3.0.0"></script>
-    <script src="./cloudbase-sync.js?v=3.0.0"></script>
-    <script src="./focus-timer.js?v=3.0.0"></script>
-    <script src="./voice-checkin.js?v=3.0.0"></script>
-    <script src="./photo-memories.js?v=3.0.0"></script>
-    <script src="./media-backup.js?v=3.0.0"></script>
-    <script type="module" src="./widget-contract.js?v=3.0.0"></script>
-    <script src="./app.js?v=3.0.0"></script>
+    <script src="./deployment-mode.js?v=4.0.0"></script>
+    <script src="./_init_tcb-env.js?v=4.0.0"></script>
+    <script src="./cloudbase-sync.js?v=4.0.0"></script>
+    <script src="./focus-timer.js?v=4.0.0"></script>
+    <script src="./voice-checkin.js?v=4.0.0"></script>
+    <script src="./photo-memories.js?v=4.0.0"></script>
+    <script src="./media-backup.js?v=4.0.0"></script>
+    <script type="module" src="./widget-contract.js?v=4.0.0"></script>
+    <script src="./app.js?v=4.0.0"></script>
   </body>
 </html>

@@ -31,8 +31,8 @@ test("desktop review reads as a document and the five panes stay list-density", 
   assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewDetailedMetrics"'));
   assert.match(css, /html\[data-desktop\] \.review-insights \{ display: flex;/);
   assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 13px\/1\.35/);
-  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: var\(--text-section-title\)/);
-  assert.match(css, /html\[data-desktop\] body\[data-active-view="today"\] \.main-content \{ max-width: none;/);
+  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: 560 44px\/0\.96 var\(--font-display\)/);
+  assert.match(css, /html\[data-desktop\] body\[data-active-view="today"\] \.main-content,[\s\S]*?max-width: none;/);
   assert.match(css, /html\[data-desktop\] \.habit-settings-list \{ gap: 0; \}/);
   assert.match(css, /html\[data-desktop\] \.timeline-habit-list \{ display: grid;/);
   assert.match(app, /class="timeline-habit-list"/);

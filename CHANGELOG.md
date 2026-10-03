@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Redesigned — Life Ledger 4.0 desk
+
+- Rebuilt the macOS desktop as a warm-paper desk with an ink source sidebar, a two-column Today canvas, a seven-day Week board, a manuscript Timeline, an editorial Review, and a habit library. Versioned assets, the PWA cache, Tauri, and Cargo are `4.0.0`. The local Tauri window unregisters any stale service worker and deletes only `life-ledger-pwa-*` CacheStorage entries; IndexedDB, localStorage, journals, habits, and photos are left in place.
+- An About line in Settings and the sidebar shows `4.0.0` so an installed build can be identified. Window titles are `Life Ledger 4`.
+
 ### Added
 
 - Added a real native macOS WidgetKit habit widget (systemSmall/systemMedium) with an interactive `AppIntent` checkbox that marks a habit complete directly from the desktop, without opening the app, and keeps working while the app is closed.

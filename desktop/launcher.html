@@ -9,11 +9,17 @@
   </head>
   <body>
     <main class="launcher">
-      <header class="launcher-bar">
+      <aside class="launcher-source">
         <div class="launcher-brand">
           <img src="./assets/app-icon.svg" alt="" width="22" height="22" />
           <span id="title">Life Ledger</span>
         </div>
+        <p class="launcher-version">4.0.0</p>
+        <p class="launcher-subtitle" id="subtitle"></p>
+        <p class="launcher-footnote" id="privacyNote"></p>
+      </aside>
+      <section class="launcher-work">
+      <header class="launcher-bar">
         <label class="launcher-language" for="languageSelect">
           <span class="sr-only" id="languageLabel">Language</span>
           <select id="languageSelect" aria-label="Launcher language">
@@ -23,8 +29,6 @@
           </select>
         </label>
       </header>
-
-      <p class="launcher-subtitle" id="subtitle"></p>
 
       <div class="launcher-choices">
         <section class="choice">
@@ -56,8 +60,8 @@
         </form>
       </div>
 
-      <p class="launcher-footnote" id="privacyNote"></p>
       <p class="launcher-error" id="launcherError" role="alert" hidden></p>
+      </section>
     </main>
     <script type="module" src="./launcher.js"></script>
   </body>

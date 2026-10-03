@@ -17,7 +17,7 @@ test("the widget bridge is gated to the local Tauri window only, never cloud or 
 test("app.js delegates the pure snapshot/mutation logic to the shared, independently-tested widget-contract module", () => {
   assert.match(appJs, /window\.LifeLedgerWidgetContract\.buildWidgetSnapshotFromHabits\(/);
   assert.match(appJs, /window\.LifeLedgerWidgetContract\.planMutationApplication\(/);
-  assert.match(indexHtml, /<script type="module" src="\.\/widget-contract\.js\?v=3\.0\.0"><\/script>/);
+  assert.match(indexHtml, /<script type="module" src="\.\/widget-contract\.js\?v=4\.0\.0"><\/script>/);
 });
 
 test("initWidgetBridge defers its first run until DOMContentLoaded, after the module script has attached window.LifeLedgerWidgetContract", () => {

@@ -7,7 +7,7 @@ const css = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 
 test("Today keeps the compact event strip and removes daily flexible goals", () => {
-  const todayView = html.match(/<section class="view active" id="todayView">([\s\S]*?)<\/section>\s*<section class="view" id="weekView">/);
+  const todayView = html.match(/<section class="view active today-desk" id="todayView">([\s\S]*?)<section class="view week-board" id="weekView">/);
   assert.ok(todayView, "Today view is missing");
   assert.match(todayView[1], /class="today-events-strip" id="todayEventsStrip"/);
   assert.match(todayView[1], /class="today-habit-list" id="todayHabitList"/);
