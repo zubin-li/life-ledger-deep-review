@@ -3,7 +3,7 @@
   --ink: #1d1d1f;
   --muted: #6e6e73;
   --line: rgba(29, 29, 31, .12);
-  --sage: #4f6a53;
+  --sage: #5d7d68;
   --sage-soft: rgba(79, 106, 83, .12);
   --danger: #b00020;
   --desktop-inset: 38px;
@@ -36,21 +36,21 @@ body {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   gap: 0;
-  background: #f3eee4;
-  color: #1c1914;
+  background: #f4f2ed;
+  color: #242522;
 }
 .launcher-source {
-  background: #241f1a;
-  color: #f4efe6;
+  background: #e9e6de;
+  color: #242522;
   padding: 36px 24px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-.launcher-source .launcher-brand { color: #f4efe6; }
+.launcher-source .launcher-brand { color: #242522; }
 .launcher-version { margin: 0; font: 600 28px/1 var(--font, inherit); letter-spacing: -.04em; }
 .launcher-source .launcher-subtitle,
-.launcher-source .launcher-footnote { color: #cfc6b8; }
+.launcher-source .launcher-footnote { color: #6f716b; }
 .launcher-work { padding: 28px 32px 32px; display: grid; align-content: start; gap: 16px; }
 
 .launcher-bar {

@@ -29,9 +29,9 @@ test("desktop review reads as a document and the five panes stay list-density", 
   const review = html.slice(html.indexOf('id="reviewView"'), html.indexOf('id="habitsView"'));
   assert.ok(review.indexOf('id="reviewText"') < review.indexOf('id="reviewTrendChart"'));
   assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewDetailedMetrics"'));
-  assert.match(css, /html\[data-desktop\] \.review-insights \{ display: flex;/);
-  assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 13px\/1\.35/);
-  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: 560 44px\/0\.96 var\(--font-display\)/);
+  assert.match(css, /html\[data-desktop\] \.review-insights \{ display: grid;/);
+  assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 1\.375rem\/1\.2/);
+  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
   assert.match(css, /html\[data-desktop\] body\[data-active-view="today"\] \.main-content,[\s\S]*?max-width: none;/);
   assert.match(css, /html\[data-desktop\] \.habit-settings-list \{ gap: 0; \}/);
   assert.match(css, /html\[data-desktop\] \.timeline-habit-list \{ display: grid;/);

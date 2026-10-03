@@ -4,7 +4,8 @@ const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
 const THEME_KEY = "life-ledger-theme";
 const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
 const INSPECTOR_KEY = "life-ledger-inspector-collapsed";
-const SIDEBAR_WIDTH_KEY = "lifeLedgerSidebarWidth";
+const SIDEBAR_WIDTH_KEY = "lifeLedgerSidebarWidth31";
+const INSPECTOR_WIDTH_KEY = "lifeLedgerInspectorWidth31";
 const DESKTOP_SHORTCUT_VIEWS = ["today", "week", "timeline", "review", "habits"];
 const CALENDAR_VIEW_KEY = "life-ledger-calendar-view";
 const REMINDER_KEY = "life-ledger-reminder";
@@ -138,7 +139,7 @@ const i18n = {
       progressText: "{done} / {total} 项完成",
     },
     mood: {
-      kicker: "MOOD",
+      kicker: "心情",
       title: "今天整体感觉如何？",
       selectedTitle: "这一天整体感觉如何？",
       values: { 低落: "低落", 平静: "平静", 很好: "很好" },
@@ -161,7 +162,7 @@ const i18n = {
       hideRecurring: "默认收起重复日程", hideRecurringHelp: "固定日程仍会被记录，但不会占满每日计划。", save: "保存选择", saving: "正在保存…", close: "关闭", disconnect: "断开连接", disconnectConfirm: "断开后将删除 Life Ledger 中缓存的日历内容。Google 日历本身不会受到影响。",
       saved: "日历选择已保存", disconnected: "Google 日历已断开", stale: "暂时无法连接 Google，正在显示最近一次日程。", error: "日历暂时无法读取，请稍后重试。", authExpired: "Google 授权已失效，请重新连接。", noCalendars: "没有找到可读取的日历。", calendarEvents: "日程",
     },
-    journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么？推进了什么？有什么值得记住？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存", tabReflection: "复盘", tabFocus: "专注", switchAria: "切换每日复盘与专注计时", showReflection: "显示每日复盘", showFocus: "显示专注计时" },
+    journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么，推进了什么，值得记住什么？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存", tabReflection: "复盘", tabFocus: "专注", switchAria: "切换每日复盘与专注计时", showReflection: "显示每日复盘", showFocus: "显示专注计时" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "明日目标", desc: "提前为明天留下一条清晰、从容的起点。", placeholder: "添加明天要完成的事情…", addLabel: "添加明日目标",
       empty: "明天还没有安排具体目标。<br />提前写下一件最重要的事。", added: "已加入明日目标",
@@ -303,6 +304,28 @@ const i18n = {
       insightDelta: "较上月 {delta}",
       insightDeltaUp: "+{delta} 点",
       insightDeltaDown: "{delta} 点",
+      timeSingular: "次",
+      timePlural: "次",
+      window7: "7 天",
+      window30: "30 天",
+      window90: "90 天",
+      windowAria: "统计区间",
+      rateLabel: "完成率",
+      vsPreviousUp: "比上一区间 +{delta}",
+      vsPreviousDown: "比上一区间 {delta}",
+      samePrevious: "与上一区间相同",
+      streakLabel: "当前连续",
+      bestStreakLabel: "最长连续",
+      weekdayTitle: "星期规律",
+      habitCompare: "各习惯",
+      heatmapTitle: "一致性",
+      valuesSummary: "数值表",
+      focusWindow: "本区间专注 {minutes} 分钟",
+      insufficient: "这个区间还没有可计入的完成记录。",
+      trendSummary: "{start} 至 {end}，完成 {completed}/{eligible}。",
+      datePopoverLabel: "选择日期",
+      datePopoverToday: "今天",
+      systemLanguage: "跟随系统",
       narrativeTitle: "月度感想",
       autosaved: "已自动保存",
       habitColRate: "完成率",
@@ -527,7 +550,7 @@ const i18n = {
       progressText: "{done} / {total} done",
     },
     mood: {
-      kicker: "MOOD",
+      kicker: "Mood",
       title: "How do you feel today?",
       selectedTitle: "How did this day feel?",
       values: { 低落: "Low", 平静: "Calm", 很好: "Good" },
@@ -550,7 +573,7 @@ const i18n = {
       hideRecurring: "Collapse recurring routines", hideRecurringHelp: "Routine events remain available without taking over the day.", save: "Save selection", saving: "Saving…", close: "Close", disconnect: "Disconnect", disconnectConfirm: "Disconnecting removes cached calendar details from Life Ledger. Your Google Calendar will not be changed.",
       saved: "Calendar selection saved", disconnected: "Google Calendar disconnected", stale: "Google is unavailable, so the latest cached schedule is shown.", error: "Calendar could not be read. Please try again.", authExpired: "Google access expired. Please reconnect.", noCalendars: "No readable calendars were found.", calendarEvents: "Calendar events",
     },
-    journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened today? What moved forward? What is worth remembering?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved", tabReflection: "Reflection", tabFocus: "Focus", switchAria: "Switch between daily reflection and focus timer", showReflection: "Show daily reflection", showFocus: "Show focus timer" },
+    journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened, what moved, and what is worth keeping?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved", tabReflection: "Reflection", tabFocus: "Focus", switchAria: "Switch between daily reflection and focus timer", showReflection: "Show daily reflection", showFocus: "Show focus timer" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "Tomorrow's Goals", desc: "Give tomorrow a clear and gentle starting point.", placeholder: "Add something for tomorrow…", addLabel: "Add tomorrow's goal",
       empty: "Nothing planned for tomorrow yet.<br />Give it one meaningful starting point.", added: "Added to tomorrow's goals",
@@ -692,6 +715,28 @@ const i18n = {
       insightDelta: "{delta} vs previous month",
       insightDeltaUp: "+{delta} pts",
       insightDeltaDown: "{delta} pts",
+      timeSingular: "time",
+      timePlural: "times",
+      window7: "7 days",
+      window30: "30 days",
+      window90: "90 days",
+      windowAria: "Statistics window",
+      rateLabel: "Completion",
+      vsPreviousUp: "+{delta} vs previous",
+      vsPreviousDown: "{delta} vs previous",
+      samePrevious: "Same as the previous window",
+      streakLabel: "Current streak",
+      bestStreakLabel: "Best streak",
+      weekdayTitle: "Weekday pattern",
+      habitCompare: "By habit",
+      heatmapTitle: "Consistency",
+      valuesSummary: "Values",
+      focusWindow: "{minutes} focused minutes in this window",
+      insufficient: "This window has no eligible completions yet.",
+      trendSummary: "{start} to {end}, {completed}/{eligible} complete.",
+      datePopoverLabel: "Choose date",
+      datePopoverToday: "Today",
+      systemLanguage: "System default",
       narrativeTitle: "Monthly reflection",
       autosaved: "Autosaved",
       habitColRate: "Rate",
@@ -702,7 +747,7 @@ const i18n = {
       draft: {
         title: "# {monthName} {year} Review",
         foundations: "## Foundations",
-        line: "- {habit}: completed {count} times, monthly coverage {rate}%.",
+        line: "- {habit}: completed {countLabel}, monthly coverage {rate}%.",
         status: "## State & Events",
         mood: "The most recorded mood this month was “{mood}” ({days} days). You left {notes} journal/event notes.",
         noNotes: "- No written notes yet this month.",
@@ -939,7 +984,7 @@ const i18n = {
       hideRecurring: "Wiederkehrende Routinen einklappen", hideRecurringHelp: "Routinen bleiben verfügbar, ohne den Tagesplan zu überladen.", save: "Auswahl speichern", saving: "Wird gespeichert…", close: "Schließen", disconnect: "Trennen", disconnectConfirm: "Beim Trennen werden zwischengespeicherte Kalenderdaten aus Life Ledger entfernt. Dein Google Kalender bleibt unverändert.",
       saved: "Kalenderauswahl gespeichert", disconnected: "Google Kalender getrennt", stale: "Google ist nicht erreichbar; der zuletzt geladene Tagesplan wird angezeigt.", error: "Der Kalender konnte nicht gelesen werden. Bitte versuche es erneut.", authExpired: "Der Google-Zugriff ist abgelaufen. Bitte erneut verbinden.", noCalendars: "Keine lesbaren Kalender gefunden.", calendarEvents: "Kalendertermine",
     },
-    journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist heute passiert? Was ging voran? Was ist erinnernswert?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert", tabReflection: "Reflexion", tabFocus: "Fokus", switchAria: "Zwischen Tagesreflexion und Fokus-Timer wechseln", showReflection: "Tagesreflexion anzeigen", showFocus: "Fokus-Timer anzeigen" },
+    journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist passiert, was ging voran, was bleibt?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert", tabReflection: "Reflexion", tabFocus: "Fokus", switchAria: "Zwischen Tagesreflexion und Fokus-Timer wechseln", showReflection: "Tagesreflexion anzeigen", showFocus: "Fokus-Timer anzeigen" },
     tomorrowGoals: {
       kicker: "PLAN FÜR MORGEN", title: "Ziele für morgen", desc: "Gib dem morgigen Tag einen klaren und ruhigen Anfang.", placeholder: "Ein Ziel für morgen hinzufügen…", addLabel: "Ziel für morgen hinzufügen",
       empty: "Für morgen ist noch nichts geplant.<br />Setze einen sinnvollen Anfangspunkt.", added: "Zu den Zielen für morgen hinzugefügt",
@@ -1081,6 +1126,28 @@ const i18n = {
       insightDelta: "{delta} vs. Vormonat",
       insightDeltaUp: "+{delta} Pkt.",
       insightDeltaDown: "{delta} Pkt.",
+      timeSingular: "Mal",
+      timePlural: "Mal",
+      window7: "7 Tage",
+      window30: "30 Tage",
+      window90: "90 Tage",
+      windowAria: "Statistikzeitraum",
+      rateLabel: "Erledigung",
+      vsPreviousUp: "+{delta} zum vorherigen Zeitraum",
+      vsPreviousDown: "{delta} zum vorherigen Zeitraum",
+      samePrevious: "Wie im vorherigen Zeitraum",
+      streakLabel: "Aktuelle Serie",
+      bestStreakLabel: "Längste Serie",
+      weekdayTitle: "Wochentage",
+      habitCompare: "Nach Gewohnheit",
+      heatmapTitle: "Regelmäßigkeit",
+      valuesSummary: "Werte",
+      focusWindow: "{minutes} Fokusminuten in diesem Zeitraum",
+      insufficient: "In diesem Zeitraum gibt es noch keine anrechenbaren Erledigungen.",
+      trendSummary: "{start} bis {end}, {completed}/{eligible} erledigt.",
+      datePopoverLabel: "Datum wählen",
+      datePopoverToday: "Heute",
+      systemLanguage: "Systemstandard",
       narrativeTitle: "Monatsreflexion",
       autosaved: "Automatisch gespeichert",
       habitColRate: "Quote",
@@ -1263,11 +1330,20 @@ const monthNames = {
 const supportedLanguages = ["en", "de", "zh"];
 const requestedLanguage = new URLSearchParams(location.search).get("lang");
 const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
-let currentLang = supportedLanguages.includes(requestedLanguage)
+const languagePreferenceSet = localStorage.getItem(LANGUAGE_PREFERENCE_KEY) === "true";
+function languageFromChoice(choice) {
+  if (supportedLanguages.includes(choice)) return choice;
+  const nav = (navigator.language || "en").toLowerCase();
+  if (nav.startsWith("zh")) return "zh";
+  if (nav.startsWith("de")) return "de";
+  return "en";
+}
+let languageChoice = supportedLanguages.includes(requestedLanguage)
   ? requestedLanguage
-  : localStorage.getItem(LANGUAGE_PREFERENCE_KEY) === "true" && supportedLanguages.includes(storedLanguage)
+  : languagePreferenceSet && (storedLanguage === "system" || supportedLanguages.includes(storedLanguage))
     ? storedLanguage
-    : "en";
+    : "system";
+let currentLang = languageFromChoice(languageChoice);
 const cloneData = value => typeof structuredClone === "function"
   ? structuredClone(value)
   : JSON.parse(JSON.stringify(value));
@@ -1327,6 +1403,7 @@ let editingLongTermGoalId = null;
 let dayPlanRoutinesExpanded = false;
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
+let analyticsWindow = 30;
 let calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
 const previewName = new URLSearchParams(location.search).get("local-preview");
@@ -1467,9 +1544,16 @@ function applyInspectorState() {
 function applySidebarWidth(width) {
   const shell = $("#appShell");
   if (!shell) return;
-  const clamped = Math.max(180, Math.min(300, width));
+  const clamped = Math.max(156, Math.min(240, Math.round(width)));
   shell.style.setProperty("--sidebar-width", `${clamped}px`);
   localStorage.setItem(SIDEBAR_WIDTH_KEY, String(clamped));
+}
+function applyInspectorWidth(width) {
+  const shell = $("#appShell");
+  if (!shell) return;
+  const clamped = Math.max(280, Math.min(440, Math.round(width)));
+  shell.style.setProperty("--inspector-width", `${clamped}px`);
+  localStorage.setItem(INSPECTOR_WIDTH_KEY, String(clamped));
 }
 function toggleSidebar() {
   withoutMotion(() => {
@@ -1484,11 +1568,34 @@ function toggleInspector() {
   applyInspectorState();
 }
 function goToToday() {
-  cursor = new Date();
-  cursor.setHours(12, 0, 0, 0);
-  selectedPlanningDate = isoDate(cursor);
+  jumpToDate(isoDate(new Date()));
+}
+function jumpToDate(iso) {
+  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+  const date = parseDate(iso);
+  cursor = date;
+  selectedPlanningDate = isoDate(date);
+  selectedTimelineDate = isoDate(date);
+  timelineCursor = new Date(date.getFullYear(), date.getMonth(), 1, 12);
+  selectedWorkspaceWeek = isoWeekKey(date);
   renderAll();
   void loadGoogleCalendarMonth(cursor);
+}
+function setDatePopoverOpen(open) {
+  const popover = $("#datePopover");
+  const label = $("#dateNavLabel");
+  if (!popover) return;
+  popover.hidden = !open;
+  label?.setAttribute("aria-expanded", String(open));
+  if (open) {
+    const input = $("#datePopoverInput");
+    if (input) input.value = selectedPlanningDate;
+    input?.focus();
+  }
+}
+function toggleDatePopover() {
+  const popover = $("#datePopover");
+  setDatePopoverOpen(Boolean(popover?.hidden));
 }
 function handleMenuAction(action) {
   if (!action) return;
@@ -1741,7 +1848,9 @@ function applyLanguage() {
   });
   const languageSelect = $("#languageSelect");
   const languageFlag = $("#languageFlag");
-  if (languageSelect) languageSelect.value = currentLang;
+  const systemOption = languageSelect?.querySelector('option[value="system"]');
+  if (systemOption) systemOption.textContent = tr("review.systemLanguage");
+  if (languageSelect) languageSelect.value = languageChoice;
   if (languageFlag) languageFlag.textContent = currentLang === "zh" ? "🇨🇳" : currentLang === "de" ? "🇩🇪" : "🇬🇧";
   setAria("#languageSelect", currentLang === "zh" ? "选择界面语言" : currentLang === "de" ? "Sprache der Oberfläche wählen" : "Select interface language");
   setAria("#yearSelect", languageText("选择年份", "Select year", "Jahr wählen"));
@@ -1754,6 +1863,17 @@ function applyLanguage() {
   setPlaceholder("#quickFind", languageText("搜索", "Search", "Suchen"));
   setAria("#dateNavPrev", languageText("上一段", "Previous", "Zurück"));
   setAria("#dateNavNext", languageText("下一段", "Next", "Weiter"));
+  setAria("#dateNavLabel", tr("review.datePopoverLabel"));
+  setAria("#datePopover", tr("review.datePopoverLabel"));
+  setText("#datePopoverToday", tr("review.datePopoverToday"));
+  setAria("#analyticsPeriod", tr("review.windowAria"));
+  $$("[data-analytics-window]").forEach(button => {
+    const days = button.dataset.analyticsWindow;
+    button.textContent = tr(`review.window${days}`);
+    const active = Number(days) === analyticsWindow;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
   setText("#settingsPaneTitle", tr("settings.title"));
   $$("[data-settings-tab]").forEach(button => { button.textContent = tr(`settings.${button.dataset.settingsTab}`); });
   setText("#workspaceSwitchButton", tr("settings.workspaceSwitch"));
@@ -3711,9 +3831,9 @@ function renderReview() {
   const todayKey = isoDate(new Date());
   const elapsedDates = monthDates.filter(date => date <= todayKey);
   const habits = activeHabits(monthDates[monthDates.length - 1]);
-  renderReviewInsights(monthDates, elapsedDates, habits);
-  renderReviewTrendChart(monthDates);
-  renderReviewInspectorTable(habits, elapsedDates, monthDates);
+  renderReviewInsights();
+  renderReviewTrendChart();
+  renderReviewInspectorTable();
   $("#scoreGrid").innerHTML = habits.map(h => {
     const version = versionFor(h, monthDates[monthDates.length - 1]);
     const count = elapsedDates.filter(date => getLog(date).completed.includes(h.id)).length;
@@ -3746,123 +3866,210 @@ function previousMonthElapsedDates(cursorDate) {
   return Array.from({ length: days }, (_, i) => isoDate(new Date(prev.getFullYear(), prev.getMonth(), i + 1, 12))).filter(date => date <= cutoff);
 }
 
-function renderReviewInsights(monthDates, elapsedDates, habits) {
+function analyticsApi() {
+  return globalThis.LifeLedgerAnalytics;
+}
+function countLabel(count) {
+  const value = Number(count) || 0;
+  const api = analyticsApi();
+  if (currentLang === "en" && api?.pluralEn) return api.pluralEn(value, tr("review.timeSingular"), tr("review.timePlural"));
+  if (currentLang === "de") return `${value} Mal`;
+  return `${value} 次`;
+}
+function analyticsEndIso() {
+  const today = isoDate(new Date());
+  const cursorIso = isoDate(cursor);
+  return cursorIso > today ? today : cursorIso;
+}
+function analyticsDates() {
+  const api = analyticsApi();
+  if (!api) return [];
+  return api.windowDates(analyticsEndIso(), analyticsWindow);
+}
+function slotTotals(dates) {
+  let completed = 0;
+  let eligible = 0;
+  dates.forEach(date => {
+    const habits = dailyHabits(date);
+    const done = new Set(getLog(date).completed);
+    eligible += habits.length;
+    completed += habits.filter(habit => done.has(habit.id)).length;
+  });
+  return analyticsApi().rate(completed, eligible);
+}
+function habitWindowStats(habit, dates) {
+  let completed = 0;
+  const flags = [];
+  dates.forEach(date => {
+    if (!countsTowardDaily(habit, date)) return;
+    const done = getLog(date).completed.includes(habit.id);
+    flags.push(done);
+    if (done) completed += 1;
+  });
+  const rated = analyticsApi().rate(completed, flags.length);
+  const today = isoDate(new Date());
+  const ignoreTrailingMiss = dates[dates.length - 1] === today;
+  return { ...rated, flags, streaks: analyticsApi().streaks(flags, { ignoreTrailingMiss }) };
+}
+function formatRate(stats) {
+  if (!stats || stats.percent == null) return "—";
+  return `${stats.percent}%`;
+}
+function analyticsDeltaLabel(current, previous) {
+  if (current.percent == null || previous.percent == null) return "";
+  const delta = current.percent - previous.percent;
+  if (delta > 0) return tr("review.vsPreviousUp", { delta });
+  if (delta < 0) return tr("review.vsPreviousDown", { delta });
+  return tr("review.samePrevious");
+}
+function renderReviewInsights() {
   const container = $("#reviewInsights");
-  if (!container) return;
-  if (!elapsedDates.length) {
-    container.innerHTML = `<p class="review-insights-empty">${escapeHtml(tr("review.insightsEmpty"))}</p>`;
+  if (!container || !analyticsApi()) return;
+  const dates = analyticsDates();
+  const current = slotTotals(dates);
+  const previous = slotTotals(analyticsApi().previousWindow(dates));
+  if (!current.eligible) {
+    container.innerHTML = `<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
     return;
   }
-  const rates = elapsedDates.map(date => completionFor(date));
-  const avg = Math.round(rates.reduce((sum, rate) => sum + rate, 0) / rates.length);
-  const prevElapsed = previousMonthElapsedDates(cursor);
-  const prevAvg = prevElapsed.length ? Math.round(prevElapsed.map(date => completionFor(date)).reduce((sum, rate) => sum + rate, 0) / prevElapsed.length) : avg;
-  const delta = avg - prevAvg;
-  const deltaClass = delta > 0 ? "up" : delta < 0 ? "down" : "";
-  const deltaPrefix = delta > 0 ? "▲ " : delta < 0 ? "▼ " : "";
-  const deltaLabel = delta > 0 ? tr("review.insightDeltaUp", { delta }) : delta < 0 ? tr("review.insightDeltaDown", { delta: Math.abs(delta) }) : languageText("与上月相同", "Same as previous month", "Wie im Vormonat");
-  const best = habits.map(habit => ({
-    habit,
-    count: elapsedDates.filter(date => getLog(date).completed.includes(habit.id)).length,
-  })).sort((a, b) => b.count - a.count)[0];
-  const focusMinutes = Math.round(focusSessionsBetween(monthDates[0], monthDates[monthDates.length - 1]).reduce((sum, session) => sum + focusSessionMinutes(session), 0));
+  const habits = activeHabits(dates[dates.length - 1]).filter(habit => countsTowardDaily(habit, dates[dates.length - 1]));
+  const ranked = habits.map(habit => ({ habit, stats: habitWindowStats(habit, dates) }))
+    .sort((a, b) => b.stats.streaks.current - a.stats.streaks.current || b.stats.streaks.best - a.stats.streaks.best);
+  const lead = ranked[0];
+  const delta = analyticsDeltaLabel(current, previous);
+  const deltaClass = current.percent != null && previous.percent != null && current.percent > previous.percent ? "up" : current.percent < previous.percent ? "down" : "";
   container.innerHTML = `
-    <div class="review-insight-block"><strong class="review-insight-value">${avg}%</strong><span class="review-insight-label">${escapeHtml(tr("review.insightAvg"))}</span><span class="review-insight-delta ${deltaClass}">${escapeHtml(deltaPrefix + deltaLabel)}</span></div>
-    <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(best?.count ? displayHabitName(best.habit) : "—")}</strong><span class="review-insight-label">${escapeHtml(tr("review.insightBest"))}</span>${best?.count ? `<span class="review-insight-delta">${escapeHtml(languageText(`${best.count} 次`, `${best.count} times`, `${best.count} Mal`))}</span>` : ""}</div>
-    <div class="review-insight-block"><strong class="review-insight-value">${focusMinutes}</strong><span class="review-insight-label">${escapeHtml(tr("review.insightFocus"))}</span><span class="review-insight-delta">${escapeHtml(tr("review.focusMonth", { minutes: focusMinutes }))}</span></div>`;
+    <div class="review-insight-block"><strong class="review-insight-value">${formatRate(current)}</strong><span class="review-insight-label">${escapeHtml(tr("review.rateLabel"))}</span><span class="review-insight-delta">${escapeHtml(`${current.completed}/${current.eligible}`)}</span>${delta ? `<span class="review-insight-delta ${deltaClass}">${escapeHtml(delta)}</span>` : ""}</div>
+    <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.current : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.streakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? displayHabitName(lead.habit) : "—")}</span></div>
+    <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.best : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.bestStreakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? countLabel(lead.stats.streaks.best) : "")}</span></div>`;
 }
 
-function reviewTrendChartDates(cursorDate) {
-  const todayKey = isoDate(new Date());
-  const year = cursorDate.getFullYear();
-  const month = cursorDate.getMonth();
-  const now = new Date();
-  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
-  if (isCurrentMonth) {
-    return Array.from({ length: 30 }, (_, index) => {
-      const date = new Date(now);
-      date.setDate(now.getDate() - (29 - index));
-      date.setHours(12, 0, 0, 0);
-      return isoDate(date);
-    });
-  }
-  const days = new Date(year, month + 1, 0).getDate();
-  return Array.from({ length: days }, (_, index) => isoDate(new Date(year, month, index + 1, 12)));
+function renderTrendSvg(points, summary) {
+  const width = 640;
+  const height = 200;
+  const left = 48;
+  const right = 36;
+  const top = 16;
+  const bottom = 32;
+  const plotW = width - left - right;
+  const plotH = height - top - bottom;
+  const coords = points.map((point, index) => {
+    const x = left + (points.length === 1 ? plotW / 2 : (index / (points.length - 1)) * plotW);
+    const y = top + (1 - Math.max(0, Math.min(100, point.value)) / 100) * plotH;
+    return { ...point, x, y };
+  });
+  const path = coords.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+  const last = coords[coords.length - 1];
+  const grid = [0, 50, 100].map(pct => {
+    const y = top + (1 - pct / 100) * plotH;
+    return `<line x1="${left}" y1="${y.toFixed(1)}" x2="${width - right}" y2="${y.toFixed(1)}" class="review-trend-gridline"/><text x="4" y="${(y + 4).toFixed(1)}" class="review-trend-axis">${pct}%</text>`;
+  }).join("");
+  const labelIndexes = points.length <= 3 ? points.map((_, index) => index) : [0, Math.floor((points.length - 1) / 2), points.length - 1];
+  const labels = labelIndexes.map(index => {
+    const point = coords[index];
+    const label = formatLocalizedDate(parseDate(point.date), { day: "numeric", month: "short" });
+    const anchor = index === 0 ? "start" : index === points.length - 1 ? "end" : "middle";
+    const x = index === 0 ? left : index === points.length - 1 ? width - 8 : point.x;
+    return `<text x="${x.toFixed(1)}" y="${height - 8}" text-anchor="${anchor}" class="review-trend-axis">${escapeHtml(label)}</text>`;
+  }).join("");
+  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${grid}<path d="${path}" class="review-trend-line"/><circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="4" class="review-trend-dot"/>${labels}</svg>`;
 }
-
-function renderReviewTrendChart(monthDates) {
+function renderCompactValues(points) {
+  return `<ul class="analytics-compact">${points.map(point => {
+    const label = formatLocalizedDate(parseDate(point.date), { day: "numeric", month: "short" });
+    return `<li><span>${escapeHtml(label)}</span><strong>${point.value}%</strong></li>`;
+  }).join("")}</ul>`;
+}
+function renderWeekdayBars(points) {
+  const averages = analyticsApi().weekdayAverages(points);
+  const names = i18n[currentLang].calendar.weekdays;
+  return `<section class="analytics-bars" aria-label="${escapeHtml(tr("review.weekdayTitle"))}"><h3>${escapeHtml(tr("review.weekdayTitle"))}</h3>${averages.map((value, index) => `
+    <div class="analytics-bar-row">
+      <strong>${escapeHtml(names[index] || "")}</strong>
+      <span>${value == null ? "—" : `${value}%`}</span>
+      <div class="analytics-bar-track" aria-hidden="true"><i style="width:${value == null ? 0 : value}%"></i></div>
+    </div>`).join("")}</section>`;
+}
+function renderHabitBars(dates) {
+  const habits = activeHabits(dates[dates.length - 1]);
+  const rows = habits.map(habit => ({ habit, stats: habitWindowStats(habit, dates) })).filter(row => row.stats.eligible > 0);
+  if (!rows.length) return "";
+  return `<section class="analytics-bars" aria-label="${escapeHtml(tr("review.habitCompare"))}"><h3>${escapeHtml(tr("review.habitCompare"))}</h3>${rows.map(({ habit, stats }) => `
+    <div class="analytics-bar-row">
+      <strong title="${escapeHtml(displayHabitName(habit))}">${escapeHtml(displayHabitName(habit))}</strong>
+      <span>${formatRate(stats)} · ${stats.completed}/${stats.eligible} · ${escapeHtml(tr("review.streakLabel"))} ${stats.streaks.current}</span>
+      <div class="analytics-bar-track" aria-hidden="true"><i style="width:${stats.percent || 0}%"></i></div>
+    </div>`).join("")}</section>`;
+}
+function renderConsistencyHeatmap(dates) {
+  const first = parseDate(dates[0]);
+  const lead = (first.getDay() + 6) % 7;
+  const cells = [...Array.from({ length: lead }, () => null), ...dates.map(date => ({ date, value: completionFor(date) }))];
+  const weeks = [];
+  for (let index = 0; index < cells.length; index += 7) weeks.push(cells.slice(index, index + 7));
+  const level = value => {
+    if (value == null) return "empty";
+    if (value <= 0) return "0";
+    if (value <= 25) return "1";
+    if (value <= 50) return "2";
+    if (value <= 75) return "3";
+    return "4";
+  };
+  const grid = weeks.map(week => `<div class="analytics-heat-week">${week.map(cell => {
+    if (!cell) return `<span class="analytics-heat-cell is-pad" aria-hidden="true"></span>`;
+    const label = formatLocalizedDate(parseDate(cell.date), { day: "numeric", month: "short" });
+    return `<span class="analytics-heat-cell level-${level(cell.value)}" title="${escapeHtml(`${label}: ${cell.value}%`)}" aria-label="${escapeHtml(`${label}: ${cell.value}%`)}"></span>`;
+  }).join("")}</div>`).join("");
+  const table = dates.map(date => {
+    const value = completionFor(date);
+    const label = formatLocalizedDate(parseDate(date), { weekday: "short", day: "numeric", month: "short" });
+    return `<tr><th scope="row">${escapeHtml(label)}</th><td>${value}%</td></tr>`;
+  }).join("");
+  return `<section class="analytics-heatmap" aria-label="${escapeHtml(tr("review.heatmapTitle"))}"><h3>${escapeHtml(tr("review.heatmapTitle"))}</h3><div class="analytics-heat-grid">${grid}</div><ul class="analytics-heat-legend"><li><i class="level-0"></i><span>0%</span></li><li><i class="level-2"></i><span>50%</span></li><li><i class="level-4"></i><span>100%</span></li></ul><details class="analytics-heat-fallback"><summary>${escapeHtml(tr("review.valuesSummary"))}</summary><table><tbody>${table}</tbody></table></details></section>`;
+}
+function renderReviewTrendChart() {
   const chart = $("#reviewTrendChart");
-  if (!chart) return;
-  const todayKey = isoDate(new Date());
-  const trendDates = reviewTrendChartDates(cursor);
-  const elapsed = trendDates.filter(date => date <= todayKey);
-  if (!elapsed.length) {
-    chart.innerHTML = `<p class="review-trend-empty">${escapeHtml(tr("review.trendEmpty"))}</p>`;
+  if (!chart || !analyticsApi()) return;
+  const dates = analyticsDates();
+  const current = slotTotals(dates);
+  if (!current.eligible) {
+    chart.innerHTML = "";
     return;
   }
-  const values = elapsed.map(date => completionFor(date));
-  const barGap = 2;
-  const barWidth = 6;
-  const width = Math.max(320, elapsed.length * (barWidth + barGap) + 32);
-  const height = 160;
-  const plotTop = 20;
-  const plotBottom = height - 28;
-  const plotHeight = plotBottom - plotTop;
-  const plotWidth = width - 32;
-  const step = plotWidth / Math.max(1, elapsed.length);
-  const gridLines = [0, 50, 100].map(pct => {
-    const y = plotBottom - (pct / 100) * plotHeight;
-    return `<line x1="24" y1="${y}" x2="${width - 8}" y2="${y}" class="review-trend-gridline"/><text x="4" y="${y + 4}" class="review-trend-axis">${pct}%</text>`;
-  }).join("");
-  const bars = elapsed.map((date, index) => {
-    const value = values[index];
-    const barHeight = Math.max(1, value / 100 * plotHeight);
-    const x = 24 + index * step + (step - barWidth) / 2;
-    const y = plotBottom - barHeight;
-    const label = formatLocalizedDate(parseDate(date), { day: "numeric", month: "short" });
-    const todayMark = date === todayKey ? ' class="review-trend-bar today"' : ` class="review-trend-bar${value >= 75 ? " high" : ""}"`;
-    return `<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="1"${todayMark}><title>${escapeHtml(label)}: ${value}%</title></rect>`;
-  }).join("");
-  const xLabels = elapsed.filter((_, index) => index % 7 === 0 || (index === elapsed.length - 1 && index % 7 >= 4)).map(date => {
-    const index = elapsed.indexOf(date);
-    const x = 24 + index * step + step / 2;
-    const label = formatLocalizedDate(parseDate(date), { day: "numeric", month: "short" });
-    return `<text x="${x}" y="${height - 8}" text-anchor="middle" class="review-trend-axis">${escapeHtml(label)}</text>`;
-  }).join("");
-  const avg = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
-  const summary = languageText(
-    `最近 ${elapsed.length} 天，平均完成度 ${avg}%。`,
-    `Last ${elapsed.length} days, averaging ${avg}% completion.`,
-    `Letzte ${elapsed.length} Tage, durchschnittlich ${avg} % Erledigung.`,
-  );
-  chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))} <span class="review-trend-range">${escapeHtml(`${formatLocalizedDate(parseDate(elapsed[0]), { day: "numeric", month: "short" })} – ${formatLocalizedDate(parseDate(elapsed[elapsed.length - 1]), { day: "numeric", month: "short" })}`)}</span></h3><svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${gridLines}${bars}${xLabels}</svg>`;
+  const points = dates.map(date => ({ date, value: completionFor(date) }));
+  const summary = tr("review.trendSummary", {
+    start: formatLocalizedDate(parseDate(dates[0]), { day: "numeric", month: "short" }),
+    end: formatLocalizedDate(parseDate(dates[dates.length - 1]), { day: "numeric", month: "short" }),
+    completed: current.completed,
+    eligible: current.eligible,
+  });
+  const mode = analyticsApi().chartMode(points.length);
+  const trend = mode === "line" ? renderTrendSvg(points, summary) : renderCompactValues(points);
+  const minutes = Math.round(focusSessionsBetween(dates[0], dates[dates.length - 1]).reduce((sum, session) => sum + focusSessionMinutes(session), 0));
+  const focus = minutes > 0 ? `<p class="analytics-focus">${escapeHtml(tr("review.focusWindow", { minutes }))}</p>` : "";
+  chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))}</h3>${trend}${renderConsistencyHeatmap(dates)}${renderWeekdayBars(points)}${renderHabitBars(dates)}${focus}`;
 }
 
-function renderReviewInspectorTable(habits, elapsedDates, monthDates) {
+function renderReviewInspectorTable() {
   const table = $("#inspectorReviewTable");
-  if (!table) return;
-  const periodLabel = tr("review.title", { year: cursor.getFullYear(), month: cursor.getMonth() + 1, monthName: monthName(cursor.getMonth()) });
-  table.innerHTML = `<p class="inspector-review-period">${escapeHtml(periodLabel)}</p><table><thead><tr><th>${escapeHtml(languageText("习惯", "Habit", "Gewohnheit"))}</th><th>${escapeHtml(languageText("完成", "Done", "Erledigt"))}</th><th>${escapeHtml(tr("review.habitColRate"))}</th></tr></thead><tbody>${habits.map(habit => {
-    const count = elapsedDates.filter(date => getLog(date).completed.includes(habit.id)).length;
-    const version = versionFor(habit, monthDates[monthDates.length - 1]);
-    let rate = 0;
-    let doneLabel = `${count}`;
-    if (version?.frequency === "daily") {
-      const denominator = Math.max(1, elapsedDates.length);
-      rate = Math.round(count / denominator * 100);
-      doneLabel = `${count}/${denominator}`;
-    } else {
-      const groups = periodDateGroups(elapsedDates, version?.frequency);
-      const target = periodTargetFor(version);
-      const met = groups.filter(group => group.filter(date => getLog(date).completed.includes(habit.id)).length >= target).length;
-      rate = Math.round(met / Math.max(1, groups.length) * 100);
-      doneLabel = `${met}/${groups.length}`;
-    }
-    return `<tr><td class="inspector-review-habit-name" title="${escapeHtml(displayHabitName(habit))}">${renderIcon(iconKey(habit))} ${escapeHtml(displayHabitName(habit))}</td><td>${doneLabel}</td><td>${rate}%</td></tr>`;
-  }).join("")}</tbody></table>`;
+  if (!table || !analyticsApi()) return;
+  const dates = analyticsDates();
+  const current = slotTotals(dates);
+  if (!current.eligible) {
+    table.innerHTML = `<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
+    const focusPanel = $("#inspectorReviewFocus");
+    if (focusPanel) focusPanel.innerHTML = "";
+    return;
+  }
+  const habits = activeHabits(dates[dates.length - 1]);
+  table.innerHTML = `<div class="inspector-stat-list">${habits.map(habit => {
+    const stats = habitWindowStats(habit, dates);
+    if (!stats.eligible) return "";
+    return `<article><strong>${escapeHtml(displayHabitName(habit))}</strong><span>${stats.completed}/${stats.eligible} · ${formatRate(stats)}</span><span>${escapeHtml(tr("review.streakLabel"))} ${stats.streaks.current} · ${escapeHtml(tr("review.bestStreakLabel"))} ${stats.streaks.best}</span></article>`;
+  }).join("")}</div>`;
   const focusPanel = $("#inspectorReviewFocus");
   if (focusPanel) {
-    const sessions = focusSessionsBetween(monthDates[0], monthDates[monthDates.length - 1]);
+    const sessions = focusSessionsBetween(dates[0], dates[dates.length - 1]);
     const byTopic = focusTopics(sessions);
     const rows = byTopic.slice(0, 4).map(([label, minutes]) => `<span>${escapeHtml(label)} · ${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</span>`).join("");
     focusPanel.innerHTML = rows ? `<h4 class="inspector-review-focus-title">${escapeHtml(tr("review.focusByTopic"))}</h4>${rows}` : "";
@@ -4934,27 +5141,46 @@ function setSettingsTab(tab) {
     panel.classList.toggle("active", active);
   });
 }
+function bindPaneResize(handle, { read, write, invert = false }) {
+  if (!handle) return;
+  let startX = 0;
+  let startWidth = 0;
+  handle.addEventListener("pointerdown", event => {
+    startX = event.clientX;
+    startWidth = read();
+    handle.setPointerCapture(event.pointerId);
+    document.documentElement.classList.add("is-resizing");
+  });
+  handle.addEventListener("pointermove", event => {
+    if (!handle.hasPointerCapture(event.pointerId)) return;
+    const delta = event.clientX - startX;
+    write(startWidth + (invert ? -delta : delta));
+  });
+  const end = event => {
+    if (handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+    document.documentElement.classList.remove("is-resizing");
+  };
+  handle.addEventListener("pointerup", end);
+  handle.addEventListener("pointercancel", end);
+}
 function initAppShell() {
   const savedWidth = Number(localStorage.getItem(SIDEBAR_WIDTH_KEY));
   if (savedWidth) applySidebarWidth(savedWidth);
-  else applySidebarWidth(220);
+  else applySidebarWidth(168);
+  const savedInspector = Number(localStorage.getItem(INSPECTOR_WIDTH_KEY));
+  if (savedInspector) applyInspectorWidth(savedInspector);
+  else applyInspectorWidth(320);
   applyInspectorState();
   applySidebarState();
-  const handle = $("#sidebarResizeHandle");
-  if (handle) {
-    let startX = 0;
-    let startWidth = 0;
-    handle.addEventListener("pointerdown", event => {
-      startX = event.clientX;
-      startWidth = $("#sidebar")?.getBoundingClientRect().width || 220;
-      handle.setPointerCapture(event.pointerId);
-    });
-    handle.addEventListener("pointermove", event => {
-      if (!handle.hasPointerCapture(event.pointerId)) return;
-      applySidebarWidth(startWidth + (event.clientX - startX));
-    });
-    handle.addEventListener("pointerup", event => handle.releasePointerCapture(event.pointerId));
-  }
+  bindPaneResize($("#sidebarResizeHandle"), {
+    read: () => $("#sidebar")?.getBoundingClientRect().width || 168,
+    write: applySidebarWidth,
+  });
+  bindPaneResize($("#inspectorResizeHandle"), {
+    read: () => $("#inspectorPane")?.getBoundingClientRect().width || 320,
+    write: applyInspectorWidth,
+    invert: true,
+  });
   if (window.matchMedia("(max-width: 1179px)").matches) {
     inspectorCollapsed = true;
     applyInspectorState();
@@ -4962,7 +5188,11 @@ function initAppShell() {
   window.addEventListener("storage", event => {
     if ([THEME_KEY, LANGUAGE_KEY].includes(event.key)) {
       themeChoice = localStorage.getItem(THEME_KEY) || "system";
-      currentLang = localStorage.getItem(LANGUAGE_KEY) || currentLang;
+      const stored = localStorage.getItem(LANGUAGE_KEY);
+      if (stored) {
+        languageChoice = stored;
+        currentLang = languageFromChoice(languageChoice);
+      }
       applyTheme();
       renderAll();
     }
@@ -5601,7 +5831,21 @@ function bindEvents() {
   $("#workspaceSwitchButton")?.addEventListener("click", () => handleMenuAction("workspace:switch"));
   $("#dateNavPrev")?.addEventListener("click", () => navigateToolbarDate(-1));
   $("#dateNavNext")?.addEventListener("click", () => navigateToolbarDate(1));
-  $("#dateNavLabel")?.addEventListener("click", goToToday);
+  $("#dateNavLabel")?.addEventListener("click", toggleDatePopover);
+  $("#datePopoverToday")?.addEventListener("click", () => {
+    setDatePopoverOpen(false);
+    goToToday();
+  });
+  $("#datePopoverInput")?.addEventListener("change", event => {
+    jumpToDate(event.target.value);
+    setDatePopoverOpen(false);
+  });
+  $$("[data-analytics-window]").forEach(button => button.addEventListener("click", () => {
+    const next = Number(button.dataset.analyticsWindow);
+    if (![7, 30, 90].includes(next) || next === analyticsWindow) return;
+    analyticsWindow = next;
+    renderReview();
+  }));
   $$("[data-timeline-filter]").forEach(button => button.addEventListener("click", () => {
     timelineFilter = button.dataset.timelineFilter || "all";
     $$("[data-timeline-filter]").forEach(item => {
@@ -5617,11 +5861,13 @@ function bindEvents() {
   });
   systemTheme.addEventListener("change", () => { if (themeChoice === "system") applyTheme(); });
   $("#languageSelect")?.addEventListener("change", event => {
-    currentLang = event.target.value;
-    localStorage.setItem(LANGUAGE_KEY, currentLang);
+    languageChoice = supportedLanguages.includes(event.target.value) || event.target.value === "system" ? event.target.value : "system";
+    currentLang = languageFromChoice(languageChoice);
+    localStorage.setItem(LANGUAGE_KEY, languageChoice);
     localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
     const url = new URL(location.href);
-    url.searchParams.set("lang", currentLang);
+    if (languageChoice === "system") url.searchParams.delete("lang");
+    else url.searchParams.set("lang", languageChoice);
     history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
     document.body.classList.remove("language-changing");
     void document.body.offsetWidth;
@@ -5989,8 +6235,20 @@ function bindEvents() {
     if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;
     closeHabitPickers();
   });
+  document.addEventListener("pointerdown", event => {
+    const popover = $("#datePopover");
+    if (!popover || popover.hidden) return;
+    if (event.target.closest("#datePopover, #dateNavLabel")) return;
+    setDatePopoverOpen(false);
+  });
   document.addEventListener("keydown", e => {
     if (e.key !== "Escape") return;
+    const popover = $("#datePopover");
+    if (popover && !popover.hidden) {
+      e.preventDefault();
+      setDatePopoverOpen(false);
+      return;
+    }
     if (habitContextMenu.open) {
       e.preventDefault();
       closeHabitContextMenu();

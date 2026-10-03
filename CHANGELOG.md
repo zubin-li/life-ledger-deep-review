@@ -4,10 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-### Redesigned — Life Ledger 4.0 desk
+### Refined — Life Ledger 3.1
 
-- Rebuilt the macOS desktop as a warm-paper desk with an ink source sidebar, a two-column Today canvas, a seven-day Week board, a manuscript Timeline, an editorial Review, and a habit library. Versioned assets, the PWA cache, Tauri, and Cargo are `4.0.0`. The local Tauri window unregisters any stale service worker and deletes only `life-ledger-pwa-*` CacheStorage entries; IndexedDB, localStorage, journals, habits, and photos are left in place.
-- An About line in Settings and the sidebar shows `4.0.0` so an installed build can be identified. Window titles are `Life Ledger 4`.
+- Kept the Today / Week / Timeline / Review / Habits desk and restored the calm sage-and-paper palette. The sidebar (156–240px) and inspector (280–440px) stay resizable, and the writing pane keeps the wider share. Package, Tauri, Cargo, and displayed assets are `3.1.0`. The version is shown only in Settings → About. The service-worker cache is `life-ledger-pwa-3.1.0-r1`; retiring a local window still deletes only `life-ledger-pwa-*` cache entries and leaves IndexedDB, journals, habits, and photos in place.
+- Review statistics come only from local logs: a 7/30/90-day completion rate with the completed/eligible counts, current and best streaks, a line when there are at least four points, a consistency heatmap with a text table, weekday and per-habit bars, and focus minutes only when focus data exists. English uses “1 time”. Settings offers System default, English, 简体中文, and Deutsch, and the choice applies immediately.
+
+### Redesigned — desk structure
+
+- Rebuilt the macOS desktop as a three-pane desk: a source sidebar, a two-column Today canvas, a seven-day Week board, a manuscript Timeline, a Review canvas, and a habit library. The local Tauri window unregisters any stale service worker and deletes only `life-ledger-pwa-*` CacheStorage entries.
 
 ### Added
 

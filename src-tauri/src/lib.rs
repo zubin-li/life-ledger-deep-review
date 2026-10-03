@@ -408,7 +408,7 @@ fn open_settings_window(app: AppHandle) -> Result<(), String> {
         "settings",
         WebviewUrl::App("index.html?settings=1&mode=local&desktop=tauri-local".into()),
     )
-    .title("Life Ledger 4 · Settings")
+    .title("Life Ledger · Settings")
     .inner_size(680.0, 560.0)
     .min_inner_size(560.0, 480.0)
     .resizable(true);
@@ -456,7 +456,7 @@ fn open_local_window(app: AppHandle) -> Result<(), String> {
         "local",
         WebviewUrl::App("index.html?mode=local&desktop=tauri-local".into()),
     )
-    .title("Life Ledger 4 · Local")
+    .title("Life Ledger · Local")
     .min_inner_size(980.0, 700.0)
     .initialization_script(
         r#"
@@ -528,7 +528,7 @@ fn open_cloud_window(app: AppHandle, raw_url: String) -> Result<(), String> {
     }
 
     let mut builder = WebviewWindowBuilder::new(&app, "cloud", WebviewUrl::External(normalized))
-        .title("Life Ledger 4 · Connected")
+        .title("Life Ledger · Connected")
         .min_inner_size(980.0, 700.0);
 
     #[cfg(target_os = "macos")]
@@ -643,7 +643,7 @@ pub fn run() {
 
             if app.get_webview_window("launcher").is_none() {
                 let mut builder = WebviewWindowBuilder::new(app, "launcher", WebviewUrl::App("launcher.html".into()))
-                    .title("Life Ledger 4 · Deep Review")
+                    .title("Life Ledger · Deep Review")
                     .min_inner_size(700.0, 620.0);
 
                 #[cfg(target_os = "macos")]

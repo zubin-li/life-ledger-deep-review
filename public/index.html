@@ -32,7 +32,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=4.0.0" />
+    <link rel="stylesheet" href="./styles.css?v=3.1.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -43,7 +43,6 @@
           <span class="sidebar-mark" aria-hidden="true">L</span>
           <span class="sidebar-identity-copy">
             <strong>Life Ledger</strong>
-            <small id="appVersionLabel">4.0.0</small>
           </span>
         </div>
         <nav class="main-nav" aria-label="主导航">
@@ -74,8 +73,12 @@
           </div>
           <div class="toolbar-center" id="toolbarDateNav">
             <button class="toolbar-nav-btn" id="dateNavPrev" type="button" aria-label="Previous">‹</button>
-            <button class="toolbar-date-label" id="dateNavLabel" type="button">Friday, 2 October</button>
+            <button class="toolbar-date-label" id="dateNavLabel" type="button" aria-haspopup="dialog" aria-expanded="false">Friday, 2 October</button>
             <button class="toolbar-nav-btn" id="dateNavNext" type="button" aria-label="Next">›</button>
+            <div class="date-popover" id="datePopover" role="dialog" aria-label="Choose date" hidden>
+              <input id="datePopoverInput" type="date" />
+              <button class="secondary-button" id="datePopoverToday" type="button">Today</button>
+            </div>
           </div>
           <div class="toolbar-trailing">
             <label class="toolbar-search" for="quickFind">
@@ -235,6 +238,11 @@
         <section class="view review-document review-manuscript" id="reviewView">
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
+            <div class="analytics-period" id="analyticsPeriod" role="group" aria-label="Statistics window">
+              <button type="button" data-analytics-window="7">7 days</button>
+              <button type="button" class="active" data-analytics-window="30" aria-pressed="true">30 days</button>
+              <button type="button" data-analytics-window="90">90 days</button>
+            </div>
           </div>
           <div class="review-insights" id="reviewInsights" aria-live="polite"></div>
           <section class="review-narrative monthly-reflection-panel">
@@ -317,6 +325,7 @@
           </main>
 
           <aside class="inspector" id="inspectorPane" aria-label="Inspector">
+            <div class="inspector-resize-handle" id="inspectorResizeHandle" role="separator" aria-orientation="vertical" aria-label="Resize inspector"></div>
             <section class="inspector-section inspector-view-panel" data-inspector-for="today">
               <section class="inspector-section inspector-focus" id="inspectorFocusSection">
                 <h3 class="inspector-heading" id="inspectorFocusHeading">Focus</h3>
@@ -434,6 +443,7 @@
             <span id="languageSettingsLabel">Language</span>
             <span class="language-flag" id="languageFlag" aria-hidden="true">🇬🇧</span>
             <select id="languageSelect" aria-label="Select interface language">
+              <option value="system">System default</option>
               <option value="en">English</option>
               <option value="de">Deutsch</option>
               <option value="zh">中文</option>
@@ -441,7 +451,7 @@
           </label>
           <button class="secondary-button" id="installAppButton" type="button" data-install-app>Install app</button>
           <span class="desktop-mode-badge" id="desktopModeBadge" hidden></span>
-          <p class="about-build" id="aboutBuild">Life Ledger 4.0.0</p>
+          <p class="about-build" id="aboutBuild">Life Ledger 3.1.0</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
           <p class="settings-save-mode" id="saveMode"><i></i><span>Local preview</span></p>
@@ -830,14 +840,15 @@
       <button type="button" role="menuitem" data-habit-context="disable" id="habitContextDisable">Disable</button>
       <button type="button" role="menuitem" data-habit-context="delete" id="habitContextDelete">Delete</button>
     </div>
-    <script src="./deployment-mode.js?v=4.0.0"></script>
-    <script src="./_init_tcb-env.js?v=4.0.0"></script>
-    <script src="./cloudbase-sync.js?v=4.0.0"></script>
-    <script src="./focus-timer.js?v=4.0.0"></script>
-    <script src="./voice-checkin.js?v=4.0.0"></script>
-    <script src="./photo-memories.js?v=4.0.0"></script>
-    <script src="./media-backup.js?v=4.0.0"></script>
-    <script type="module" src="./widget-contract.js?v=4.0.0"></script>
-    <script src="./app.js?v=4.0.0"></script>
+    <script src="./deployment-mode.js?v=3.1.0"></script>
+    <script src="./_init_tcb-env.js?v=3.1.0"></script>
+    <script src="./cloudbase-sync.js?v=3.1.0"></script>
+    <script src="./focus-timer.js?v=3.1.0"></script>
+    <script src="./voice-checkin.js?v=3.1.0"></script>
+    <script src="./photo-memories.js?v=3.1.0"></script>
+    <script src="./media-backup.js?v=3.1.0"></script>
+    <script type="module" src="./widget-contract.js?v=3.1.0"></script>
+    <script src="./habit-analytics.js?v=3.1.0"></script>
+    <script src="./app.js?v=3.1.0"></script>
   </body>
 </html>
