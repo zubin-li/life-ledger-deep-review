@@ -10,22 +10,22 @@ const app = read("public/app.js");
 const lib = read("src-tauri/src/lib.rs");
 const pkg = JSON.parse(read("package.json"));
 
-test("3.1.0 is the install identity across package, assets, cache, and About", () => {
-  assert.equal(pkg.version, "3.1.0");
-  assert.match(html, /styles\.css\?v=3\.1\.0/);
-  assert.match(html, /app\.js\?v=3\.1\.0/);
-  assert.match(read("public/sw.js"), /life-ledger-pwa-3\.1\.0/);
-  assert.match(read("src-tauri/tauri.conf.json"), /"version": "3\.1\.0"/);
-  assert.match(read("src-tauri/Cargo.toml"), /version = "3\.1\.0"/);
+test("3.2.0 is the install identity across package, assets, cache, and About", () => {
+  assert.equal(pkg.version, "3.2.0");
+  assert.match(html, /styles\.css\?v=3\.2\.0-r1/);
+  assert.match(html, /app\.js\?v=3\.2\.0-r1/);
+  assert.match(read("public/sw.js"), /life-ledger-pwa-3\.2\.0-r1/);
+  assert.match(read("src-tauri/tauri.conf.json"), /"version": "3\.2\.0"/);
+  assert.match(read("src-tauri/Cargo.toml"), /version = "3\.2\.0"/);
   assert.doesNotMatch(html, /id="appVersionLabel"/);
-  assert.match(html, /id="aboutBuild">Life Ledger 3\.1\.0</);
+  assert.match(html, /id="aboutBuild">Life Ledger 3\.2\.0</);
 });
 
 test("the five desktop first viewports are recomposed, not appended to the 3.0 list", () => {
   assert.match(html, /class="view active today-desk"/);
   assert.match(html, /class="today-desk-grid"/);
   assert.match(html, /class="today-sheet today-journal"/);
-  assert.match(css, /html\[data-desktop\] \.today-desk-grid \{ display: grid; grid-template-columns: minmax\(220px, 0\.82fr\) minmax\(360px, 1\.18fr\)/);
+  assert.match(css, /html\[data-desktop\] \.today-desk-grid \{ display: grid; grid-template-columns: repeat\(12, minmax\(0, 1fr\)\)/);
   assert.match(css, /html\[data-desktop\] \.today-date-heading \{ margin: 0; font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
   assert.doesNotMatch(css, /html\[data-desktop\] \.today-date-heading \{[^}]*44px/);
   assert.match(html, /class="view week-board"/);

@@ -32,7 +32,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=3.1.0" />
+    <link rel="stylesheet" href="./styles.css?v=3.2.0-r1" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -46,6 +46,7 @@
           </span>
         </div>
         <nav class="main-nav" aria-label="主导航">
+          <span class="nav-indicator" aria-hidden="true" hidden></span>
           <button class="nav-item active" data-view="today" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">今日</span></button>
           <button class="nav-item" data-view="week"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/><path d="m16 16 1.5 1.5L21 14"/></svg></span><span class="nav-label">本周</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><circle cx="7" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">时间轴</span></button>
@@ -81,6 +82,7 @@
             </div>
           </div>
           <div class="toolbar-trailing">
+            <button class="toolbar-command" id="openCommandPalette" type="button">⌘K</button>
             <label class="toolbar-search" for="quickFind">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
               <input id="quickFind" type="search" autocomplete="off" spellcheck="false" placeholder="Search" />
@@ -95,7 +97,6 @@
           <main class="main-content">
         <section class="view active today-desk" id="todayView">
           <div class="today-desk-grid">
-          <div class="today-rail">
           <header class="today-header">
             <p class="today-kicker" id="todayKicker">Today</p>
             <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
@@ -103,6 +104,7 @@
             <p class="today-summary" id="todaySummary">0 of 0 done</p>
           </header>
           <div class="today-events-strip" id="todayEventsStrip" hidden role="list" aria-label="Today's events"></div>
+          <div class="today-primary" data-disclosure-group="today">
           <ul class="today-habit-list" id="todayHabitList" role="list" tabindex="0" aria-label="Today's habits"></ul>
           <details class="today-completed" id="todayCompletedGroup" hidden>
             <summary id="todayCompletedSummary">Completed (0)</summary>
@@ -113,21 +115,7 @@
             <ul class="today-habit-list not-today" id="todayNotTodayList" role="list"></ul>
           </details>
           </div>
-          <section class="today-sheet today-journal" id="todayJournal" aria-labelledby="inspectorReflectionHeading">
-            <section class="photo-library today-sheet-photos" id="todayPhotoSection" data-photo-editor>
-              <div class="mood-photo-heading">
-                <div><strong id="todayPhotoTitle" data-photo-title>Photo memories</strong><small id="todayPhotoHelp" data-photo-help>Up to three private photos for this day.</small></div>
-                <span id="todayPhotoCount" data-photo-count>0 of 3</span>
-              </div>
-              <div class="photo-drop" data-photo-drop>
-                <p class="photo-drop-empty" data-photo-empty>No photo for this day yet.</p>
-                <div class="mood-photo-list" id="todayPhotoList" data-photo-list></div>
-              </div>
-              <button class="mood-photo-add" id="todayPhotoAdd" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>Add photo</span></button>
-              <input id="todayPhotoInput" data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-              <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-              <p class="mood-photo-status" id="todayPhotoStatus" data-photo-status role="status" hidden></p>
-            </section>
+          <aside class="today-context">
             <section class="inspector-section inspector-mood" id="inspectorMoodSection">
               <h3 class="inspector-heading" id="inspectorMoodHeading">Mood</h3>
               <div class="mood-segmented" id="quickMood" role="group">
@@ -137,6 +125,8 @@
               </div>
               <button class="mood-reason-summary" id="inspectorMoodReason" type="button" hidden></button>
             </section>
+          </aside>
+          <section class="today-sheet today-journal" id="todayJournal" aria-labelledby="inspectorReflectionHeading">
             <section class="inspector-section inspector-reflection">
               <div class="inspector-reflection-header">
                 <h3 class="inspector-heading" id="inspectorReflectionHeading">Reflection</h3>
@@ -149,6 +139,20 @@
               <span class="autosave" id="homeJournalSave">● autosaved</span>
             </section>
           </section>
+          <section class="photo-library today-sheet-photos today-photos-zone" id="todayPhotoSection" data-photo-editor>
+              <div class="mood-photo-heading">
+                <div><strong id="todayPhotoTitle" data-photo-title>Photo memories</strong><small id="todayPhotoHelp" data-photo-help>Up to three private photos for this day.</small></div>
+                <span id="todayPhotoCount" data-photo-count>0 of 3</span>
+              </div>
+              <div class="photo-drop" data-photo-drop>
+                <p class="photo-drop-empty" data-photo-empty>No photo for this day yet.</p>
+                <div class="mood-photo-list" id="todayPhotoList" data-photo-list></div>
+              </div>
+              <button class="mood-photo-add" id="todayPhotoAdd" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>Add photo</span></button>
+              <input id="todayPhotoInput" data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+              <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+              <p class="mood-photo-status" id="todayPhotoStatus" data-photo-status role="status" hidden></p>
+          </section>
           </div>
         </section>
 
@@ -160,7 +164,7 @@
             <section class="weekly-goals-section">
               <header class="weekly-goals-header">
                 <h3 class="weekly-goals-title" id="weeklyGoalsTitle">Weekly goals · 0 of 0</h3>
-                <div class="goal-horizon-switch" id="goalHorizonSwitch" role="tablist" aria-label="Goal horizon">
+                <div class="goal-horizon-switch" id="goalHorizonSwitch" data-segment role="tablist" aria-label="Goal horizon">
                   <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
                   <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
                 </div>
@@ -235,16 +239,19 @@
           <span id="timelineSummary" hidden></span>
         </section>
 
-        <section class="view review-document review-manuscript" id="reviewView">
+        <section class="view review-document review-manuscript" id="reviewView" data-disclosure-group="review">
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
-            <div class="analytics-period" id="analyticsPeriod" role="group" aria-label="Statistics window">
+            <div class="analytics-period" id="analyticsPeriod" data-segment role="group" aria-label="Statistics window">
               <button type="button" data-analytics-window="7">7 days</button>
               <button type="button" class="active" data-analytics-window="30" aria-pressed="true">30 days</button>
               <button type="button" data-analytics-window="90">90 days</button>
             </div>
           </div>
           <div class="review-insights" id="reviewInsights" aria-live="polite"></div>
+          <div class="review-trend-chart" id="reviewTrendChart" aria-label="Monthly completion trend"></div>
+          <div class="review-heatmap-card" id="reviewHeatmap"></div>
+          <div class="review-habit-compare" id="reviewHabitCompare"></div>
           <section class="review-narrative monthly-reflection-panel">
             <header class="review-narrative-header">
               <h3 id="reviewNarrativeTitle">Monthly reflection</h3>
@@ -252,7 +259,6 @@
             </header>
             <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
           </section>
-          <div class="review-trend-chart" id="reviewTrendChart" aria-label="Monthly completion trend"></div>
           <details class="review-detailed-metrics" id="reviewDetailedMetrics">
             <summary id="reviewDetailedSummary">Detailed metrics</summary>
             <article class="panel focus-review-panel">
@@ -451,7 +457,7 @@
           </label>
           <button class="secondary-button" id="installAppButton" type="button" data-install-app>Install app</button>
           <span class="desktop-mode-badge" id="desktopModeBadge" hidden></span>
-          <p class="about-build" id="aboutBuild">Life Ledger 3.1.0</p>
+          <p class="about-build" id="aboutBuild">Life Ledger 3.2.0</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
           <p class="settings-save-mode" id="saveMode"><i></i><span>Local preview</span></p>
@@ -833,6 +839,18 @@
       <img id="photoLightboxImage" alt="" />
       <p id="photoLightboxCaption"></p>
     </dialog>
+
+    <div class="command-palette" id="commandPalette" hidden>
+      <div class="command-palette-scrim" data-command-dismiss></div>
+      <div class="command-palette-panel" role="dialog" aria-modal="true" aria-labelledby="commandPaletteLabel">
+        <label class="command-palette-field" for="commandPaletteInput">
+          <span id="commandPaletteLabel">Commands</span>
+          <input id="commandPaletteInput" data-command-input type="text" role="combobox" aria-expanded="true" aria-controls="commandPaletteList" aria-autocomplete="list" autocomplete="off" spellcheck="false" />
+        </label>
+        <ul id="commandPaletteList" data-command-list role="listbox"></ul>
+        <p class="command-palette-empty" data-command-empty hidden>No matching commands</p>
+      </div>
+    </div>
     <div class="toast" id="toast"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg></span><p>已保存</p><button type="button" class="toast-action" id="toastAction" hidden>Undo</button></div>
     <div class="habit-context-menu" id="habitContextMenu" role="menu" hidden>
       <button type="button" role="menuitem" data-habit-context="toggle" id="habitContextToggle">Mark done</button>
@@ -840,15 +858,16 @@
       <button type="button" role="menuitem" data-habit-context="disable" id="habitContextDisable">Disable</button>
       <button type="button" role="menuitem" data-habit-context="delete" id="habitContextDelete">Delete</button>
     </div>
-    <script src="./deployment-mode.js?v=3.1.0"></script>
-    <script src="./_init_tcb-env.js?v=3.1.0"></script>
-    <script src="./cloudbase-sync.js?v=3.1.0"></script>
-    <script src="./focus-timer.js?v=3.1.0"></script>
-    <script src="./voice-checkin.js?v=3.1.0"></script>
-    <script src="./photo-memories.js?v=3.1.0"></script>
-    <script src="./media-backup.js?v=3.1.0"></script>
-    <script type="module" src="./widget-contract.js?v=3.1.0"></script>
-    <script src="./habit-analytics.js?v=3.1.0"></script>
-    <script src="./app.js?v=3.1.0"></script>
+    <script src="./deployment-mode.js?v=3.2.0-r1"></script>
+    <script src="./_init_tcb-env.js?v=3.2.0-r1"></script>
+    <script src="./cloudbase-sync.js?v=3.2.0-r1"></script>
+    <script src="./focus-timer.js?v=3.2.0-r1"></script>
+    <script src="./voice-checkin.js?v=3.2.0-r1"></script>
+    <script src="./photo-memories.js?v=3.2.0-r1"></script>
+    <script src="./media-backup.js?v=3.2.0-r1"></script>
+    <script type="module" src="./widget-contract.js?v=3.2.0-r1"></script>
+    <script src="./habit-analytics.js?v=3.2.0-r1"></script>
+    <script src="./interaction.js?v=3.2.0-r1"></script>
+    <script src="./app.js?v=3.2.0-r1"></script>
   </body>
 </html>

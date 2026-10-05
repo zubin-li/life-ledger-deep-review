@@ -27,8 +27,10 @@ test("mobile navigation uses a stable safe-area inset while the page scrolls", (
 
 test("desktop review reads as a document and the five panes stay list-density", () => {
   const review = html.slice(html.indexOf('id="reviewView"'), html.indexOf('id="habitsView"'));
-  assert.ok(review.indexOf('id="reviewText"') < review.indexOf('id="reviewTrendChart"'));
-  assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewDetailedMetrics"'));
+  assert.ok(review.indexOf('id="reviewInsights"') < review.indexOf('id="reviewTrendChart"'));
+  assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewHabitCompare"'));
+  assert.ok(review.indexOf('id="reviewHabitCompare"') < review.indexOf('id="reviewText"'));
+  assert.ok(review.indexOf('id="reviewText"') < review.indexOf('id="reviewDetailedMetrics"'));
   assert.match(css, /html\[data-desktop\] \.review-insights \{ display: grid;/);
   assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 1\.375rem\/1\.2/);
   assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: 600 1\.75rem\/1\.2 var\(--font-display\)/);

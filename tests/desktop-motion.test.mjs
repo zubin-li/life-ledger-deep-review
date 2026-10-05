@@ -26,8 +26,8 @@ test("shared motion duration tokens exist alongside the existing easing curves",
   }
 });
 
-test("the primary view-change animation actually consumes the declared 300ms token, not a hardcoded mismatch", () => {
-  assert.match(styles, /\.view\.active \{ display: block; animation: viewIn var\(--duration-slow\) var\(--ease-enter\) forwards; \}/);
+test("the primary view-change animation uses the 220ms base token", () => {
+  assert.match(styles, /\.view\.active \{ display: block; animation: viewIn var\(--duration-base\) var\(--ease-enter\) forwards; \}/);
   assert.doesNotMatch(styles, /animation:\s*viewIn\s+320ms/);
 });
 

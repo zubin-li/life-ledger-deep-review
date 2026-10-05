@@ -18,9 +18,9 @@ function loadAnalytics() {
   return context.LifeLedgerAnalytics;
 }
 
-test("3.1 cache key is unique while the displayed version stays 3.1.0", () => {
-  assert.match(sw, /life-ledger-pwa-3\.1\.0-r1/);
-  assert.match(html, /habit-analytics\.js\?v=3\.1\.0/);
+test("3.2 cache key is unique while the displayed version stays 3.2.0", () => {
+  assert.match(sw, /life-ledger-pwa-3\.2\.0-r1/);
+  assert.match(html, /habit-analytics\.js\?v=3\.2\.0-r1/);
   assert.doesNotMatch(html, /id="appVersionLabel"/);
   assert.match(html, /option value="system"/);
   assert.match(app, /Math\.max\(156, Math\.min\(240/);

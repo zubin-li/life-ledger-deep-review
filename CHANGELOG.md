@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Rebuilt — Life Ledger 3.2 interaction architecture
+
+- Recomposed Today on a 12-column desk: the date spans the pane, habits take seven columns, mood takes five, and reflection and photos repeat that split. Review now reads summary, trend, heatmap, habit comparison, then the monthly note, with 7/30/90 changes retargeting the same chart instead of rebuilding the page. Week and Timeline move one selection highlight onto the chosen day.
+- Added one shared sidebar selection pill and a `⌘K` / `Ctrl+K` command palette for views, dates, habits, focus, theme, language, and backup. Sibling disclosures stay one-open. A review badge appears only when a recent day has completions and no reflection, and it shrinks on entry. The reference video’s dock, mega menu, and neon palette were not shipped. Version `3.2.0` is shown only in Settings → About. The service-worker cache is `life-ledger-pwa-3.2.0-r1`.
+
 ### Refined — Life Ledger 3.1
 
 - Kept the Today / Week / Timeline / Review / Habits desk and restored the calm sage-and-paper palette. The sidebar (156–240px) and inspector (280–440px) stay resizable, and the writing pane keeps the wider share. Package, Tauri, Cargo, and displayed assets are `3.1.0`. The version is shown only in Settings → About. The service-worker cache is `life-ledger-pwa-3.1.0-r1`; retiring a local window still deletes only `life-ledger-pwa-*` cache entries and leaves IndexedDB, journals, habits, and photos in place.

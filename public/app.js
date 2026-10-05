@@ -1440,6 +1440,8 @@ let selectedTimelineDate = isoDate(new Date());
 let selectedHabitSettingsId = "";
 let habitContextMenu = { open: false, habitId: "", anchor: null, date: "" };
 let quickFindQuery = "";
+let reviewBadgeSeen = 0;
+let commandPalette = null;
 let lastHabitToggle = null;
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
@@ -1616,7 +1618,7 @@ function handleMenuAction(action) {
     return;
   }
   if (action === "find") {
-    $("#quickFind")?.focus({ preventScroll: true });
+    commandPalette?.open() || $("#quickFind")?.focus({ preventScroll: true });
     return;
   }
   if (action === "export") {
@@ -1659,10 +1661,178 @@ function withoutMotion(run) {
   run();
   requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove("motion-off")));
 }
+function recentUnreflectedCount() {
+  let count = 0;
+  for (let offset = 1; offset <= 7; offset += 1) {
+    const date = new Date();
+    date.setDate(date.getDate() - offset);
+    const key = isoDate(date);
+    const habits = dailyHabits(key);
+    if (!habits.length) continue;
+    const log = getLog(key);
+    const done = habits.filter(habit => log.completed.includes(habit.id)).length;
+    if (done > 0 && !String(log.note || "").trim()) count += 1;
+  }
+  return count;
+}
+function updateReviewBadge() {
+  const badge = $(".nav-item[data-view='review'] .nav-badge");
+  if (!badge || !window.LifeLedgerInteraction) return;
+  const state = LifeLedgerInteraction.badgeVisibility(recentUnreflectedCount(), reviewBadgeSeen);
+  badge.hidden = !state.visible;
+  badge.textContent = state.visible ? String(state.count) : "";
+  badge.classList.toggle("is-live", state.visible);
+}
+function acknowledgeReviewBadge() {
+  const badge = $(".nav-item[data-view='review'] .nav-badge");
+  if (badge && !badge.hidden) badge.classList.add("is-acknowledged");
+  reviewBadgeSeen = recentUnreflectedCount();
+  window.setTimeout(updateReviewBadge, 180);
+}
+function syncInteractionChrome(animate = false) {
+  window.LifeLedgerInteraction?.moveNavIndicator({ animate });
+  window.LifeLedgerInteraction?.syncSegments(document);
+  updateReviewBadge();
+}
+function buildCommands() {
+  const text = (zh, en, de) => languageText(zh, en, de);
+  const commands = [
+    { id: "view:today", title: text("前往今日", "Go to Today", "Zu Heute"), keywords: "today view 今日", group: "view" },
+    { id: "view:week", title: text("前往本周", "Go to Week", "Zur Woche"), keywords: "week view 本周", group: "view" },
+    { id: "view:timeline", title: text("前往时间轴", "Go to Timeline", "Zur Zeitleiste"), keywords: "timeline view 时间轴", group: "view" },
+    { id: "view:review", title: text("前往复盘", "Go to Review", "Zum Rückblick"), keywords: "review view 复盘", group: "view" },
+    { id: "view:habits", title: text("前往习惯设置", "Go to Habits", "Zu Gewohnheiten"), keywords: "habits settings 习惯", group: "view" },
+    { id: "date:today", title: text("跳到今天", "Jump to today", "Zu heute springen"), keywords: "date today 今天", group: "date" },
+    { id: "date:yesterday", title: text("跳到昨天", "Jump to yesterday", "Zu gestern springen"), keywords: "date yesterday 昨天", group: "date" },
+    { id: "focus:start", title: text("开始专注", "Start focus", "Fokus starten"), keywords: "focus timer 专注", group: "action" },
+    { id: "settings", title: text("打开设置", "Open settings", "Einstellungen öffnen"), keywords: "settings 设置", group: "action" },
+    { id: "theme:cycle", title: text("切换外观", "Cycle appearance", "Erscheinung wechseln"), keywords: "theme dark light 主题", group: "action" },
+    { id: "lang:zh", title: text("使用简体中文", "Use Simplified Chinese", "Vereinfachtes Chinesisch"), keywords: "language zh 中文", group: "action" },
+    { id: "lang:en", title: text("使用英文", "Use English", "Englisch verwenden"), keywords: "language en english", group: "action" },
+    { id: "lang:de", title: text("使用德文", "Use German", "Deutsch verwenden"), keywords: "language de german deutsch", group: "action" },
+    { id: "backup:export", title: text("导出备份", "Export backup", "Sicherung exportieren"), keywords: "export backup 导出", group: "action" },
+    { id: "backup:import", title: text("导入备份", "Import backup", "Sicherung importieren"), keywords: "import backup 导入", group: "action" },
+    { id: "review:7", title: text("复盘改为 7 天", "Review the last 7 days", "Rückblick auf 7 Tage"), keywords: "review 7", group: "review" },
+    { id: "review:30", title: text("复盘改为 30 天", "Review the last 30 days", "Rückblick auf 30 Tage"), keywords: "review 30", group: "review" },
+    { id: "review:90", title: text("复盘改为 90 天", "Review the last 90 days", "Rückblick auf 90 Tage"), keywords: "review 90", group: "review" },
+    { id: "habit:new", title: text("添加习惯", "Add a habit", "Gewohnheit hinzufügen"), keywords: "new habit 添加", group: "habit" },
+  ];
+  activeHabits(isoDate(new Date())).forEach(habit => {
+    const name = displayHabitName(habit);
+    const done = getLog(isoDate(new Date())).completed.includes(habit.id);
+    commands.push({
+      id: `habit:toggle:${habit.id}`,
+      title: done ? text(`撤销今天的${name}`, `Undo ${name} today`, `${name} heute zurücknehmen`) : text(`完成今天的${name}`, `Mark ${name} done today`, `${name} heute erledigen`),
+      keywords: `${name} habit`,
+      group: "habit",
+    });
+  });
+  return commands;
+}
+function applyLanguageChoice(value) {
+  languageChoice = supportedLanguages.includes(value) || value === "system" ? value : "system";
+  currentLang = languageFromChoice(languageChoice);
+  localStorage.setItem(LANGUAGE_KEY, languageChoice);
+  localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
+  const url = new URL(location.href);
+  if (languageChoice === "system") url.searchParams.delete("lang");
+  else url.searchParams.set("lang", languageChoice);
+  history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  document.body.classList.remove("language-changing");
+  void document.body.offsetWidth;
+  document.body.classList.add("language-changing");
+  voiceReflection?.setLanguage(currentLang);
+  renderAll();
+  if ($("#dayDrawer")?.classList.contains("open")) renderDrawer();
+  window.setTimeout(() => document.body.classList.remove("language-changing"), 260);
+}
+function runCommand(command) {
+  if (!command?.id) return;
+  if (command.id.startsWith("view:")) {
+    switchToView(command.id.slice(5));
+    return;
+  }
+  if (command.id === "date:today") {
+    goToToday();
+    return;
+  }
+  if (command.id === "date:yesterday") {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    jumpToDate(isoDate(date));
+    return;
+  }
+  if (command.id === "focus:start") {
+    switchToView("today");
+    void startFocusSession();
+    return;
+  }
+  if (command.id === "settings") {
+    openSettings();
+    return;
+  }
+  if (command.id === "theme:cycle") {
+    const order = ["system", "light", "dark"];
+    themeChoice = order[(Math.max(0, order.indexOf(themeChoice)) + 1) % order.length];
+    localStorage.setItem(THEME_KEY, themeChoice);
+    applyTheme();
+    return;
+  }
+  if (command.id.startsWith("lang:")) {
+    applyLanguageChoice(command.id.slice(5));
+    return;
+  }
+  if (command.id === "backup:export") {
+    withoutMotion(() => openBackupDialog());
+    return;
+  }
+  if (command.id === "backup:import") {
+    withoutMotion(() => openBackupDialog("import"));
+    return;
+  }
+  if (command.id.startsWith("review:")) {
+    const next = Number(command.id.slice(7));
+    if ([7, 30, 90].includes(next)) {
+      analyticsWindow = next;
+      switchToView("review");
+      renderReview();
+    }
+    return;
+  }
+  if (command.id === "habit:new") {
+    switchToView("habits");
+    $("#addHabitButton")?.click();
+    return;
+  }
+  if (command.id.startsWith("habit:toggle:")) {
+    toggleHabit(isoDate(new Date()), command.id.slice(13));
+  }
+}
+function mountCommandPalette() {
+  const palette = $("#commandPalette");
+  if (!palette || !window.LifeLedgerInteraction || commandPalette) return;
+  commandPalette = LifeLedgerInteraction.mountCommandPalette({
+    root: palette,
+    getCommands: buildCommands,
+    onRun: runCommand,
+    text: { empty: () => languageText("没有匹配的命令", "No matching commands", "Keine passenden Befehle") },
+  });
+  $("#openCommandPalette")?.addEventListener("click", () => commandPalette.open());
+  document.addEventListener("keydown", event => {
+    const mod = event.metaKey || event.ctrlKey;
+    if (!mod || event.shiftKey || event.altKey || event.repeat) return;
+    if (event.key.toLowerCase() !== "k") return;
+    if (document.querySelector("dialog[open]")) return;
+    event.preventDefault();
+    commandPalette.toggle();
+  });
+}
 function switchToView(view, { animate = true } = {}) {
   const button = $(`.nav-item[data-view="${view}"]`);
   const section = $(`#${view}View`);
   if (!button || !section) return;
+  const previousView = document.body.dataset.activeView || view;
+  const direction = window.LifeLedgerInteraction?.viewDirection(previousView, view) || 0;
   const run = () => {
     $$(".nav-item").forEach(item => {
       const active = item === button;
@@ -1671,8 +1841,11 @@ function switchToView(view, { animate = true } = {}) {
       else item.removeAttribute("aria-current");
     });
     $$(".view").forEach(v => v.classList.remove("active"));
+    section.style.setProperty("--view-shift", `${direction * 8}px`);
     section.classList.add("active");
     document.body.dataset.activeView = view;
+    if (view === "review") acknowledgeReviewBadge();
+    window.LifeLedgerInteraction?.moveNavIndicator({ animate });
     $("#viewTitle").textContent = tr(`viewTitles.${view}`);
     renderToolbarDateNav();
     updateInspectorForView();
@@ -1683,6 +1856,7 @@ function switchToView(view, { animate = true } = {}) {
       selectedHabitSettingsId = state.habits[0].id;
       populateHabitInspectorForm(selectedHabitSettingsId);
     }
+    syncInteractionChrome(animate);
   };
   if (animate) run();
   else withoutMotion(run);
@@ -1830,11 +2004,18 @@ function applyLanguage() {
   updateWidgetStatusUI();
   document.title = tr("title");
   document.querySelector('meta[name="description"]')?.setAttribute("content", tr("metaDescription"));
-  $$(".nav-item").forEach(button => {
+    $$(".nav-item").forEach(button => {
     const icon = $(".nav-icon", button)?.outerHTML || "";
-    button.innerHTML = `${icon}<span class="nav-label">${tr(`nav.${button.dataset.view}`)}</span>`;
+    const badge = button.dataset.view === "review" ? `<span class="nav-badge" hidden></span>` : "";
+    button.innerHTML = `${icon}<span class="nav-label">${tr(`nav.${button.dataset.view}`)}</span>${badge}`;
     button.setAttribute("title", tr(`nav.${button.dataset.view}`));
   });
+  updateReviewBadge();
+  const commandButton = $("#openCommandPalette");
+  if (commandButton) commandButton.setAttribute("aria-label", languageText("命令", "Commands", "Befehle"));
+  setText("#commandPaletteLabel", languageText("命令", "Commands", "Befehle"));
+  const commandInput = $("#commandPaletteInput");
+  if (commandInput) commandInput.placeholder = languageText("跳转、习惯或操作", "Jump, habits, or actions", "Springen, Gewohnheiten oder Aktionen");
   setAria(".main-nav", languageText("主导航", "Main navigation", "Hauptnavigation"));
   setText("#sidebarSettingsLabel", tr("settings.title"));
   setAria("#openSettingsButton", tr("settings.title"));
@@ -2744,6 +2925,7 @@ function renderAll() {
   updateInspectorForView();
   if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
   if (document.body.dataset.activeView === "habits" && selectedHabitSettingsId) populateHabitInspectorForm(selectedHabitSettingsId);
+  syncInteractionChrome(false);
 }
 
 function autoGrowTextarea(textarea) {
@@ -2791,6 +2973,7 @@ function renderWeekAgenda() {
       <span class="week-agenda-note ${note === tr("week.noEntry") ? "empty" : ""}">${escapeHtml(note)}</span>
     </li>`;
   }).join("");
+  window.LifeLedgerInteraction?.glideTo(agenda, agenda.querySelector(`[data-date="${selectedPlanningDate}"]`));
   agenda.querySelectorAll(".week-agenda-row").forEach(row => {
     const select = () => {
       selectedPlanningDate = row.dataset.date;
@@ -2872,6 +3055,7 @@ function applyGoalHorizon() {
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", String(active));
   });
+  window.LifeLedgerInteraction?.syncSegments(document);
 }
 
 function formatLongTermReviewDate(value) {
@@ -3021,12 +3205,17 @@ function renderTimelineEntryList(entries = []) {
     renderTimelineDetail();
     $$(".calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
   }));
+  window.LifeLedgerInteraction?.glideTo(container, container.querySelector(".timeline-entry-row.selected"));
 }
 
 async function renderTimelineDetail() {
   const container = $("#timelineDetail");
   if (!container) return;
   const date = selectedTimelineDate;
+  if (date && container.dataset.shownDate && container.dataset.shownDate !== date) {
+    window.LifeLedgerInteraction?.retarget(container);
+  }
+  if (date) container.dataset.shownDate = date;
   if (!date) {
     container.innerHTML = `<p class="timeline-detail-empty">${escapeHtml(tr("timeline.selectDay"))}</p>`;
     return;
@@ -3199,10 +3388,12 @@ function todayHabitRowMarkup(habit, date, done, locked, selected) {
   const trailing = todayHabitTrailing(habit, date);
   const markLabel = languageText(`标记 ${name} 完成`, `Mark ${name} done`, `${name} als erledigt markieren`);
   const detail = selected ? todayHabitDetailMarkup(habit, date) : "";
-  return `<li class="today-habit-row ${done ? "done" : ""} ${selected ? "selected" : ""} ${locked ? "future-locked" : ""}" data-id="${escapeHtml(habit.id)}" role="listitem" tabindex="${selected ? "0" : "-1"}" style="${habitStyle(habit)}">
+    const editLabel = languageText(`编辑${name}`, `Edit ${name}`, `${name} bearbeiten`);
+    return `<li class="today-habit-row ${done ? "done" : ""} ${selected ? "selected" : ""} ${locked ? "future-locked" : ""}" data-id="${escapeHtml(habit.id)}" role="listitem" tabindex="${selected ? "0" : "-1"}" style="${habitStyle(habit)}">
     <button class="today-habit-check" type="button" aria-pressed="${done}" aria-label="${escapeHtml(markLabel)}" ${locked ? "disabled" : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
     <div class="today-habit-copy"><strong>${escapeHtml(name)}</strong>${detail}</div>
     <span class="today-habit-trailing">${escapeHtml(trailing)}</span>
+    <button class="today-habit-edit" type="button" aria-label="${escapeHtml(editLabel)}">${escapeHtml(languageText("编辑", "Edit", "Bearbeiten"))}</button>
   </li>`;
 }
 
@@ -3226,6 +3417,10 @@ function bindTodayHabitRows() {
       event.stopPropagation();
       if (future) return;
       toggleHabit(date, id);
+    });
+    row.querySelector(".today-habit-edit")?.addEventListener("click", event => {
+      event.stopPropagation();
+      openHabitDialog(id);
     });
     row.addEventListener("keydown", event => {
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -3280,9 +3475,10 @@ function renderToday() {
   const visibleIds = [...pending, ...completed, ...notTodayHabits].map(habit => habit.id);
   if (selectedTodayHabitId && !visibleIds.includes(selectedTodayHabitId)) selectedTodayHabitId = "";
   setText("#todayDateHeading", formatTodayWeekday(selected));
-  const mergedSecondary = `${formatTodayDateSecondary(selected)} · ${tr("today.summary", { done: complete, total: scoredHabits.length })}`;
-  setText("#todayDateSecondary", mergedSecondary);
-  setText("#todaySummary", tr("today.summary", { done: complete, total: scoredHabits.length }));
+  setText("#todayDateSecondary", formatTodayDateSecondary(selected));
+  const summaryText = tr("today.summary", { done: complete, total: scoredHabits.length });
+  if (window.LifeLedgerInteraction) LifeLedgerInteraction.rollText($("#todaySummary"), summaryText);
+  else setText("#todaySummary", summaryText);
   const list = $("#todayHabitList");
   if (list) {
     list.innerHTML = pending.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
@@ -3855,6 +4051,7 @@ function renderReview() {
   renderPeriodicGoals(monthDates);
   $("#reviewText").value = state.reviews[key] || "";
   renderFocusReview(year, month);
+  window.LifeLedgerInteraction?.syncSegments(document);
 }
 
 function previousMonthElapsedDates(cursorDate) {
@@ -3938,10 +4135,15 @@ function renderReviewInsights() {
   const lead = ranked[0];
   const delta = analyticsDeltaLabel(current, previous);
   const deltaClass = current.percent != null && previous.percent != null && current.percent > previous.percent ? "up" : current.percent < previous.percent ? "down" : "";
+  const previousRate = container.dataset.rateValue || "";
+  const nextRate = formatRate(current);
   container.innerHTML = `
-    <div class="review-insight-block"><strong class="review-insight-value">${formatRate(current)}</strong><span class="review-insight-label">${escapeHtml(tr("review.rateLabel"))}</span><span class="review-insight-delta">${escapeHtml(`${current.completed}/${current.eligible}`)}</span>${delta ? `<span class="review-insight-delta ${deltaClass}">${escapeHtml(delta)}</span>` : ""}</div>
+    <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(nextRate)}</strong><span class="review-insight-label">${escapeHtml(tr("review.rateLabel"))}</span><span class="review-insight-delta">${escapeHtml(`${current.completed}/${current.eligible}`)}</span>${delta ? `<span class="review-insight-delta ${deltaClass}">${escapeHtml(delta)}</span>` : ""}</div>
     <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.current : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.streakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? displayHabitName(lead.habit) : "—")}</span></div>
     <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.best : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.bestStreakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? countLabel(lead.stats.streaks.best) : "")}</span></div>`;
+  const rate = container.querySelector(".review-insight-value");
+  if (rate) LifeLedgerInteraction?.rollText(rate, nextRate, previousRate);
+  container.dataset.rateValue = nextRate;
 }
 
 function renderTrendSvg(points, summary) {
@@ -4034,6 +4236,10 @@ function renderReviewTrendChart() {
   const current = slotTotals(dates);
   if (!current.eligible) {
     chart.innerHTML = "";
+    const heatmap = $("#reviewHeatmap");
+    const compare = $("#reviewHabitCompare");
+    if (heatmap) heatmap.innerHTML = "";
+    if (compare) compare.innerHTML = "";
     return;
   }
   const points = dates.map(date => ({ date, value: completionFor(date) }));
@@ -4047,7 +4253,21 @@ function renderReviewTrendChart() {
   const trend = mode === "line" ? renderTrendSvg(points, summary) : renderCompactValues(points);
   const minutes = Math.round(focusSessionsBetween(dates[0], dates[dates.length - 1]).reduce((sum, session) => sum + focusSessionMinutes(session), 0));
   const focus = minutes > 0 ? `<p class="analytics-focus">${escapeHtml(tr("review.focusWindow", { minutes }))}</p>` : "";
-  chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))}</h3>${trend}${renderConsistencyHeatmap(dates)}${renderWeekdayBars(points)}${renderHabitBars(dates)}${focus}`;
+  const plot = chart.querySelector(".review-trend-plot");
+  if (!chart.querySelector(".review-trend-title") || !plot) {
+    chart.innerHTML = `<h3 class="review-trend-title"></h3><div class="review-trend-plot"></div>`;
+  }
+  chart.querySelector(".review-trend-title").textContent = tr("review.trendTitle");
+  const host = chart.querySelector(".review-trend-plot");
+  if (host.dataset.signature && host.dataset.signature !== String(dates.length)) {
+    window.LifeLedgerInteraction?.retarget(host);
+  }
+  host.dataset.signature = String(dates.length);
+  host.innerHTML = `${trend}${focus}`;
+  const heatmap = $("#reviewHeatmap");
+  if (heatmap) heatmap.innerHTML = renderConsistencyHeatmap(dates);
+  const compare = $("#reviewHabitCompare");
+  if (compare) compare.innerHTML = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
 }
 
 function renderReviewInspectorTable() {
@@ -5808,6 +6028,9 @@ function initFocusTimer() {
 }
 
 function bindEvents() {
+  window.LifeLedgerInteraction?.mountNavIndicator();
+  window.LifeLedgerInteraction?.mountDisclosures(document);
+  mountCommandPalette();
   window.addEventListener("pointermove", moveHabitDrag, { passive: false });
   window.addEventListener("pointerup", finishHabitSettingsDrag);
   window.addEventListener("pointercancel", finishHabitSettingsDrag);
@@ -5840,10 +6063,15 @@ function bindEvents() {
     jumpToDate(event.target.value);
     setDatePopoverOpen(false);
   });
-  $$("[data-analytics-window]").forEach(button => button.addEventListener("click", () => {
+    $$("[data-analytics-window]").forEach(button => button.addEventListener("click", () => {
     const next = Number(button.dataset.analyticsWindow);
     if (![7, 30, 90].includes(next) || next === analyticsWindow) return;
     analyticsWindow = next;
+    $$("[data-analytics-window]").forEach(item => {
+      const active = item === button;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
     renderReview();
   }));
   $$("[data-timeline-filter]").forEach(button => button.addEventListener("click", () => {
@@ -5860,23 +6088,7 @@ function bindEvents() {
     renderToday();
   });
   systemTheme.addEventListener("change", () => { if (themeChoice === "system") applyTheme(); });
-  $("#languageSelect")?.addEventListener("change", event => {
-    languageChoice = supportedLanguages.includes(event.target.value) || event.target.value === "system" ? event.target.value : "system";
-    currentLang = languageFromChoice(languageChoice);
-    localStorage.setItem(LANGUAGE_KEY, languageChoice);
-    localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
-    const url = new URL(location.href);
-    if (languageChoice === "system") url.searchParams.delete("lang");
-    else url.searchParams.set("lang", languageChoice);
-    history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-    document.body.classList.remove("language-changing");
-    void document.body.offsetWidth;
-    document.body.classList.add("language-changing");
-    voiceReflection?.setLanguage(currentLang);
-    renderAll();
-    if ($("#dayDrawer").classList.contains("open")) renderDrawer();
-    window.setTimeout(() => document.body.classList.remove("language-changing"), 260);
-  });
+  $("#languageSelect")?.addEventListener("change", event => applyLanguageChoice(event.target.value));
   $$(".nav-item").forEach(button => button.addEventListener("click", () => switchToView(button.dataset.view)));
   $("#timelinePreviousMonth")?.addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() - 1); void renderTimeline(); });
   $("#timelineNextMonth")?.addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() + 1); void renderTimeline(); });
