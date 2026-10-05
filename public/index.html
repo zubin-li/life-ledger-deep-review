@@ -32,7 +32,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=3.3.0-r1" />
+    <link rel="stylesheet" href="./styles.css?v=3.3.0-r2" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -90,7 +90,7 @@
             <div class="focus-anchor" id="focusAnchor">
               <button class="toolbar-focus" id="toolbarPrimaryAction" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="focusPanel" aria-label="Focus" title="Focus">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
-                <span id="focusToolbarTime">25:00</span>
+                <span id="focusToolbarTime" hidden>25:00</span>
               </button>
               <div class="focus-panel" id="focusPanel" role="dialog" aria-label="Focus" hidden>
                 <section class="inspector-section inspector-focus" id="inspectorFocusSection">
@@ -138,7 +138,12 @@
           </header>
           <div class="today-events-strip" id="todayEventsStrip" hidden role="list" aria-label="Today's events"></div>
           <div class="today-list" data-disclosure-group="today">
+            <h3 class="today-list-heading" id="todayOpenHeading">Open</h3>
             <ul class="today-habit-list" id="todayHabitList" role="list" tabindex="0" aria-label="Today's habits"></ul>
+            <section class="today-scheduled" id="todayScheduledGroup" hidden>
+              <h3 class="today-list-heading" id="todayScheduledHeading">Scheduled</h3>
+              <ul class="today-habit-list scheduled" id="todayScheduledList" role="list"></ul>
+            </section>
             <details class="today-completed" id="todayCompletedGroup" hidden>
               <summary id="todayCompletedSummary">Completed (0)</summary>
               <ul class="today-habit-list completed" id="todayCompletedList" role="list"></ul>
@@ -245,7 +250,7 @@
           </section>
         </section>
 
-        <section class="view timeline-journal" id="timelineView">
+        <section class="view timeline-journal" id="timelineView" data-journal-layout="timeline">
           <div class="journal-mode-switch" id="journalModeSwitch" data-segment role="tablist" aria-label="Journal mode">
             <button type="button" class="active" role="tab" data-journal-mode="timeline" aria-selected="true" id="journalModeTimeline">Timeline</button>
             <button type="button" role="tab" data-journal-mode="photos" aria-selected="false" id="journalModePhotos">Photos</button>
@@ -271,6 +276,11 @@
                   <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
                   <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
+                <form class="journal-composer" id="journalComposer">
+                  <label class="sr-only" for="journalQuickNote" id="journalComposerLabel">Note</label>
+                  <textarea id="journalQuickNote" rows="2" placeholder="Any thoughts for this day?"></textarea>
+                  <span class="journal-composer-status" id="journalQuickSave" role="status"></span>
+                </form>
                 <div class="timeline-filter" id="timelineFilter" role="group" aria-label="Timeline filter">
                   <button type="button" class="active" data-timeline-filter="all">All</button>
                   <button type="button" data-timeline-filter="photos">Photos</button>
@@ -284,6 +294,7 @@
             </aside>
             <article class="timeline-detail" id="timelineDetail" aria-live="polite" aria-label="Entry detail"></article>
           </div>
+          <div class="journal-photo-library" id="journalPhotoLibrary"></div>
           <span id="timelineKicker" hidden></span>
           <span id="timelineTitle" hidden></span>
           <span id="timelineDescription" hidden></span>
@@ -293,9 +304,15 @@
           <span id="timelineSummary" hidden></span>
         </section>
 
-        <section class="view review-document review-manuscript" id="reviewView" data-disclosure-group="review">
+        <section class="view review-document review-manuscript" id="reviewView" data-disclosure-group="review" data-insight-view="trend">
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
+            <div class="insight-view-switch" id="insightViewSwitch" role="tablist" aria-label="Report view">
+              <button type="button" class="active" role="tab" data-insight-view="trend" aria-selected="true" id="insightViewTrend">Trend</button>
+              <button type="button" role="tab" data-insight-view="heatmap" aria-selected="false" id="insightViewHeatmap">Calendar</button>
+              <button type="button" role="tab" data-insight-view="habits" aria-selected="false" id="insightViewHabits">Habits</button>
+              <button type="button" role="tab" data-insight-view="table" aria-selected="false" id="insightViewTable">Table</button>
+            </div>
             <div class="analytics-period" id="analyticsPeriod" data-segment role="group" aria-label="Statistics window">
               <button type="button" data-analytics-window="7">7 days</button>
               <button type="button" class="active" data-analytics-window="30" aria-pressed="true">30 days</button>
@@ -870,16 +887,25 @@
       <button type="button" role="menuitem" data-habit-context="disable" id="habitContextDisable">Disable</button>
       <button type="button" role="menuitem" data-habit-context="delete" id="habitContextDelete">Delete</button>
     </div>
-    <script src="./deployment-mode.js?v=3.3.0-r1"></script>
-    <script src="./_init_tcb-env.js?v=3.3.0-r1"></script>
-    <script src="./cloudbase-sync.js?v=3.3.0-r1"></script>
-    <script src="./focus-timer.js?v=3.3.0-r1"></script>
-    <script src="./voice-checkin.js?v=3.3.0-r1"></script>
-    <script src="./photo-memories.js?v=3.3.0-r1"></script>
-    <script src="./media-backup.js?v=3.3.0-r1"></script>
-    <script type="module" src="./widget-contract.js?v=3.3.0-r1"></script>
-    <script src="./habit-analytics.js?v=3.3.0-r1"></script>
-    <script src="./interaction.js?v=3.3.0-r1"></script>
-    <script src="./app.js?v=3.3.0-r1"></script>
+    <div class="focus-mini-player" id="focusMiniPlayer" hidden>
+      <button class="focus-mini-clock" id="focusMiniExpand" type="button">
+        <span id="focusMiniTime">25:00</span>
+      </button>
+      <span class="focus-mini-label" id="focusMiniLabel"></span>
+      <button class="focus-mini-action" id="focusMiniPrimary" type="button">Pause</button>
+      <button class="focus-mini-action" id="focusMiniFinish" type="button" hidden>Finish</button>
+      <button class="focus-mini-action" id="focusMiniSkip" type="button" hidden>Skip</button>
+    </div>
+    <script src="./deployment-mode.js?v=3.3.0-r2"></script>
+    <script src="./_init_tcb-env.js?v=3.3.0-r2"></script>
+    <script src="./cloudbase-sync.js?v=3.3.0-r2"></script>
+    <script src="./focus-timer.js?v=3.3.0-r2"></script>
+    <script src="./voice-checkin.js?v=3.3.0-r2"></script>
+    <script src="./photo-memories.js?v=3.3.0-r2"></script>
+    <script src="./media-backup.js?v=3.3.0-r2"></script>
+    <script type="module" src="./widget-contract.js?v=3.3.0-r2"></script>
+    <script src="./habit-analytics.js?v=3.3.0-r2"></script>
+    <script src="./interaction.js?v=3.3.0-r2"></script>
+    <script src="./app.js?v=3.3.0-r2"></script>
   </body>
 </html>

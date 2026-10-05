@@ -118,6 +118,8 @@ const i18n = {
       notScheduled: "未排程",
       notToday: "非今日计分",
       noHabits: "今天没有需要完成的习惯",
+      open: "待完成",
+      scheduled: "已排程",
       reflect: "回顾今天",
       eventsCount: "{count} 个日程",
       sidebarMore: "还有 {count} 项",
@@ -312,6 +314,13 @@ const i18n = {
       window90: "90 天",
       windowAria: "统计区间",
       rateLabel: "完成率",
+      rangeTo: "至",
+      forPeriod: "本区间",
+      perDay: "每天 {count} 次",
+      viewTrend: "趋势",
+      viewCalendar: "日历",
+      viewHabits: "习惯",
+      viewTable: "表格",
       vsPreviousUp: "比上一区间 +{delta}",
       vsPreviousDown: "比上一区间 {delta}",
       samePrevious: "与上一区间相同",
@@ -530,6 +539,8 @@ const i18n = {
       notScheduled: "Not scheduled",
       notToday: "Not in today's score",
       noHabits: "No habits scheduled for today",
+      open: "Open",
+      scheduled: "Scheduled",
       reflect: "Reflect on today",
       eventsCount: "{count} events",
       sidebarMore: "+{count} more",
@@ -724,6 +735,13 @@ const i18n = {
       window90: "90 days",
       windowAria: "Statistics window",
       rateLabel: "Completion",
+      rangeTo: "to",
+      forPeriod: "For this window",
+      perDay: "{count} per day",
+      viewTrend: "Trend",
+      viewCalendar: "Calendar",
+      viewHabits: "Habits",
+      viewTable: "Table",
       vsPreviousUp: "+{delta} vs previous",
       vsPreviousDown: "{delta} vs previous",
       samePrevious: "Same as the previous window",
@@ -942,6 +960,8 @@ const i18n = {
       notScheduled: "Nicht geplant",
       notToday: "Nicht im Tagesscore",
       noHabits: "Heute keine Gewohnheiten",
+      open: "Offen",
+      scheduled: "Geplant",
       reflect: "Heute reflektieren",
       eventsCount: "{count} Termine",
       sidebarMore: "+{count} weitere",
@@ -1136,6 +1156,13 @@ const i18n = {
       window90: "90 Tage",
       windowAria: "Statistikzeitraum",
       rateLabel: "Erledigung",
+      rangeTo: "bis",
+      forPeriod: "In diesem Zeitraum",
+      perDay: "{count} pro Tag",
+      viewTrend: "Verlauf",
+      viewCalendar: "Kalender",
+      viewHabits: "Gewohnheiten",
+      viewTable: "Tabelle",
       vsPreviousUp: "+{delta} zum vorherigen Zeitraum",
       vsPreviousDown: "{delta} zum vorherigen Zeitraum",
       samePrevious: "Wie im vorherigen Zeitraum",
@@ -2032,6 +2059,15 @@ function applyLanguage() {
   setText("#journalModePhotos", languageText("照片", "Photos", "Fotos"));
   setText("#journalModeCalendar", languageText("日历", "Calendar", "Kalender"));
   setText("#reviewScoreSummary", languageText("习惯分数", "Habit scores", "Gewohnheitswerte"));
+  setText("#todayOpenHeading", tr("today.open"));
+  setText("#todayScheduledHeading", tr("today.scheduled"));
+  setText("#insightViewTrend", tr("review.viewTrend"));
+  setText("#insightViewHeatmap", tr("review.viewCalendar"));
+  setText("#insightViewHabits", tr("review.viewHabits"));
+  setText("#insightViewTable", tr("review.viewTable"));
+  setAria("#insightViewSwitch", languageText("报表视图", "Report view", "Berichtansicht"));
+  setPlaceholder("#journalQuickNote", languageText("这一天想记下什么？", "Any thoughts for this day?", "Was möchtest du zu diesem Tag notieren?"));
+  setAria("#journalComposerLabel", languageText("日志", "Note", "Notiz"));
   setAria("#journalModeSwitch", languageText("日志模式", "Journal mode", "Journalmodus"));
   setPlaceholder("#quickFind", languageText("搜索", "Search", "Suchen"));
   setAria("#dateNavPrev", languageText("上一段", "Previous", "Zurück"));
@@ -2931,6 +2967,13 @@ function weekAgendaSegmentBar(scored, log) {
   return `<span class="week-agenda-segments" aria-hidden="true">${scored.map(habit => `<i class="week-agenda-segment ${log.completed.includes(habit.id) ? "done" : ""}" style="${habitStyle(habit)}"></i>`).join("")}</span>`;
 }
 
+function weekHabitMarkup(habit, date, time) {
+  const name = displayHabitName(habit);
+  const markLabel = languageText(`标记 ${name} 完成`, `Mark ${name} done`, `${name} als erledigt markieren`);
+  const timeHtml = time ? `<time class="week-habit-time">${escapeHtml(time)}</time>` : "";
+  return `<li class="week-habit-row" data-id="${escapeHtml(habit.id)}" data-date="${escapeHtml(date)}">${timeHtml}<span>${escapeHtml(name)}</span><button class="week-habit-check" type="button" aria-label="${escapeHtml(markLabel)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button></li>`;
+}
+
 function renderWeekAgenda() {
   const agenda = $("#weekAgenda");
   if (!agenda) return;
@@ -2958,11 +3001,23 @@ function renderWeekAgenda() {
     const isToday = key === todayKey;
     const isSelected = key === selectedPlanningDate;
     const rowClass = `${isToday ? "today" : ""} ${isSelected && !isToday ? "selected" : ""}`.trim();
-    return `<li class="week-agenda-row ${rowClass}" data-date="${key}" role="listitem" tabindex="0">
-      <span class="week-agenda-day"><span class="week-agenda-weekday">${escapeHtml(weekday)}</span><span class="week-agenda-date">${escapeHtml(dateLabel)}</span></span>
-      <span class="week-agenda-progress">${escapeHtml(progressLabel)}</span>
-      ${moodGlyph}
-      <span class="week-agenda-note ${note === tr("week.noEntry") ? "empty" : ""}">${escapeHtml(note)}</span>
+    const pending = scored.filter(habit => !log.completed.includes(habit.id));
+    const timed = habit => scheduleLabel(versionFor(habit, key));
+    const scheduled = pending.filter(habit => timed(habit)).sort((a, b) => timed(a).localeCompare(timed(b)));
+    const open = pending.filter(habit => !timed(habit));
+    const body = isSelected ? `<div class="week-day-body">
+      ${open.length ? `<ul class="week-habit-list">${open.map(habit => weekHabitMarkup(habit, key, "")).join("")}</ul>` : ""}
+      ${scheduled.length ? `<h3 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h3><ul class="week-habit-list scheduled">${scheduled.map(habit => weekHabitMarkup(habit, key, timed(habit))).join("")}</ul>` : ""}
+      ${!open.length && !scheduled.length ? `<p class="week-day-empty">${escapeHtml(future ? tr("today.noHabits") : tr("today.completed", { count: completed }))}</p>` : ""}
+    </div>` : "";
+    return `<li class="week-day-section ${isSelected ? "is-open" : ""}" role="listitem">
+      <button type="button" class="week-agenda-row ${rowClass}" data-date="${key}">
+        <span class="week-agenda-day"><span class="week-agenda-weekday">${escapeHtml(weekday)}</span><span class="week-agenda-date">${escapeHtml(dateLabel)}</span></span>
+        <span class="week-agenda-progress">${escapeHtml(progressLabel)}</span>
+        ${moodGlyph}
+        <span class="week-agenda-note ${note === tr("week.noEntry") ? "empty" : ""}">${escapeHtml(note)}</span>
+      </button>
+      ${body}
     </li>`;
   }).join("");
   window.LifeLedgerInteraction?.glideTo(agenda, agenda.querySelector(`[data-date="${selectedPlanningDate}"]`));
@@ -2986,6 +3041,11 @@ function renderWeekAgenda() {
       }
     });
   });
+  agenda.querySelectorAll(".week-habit-check").forEach(button => button.addEventListener("click", event => {
+    event.stopPropagation();
+    const row = button.closest(".week-habit-row");
+    if (row) toggleHabit(row.dataset.date, row.dataset.id);
+  }));
   const lede = $("#weekPlanLede");
   if (lede) {
     lede.textContent = languageText(
@@ -3162,6 +3222,55 @@ function timelineDateLabel(value) {
   };
 }
 
+// Layout counts follow Memos resolveVisualGalleryLayout (MIT, 0d989707):
+// 1 full, 2 columns, 3 with the first cell spanning both rows, 4 as a 2×2,
+// and 5 or more as a 2×3 whose last cell shows +N.
+function photoCollageMarkup(photos) {
+  const items = (photos || []).filter(photo => photo?.url);
+  if (!items.length) return "";
+  const cell = (photo, extra = "") => `<span class="journal-collage-cell ${extra}"><img src="${escapeHtml(photo.url)}" alt="" /></span>`;
+  if (items.length === 1) return `<span class="journal-collage is-single">${cell(items[0])}</span>`;
+  if (items.length === 2) return `<span class="journal-collage is-two">${items.map(photo => cell(photo)).join("")}</span>`;
+  if (items.length === 3) return `<span class="journal-collage is-mosaic">${cell(items[0], "is-span")}${cell(items[1])}${cell(items[2])}</span>`;
+  if (items.length === 4) return `<span class="journal-collage is-grid">${items.map(photo => cell(photo)).join("")}</span>`;
+  const visible = items.slice(0, 6);
+  const overflow = items.length - visible.length;
+  return `<span class="journal-collage is-six">${visible.map((photo, index) => `${cell(photo)}${index === visible.length - 1 && overflow > 0 ? `<b class="journal-collage-more">+${overflow}</b>` : ""}`).join("")}</span>`;
+}
+
+function renderJournalPhotoLibrary(photos) {
+  const host = $("#journalPhotoLibrary");
+  if (!host) return;
+  if (!photos.length) {
+    host.innerHTML = `<div class="journal-library-empty"><strong>${escapeHtml(languageText("照片", "Photos", "Fotos"))}</strong><p>${escapeHtml(languageText("这个月还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos this month yet. Add one from a day and it will appear here by month.", "Diesen Monat gibt es noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."))}</p></div>`;
+    return;
+  }
+  const groups = new Map();
+  photos.forEach(photo => {
+    const key = String(photo.date || "").slice(0, 7);
+    if (!key) return;
+    groups.set(key, [...(groups.get(key) || []), photo]);
+  });
+  host.innerHTML = [...groups.entries()].sort((a, b) => b[0].localeCompare(a[0])).map(([key, items]) => {
+    const label = formatLocalizedDate(parseDate(`${key}-01`), { month: "long", year: "numeric" });
+    return `<section class="journal-library-month"><h3>${escapeHtml(label)}</h3><div class="journal-library-grid">${items.map(photo => `<button type="button" class="journal-library-card" data-date="${escapeHtml(photo.date)}"><img src="${escapeHtml(photo.url)}" alt="" /><span>${escapeHtml(formatLocalizedDate(parseDate(photo.date), { day: "numeric", month: "short" }))}</span></button>`).join("")}</div></section>`;
+  }).join("");
+  host.querySelectorAll(".journal-library-card").forEach(button => button.addEventListener("click", () => {
+    selectedTimelineDate = button.dataset.date;
+    setJournalMode("timeline");
+  }));
+}
+
+function renderJournalComposer() {
+  const field = $("#journalQuickNote");
+  const status = $("#journalQuickSave");
+  if (!field || document.activeElement === field) return;
+  const date = selectedTimelineDate || isoDate(new Date());
+  field.dataset.date = date;
+  field.value = getLog(date).note || "";
+  if (status && !status.dataset.pending) status.textContent = languageText("已保存", "Saved", "Gespeichert");
+}
+
 function timelineEntriesForMonth(monthDate) {
   const { from, to } = timelineRange(monthDate);
   const dates = new Set(Object.keys(state.logs || {}).filter(date => date >= from && date <= to));
@@ -3184,9 +3293,9 @@ function renderTimelineEntryList(entries = []) {
     const excerpt = noteLines.slice(0, 2).join(" ");
     const mood = entry.log.mood ? `<span class="timeline-entry-mood" aria-label="${escapeHtml(moodLabel(entry.log.mood))}">${moodCalendarIcon(entry.log.mood)}</span>` : "";
     const photos = calendarPhotosByDate.get(entry.date) || [];
-    const thumb = photos[0]?.url ? `<img class="timeline-entry-thumb" src="${escapeHtml(photos[0].url)}" alt="" />` : "";
-    const photoIcon = photos.length && !thumb ? `<span class="timeline-entry-photos" aria-label="${escapeHtml(tr("drawer.photoCount", { count: photos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg></span>` : "";
-    const trailing = mood || photoIcon || thumb ? `<span class="timeline-entry-trailing">${mood}${photoIcon}${thumb}</span>` : "";
+    const collage = photoCollageMarkup(photos);
+    const photoIcon = photos.length && !collage ? `<span class="timeline-entry-photos" aria-label="${escapeHtml(tr("drawer.photoCount", { count: photos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg></span>` : "";
+    const trailing = mood || photoIcon || collage ? `<span class="timeline-entry-trailing">${mood}${photoIcon}${collage}</span>` : "";
     return `<button type="button" class="timeline-entry-row ${entry.date === selectedTimelineDate ? "selected" : ""}" data-date="${entry.date}" role="listitem">
       <span class="timeline-entry-date"><strong>${escapeHtml(label.weekday)}</strong><span>${escapeHtml(label.day)}</span></span>
       <span class="timeline-entry-note">${escapeHtml(excerpt)}</span>
@@ -3224,6 +3333,7 @@ async function renderTimelineDetail() {
       ${log.mood ? `<p class="timeline-detail-mood"><span class="timeline-detail-mood-glyph">${moodCalendarIcon(log.mood)}</span><span>${escapeHtml(moodLabel(log.mood))}</span></p>` : ""}
     </header>
     ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<p class="timeline-detail-empty-note">${escapeHtml(tr("timeline.noNote"))}</p>`}
+    ${photoCollageMarkup(calendarPhotosByDate.get(date) || [])}
     <section class="photo-library photo-library-story" id="timelineDetailPhotos" data-photo-editor>
       <div class="mood-photo-heading"><div><strong data-photo-title></strong><small data-photo-help></small></div><span data-photo-count></span></div>
       <div class="photo-drop" data-photo-drop><p class="photo-drop-empty" data-photo-empty></p><div class="mood-photo-list" data-photo-list></div></div>
@@ -3261,8 +3371,6 @@ function applyTimelineFilter(entries) {
 async function renderTimeline() {
   const version = ++timelineRenderVersion;
   timelineRendering = true;
-  cursor = new Date(timelineCursor);
-  cursor.setHours(12, 0, 0, 0);
   renderCalendar();
   const { from, to } = timelineRange(timelineCursor);
   let photos = [];
@@ -3288,6 +3396,8 @@ async function renderTimeline() {
     selectedTimelineDate = visibleEntries[0]?.date || "";
   }
   renderTimelineEntryList(visibleEntries);
+  renderJournalPhotoLibrary(photos);
+  renderJournalComposer();
   void renderTimelineDetail();
   $$(".calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
   timelineRendering = false;
@@ -3377,12 +3487,14 @@ function todayHabitDetailMarkup(habit, date) {
   return parts.length ? `<span class="today-habit-detail">${escapeHtml(parts.join(" · "))}</span>` : "";
 }
 
-function todayHabitRowMarkup(habit, date, done, locked, selected) {
+function todayHabitRowMarkup(habit, date, done, locked, selected, timeLabel = "") {
   const name = displayHabitName(habit);
   const trailing = todayHabitTrailing(habit, date);
   const markLabel = languageText(`标记 ${name} 完成`, `Mark ${name} done`, `${name} als erledigt markieren`);
   const detail = selected ? todayHabitDetailMarkup(habit, date) : "";
+  const time = timeLabel ? `<time class="today-habit-time">${escapeHtml(timeLabel)}</time>` : "";
     return `<li class="today-habit-row ${done ? "done" : ""} ${selected ? "selected" : ""} ${locked ? "future-locked" : ""}" data-id="${escapeHtml(habit.id)}" role="listitem" tabindex="${selected ? "0" : "-1"}" style="${habitStyle(habit)}">
+    ${time}
     <button class="today-habit-check" type="button" aria-pressed="${done}" aria-label="${escapeHtml(markLabel)}" ${locked ? "disabled" : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
     <div class="today-habit-copy"><strong>${escapeHtml(name)}</strong>${detail}</div>
     <span class="today-habit-trailing">${escapeHtml(trailing)}</span>
@@ -3392,7 +3504,7 @@ function todayHabitRowMarkup(habit, date, done, locked, selected) {
 function bindTodayHabitRows() {
   const date = selectedPlanningDate;
   const future = isFutureDate(date);
-  $$("#todayHabitList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
+  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
     const id = row.dataset.id;
     const check = $(".today-habit-check", row);
     const select = () => {
@@ -3413,7 +3525,7 @@ function bindTodayHabitRows() {
     row.addEventListener("keydown", event => {
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
-        const rows = [...$$("#todayHabitList .today-habit-row, #todayCompletedList .today-habit-row")];
+        const rows = [...$$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row")];
         const index = rows.indexOf(row);
         const next = rows[index + (event.key === "ArrowDown" ? 1 : -1)];
         next?.focus();
@@ -3458,9 +3570,12 @@ function renderToday() {
   const query = quickFindQuery.trim().toLowerCase();
   const matches = habit => !query || displayHabitName(habit).toLowerCase().includes(query);
   const pending = scoredHabits.filter(habit => !log.completed.includes(habit.id) && matches(habit));
+  const scheduledTime = habit => scheduleLabel(versionFor(habit, date));
+  const scheduled = pending.filter(habit => scheduledTime(habit)).sort((a, b) => scheduledTime(a).localeCompare(scheduledTime(b)));
+  const open = pending.filter(habit => !scheduledTime(habit));
   const completed = scoredHabits.filter(habit => log.completed.includes(habit.id) && matches(habit));
   const notTodayHabits = activeHabits(date).filter(habit => !countsTowardDaily(habit, date) && matches(habit));
-  const visibleIds = [...pending, ...completed, ...notTodayHabits].map(habit => habit.id);
+  const visibleIds = [...open, ...scheduled, ...completed, ...notTodayHabits].map(habit => habit.id);
   if (selectedTodayHabitId && !visibleIds.includes(selectedTodayHabitId)) selectedTodayHabitId = "";
   setText("#todayDateHeading", formatTodayWeekday(selected));
   setText("#todayDateSecondary", formatTodayDateSecondary(selected));
@@ -3471,8 +3586,15 @@ function renderToday() {
   if (progressFill) progressFill.style.width = `${scoredHabits.length ? Math.round((complete / scoredHabits.length) * 100) : 0}%`;
   const list = $("#todayHabitList");
   if (list) {
-    list.innerHTML = pending.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
+    list.innerHTML = open.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
       || `<li class="today-habit-empty">${escapeHtml(tr("today.noHabits"))}</li>`;
+  }
+  const scheduledGroup = $("#todayScheduledGroup");
+  const scheduledList = $("#todayScheduledList");
+  if (scheduledGroup && scheduledList) {
+    scheduledGroup.hidden = !scheduled.length;
+    setText("#todayScheduledHeading", tr("today.scheduled"));
+    scheduledList.innerHTML = scheduled.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId, scheduledTime(habit))).join("");
   }
   const completedGroup = $("#todayCompletedGroup");
   const completedList = $("#todayCompletedList");
@@ -3817,10 +3939,12 @@ function habitCard(habit, date, done, locked = false) {
 }
 let revealCompletedOnRender = false;
 let journalMode = "timeline";
+let insightView = "trend";
+let journalSaveTimer = 0;
 
 function captureHabitFrames() {
   const frames = new Map();
-  $$("#todayHabitList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
+  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
     const rect = row.getBoundingClientRect();
     if (!rect.width && !rect.height) return;
     frames.set(row.dataset.id, { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
@@ -3831,7 +3955,7 @@ function captureHabitFrames() {
 function playHabitFlip(previous) {
   if (!previous?.size) return;
   if (document.documentElement.classList.contains("motion-off") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  $$("#todayHabitList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
+  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
     const before = previous.get(row.dataset.id);
     if (!before) return;
     const rect = row.getBoundingClientRect();
@@ -3870,6 +3994,7 @@ function setFocusPanelOpen(open) {
   if (!panel) return;
   panel.hidden = !open;
   button?.setAttribute("aria-expanded", String(open));
+  renderFocusTimer(focusTimer?.snapshot());
   if (open) $("#focusQuickPrimary")?.focus();
 }
 
@@ -3877,6 +4002,8 @@ function setJournalMode(mode) {
   journalMode = mode === "photos" || mode === "calendar" ? mode : "timeline";
   const layout = $(".timeline-layout");
   if (layout) layout.dataset.journalLayout = journalMode;
+  const journal = $("#timelineView");
+  if (journal) journal.dataset.journalLayout = journalMode;
   $$("[data-journal-mode]").forEach(button => {
     const active = button.dataset.journalMode === journalMode;
     button.classList.toggle("active", active);
@@ -4112,6 +4239,7 @@ function renderReview() {
   const todayKey = isoDate(new Date());
   const elapsedDates = monthDates.filter(date => date <= todayKey);
   const habits = activeHabits(monthDates[monthDates.length - 1]);
+  setInsightView(insightView);
   renderReviewInsights();
   renderReviewTrendChart();
   renderReviewInspectorTable();
@@ -4204,14 +4332,44 @@ function analyticsDeltaLabel(current, previous) {
   if (delta < 0) return tr("review.vsPreviousDown", { delta });
   return tr("review.samePrevious");
 }
+// Actual ReportSummary (MIT, 8e165c0) prints the end date only when it
+// differs from the start, then one period total and one per-interval average.
+function reportRangeSentence(dates) {
+  if (!dates.length) return "";
+  const label = value => formatLocalizedDate(parseDate(value), { day: "numeric", month: "short" });
+  const start = label(dates[0]);
+  const end = label(dates[dates.length - 1]);
+  return start === end ? start : `${start} ${tr("review.rangeTo")} ${end}`;
+}
+
+function reportSummaryMarkup(dates, current) {
+  const raw = dates.length ? (current?.completed || 0) / dates.length : 0;
+  const average = new Intl.NumberFormat(dateLocale(), { maximumFractionDigits: 1 }).format(raw);
+  return `<p class="review-range-line">${escapeHtml(reportRangeSentence(dates))}</p><p class="review-period-line"><strong>${escapeHtml(tr("review.forPeriod"))}</strong><span>${escapeHtml(tr("review.perDay", { count: average }))}</span></p>`;
+}
+
+function setInsightView(view) {
+  insightView = ["heatmap", "habits", "table"].includes(view) ? view : "trend";
+  const review = $("#reviewView");
+  if (review) review.dataset.insightView = insightView;
+  const table = $(".review-score-table");
+  if (table) table.open = insightView === "table";
+  $$("#insightViewSwitch [data-insight-view]").forEach(button => {
+    const active = button.dataset.insightView === insightView;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+}
+
 function renderReviewInsights() {
   const container = $("#reviewInsights");
   if (!container || !analyticsApi()) return;
   const dates = analyticsDates();
   const current = slotTotals(dates);
   const previous = slotTotals(analyticsApi().previousWindow(dates));
+  const summary = reportSummaryMarkup(dates, current);
   if (!current.eligible) {
-    container.innerHTML = `<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
+    container.innerHTML = `${summary}<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
     return;
   }
   const habits = activeHabits(dates[dates.length - 1]).filter(habit => countsTowardDaily(habit, dates[dates.length - 1]));
@@ -4222,7 +4380,7 @@ function renderReviewInsights() {
   const deltaClass = current.percent != null && previous.percent != null && current.percent > previous.percent ? "up" : current.percent < previous.percent ? "down" : "";
   const previousRate = container.dataset.rateValue || "";
   const nextRate = formatRate(current);
-  container.innerHTML = `
+  container.innerHTML = `${summary}
     <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(nextRate)}</strong><span class="review-insight-label">${escapeHtml(tr("review.rateLabel"))}</span><span class="review-insight-delta">${escapeHtml(`${current.completed}/${current.eligible}`)}</span>${delta ? `<span class="review-insight-delta ${deltaClass}">${escapeHtml(delta)}</span>` : ""}</div>
     <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.current : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.streakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? displayHabitName(lead.habit) : "—")}</span></div>
     <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.best : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.bestStreakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? countLabel(lead.stats.streaks.best) : "")}</span></div>`;
@@ -6015,6 +6173,19 @@ function renderFocusTimer(snapshot) {
   $("#inspectorFocusRow")?.style.setProperty("--focus-inline-progress", progress);
   setText("#focusInlineTime", formatFocusTime(remaining));
   setText("#focusToolbarTime", formatFocusTime(remaining));
+  setText("#focusMiniTime", formatFocusTime(remaining));
+  setText("#focusMiniLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
+  const sessionLive = Boolean(snapshot);
+  const panelOpen = $("#focusPanel") ? !$("#focusPanel").hidden : false;
+  const clock = $("#focusToolbarTime");
+  if (clock) clock.hidden = !sessionLive;
+  const player = $("#focusMiniPlayer");
+  // Kairos TimerMiniPlayer (MIT, fb1f18d) mounts only while a session is
+  // running, paused, or complete, and stays hidden on the timer surface.
+  if (player) player.hidden = !sessionLive || panelOpen;
+  setText("#focusMiniPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
+  $("#focusMiniFinish").hidden = !isFocus;
+  $("#focusMiniSkip").hidden = !isBreak;
   setText("#focusInlineLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
   setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusQuickFinish").hidden = !isFocus;
@@ -6217,6 +6388,37 @@ function bindEvents() {
   $("#focusQuickSkip").addEventListener("click", () => {
     focusTimer?.skipBreak();
     releaseFocusWakeLock();
+  });
+  $$("#insightViewSwitch [data-insight-view]").forEach(button => button.addEventListener("click", () => setInsightView(button.dataset.insightView)));
+  $("#focusMiniExpand")?.addEventListener("click", () => setFocusPanelOpen(true));
+  $("#focusMiniPrimary")?.addEventListener("click", handleFocusQuickPrimary);
+  $("#focusMiniFinish")?.addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
+  $("#focusMiniSkip")?.addEventListener("click", () => {
+    focusTimer?.skipBreak();
+    releaseFocusWakeLock();
+  });
+  $("#journalQuickNote")?.addEventListener("input", event => {
+    const field = event.currentTarget;
+    const date = field.dataset.date || selectedTimelineDate || isoDate(new Date());
+    const status = $("#journalQuickSave");
+    if (status) {
+      status.dataset.pending = "1";
+      status.textContent = languageText("正在保存", "Saving", "Speichert");
+    }
+    window.clearTimeout(journalSaveTimer);
+    journalSaveTimer = window.setTimeout(() => {
+      state.logs[date] = { ...getLog(date), note: field.value };
+      saveState();
+      if (status) {
+        delete status.dataset.pending;
+        status.textContent = languageText("已保存", "Saved", "Gespeichert");
+      }
+      selectedTimelineDate = date;
+      if ($("#timelineView")?.classList.contains("active")) {
+        renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
+        void renderTimelineDetail();
+      }
+    }, 280);
   });
   $$(".close-focus-dialog").forEach(button => button.addEventListener("click", () => $("#focusDialog").close()));
   $("#focusDialog").addEventListener("cancel", event => {
@@ -6600,8 +6802,6 @@ function navigateToolbarDate(amount) {
     renderToolbarDateNav();
   } else if (view === "timeline") {
     timelineCursor.setMonth(timelineCursor.getMonth() + amount);
-    cursor = new Date(timelineCursor);
-    cursor.setHours(12, 0, 0, 0);
     void renderTimeline();
     renderToolbarDateNav();
   } else if (view === "review") {

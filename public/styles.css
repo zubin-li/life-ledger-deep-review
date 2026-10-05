@@ -2710,7 +2710,7 @@ html[data-desktop] .today-habit-row.is-moving { z-index: 2; }
 .focus-panel { position: absolute; top: calc(100% + 8px); right: 0; z-index: 40; width: min(320px, calc(100vw - 32px)); padding: 14px 16px; border: 1px solid var(--separator); border-radius: 14px; background: var(--card, var(--sheet)); box-shadow: 0 16px 40px rgba(36, 37, 34, .14); transform-origin: top right; animation: sheetIn 200ms var(--ease-move); }
 .focus-panel[hidden] { display: none; }
 .toolbar-focus { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 8px; border: 1px solid var(--separator); border-radius: 8px; background: transparent; color: var(--label); font: 600 12px/1 var(--font-body); font-variant-numeric: tabular-nums; }
-.toolbar-focus svg { width: 14px; height: 14px; }
+.toolbar-focus svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 html[data-desktop] .weekly-workspace { display: block; height: auto; }
 html[data-desktop] .weekly-goals-section { max-height: none; }
 html[data-desktop] .week-split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); gap: 28px; min-height: 0; padding: 4px 28px 8px; }
@@ -2746,3 +2746,81 @@ html[data-desktop] body[data-active-view="week"] .main-content { overflow: auto;
   html[data-desktop] .week-split,
   html[data-desktop] #habitsView.active { grid-template-columns: 1fr; }
 }
+
+html[data-desktop] .today-list-heading { margin: 14px 0 2px; font: 600 12px/1.3 var(--font-body); letter-spacing: .04em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .today-habit-list.scheduled .today-habit-row { grid-template-columns: 52px 24px minmax(0, 1fr) auto; }
+html[data-desktop] .today-habit-time,
+html[data-desktop] .week-habit-time { font: 600 12px/1 var(--font-body); font-variant-numeric: tabular-nums; color: var(--secondaryLabel); }
+html[data-desktop] .week-split { display: block; }
+html[data-desktop] .week-day-detail { display: none; }
+html[data-desktop] .week-day-section { border-bottom: 1px solid var(--separator); }
+html[data-desktop] .week-day-section .week-agenda-row { width: 100%; }
+html[data-desktop] .week-day-body { display: grid; gap: 2px; padding: 2px 8px 12px 108px; animation: sheetIn 200ms var(--ease-move); }
+html[data-desktop] .week-habit-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+html[data-desktop] .week-habit-row { display: grid; grid-template-columns: minmax(0, 1fr) 28px; align-items: center; min-height: 32px; gap: 8px; }
+html[data-desktop] .week-habit-list.scheduled .week-habit-row { grid-template-columns: 52px minmax(0, 1fr) 28px; }
+html[data-desktop] .week-scheduled-heading { margin: 8px 0 2px; font: 600 12px/1.3 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .week-habit-check { width: 22px; height: 22px; border: 1px solid var(--separator); border-radius: 50%; background: transparent; color: var(--controlAccent); cursor: pointer; }
+html[data-desktop] .week-habit-check svg { width: 14px; height: 14px; }
+html[data-desktop] .week-day-empty { margin: 4px 0 0; color: var(--secondaryLabel); font: 400 13px/1.4 var(--font-body); }
+html[data-desktop] .journal-composer { display: grid; gap: 4px; margin: 0 0 12px; }
+html[data-desktop] .journal-composer textarea { width: 100%; min-height: 52px; resize: vertical; border: 1px solid var(--separator); border-radius: 10px; background: transparent; color: inherit; font: 400 14px/1.45 var(--font-body); padding: 8px 10px; }
+html[data-desktop] .journal-composer-status { color: var(--secondaryLabel); font: 500 12px/1.3 var(--font-body); }
+html[data-desktop] .journal-collage { display: grid; gap: 2px; width: 72px; height: 48px; }
+html[data-desktop] .journal-collage.is-single { grid-template-columns: 1fr; }
+html[data-desktop] .journal-collage.is-two,
+html[data-desktop] .journal-collage.is-grid { grid-template-columns: 1fr 1fr; }
+html[data-desktop] .journal-collage.is-mosaic { grid-template-columns: 1.2fr 1fr; grid-template-rows: 1fr 1fr; }
+html[data-desktop] .journal-collage.is-six { grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; }
+html[data-desktop] .journal-collage-cell { position: relative; overflow: hidden; border-radius: 4px; min-width: 0; min-height: 0; }
+html[data-desktop] .journal-collage-cell.is-span { grid-row: span 2; }
+html[data-desktop] .journal-collage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+html[data-desktop] .journal-collage-more { position: absolute; right: 2px; bottom: 2px; color: #f6f3ec; font: 700 10px/1 var(--font-body); text-shadow: 0 1px 2px rgba(0,0,0,.45); }
+html[data-desktop] #timelineView[data-journal-layout="photos"] .timeline-layout,
+html[data-desktop] #timelineView[data-journal-layout="photos"] .journal-mode-switch + .timeline-layout { display: none; }
+html[data-desktop] .journal-photo-library { display: none; padding: 8px 28px 32px; }
+html[data-desktop] #timelineView[data-journal-layout="photos"] .journal-photo-library { display: block; }
+html[data-desktop] .journal-library-empty { min-height: 280px; display: grid; align-content: center; justify-items: center; gap: 8px; text-align: center; border: 1px dashed var(--separator); border-radius: 16px; padding: 32px; }
+html[data-desktop] .journal-library-empty strong { font: 600 1.125rem/1.3 var(--font-display); }
+html[data-desktop] .journal-library-empty p { max-width: 360px; margin: 0; color: var(--secondaryLabel); }
+html[data-desktop] .journal-library-month { display: grid; gap: 10px; margin-bottom: 22px; }
+html[data-desktop] .journal-library-month h3 { margin: 0; font: 600 12px/1.3 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .journal-library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+html[data-desktop] .journal-library-card { display: grid; gap: 6px; padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; color: inherit; }
+html[data-desktop] .journal-library-card img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; border-radius: 12px; }
+html[data-desktop] .journal-library-card span { font: 500 12px/1.3 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] #timelineView[data-journal-layout="calendar"] .timeline-detail { margin: 16px; border: 1px solid var(--separator); border-radius: 16px; padding: 16px; background: var(--sheet); }
+html[data-desktop] .timeline-detail .journal-collage { width: min(100%, 280px); height: 140px; margin: 8px 0 12px; }
+html[data-desktop] .review-intro { flex-wrap: wrap; }
+html[data-desktop] .insight-view-switch { display: flex; gap: 4px; }
+html[data-desktop] .insight-view-switch button { border: 0; background: transparent; color: var(--secondaryLabel); font: 600 13px/1.3 var(--font-body); padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+html[data-desktop] .insight-view-switch button.active { color: var(--label); background: color-mix(in srgb, var(--sage) 18%, transparent); }
+html[data-desktop] .review-range-line,
+html[data-desktop] .review-period-line,
+html[data-desktop] .review-insights .analytics-empty { grid-column: 1 / -1; margin: 0; }
+html[data-desktop] .review-range-line { font: 600 1.05rem/1.3 var(--font-display); }
+html[data-desktop] .review-period-line { display: flex; gap: 8px; align-items: baseline; color: var(--secondaryLabel); }
+html[data-desktop] #reviewView[data-insight-view="trend"] > .review-heatmap-card,
+html[data-desktop] #reviewView[data-insight-view="trend"] > .review-habit-compare,
+html[data-desktop] #reviewView[data-insight-view="trend"] > .review-score-table,
+html[data-desktop] #reviewView[data-insight-view="heatmap"] > .review-trend-chart,
+html[data-desktop] #reviewView[data-insight-view="heatmap"] > .review-habit-compare,
+html[data-desktop] #reviewView[data-insight-view="heatmap"] > .review-score-table,
+html[data-desktop] #reviewView[data-insight-view="habits"] > .review-trend-chart,
+html[data-desktop] #reviewView[data-insight-view="habits"] > .review-heatmap-card,
+html[data-desktop] #reviewView[data-insight-view="habits"] > .review-score-table,
+html[data-desktop] #reviewView[data-insight-view="table"] > .review-trend-chart,
+html[data-desktop] #reviewView[data-insight-view="table"] > .review-heatmap-card,
+html[data-desktop] #reviewView[data-insight-view="table"] > .review-habit-compare { display: none; }
+html[data-desktop] #reviewView[data-insight-view="table"] > .review-score-table { display: block; }
+html[data-desktop] #reviewView[data-insight-view="table"] > .review-score-table > summary { display: none; }
+.focus-mini-player { position: fixed; z-index: 45; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; min-width: min(420px, calc(100vw - 32px)); padding: 8px 10px; border: 1px solid var(--separator); border-radius: 14px; background: var(--card, var(--sheet)); box-shadow: 0 12px 32px rgba(36, 37, 34, .14); animation: sheetIn 200ms var(--ease-move); }
+.focus-mini-player[hidden] { display: none; }
+.focus-mini-clock, .focus-mini-action { border: 0; background: transparent; color: inherit; font: 600 13px/1 var(--font-body); cursor: pointer; }
+.focus-mini-clock { font-variant-numeric: tabular-nums; font-size: 16px; }
+.focus-mini-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--secondaryLabel); }
+@media (prefers-reduced-motion: reduce) {
+  .week-day-body, .focus-mini-player, .journal-collage { animation: none !important; transition: none !important; }
+}
+html.motion-off .week-day-body,
+html.motion-off .focus-mini-player { animation: none; transition: none; }

@@ -19,8 +19,8 @@ function loadAnalytics() {
 }
 
 test("3.3 cache key is unique while the displayed version stays 3.3.0", () => {
-  assert.match(sw, /life-ledger-pwa-3\.3\.0-r1/);
-  assert.match(html, /habit-analytics\.js\?v=3\.3\.0-r1/);
+  assert.match(sw, /life-ledger-pwa-3\.3\.0-r2/);
+  assert.match(html, /habit-analytics\.js\?v=3\.3\.0-r2/);
   assert.doesNotMatch(html, /id="appVersionLabel"/);
   assert.match(html, /option value="system"/);
   assert.match(app, /Math\.max\(156, Math\.min\(240/);
