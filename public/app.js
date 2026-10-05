@@ -64,7 +64,7 @@ const i18n = {
     metaDescription: "一套会随着你成长的私人习惯与深度复盘系统。",
     brand: "Life Ledger",
     brandSmall: "深度复盘",
-    nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", habits: "习惯设置" },
+    nav: { today: "今日", week: "本周", timeline: "日志", review: "洞察", habits: "习惯" },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
     profileName: "个人复盘空间",
     exportTitle: "导入与导出",
@@ -107,8 +107,8 @@ const i18n = {
     viewTitles: {
       today: "今日",
       week: "本周",
-      timeline: "时间轴",
-      review: "月度复盘",
+      timeline: "日志",
+      review: "洞察",
       habits: "习惯",
     },
     today: {
@@ -118,6 +118,7 @@ const i18n = {
       notScheduled: "未排程",
       notToday: "非今日计分",
       noHabits: "今天没有需要完成的习惯",
+      reflect: "回顾今天",
       eventsCount: "{count} 个日程",
       sidebarMore: "还有 {count} 项",
     },
@@ -475,7 +476,7 @@ const i18n = {
     metaDescription: "A private habit and deep-review system that grows with you.",
     brand: "Life Ledger",
     brandSmall: "DEEP REVIEW",
-    nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", habits: "Habits" },
+    nav: { today: "Today", week: "Week", timeline: "Journal", review: "Insights", habits: "Habits" },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
     profileName: "Personal Ledger",
     exportTitle: "Import & export",
@@ -518,8 +519,8 @@ const i18n = {
     viewTitles: {
       today: "Today",
       week: "Week",
-      timeline: "Timeline",
-      review: "Monthly Review",
+      timeline: "Journal",
+      review: "Insights",
       habits: "Habits",
     },
     today: {
@@ -529,6 +530,7 @@ const i18n = {
       notScheduled: "Not scheduled",
       notToday: "Not in today's score",
       noHabits: "No habits scheduled for today",
+      reflect: "Reflect on today",
       eventsCount: "{count} events",
       sidebarMore: "+{count} more",
     },
@@ -886,7 +888,7 @@ const i18n = {
     metaDescription: "Ein privates System für Gewohnheiten und tiefgehende Rückblicke, das mit dir wächst.",
     brand: "Life Ledger",
     brandSmall: "TIEFE REFLEXION",
-    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", habits: "Gewohnheiten" },
+    nav: { today: "Heute", week: "Woche", timeline: "Journal", review: "Einblicke", habits: "Gewohnheiten" },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
     profileName: "Persönliches Journal",
     exportTitle: "Import & Export",
@@ -929,8 +931,8 @@ const i18n = {
     viewTitles: {
       today: "Heute",
       week: "Woche",
-      timeline: "Zeitleiste",
-      review: "Monatsrückblick",
+      timeline: "Journal",
+      review: "Einblicke",
       habits: "Gewohnheiten",
     },
     today: {
@@ -940,6 +942,7 @@ const i18n = {
       notScheduled: "Nicht geplant",
       notToday: "Nicht im Tagesscore",
       noHabits: "Heute keine Gewohnheiten",
+      reflect: "Heute reflektieren",
       eventsCount: "{count} Termine",
       sidebarMore: "+{count} weitere",
     },
@@ -1610,7 +1613,7 @@ function handleMenuAction(action) {
     return;
   }
   if (action === "inspector:toggle") {
-    toggleInspector();
+    setFocusPanelOpen($("#focusPanel")?.hidden !== false);
     return;
   }
   if (action === "settings") {
@@ -1864,25 +1867,7 @@ function switchToView(view, { animate = true } = {}) {
 
 function updateInspectorForView() {
   const view = document.body.dataset.activeView || "today";
-  const enteringTimeline = view === "timeline";
-  const leavingTimeline = document.body.classList.contains("timeline-no-inspector") && !enteringTimeline;
-  if (enteringTimeline && inspectorBeforeTimeline === null) {
-    inspectorBeforeTimeline = inspectorCollapsed;
-  }
-  if (leavingTimeline && inspectorBeforeTimeline !== null) {
-    inspectorCollapsed = inspectorBeforeTimeline;
-    inspectorBeforeTimeline = null;
-    applyInspectorState();
-  }
-  document.body.classList.toggle("timeline-no-inspector", enteringTimeline);
-  const inspectorBtn = $("#toolbarPrimaryAction");
-  if (inspectorBtn) {
-    inspectorBtn.disabled = enteringTimeline;
-    inspectorBtn.setAttribute("aria-disabled", String(enteringTimeline));
-  }
-  $$("#inspectorPane [data-inspector-for]").forEach(section => {
-    section.hidden = section.dataset.inspectorFor !== view;
-  });
+  document.body.classList.toggle("timeline-no-inspector", view === "timeline");
 }
 function isDesktopShell() {
   return Boolean(document.documentElement.dataset.desktop);
@@ -2039,8 +2024,15 @@ function applyLanguage() {
   const activeView = $(".nav-item.active")?.dataset.view || "today";
   document.body.dataset.activeView = activeView;
   setText("#viewTitle", tr(`viewTitles.${activeView}`));
-  setAria("#toolbarPrimaryAction", tr("settings.inspector"));
-  $("#toolbarPrimaryAction")?.setAttribute("title", tr("settings.inspector"));
+  setAria("#toolbarPrimaryAction", tr("focus.kicker"));
+  $("#toolbarPrimaryAction")?.setAttribute("title", tr("focus.kicker"));
+  setText("#openDayDetail", tr("today.reflect"));
+  setText("#dayDetailTitle", tr("today.reflect"));
+  setText("#journalModeTimeline", languageText("时间线", "Timeline", "Zeitstrahl"));
+  setText("#journalModePhotos", languageText("照片", "Photos", "Fotos"));
+  setText("#journalModeCalendar", languageText("日历", "Calendar", "Kalender"));
+  setText("#reviewScoreSummary", languageText("习惯分数", "Habit scores", "Gewohnheitswerte"));
+  setAria("#journalModeSwitch", languageText("日志模式", "Journal mode", "Journalmodus"));
   setPlaceholder("#quickFind", languageText("搜索", "Search", "Suchen"));
   setAria("#dateNavPrev", languageText("上一段", "Previous", "Zurück"));
   setAria("#dateNavNext", languageText("下一段", "Next", "Weiter"));
@@ -2974,6 +2966,7 @@ function renderWeekAgenda() {
     </li>`;
   }).join("");
   window.LifeLedgerInteraction?.glideTo(agenda, agenda.querySelector(`[data-date="${selectedPlanningDate}"]`));
+  renderWeekDayDetail();
   agenda.querySelectorAll(".week-agenda-row").forEach(row => {
     const select = () => {
       selectedPlanningDate = row.dataset.date;
@@ -3191,8 +3184,9 @@ function renderTimelineEntryList(entries = []) {
     const excerpt = noteLines.slice(0, 2).join(" ");
     const mood = entry.log.mood ? `<span class="timeline-entry-mood" aria-label="${escapeHtml(moodLabel(entry.log.mood))}">${moodCalendarIcon(entry.log.mood)}</span>` : "";
     const photos = calendarPhotosByDate.get(entry.date) || [];
-    const photoIcon = photos.length ? `<span class="timeline-entry-photos" aria-label="${escapeHtml(tr("drawer.photoCount", { count: photos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg></span>` : "";
-    const trailing = mood || photoIcon ? `<span class="timeline-entry-trailing">${mood}${photoIcon}</span>` : "";
+    const thumb = photos[0]?.url ? `<img class="timeline-entry-thumb" src="${escapeHtml(photos[0].url)}" alt="" />` : "";
+    const photoIcon = photos.length && !thumb ? `<span class="timeline-entry-photos" aria-label="${escapeHtml(tr("drawer.photoCount", { count: photos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg></span>` : "";
+    const trailing = mood || photoIcon || thumb ? `<span class="timeline-entry-trailing">${mood}${photoIcon}${thumb}</span>` : "";
     return `<button type="button" class="timeline-entry-row ${entry.date === selectedTimelineDate ? "selected" : ""}" data-date="${entry.date}" role="listitem">
       <span class="timeline-entry-date"><strong>${escapeHtml(label.weekday)}</strong><span>${escapeHtml(label.day)}</span></span>
       <span class="timeline-entry-note">${escapeHtml(excerpt)}</span>
@@ -3388,12 +3382,10 @@ function todayHabitRowMarkup(habit, date, done, locked, selected) {
   const trailing = todayHabitTrailing(habit, date);
   const markLabel = languageText(`标记 ${name} 完成`, `Mark ${name} done`, `${name} als erledigt markieren`);
   const detail = selected ? todayHabitDetailMarkup(habit, date) : "";
-    const editLabel = languageText(`编辑${name}`, `Edit ${name}`, `${name} bearbeiten`);
     return `<li class="today-habit-row ${done ? "done" : ""} ${selected ? "selected" : ""} ${locked ? "future-locked" : ""}" data-id="${escapeHtml(habit.id)}" role="listitem" tabindex="${selected ? "0" : "-1"}" style="${habitStyle(habit)}">
     <button class="today-habit-check" type="button" aria-pressed="${done}" aria-label="${escapeHtml(markLabel)}" ${locked ? "disabled" : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
     <div class="today-habit-copy"><strong>${escapeHtml(name)}</strong>${detail}</div>
     <span class="today-habit-trailing">${escapeHtml(trailing)}</span>
-    <button class="today-habit-edit" type="button" aria-label="${escapeHtml(editLabel)}">${escapeHtml(languageText("编辑", "Edit", "Bearbeiten"))}</button>
   </li>`;
 }
 
@@ -3418,10 +3410,6 @@ function bindTodayHabitRows() {
       if (future) return;
       toggleHabit(date, id);
     });
-    row.querySelector(".today-habit-edit")?.addEventListener("click", event => {
-      event.stopPropagation();
-      openHabitDialog(id);
-    });
     row.addEventListener("keydown", event => {
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
@@ -3443,7 +3431,7 @@ function bindTodayHabitRows() {
       }
       if (event.key === "Enter") {
         event.preventDefault();
-        select();
+        if (!future) toggleHabit(date, id);
       }
     });
   });
@@ -3479,6 +3467,8 @@ function renderToday() {
   const summaryText = tr("today.summary", { done: complete, total: scoredHabits.length });
   if (window.LifeLedgerInteraction) LifeLedgerInteraction.rollText($("#todaySummary"), summaryText);
   else setText("#todaySummary", summaryText);
+  const progressFill = $("#todayProgressFill");
+  if (progressFill) progressFill.style.width = `${scoredHabits.length ? Math.round((complete / scoredHabits.length) * 100) : 0}%`;
   const list = $("#todayHabitList");
   if (list) {
     list.innerHTML = pending.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
@@ -3488,6 +3478,7 @@ function renderToday() {
   const completedList = $("#todayCompletedList");
   if (completedGroup && completedList) {
     completedGroup.hidden = !completed.length;
+    if (revealCompletedOnRender) completedGroup.open = true;
     setText("#todayCompletedSummary", tr("today.completed", { count: completed.length }));
     completedList.innerHTML = completed.map(habit => todayHabitRowMarkup(habit, date, true, future, habit.id === selectedTodayHabitId)).join("");
   }
@@ -3824,14 +3815,104 @@ function habitCard(habit, date, done, locked = false) {
     <h3>${escapeHtml(displayHabitName(habit))}</h3><p>${target}</p>${periodNote}
   </article>`;
 }
+let revealCompletedOnRender = false;
+let journalMode = "timeline";
+
+function captureHabitFrames() {
+  const frames = new Map();
+  $$("#todayHabitList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
+    const rect = row.getBoundingClientRect();
+    if (!rect.width && !rect.height) return;
+    frames.set(row.dataset.id, { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
+  });
+  return frames;
+}
+
+function playHabitFlip(previous) {
+  if (!previous?.size) return;
+  if (document.documentElement.classList.contains("motion-off") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  $$("#todayHabitList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
+    const before = previous.get(row.dataset.id);
+    if (!before) return;
+    const rect = row.getBoundingClientRect();
+    const dx = before.x - rect.left;
+    const dy = before.y - rect.top;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+    row.classList.add("is-moving");
+    row.style.transition = "none";
+    row.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    row.offsetWidth;
+    row.style.transition = "transform 280ms cubic-bezier(0.22, 1, 0.36, 1)";
+    row.style.transform = "translate3d(0, 0, 0)";
+    const clear = () => {
+      row.style.transition = "";
+      row.style.transform = "";
+      row.classList.remove("is-moving");
+      row.removeEventListener("transitionend", clear);
+    };
+    row.addEventListener("transitionend", clear);
+  });
+}
+
+function setDayDetailOpen(open) {
+  const sheet = $("#dayDetailSheet");
+  const trigger = $("#openDayDetail");
+  if (!sheet) return;
+  sheet.hidden = !open;
+  trigger?.setAttribute("aria-expanded", String(open));
+  if (open) $("#homeDayNote")?.focus();
+  else trigger?.focus();
+}
+
+function setFocusPanelOpen(open) {
+  const panel = $("#focusPanel");
+  const button = $("#toolbarPrimaryAction");
+  if (!panel) return;
+  panel.hidden = !open;
+  button?.setAttribute("aria-expanded", String(open));
+  if (open) $("#focusQuickPrimary")?.focus();
+}
+
+function setJournalMode(mode) {
+  journalMode = mode === "photos" || mode === "calendar" ? mode : "timeline";
+  const layout = $(".timeline-layout");
+  if (layout) layout.dataset.journalLayout = journalMode;
+  $$("[data-journal-mode]").forEach(button => {
+    const active = button.dataset.journalMode === journalMode;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  if (journalMode === "photos") timelineFilter = "photos";
+  else if (timelineFilter === "photos") timelineFilter = "all";
+  $$("[data-timeline-filter]").forEach(button => button.classList.toggle("active", button.dataset.timelineFilter === timelineFilter));
+  if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
+}
+
+function renderWeekDayDetail() {
+  const host = $("#weekDayDetail");
+  if (!host) return;
+  const date = selectedPlanningDate;
+  if (host.dataset.shownDate && host.dataset.shownDate !== date) window.LifeLedgerInteraction?.retarget(host);
+  host.dataset.shownDate = date;
+  const log = getLog(date);
+  const scored = dailyHabits(date);
+  const done = scored.filter(habit => log.completed.includes(habit.id)).length;
+  const label = formatLocalizedDate(parseDate(date), { weekday: "long", day: "numeric", month: "long" });
+  const note = String(log.note || "").trim();
+  const mood = log.mood ? `${moodCalendarIcon(log.mood)} ${escapeHtml(moodLabel(log.mood))}` : "";
+  host.innerHTML = `<h2>${escapeHtml(label)}</h2><p>${escapeHtml(tr("today.summary", { done, total: scored.length }))}</p>${mood ? `<p class="week-day-mood">${mood}</p>` : ""}${note ? `<p>${escapeHtml(note)}</p>` : `<p>${escapeHtml(tr("week.noEntry"))}</p>`}`;
+}
+
 function toggleHabit(date, id) {
   if (isFutureDate(date)) return;
+  const frames = date === selectedPlanningDate ? captureHabitFrames() : null;
   const previous = cloneData(getLog(date));
   const log = { ...getLog(date), completed: [...getLog(date).completed] };
   const scored = activeHabits(date).filter(habit => countsTowardDaily(habit, date));
   const wasComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   const i = log.completed.indexOf(id);
   if (i >= 0) log.completed.splice(i, 1); else log.completed.push(id);
+  if (i < 0) revealCompletedOnRender = true;
   const commit = () => {
     state.logs[date] = log;
     saveState();
@@ -3840,6 +3921,8 @@ function toggleHabit(date, id) {
     if (date === isoDate(new Date())) void publishWidgetSnapshot();
   };
   commit();
+  revealCompletedOnRender = false;
+  if (frames) playHabitFlip(frames);
   const isComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   if (!wasComplete && isComplete) showCelebration();
   lastHabitToggle = { date, previous };
@@ -3848,9 +3931,11 @@ function toggleHabit(date, id) {
     actionLabel: undoLabel,
     onAction: () => {
       if (!lastHabitToggle || lastHabitToggle.date !== date) return;
+      const undoFrames = captureHabitFrames();
       state.logs[date] = cloneData(lastHabitToggle.previous);
       saveState();
       renderAll();
+      playHabitFlip(undoFrames);
       if ($("#dayDrawer").classList.contains("open")) renderDrawer();
       if (date === isoDate(new Date())) void publishWidgetSnapshot();
     },
@@ -4174,7 +4259,7 @@ function renderTrendSvg(points, summary) {
     const x = index === 0 ? left : index === points.length - 1 ? width - 8 : point.x;
     return `<text x="${x.toFixed(1)}" y="${height - 8}" text-anchor="${anchor}" class="review-trend-axis">${escapeHtml(label)}</text>`;
   }).join("");
-  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${grid}<path d="${path}" class="review-trend-line"/><circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="4" class="review-trend-dot"/>${labels}</svg>`;
+  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${grid}<path d="${path}" pathLength="1" class="review-trend-line"/><circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="4" class="review-trend-dot"/>${labels}</svg>`;
 }
 function renderCompactValues(points) {
   return `<ul class="analytics-compact">${points.map(point => {
@@ -5929,6 +6014,7 @@ function renderFocusTimer(snapshot) {
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
   $("#inspectorFocusRow")?.style.setProperty("--focus-inline-progress", progress);
   setText("#focusInlineTime", formatFocusTime(remaining));
+  setText("#focusToolbarTime", formatFocusTime(remaining));
   setText("#focusInlineLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
   setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusQuickFinish").hidden = !isFocus;
@@ -6040,10 +6126,29 @@ function bindEvents() {
     applyTheme();
   });
   $("#sidebarToggle")?.addEventListener("click", toggleSidebar);
-  $("#toolbarPrimaryAction")?.addEventListener("click", () => {
-    const view = document.body.dataset.activeView || "today";
-    if (view === "timeline") return;
-    toggleInspector();
+  $("#toolbarPrimaryAction")?.addEventListener("click", event => {
+    event.stopPropagation();
+    setFocusPanelOpen(Boolean($("#focusPanel")?.hidden));
+  });
+  $("#openDayDetail")?.addEventListener("click", () => setDayDetailOpen(true));
+  $$("[data-close-day-detail]").forEach(button => button.addEventListener("click", () => setDayDetailOpen(false)));
+  $$("[data-journal-mode]").forEach(button => button.addEventListener("click", () => setJournalMode(button.dataset.journalMode)));
+  document.addEventListener("click", event => {
+    if ($("#focusPanel")?.hidden) return;
+    if (event.target.closest("#focusAnchor")) return;
+    setFocusPanelOpen(false);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape" || event.defaultPrevented) return;
+    if (!$("#dayDetailSheet")?.hidden) {
+      setDayDetailOpen(false);
+      event.preventDefault();
+      return;
+    }
+    if (!$("#focusPanel")?.hidden) {
+      setFocusPanelOpen(false);
+      event.preventDefault();
+    }
   });
   $("#openSettingsButton")?.addEventListener("click", openSettings);
   $("#closeSettingsPane")?.addEventListener("click", () => {

@@ -68,18 +68,19 @@ test("review badge is real pending work and acknowledge clears it", () => {
   assert.deepEqual(JSON.parse(JSON.stringify(api.badgeVisibility(0, 0))), { visible: false, count: 0 });
 });
 
-test("the desktop shell exposes one sliding nav, a command palette, and the 12-column desk", () => {
+test("the desktop shell exposes one sliding nav, a command palette, and a single Today column", () => {
   assert.match(html, /class="nav-indicator"/);
   assert.match(html, /id="commandPalette"/);
   assert.match(html, /data-disclosure-group="today"/);
-  assert.match(html, /class="today-primary"/);
-  assert.match(html, /class="today-context"/);
+  assert.match(html, /id="openDayDetail"/);
+  assert.match(html, /id="focusPanel"/);
   assert.match(html, /id="reviewHeatmap"/);
   assert.match(html, /id="reviewHabitCompare"/);
   assert.match(app, /mountCommandPalette\(/);
   assert.match(app, /recentUnreflectedCount\(/);
-  assert.match(css, /grid-column: span 7/);
-  assert.match(css, /grid-column: span 5/);
+  assert.match(app, /function playHabitFlip\(/);
+  assert.match(css, /grid-template-columns: minmax\(0, 1fr\);/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*\.nav-indicator/);
+  assert.doesNotMatch(html, /class="today-primary"|class="today-context"|class="today-photos-zone"/);
   assert.doesNotMatch(html, /class="floating-dock"|class="mega-panel"/);
 });

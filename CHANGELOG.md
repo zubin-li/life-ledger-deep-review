@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Rebuilt — Life Ledger 3.3 information architecture
+
+- Removed the permanent right Focus rail and the Today four-zone card grid. Today is now one column: the date, a single progress line, a compact mood check-in, an optional event strip, and the habit list. Reflection and photos open from “Reflect on today”. Focus is a toolbar control that expands back to the same control. Completed habits move into the completed group.
+- Renamed Timeline to Journal and Monthly Review to Insights in English, Simplified Chinese, and German. Journal keeps Timeline, Photos, and Calendar as modes of one list/detail view. Week is a vertical agenda with one selected-day detail. Insights stacks at most three summary numbers, the completion trend, the consistency heatmap, and habit bars; scores and detailed metrics stay closed. Habit editing lives on Habits. Version `3.3.0` is shown only in Settings → About. The service-worker cache is `life-ledger-pwa-3.3.0-r1`. Storage keys are unchanged.
+
 ### Rebuilt — Life Ledger 3.2 interaction architecture
 
 - Recomposed Today on a 12-column desk: the date spans the pane, habits take seven columns, mood takes five, and reflection and photos repeat that split. Review now reads summary, trend, heatmap, habit comparison, then the monthly note, with 7/30/90 changes retargeting the same chart instead of rebuilding the page. Week and Timeline move one selection highlight onto the chosen day.

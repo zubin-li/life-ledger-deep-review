@@ -10,28 +10,29 @@ const app = read("public/app.js");
 const lib = read("src-tauri/src/lib.rs");
 const pkg = JSON.parse(read("package.json"));
 
-test("3.2.0 is the install identity across package, assets, cache, and About", () => {
-  assert.equal(pkg.version, "3.2.0");
-  assert.match(html, /styles\.css\?v=3\.2\.0-r1/);
-  assert.match(html, /app\.js\?v=3\.2\.0-r1/);
-  assert.match(read("public/sw.js"), /life-ledger-pwa-3\.2\.0-r1/);
-  assert.match(read("src-tauri/tauri.conf.json"), /"version": "3\.2\.0"/);
-  assert.match(read("src-tauri/Cargo.toml"), /version = "3\.2\.0"/);
+test("3.3.0 is the install identity across package, assets, cache, and About", () => {
+  assert.equal(pkg.version, "3.3.0");
+  assert.match(html, /styles\.css\?v=3\.3\.0-r1/);
+  assert.match(html, /app\.js\?v=3\.3\.0-r1/);
+  assert.match(read("public/sw.js"), /life-ledger-pwa-3\.3\.0-r1/);
+  assert.match(read("src-tauri/tauri.conf.json"), /"version": "3\.3\.0"/);
+  assert.match(read("src-tauri/Cargo.toml"), /version = "3\.3\.0"/);
   assert.doesNotMatch(html, /id="appVersionLabel"/);
-  assert.match(html, /id="aboutBuild">Life Ledger 3\.2\.0</);
+  assert.match(html, /id="aboutBuild">Life Ledger 3\.3\.0</);
 });
 
 test("the five desktop first viewports are recomposed, not appended to the 3.0 list", () => {
-  assert.match(html, /class="view active today-desk"/);
-  assert.match(html, /class="today-desk-grid"/);
-  assert.match(html, /class="today-sheet today-journal"/);
-  assert.match(css, /html\[data-desktop\] \.today-desk-grid \{ display: grid; grid-template-columns: repeat\(12, minmax\(0, 1fr\)\)/);
+  assert.match(html, /class="view active today-desk today-stage"/);
+  assert.match(html, /id="openDayDetail"/);
+  assert.doesNotMatch(html, /class="today-desk-grid"/);
+  assert.doesNotMatch(html, /class="today-primary"/);
+  assert.match(css, /html\[data-desktop\] \.today-stage \{ gap: 8px;/);
   assert.match(css, /html\[data-desktop\] \.today-date-heading \{ margin: 0; font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
   assert.doesNotMatch(css, /html\[data-desktop\] \.today-date-heading \{[^}]*44px/);
   assert.match(html, /class="view week-board"/);
-  assert.match(css, /html\[data-desktop\] \.week-agenda \{ display: grid; grid-template-columns: repeat\(7, minmax\(0, 1fr\)\)/);
+  assert.match(css, /html\[data-desktop\] \.week-agenda \{ display: flex; flex-direction: column;/);
   assert.match(html, /class="view timeline-journal"/);
-  assert.match(css, /html\[data-desktop\] \.timeline-layout \{ grid-template-columns: minmax\(0, 1fr\) 292px/);
+  assert.match(css, /html\[data-desktop\] \.timeline-layout \{ grid-template-columns: minmax\(280px, 360px\) minmax\(0, 1fr\)/);
   assert.match(css, /html\[data-desktop\] \.timeline-detail-empty \{[^}]*font: 600 1\.375rem\/1\.3/);
   assert.match(html, /review-manuscript/);
   assert.match(css, /html\[data-desktop\] \.review-intro #reviewTitle \{[^}]*font: 600 1\.75rem\/1\.2/);
