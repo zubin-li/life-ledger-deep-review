@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Motion & hairline — Life Ledger 3.4 (macOS desktop)
+
+- Added continuity motion helpers in `public/interaction.js` (elastic nav/segment indicator, submit-state chain, toolbar create popover, collapsible search, scroll-compact titles, FLIP transitions, and Settings → Motion: Full / Reduced / Off via `life-ledger-motion`). Hairline SVG empty states and launcher illustrations use the local `public/assets/hairline/` set. Version `3.4.0`; service-worker cache `life-ledger-pwa-3.4.0-r1`.
+
 ### Rebuilt — Life Ledger 3.3 information architecture
 
 - Removed the permanent right Focus rail and the Today four-zone card grid. Today is now one column: the date, a single progress line, a compact mood check-in, an optional event strip, and the habit list. Reflection and photos open from “Reflect on today”. Focus is a toolbar control that expands back to the same control. Completed habits move into the completed group.
