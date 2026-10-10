@@ -1,0 +1,20 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="Empty habits list" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 38,74 L 70,58 Q 74,56 78,58 L 110,74 Q 114,76 110,78 L 78,94 Q 74,96 70,94 L 38,78 Q 34,76 38,74 Z" />
+      <path d="M 36,77 V 80 L 70,97 Q 74,99 78,97 L 112,81 V 78" />
+      <rect x="48" y="72" width="10" height="10" rx="2" />
+      <path d="M 50.5 77 L 53 79.5 L 56.5 75" stroke="var(--accent, #4f7a64)" />
+    </g>
+    <g data-layer="2">
+      <path d="M 64,76 H 96" />
+      <path d="M 64,80 H 86" stroke-dasharray="2 2" />
+      <path d="M 64,86 H 92" stroke-dasharray="2 2" />
+    </g>
+    <g data-layer="3">
+      <path d="M 96,52 V 68" stroke-dasharray="2 2" />
+      <path d="M 82,40 L 94,34 Q 96,33 98,34 L 110,40 Q 112,41 110,42 L 98,48 Q 96,49 94,48 L 82,42 Q 80,41 82,40 Z" />
+      <path d="M 92,41 H 100 M 96,37 V 45" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>

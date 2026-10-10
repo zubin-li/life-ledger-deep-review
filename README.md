@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v2.png" width="100%" alt="Life Ledger monthly review dashboard" />
+  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v3.png" width="100%" alt="Life Ledger monthly review" />
 </p>
 
 <p align="center">
@@ -130,8 +130,8 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v2.png" alt="Daily planning and reflection" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v2.png" alt="Weekly goals and output" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v3.png" alt="Daily planning and reflection" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v3.png" alt="Weekly goals and output" /></td>
   </tr>
   <tr>
     <td><strong>Daily clarity</strong><br />See the day's real calendar and leave a reflection beside it, without duplicating plans.</td>
@@ -140,7 +140,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v3.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
+  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v4.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
 </p>
 <p align="center"><strong>A private memory line.</strong> Revisit mood, context, and compressed photo memories without turning them into a public feed.</p>
 
@@ -234,7 +234,21 @@ The repository now includes a first Tauri v2 macOS shell with two explicit choic
 
 JSON backup in the local desktop window uses native macOS file dialogs, including iCloud Drive folder selection as file backup. This is backup transfer, not live sync or conflict resolution.
 
+The local desktop app can also publish today's habits to a real native macOS WidgetKit widget on the desktop or Notification Center — with a native checkbox that works even when the app is closed. It never shows journal notes or mood reasons, and it never touches the connected-cloud window's security boundary. See [docs/macos-widget.md](docs/macos-widget.md) for the architecture and build steps.
+
+The shell presents the app itself with native macOS chrome: real traffic lights sit in a transparent titlebar, the sidebar is edge-attached with no embedded-card framing, and an unobtrusive **Local Mac** / **Connected Cloud** status label replaces the PWA install prompt, which stays hidden outside the browser. Standard shortcuts work outside editable fields — Cmd+1–5 for Today/Week/Timeline/Review/Habits, Cmd+B to toggle the sidebar, Cmd+, for the Settings window, and Cmd+Shift+E for backup/export — without changing any shortcut in the public PWA. The launcher is a compact native workspace chooser, and window position and size are remembered per window across launches.
+
 Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
+
+### 7. Life Ledger 2.0 — a calm instrument panel
+
+Version 3.4 adds desktop motion controls (Settings → Motion: Full / Reduced / Off), continuity animations on the toolbar and views, and hairline empty-state illustrations. Version 3.3 removes the permanent inspector. Today is the habit list: the date, one progress line, a compact mood check-in, open habits, and a separate scheduled list for habits that have a time. “Reflect on today” still holds the note and photos. Focus is an icon until a session starts; the running clock and a mini-player appear only then. The sidebar destinations are Today, Week, Journal, Insights, and Habits. Week is a stack of days, and the selected day opens in place. Journal keeps timeline, photos, and calendar as modes: the timeline has a composer, photos is a month library, and calendar keeps the month beside the day. Insights is one report with a range, three summary numbers, and a switch among trend, calendar, habits, and table. The version is still shown only in Settings → About.
+
+Version 3.2 recomposes the desktop desk around the task. Today uses a 12-column page: habits and reflection take the wider span, mood and photos take the narrower span, and Focus stays in the inspector. The sidebar has one sliding selection, and ⌘K opens a command palette for views, dates, habits, and settings. Review leads with the 7/30/90 summary, trend, and heatmap. The version is still shown only in Settings → About.
+
+Version 3.1 keeps the desktop desk (980px and wider) and restores the calm sage-and-paper palette. The installed version appears only in Settings → About. Today is a two-column canvas: the habit list on the left, and that day’s photos, mood, and reflection on a wider sheet to the right. Week is seven day columns across the pane. Timeline puts the journal page on the left and the month on the right. Review opens with local 7/30/90-day statistics — completion over eligible days, streaks, a trend, and a consistency heatmap — then the monthly reflection. Habits is a library of rows. Language can follow the system, English, 简体中文, or Deutsch, and applies immediately. Photos still stay on this device, or in a Cloudflare workspace when that is the signed-in deployment, and a selected month can be exported with them. The local Mac window unregisters a stale service worker and deletes only the app’s cache entries, leaving journals, habits, and photos in place. The Mac app keeps its application menu (App, File, Edit, View, Window, Help) with Cmd+, for a separate Settings window, Cmd+N for a new habit, Cmd+F for search, Cmd+1–5 for views, Cmd+B for the sidebar, Cmd+Option+0 for the inspector, Cmd+T / Cmd+[ / Cmd+] for dates, and Cmd+Shift+E for backup/export; it also reopens the last workspace (Local or Connected Cloud), with File → Switch Workspace… to change it. Phone and narrow browser layouts, data, backups, sync, languages, and themes stay compatible.
+
+Version 2.0 carries a full interface redesign across the web app, PWA, and the macOS shell alike — this is not a desktop-only skin. The sidebar, toolbar, and every view (Today, Week, Timeline, Review, Habits/Settings) now share one restrained system: system typography (no decorative serif or a network font for the interface chrome), a 4px spacing scale, a 6–14px radius scale in place of the previous 18–30px "card" look, and shadows reserved for floating dialogs, popovers, and the day drawer rather than every inline card. Every remaining glyph/emoji icon (navigation, mood picker, dialog close buttons, disclosure chevrons, carousel and calendar arrows) is now a coherent local inline SVG icon set, and hover/press feedback is immediate border or background changes instead of a mouse-following tilt/glow effect. Light and dark appearance are both deliberately tuned, independently of each other, and motion continues to respect `prefers-reduced-motion`. No existing data, local/connected-cloud modes, backup/import/export, language, theme, keyboard shortcut, calendar, habit, focus, or review behavior changed.
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 

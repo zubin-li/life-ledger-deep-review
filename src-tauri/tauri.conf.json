@@ -1,7 +1,7 @@
 {
   "$schema": "./gen/schemas/desktop-schema.json",
   "productName": "Life Ledger Deep Review",
-  "version": "1.3.0",
+  "version": "3.4.0",
   "identifier": "app.zubinli.lifeledger",
   "build": {
     "beforeDevCommand": "npm run desktop:prepare",
@@ -12,7 +12,7 @@
     "withGlobalTauri": true,
     "windows": [],
     "security": {
-      "capabilities": ["default", "local-only"]
+      "capabilities": ["default", "local-only", "settings-window"]
     }
   },
   "bundle": {
@@ -25,7 +25,12 @@
       "icons/icon.icns"
     ],
     "macOS": {
-      "minimumSystemVersion": "12.0"
+      "minimumSystemVersion": "12.0",
+      "entitlements": "./widget/build/_plists/App.entitlements",
+      "files": {
+        "PlugIns/LifeLedgerWidgetExtension.appex": "./widget/build/PlugIns/LifeLedgerWidgetExtension.appex",
+        "Resources/life-ledger-widget-reload": "./widget/build/Resources/life-ledger-widget-reload"
+      }
     }
   }
 }

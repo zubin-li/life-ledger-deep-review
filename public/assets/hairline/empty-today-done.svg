@@ -1,0 +1,19 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="All habits completed today" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 50,76 L 76,63 Q 80,61 84,63 L 110,76 Q 114,78 110,80 L 84,93 Q 80,95 76,93 L 50,80 Q 46,78 50,76 Z" />
+      <path d="M 48,79 V 82 L 76,96 Q 80,98 84,96 L 112,82 V 79" />
+      <path d="M 58,78 L 77,68 Q 80,67 83,68 L 102,78 L 83,88 Q 80,89 77,88 Z" />
+    </g>
+    <g data-layer="2">
+      <path d="M 50,58 L 76,45 Q 80,43 84,45 L 110,58 Q 114,60 110,62 L 84,75 Q 80,77 76,75 L 50,62 Q 46,60 50,58 Z" />
+      <path d="M 48,61 V 64 L 76,78 Q 80,80 84,78 L 112,64 V 61" />
+      <path d="M 58,60 L 77,50 Q 80,49 83,50 L 102,60 L 83,70 Q 80,71 77,70 Z" />
+    </g>
+    <g data-layer="3">
+      <path d="M 50,40 L 76,27 Q 80,25 84,27 L 110,40 Q 114,42 110,44 L 84,57 Q 80,59 76,57 L 50,44 Q 46,42 50,40 Z" />
+      <path d="M 48,43 V 46 L 76,60 Q 80,62 84,60 L 112,46 V 43" />
+      <path d="M 72,44 L 76,48 L 88,36" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>

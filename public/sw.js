@@ -1,22 +1,25 @@
-const CACHE_NAME = "life-ledger-pwa-1.3.0";
+const CACHE_NAME = "life-ledger-pwa-3.4.0-r1";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=1.3.0",
-  "./app.js?v=1.3.0",
-  "./focus-timer.js?v=1.3.0",
-  "./voice-checkin.js?v=1.3.0",
-  "./photo-memories.js?v=1.3.0",
-  "./media-backup.js?v=1.3.0",
-  "./deployment-mode.js?v=1.3.0",
-  "./cloudbase-sync.js?v=1.3.0",
+  "./styles.css?v=3.4.0-r1",
+  "./app.js?v=3.4.0-r1",
+  "./habit-analytics.js?v=3.4.0-r1",
+  "./interaction.js?v=3.4.0-r1",
+  "./focus-timer.js?v=3.4.0-r1",
+  "./voice-checkin.js?v=3.4.0-r1",
+  "./photo-memories.js?v=3.4.0-r1",
+  "./media-backup.js?v=3.4.0-r1",
+  "./deployment-mode.js?v=3.4.0-r1",
+  "./cloudbase-sync.js?v=3.4.0-r1",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=1.3.0",
+  "./_init_tcb-env.js?v=3.4.0-r1",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",
   "./assets/apple-touch-icon.png",
+  ...["empty-today-done", "empty-journal", "empty-insights", "empty-week", "empty-habits", "focus-idle"].map(name => `./assets/hairline/${name}.svg`),
 ];
 
 self.addEventListener("install", event => {

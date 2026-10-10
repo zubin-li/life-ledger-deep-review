@@ -1,0 +1,18 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="Insights trend placeholder" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 46,73 L 76,58 Q 80,56 84,58 L 114,73 Q 118,75 114,77 L 84,92 Q 80,94 76,92 L 46,77 Q 42,75 46,73 Z" />
+      <path d="M 44,76 V 79 L 76,95 Q 80,97 84,95 L 116,79 V 76" />
+    </g>
+    <g data-layer="2">
+      <path d="M 56,78 L 72,66 L 88,72 L 104,54" />
+      <circle cx="56" cy="78" r="2" fill="currentColor" stroke="none" />
+      <circle cx="72" cy="66" r="2" fill="currentColor" stroke="none" />
+      <circle cx="88" cy="72" r="2" fill="currentColor" stroke="none" />
+      <circle cx="104" cy="54" r="2" fill="currentColor" stroke="none" />
+    </g>
+    <g data-layer="3">
+      <path d="M 56,78 L 72,66 L 88,72 L 104,54" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>

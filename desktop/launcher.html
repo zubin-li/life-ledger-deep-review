@@ -9,14 +9,19 @@
   </head>
   <body>
     <main class="launcher">
-      <header class="launcher-header">
-        <img src="./assets/app-icon.svg" alt="" width="48" height="48" />
-        <div>
-          <h1 id="title">Life Ledger · Deep Review</h1>
-          <p id="subtitle"></p>
+      <aside class="launcher-source">
+        <div class="launcher-brand">
+          <img src="./assets/app-icon.svg" alt="" width="22" height="22" />
+          <span id="title">Life Ledger</span>
         </div>
-        <label for="languageSelect" class="launcher-language">
-          <span id="languageLabel">Language</span>
+        <p class="launcher-version">3.4.0</p>
+        <p class="launcher-subtitle" id="subtitle"></p>
+        <p class="launcher-footnote" id="privacyNote"></p>
+      </aside>
+      <section class="launcher-work">
+      <header class="launcher-bar">
+        <label class="launcher-language" for="languageSelect">
+          <span class="sr-only" id="languageLabel">Language</span>
           <select id="languageSelect" aria-label="Launcher language">
             <option value="en">English</option>
             <option value="zh">简体中文</option>
@@ -25,24 +30,36 @@
         </label>
       </header>
 
-      <section class="card">
-        <h2 id="localTitle"></h2>
-        <p id="localDesc"></p>
-        <button id="openLocal" class="primary" type="button"></button>
-      </section>
+      <div class="launcher-choices">
+        <section class="choice">
+          <div class="hairline-mount choice-hairline" data-hairline-src="./assets/hairline/launcher-local.svg" aria-hidden="true"></div>
+          <div class="choice-copy">
+            <h2 id="localTitle"></h2>
+            <p id="localDesc"></p>
+          </div>
+          <button id="openLocal" class="choice-button primary" type="button"></button>
+        </section>
 
-      <section class="card">
-        <h2 id="cloudTitle"></h2>
-        <p id="cloudDesc"></p>
-        <label for="cloudUrl" id="cloudLabel"></label>
-        <input id="cloudUrl" type="url" placeholder="https://your-life-ledger.example.com" />
-        <p id="cloudError" role="alert" hidden></p>
-        <div class="actions">
-          <button id="openCloud" class="primary" type="button"></button>
-          <button id="forgetCloud" class="secondary" type="button"></button>
-        </div>
+        <form class="choice" id="cloudForm" novalidate>
+          <div class="hairline-mount choice-hairline" data-hairline-src="./assets/hairline/launcher-cloud.svg" aria-hidden="true"></div>
+          <div class="choice-copy">
+            <h2 id="cloudTitle"></h2>
+            <p id="cloudDesc"></p>
+            <label for="cloudUrl" id="cloudLabel"></label>
+            <input id="cloudUrl" type="url" placeholder="https://your-life-ledger.example.com" autocomplete="off" spellcheck="false" />
+            <p id="cloudError" role="alert" hidden></p>
+          </div>
+          <div class="choice-actions">
+            <button id="openCloud" class="choice-button primary" type="submit"></button>
+            <button id="forgetCloud" class="choice-button secondary" type="button"></button>
+          </div>
+        </form>
+      </div>
+
+      <p class="launcher-error" id="launcherError" role="alert" hidden></p>
       </section>
     </main>
+    <script src="./interaction.js"></script>
     <script type="module" src="./launcher.js"></script>
   </body>
 </html>

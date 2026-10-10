@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger" />
+  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v3.png" width="100%" alt="Monatsrückblick von Life Ledger" />
 </p>
 
 <p align="center">
@@ -130,8 +130,8 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesplanung und Reflexion" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v3.png" alt="Tagesplanung und Reflexion" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v3.png" alt="Wochenziele und Wochenrückblick" /></td>
   </tr>
   <tr>
     <td><strong>Klarheit für den Tag</strong><br />Sieh den echten Tageskalender und halte deine Gedanken direkt daneben fest, ohne Pläne doppelt zu pflegen.</td>
@@ -140,7 +140,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v3.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
+  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v4.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
 </p>
 <p align="center"><strong>Eine private Erinnerungslinie.</strong> Stimmung, Kontext und komprimierte Fotoerinnerungen wiedersehen, ohne das Leben in einen öffentlichen Feed zu verwandeln.</p>
 
@@ -247,7 +247,21 @@ Das Repository enthält jetzt eine erste Tauri-v2-macOS-Hülle mit zwei klaren O
 
 Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern. Das ist Datei-Backup, keine Live-Synchronisierung, Konfliktauflösung oder automatische Zwei-Wege-Synchronisierung.
 
+Die lokale Desktop-App kann die heutigen Gewohnheiten außerdem an ein echtes natives macOS-WidgetKit-Widget veröffentlichen (Schreibtisch oder Mitteilungszentrale), mit einer nativen Checkbox, die auch bei geschlossener App funktioniert. Das Widget zeigt niemals Tagebuchnotizen oder Stimmungsgründe und verändert nicht die Sicherheitsgrenze des verbundenen Cloud-Fensters. Architektur und Build-Schritte stehen in [docs/macos-widget.md](docs/macos-widget.md) (Englisch).
+
+Die Hülle zeigt die App selbst mit nativem macOS-Look: echte Ampel-Fensterknöpfe sitzen in einer transparenten Titelleiste, die Seitenleiste liegt randständig ohne Web-Karten-Rahmen, und ein dezentes **Lokaler Mac** / **Verbundene Cloud**-Statuslabel ersetzt den PWA-Installationshinweis, der außerhalb des Browsers verborgen bleibt. Standard-Tastenkürzel funktionieren außerhalb editierbarer Felder – Cmd+1–5 für Heute/Woche/Zeitleiste/Rückblick/Gewohnheiten, Cmd+B zum Ein-/Ausblenden der Seitenleiste, Cmd+, für das Einstellungsfenster und Cmd+Umschalt+E für Sicherung/Export – ohne ein Tastenkürzel der öffentlichen PWA zu verändern. Der Launcher ist jetzt eine kompakte native Arbeitsbereichsauswahl, und Fensterposition sowie -größe werden je Fenster über Neustarts hinweg gemerkt.
+
 Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
+
+### 7. Life Ledger 2.0 — ein ruhiges Instrumentenbrett
+
+Version 3.4 ergänzt Desktop-Bewegung (Einstellungen → Bewegung: Voll / Reduziert / Aus), Kontinuitätsanimationen in der Symbolleiste und Haarlinien-Leerzustände. Version 3.3 entfernt den festen Inspektor. Heute ist die Gewohnheitsliste: Datum, eine Fortschrittszeile, eine knappe Stimmung, offene Gewohnheiten und eine eigene Liste für Gewohnheiten mit Uhrzeit. Notiz und Fotos bleiben unter „Heute reflektieren“. Fokus ist ein Symbol, bis eine Sitzung läuft; erst dann erscheinen Uhr und Mini-Player. Die Seitenleiste heißt Heute, Woche, Journal, Einblicke und Gewohnheiten. Die Woche stapelt die Tage, und der gewählte Tag öffnet sich an Ort und Stelle. Das Journal führt Zeitstrahl, Fotos und Kalender: der Zeitstrahl hat ein Eingabefeld, Fotos sind eine Monatsbibliothek, der Kalender zeigt den Monat neben dem Tag. Einblicke sind ein Bericht mit Zeitraum, drei Kennzahlen und einem Wechsel zwischen Verlauf, Kalender, Gewohnheiten und Tabelle. Die Version steht weiterhin nur unter Einstellungen → Info.
+
+Version 3.2 ordnet den Desktop nach der Aufgabe. Heute nutzt zwölf Spalten: Gewohnheiten und Reflexion sind breiter, Stimmung und Fotos schmaler, der Fokus bleibt im Inspektor. Die Seitenleiste hat eine gleitende Auswahl, und ⌘K öffnet eine Befehlspalette für Ansichten, Daten, Gewohnheiten und Einstellungen. Der Rückblick beginnt mit der 7/30/90-Zusammenfassung, dem Trend und der Karte. Die Version steht weiterhin nur unter Einstellungen → Info.
+
+Version 3.1 behält den Desktop-Schreibtisch (ab 980px) und stellt die ruhige Salbei-und-Papier-Palette wieder her. Die installierte Version steht nur unter Einstellungen → Info. Heute ist zweispaltig: links die Gewohnheitsliste, rechts ein breiteres Blatt mit Fotos, Stimmung und Text des Tages. Die Woche sind sieben Tagespalten über die ganze Fläche. Die Zeitleiste legt die Journalseite nach links und den Monat nach rechts. Der Rückblick beginnt mit lokalen 7/30/90-Tage-Statistiken — Erledigungen durch anrechenbare Tage, Serien, Trend und eine Konsistenzkarte — und danach die Monatsreflexion. Gewohnheiten sind eine Zeilenbibliothek. Die Sprache kann der Systemsprache, English, 简体中文 oder Deutsch folgen und gilt sofort. Fotos bleiben auf diesem Gerät, oder in einem Cloudflare-Workspace, wenn das die angemeldete Bereitstellung ist, und ein gewählter Monat kann mit ihnen exportiert werden. Das lokale Mac-Fenster meldet einen alten Service Worker ab und löscht nur die App-Caches; Tagebuch, Gewohnheiten und Fotos bleiben. Das Mac-Menü bleibt (App, Ablage, Bearbeiten, Darstellung, Fenster, Hilfe): Cmd+, für ein eigenes Einstellungsfenster, Cmd+N für eine neue Gewohnheit, Cmd+F für die Suche, Cmd+1–5 für die Ansichten, Cmd+B für die Seitenleiste, Cmd+Option+0 für den Inspektor, Cmd+T / Cmd+[ / Cmd+] für das Datum und Cmd+Shift+E für Backup/Export. Der letzte Arbeitsbereich (Lokal oder verbundene Cloud) öffnet sich direkt; „Ablage → Arbeitsbereich wechseln…“ wechselt ihn. Schmale Browserlayouts, Daten, Backups, Sync, Sprachen und Themen bleiben kompatibel.
+
+Version 2.0 bringt eine vollständige Neugestaltung der Oberfläche über Web-App, PWA und macOS-Hülle hinweg mit sich — nicht nur eine Desktop-Optik. Seitenleiste, Werkzeugleiste und alle fünf Ansichten (Heute, Woche, Zeitleiste, Rückblick, Gewohnheiten/Einstellungen) teilen sich jetzt ein zurückhaltendes System: Systemschrift (keine dekorative Serifenschrift oder Web-Schriftart mehr für die Oberfläche selbst), eine 4px-Abstandsskala, eine Rundungsskala von 6–14px statt der bisherigen 18–30px großen „Karten"-Optik, und Schatten sind jetzt schwebenden Dialogen, Popovers und der Tages-Schublade vorbehalten statt jeder einzelnen Karte. Jedes verbliebene Text-/Emoji-Symbol (Navigation, Stimmungsauswahl, Schließen-Schaltflächen in Dialogen, Auf-/Zuklapp-Pfeile, Karussell- und Kalenderpfeile) ist jetzt ein einheitliches, lokal eingebettetes SVG-Icon-System; Hover- und Klick-Feedback sind jetzt sofortige Rahmen- oder Hintergrundänderungen statt eines der Maus folgenden Neige-/Leuchteffekts. Helles und dunkles Erscheinungsbild sind jeweils eigenständig abgestimmt, und Bewegungseffekte respektieren weiterhin `prefers-reduced-motion`. Bestehende Daten, der lokale/verbundene Cloud-Modus, Sicherung/Import/Export, Sprache, Theme, Tastenkürzel, Kalender-, Gewohnheits-, Fokus- und Rückblick-Verhalten bleiben unverändert.
 
 ## Datenhoheit
 
