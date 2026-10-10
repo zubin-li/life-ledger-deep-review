@@ -25,6 +25,14 @@
     </script>
     <script>
       (() => {
+        const motion = localStorage.getItem("life-ledger-motion") || "full";
+        document.documentElement.classList.remove("motion-reduced", "motion-off");
+        if (motion === "reduced") document.documentElement.classList.add("motion-reduced");
+        if (motion === "off") document.documentElement.classList.add("motion-off");
+      })();
+    </script>
+    <script>
+      (() => {
         const desktopMode = new URLSearchParams(location.search).get("desktop");
         if (desktopMode === "tauri-local" || desktopMode === "tauri-cloud") {
           document.documentElement.dataset.desktop = desktopMode;
@@ -32,7 +40,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=3.3.0-r2" />
+    <link rel="stylesheet" href="./styles.css?v=3.4.0-r1" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -67,8 +75,9 @@
       <div class="workspace-pane">
         <header class="app-toolbar" data-tauri-drag-region>
           <div class="toolbar-leading">
-            <button class="toolbar-sidebar-toggle" id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg>
+            <button class="toolbar-sidebar-toggle icon-morph-host" id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true">
+              <span class="icon-morph-layer is-on" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></span>
+              <span class="icon-morph-layer is-off" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></span>
             </button>
             <h1 class="toolbar-view-title" id="viewTitle">今日</h1>
           </div>
@@ -83,10 +92,23 @@
           </div>
           <div class="toolbar-trailing">
             <button class="toolbar-command" id="openCommandPalette" type="button">⌘K</button>
-            <label class="toolbar-search" for="quickFind">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-              <input id="quickFind" type="search" autocomplete="off" spellcheck="false" placeholder="Search" />
-            </label>
+            <div class="toolbar-search-slot">
+              <div class="toolbar-search-collapsible" id="toolbarSearch" data-search-expanded="false">
+                <button class="toolbar-search-toggle icon-morph-host" id="toolbarSearchToggle" type="button" aria-label="Search" aria-expanded="false" aria-controls="quickFind">
+                  <span class="icon-morph-layer is-on" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+                  <span class="icon-morph-layer is-off" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></span>
+                </button>
+                <label class="toolbar-search-field" for="quickFind">
+                  <input id="quickFind" type="search" autocomplete="off" spellcheck="false" placeholder="Search" />
+                </label>
+              </div>
+            </div>
+            <div class="toolbar-create" id="toolbarCreateAnchor">
+              <button class="toolbar-create-button" id="toolbarCreateButton" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="toolbarCreateMenu" aria-label="Create">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+              <div class="toolbar-create-menu" id="toolbarCreateMenu" role="menu" hidden></div>
+            </div>
             <div class="focus-anchor" id="focusAnchor">
               <button class="toolbar-focus" id="toolbarPrimaryAction" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="focusPanel" aria-label="Focus" title="Focus">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
@@ -95,6 +117,7 @@
               <div class="focus-panel" id="focusPanel" role="dialog" aria-label="Focus" hidden>
                 <section class="inspector-section inspector-focus" id="inspectorFocusSection">
                   <h3 class="inspector-heading" id="inspectorFocusHeading">Focus</h3>
+                  <div class="focus-idle-hairline hairline-mount" id="focusIdleHairline" hidden aria-hidden="true"></div>
                   <p class="inspector-focus-summary" id="focusTodaySummary"></p>
                   <div class="inspector-focus-row" id="inspectorFocusRow">
                     <strong class="focus-inline-time" id="focusInlineTime">25:00</strong>
@@ -251,6 +274,10 @@
         </section>
 
         <section class="view timeline-journal" id="timelineView" data-journal-layout="timeline">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="journalScrollTitle">Journal</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
           <div class="journal-mode-switch" id="journalModeSwitch" data-segment role="tablist" aria-label="Journal mode">
             <button type="button" class="active" role="tab" data-journal-mode="timeline" aria-selected="true" id="journalModeTimeline">Timeline</button>
             <button type="button" role="tab" data-journal-mode="photos" aria-selected="false" id="journalModePhotos">Photos</button>
@@ -279,7 +306,10 @@
                 <form class="journal-composer" id="journalComposer">
                   <label class="sr-only" for="journalQuickNote" id="journalComposerLabel">Note</label>
                   <textarea id="journalQuickNote" rows="2" placeholder="Any thoughts for this day?"></textarea>
-                  <span class="journal-composer-status" id="journalQuickSave" role="status"></span>
+                  <div class="journal-composer-actions">
+                    <button class="secondary-button submit-state-button" id="journalComposerSave" type="button">Save</button>
+                    <span class="journal-composer-status" id="journalQuickSave" role="status" aria-live="polite"></span>
+                  </div>
                 </form>
                 <div class="timeline-filter" id="timelineFilter" role="group" aria-label="Timeline filter">
                   <button type="button" class="active" data-timeline-filter="all">All</button>
@@ -305,6 +335,10 @@
         </section>
 
         <section class="view review-document review-manuscript" id="reviewView" data-disclosure-group="review" data-insight-view="trend">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="insightsScrollTitle">Insights</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
             <div class="insight-view-switch" id="insightViewSwitch" role="tablist" aria-label="Report view">
@@ -382,6 +416,10 @@
         </section>
 
         <section class="view habit-library" id="habitsView">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="habitsScrollTitle">Habits</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
           <header class="habits-view-header">
             <p class="habits-view-summary" id="habitSummary">4 active habits</p>
             <button class="primary-button" id="addHabitButton">＋ Add habit</button>
@@ -426,7 +464,7 @@
                   <legend class="inspector-heading" id="habitInspectorScheduleLegend">Schedule</legend>
                   <label class="habit-form-row"><span id="habitInspectorFrequencyLabel">Frequency</span><select name="frequency"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
                   <label class="habit-form-row" id="habitInspectorScheduleField"><span id="habitInspectorScheduleLabel">Time</span><input name="scheduleTime" type="time" /></label>
-                  <label class="habit-form-row" id="habitInspectorPeriodTargetField"><span id="habitInspectorPeriodTargetLabel">Period target</span><input name="periodTarget" type="number" min="1" max="31" value="3" /></label>
+                  <label class="habit-form-row" id="habitInspectorPeriodTargetField"><span id="habitInspectorPeriodTargetLabel">Period target</span><input name="periodTarget" type="number" min="1" max="31" value="3" /><div id="habitInspectorPeriodStepper"></div></label>
                   <label class="habit-form-row"><span id="habitInspectorEffectiveDateLabel">Effective date</span><input name="effectiveDate" required type="date" /></label>
                   <label class="habit-form-row habit-switch-row"><span id="habitInspectorCountsLabel">Counts toward score</span><input class="desktop-switch" name="countsTowardDaily" type="checkbox" role="switch" /></label>
                   <label class="habit-form-row habit-switch-row"><span id="habitInspectorActiveLabel">Active</span><input class="desktop-switch" name="active" type="checkbox" role="switch" checked /></label>
@@ -486,7 +524,15 @@
           </label>
           <button class="secondary-button" id="installAppButton" type="button" data-install-app>Install app</button>
           <span class="desktop-mode-badge" id="desktopModeBadge" hidden></span>
-          <p class="about-build" id="aboutBuild">Life Ledger 3.3.0</p>
+          <label class="motion-switcher" for="motionSelect">
+            <span id="motionSettingsLabel">Motion</span>
+            <select id="motionSelect" aria-label="Motion">
+              <option value="full">Full</option>
+              <option value="reduced">Reduced</option>
+              <option value="off">Off</option>
+            </select>
+          </label>
+          <p class="about-build" id="aboutBuild">Life Ledger 3.4.0</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
           <p class="settings-save-mode" id="saveMode"><i></i><span>Local preview</span></p>
@@ -887,6 +933,7 @@
       <button type="button" role="menuitem" data-habit-context="disable" id="habitContextDisable">Disable</button>
       <button type="button" role="menuitem" data-habit-context="delete" id="habitContextDelete">Delete</button>
     </div>
+    <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>
     <div class="focus-mini-player" id="focusMiniPlayer" hidden>
       <button class="focus-mini-clock" id="focusMiniExpand" type="button">
         <span id="focusMiniTime">25:00</span>
@@ -896,16 +943,16 @@
       <button class="focus-mini-action" id="focusMiniFinish" type="button" hidden>Finish</button>
       <button class="focus-mini-action" id="focusMiniSkip" type="button" hidden>Skip</button>
     </div>
-    <script src="./deployment-mode.js?v=3.3.0-r2"></script>
-    <script src="./_init_tcb-env.js?v=3.3.0-r2"></script>
-    <script src="./cloudbase-sync.js?v=3.3.0-r2"></script>
-    <script src="./focus-timer.js?v=3.3.0-r2"></script>
-    <script src="./voice-checkin.js?v=3.3.0-r2"></script>
-    <script src="./photo-memories.js?v=3.3.0-r2"></script>
-    <script src="./media-backup.js?v=3.3.0-r2"></script>
-    <script type="module" src="./widget-contract.js?v=3.3.0-r2"></script>
-    <script src="./habit-analytics.js?v=3.3.0-r2"></script>
-    <script src="./interaction.js?v=3.3.0-r2"></script>
-    <script src="./app.js?v=3.3.0-r2"></script>
+    <script src="./deployment-mode.js?v=3.4.0-r1"></script>
+    <script src="./_init_tcb-env.js?v=3.4.0-r1"></script>
+    <script src="./cloudbase-sync.js?v=3.4.0-r1"></script>
+    <script src="./focus-timer.js?v=3.4.0-r1"></script>
+    <script src="./voice-checkin.js?v=3.4.0-r1"></script>
+    <script src="./photo-memories.js?v=3.4.0-r1"></script>
+    <script src="./media-backup.js?v=3.4.0-r1"></script>
+    <script type="module" src="./widget-contract.js?v=3.4.0-r1"></script>
+    <script src="./habit-analytics.js?v=3.4.0-r1"></script>
+    <script src="./interaction.js?v=3.4.0-r1"></script>
+    <script src="./app.js?v=3.4.0-r1"></script>
   </body>
 </html>

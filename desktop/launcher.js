@@ -149,3 +149,7 @@ document.getElementById("forgetCloud").addEventListener("click", () => {
   cloudUrlInput.value = "";
   setCloudError("");
 });
+
+document.querySelectorAll(".hairline-mount[data-hairline-src]").forEach(host => {
+  window.LifeLedgerInteraction?.mountHairline(host, host.dataset.hairlineSrc);
+});

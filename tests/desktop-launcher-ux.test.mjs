@@ -49,7 +49,8 @@ test("privacy/data-location language is present and localized in all three langu
   assert.match(launcherJs, /privacyNote: "Der lokale Modus verlässt diesen Mac nie\./);
 });
 
-test("the launcher uses crisp inline SVG icons, not emoji, for each choice", () => {
-  assert.match(launcherHtml, /<span class="choice-icon" aria-hidden="true">\s*<svg viewBox="0 0 24 24"/g);
+test("the launcher uses local hairline SVG illustrations, not emoji, for each choice", () => {
+  assert.match(launcherHtml, /<div class="hairline-mount choice-hairline" data-hairline-src="\.\/assets\/hairline\/launcher-local\.svg" aria-hidden="true"><\/div>/);
+  assert.match(launcherHtml, /<div class="hairline-mount choice-hairline" data-hairline-src="\.\/assets\/hairline\/launcher-cloud\.svg" aria-hidden="true"><\/div>/);
   assert.doesNotMatch(launcherHtml, /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u);
 });

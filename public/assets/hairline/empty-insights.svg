@@ -1,22 +1,18 @@
-<svg viewBox="0 0 160 120" role="img" aria-label="Insights chart showing progress" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 160 120" role="img" aria-label="Insights trend placeholder" xmlns="http://www.w3.org/2000/svg">
   <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
     <g data-layer="1">
-      <path d="M 34,44 L 54,34 Q 56,33 58,34 L 74,42 Q 76,43 74,44 L 54,54 Q 52,55 50,54 L 34,46 Q 32,45 34,44 Z" />
-      <path d="M 44,44 L 62,44" />
-      <path d="M 86,40 L 106,30 Q 108,29 110,30 L 126,38 Q 128,39 126,40 L 106,50 Q 104,51 102,50 L 86,42 Q 84,41 86,40 Z" />
-      <path d="M 96,40 L 116,40" />
-    </g>
-    <g data-layer="2">
       <path d="M 46,73 L 76,58 Q 80,56 84,58 L 114,73 Q 118,75 114,77 L 84,92 Q 80,94 76,92 L 46,77 Q 42,75 46,73 Z" />
       <path d="M 44,76 V 79 L 76,95 Q 80,97 84,95 L 116,79 V 76" />
-      <path d="M 56,77 L 80,65 L 104,77" />
-      <path d="M 62,69 V 75 M 74,62 V 71 M 86,64 V 71 M 98,50 V 74" stroke-dasharray="1 2" />
-      <circle cx="62" cy="69" r="1.5" />
-      <circle cx="74" cy="62" r="1.5" />
-      <circle cx="86" cy="64" r="1.5" />
+    </g>
+    <g data-layer="2">
+      <path d="M 56,78 L 72,66 L 88,72 L 104,54" />
+      <circle cx="56" cy="78" r="2" fill="currentColor" stroke="none" />
+      <circle cx="72" cy="66" r="2" fill="currentColor" stroke="none" />
+      <circle cx="88" cy="72" r="2" fill="currentColor" stroke="none" />
+      <circle cx="104" cy="54" r="2" fill="currentColor" stroke="none" />
     </g>
     <g data-layer="3">
-      <path d="M 62,69 L 74,62 L 86,64 L 98,50 M 101,50 A 3,3 0 1,1 95,50 A 3,3 0 1,1 101,50" stroke="var(--accent, #4f7a64)" />
+      <path d="M 56,78 L 72,66 L 88,72 L 104,54" stroke="var(--accent, #4f7a64)" />
     </g>
   </g>
 </svg>

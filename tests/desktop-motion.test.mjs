@@ -49,7 +49,7 @@ test("reduced motion is respected globally, independent of the motion-off shortc
 });
 
 test("desktop phase-3 motion tokens stay within mandated durations", () => {
-  assert.match(styles, /--duration-habit-check: 140ms;/);
+  assert.match(styles, /--duration-habit-check: 180ms;/);
   assert.match(styles, /--duration-date-shift: 160ms;/);
   assert.match(styles, /--duration-inspector: 240ms;/);
   assert.match(styles, /--duration-popover: 160ms;/);

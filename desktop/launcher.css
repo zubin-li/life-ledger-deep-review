@@ -102,16 +102,6 @@ body {
   transition: border-color 160ms var(--ease-enter), background-color 160ms var(--ease-enter);
 }
 
-.choice-icon {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--sage-soft);
-  color: var(--sage);
-}
-.choice-icon svg { width: 18px; height: 18px; }
 
 .choice-copy { display: grid; gap: 4px; min-width: 0; }
 .choice-copy h2 { margin: 0; font-size: 13px; font-weight: 700; }
@@ -175,6 +165,22 @@ body {
   color: var(--muted, GrayText);
   font-size: 10.5px;
   line-height: 1.5;
+}
+
+.choice-hairline {
+  width: min(120px, 28%);
+  margin-bottom: 8px;
+  color: var(--sage, #5d7d68);
+}
+
+.hairline-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hairline-mount {
+  display: block;
 }
 
 @media (prefers-reduced-motion: reduce) {

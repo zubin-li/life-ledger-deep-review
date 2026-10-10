@@ -2,6 +2,7 @@ const STORAGE_KEY = "life-ledger-v1";
 const LANGUAGE_KEY = "life-ledger-language";
 const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
 const THEME_KEY = "life-ledger-theme";
+const MOTION_KEY = "life-ledger-motion";
 const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
 const INSPECTOR_KEY = "life-ledger-inspector-collapsed";
 const SIDEBAR_WIDTH_KEY = "lifeLedgerSidebarWidth31";
@@ -115,9 +116,12 @@ const i18n = {
       summary: "{done} / {total} 项完成",
       completed: "已完成（{count}）",
       streak: "{count} 天连续",
+      last7: "最近 7 天",
       notScheduled: "未排程",
       notToday: "非今日计分",
       noHabits: "今天没有需要完成的习惯",
+      allDone: "今天的习惯都完成了",
+      allDoneHelp: "可以回顾今天，或为自己留一点空白。",
       open: "待完成",
       scheduled: "已排程",
       reflect: "回顾今天",
@@ -133,6 +137,24 @@ const i18n = {
       habits: "习惯",
       workspaceSwitch: "切换工作区",
       inspector: "检查器",
+      motion: "动效",
+      motionFull: "完整",
+      motionReduced: "减少",
+      motionOff: "关闭",
+    },
+    create: {
+      label: "新建",
+      habit: "新习惯",
+      journal: "日志条目",
+      weeklyGoal: "添加本周目标",
+      focus: "开始专注",
+    },
+    submit: {
+      saved: "已保存",
+      exported: "已导出",
+      saving: "保存中",
+      exporting: "导出中",
+      error: "未能完成，请重试",
     },
     hero: {
       quote: "不积小流，\n无以成江海。",
@@ -365,6 +387,8 @@ const i18n = {
       add: "＋ 新增习惯",
       summary: "{count} 个习惯 · {active} 个生效",
       summaryAll: "{count} 个习惯 · {active} 个生效",
+      emptyTitle: "还没有习惯",
+      emptyHelp: "从一个小而稳定的动作开始。",
       versions: "{count} 个目标版本",
       currentStandard: "当前标准",
       inDaily: "计入今日",
@@ -536,9 +560,12 @@ const i18n = {
       summary: "{done} of {total} done",
       completed: "Completed ({count})",
       streak: "{count}-day streak",
+      last7: "Last 7 days",
       notScheduled: "Not scheduled",
       notToday: "Not in today's score",
       noHabits: "No habits scheduled for today",
+      allDone: "All of today's habits are done",
+      allDoneHelp: "Reflect on the day or leave a little space.",
       open: "Open",
       scheduled: "Scheduled",
       reflect: "Reflect on today",
@@ -554,6 +581,24 @@ const i18n = {
       habits: "Habits",
       workspaceSwitch: "Switch workspace",
       inspector: "Inspector",
+      motion: "Motion",
+      motionFull: "Full",
+      motionReduced: "Reduced",
+      motionOff: "Off",
+    },
+    create: {
+      label: "Create",
+      habit: "New habit",
+      journal: "Journal entry",
+      weeklyGoal: "Add weekly goal",
+      focus: "Start focus",
+    },
+    submit: {
+      saved: "Saved",
+      exported: "Exported",
+      saving: "Saving",
+      exporting: "Exporting",
+      error: "Could not finish. Try again.",
     },
     hero: {
       quote: "The secret of getting ahead\nis getting started.",
@@ -786,6 +831,8 @@ const i18n = {
       add: "＋ Add habit",
       summary: "{count} habits · {active} active",
       summaryAll: "{count} habits · {active} active",
+      emptyTitle: "No habits yet",
+      emptyHelp: "Start with one small, steady action.",
       versions: "{count} versions",
       currentStandard: "current standard",
       inDaily: "in daily score",
@@ -960,6 +1007,9 @@ const i18n = {
       notScheduled: "Nicht geplant",
       notToday: "Nicht im Tagesscore",
       noHabits: "Heute keine Gewohnheiten",
+      allDone: "Alle Gewohnheiten für heute erledigt",
+      allDoneHelp: "Reflektiere den Tag oder lass etwas Raum.",
+      last7: "Letzte 7 Tage",
       open: "Offen",
       scheduled: "Geplant",
       reflect: "Heute reflektieren",
@@ -975,6 +1025,24 @@ const i18n = {
       habits: "Gewohnheiten",
       workspaceSwitch: "Arbeitsbereich wechseln",
       inspector: "Inspektor",
+      motion: "Bewegung",
+      motionFull: "Voll",
+      motionReduced: "Reduziert",
+      motionOff: "Aus",
+    },
+    create: {
+      label: "Neu",
+      habit: "Neue Gewohnheit",
+      journal: "Journal-Eintrag",
+      weeklyGoal: "Wochenziel hinzufügen",
+      focus: "Fokus starten",
+    },
+    submit: {
+      saved: "Gespeichert",
+      exported: "Exportiert",
+      saving: "Speichert",
+      exporting: "Exportiert",
+      error: "Konnte nicht abgeschlossen werden.",
     },
     hero: {
       quote: "Es ist nicht genug zu wollen,\nman muss auch tun.",
@@ -1207,6 +1275,8 @@ const i18n = {
       add: "＋ Gewohnheit hinzufügen",
       summary: "{count} Gewohnheiten · {active} aktiv",
       summaryAll: "{count} Gewohnheiten · {active} aktiv",
+      emptyTitle: "Noch keine Gewohnheiten",
+      emptyHelp: "Beginne mit einer kleinen, stabilen Gewohnheit.",
       versions: "{count} Versionen",
       currentStandard: "aktueller Standard",
       inDaily: "im Tagesscore",
@@ -1456,6 +1526,7 @@ let authExpired = false;
 let cloudBaseLoginState = null;
 let deferredInstallPrompt = null;
 let themeChoice = ["system", "light", "dark"].includes(localStorage.getItem(THEME_KEY)) ? localStorage.getItem(THEME_KEY) : "system";
+let motionChoice = ["full", "reduced", "off"].includes(localStorage.getItem(MOTION_KEY)) ? localStorage.getItem(MOTION_KEY) : "full";
 let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
 function readInspectorCollapsed() {
   const stored = localStorage.getItem(INSPECTOR_KEY);
@@ -1472,6 +1543,7 @@ let habitContextMenu = { open: false, habitId: "", anchor: null, date: "" };
 let quickFindQuery = "";
 let reviewBadgeSeen = 0;
 let commandPalette = null;
+let refreshToolbarCreateMenu = () => {};
 let lastHabitToggle = null;
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
@@ -1567,6 +1639,8 @@ function applySidebarState() {
   button.setAttribute("aria-label", label);
   button.setAttribute("title", label);
   button.setAttribute("aria-expanded", String(!sidebarCollapsed));
+  button.classList.toggle("icon-morph-on", sidebarCollapsed);
+  window.LifeLedgerInteraction?.morphIconToggle(button, sidebarCollapsed ? "collapsed" : "expanded", { onState: "collapsed" });
 }
 function applyInspectorState() {
   document.body.classList.toggle("inspector-collapsed", inspectorCollapsed);
@@ -1691,6 +1765,314 @@ function withoutMotion(run) {
   run();
   requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove("motion-off")));
 }
+
+function applyMotionSetting() {
+  motionChoice = ["full", "reduced", "off"].includes(motionChoice) ? motionChoice : "full";
+  localStorage.setItem(MOTION_KEY, motionChoice);
+  window.LifeLedgerInteraction?.applyMotionPreference(document, motionChoice);
+  if ($("#motionSelect")) $("#motionSelect").value = motionChoice;
+}
+
+function announceSubmit(message) {
+  const region = $("#submitLiveRegion");
+  if (!region) return;
+  region.textContent = "";
+  requestAnimationFrame(() => {
+    region.textContent = message;
+  });
+}
+
+function hairlineEmptyMarkup(asset, title, help) {
+  return `<div class="hairline-empty"><div class="hairline-mount" data-hairline-src="${escapeHtml(asset)}" aria-hidden="true"></div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(help)}</p></div>`;
+}
+
+function hydrateHairlineMounts(scope = document) {
+  scope.querySelectorAll(".hairline-mount[data-hairline-src]:not([data-hairline-ready])").forEach(host => {
+    host.dataset.hairlineReady = "true";
+    window.LifeLedgerInteraction?.mountHairline(host, host.dataset.hairlineSrc);
+  });
+}
+
+function captureSiblingRects(selector, key = node => node.dataset.id || node.dataset.date) {
+  const map = new Map();
+  $$(selector).forEach(node => {
+    const id = key(node);
+    if (!id) return;
+    const rect = node.getBoundingClientRect();
+    map.set(id, { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
+  });
+  return map;
+}
+
+function playFlipFromMap(previous, selector, key = node => node.dataset.id || node.dataset.date) {
+  if (!previous?.size || window.LifeLedgerInteraction?.motionTravelDisabled()) return;
+  // ponytail: first 24 nodes travel, the rest snap; enough for any on-screen list.
+  $$(selector).slice(0, 24).forEach(node => {
+    const before = previous.get(key(node));
+    if (!before) return;
+    const rect = node.getBoundingClientRect();
+    const dx = before.x - rect.left;
+    const dy = before.y - rect.top;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+    node.classList.add("is-moving");
+    node.style.transition = "none";
+    node.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    node.offsetWidth;
+    node.style.transition = "transform 220ms var(--ease-spring)";
+    node.style.transform = "translate3d(0, 0, 0)";
+    const clear = () => {
+      node.style.transition = "";
+      node.style.transform = "";
+      node.classList.remove("is-moving");
+      node.removeEventListener("transitionend", clear);
+      node.removeEventListener("transitioncancel", clear);
+    };
+    node.addEventListener("transitionend", clear);
+    node.addEventListener("transitioncancel", clear);
+  });
+}
+
+function runSubmitButton(button, task, labels = {}) {
+  const api = window.LifeLedgerInteraction;
+  if (!button || !api) return Promise.resolve(task?.());
+  let state = "idle";
+  const idleLabel = labels.idle ?? button.dataset.submitIdle ?? button.textContent;
+  const busyLabel = labels.busy ?? tr("submit.saving");
+  const doneLabel = labels.done ?? tr("submit.saved");
+  const errorLabel = labels.error ?? tr("submit.error");
+  button.dataset.submitIdle = idleLabel;
+  button.style.setProperty("--submit-min-width", `${Math.max(button.offsetWidth, button.scrollWidth)}px`);
+  button.classList.add("submit-state-button");
+  const setState = next => {
+    state = api.submitStateStep(state, next);
+    button.dataset.submitState = state;
+    button.disabled = state === "busy";
+    if (state === "busy") button.textContent = busyLabel;
+    if (state === "done") {
+      button.textContent = doneLabel;
+      announceSubmit(doneLabel);
+    }
+    if (state === "idle") button.textContent = idleLabel;
+    if (state === "error") button.textContent = idleLabel;
+  };
+  setState("start");
+  return Promise.resolve()
+    .then(() => task?.())
+    .then(() => {
+      setState("success");
+      window.clearTimeout(button._submitResetTimer);
+      button._submitResetTimer = window.setTimeout(() => setState("reset"), 1200);
+    })
+    .catch(() => {
+      setState("fail");
+      const error = button.parentElement?.querySelector(".submit-state-error") || (() => {
+        const note = document.createElement("p");
+        note.className = "submit-state-error";
+        button.insertAdjacentElement("afterend", note);
+        return note;
+      })();
+      error.textContent = errorLabel;
+      announceSubmit(errorLabel);
+    });
+}
+
+function habitLast7Dots(habitId, date) {
+  const base = parseDate(date);
+  const dots = [];
+  for (let offset = 6; offset >= 0; offset -= 1) {
+    const day = new Date(base);
+    day.setDate(day.getDate() - offset);
+    const key = isoDate(day);
+    dots.push(`<i class="${getLog(key).completed.includes(habitId) ? "done" : ""}"></i>`);
+  }
+  return `<span class="habit-last7" aria-label="${escapeHtml(tr("today.last7"))}">${dots.join("")}</span>`;
+}
+
+function mountNumericStepper(host, { min, max, step, getValue, onChange, suffix = "", ariaLabel = "" }) {
+  if (!host || !window.LifeLedgerInteraction) return;
+  const paint = () => {
+    const value = getValue();
+    host.innerHTML = `<div class="stepper-chip" role="group" aria-label="${escapeHtml(ariaLabel)}">
+      <button type="button" class="stepper-minus" aria-label="-"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+      <span class="stepper-value" data-stepper-value>${value}</span>
+      <button type="button" class="stepper-plus" aria-label="+"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      ${suffix ? `<span class="stepper-suffix">${escapeHtml(suffix)}</span>` : ""}
+    </div>`;
+    const valueEl = host.querySelector("[data-stepper-value]");
+    host.querySelector(".stepper-minus")?.addEventListener("click", () => {
+      const previous = valueEl.textContent;
+      onChange(LifeLedgerInteraction.clampStepper(getValue() - step, min, max, step));
+      if (valueEl.isConnected) LifeLedgerInteraction.rollText(valueEl, String(getValue()), previous);
+    });
+    host.querySelector(".stepper-plus")?.addEventListener("click", () => {
+      const previous = valueEl.textContent;
+      onChange(LifeLedgerInteraction.clampStepper(getValue() + step, min, max, step));
+      if (valueEl.isConnected) LifeLedgerInteraction.rollText(valueEl, String(getValue()), previous);
+    });
+  };
+  paint();
+}
+
+function mountFocusDurationStepper() {
+  const host = $("#focusQuickPresets");
+  if (!host) return;
+  mountNumericStepper(host, {
+    min: 5,
+    max: 120,
+    step: 5,
+    suffix: languageText("分钟", "min", "Min."),
+    ariaLabel: languageText("专注时长", "Focus duration", "Fokusdauer"),
+    getValue: () => state.focusSettings?.focusMinutes || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes,
+    onChange: minutes => {
+      state.focusSettings = { ...state.focusSettings, focusMinutes: minutes, preset: "custom" };
+      saveState();
+      renderFocusTimer(focusTimer?.snapshot());
+    },
+  });
+}
+
+function syncHabitPeriodStepper() {
+  const form = $("#habitInspectorForm");
+  const host = $("#habitInspectorPeriodStepper");
+  const input = form?.elements.periodTarget;
+  if (!form || !host || !input || form.elements.frequency.value === "daily") {
+    if (host) host.innerHTML = "";
+    return;
+  }
+  mountNumericStepper(host, {
+    min: 1,
+    max: 7,
+    step: 1,
+    ariaLabel: tr("dialog.periodTarget"),
+    getValue: () => Number(input.value) || 1,
+    onChange: value => {
+      input.value = String(value);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    },
+  });
+}
+
+function mountReviewMetricsFlip() {
+  const details = $("#reviewDetailedMetrics");
+  if (!details || details.dataset.flipBound) return;
+  details.dataset.flipBound = "true";
+  const selector = "#reviewView > *:not(details)";
+  const key = node => node.id || node.className;
+  let previous = null;
+  details.querySelector("summary")?.addEventListener("click", () => { previous = captureSiblingRects(selector, key); });
+  details.addEventListener("toggle", () => {
+    if (!previous) return;
+    const before = previous;
+    previous = null;
+    playFlipFromMap(before, selector, key);
+  });
+}
+
+function setToolbarSearchExpanded(open) {
+  const shell = $("#toolbarSearch");
+  const toggle = $("#toolbarSearchToggle");
+  const field = $("#quickFind");
+  if (!shell || !toggle) return;
+  const expanded = Boolean(open);
+  shell.dataset.searchExpanded = String(expanded);
+  toggle.setAttribute("aria-expanded", String(expanded));
+  toggle.classList.toggle("icon-morph-on", expanded);
+  if (expanded) field?.focus({ preventScroll: true });
+  else if (!field?.value?.trim()) {
+    field.value = "";
+    quickFindQuery = "";
+    renderToday();
+  }
+}
+
+function mountToolbarSearch() {
+  const toggle = $("#toolbarSearchToggle");
+  const field = $("#quickFind");
+  toggle?.addEventListener("click", () => setToolbarSearchExpanded($("#toolbarSearch")?.dataset.searchExpanded !== "true"));
+  field?.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !field.value.trim()) {
+      setToolbarSearchExpanded(false);
+      toggle?.focus();
+    }
+  });
+  field?.addEventListener("blur", () => {
+    if (!field.value.trim()) setToolbarSearchExpanded(false);
+  });
+  document.addEventListener("keydown", event => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
+      event.preventDefault();
+      setToolbarSearchExpanded(true);
+      field?.focus({ preventScroll: true });
+      return;
+    }
+    if (event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+      event.preventDefault();
+      setToolbarSearchExpanded(true);
+      field?.focus({ preventScroll: true });
+    }
+  });
+}
+
+function mountToolbarCreateMenu() {
+  const trigger = $("#toolbarCreateButton");
+  const popover = $("#toolbarCreateMenu");
+  if (!trigger || !popover || !window.LifeLedgerInteraction) return;
+  const items = [
+    { id: "habit", label: () => tr("create.habit") },
+    { id: "journal", label: () => tr("create.journal") },
+    { id: "weeklyGoal", label: () => tr("create.weeklyGoal") },
+    { id: "focus", label: () => tr("create.focus") },
+  ];
+  const paint = () => {
+    popover.innerHTML = items.map((item, index) => `<button type="button" role="menuitem" data-popover-item data-create-action="${item.id}" id="createMenuItem${index}">${escapeHtml(item.label())}</button>`).join("");
+    popover.querySelectorAll("[data-create-action]").forEach(button => button.addEventListener("click", () => handleCreateMenuAction(button.dataset.createAction)));
+  };
+  paint();
+  const controller = LifeLedgerInteraction.openAnchoredPopover({
+    trigger,
+    popover,
+    items,
+    onSelect: item => handleCreateMenuAction(item.id),
+  });
+  refreshToolbarCreateMenu = paint;
+  return controller;
+}
+
+function handleCreateMenuAction(action) {
+  if (action === "habit") {
+    switchToView("habits");
+    $("#addHabitButton")?.click();
+    return;
+  }
+  if (action === "journal") {
+    switchToView("timeline");
+    setJournalMode("timeline");
+    $("#journalQuickNote")?.focus({ preventScroll: true });
+    return;
+  }
+  if (action === "weeklyGoal") {
+    switchToView("week");
+    $("#weeklyGoalInput")?.focus({ preventScroll: true });
+    return;
+  }
+  if (action === "focus") {
+    setFocusPanelOpen(true);
+    $("#focusQuickPrimary")?.focus();
+  }
+}
+
+function mountScrollTitleObservers() {
+  const toolbar = $(".app-toolbar");
+  if (!toolbar || !("IntersectionObserver" in window)) return;
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const compact = !entry.isIntersecting;
+      toolbar.classList.toggle("is-scroll-compact", compact);
+    });
+  }, { root: $(".main-content"), threshold: 0 });
+  $$("[data-scroll-title-sentinel]").forEach(node => observer.observe(node));
+}
+
 function recentUnreflectedCount() {
   let count = 0;
   for (let offset = 1; offset <= 7; offset += 1) {
@@ -2068,8 +2450,21 @@ function applyLanguage() {
   setAria("#insightViewSwitch", languageText("报表视图", "Report view", "Berichtansicht"));
   setPlaceholder("#journalQuickNote", languageText("这一天想记下什么？", "Any thoughts for this day?", "Was möchtest du zu diesem Tag notieren?"));
   setAria("#journalComposerLabel", languageText("日志", "Note", "Notiz"));
+  setText("#journalComposerSave", languageText("保存", "Save", "Speichern"));
   setAria("#journalModeSwitch", languageText("日志模式", "Journal mode", "Journalmodus"));
   setPlaceholder("#quickFind", languageText("搜索", "Search", "Suchen"));
+  setText("#motionSettingsLabel", tr("settings.motion"));
+  setAria("#motionSelect", tr("settings.motion"));
+  $$("#motionSelect option").forEach(option => {
+    if (option.value === "full") option.textContent = tr("settings.motionFull");
+    if (option.value === "reduced") option.textContent = tr("settings.motionReduced");
+    if (option.value === "off") option.textContent = tr("settings.motionOff");
+  });
+  setAria("#toolbarCreateButton", tr("create.label"));
+  setText("#journalScrollTitle", tr("viewTitles.timeline"));
+  setText("#insightsScrollTitle", tr("viewTitles.review"));
+  setText("#habitsScrollTitle", tr("viewTitles.habits"));
+  refreshToolbarCreateMenu();
   setAria("#dateNavPrev", languageText("上一段", "Previous", "Zurück"));
   setAria("#dateNavNext", languageText("下一段", "Next", "Weiter"));
   setAria("#dateNavLabel", tr("review.datePopoverLabel"));
@@ -2954,6 +3349,7 @@ function renderAll() {
   if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
   if (document.body.dataset.activeView === "habits" && selectedHabitSettingsId) populateHabitInspectorForm(selectedHabitSettingsId);
   syncInteractionChrome(false);
+  hydrateHairlineMounts(document);
 }
 
 function autoGrowTextarea(textarea) {
@@ -3024,8 +3420,10 @@ function renderWeekAgenda() {
   renderWeekDayDetail();
   agenda.querySelectorAll(".week-agenda-row").forEach(row => {
     const select = () => {
+      const previous = captureSiblingRects(".week-day-section", node => node.querySelector(".week-agenda-row")?.dataset.date);
       selectedPlanningDate = row.dataset.date;
       renderWeekAgenda();
+      playFlipFromMap(previous, ".week-day-section", node => node.querySelector(".week-agenda-row")?.dataset.date);
       renderToolbarDateNav();
     };
     row.addEventListener("click", select);
@@ -3075,7 +3473,12 @@ function renderWeeklyWorkspace() {
       <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
       <button class="weekly-goal-text" data-action="toggle">${escapeHtml(goal.text)}</button>
       <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-    </div>`).join("") : `<p class="weekly-goal-empty">${tr("week.emptyGoals")}</p>`;
+    </div>`).join("") : hairlineEmptyMarkup(
+      "./assets/hairline/empty-week.svg",
+      tr("week.goalsTitleProgress", { done: 0, total: 0 }),
+      languageText("先写一件真正重要的事。", "Put one important thing here.", "Lege eine wirklich wichtige Sache hinein."),
+    );
+  if (!goals.length) hydrateHairlineMounts($("#weekView"));
   $("#currentWeekNumber").textContent = range;
   $("#basketYear").textContent = "";
   setText("#basketWeekLabel", range);
@@ -3242,7 +3645,12 @@ function renderJournalPhotoLibrary(photos) {
   const host = $("#journalPhotoLibrary");
   if (!host) return;
   if (!photos.length) {
-    host.innerHTML = `<div class="journal-library-empty"><strong>${escapeHtml(languageText("照片", "Photos", "Fotos"))}</strong><p>${escapeHtml(languageText("这个月还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos this month yet. Add one from a day and it will appear here by month.", "Diesen Monat gibt es noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."))}</p></div>`;
+    host.innerHTML = hairlineEmptyMarkup(
+      "./assets/hairline/empty-journal.svg",
+      languageText("照片", "Photos", "Fotos"),
+      languageText("这个月还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos this month yet. Add one from a day and it will appear here by month.", "Diesen Monat gibt es noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."),
+    );
+    hydrateHairlineMounts(host);
     return;
   }
   const groups = new Map();
@@ -3284,7 +3692,8 @@ function renderTimelineEntryList(entries = []) {
   const container = $("#timelineEntryList");
   if (!container) return;
   if (!entries.length) {
-    container.innerHTML = `<p class="timeline-entry-empty">${escapeHtml(tr("timeline.emptyHelp"))}</p>`;
+    container.innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"));
+    hydrateHairlineMounts(container);
     return;
   }
   container.innerHTML = entries.map(entry => {
@@ -3479,12 +3888,12 @@ function todayHabitTrailing(habit, date) {
 function todayHabitDetailMarkup(habit, date) {
   const version = versionFor(habit, date);
   const parts = [];
-  if (version?.scheduleTime) parts.push(version.scheduleTime);
   const streak = habitStreak(habit.id, date);
   if (streak > 1) parts.push(tr("today.streak", { count: streak }));
   const note = String(version?.note || "").trim();
   if (note) parts.push(note);
-  return parts.length ? `<span class="today-habit-detail">${escapeHtml(parts.join(" · "))}</span>` : "";
+  const meta = parts.length ? `<span class="today-habit-detail-meta">${escapeHtml(parts.join(" · "))}</span>` : "";
+  return `<span class="today-habit-detail">${habitLast7Dots(habit.id, date)}${meta}</span>`;
 }
 
 function todayHabitRowMarkup(habit, date, done, locked, selected, timeLabel = "") {
@@ -3508,8 +3917,10 @@ function bindTodayHabitRows() {
     const id = row.dataset.id;
     const check = $(".today-habit-check", row);
     const select = () => {
+      const previous = captureSiblingRects("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row");
       selectedTodayHabitId = id;
       renderToday();
+      playFlipFromMap(previous, "#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row");
       renderInspector();
     };
     row.addEventListener("click", event => {
@@ -3586,9 +3997,13 @@ function renderToday() {
   if (progressFill) progressFill.style.width = `${scoredHabits.length ? Math.round((complete / scoredHabits.length) * 100) : 0}%`;
   const list = $("#todayHabitList");
   if (list) {
+    const allDone = scoredHabits.length > 0 && complete === scoredHabits.length && !open.length && !scheduled.length;
     list.innerHTML = open.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
-      || `<li class="today-habit-empty">${escapeHtml(tr("today.noHabits"))}</li>`;
+      || (allDone
+        ? `<li class="today-habit-empty">${hairlineEmptyMarkup("./assets/hairline/empty-today-done.svg", tr("today.allDone"), tr("today.allDoneHelp"))}</li>`
+        : `<li class="today-habit-empty">${escapeHtml(tr("today.noHabits"))}</li>`);
   }
+  hydrateHairlineMounts($("#todayView"));
   const scheduledGroup = $("#todayScheduledGroup");
   const scheduledList = $("#todayScheduledList");
   if (scheduledGroup && scheduledList) {
@@ -3954,7 +4369,7 @@ function captureHabitFrames() {
 
 function playHabitFlip(previous) {
   if (!previous?.size) return;
-  if (document.documentElement.classList.contains("motion-off") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (window.LifeLedgerInteraction?.motionTravelDisabled?.()) return;
   $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row").forEach(row => {
     const before = previous.get(row.dataset.id);
     if (!before) return;
@@ -3966,7 +4381,8 @@ function playHabitFlip(previous) {
     row.style.transition = "none";
     row.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
     row.offsetWidth;
-    row.style.transition = "transform 280ms cubic-bezier(0.22, 1, 0.36, 1)";
+    row.style.transition = "transform 240ms var(--ease-spring)";
+    row.classList.add("habit-row-flip");
     row.style.transform = "translate3d(0, 0, 0)";
     const clear = () => {
       row.style.transition = "";
@@ -3999,6 +4415,9 @@ function setFocusPanelOpen(open) {
 }
 
 function setJournalMode(mode) {
+  const previousRects = journalMode === "photos" || mode === "photos"
+    ? captureSiblingRects(".journal-photo-library img, .timeline-entry-list img", node => node.src)
+    : null;
   journalMode = mode === "photos" || mode === "calendar" ? mode : "timeline";
   const layout = $(".timeline-layout");
   if (layout) layout.dataset.journalLayout = journalMode;
@@ -4012,7 +4431,12 @@ function setJournalMode(mode) {
   if (journalMode === "photos") timelineFilter = "photos";
   else if (timelineFilter === "photos") timelineFilter = "all";
   $$("[data-timeline-filter]").forEach(button => button.classList.toggle("active", button.dataset.timelineFilter === timelineFilter));
-  if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
+  if ($("#timelineView")?.classList.contains("active")) {
+    void renderTimeline();
+    requestAnimationFrame(() => {
+      if (previousRects?.size) playFlipFromMap(previousRects, ".journal-photo-library img, .timeline-entry-list img", node => node.src);
+    });
+  }
 }
 
 function renderWeekDayDetail() {
@@ -4049,6 +4473,12 @@ function toggleHabit(date, id) {
   };
   commit();
   revealCompletedOnRender = false;
+  if (i < 0) {
+    $$(`.today-habit-row[data-id="${id}"] .today-habit-check`).forEach(node => {
+      node.classList.add("is-completing");
+      window.setTimeout(() => node.classList.remove("is-completing"), 220);
+    });
+  }
   if (frames) playHabitFlip(frames);
   const isComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   if (!wasComplete && isComplete) showCelebration();
@@ -4369,7 +4799,12 @@ function renderReviewInsights() {
   const previous = slotTotals(analyticsApi().previousWindow(dates));
   const summary = reportSummaryMarkup(dates, current);
   if (!current.eligible) {
-    container.innerHTML = `${summary}<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
+    container.innerHTML = `${summary}${hairlineEmptyMarkup(
+      "./assets/hairline/empty-insights.svg",
+      languageText("洞察", "Insights", "Einblicke"),
+      tr("review.insufficient"),
+    )}`;
+    hydrateHairlineMounts(container);
     return;
   }
   const habits = activeHabits(dates[dates.length - 1]).filter(habit => countsTowardDaily(habit, dates[dates.length - 1]));
@@ -4806,6 +5241,11 @@ function formatWeekRangeInMonth(key, year, month) {
 function renderHabitSettings() {
   const activeCount = state.habits.filter(habit => habit.active).length;
   $("#habitSummary").textContent = tr("habits.summary", { count: state.habits.length, active: activeCount });
+  if (!state.habits.length) {
+    $("#habitSettingsList").innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-habits.svg", tr("habits.emptyTitle"), tr("habits.emptyHelp"));
+    hydrateHairlineMounts($("#habitsView"));
+    return;
+  }
   $("#habitSettingsList").innerHTML = state.habits.map(h => {
     const v = versionFor(h, isoDate(new Date())) || h.versions[h.versions.length - 1];
     const selected = h.id === selectedHabitSettingsId;
@@ -4815,9 +5255,9 @@ function renderHabitSettings() {
       <span class="habit-icon habit-list-icon">${renderIcon(iconKey(h))}</span>
       <button class="setting-main habit-settings-main" type="button" data-id="${h.id}">
         <strong>${escapeHtml(displayHabitName(h))}</strong>
-        <span>${escapeHtml(habitMetaLabel(v))}</span>
+        <span>${escapeHtml([frequencyLabel(v), scheduleLabel(v)].filter(Boolean).join(" · "))}</span>
       </button>
-      <span class="habit-settings-target">${escapeHtml(target)}</span>
+      <span class="habit-settings-target">${escapeHtml(trackingModeFor(v) === "measured" ? target : "")}</span>
       <label class="habit-enabled-switch"><input class="desktop-switch habit-enabled-toggle" type="checkbox" role="switch" data-id="${h.id}" ${h.active ? "checked" : ""} aria-label="${escapeHtml(displayHabitName(h))}" /><span class="sr-only">${escapeHtml(h.active ? tr("habits.active") : tr("habits.inactive"))}</span></label>
     </article>`;
   }).join("");
@@ -4925,13 +5365,15 @@ function updateHabitInspectorRules() {
   const frequency = form.elements.frequency.value;
   $("#habitInspectorTargetField").hidden = !measured;
   $("#habitInspectorPeriodTargetField").style.display = frequency === "daily" ? "none" : "";
+  syncHabitPeriodStepper();
 }
 
 function saveHabitFromInspector(event) {
   event.preventDefault();
   if (!selectedHabitSettingsId) return openHabitDialog();
-  editingHabitId = selectedHabitSettingsId;
   const form = event.currentTarget;
+  runSubmitButton($("#inspectorSaveHabitButton"), () => {
+  editingHabitId = selectedHabitSettingsId;
   const measured = form.elements.trackingMode.value === "measured";
   const version = {
     trackingMode: measured ? "measured" : "check",
@@ -4956,6 +5398,7 @@ function saveHabitFromInspector(event) {
   saveState();
   renderAll();
   showToast(tr("habits.updated"));
+  });
 }
 
 function deleteHabitFromInspector() {
@@ -5701,27 +6144,24 @@ async function downloadExport(event) {
   const backup = createBackup(scope);
   const includePhotos = Boolean(photoMemories) && $("#includePhotos")?.checked;
   const confirmButton = $("#exportConfirm");
-  const originalLabel = confirmButton.textContent;
-  confirmButton.disabled = true;
-  try {
+  await runSubmitButton(confirmButton, async () => {
     if (includePhotos) {
       if (scope !== "month") throw new Error("photo-backup-month-only");
-      confirmButton.textContent = tr("backup.mediaExporting");
       const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
       const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
       triggerFileDownload(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
       showToast(tr("toast.exported"));
-    } else {
-      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-      await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
+      return;
     }
-  } catch (error) {
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
+  }, {
+    busy: tr("submit.exporting"),
+    done: tr("submit.exported"),
+  }).catch(error => {
     console.warn("Backup export failed", error);
     window.alert(error?.message === "photo-backup-month-only" ? tr("backup.mediaOnlyMonth") : tr("backup.mediaInvalid"));
-  } finally {
-    confirmButton.disabled = false;
-    confirmButton.textContent = originalLabel;
-  }
+  });
 }
 
 function isRecord(value) {
@@ -6197,6 +6637,21 @@ function renderFocusTimer(snapshot) {
   } else {
     document.title = tr("title");
   }
+  const idleHairline = $("#focusIdleHairline");
+  if (idleHairline) {
+    idleHairline.hidden = Boolean(snapshot);
+    if (!snapshot && !idleHairline.dataset.hairlineReady) {
+      idleHairline.dataset.hairlineReady = "true";
+      LifeLedgerInteraction?.mountHairline(idleHairline, "./assets/hairline/focus-idle.svg", {
+        alt: tr("focus.untitled"),
+      });
+    }
+  }
+  const quickPrimary = $("#focusQuickPrimary");
+  if (quickPrimary) {
+    const morphState = running ? "pause" : paused ? "resume" : "play";
+    LifeLedgerInteraction?.morphIconToggle(quickPrimary, morphState, { onState: "pause" });
+  }
 }
 
 function openFocusTimerDialog() {
@@ -6285,9 +6740,15 @@ function initFocusTimer() {
 }
 
 function bindEvents() {
+  applyMotionSetting();
   window.LifeLedgerInteraction?.mountNavIndicator();
   window.LifeLedgerInteraction?.mountDisclosures(document);
   mountCommandPalette();
+  mountToolbarSearch();
+  mountToolbarCreateMenu();
+  mountScrollTitleObservers();
+  mountFocusDurationStepper();
+  mountReviewMetricsFlip();
   window.addEventListener("pointermove", moveHabitDrag, { passive: false });
   window.addEventListener("pointerup", finishHabitSettingsDrag);
   window.addEventListener("pointercancel", finishHabitSettingsDrag);
@@ -6295,6 +6756,10 @@ function bindEvents() {
     themeChoice = event.target.value;
     localStorage.setItem(THEME_KEY, themeChoice);
     applyTheme();
+  });
+  $("#motionSelect")?.addEventListener("change", event => {
+    motionChoice = event.target.value;
+    applyMotionSetting();
   });
   $("#sidebarToggle")?.addEventListener("click", toggleSidebar);
   $("#toolbarPrimaryAction")?.addEventListener("click", event => {
@@ -6396,6 +6861,25 @@ function bindEvents() {
   $("#focusMiniSkip")?.addEventListener("click", () => {
     focusTimer?.skipBreak();
     releaseFocusWakeLock();
+  });
+  $("#journalComposerSave")?.addEventListener("click", () => {
+    const field = $("#journalQuickNote");
+    if (!field) return;
+    const date = field.dataset.date || selectedTimelineDate || isoDate(new Date());
+    runSubmitButton($("#journalComposerSave"), () => {
+      state.logs[date] = { ...getLog(date), note: field.value };
+      saveState();
+      const status = $("#journalQuickSave");
+      if (status) {
+        delete status.dataset.pending;
+        status.textContent = languageText("已保存", "Saved", "Gespeichert");
+      }
+      selectedTimelineDate = date;
+      if ($("#timelineView")?.classList.contains("active")) {
+        renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
+        void renderTimelineDetail();
+      }
+    });
   });
   $("#journalQuickNote")?.addEventListener("input", event => {
     const field = event.currentTarget;
@@ -6529,14 +7013,15 @@ function bindEvents() {
   $("#reviewCanvasMonth").addEventListener("change", event => { reviewCanvasKey = event.target.value || monthKey(cursor); renderReviewCanvas(); });
   $("#regenerateReviewCanvas").addEventListener("click", regenerateReviewCanvas);
   $("#reviewCanvasText").addEventListener("input", event => { reviewCanvasStore()[reviewCanvasKey] = event.target.value; saveState(); });
-  $("#copyReviewCanvas").addEventListener("click", async () => {
+  $("#copyReviewCanvas").addEventListener("click", () => {
     const text = $("#reviewCanvasText").value;
-    try { await navigator.clipboard.writeText(text); }
-    catch {
-      $("#reviewCanvasText").select();
-      document.execCommand("copy");
-    }
-    showToast(tr("reviewCanvas.copied"));
+    runSubmitButton($("#copyReviewCanvas"), async () => {
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        $("#reviewCanvasText").select();
+        document.execCommand("copy");
+      }
+    }, { done: tr("reviewCanvas.copied") });
   });
   $$(".close-review-canvas").forEach(button => button.addEventListener("click", () => $("#reviewCanvasDialog").close()));
   $("#reviewCanvasDialog").addEventListener("cancel", event => { event.preventDefault(); $("#reviewCanvasDialog").close(); });
