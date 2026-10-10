@@ -1,0 +1,26 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="Empty journal with open notebook and pen" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 44,24 L 66,16 Q 70,15 72,19 L 78,40 Q 79,44 75,45 L 53,53 Q 49,54 48,50 L 42,29 Q 41,25 44,24 Z" />
+      <path d="M 49,27 L 66,21 L 71,37 L 54,43 Z" />
+      <circle cx="62" cy="27" r="2" />
+      <path d="M 52,38 L 60,33 L 68,36" />
+    </g>
+    <g data-layer="2">
+      <path d="M 80,52 C 70,50 56,50 44,55 L 44,87 C 56,82 70,82 80,84" />
+      <path d="M 80,52 C 90,50 104,50 116,55 L 116,87 C 104,82 90,82 80,84" />
+      <path d="M 80,52 V 84" />
+      <path d="M 44,89 C 56,84 70,84 80,86 C 90,84 104,84 116,89" />
+      <path d="M 44,87 V 89" />
+      <path d="M 116,87 V 89" />
+      <path d="M 52,65 C 60,62 70,62 74,63" />
+      <path d="M 52,73 C 60,70 70,70 74,71" />
+      <path d="M 86,63 C 90,62 100,62 108,65" />
+      <path d="M 86,71 C 90,70 100,70 108,73" />
+      <path d="M 80,84 Q 78,94 83,98 L 86,94" />
+    </g>
+    <g data-layer="3">
+      <path d="M 88,82 L 92,78 L 116,54 Q 118,52 120,54 L 122,56 Q 124,58 122,60 L 98,84 L 94,88 Z M 88,82 L 93,77 M 117,59 L 111,65" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>

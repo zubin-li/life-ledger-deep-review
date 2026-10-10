@@ -1,0 +1,22 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="Focus timer hourglass on a stand" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 46,82 L 76,67 Q 80,65 84,67 L 114,82 Q 118,84 114,86 L 84,101 Q 80,103 76,101 L 46,86 Q 42,84 46,82 Z" />
+      <path d="M 44,85 V 88 L 76,104 Q 80,106 84,104 L 116,88 V 85" />
+      <path d="M 56,83 L 78,72 Q 80,71 82,72 L 104,83 L 82,94 Q 80,95 78,94 Z" />
+      <path d="M 80,72 V 70 M 104,83 H 106 M 80,94 V 96 M 56,83 H 54" />
+    </g>
+    <g data-layer="2">
+      <path d="M 64,28 L 78,22 Q 80,21 82,22 L 96,28 Q 98,29 96,30 L 82,36 Q 80,37 78,36 L 64,30 Q 62,29 64,28 Z" />
+      <path d="M 64,74 L 78,68 Q 80,67 82,68 L 96,74 Q 98,75 96,76 L 82,82 Q 80,83 78,82 L 64,76 Q 62,75 64,74 Z" />
+      <path d="M 67,29 V 75" />
+      <path d="M 93,29 V 75" />
+      <path d="M 71,32 C 71,43 78,48 78,51 C 78,54 71,59 71,70" />
+      <path d="M 89,32 C 89,43 82,48 82,51 C 82,54 89,59 89,70" />
+      <path d="M 74,42 Q 80,45 86,42" />
+    </g>
+    <g data-layer="3">
+      <path d="M 80,51 V 63 M 75,69 Q 80,64 85,69" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="Weekly habit overview with highlighted day" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 40,78 L 76,60 Q 80,58 84,60 L 120,78 Q 124,80 120,82 L 84,100 Q 80,102 76,100 L 40,82 Q 36,80 40,78 Z" />
+      <path d="M 38,81 V 84 L 76,103 Q 80,105 84,103 L 122,84 V 81" />
+      <path d="M 48,80 L 77,66 Q 80,65 83,66 L 112,80 L 83,94 Q 80,95 77,94 Z" />
+    </g>
+    <g data-layer="2">
+      <path d="M 51,80 V 67 C 51,65 55,65 55,67 V 80" />
+      <path d="M 60,80 V 61 C 60,59 64,59 64,61 V 80" />
+      <path d="M 69,80 V 65 C 69,63 73,63 73,65 V 80" />
+      <path d="M 78,80 V 57 C 78,55 82,55 82,57 V 80" />
+      <path d="M 96,80 V 69 C 96,67 100,67 100,69 V 80" />
+      <path d="M 105,80 V 63 C 105,61 109,61 109,63 V 80" />
+      <path d="M 50,83 H 110" stroke-dasharray="2 3" />
+    </g>
+    <g data-layer="3">
+      <path d="M 87,80 V 49 C 87,47 91,47 91,49 V 80 M 89,41 A 2.5,2.5 0 1,0 89.1,41" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>

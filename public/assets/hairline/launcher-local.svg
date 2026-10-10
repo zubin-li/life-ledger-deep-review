@@ -1,0 +1,22 @@
+<svg viewBox="0 0 160 120" role="img" aria-label="Local storage with laptop and lock" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <g data-layer="1">
+      <path d="M 44,76 L 44,43 Q 44,41 46,40 L 78,24 Q 80,23 80,25 L 80,58 Z" />
+      <path d="M 49,71 L 49,46 L 75,33 L 75,58 Z" />
+      <path d="M 53,52 L 67,45" />
+      <path d="M 53,58 L 71,49" />
+    </g>
+    <g data-layer="2">
+      <path d="M 44,76 L 78,93 Q 80,94 82,93 L 116,76 Q 118,75 116,74 L 82,57 Q 80,56 78,57 L 44,74 Z" />
+      <path d="M 43,76 V 79 L 78,97 Q 80,98 82,97 L 117,79 V 76" />
+      <path d="M 56,76 L 78,65 Q 80,64 82,65 L 104,76 L 82,87 Q 80,88 78,87 Z" />
+      <path d="M 63,76 L 80,67 L 97,76" />
+      <path d="M 68,80 L 80,74 L 92,80" />
+      <path d="M 74,86 L 80,83 L 86,86 L 80,89 Z" />
+    </g>
+    <g data-layer="3">
+      <path d="M 96,56 V 70" stroke-dasharray="2 2" />
+      <path d="M 92,45 V 39 C 92,35.5 100,35.5 100,39 V 45 M 88,45 H 104 V 56 H 88 Z M 96,49 V 52" stroke="var(--accent, #4f7a64)" />
+    </g>
+  </g>
+</svg>
