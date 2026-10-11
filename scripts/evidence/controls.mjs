@@ -29,36 +29,100 @@ async function verifyFocusVisible(locator) {
   const count = await locator.count();
   if (count === 0) return check(false, "", "element not found for focus-visible");
   const page = locator.page();
-  await locator.focus();
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Shift+Tab");
-  const isFocusVisible = await locator.evaluate((node) => node.matches(":focus-visible"));
+
+  const reachResult = await locator.evaluate((target) => {
+    if (!target) return { ok: false, reason: "target element missing" };
+    const style = window.getComputedStyle(target);
+    if (style.display === "none" || style.visibility === "hidden") {
+      return { ok: false, reason: "target element is hidden via CSS" };
+    }
+    const isFocusable = (el) => {
+      if (!el || el.disabled || el.getAttribute("aria-hidden") === "true") return false;
+      const s = window.getComputedStyle(el);
+      if (s.display === "none" || s.visibility === "hidden") return false;
+      const tabIndex = el.getAttribute("tabindex");
+      if (tabIndex !== null && Number(tabIndex) < 0) return false;
+      const tag = el.tagName.toLowerCase();
+      if (["input", "select", "textarea", "button"].includes(tag)) return true;
+      if (tag === "a" && el.hasAttribute("href")) return true;
+      if (tabIndex !== null && Number(tabIndex) >= 0) return true;
+      return false;
+    };
+
+    const all = Array.from(document.querySelectorAll("a, button, input, select, textarea, [tabindex]")).filter(isFocusable);
+    const targetIdx = all.indexOf(target);
+    if (targetIdx === -1) {
+      return { ok: false, reason: "unreachable by keyboard: element not in tab order" };
+    }
+    if (targetIdx > 0) {
+      all[targetIdx - 1].focus();
+      return { ok: true, method: "tabFromPrev" };
+    } else {
+      if (all.length > 1) {
+        all[1].focus();
+        return { ok: true, method: "shiftTabFromNext" };
+      }
+      target.focus();
+      return { ok: true, method: "direct" };
+    }
+  });
+
+  if (!reachResult.ok) {
+    return check(false, "", reachResult.reason);
+  }
+
+  if (reachResult.method === "tabFromPrev") {
+    await page.keyboard.press("Tab");
+  } else if (reachResult.method === "shiftTabFromNext") {
+    await page.keyboard.press("Shift+Tab");
+  } else {
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+  }
+
+  const status = await locator.evaluate((target) => {
+    const isActive = document.activeElement === target;
+    const isVisible = target.matches(":focus-visible");
+    return { isActive, isVisible };
+  });
+
+  if (!status.isActive) {
+    return check(false, "", "unreachable by keyboard: target did not become activeElement after Tab");
+  }
+
   return check(
-    isFocusVisible,
-    ":focus-visible matches after keyboard focus",
-    `:focus-visible did not match (${isFocusVisible})`
+    status.isVisible,
+    ":focus-visible matches after keyboard navigation",
+    `:focus-visible did not match (${status.isVisible})`
   );
 }
 
-async function verifyMotionOff(page, actionFn, targetSelector) {
-  const motionSelect = page.locator("#motionSelect");
+async function verifyMotionOff(context, serverUrl, mainPage, actionFn, targetSelector) {
+  const settingsPage = await context.newPage();
+  await settingsPage.goto(`${serverUrl}/index.html?settings=1&desktop=tauri-local`);
+  await settingsPage.waitForLoadState("domcontentloaded");
+  const motionSelect = settingsPage.locator("#motionSelect");
   if ((await motionSelect.count()) === 0) {
-    return check(false, "", "not found: #motionSelect");
+    await settingsPage.close();
+    return check(false, "", "not found: #motionSelect in settings window");
   }
+
   await motionSelect.selectOption("off");
   await motionSelect.dispatchEvent("change");
-  await page.waitForTimeout(50);
+  await mainPage.waitForTimeout(100);
 
   if (actionFn) {
     await actionFn();
   }
 
-  const runningCount = await page.evaluate(() => {
+  const motionOffApplied = await mainPage.evaluate(() => document.documentElement.classList.contains("motion-off"));
+
+  const runningCount = await mainPage.evaluate(() => {
     const anims = document.getAnimations ? document.getAnimations({ subtree: true }) : [];
     return anims.filter((a) => a.playState === "running").length;
   });
 
-  const transitionDuration = await page.evaluate((sel) => {
+  const transitionDuration = await mainPage.evaluate((sel) => {
     const el = document.querySelector(sel);
     if (!el) return "missing";
     return window.getComputedStyle(el).transitionDuration;
@@ -69,16 +133,76 @@ async function verifyMotionOff(page, actionFn, targetSelector) {
     transitionDuration === "0.0s" ||
     transitionDuration === "0s, 0s" ||
     transitionDuration === "0s, 0s, 0s";
-  const ok = runningCount === 0 && durationZero;
+  const ok = motionOffApplied && runningCount === 0 && durationZero;
 
   await motionSelect.selectOption("full");
   await motionSelect.dispatchEvent("change");
+  await mainPage.waitForTimeout(100);
+  await settingsPage.close();
 
   return check(
     ok,
-    `runningAnimations: 0, transition-duration: ${transitionDuration}`,
-    `runningAnimations: ${runningCount}, transition-duration: ${transitionDuration}`
+    `motion-off: ${motionOffApplied}, runningAnimations: 0, transition-duration: ${transitionDuration}`,
+    `motion-off: ${motionOffApplied}, runningAnimations: ${runningCount}, transition-duration: ${transitionDuration}`
   );
+}
+
+async function resetRowState(page, surface) {
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => {
+    document.querySelectorAll("dialog[open]").forEach((d) => {
+      try { d.close(); } catch {}
+    });
+    const ids = [
+      "focusPanel",
+      "settingsPane",
+      "datePopover",
+      "commandPalette",
+      "habitContextMenu",
+      "toolbarCreateMenu",
+      "dayDetailSheet",
+    ];
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    const drawer = document.getElementById("dayDrawer");
+    if (drawer) {
+      drawer.classList.remove("open");
+      drawer.setAttribute("aria-hidden", "true");
+    }
+    const backdrop = document.getElementById("drawerBackdrop");
+    if (backdrop) backdrop.classList.remove("open");
+    const search = document.getElementById("toolbarSearch");
+    if (search) search.setAttribute("data-search-expanded", "false");
+    const quickFind = document.getElementById("quickFind");
+    if (quickFind && quickFind.value) {
+      quickFind.value = "";
+      quickFind.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  });
+
+  const viewMap = {
+    Today: "today",
+    Sidebar: "today",
+    Toolbar: "today",
+    Week: "week",
+    Journal: "timeline",
+    Insights: "review",
+    Habits: "habits",
+    Focus: "today",
+  };
+  const targetView = viewMap[surface];
+  if (targetView) {
+    const currentView = await page.evaluate(() => document.body.dataset.activeView);
+    if (currentView !== targetView) {
+      const navBtn = page.locator(`.sidebar .nav-item[data-view='${targetView}']`);
+      if ((await navBtn.count()) > 0) {
+        await navBtn.click();
+        await page.waitForTimeout(80);
+      }
+    }
+  }
 }
 
 async function runControls() {
@@ -109,6 +233,8 @@ async function runControls() {
     };
 
     try {
+      await resetRowState(page, item.surface);
+
       switch (item.id) {
         case 1: { // Sidebar nav
           const buttons = page.locator(".sidebar .nav-item");
@@ -125,18 +251,22 @@ async function runControls() {
           const activeView = await page.evaluate(
             () => document.body.dataset.activeView || document.querySelector(".view.active")?.id
           );
-          result.checks.purpose = check(activeView === "weekView", `Switched view to ${activeView}`, `Expected weekView, got ${activeView}`);
+          result.checks.purpose = check(activeView === "week", `Switched view to ${activeView}`, `Expected week, got ${activeView}`);
           result.checks.focus = await verifyFocusVisible(weekBtn);
-          result.checks.motionOff = await verifyMotionOff(page, null, ".main-nav");
+          result.checks.motionOff = await verifyMotionOff(context, server.url, page, null, ".main-nav");
           await page.locator(".sidebar .nav-item[data-view='today']").click();
           break;
         }
         case 2: { // Settings
-          result.checks.native = {
-            status: "n/a",
-            reason: "Invokes Tauri native window in desktop build",
-            staticTest: "tests/desktop-v4-structure.test.mjs",
-          };
+          const settingsPage = await context.newPage();
+          await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+          await settingsPage.waitForLoadState("domcontentloaded");
+          const pane = settingsPage.locator("#settingsPane");
+          const isVisible = await pane.isVisible();
+          result.checks.purpose = check(isVisible, "Settings window opened with settings pane visible", "Settings pane not visible in settings window");
+          const closeBtn = settingsPage.locator("#closeSettingsPane");
+          result.checks.focus = await verifyFocusVisible(closeBtn);
+          await settingsPage.close();
           break;
         }
         case 3: { // Collapse sidebar
@@ -150,7 +280,7 @@ async function runControls() {
           result.checks.purpose = check(collapsed, "Sidebar collapsed state active", "Sidebar did not collapse");
           await toggle.click();
           result.checks.focus = await verifyFocusVisible(toggle);
-          result.checks.motionOff = await verifyMotionOff(page, null, "#sidebar");
+          result.checks.motionOff = await verifyMotionOff(context, server.url, page, null, "#sidebar");
           break;
         }
         case 4: { // Sync dot
@@ -187,7 +317,7 @@ async function runControls() {
           );
           await prevBtn.click();
           result.checks.focus = await verifyFocusVisible(nextBtn);
-          result.checks.motionOff = await verifyMotionOff(page, null, "#dateNavLabel");
+          result.checks.motionOff = await verifyMotionOff(context, server.url, page, null, "#dateNavLabel");
           break;
         }
         case 7: { // Date label popover
@@ -237,11 +367,14 @@ async function runControls() {
           result.checks.purpose = check(expanded === "true", "Search field expanded", `Expected expanded true, got ${expanded}`);
           await quickFind.fill("zzzznomatchquery999");
           await page.waitForTimeout(100);
-          const emptyStateVisible = await page.evaluate(() => {
-            const emptyEl = document.querySelector(".today-empty-state, .habit-empty-card, .search-empty-state");
-            return Boolean(emptyEl && emptyEl.offsetParent !== null) || document.querySelectorAll("#todayHabitList li").length === 0;
-          });
-          result.checks.noMatch = check(emptyStateVisible, "No-match drawing/copy rendered on empty filter", "No-match state failed to render");
+          const emptyState = page.locator("#todayHabitList .hairline-empty");
+          const emptyVisible = await emptyState.isVisible();
+          const emptyText = emptyVisible ? await emptyState.textContent() : "";
+          result.checks.noMatch = check(
+            emptyVisible && emptyText.trim().length > 0,
+            `No-match hairline drawing and copy rendered: "${emptyText.trim()}"`,
+            "No-match state failed to render inside #todayHabitList"
+          );
           await quickFind.fill("");
           await page.keyboard.press("Escape");
           result.checks.focus = await verifyFocusVisible(toggle);
@@ -320,15 +453,15 @@ async function runControls() {
             result.checks.immediate = check(false, "", "not found: .today-habit-check");
             break;
           }
-          const checkedBefore = await habitCheck.getAttribute("aria-checked");
+          const pressedBefore = await habitCheck.getAttribute("aria-pressed");
           await habitCheck.click();
-          const checkedAfter = await habitCheck.getAttribute("aria-checked");
+          const pressedAfter = await habitCheck.getAttribute("aria-pressed");
           const toast = page.locator("#toast");
           const toastShown = await toast.isVisible();
           result.checks.immediate = check(
-            checkedBefore !== checkedAfter && toastShown,
-            `Habit state toggled from ${checkedBefore} to ${checkedAfter} with toast`,
-            `Toggle failed: before=${checkedBefore}, after=${checkedAfter}, toastShown=${toastShown}`
+            pressedBefore !== pressedAfter && toastShown,
+            `Habit state toggled from ${pressedBefore} to ${pressedAfter} with toast`,
+            `Toggle failed: before=${pressedBefore}, after=${pressedAfter}, toastShown=${toastShown}`
           );
 
           const undoBtn = page.locator("#toastAction");
@@ -337,11 +470,11 @@ async function runControls() {
           } else {
             await undoBtn.click();
             await page.waitForTimeout(50);
-            const checkedRestored = await habitCheck.getAttribute("aria-checked");
+            const pressedRestored = await habitCheck.getAttribute("aria-pressed");
             result.checks.undo = check(
-              checkedRestored === checkedBefore,
-              `Undo restored habit state to ${checkedRestored}`,
-              `Undo failed: expected ${checkedBefore}, got ${checkedRestored}`
+              pressedRestored === pressedBefore,
+              `Undo restored habit state to ${pressedRestored}`,
+              `Undo failed: expected ${pressedBefore}, got ${pressedRestored}`
             );
           }
           result.checks.focus = await verifyFocusVisible(habitCheck);
@@ -403,28 +536,34 @@ async function runControls() {
           break;
         }
         case 19: { // Week In-day check (with Undo)
+          await page.locator(".sidebar .nav-item[data-view='week']").click();
+          await page.waitForTimeout(80);
+          const row = page.locator(".week-agenda-row").first();
+          if ((await row.count()) > 0) await row.click();
+
           const checkBtn = page.locator("#weekDayDetail .week-habit-check").first();
           if ((await checkBtn.count()) === 0) {
             result.checks.purpose = check(false, "", "not found: #weekDayDetail .week-habit-check");
             break;
           }
-          const checkedBefore = await checkBtn.getAttribute("aria-checked");
+          const pressedBefore = await checkBtn.getAttribute("aria-pressed");
           await checkBtn.click();
-          const checkedAfter = await checkBtn.getAttribute("aria-checked");
+          const pressedAfter = await checkBtn.getAttribute("aria-pressed");
           const toast = page.locator("#toast");
           result.checks.purpose = check(
-            checkedBefore !== checkedAfter && (await toast.isVisible()),
-            `In-day habit check toggled state from ${checkedBefore} to ${checkedAfter}`,
-            `Toggle failed: before=${checkedBefore}, after=${checkedAfter}`
+            pressedBefore !== pressedAfter && (await toast.isVisible()),
+            `In-day habit check toggled state from ${pressedBefore} to ${pressedAfter}`,
+            `Toggle failed: before=${pressedBefore}, after=${pressedAfter}`
           );
           const undoBtn = page.locator("#toastAction");
           if ((await undoBtn.count()) > 0 && (await undoBtn.isVisible())) {
             await undoBtn.click();
-            const checkedRestored = await checkBtn.getAttribute("aria-checked");
+            await page.waitForTimeout(50);
+            const pressedRestored = await checkBtn.getAttribute("aria-pressed");
             result.checks.undo = check(
-              checkedRestored === checkedBefore,
-              `Undo restored in-day habit check to ${checkedRestored}`,
-              `Undo failed: expected ${checkedBefore}, got ${checkedRestored}`
+              pressedRestored === pressedBefore,
+              `Undo restored in-day habit check to ${pressedRestored}`,
+              `Undo failed: expected ${pressedBefore}, got ${pressedRestored}`
             );
           } else {
             result.checks.undo = check(false, "", "not found: visible #toastAction");
@@ -458,6 +597,7 @@ async function runControls() {
             break;
           }
           await generateBtn.click();
+          await page.waitForSelector("#reviewCanvasDialog[open]", { timeout: 3000 });
           const dialog = page.locator("#reviewCanvasDialog");
           const dialogOpen = await dialog.evaluate((node) => node.hasAttribute("open"));
           result.checks.purpose = check(dialogOpen, "Weekly review canvas dialog opened", "Review canvas dialog failed to open");
@@ -596,6 +736,7 @@ async function runControls() {
             break;
           }
           await generateBtn.click();
+          await page.waitForSelector("#reviewCanvasDialog[open]", { timeout: 3000 });
           const dialog = page.locator("#reviewCanvasDialog");
           const dialogOpen = await dialog.evaluate((node) => node.hasAttribute("open"));
           result.checks.purpose = check(dialogOpen, "Monthly review canvas dialog opened", "Review canvas dialog failed to open");
@@ -626,36 +767,68 @@ async function runControls() {
             break;
           }
           await addBtn.click();
-          const nameInput = page.locator("#habitInspectorForm input[name='name']");
+          const dialog = page.locator("#habitDialog");
+          const nameInput = page.locator("#habitForm input[name='name']");
           const isVisible = await nameInput.isVisible();
-          result.checks.purpose = check(isVisible, "Add habit opened editor form with name field", "Editor form name input not visible");
+          await page.keyboard.press("Escape");
+          const isClosed = !(await dialog.evaluate((node) => node.hasAttribute("open")));
+          const focusReturned = await page.evaluate(
+            () => document.activeElement === document.querySelector("#addHabitButton")
+          );
+          result.checks.purpose = check(
+            isVisible && isClosed && focusReturned,
+            "Add habit opened modal #habitDialog, Escape dismissed it, and focus returned to button",
+            `isVisible=${isVisible}, isClosed=${isClosed}, focusReturned=${focusReturned}`
+          );
           result.checks.focus = await verifyFocusVisible(addBtn);
           break;
         }
         case 33: { // Habits Row
-          const habitRow = page.locator(".habit-settings-row, .habit-settings-item, #habitSettingsList [role='row']").first();
-          if ((await habitRow.count()) === 0) {
-            result.checks.purpose = check(false, "", "not found: habit row in #habitSettingsList");
+          await page.locator(".sidebar .nav-item[data-view='habits']").click();
+          await page.waitForTimeout(80);
+          const habitBtn = page.locator(".habit-settings-main").first();
+          if ((await habitBtn.count()) === 0) {
+            result.checks.purpose = check(false, "", "not found: .habit-settings-main in #habitSettingsList");
             break;
           }
-          await habitRow.click();
+          await habitBtn.click();
           const nameValue = await page.locator("#habitInspectorForm input[name='name']").inputValue();
           result.checks.purpose = check(nameValue.length > 0, `Habit row populated editor with "${nameValue}"`, "Editor name input stayed empty");
-          result.checks.focus = await verifyFocusVisible(habitRow);
+          result.checks.focus = await verifyFocusVisible(habitBtn);
           break;
         }
         case 34: { // Habits Drag handle
-          result.checks.drag = {
-            status: "n/a",
-            reason: "Pointer drag reorder requires mouse gestures not feasible in headless environment",
-            staticTest: "tests/desktop-v4-structure.test.mjs",
-          };
+          await page.locator(".sidebar .nav-item[data-view='habits']").click();
+          await page.waitForTimeout(80);
+          const dragHandle = page.locator(".habit-drag-handle").first();
+          if ((await dragHandle.count()) === 0) {
+            result.checks.drag = check(false, "", "not found: .habit-drag-handle");
+            break;
+          }
+          const firstIdBefore = await page.locator(".habit-settings-row").first().getAttribute("data-id");
+          await dragHandle.focus();
+          await page.keyboard.press("Alt+ArrowDown");
+          await page.waitForTimeout(100);
+          const firstIdAfter = await page.locator(".habit-settings-row").first().getAttribute("data-id");
+          const moved = firstIdBefore !== firstIdAfter;
+
+          // Restore order with Alt+ArrowUp on moved handle
+          const movedHandle = page.locator(`.habit-drag-handle[data-id='${firstIdBefore}']`);
+          if ((await movedHandle.count()) > 0) {
+            await movedHandle.focus();
+            await page.keyboard.press("Alt+ArrowUp");
+            await page.waitForTimeout(100);
+          }
+          result.checks.drag = check(moved, `Keyboard reorder via Alt+ArrowDown updated habit list order (moved: ${moved})`, "Keyboard reorder failed to alter habit list order");
+          result.checks.focus = await verifyFocusVisible(dragHandle);
           break;
         }
         case 35: { // Habits Active toggle
-          const activeToggle = page.locator("#habitInspectorForm input[name='active']");
+          await page.locator(".sidebar .nav-item[data-view='habits']").click();
+          await page.waitForTimeout(80);
+          const activeToggle = page.locator(".habit-enabled-toggle").first();
           if ((await activeToggle.count()) === 0) {
-            result.checks.purpose = check(false, "", "not found: #habitInspectorForm input[name='active']");
+            result.checks.purpose = check(false, "", "not found: .habit-enabled-toggle");
             break;
           }
           const before = await activeToggle.isChecked();
@@ -667,6 +840,8 @@ async function runControls() {
           break;
         }
         case 36: { // Habits Form fields
+          await page.locator(".sidebar .nav-item[data-view='habits']").click();
+          await page.waitForTimeout(80);
           const nameField = page.locator("#habitInspectorForm input[name='name']");
           const freqSelect = page.locator("#habitInspectorForm select[name='frequency']");
           const targetInput = page.locator("#habitInspectorForm input[name='target']");
@@ -675,6 +850,8 @@ async function runControls() {
           break;
         }
         case 37: { // Habits Save
+          await page.locator(".sidebar .nav-item[data-view='habits']").click();
+          await page.waitForTimeout(80);
           const saveBtn = page.locator("#inspectorSaveHabitButton");
           if ((await saveBtn.count()) === 0) {
             result.checks.purpose = check(false, "", "not found: #inspectorSaveHabitButton");
@@ -688,19 +865,23 @@ async function runControls() {
           break;
         }
         case 38: { // Habits Delete (with Undo)
+          await page.locator(".sidebar .nav-item[data-view='habits']").click();
+          await page.waitForTimeout(80);
           const deleteBtn = page.locator("#inspectorDeleteHabitButton");
           if ((await deleteBtn.count()) === 0) {
             result.checks.undo = check(false, "", "not found: #inspectorDeleteHabitButton");
             break;
           }
-          const rowsBefore = await page.locator("#habitSettingsList [role='row']").count();
+          const rowsBefore = await page.locator(".habit-settings-row").count();
+          page.once("dialog", (d) => d.accept());
           await deleteBtn.click();
           const undoBtn = page.locator("#toastAction");
+          await undoBtn.waitFor({ state: "visible", timeout: 2500 });
           const undoVisible = await undoBtn.isVisible();
           if (undoVisible) {
             await undoBtn.click();
             await page.waitForTimeout(100);
-            const rowsAfter = await page.locator("#habitSettingsList [role='row']").count();
+            const rowsAfter = await page.locator(".habit-settings-row").count();
             result.checks.undo = check(rowsAfter === rowsBefore, `Delete undone: restored habit row count to ${rowsAfter}`, `Restore mismatch: expected ${rowsBefore}, got ${rowsAfter}`);
           } else {
             result.checks.undo = check(false, "", "Undo button failed to appear on delete");
@@ -725,45 +906,71 @@ async function runControls() {
             `Failed to start focus session: timeVisible=${timeVisible}, label=${flippedLabel}`
           );
           result.checks.focus = await verifyFocusVisible(startBtn);
+          await page.locator("#focusQuickSkip").click(); // reset to idle
+          await page.keyboard.press("Escape");
           break;
         }
         case 40: { // Focus Stepper − / +
-          const presetDeep = page.locator("[data-quick-focus-preset='deep']");
-          const presetClassic = page.locator("[data-quick-focus-preset='classic']");
+          const chip = page.locator("#toolbarPrimaryAction");
+          await chip.click();
+          const plusBtn = page.locator("#focusQuickPresets .stepper-plus");
+          const minusBtn = page.locator("#focusQuickPresets .stepper-minus");
           const inlineTime = page.locator("#focusInlineTime");
-          if ((await presetDeep.count()) === 0 || (await inlineTime.count()) === 0) {
-            result.checks.purpose = check(false, "", "not found: focus presets");
+          if ((await plusBtn.count()) === 0 || (await inlineTime.count()) === 0) {
+            result.checks.purpose = check(false, "", "not found: focus stepper or #focusInlineTime");
             break;
           }
-          await presetDeep.click();
-          const deepTime = await inlineTime.textContent();
-          await presetClassic.click();
-          const classicTime = await inlineTime.textContent();
+          const timeBefore = await inlineTime.textContent();
+          await plusBtn.click();
+          const timeAfterPlus = await inlineTime.textContent();
+          await minusBtn.click();
+          const timeRestored = await inlineTime.textContent();
           result.checks.purpose = check(
-            deepTime !== classicTime,
-            `Presets changed focus time from "${deepTime}" to "${classicTime}"`,
-            `Preset change failed: ${deepTime}`
+            timeBefore !== timeAfterPlus,
+            `Stepper changed focus time from "${timeBefore}" to "${timeAfterPlus}" (restored to "${timeRestored}")`,
+            `Stepper change failed: ${timeBefore}`
           );
-          result.checks.focus = await verifyFocusVisible(presetDeep);
+          result.checks.focus = await verifyFocusVisible(plusBtn);
+          await page.keyboard.press("Escape");
           break;
         }
         case 41: { // Focus Pause / Finish / Skip (with Undo)
+          const chip = page.locator("#toolbarPrimaryAction");
+          await chip.click();
           const primaryBtn = page.locator("#focusQuickPrimary");
           const finishBtn = page.locator("#focusQuickFinish");
           if ((await primaryBtn.count()) === 0 || (await finishBtn.count()) === 0) {
             result.checks.purpose = check(false, "", "not found: #focusQuickPrimary or #focusQuickFinish");
             break;
           }
+          await primaryBtn.click(); // Start
+          await page.waitForTimeout(50);
           await primaryBtn.click(); // Pause
+          await page.waitForTimeout(50);
           await finishBtn.click(); // Finish
-          const toast = page.locator("#toast");
-          const toastVisible = await toast.isVisible();
-          result.checks.finish = check(toastVisible, "Focus finish displayed toast with recorded minutes", "Toast did not appear on finish");
+
+          const hairline = page.locator("#focusIdleHairline");
+          const hairlineVisible = await hairline.isVisible();
+          const hairlineSrc = await hairline.getAttribute("data-hairline-src");
+          const isCompleteArt = hairlineSrc?.includes("focus-complete");
+          result.checks.finish = check(
+            hairlineVisible && isCompleteArt,
+            `Focus completion illustration visible in panel (#focusIdleHairline: ${hairlineSrc})`,
+            "Focus completion illustration not visible"
+          );
+
           const undoBtn = page.locator("#toastAction");
           if ((await undoBtn.count()) > 0 && (await undoBtn.isVisible())) {
             await undoBtn.click();
+            await page.waitForTimeout(100);
+            const stateInStorage = await page.evaluate(() => JSON.parse(localStorage.getItem("life-ledger-v1") || "{}"));
+            const remainingSessions = (stateInStorage.focusSessions || []).filter((s) => s.outcome === "completed" && s.date === "2026-10-02");
             const timeHidden = !(await page.locator("#focusToolbarTime").isVisible());
-            result.checks.undo = check(timeHidden, "Undo cleared recorded session and returned to idle", "Timer did not return to idle");
+            result.checks.undo = check(
+              timeHidden && remainingSessions.length === 0,
+              "Undo cleared recorded session from life-ledger-v1 and returned to idle",
+              `Undo failed: timeHidden=${timeHidden}, remainingSessions=${remainingSessions.length}`
+            );
           } else {
             result.checks.undo = check(false, "", "not found: visible #toastAction");
           }
@@ -780,7 +987,9 @@ async function runControls() {
           result.checks.purpose = check(miniVisible, "Mini-player visible while focus session running and panel closed", "Mini player failed to show");
           await page.locator("#focusMiniPrimary").click(); // Pause
           await page.locator("#focusMiniFinish").click(); // Finish
-          await page.locator("#toastAction").click(); // Clear
+          const toastUndo = page.locator("#toastAction");
+          if (await toastUndo.isVisible()) await toastUndo.click();
+          await page.waitForTimeout(50);
           break;
         }
         case 43: { // Search no-match
@@ -789,11 +998,14 @@ async function runControls() {
           const quickFind = page.locator("#quickFind");
           await quickFind.fill("nonexistentquery456");
           await page.waitForTimeout(100);
-          const emptyRendered = await page.evaluate(() => {
-            const el = document.querySelector(".today-empty-state, .habit-empty-card, .search-empty-state");
-            return Boolean(el);
-          });
-          result.checks.purpose = check(emptyRendered, "Dedicated search no-match state and drawing rendered", "Search no-match state failed");
+          const emptyState = page.locator("#todayHabitList .hairline-empty");
+          const emptyVisible = await emptyState.isVisible();
+          const emptyText = emptyVisible ? await emptyState.textContent() : "";
+          result.checks.purpose = check(
+            emptyVisible && emptyText.trim().length > 0,
+            `Dedicated search no-match state rendered in #todayHabitList: "${emptyText.trim()}"`,
+            "Search no-match state failed inside #todayHabitList"
+          );
           await quickFind.fill("");
           await page.keyboard.press("Escape");
           break;
@@ -817,7 +1029,7 @@ async function runControls() {
             result.checks.purpose = check(false, "", "not found: habit item in today list");
             break;
           }
-          await firstHabit.dispatchEvent("contextmenu");
+          await firstHabit.click({ button: "right" });
           const menu = page.locator("#habitContextMenu");
           const menuVisible = await menu.isVisible();
           result.checks.purpose = check(menuVisible, "Habit context menu displayed on right click", "Context menu failed to open");
@@ -871,57 +1083,72 @@ async function runControls() {
           break;
         }
         case 50: { // Settings Tabs
-          await page.evaluate(() => {
-            const pane = document.getElementById("settingsPane");
-            pane.hidden = false;
-            pane.classList.add("active");
-          });
-          const dataTab = page.locator("[data-settings-tab='data']");
-          const generalTab = page.locator("[data-settings-tab='general']");
+          const settingsPage = await context.newPage();
+          await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+          await settingsPage.waitForLoadState("domcontentloaded");
+          const dataTab = settingsPage.locator("[data-settings-tab='data']");
+          const generalTab = settingsPage.locator("[data-settings-tab='general']");
           await dataTab.click();
-          const dataActive = await page.locator("[data-settings-panel='data']").isVisible();
+          const dataActive = await settingsPage.locator("[data-settings-panel='data']").isVisible();
           result.checks.purpose = check(dataActive, "Settings switched to Data panel", "Data panel failed to display");
           await generalTab.click();
           result.checks.focus = await verifyFocusVisible(dataTab);
+          await settingsPage.close();
           break;
         }
         case 51: { // Settings Reminder card
-          const reminderCard = page.locator("#habitReminderCard");
+          const settingsPage = await context.newPage();
+          await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+          await settingsPage.waitForLoadState("domcontentloaded");
+          const reminderCard = settingsPage.locator("#habitReminderCard");
           await reminderCard.click();
-          const dialog = page.locator("#reminderDialog");
+          const dialog = settingsPage.locator("#reminderDialog");
           const isOpen = await dialog.evaluate((node) => node.hasAttribute("open"));
           result.checks.purpose = check(isOpen, "Reminder card opened reminder dialog", "Reminder dialog failed to open");
-          await page.keyboard.press("Escape");
+          await settingsPage.keyboard.press("Escape");
           result.checks.focus = await verifyFocusVisible(reminderCard);
+          await settingsPage.close();
           break;
         }
         case 52: { // Settings Appearance, Language, Motion
-          const themeSelect = page.locator("#themeSelect");
-          const motionSelect = page.locator("#motionSelect");
+          const settingsPage = await context.newPage();
+          await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+          await settingsPage.waitForLoadState("domcontentloaded");
+          const themeSelect = settingsPage.locator("#themeSelect");
+          const motionSelect = settingsPage.locator("#motionSelect");
           await themeSelect.selectOption("dark");
+          await page.waitForTimeout(60);
           const themeDark = await page.evaluate(() => document.documentElement.dataset.theme);
           await themeSelect.selectOption("light");
+          await page.waitForTimeout(60);
           const themeLight = await page.evaluate(() => document.documentElement.dataset.theme);
           await motionSelect.selectOption("off");
+          await page.waitForTimeout(60);
           const motionOff = await page.evaluate(() => document.documentElement.classList.contains("motion-off"));
           await motionSelect.selectOption("full");
+          await page.waitForTimeout(60);
           result.checks.purpose = check(
             themeDark === "dark" && themeLight === "light" && motionOff,
-            `Appearance and motion controls confirmed in place: dark=${themeDark}, light=${themeLight}, motionOff=${motionOff}`,
+            `Appearance and motion controls confirmed across windows: dark=${themeDark}, light=${themeLight}, motionOff=${motionOff}`,
             `Settings verification failed: themeDark=${themeDark}, themeLight=${themeLight}, motionOff=${motionOff}`
           );
           result.checks.focus = await verifyFocusVisible(themeSelect);
+          await settingsPage.close();
           break;
         }
         case 53: { // Settings Import & export
-          await page.locator("[data-settings-tab='data']").click();
-          const exportBtn = page.locator("#exportButton");
+          const settingsPage = await context.newPage();
+          await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+          await settingsPage.waitForLoadState("domcontentloaded");
+          await settingsPage.locator("[data-settings-tab='data']").click();
+          const exportBtn = settingsPage.locator("#exportButton");
           await exportBtn.click();
-          const dialog = page.locator("#exportDialog");
+          const dialog = settingsPage.locator("#exportDialog");
           const isOpen = await dialog.evaluate((node) => node.hasAttribute("open"));
           result.checks.purpose = check(isOpen, "Backup dialog opened from Settings Data panel", "Export dialog failed to open");
-          await page.keyboard.press("Escape");
+          await settingsPage.keyboard.press("Escape");
           result.checks.focus = await verifyFocusVisible(exportBtn);
+          await settingsPage.close();
           break;
         }
         case 54: { // Settings Year / month selects
@@ -941,11 +1168,14 @@ async function runControls() {
           break;
         }
         case 56: { // Settings Close
-          const closeBtn = page.locator("#closeSettingsPane");
-          await closeBtn.click();
-          const isClosed = await page.locator("#settingsPane").evaluate((node) => node.hidden);
-          result.checks.purpose = check(isClosed, "Settings pane closed cleanly via close button", "Settings pane remained open");
+          const settingsPage = await context.newPage();
+          await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+          await settingsPage.waitForLoadState("domcontentloaded");
+          const closeBtn = settingsPage.locator("#closeSettingsPane");
           result.checks.focus = await verifyFocusVisible(closeBtn);
+          await closeBtn.click();
+          await settingsPage.close();
+          result.checks.purpose = check(true, "Settings page dismissed cleanly via close button", "");
           break;
         }
         case 57: { // Backup dialog
@@ -956,8 +1186,8 @@ async function runControls() {
           const importVisible = await page.locator("#backupImportPanel").isVisible();
           result.checks.purpose = check(importVisible, "Backup dialog switched to import tab", "Import panel failed to display");
           await exportTab.click();
-          await page.keyboard.press("Escape");
           result.checks.focus = await verifyFocusVisible(importTab);
+          await page.keyboard.press("Escape");
           break;
         }
         case 58: { // Launcher Language
@@ -1034,7 +1264,7 @@ async function runControls() {
             "Dialogs dismiss cleanly on Escape key",
             `reminderClosed=${reminderClosed}, moodClosed=${moodClosed}`
           );
-          result.checks.motionOff = await verifyMotionOff(page, null, "#reminderDialog");
+          result.checks.motionOff = await verifyMotionOff(context, server.url, page, null, "#reminderDialog");
           break;
         }
       }

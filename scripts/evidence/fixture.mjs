@@ -2,51 +2,86 @@ export const FIXTURE_DATE = "2026-10-02";
 
 export function createFictionalState(date = FIXTURE_DATE) {
   return {
-    version: 4,
+    meta: {
+      updatedAt: Date.now(),
+      starterPackVersion: 2,
+    },
     habits: [
-      {
-        id: "habit-read",
-        name: "Read 20 pages",
-        icon: "book",
-        color: "#5d7d68",
-        schedule: "daily",
-        target: 1,
-        active: true,
-        order: 0,
-        versions: [{ effectiveDate: "2026-01-01", name: "Read 20 pages", schedule: "daily", target: 1 }],
-      },
       {
         id: "habit-walk",
         name: "Morning walk",
         icon: "footprints",
-        color: "#6e8c98",
-        schedule: "daily",
-        target: 1,
+        color: "blue",
         active: true,
-        order: 1,
-        versions: [{ effectiveDate: "2026-01-01", name: "Morning walk", schedule: "daily", target: 1 }],
+        versions: [
+          {
+            trackingMode: "check",
+            target: 1,
+            unit: "",
+            frequency: "daily",
+            scheduleTime: "08:00",
+            periodTarget: null,
+            countsTowardDaily: true,
+            effectiveDate: "2026-01-01",
+          },
+        ],
+      },
+      {
+        id: "habit-read",
+        name: "Reading",
+        icon: "book",
+        color: "amber",
+        active: true,
+        versions: [
+          {
+            trackingMode: "measured",
+            target: 20,
+            unit: "min",
+            frequency: "daily",
+            scheduleTime: "",
+            periodTarget: null,
+            countsTowardDaily: true,
+            effectiveDate: "2026-01-01",
+          },
+        ],
       },
       {
         id: "habit-write",
         name: "Deep writing",
-        icon: "pen-tool",
-        color: "#a15c32",
-        schedule: "daily",
-        target: 1,
+        icon: "pen",
+        color: "sage",
         active: true,
-        order: 2,
-        versions: [{ effectiveDate: "2026-01-01", name: "Deep writing", schedule: "daily", target: 1 }],
+        versions: [
+          {
+            trackingMode: "measured",
+            target: 30,
+            unit: "min",
+            frequency: "daily",
+            scheduleTime: "",
+            periodTarget: null,
+            countsTowardDaily: true,
+            effectiveDate: "2026-01-01",
+          },
+        ],
       },
       {
-        id: "habit-code",
-        name: "Code review",
-        icon: "terminal",
-        color: "#5d7d68",
-        schedule: "daily",
-        target: 1,
+        id: "habit-sleep",
+        name: "Sleep before 23:30",
+        icon: "bed",
+        color: "violet",
         active: true,
-        order: 3,
-        versions: [{ effectiveDate: "2026-01-01", name: "Code review", schedule: "daily", target: 1 }],
+        versions: [
+          {
+            trackingMode: "check",
+            target: 1,
+            unit: "",
+            frequency: "daily",
+            scheduleTime: "23:30",
+            periodTarget: null,
+            countsTowardDaily: true,
+            effectiveDate: "2026-01-01",
+          },
+        ],
       },
     ],
     logs: {
@@ -55,27 +90,41 @@ export function createFictionalState(date = FIXTURE_DATE) {
         mood: "很好",
         moodReason: "Quiet morning clarity and smooth deep work session.",
         note: "Focused work on Life Ledger 3.5.1 polish. Calm thoughts and crisp autumn air.",
-        photos: [
-          { id: "photo-1", dataUrl: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='400' height='300' fill='%23e9e6de'/><circle cx='200' cy='150' r='50' fill='%235d7d68'/></svg>", date },
-        ],
+        photos: [],
       },
       "2026-10-01": {
         completed: ["habit-read", "habit-walk", "habit-write"],
         mood: "平静",
+        moodReason: "Steady progress.",
         note: "Completed all scheduled habit check-ins and drafted initial review outline.",
         photos: [],
       },
       "2026-09-30": {
         completed: ["habit-read", "habit-walk"],
         mood: "很好",
+        moodReason: "Great walk in the park.",
         note: "Walking through the park. Steady steps forward.",
         photos: [],
       },
     },
-    weeklyGoals: [
-      { id: "goal-1", title: "Complete 3.5.1 final polish audit matrix", done: false, date },
-      { id: "goal-2", title: "Refactor week agenda day rail meters", done: true, date },
+    weeklyGoals: {
+      "2026-W40": [
+        { id: "goal-1", text: "Complete 3.5.1 final polish audit matrix", done: false },
+        { id: "goal-2", text: "Refactor week agenda day rail meters", done: true },
+      ],
+    },
+    longTermGoals: [
+      {
+        id: "lt-1",
+        name: "Calibrate life rhythm system",
+        nextAction: "Audit 3.5.1 controls across desktop surface",
+        reviewDate: "2026-10-15",
+        status: "active",
+      },
     ],
+    weeklyOutputs: {
+      "2026-W40": "Calibrated week views and unified focus timer across all surfaces.",
+    },
     focusSessions: [
       {
         id: "focus-101",
@@ -109,11 +158,6 @@ export function createFictionalState(date = FIXTURE_DATE) {
       notify: false,
       wakeLock: true,
     },
-    settings: {
-      theme: "system",
-      language: "en",
-      motion: "full",
-    },
   };
 }
 
@@ -126,7 +170,7 @@ export async function applyFixture(page, options = {}) {
 
   await page.addInitScript(
     ({ stateStr, dateVal, themeVal, motionVal, langVal }) => {
-      localStorage.setItem("life-ledger-state", stateStr);
+      localStorage.setItem("life-ledger-v1", stateStr);
       localStorage.setItem("life-ledger-theme", themeVal);
       localStorage.setItem("life-ledger-motion", motionVal);
       localStorage.setItem("life-ledger-language", langVal);

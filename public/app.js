@@ -134,6 +134,8 @@ const i18n = {
       tomorrow: "明天",
       tomorrowCount: "明天有 {count} 项",
       reflectionLabel: "回顾",
+      habits: "习惯",
+      reflection: "回顾",
       noReflection: "还没有回顾",
       eventsCount: "{count} 个日程",
       sidebarMore: "还有 {count} 项",
@@ -444,6 +446,7 @@ const i18n = {
       futureLocked: "未来日期只用于规划目标，习惯、心情与复盘将在当天开放。",
       memoryEdit: "照片与原因",
       photoCount: "{count} 张照片",
+      photos: "照片记忆",
     },
     dialog: {
       kicker: "HABIT",
@@ -591,6 +594,8 @@ const i18n = {
       tomorrow: "Tomorrow",
       tomorrowCount: "{count} habits tomorrow",
       reflectionLabel: "Reflection",
+      habits: "Habits",
+      reflection: "Reflection",
       noReflection: "No reflection yet",
       eventsCount: "{count} events",
       sidebarMore: "+{count} more",
@@ -901,6 +906,7 @@ const i18n = {
       futureLocked: "Future dates are for planning only. Habits, mood and reflection open on the day.",
       memoryEdit: "Photos & reason",
       photoCount: "{count} photos",
+      photos: "Photo memories",
     },
     dialog: {
       kicker: "HABIT",
@@ -1048,6 +1054,8 @@ const i18n = {
       tomorrow: "Morgen",
       tomorrowCount: "{count} Gewohnheiten morgen",
       reflectionLabel: "Reflexion",
+      habits: "Gewohnheiten",
+      reflection: "Reflexion",
       noReflection: "Noch keine Reflexion",
       eventsCount: "{count} Termine",
       sidebarMore: "+{count} weitere",
@@ -1358,6 +1366,7 @@ const i18n = {
       futureLocked: "Zukünftige Tage dienen nur der Planung. Gewohnheiten, Stimmung und Reflexion öffnen am jeweiligen Tag.",
       memoryEdit: "Fotos & Grund",
       photoCount: "{count} Fotos",
+      photos: "Fotoerinnerungen",
     },
     dialog: {
       kicker: "GEWOHNHEIT",
@@ -3520,6 +3529,7 @@ function renderWeeklyWorkspace() {
   $("#weeklyGoalProgress").textContent = `${done} / ${goals.length}`;
   setText("#weeklyGoalsTitle", tr("week.goalsTitleProgress", { done, total: goals.length }));
   setText("#inspectorWeekRange", range);
+  $(".weekly-goals-section")?.classList.toggle("is-empty", !goals.length);
   $("#weeklyGoalList").innerHTML = goals.length ? goals.map(goal => `
     <div class="weekly-goal ${goal.done ? "done" : ""}" data-id="${goal.id}">
       <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
@@ -3812,11 +3822,11 @@ async function renderTimelineDetail() {
       </section>
       <section class="photo-library photo-library-story day-page-photos" id="timelineDetailPhotos" data-photo-editor>
         <div class="mood-photo-heading day-page-meta">
-          <strong data-photo-title>${escapeHtml(tr("drawer.photos"))} · <span data-photo-count>${photos.length} of 3</span></strong>
+          <strong data-photo-title>${escapeHtml(tr("drawer.photos"))}</strong><span class="photo-count-inline" data-photo-count>${photos.length} of 3</span>
           <small data-photo-help></small>
         </div>
         <div class="photo-drop" data-photo-drop>
-          <div class="mood-photo-grid-composed">
+          <div class="journal-photo-grid-composed">
             <button class="mood-photo-add" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>${escapeHtml(languageText("添加照片", "Add photo", "Foto hinzufügen"))}</span></button>
             <div class="mood-photo-list" data-photo-list></div>
           </div>
@@ -4632,7 +4642,7 @@ function renderWeekDayDetail() {
     </header>
     <div class="week-day-sheet">
       <div class="week-day-sheet-habits">
-        <h3 class="week-sheet-subheading">${escapeHtml(tr("today.habits"))}</h3>
+        <h3 class="week-sheet-subheading">${escapeHtml(tr("timeline.habitsHeading"))}</h3>
         <div class="week-detail-habits">
           ${open.length ? `<ul class="week-habit-list">${habitList(open)}</ul>` : ""}
           ${scheduled.length ? `<h4 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h4><ul class="week-habit-list scheduled">${habitList(scheduled)}</ul>` : ""}
@@ -4642,7 +4652,7 @@ function renderWeekDayDetail() {
       </div>
       <div class="week-day-sheet-meta">
         <div class="week-sheet-card week-sheet-reflection">
-          <h3 class="week-sheet-subheading">${escapeHtml(tr("today.reflection"))}</h3>
+          <h3 class="week-sheet-subheading">${escapeHtml(tr("today.reflectionLabel"))}</h3>
           <p class="week-day-mood">${mood}</p>
           ${note ? `<blockquote class="week-detail-note">${escapeHtml(note)}</blockquote>` : `<p class="week-detail-note empty">${escapeHtml(tr("week.noEntry"))}</p>`}
         </div>
@@ -6363,6 +6373,11 @@ function initAppShell() {
     applyInspectorState();
   }
   window.addEventListener("storage", event => {
+    if (event.key === MOTION_KEY) {
+      motionChoice = localStorage.getItem(MOTION_KEY) || "full";
+      applyMotionSetting();
+      return;
+    }
     if ([THEME_KEY, LANGUAGE_KEY].includes(event.key)) {
       themeChoice = localStorage.getItem(THEME_KEY) || "system";
       const stored = localStorage.getItem(LANGUAGE_KEY);
@@ -7761,9 +7776,7 @@ function navigateToolbarDate(amount) {
   }
   animateMainContentShift(amount);
   if (view === "week") {
-    const date = parseDate(selectedWorkspaceWeek);
-    date.setDate(date.getDate() + amount * 7);
-    selectedWorkspaceWeek = isoWeekKey(date);
+    selectedWorkspaceWeek = shiftWeekKey(selectedWorkspaceWeek, amount);
     renderWeeklyWorkspace();
     renderToolbarDateNav();
   } else if (view === "timeline") {

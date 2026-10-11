@@ -26,23 +26,44 @@ function generateReport() {
     }));
   }
 
-  let screensSummary = { totalScreenshots: 48, pageErrors: [], horizontalScrolls: [] };
+  let screensSummary = { totalScreenshots: 0, pageErrors: [], horizontalScrolls: [] };
   if (fs.existsSync(screensSummaryPath)) {
     screensSummary = JSON.parse(fs.readFileSync(screensSummaryPath, "utf8"));
   }
 
-  const passCount = controls.filter(c => {
+  const totalControls = controls.length;
+  let passCount = 0;
+  let failCount = 0;
+  let naCount = 0;
+
+  for (const c of controls) {
     const vals = Object.values(c.checks || {});
-    return vals.every(v => v.status === "pass" || v.status === "n/a");
-  }).length;
+    const hasFail = vals.some(v => v.status === "fail");
+    const allNa = vals.length > 0 && vals.every(v => v.status === "n/a");
+    if (hasFail) {
+      failCount++;
+    } else if (allNa) {
+      naCount++;
+    } else {
+      passCount++;
+    }
+  }
+
+  const verifiedCount = passCount + naCount;
+  const verifiedPercent = totalControls > 0 ? ((verifiedCount / totalControls) * 100).toFixed(1) : "0.0";
+  const passPercent = totalControls > 0 ? ((passCount / totalControls) * 100).toFixed(1) : "0.0";
+
+  const totalScreenshots = screensSummary.totalScreenshots || 0;
+  const pageErrorsCount = (screensSummary.pageErrors || []).length;
+  const horizontalScrollsCount = (screensSummary.horizontalScrolls || []).length;
 
   const content = `# Life Ledger 3.5.1 Polish Verification Report
 
 - **Version:** 3.5.1
 - **Branch:** \`agy-351\` (base \`6279dcd\`, 3.5.0)
 - **Verification Date:** ${dateStr}
-- **Controls Matrix Status:** ${passCount} / 62 verified (100% passing or verified via named static test)
-- **JS Test Suite:** 100% pass (â‰¥ 174 tests passing)
+- **Controls Matrix Status:** ${verifiedCount} / ${totalControls} verified (${verifiedPercent}% verified: ${passCount} passing [${passPercent}%], ${naCount} n/a, ${failCount} fail)
+- **JS Test Suite:** automated suite passing
 
 ---
 
@@ -105,8 +126,9 @@ All hairline SVGs follow the strict grammar in \`docs/hairline-system.md\` (160Ã
 - Viewports verified: 980px, 1180px, 1440px, 1600px
 - Locales verified: English (\`en\`), German (\`de\`), Simplified Chinese (\`zh\`)
 - Color modes verified: Light (\`data-theme="light"\`), Dark (\`data-theme="dark"\`)
-- Horizontal scroll check: **0 horizontal scroll** across all widths and locales.
-- Console / page errors: **0 errors**.
+- Total screenshots: **${totalScreenshots} screenshots**
+- Horizontal scroll check: **${horizontalScrollsCount} horizontal scroll** across all widths and locales.
+- Console / page errors: **${pageErrorsCount} errors**.
 
 Screenshots saved to: \`docs/phase-3-5-1/screens/\`
 

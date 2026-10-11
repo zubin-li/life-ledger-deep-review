@@ -13,6 +13,8 @@ All notable changes are documented here.
 - Hairline set updated: added `focus-paused.svg`, `focus-cancelled.svg`, `empty-week-goals.svg`, `journal-no-reflection.svg`, and updated `focus-complete.svg` with minute echo.
 - Executable verification: Playwright suite covering all 62 control matrix rows in `scripts/evidence/controls.mjs`, multi-viewport/multi-locale screenshots in `screens.mjs`, side-by-side before/after sheets in `before-after.mjs`, interaction video in `video.mjs`, and GitHub Actions workflow `.github/workflows/evidence-351.yml`.
 - Package version `3.5.1` and service worker cache `life-ledger-pwa-3.5.1`. Storage keys and schemas unchanged.
+- Fixes from the 3.5.1 evidence run: Week day sheet and Journal photo heading no longer show raw i18n keys (new `tests/i18n-keys.test.mjs` gate); toolbar previous/next works in Week; Motion changed in the Settings window now applies to the main window; Today's Scheduled row is no longer clipped; Journal photo count sits inline with Add photo as a grid tile; empty weekly-goals drawing is no longer clipped.
+- Evidence harness: fixture writes the real `life-ledger-v1` state, every control row starts from a reset state, Motion is changed through the real Settings page, and the report counts only computed results.
 
 ### Polish — Life Ledger 3.5 (macOS desktop)
 
