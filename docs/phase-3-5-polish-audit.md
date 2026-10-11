@@ -79,70 +79,70 @@ Reject:
 
 Repeated rows (each habit check, each calendar day, each week row) are one control. Decision is keep, fix, or remove.
 
-| Surface | Control | Purpose | Immediate | Disabled | Loading | Success | Failure | Undo | Keyboard | Focus | Motion | Decision |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Sidebar | Today, Week, Journal, Insights, Habits | Switch the primary view | Selected nav item | — | — | View swaps | — | — | Click; palette duplicates | Visible on buttons | Indicator should honor Off | keep |
-| Sidebar | Settings | Open settings | Native window on macOS; in this browser `?settings=1` shows the pane | — | — | Pane or window | Invoke missing in the browser preview | — | Button | Visible | Dialog animation must honor Off | keep |
-| Sidebar | Collapse | Hide or show the sidebar | Icon morph | — | — | Sidebar width changes | — | — | Button | Visible | Morph must honor Off | keep |
-| Sidebar | Sync dot | Show local save | Dot | — | — | Quiet status | — | — | Not a control | — | `syncDot` must honor Off | keep |
-| Sidebar | Per-habit shortcuts | Jump to a habit | Hidden on desktop (`display: none`) | — | — | — | — | — | Not in the desktop tab order | — | — | keep |
-| Toolbar | Previous / next date | Move the selected day | Label and list update | — | — | New day | — | — | Buttons | Visible | Date shift must honor Off | keep |
-| Toolbar | Date label | Open the date popover | Popover | — | — | Date applies | — | — | Button, Escape closes | Visible | Popover must honor Off | keep |
-| Toolbar | ⌘K | Open the command palette | Palette | — | — | Command runs | Empty query state exists | — | ⌘K, arrows, Enter, Escape | Visible | Panel must honor Off | fix |
-| Toolbar | Search | Filter the current list | Field expands | — | — | Matches stay | No-match copy is the empty-day sentence | Clear the field | Button, then the field | Visible | Expand must honor Off | fix |
-| Toolbar | “+” | Create a habit, a journal entry, a weekly goal, or start focus | Menu opens | — | — | Destination opens | — | — | Button, arrows, Escape | Visible | Item stagger must honor Off | keep |
-| Toolbar | Focus chip | Open the focus panel | Panel | — | — | Panel | — | — | Button, Escape | Visible | Panel must honor Off | keep |
-| Today | Mood Good / Calm / Low | Set the day’s mood | Pressed state, toast | — | — | Toast | — | — | Buttons | Visible | — | keep |
-| Today | Reflect on today | Open the note and photo sheet | Sheet | — | — | Autosave line | — | — | Button, Escape | Visible | Sheet must honor Off | keep |
-| Today | Habit check | Complete or reopen a habit | Row leaves Open; check draws | Future dates disable with no reason | — | Toast | — | Undo toast | Button, context menu | Visible | Check pop must honor Off | fix |
-| Today | Completed / Not in today’s score | Disclose finished or unscored habits | Disclosure opens | — | — | List | — | — | Summary | Visible | — | keep |
-| Today | Header | Say what kind of day it is | Static weekday and count | — | — | — | — | — | Not a control | — | — | fix |
-| Today | All-done moment | Mark the day complete once | 1.9s disc plus pill plus toast | — | — | Overlaps the help text | — | Undo still on the toast | — | — | Must be ≤600ms and honor Off | fix |
-| Week | Day row | Open that day’s habits in place | Row expands | — | — | Habits | — | — | Enter | Visible | Expand must honor Off | keep |
-| Week | In-day check | Same as Today’s check | Same toast | Future: silent disable | — | Toast | — | Undo | Button | Visible | Same as Today | fix |
-| Week | This week / Longer term | Switch the goals scope | Segment | — | — | Scope | — | — | Buttons | Visible | — | keep |
-| Week | Generate weekly review | Draft a review | Button | — | Needs a busy state if generation waits | Toast exists in code | No inline failure seen | — | Button | Visible | — | fix |
-| Journal | Timeline / Photos / Calendar | Switch journal mode | Selected tab | — | — | Mode | — | — | Tabs | Visible | FLIP must honor Off | keep |
-| Journal | Save note | Write the day’s note | “Saved” | — | — | Saved | — | — | Button | Visible | — | keep |
-| Journal | All / Photos / Notes | Filter the timeline | Segment | — | — | Filter | — | — | Buttons | Visible | — | keep |
-| Journal | Month previous / next | Change the visible month | Grid updates | — | — | Month | — | — | Buttons | Visible | — | keep |
-| Journal | Calendar day | Choose a day | Day marks | — | — | Composer updates; right column often stays empty | — | — | Buttons | Visible | — | fix |
-| Journal | Mood / Heatmap | Switch the calendar encoding | Segment | — | — | Grid | — | — | Buttons | Visible | — | keep |
-| Insights | Trend / Calendar / Habits / Table | Switch the report | Selected tab | — | — | View | — | — | Tabs | Visible | Draw must honor Off | keep |
-| Insights | 7 / 30 / 90 days | Set the window | Selected chip | — | — | Numbers | A zero window still looks like a chart | — | Buttons | Visible | — | fix |
-| Insights | Generate monthly review | Draft the month note | Button | — | Busy state unclear | Text appears | No inline failure seen | — | Button | Visible | — | fix |
-| Insights | Detailed metrics disclosure | Show the extra table | Disclosure | — | — | Table | — | — | Summary | Visible | — | keep |
-| Habits | Add habit | Start a new habit | Editor clears | — | — | Editor | — | — | Button | Visible | — | keep |
-| Habits | Row | Edit that habit | Row selects; editor fills | — | — | Fields | — | — | Row button | Visible | — | keep |
-| Habits | Drag handle | Reorder | Grip | — | — | New order | — | Reorder toast exists; confirm it stays | Keyboard order if present | Visible | Travel must honor Off | keep |
-| Habits | Active toggle | Pause a habit | Switch | — | — | Row state | — | — | Switch | Visible | — | fix |
-| Habits | Icon, color, mode, target, schedule, score, active | Define the habit | Control updates | — | — | Save toast | Validation not inline | — | Fields | Visible | — | fix |
-| Habits | Save | Commit the editor | Button | — | — | Toast | — | — | Button | Visible | Submit glyph must honor Off | fix |
-| Habits | Delete | Remove the habit | Menu or button | — | — | Toast | — | Context-menu path has Undo; the editor path must too | Menu item | Visible | — | fix |
-| Focus | Start | Begin a session | Clock runs | — | — | Running panel, then mini-player | — | Finish or skip | Button | Visible | Pulse must honor Off | keep |
-| Focus | Stepper − / + | Change minutes before start | Number | At a sensible floor | — | Time label | — | — | Buttons | Visible | — | keep |
-| Focus | Pause / Finish / Skip | Control a live session | Label flips | Hidden until a session exists | — | Toast on finish | — | — | Buttons | Visible | Complete flash must honor Off and drop `filter` | fix |
-| Focus | Mini-player | Continue a session while the panel is closed | Player | Hidden when idle or when the panel is open | — | Same actions | — | — | Buttons | Visible | Must not sit under the toast | fix |
-| Search | No-match state | Explain the empty filter | Wrong sentence | — | — | — | Reads as “no habits today” | Clear search | — | — | — | fix |
-| Palette | Command rows | Run the named command | Highlight | — | — | Action | Names disagree with the sidebar | — | Arrows, Enter | Visible | — | fix |
-| Context menu | Mark, Edit, Inactive, Delete | Act on one habit | Menu | — | — | Toast or navigation | — | Delete needs Undo on every path | Menu, Escape | Visible | — | fix |
-| Toast | Undo | Reverse the last state change | Toast | Hidden when there is no action | — | State returns | — | This is the undo | Button | Visible | Must clear the mini-player | fix |
-| Reflect | Note | Record the day | Autosave | Future day disables the field | — | “autosaved” | — | — | Textarea | Visible | — | keep |
-| Reflect | Add photo | Attach up to three private photos | Button | Disabled at three or with no date; reason is the count line | Busy while reading | Thumbnail | Toast on failure in the photo module | Photo undo exists in that module | Button | Visible | — | keep |
-| Reflect | Close | Dismiss the sheet | Sheet closes | — | — | — | — | — | Escape | Visible | — | keep |
-| Settings | General / Data / Cloud / Calendar / Habits | Switch settings section | Selected tab | — | — | Panel | — | — | Tabs | Visible | — | keep |
-| Settings | Reminder card | Open the reminder dialog | Dialog | — | — | Save reminder toast | — | — | Button | Visible | Dialog must honor Off | keep |
-| Settings | Appearance, Language, Motion | Set theme, language, motion | Select changes the UI | — | — | No in-place confirmation | — | Change the select again | Select | Visible | The choice must actually stop every animation | fix |
-| Settings | Import & export | Open the backup dialog | Dialog | — | Busy on read | Export toast; restore undo exists | Error toast in code | Restore undo | Button | Visible | — | keep |
-| Settings | Year / month selects | Jump the global cursor | They are visible with no label | HTML says `hidden` | — | Whole app retargets | — | — | Accidentally tabbable | — | — | fix |
-| Settings | Switch workspace | Return to the launcher choice | Button | — | — | Launcher when the bridge exists | Browser preview has no bridge | — | Button | Visible | — | keep |
-| Settings | Close | Dismiss settings | Pane closes | — | — | — | — | — | Button, Escape | Visible | — | keep |
-| Backup dialog | Export / Import tabs, Export, Done | Write or read a backup | Tab and buttons | Photo option disables outside month scope | Busy on file read | Toast | Invalid file message in code | Restore undo | Dialog keys | Visible | — | keep |
-| Launcher | Language | Set launcher language | Select | — | — | Copy swaps | — | — | Select | Visible | — | keep |
-| Launcher | Open local app | Enter the local desk | Button | — | — | Navigation | Error line if launch fails | — | Button | Visible | — | keep |
-| Launcher | Open connected app | Open the typed deployment | Submit | — | — | Navigation | Inline URL error | — | Submit | Visible | — | keep |
-| Launcher | Forget saved URL | Clear the stored cloud URL | Button | — | — | Field clears | — | — | Button | Visible | — | fix |
-| Dialogs | Close on reminder, mood reason, voice, review canvas, CloudBase, photo lightbox, focus timer | Dismiss that dialog | Dialog closes | Some actions disable until valid | Voice and sign-in have busy states | Save toasts where the action writes | Inline errors on sign-in | — | Escape / close | Visible | Dialog motion must honor Off | keep |
+| Surface | Control | Purpose | Immediate | Disabled | Loading | Success | Failure | Undo | Keyboard | Focus | Motion | Decision | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Sidebar | Today, Week, Journal, Insights, Habits | Switch the primary view | Selected nav item | — | — | View swaps | — | — | Click; palette duplicates | Visible on buttons | Indicator should honor Off | keep | done |
+| Sidebar | Settings | Open settings | Native window on macOS; in this browser `?settings=1` shows the pane | — | — | Pane or window | Invoke missing in the browser preview | — | Button | Visible | Dialog animation must honor Off | keep | done |
+| Sidebar | Collapse | Hide or show the sidebar | Icon morph | — | — | Sidebar width changes | — | — | Button | Visible | Morph must honor Off | keep | done |
+| Sidebar | Sync dot | Show local save | Dot | — | — | Quiet status | — | — | Not a control | — | `syncDot` must honor Off | keep | done |
+| Sidebar | Per-habit shortcuts | Jump to a habit | Hidden on desktop (`display: none`) | — | — | — | — | — | Not in the desktop tab order | — | — | keep | done |
+| Toolbar | Previous / next date | Move the selected day | Label and list update | — | — | New day | — | — | Buttons | Visible | Date shift must honor Off | keep | done |
+| Toolbar | Date label | Open the date popover | Popover | — | — | Date applies | — | — | Button, Escape closes | Visible | Popover must honor Off | keep | done |
+| Toolbar | ⌘K | Open the command palette | Palette | — | — | Command runs | Empty query state exists | — | ⌘K, arrows, Enter, Escape | Visible | Panel must honor Off | fix | done — palette names match Journal and Insights |
+| Toolbar | Search | Filter the current list | Field expands | — | — | Matches stay | No-match copy is the empty-day sentence | Clear the field | Button, then the field | Visible | Expand must honor Off | fix | done — field expands; no-match uses the search drawing and its own copy |
+| Toolbar | “+” | Create a habit, a journal entry, a weekly goal, or start focus | Menu opens | — | — | Destination opens | — | — | Button, arrows, Escape | Visible | Item stagger must honor Off | keep | done |
+| Toolbar | Focus chip | Open the focus panel | Panel | — | — | Panel | — | — | Button, Escape | Visible | Panel must honor Off | keep | done |
+| Today | Mood Good / Calm / Low | Set the day’s mood | Pressed state, toast | — | — | Toast | — | — | Buttons | Visible | — | keep | done |
+| Today | Reflect on today | Open the note and photo sheet | Sheet | — | — | Autosave line | — | — | Button, Escape | Visible | Sheet must honor Off | keep | done |
+| Today | Habit check | Complete or reopen a habit | Row leaves Open; check draws | Future dates disable with no reason | — | Toast | — | Undo toast | Button, context menu | Visible | Check pop must honor Off | fix | done — future days stay disabled and say why |
+| Today | Completed / Not in today’s score | Disclose finished or unscored habits | Disclosure opens | — | — | List | — | — | Summary | Visible | — | keep | done |
+| Today | Header | Say what kind of day it is | Static weekday and count | — | — | — | — | — | Not a control | — | — | fix | done — morning, evening, and done change the kicker and the 128px drawing |
+| Today | All-done moment | Mark the day complete once | 1.9s disc plus pill plus toast | — | — | Overlaps the help text | — | Undo still on the toast | — | — | Must be ≤600ms and honor Off | fix | done — one 600ms chip; Motion Off skips it |
+| Week | Day row | Open that day’s habits in place | Row expands | — | — | Habits | — | — | Enter | Visible | Expand must honor Off | keep | done — desktop selects the day into the primary pane; narrow windows still expand in place |
+| Week | In-day check | Same as Today’s check | Same toast | Future: silent disable | — | Toast | — | Undo | Button | Visible | Same as Today | fix | done — same future-day reason and Undo as Today |
+| Week | This week / Longer term | Switch the goals scope | Segment | — | — | Scope | — | — | Buttons | Visible | — | keep | done |
+| Week | Generate weekly review | Draft a review | Button | — | Needs a busy state if generation waits | Toast exists in code | No inline failure seen | — | Button | Visible | — | fix | done — button goes busy, then success or failure |
+| Journal | Timeline / Photos / Calendar | Switch journal mode | Selected tab | — | — | Mode | — | — | Tabs | Visible | FLIP must honor Off | keep | done |
+| Journal | Save note | Write the day’s note | “Saved” | — | — | Saved | — | — | Button | Visible | — | keep | done |
+| Journal | All / Photos / Notes | Filter the timeline | Segment | — | — | Filter | — | — | Buttons | Visible | — | keep | done |
+| Journal | Month previous / next | Change the visible month | Grid updates | — | — | Month | — | — | Buttons | Visible | — | keep | done |
+| Journal | Calendar day | Choose a day | Day marks | — | — | Composer updates; right column often stays empty | — | — | Buttons | Visible | — | fix | done — the detail pane is the selected day: mood, note, photos, habits |
+| Journal | Mood / Heatmap | Switch the calendar encoding | Segment | — | — | Grid | — | — | Buttons | Visible | — | keep | done |
+| Insights | Trend / Calendar / Habits / Table | Switch the report | Selected tab | — | — | View | — | — | Tabs | Visible | Draw must honor Off | keep | done |
+| Insights | 7 / 30 / 90 days | Set the window | Selected chip | — | — | Numbers | A zero window still looks like a chart | — | Buttons | Visible | — | fix | done — a zero window keeps the axes and date range; the drawing sits beside the chart |
+| Insights | Generate monthly review | Draft the month note | Button | — | Busy state unclear | Text appears | No inline failure seen | — | Button | Visible | — | fix | done — button goes busy, then success or failure |
+| Insights | Detailed metrics disclosure | Show the extra table | Disclosure | — | — | Table | — | — | Summary | Visible | — | keep | done |
+| Habits | Add habit | Start a new habit | Editor clears | — | — | Editor | — | — | Button | Visible | — | keep | done |
+| Habits | Row | Edit that habit | Row selects; editor fills | — | — | Fields | — | — | Row button | Visible | — | keep | done |
+| Habits | Drag handle | Reorder | Grip | — | — | New order | — | Reorder toast exists; confirm it stays | Keyboard order if present | Visible | Travel must honor Off | keep | done |
+| Habits | Active toggle | Pause a habit | Switch | — | — | Row state | — | — | Switch | Visible | — | fix | done — the switch confirms in place |
+| Habits | Icon, color, mode, target, schedule, score, active | Define the habit | Control updates | — | — | Save toast | Validation not inline | — | Fields | Visible | — | fix | done — Save confirms in place |
+| Habits | Save | Commit the editor | Button | — | — | Toast | — | — | Button | Visible | Submit glyph must honor Off | fix | done — submit shows busy, then saved |
+| Habits | Delete | Remove the habit | Menu or button | — | — | Toast | — | Context-menu path has Undo; the editor path must too | Menu item | Visible | — | fix | done — every delete path offers Undo |
+| Focus | Start | Begin a session | Clock runs | — | — | Running panel, then mini-player | — | Finish or skip | Button | Visible | Pulse must honor Off | keep | done |
+| Focus | Stepper − / + | Change minutes before start | Number | At a sensible floor | — | Time label | — | — | Buttons | Visible | — | keep | done |
+| Focus | Pause / Finish / Skip | Control a live session | Label flips | Hidden until a session exists | — | Toast on finish | — | — | Buttons | Visible | Complete flash must honor Off and drop `filter` | fix | done — finish drawing has no filter and follows Motion |
+| Focus | Mini-player | Continue a session while the panel is closed | Player | Hidden when idle or when the panel is open | — | Same actions | — | — | Buttons | Visible | Must not sit under the toast | fix | done — the toast sits above the player |
+| Search | No-match state | Explain the empty filter | Wrong sentence | — | — | — | Reads as “no habits today” | Clear search | — | — | — | fix | done — own sentence plus the search drawing |
+| Palette | Command rows | Run the named command | Highlight | — | — | Action | Names disagree with the sidebar | — | Arrows, Enter | Visible | — | fix | done — labels match the sidebar |
+| Context menu | Mark, Edit, Inactive, Delete | Act on one habit | Menu | — | — | Toast or navigation | — | Delete needs Undo on every path | Menu, Escape | Visible | — | fix | done — Delete offers Undo |
+| Toast | Undo | Reverse the last state change | Toast | Hidden when there is no action | — | State returns | — | This is the undo | Button | Visible | Must clear the mini-player | fix | done — toast clears the mini-player |
+| Reflect | Note | Record the day | Autosave | Future day disables the field | — | “autosaved” | — | — | Textarea | Visible | — | keep | done |
+| Reflect | Add photo | Attach up to three private photos | Button | Disabled at three or with no date; reason is the count line | Busy while reading | Thumbnail | Toast on failure in the photo module | Photo undo exists in that module | Button | Visible | — | keep | done |
+| Reflect | Close | Dismiss the sheet | Sheet closes | — | — | — | — | — | Escape | Visible | — | keep | done |
+| Settings | General / Data / Cloud / Calendar / Habits | Switch settings section | Selected tab | — | — | Panel | — | — | Tabs | Visible | — | keep | done |
+| Settings | Reminder card | Open the reminder dialog | Dialog | — | — | Save reminder toast | — | — | Button | Visible | Dialog must honor Off | keep | done |
+| Settings | Appearance, Language, Motion | Set theme, language, motion | Select changes the UI | — | — | No in-place confirmation | — | Change the select again | Select | Visible | The choice must actually stop every animation | fix | done — each select confirms in place; Motion covers every animation |
+| Settings | Import & export | Open the backup dialog | Dialog | — | Busy on read | Export toast; restore undo exists | Error toast in code | Restore undo | Button | Visible | — | keep | done |
+| Settings | Year / month selects | Jump the global cursor | They are visible with no label | HTML says `hidden` | — | Whole app retargets | — | — | Accidentally tabbable | — | — | fix | done — hidden selects stay hidden |
+| Settings | Switch workspace | Return to the launcher choice | Button | — | — | Launcher when the bridge exists | Browser preview has no bridge | — | Button | Visible | — | keep | done |
+| Settings | Close | Dismiss settings | Pane closes | — | — | — | — | — | Button, Escape | Visible | — | keep | done |
+| Backup dialog | Export / Import tabs, Export, Done | Write or read a backup | Tab and buttons | Photo option disables outside month scope | Busy on file read | Toast | Invalid file message in code | Restore undo | Dialog keys | Visible | — | keep | done |
+| Launcher | Language | Set launcher language | Select | — | — | Copy swaps | — | — | Select | Visible | — | keep | done |
+| Launcher | Open local app | Enter the local desk | Button | — | — | Navigation | Error line if launch fails | — | Button | Visible | — | keep | done |
+| Launcher | Open connected app | Open the typed deployment | Submit | — | — | Navigation | Inline URL error | — | Submit | Visible | — | keep | done |
+| Launcher | Forget saved URL | Clear the stored cloud URL | Button | — | — | Field clears | — | — | Button | Visible | — | fix | done — the field clears and confirms |
+| Dialogs | Close on reminder, mood reason, voice, review canvas, CloudBase, photo lightbox, focus timer | Dismiss that dialog | Dialog closes | Some actions disable until valid | Voice and sign-in have busy states | Save toasts where the action writes | Inline errors on sign-in | — | Escape / close | Visible | Dialog motion must honor Off | keep | done |
 
 “Fix” rows to implement, and nothing else from this matrix:
 
@@ -152,7 +152,9 @@ Repeated rows (each habit check, each calendar day, each week row) are one contr
 - All-done celebration is one shot, ≤600ms, does not cover the help line, and follows Motion.
 - Today header copy and drawing follow morning / evening and done / not done.
 - Journal’s empty right column shows the selected day or gets out of the way.
-- Insights with no completions uses the insufficient-data drawing instead of a fake 0% chart.
+- Insights with no completions keeps the chart axes and the date range. The insufficient-data drawing sits beside the chart.
+
+Status counts for this matrix: 62 done, 0 removed, 0 deferred. Every original “fix” row is done. The Week day row stays, and on the desktop it selects the day into the primary pane instead of expanding a second list under the rail.
 - Weekly and monthly generate buttons show busy, then success or failure.
 - Habit active toggle and Save confirm in place; every delete offers Undo.
 - Focus finish animation drops `filter`; the mini-player and the toast no longer overlap.

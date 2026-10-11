@@ -2800,8 +2800,9 @@ html[data-desktop] .today-list-heading { margin: 14px 0 2px; font: 600 12px/1.3 
 html[data-desktop] .today-habit-list.scheduled .today-habit-row { grid-template-columns: 52px 24px minmax(0, 1fr) auto; }
 html[data-desktop] .today-habit-time,
 html[data-desktop] .week-habit-time { font: 600 12px/1 var(--font-body); font-variant-numeric: tabular-nums; color: var(--secondaryLabel); }
-html[data-desktop] .week-split { display: block; }
-html[data-desktop] .week-day-detail { display: none; }
+html[data-desktop] .week-agenda .week-day-body { display: none; }
+html[data-desktop] .week-habit-row.done .week-habit-check { background: var(--controlAccent); color: white; border-color: var(--controlAccent); }
+html[data-desktop] .week-habit-row.done span { color: var(--secondaryLabel); }
 html[data-desktop] .week-day-section { border-bottom: 1px solid var(--separator); }
 html[data-desktop] .week-day-section .week-agenda-row { width: 100%; }
 html[data-desktop] .week-day-body { display: grid; gap: 2px; padding: 2px 8px 12px 108px; animation: sheetIn 200ms var(--ease-move); }
@@ -2971,10 +2972,11 @@ html.motion-reduced .hairline-enter { transform: none !important; clip-path: non
 html.motion-reduced .hairline-enter { opacity: 1 !important; }
 
 .hairline-mount.is-inline { width: 72px; }
+.hairline-mount.is-mark { width: 128px; }
 .hairline-mount.is-empty { width: min(160px, 56vw); }
 .hairline-mount.is-hero { width: min(200px, 70vw); }
 .today-stage-copy { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; }
-.today-header-art { grid-row: 1 / span 5; align-self: center; width: 72px; }
+.today-header-art { grid-row: 1 / span 5; align-self: center; width: 128px; }
 .today-kicker, .today-date-heading, .today-date-secondary, .today-summary, .today-progress { grid-column: 2; }
 .hairline-mount[data-streak="short"] [data-growth="2"],
 .hairline-mount[data-streak="short"] [data-growth="3"],
@@ -3018,3 +3020,82 @@ html.motion-reduced .hairline-enter { opacity: 1 !important; }
 html.motion-off *,
 html.motion-off *::before,
 html.motion-off *::after { animation: none !important; transition: none !important; }
+
+/* Round 2 — one primary region, one secondary, quiet chrome. */
+.week-day-detail { display: none; }
+html[data-desktop] body[data-active-view="today"] .main-content { overflow: hidden; }
+html[data-desktop] #todayView.active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; height: 100%; overflow: hidden; }
+html[data-desktop] .today-stage { flex: 1 1 auto; min-height: 0; }
+html[data-desktop] .today-stage-header { align-items: center; }
+html[data-desktop] .today-stage-copy { grid-template-columns: 128px minmax(0, 1fr); column-gap: 20px; align-items: center; }
+html[data-desktop] .today-header-art { width: 128px; align-self: center; }
+html[data-desktop] .today-date-heading { font: 600 2.5rem/1.05 var(--font-display); letter-spacing: -0.03em; }
+html[data-desktop] .today-list { flex: 0 1 auto; min-height: 0; overflow: auto; }
+html[data-desktop] .today-day-context { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(200px, .7fr); gap: 28px; align-content: start; min-height: 168px; margin-top: 16px; padding: 16px 4px 8px; border-top: 1px solid var(--separator); }
+html[data-desktop] .today-context-week h3,
+html[data-desktop] .today-context-aside h3 { margin: 0 0 8px; font: 600 11px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .today-context-week ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+html[data-desktop] .today-context-day { display: grid; justify-items: center; gap: 6px; width: 100%; min-height: 72px; padding: 8px 2px; border: 0; border-radius: 10px; background: transparent; color: var(--label); cursor: pointer; }
+html[data-desktop] .today-context-day span { font: 600 11px/1.2 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .today-context-day b { font: 600 12px/1 var(--font-body); font-variant-numeric: tabular-nums; }
+html[data-desktop] .today-context-day i { display: block; width: min(28px, 100%); height: 4px; border-radius: 999px; background: color-mix(in srgb, var(--label) 12%, transparent); position: relative; overflow: hidden; }
+html[data-desktop] .today-context-day i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--fill, 0) * 100%); background: var(--controlAccent); }
+html[data-desktop] .today-context-day.is-selected { background: color-mix(in srgb, var(--controlAccent) 14%, transparent); }
+html[data-desktop] .today-context-day:disabled { opacity: .45; cursor: default; }
+html[data-desktop] .today-context-aside p { margin: 0 0 14px; font: 400 14px/1.45 var(--font-body); color: var(--label); }
+html[data-desktop] #weekView.active { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+html[data-desktop] .week-plan-lede { margin: 0; padding: 10px 24px 8px; font: 500 13px/1.35 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .weekly-workspace { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; height: auto; }
+html[data-desktop] .week-split { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 0; padding: 0; border-top: 1px solid var(--separator); }
+html[data-desktop] .week-agenda { overflow: auto; padding: 8px 0; border-right: 1px solid var(--separator); background: var(--surface-1); }
+html[data-desktop] .week-agenda-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; min-height: 40px; padding: 6px 14px; }
+html[data-desktop] .week-agenda-note,
+html[data-desktop] .week-agenda-mood { display: none; }
+html[data-desktop] .week-agenda-date { font: 600 15px/1.1 var(--font-display); }
+html[data-desktop] .week-agenda-row.today,
+html[data-desktop] .week-agenda-row.selected { box-shadow: inset 3px 0 0 var(--controlAccent); background: color-mix(in srgb, var(--controlAccent) 10%, transparent); }
+html[data-desktop] .week-day-detail { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 28px 40px 24px; overflow: auto; background: var(--sheet); }
+html[data-desktop] .week-detail-kicker { margin: 0; font: 600 12px/1.3 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .week-detail-header h2,
+html[data-desktop] .week-day-detail h2 { margin: 2px 0 0; font: 600 2.35rem/1.1 var(--font-display); letter-spacing: -0.03em; color: var(--label); }
+html[data-desktop] .week-detail-header p { margin: 8px 0 0; font: 600 15px/1.35 var(--font-body); color: var(--label); }
+html[data-desktop] .week-day-mood { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; font: 500 14px/1.4 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .week-day-mood svg { width: 16px; height: 16px; }
+html[data-desktop] .week-detail-note { max-width: 42em; margin: 0; font: 400 15px/1.55 var(--font-body); color: var(--label); }
+html[data-desktop] .week-detail-note.empty { color: var(--secondaryLabel); }
+html[data-desktop] .week-detail-habits { margin-top: 12px; max-width: 520px; }
+html[data-desktop] .weekly-goals-section { flex: 0 0 auto; max-height: 148px; margin: 0; padding: 10px 24px 12px; border-top: 1px solid var(--separator); background: color-mix(in srgb, var(--surface-1) 80%, transparent); }
+html[data-desktop] .day-page { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(200px, 280px); grid-template-areas: "header side" "note side"; column-gap: 36px; row-gap: 12px; align-items: start; }
+html[data-desktop] .day-page-header { grid-area: header; }
+html[data-desktop] .day-page-note { grid-area: note; max-width: 40em; }
+html[data-desktop] .day-page-side { grid-area: side; display: grid; gap: 18px; align-content: start; }
+html[data-desktop] .day-page-label,
+html[data-desktop] .day-page .timeline-detail-habits h3,
+html[data-desktop] .day-page .mood-photo-heading strong { margin: 0; font: 600 11px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .timeline-detail .day-page .timeline-detail-date { margin: 0; font: 600 2.35rem/1.1 var(--font-display); letter-spacing: -0.03em; }
+html[data-desktop] .day-page-mood { margin: 8px 0 0; }
+html[data-desktop] .day-page .mood-photo-heading.day-page-meta { display: grid; grid-template-columns: max-content max-content; justify-content: start; align-items: baseline; column-gap: 10px; width: 100%; margin: 0 0 8px; }
+html[data-desktop] .day-page .mood-photo-heading > div { display: contents; }
+html[data-desktop] .day-page .mood-photo-heading strong { grid-column: 1; grid-row: 1; }
+html[data-desktop] .day-page .mood-photo-heading [data-photo-count] { grid-column: 2; grid-row: 1; }
+html[data-desktop] .day-page .mood-photo-heading small { grid-column: 1 / -1; grid-row: 2; max-width: 26em; }
+html[data-desktop] .day-page-meta { display: flex; align-items: baseline; justify-content: flex-start; gap: 10px; width: auto; margin: 0 0 8px; }
+html[data-desktop] .week-detail-habits .week-habit-row { grid-template-columns: 28px minmax(0, 1fr); }
+html[data-desktop] .week-detail-habits .week-habit-check { order: -1; }
+html[data-desktop] .week-detail-habits .week-habit-list.scheduled .week-habit-row { grid-template-columns: 52px 28px minmax(0, 1fr); }
+html[data-desktop] .week-detail-habits .week-habit-list.scheduled .week-habit-time { order: -2; }
+html[data-desktop] .day-page .mood-photo-heading > span,
+html[data-desktop] .day-page-meta b { margin: 0; font: 600 12px/1.2 var(--font-body); font-variant-numeric: tabular-nums; color: var(--secondaryLabel); letter-spacing: 0; text-transform: none; }
+html[data-desktop] .day-page .timeline-habit-row.done span { color: var(--secondaryLabel); }
+html[data-desktop] .review-trend-with-note { display: grid; grid-template-columns: minmax(0, 1fr) 168px; gap: 16px; align-items: center; }
+html[data-desktop] .review-trend-note .hairline-empty { padding: 0; gap: 6px; justify-items: center; }
+html[data-desktop] .review-trend-note .hairline-mount { width: 120px; }
+html[data-desktop] .review-trend-note strong { font: 600 13px/1.3 var(--font-body); }
+html[data-desktop] .review-trend-note p { margin: 0; font: 400 12px/1.4 var(--font-body); }
+@media (max-width: 1180px) {
+  html[data-desktop] .week-split { grid-template-columns: 200px minmax(0, 1fr); }
+  html[data-desktop] .today-day-context,
+  html[data-desktop] .day-page,
+  html[data-desktop] .review-trend-with-note { grid-template-columns: 1fr; }
+  html[data-desktop] .day-page { grid-template-areas: "header" "note" "side"; }
+}

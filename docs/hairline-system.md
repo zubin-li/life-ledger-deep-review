@@ -21,7 +21,8 @@ The subject stays inside x 36–124 and y 28–96. Nothing floats in a distant c
 
 | Token | Width | Use |
 | --- | --- | --- |
-| `is-inline` | 72px | Today header, settings status |
+| `is-inline` | 72px | Settings and status lines |
+| `is-mark` | 128px | Today header, beside the weekday |
 | `is-empty` | 160px | Empty and all-done states |
 | `is-hero` | 200px | Launcher choice, and nowhere else |
 

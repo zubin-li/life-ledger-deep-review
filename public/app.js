@@ -131,6 +131,10 @@ const i18n = {
       open: "待完成",
       scheduled: "已排程",
       reflect: "回顾今天",
+      tomorrow: "明天",
+      tomorrowCount: "明天有 {count} 项",
+      reflectionLabel: "回顾",
+      noReflection: "还没有回顾",
       eventsCount: "{count} 个日程",
       sidebarMore: "还有 {count} 项",
     },
@@ -584,6 +588,10 @@ const i18n = {
       open: "Open",
       scheduled: "Scheduled",
       reflect: "Reflect on today",
+      tomorrow: "Tomorrow",
+      tomorrowCount: "{count} habits tomorrow",
+      reflectionLabel: "Reflection",
+      noReflection: "No reflection yet",
       eventsCount: "{count} events",
       sidebarMore: "+{count} more",
     },
@@ -1037,6 +1045,10 @@ const i18n = {
       open: "Offen",
       scheduled: "Geplant",
       reflect: "Heute reflektieren",
+      tomorrow: "Morgen",
+      tomorrowCount: "{count} Gewohnheiten morgen",
+      reflectionLabel: "Reflexion",
+      noReflection: "Noch keine Reflexion",
       eventsCount: "{count} Termine",
       sidebarMore: "+{count} weitere",
     },
@@ -3398,7 +3410,8 @@ function weekHabitMarkup(habit, date, time) {
   const timeHtml = time ? `<time class="week-habit-time">${escapeHtml(time)}</time>` : "";
   const locked = isFutureDate(date);
   const lockedAttr = locked ? `disabled title="${escapeHtml(tr("today.futureLocked"))}"` : "";
-  return `<li class="week-habit-row" data-id="${escapeHtml(habit.id)}" data-date="${escapeHtml(date)}">${timeHtml}<span>${escapeHtml(name)}</span><button class="week-habit-check" type="button" aria-label="${escapeHtml(markLabel)}" ${lockedAttr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button></li>`;
+  const done = getLog(date).completed.includes(habit.id);
+  return `<li class="week-habit-row ${done ? "done" : ""}" data-id="${escapeHtml(habit.id)}" data-date="${escapeHtml(date)}">${timeHtml}<span>${escapeHtml(name)}</span><button class="week-habit-check" type="button" aria-pressed="${done}" aria-label="${escapeHtml(markLabel)}" ${lockedAttr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button></li>`;
 }
 
 function renderWeekAgenda() {
@@ -3782,24 +3795,38 @@ async function renderTimelineDetail() {
   const log = getLog(date);
   const label = timelineDateLabel(date);
   const events = calendarEventsForDate(date).filter(event => !event.routine);
-  const habits = dailyHabits(date).filter(habit => log.completed.includes(habit.id));
+  const scored = dailyHabits(date);
+  const doneCount = scored.filter(habit => log.completed.includes(habit.id)).length;
+  const mood = log.mood
+    ? `<span class="timeline-detail-mood-glyph">${moodCalendarIcon(log.mood)}</span><span>${escapeHtml(moodLabel(log.mood))}</span>`
+    : escapeHtml(tr("today.noReflection"));
   container.innerHTML = `
-    <header class="timeline-detail-header">
-      <h2 class="timeline-detail-date">${escapeHtml(label.detail)}</h2>
-      ${log.mood ? `<p class="timeline-detail-mood"><span class="timeline-detail-mood-glyph">${moodCalendarIcon(log.mood)}</span><span>${escapeHtml(moodLabel(log.mood))}</span></p>` : ""}
-    </header>
-    ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<p class="timeline-detail-empty-note">${escapeHtml(tr("timeline.noNote"))}</p>`}
-    ${photoCollageMarkup(calendarPhotosByDate.get(date) || [])}
-    <section class="photo-library photo-library-story" id="timelineDetailPhotos" data-photo-editor>
-      <div class="mood-photo-heading"><div><strong data-photo-title></strong><small data-photo-help></small></div><span data-photo-count></span></div>
-      <div class="photo-drop" data-photo-drop><p class="photo-drop-empty" data-photo-empty></p><div class="mood-photo-list" data-photo-list></div></div>
-      <button class="mood-photo-add" data-photo-add type="button"><span></span></button>
-      <input data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-      <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-      <p class="mood-photo-status" data-photo-status role="status" hidden></p>
-    </section>
-    ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
-    ${habits.length ? `<section class="timeline-detail-habits"><h3>${escapeHtml(tr("timeline.habitsHeading"))}</h3><ul class="timeline-habit-list">${habits.map(habit => `<li class="timeline-habit-row" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul></section>` : ""}`;
+    <div class="day-page">
+      <header class="day-page-header timeline-detail-header">
+        <h2 class="timeline-detail-date">${escapeHtml(label.detail)}</h2>
+        <p class="timeline-detail-mood day-page-mood">${mood}</p>
+      </header>
+      <section class="day-page-note">
+        <h3 class="day-page-label">${escapeHtml(tr("today.reflectionLabel"))}</h3>
+        ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<p class="timeline-detail-empty-note">${escapeHtml(tr("timeline.noNote"))}</p>`}
+      </section>
+      <section class="day-page-side">
+        ${photoCollageMarkup(calendarPhotosByDate.get(date) || [])}
+        <section class="photo-library photo-library-story" id="timelineDetailPhotos" data-photo-editor>
+          <div class="mood-photo-heading day-page-meta"><div><strong data-photo-title></strong><small data-photo-help></small></div><span data-photo-count></span></div>
+          <div class="photo-drop" data-photo-drop><p class="photo-drop-empty" data-photo-empty></p><div class="mood-photo-list" data-photo-list></div></div>
+          <button class="mood-photo-add" data-photo-add type="button"><span></span></button>
+          <input data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+          <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+          <p class="mood-photo-status" data-photo-status role="status" hidden></p>
+        </section>
+        <section class="timeline-detail-habits">
+          <h3 class="day-page-meta"><span>${escapeHtml(tr("timeline.habitsHeading"))}</span><b>${doneCount}/${scored.length}</b></h3>
+          <ul class="timeline-habit-list">${scored.map(habit => `<li class="timeline-habit-row ${log.completed.includes(habit.id) ? "done" : ""}" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul>
+        </section>
+        ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
+      </section>
+    </div>`;
   photoMemories?.mount($("#timelineDetailPhotos"))?.load(date);
 }
 
@@ -4111,8 +4138,40 @@ function renderToday() {
   }
   bindTodayHabitRows();
   renderTodayEventsStrip();
+  renderTodayContext(date);
   renderHomeJournal();
   void todayPhotoMount?.load(date);
+}
+
+function renderTodayContext(date) {
+  const host = $("#todayDayContext");
+  if (!host) return;
+  const end = parseDate(date);
+  const days = [];
+  for (let offset = 6; offset >= 0; offset -= 1) {
+    const day = new Date(end);
+    day.setDate(end.getDate() - offset);
+    const key = isoDate(day);
+    const scored = dailyHabits(key);
+    const done = scored.filter(habit => getLog(key).completed.includes(habit.id)).length;
+    days.push({
+      key,
+      label: formatLocalizedDate(day, { weekday: "narrow" }),
+      done,
+      total: scored.length,
+      future: isFutureDate(key),
+      selected: key === date,
+    });
+  }
+  const tomorrow = parseDate(date);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowKey = isoDate(tomorrow);
+  const tomorrowTotal = dailyHabits(tomorrowKey).length;
+  const note = String(getLog(date).note || "").replace(/\s+/g, " ").trim();
+  host.innerHTML = `<section class="today-context-week" aria-label="${escapeHtml(tr("today.last7"))}"><h3>${escapeHtml(tr("today.last7"))}</h3><ol>${days.map(day => `<li><button type="button" class="today-context-day${day.selected ? " is-selected" : ""}" data-date="${day.key}" ${day.future ? `disabled title="${escapeHtml(tr("today.futureLocked"))}"` : ""}><span>${escapeHtml(day.label)}</span><i style="--fill:${day.total ? day.done / day.total : 0}"></i><b>${day.future ? "—" : `${day.done}/${day.total}`}</b></button></li>`).join("")}</ol></section><section class="today-context-aside"><h3>${escapeHtml(tr("today.tomorrow"))}</h3><p>${escapeHtml(tr("today.tomorrowCount", { count: tomorrowTotal }))}</p><h3>${escapeHtml(tr("today.reflectionLabel"))}</h3><p>${escapeHtml(note || tr("today.noReflection"))}</p></section>`;
+  host.querySelectorAll(".today-context-day:not([disabled])").forEach(button => {
+    button.addEventListener("click", () => selectPlanningDate(button.dataset.date));
+  });
 }
 
 function renderInspector() {
@@ -4533,8 +4592,19 @@ function renderWeekDayDetail() {
   const done = scored.filter(habit => log.completed.includes(habit.id)).length;
   const label = formatLocalizedDate(parseDate(date), { weekday: "long", day: "numeric", month: "long" });
   const note = String(log.note || "").trim();
-  const mood = log.mood ? `${moodCalendarIcon(log.mood)} ${escapeHtml(moodLabel(log.mood))}` : "";
-  host.innerHTML = `<h2>${escapeHtml(label)}</h2><p>${escapeHtml(tr("today.summary", { done, total: scored.length }))}</p>${mood ? `<p class="week-day-mood">${mood}</p>` : ""}${note ? `<p>${escapeHtml(note)}</p>` : `<p>${escapeHtml(tr("week.noEntry"))}</p>`}`;
+  const mood = log.mood ? `${moodCalendarIcon(log.mood)} ${escapeHtml(moodLabel(log.mood))}` : escapeHtml(tr("today.noReflection"));
+  const pending = scored.filter(habit => !log.completed.includes(habit.id));
+  const timed = habit => scheduleLabel(versionFor(habit, date));
+  const scheduled = pending.filter(habit => timed(habit)).sort((a, b) => timed(a).localeCompare(timed(b)));
+  const open = pending.filter(habit => !timed(habit));
+  const completed = scored.filter(habit => log.completed.includes(habit.id));
+  const habitList = items => items.map(habit => weekHabitMarkup(habit, date, timed(habit) || "")).join("");
+  host.innerHTML = `<header class="week-detail-header"><p class="week-detail-kicker">${escapeHtml(tr("viewTitles.week"))}</p><h2>${escapeHtml(label)}</h2><p>${escapeHtml(tr("today.summary", { done, total: scored.length }))}</p></header><p class="week-day-mood">${mood}</p>${note ? `<p class="week-detail-note">${escapeHtml(note)}</p>` : `<p class="week-detail-note empty">${escapeHtml(tr("week.noEntry"))}</p>`}<div class="week-detail-habits">${open.length ? `<ul class="week-habit-list">${habitList(open)}</ul>` : ""}${scheduled.length ? `<h3 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h3><ul class="week-habit-list scheduled">${habitList(scheduled)}</ul>` : ""}${completed.length ? `<h3 class="week-scheduled-heading">${escapeHtml(tr("today.completed", { count: completed.length }))}</h3><ul class="week-habit-list">${habitList(completed)}</ul>` : ""}</div>`;
+  host.querySelectorAll(".week-habit-check").forEach(button => button.addEventListener("click", event => {
+    event.stopPropagation();
+    const row = button.closest(".week-habit-row");
+    if (row) toggleHabit(row.dataset.date, row.dataset.id);
+  }));
 }
 
 function toggleHabit(date, id) {
@@ -5004,9 +5074,15 @@ function renderReviewTrendChart() {
     return;
   }
   if (!current.completed) {
-    chart.innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.trendTitle"), tr("review.insufficient"));
-    hydrateHairlineMounts(chart);
     const points = dates.map(date => ({ date, value: completionFor(date) }));
+    const range = tr("review.trendSummary", {
+      start: formatLocalizedDate(parseDate(dates[0]), { day: "numeric", month: "short" }),
+      end: formatLocalizedDate(parseDate(dates[dates.length - 1]), { day: "numeric", month: "short" }),
+      completed: current.completed,
+      eligible: current.eligible,
+    });
+    chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))} <span class="review-trend-range">${escapeHtml(range)}</span></h3><div class="review-trend-plot review-trend-with-note">${renderTrendSvg(points, range)}<aside class="review-trend-note">${hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.trendTitle"), tr("review.insufficient"))}</aside></div>`;
+    hydrateHairlineMounts(chart);
     const heatmap = $("#reviewHeatmap");
     const compare = $("#reviewHabitCompare");
     if (heatmap) heatmap.innerHTML = renderConsistencyHeatmap(dates);

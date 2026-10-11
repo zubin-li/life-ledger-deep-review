@@ -1,14 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
-    <path d="M36 84h88"/>
-    <path d="M44 84c12-20 60-20 72 0"/>
+    <path d="M36 96h88"/>
+    <path d="M40 96c14-28 66-28 80 0"/>
   </g>
   <g data-layer="2" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
-    <path d="M80 46V38"/>
-    <path d="M66 54l-6-4"/>
-    <path d="M94 54l6-4"/>
+    <path d="M80 48V28"/>
+    <path d="M62 58l-12-8"/>
+    <path d="M98 58l12-8"/>
+    <path d="M56 42l-8-12"/>
+    <path d="M104 42l8-12"/>
   </g>
   <g data-layer="3" stroke="var(--accent, #4f7a64)" stroke-width="1" vector-effect="non-scaling-stroke">
-    <circle cx="80" cy="46" r="9"/>
+    <circle cx="80" cy="52" r="14"/>
   </g>
 </svg>
