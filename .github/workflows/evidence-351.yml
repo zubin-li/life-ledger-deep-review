@@ -28,7 +28,7 @@ jobs:
       - name: Checkout 3.5.0 baseline (6279dcd)
         uses: actions/checkout@v4
         with:
-          ref: 6279dcd
+          ref: 6279dcd6e3797465dda3086bb982a6102f9fa7f4
           path: before-350
 
       - name: Setup Node.js
