@@ -168,10 +168,11 @@ body {
 }
 
 .choice-hairline {
-  width: min(120px, 28%);
+  width: min(160px, 42%);
   margin-bottom: 8px;
   color: var(--sage, #5d7d68);
 }
+.launcher-status { min-height: 1.2em; margin: 8px 0 0; color: var(--sage, #5d7d68); font-size: 12px; }
 
 .hairline-illustration {
   display: block;

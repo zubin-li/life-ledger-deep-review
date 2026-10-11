@@ -142,6 +142,7 @@
         <section class="view active today-desk today-stage" id="todayView">
           <header class="today-stage-header today-header">
             <div class="today-stage-copy">
+              <div class="today-header-art hairline-mount is-inline" id="todayHeaderArt" aria-hidden="true"></div>
               <p class="today-kicker" id="todayKicker">Today</p>
               <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
               <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
@@ -532,6 +533,7 @@
               <option value="off">Off</option>
             </select>
           </label>
+          <p class="settings-confirm" id="settingsConfirm" role="status"></p>
           <p class="about-build" id="aboutBuild">Life Ledger 3.4.0</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
@@ -546,6 +548,8 @@
         <section class="settings-panel" data-settings-panel="cloud" role="tabpanel" hidden>
           <button class="secondary-button cloud-account-button" id="cloudAccountButton" type="button">Cloud account</button>
           <button class="secondary-button" id="workspaceSwitchButton" type="button" hidden>Switch workspace</button>
+          <div class="sync-offline hairline-mount is-inline" id="syncOfflineArt" hidden></div>
+          <p id="syncOfflineNote" hidden></p>
           <p id="profileSaveMode"></p>
         </section>
         <section class="settings-panel" data-settings-panel="calendar" role="tabpanel" hidden>
@@ -841,6 +845,7 @@
           </div>
           <button class="text-button undo-restore-button" id="undoRestore" type="button" hidden>撤销上一次恢复</button>
         </section>
+        <div class="backup-success hairline-mount is-inline" id="backupSuccess" hidden></div>
         <footer><button class="secondary-button close-export-dialog" type="button" id="exportCancel">完成</button><button class="primary-button" type="submit" id="exportConfirm">导出备份</button></footer>
       </form>
     </dialog>

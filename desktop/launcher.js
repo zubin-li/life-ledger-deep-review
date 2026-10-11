@@ -25,6 +25,7 @@ const copy = {
     openCloud: "Open connected app",
     openCloudBusy: "Connecting…",
     forgetCloud: "Forget saved URL",
+    forgotCloud: "Saved URL forgotten",
     invalid: "Use HTTPS. HTTP is allowed only for localhost/127.0.0.1 development.",
     launchError: "Couldn't open that window. Please try again.",
     privacyNote: "Local mode never leaves this Mac. Cloud mode only talks to the URL you enter above.",
@@ -42,6 +43,7 @@ const copy = {
     openCloud: "打开云端应用",
     openCloudBusy: "正在连接…",
     forgetCloud: "忘记已保存 URL",
+    forgotCloud: "已忘记保存的 URL",
     invalid: "生产环境请使用 HTTPS。仅 localhost/127.0.0.1 开发地址可用 HTTP。",
     launchError: "无法打开该窗口，请重试。",
     privacyNote: "本机模式的数据不会离开这台 Mac。云端模式只会与你填写的地址通信。",
@@ -59,6 +61,7 @@ const copy = {
     openCloud: "Cloud-App öffnen",
     openCloudBusy: "Verbindung wird hergestellt…",
     forgetCloud: "Gespeicherte URL vergessen",
+    forgotCloud: "URL wurde vergessen",
     invalid: "Bitte HTTPS nutzen. HTTP ist nur für localhost/127.0.0.1 in Entwicklung erlaubt.",
     launchError: "Fenster konnte nicht geöffnet werden. Bitte erneut versuchen.",
     privacyNote: "Der lokale Modus verlässt diesen Mac nie. Der Cloud-Modus spricht nur mit der oben angegebenen Adresse.",
@@ -148,6 +151,8 @@ document.getElementById("forgetCloud").addEventListener("click", () => {
   localStorage.removeItem(STORAGE_KEY);
   cloudUrlInput.value = "";
   setCloudError("");
+  const status = document.getElementById("launcherStatus");
+  if (status) status.textContent = activeCopy.forgotCloud;
 });
 
 document.querySelectorAll(".hairline-mount[data-hairline-src]").forEach(host => {

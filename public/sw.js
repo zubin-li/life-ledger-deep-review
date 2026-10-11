@@ -19,7 +19,7 @@ const APP_SHELL = [
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",
   "./assets/apple-touch-icon.png",
-  ...["empty-today-done", "empty-journal", "empty-insights", "empty-week", "empty-habits", "focus-idle"].map(name => `./assets/hairline/${name}.svg`),
+  ...["empty-today-done", "today-morning", "today-evening", "today-open", "empty-first-run", "empty-journal", "empty-photos", "empty-insights", "focus-idle", "focus-complete", "empty-week", "empty-habits", "launcher-local", "launcher-cloud", "search-empty", "backup-success", "sync-offline"].map(name => `./assets/hairline/${name}.svg`),
 ];
 
 self.addEventListener("install", event => {
