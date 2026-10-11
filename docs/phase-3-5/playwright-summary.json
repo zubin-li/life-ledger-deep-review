@@ -1,4 +1,5 @@
 {
+  "round": 2,
   "engine": "playwright-core",
   "chrome": "/usr/local/bin/google-chrome",
   "pages": [
