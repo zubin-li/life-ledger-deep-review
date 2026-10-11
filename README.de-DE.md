@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v3.png" width="100%" alt="Monatsrückblick von Life Ledger" />
+  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v5.png" width="100%" alt="Monatsrückblick von Life Ledger" />
 </p>
 
 <p align="center">
@@ -130,8 +130,8 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v3.png" alt="Tagesplanung und Reflexion" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v3.png" alt="Wochenziele und Wochenrückblick" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v5.png" alt="Tagesplanung und Reflexion" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v5.png" alt="Wochenziele und Wochenrückblick" /></td>
   </tr>
   <tr>
     <td><strong>Klarheit für den Tag</strong><br />Sieh den echten Tageskalender und halte deine Gedanken direkt daneben fest, ohne Pläne doppelt zu pflegen.</td>
@@ -140,14 +140,14 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v4.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
+  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v5.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
 </p>
 <p align="center"><strong>Eine private Erinnerungslinie.</strong> Stimmung, Kontext und komprimierte Fotoerinnerungen wiedersehen, ohne das Leben in einen öffentlichen Feed zu verwandeln.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v2.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v3.png" width="30%" alt="Private Zeitleiste auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v2.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v5.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v5.png" width="30%" alt="Private Zeitleiste auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v5.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
 </p>
 
 <p align="center"><strong>Für kleine Bildschirme gestaltet.</strong> Als installierte PWA nutzt Life Ledger eine untere Navigation und einen fokussierten Tagesrückblick über die gesamte Höhe.</p>
@@ -255,7 +255,7 @@ Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/mac
 
 ### 7. Life Ledger 2.0 — ein ruhiges Instrumentenbrett
 
-Version 3.4 ergänzt Desktop-Bewegung (Einstellungen → Bewegung: Voll / Reduziert / Aus), Kontinuitätsanimationen in der Symbolleiste und Haarlinien-Leerzustände. Version 3.3 entfernt den festen Inspektor. Heute ist die Gewohnheitsliste: Datum, eine Fortschrittszeile, eine knappe Stimmung, offene Gewohnheiten und eine eigene Liste für Gewohnheiten mit Uhrzeit. Notiz und Fotos bleiben unter „Heute reflektieren“. Fokus ist ein Symbol, bis eine Sitzung läuft; erst dann erscheinen Uhr und Mini-Player. Die Seitenleiste heißt Heute, Woche, Journal, Einblicke und Gewohnheiten. Die Woche stapelt die Tage, und der gewählte Tag öffnet sich an Ort und Stelle. Das Journal führt Zeitstrahl, Fotos und Kalender: der Zeitstrahl hat ein Eingabefeld, Fotos sind eine Monatsbibliothek, der Kalender zeigt den Monat neben dem Tag. Einblicke sind ein Bericht mit Zeitraum, drei Kennzahlen und einem Wechsel zwischen Verlauf, Kalender, Gewohnheiten und Tabelle. Die Version steht weiterhin nur unter Einstellungen → Info.
+Version 3.5 hält denselben Schreibtisch: die Heute-Überschrift wechselt zwischen Morgen, Abend und einem abgeschlossenen Tag, Leerzustände nutzen ein Haarlinien-System, und jede Animation folgt Einstellungen → Bewegung. Suche, Rückgängig und Fokus überdecken sich nicht mehr. Version 3.4 ergänzt Desktop-Bewegung (Einstellungen → Bewegung: Voll / Reduziert / Aus), Kontinuitätsanimationen in der Symbolleiste und Haarlinien-Leerzustände. Version 3.3 entfernt den festen Inspektor. Heute ist die Gewohnheitsliste: Datum, eine Fortschrittszeile, eine knappe Stimmung, offene Gewohnheiten und eine eigene Liste für Gewohnheiten mit Uhrzeit. Notiz und Fotos bleiben unter „Heute reflektieren“. Fokus ist ein Symbol, bis eine Sitzung läuft; erst dann erscheinen Uhr und Mini-Player. Die Seitenleiste heißt Heute, Woche, Journal, Einblicke und Gewohnheiten. Die Woche stapelt die Tage, und der gewählte Tag öffnet sich an Ort und Stelle. Das Journal führt Zeitstrahl, Fotos und Kalender: der Zeitstrahl hat ein Eingabefeld, Fotos sind eine Monatsbibliothek, der Kalender zeigt den Monat neben dem Tag. Einblicke sind ein Bericht mit Zeitraum, drei Kennzahlen und einem Wechsel zwischen Verlauf, Kalender, Gewohnheiten und Tabelle. Die Version steht weiterhin nur unter Einstellungen → Info.
 
 Version 3.2 ordnet den Desktop nach der Aufgabe. Heute nutzt zwölf Spalten: Gewohnheiten und Reflexion sind breiter, Stimmung und Fotos schmaler, der Fokus bleibt im Inspektor. Die Seitenleiste hat eine gleitende Auswahl, und ⌘K öffnet eine Befehlspalette für Ansichten, Daten, Gewohnheiten und Einstellungen. Der Rückblick beginnt mit der 7/30/90-Zusammenfassung, dem Trend und der Karte. Die Version steht weiterhin nur unter Einstellungen → Info.
 

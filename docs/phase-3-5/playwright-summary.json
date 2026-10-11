@@ -1,0 +1,1090 @@
+{
+  "engine": "playwright-core",
+  "chrome": "/usr/local/bin/google-chrome",
+  "pages": [
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "en",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "de",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 980,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 980,
+      "clientWidth": 980,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "en",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "de",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1180,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1180,
+      "clientWidth": 1180,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "de",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "en",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "de",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "light",
+      "view": "today",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "light",
+      "view": "week",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "light",
+      "view": "timeline",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "light",
+      "view": "review",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "light",
+      "view": "habits",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "today",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "week",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "timeline",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "review",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    },
+    {
+      "width": 1600,
+      "lang": "zh",
+      "theme": "dark",
+      "view": "habits",
+      "scrollWidth": 1600,
+      "clientWidth": 1600,
+      "errors": 0
+    }
+  ],
+  "pageErrors": [],
+  "horizontalScroll": [],
+  "pageErrorCount": 0,
+  "horizontalScrollCount": 0
+}

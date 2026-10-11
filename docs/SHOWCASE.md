@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Back to README](../README.md)
 
-Life Ledger brings daily habits, practical planning, and long-form reflection into one local-first workspace. The screenshots below use fictional July 2026 data created only for demonstration.
+Life Ledger brings daily habits, practical planning, and long-form reflection into one local-first workspace. The screenshots below use fictional data created only for demonstration. The desktop frames show the 3.5 desk: one Today list, a morning or evening header, and hairline empty states.
 
 ## Desktop experience
 

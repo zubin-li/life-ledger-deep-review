@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v3.png" width="100%" alt="Life Ledger monthly review" />
+  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v5.png" width="100%" alt="Life Ledger monthly review" />
 </p>
 
 <p align="center">
@@ -130,8 +130,8 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v3.png" alt="Daily planning and reflection" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v3.png" alt="Weekly goals and output" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v5.png" alt="Daily planning and reflection" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v5.png" alt="Weekly goals and output" /></td>
   </tr>
   <tr>
     <td><strong>Daily clarity</strong><br />See the day's real calendar and leave a reflection beside it, without duplicating plans.</td>
@@ -140,14 +140,14 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v4.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
+  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v5.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
 </p>
 <p align="center"><strong>A private memory line.</strong> Revisit mood, context, and compressed photo memories without turning them into a public feed.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-mobile/en-01-today-planning-v2.png" width="30%" alt="Daily planning on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v3.png" width="30%" alt="Private Timeline on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v2.png" width="30%" alt="Monthly review on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-01-today-planning-v5.png" width="30%" alt="Daily planning on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v5.png" width="30%" alt="Private Timeline on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v5.png" width="30%" alt="Monthly review on mobile" />
 </p>
 
 <p align="center"><strong>Responsive by design.</strong> The installed PWA uses a bottom navigation bar and a focused, full-height daily review on smaller screens.</p>
@@ -242,7 +242,7 @@ Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md)
 
 ### 7. Life Ledger 2.0 — a calm instrument panel
 
-Version 3.4 adds desktop motion controls (Settings → Motion: Full / Reduced / Off), continuity animations on the toolbar and views, and hairline empty-state illustrations. Version 3.3 removes the permanent inspector. Today is the habit list: the date, one progress line, a compact mood check-in, open habits, and a separate scheduled list for habits that have a time. “Reflect on today” still holds the note and photos. Focus is an icon until a session starts; the running clock and a mini-player appear only then. The sidebar destinations are Today, Week, Journal, Insights, and Habits. Week is a stack of days, and the selected day opens in place. Journal keeps timeline, photos, and calendar as modes: the timeline has a composer, photos is a month library, and calendar keeps the month beside the day. Insights is one report with a range, three summary numbers, and a switch among trend, calendar, habits, and table. The version is still shown only in Settings → About.
+Version 3.5 tightens the same desk: the Today header changes between morning, evening, and a finished day, empty states use one hairline system, and every animation follows Settings → Motion. Search, undo, and focus no longer talk over each other. Version 3.4 adds desktop motion controls (Settings → Motion: Full / Reduced / Off), continuity animations on the toolbar and views, and hairline empty-state illustrations. Version 3.3 removes the permanent inspector. Today is the habit list: the date, one progress line, a compact mood check-in, open habits, and a separate scheduled list for habits that have a time. “Reflect on today” still holds the note and photos. Focus is an icon until a session starts; the running clock and a mini-player appear only then. The sidebar destinations are Today, Week, Journal, Insights, and Habits. Week is a stack of days, and the selected day opens in place. Journal keeps timeline, photos, and calendar as modes: the timeline has a composer, photos is a month library, and calendar keeps the month beside the day. Insights is one report with a range, three summary numbers, and a switch among trend, calendar, habits, and table. The version is still shown only in Settings → About.
 
 Version 3.2 recomposes the desktop desk around the task. Today uses a 12-column page: habits and reflection take the wider span, mood and photos take the narrower span, and Focus stays in the inspector. The sidebar has one sliding selection, and ⌘K opens a command palette for views, dates, habits, and settings. Review leads with the 7/30/90 summary, trend, and heatmap. The version is still shown only in Settings → About.
 

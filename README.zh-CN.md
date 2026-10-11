@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v3.png" width="100%" alt="Life Ledger 中文月度复盘界面" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v5.png" width="100%" alt="Life Ledger 中文月度复盘界面" />
 </p>
 
 <p align="center">
@@ -134,8 +134,8 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-01-today-planning-v3.png" alt="每日目标与每日复盘" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-03-weekly-plan-v3.png" alt="本周目标与本周输出" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-01-today-planning-v5.png" alt="每日目标与每日复盘" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-03-weekly-plan-v5.png" alt="本周目标与本周输出" /></td>
   </tr>
   <tr>
     <td><strong>每日更清楚</strong><br />直接查看当天真实日程，并在旁边留下复盘，不再重复规划。</td>
@@ -144,14 +144,14 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v4.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v5.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
 </p>
 <p align="center"><strong>一条只属于自己的记忆线。</strong> 回看心情、语境和压缩后的照片记忆，而不是把生活变成公开动态。</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-planning-v2.png" width="30%" alt="手机版每日规划" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v3.png" width="30%" alt="手机版私人时间轴" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v2.png" width="30%" alt="手机版月度复盘" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-planning-v5.png" width="30%" alt="手机版每日规划" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v5.png" width="30%" alt="手机版私人时间轴" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v5.png" width="30%" alt="手机版月度复盘" />
 </p>
 
 <p align="center"><strong>为手机重新排版。</strong> 安装为 PWA 后使用底部导航；单日打卡与日记在小屏幕上变成专注的纵向复盘空间。</p>
@@ -259,7 +259,7 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 
 ### 7. Life Ledger 2.0——一套安静的仪表盘式设计
 
-3.4 版本增加了桌面动效设置（设置 → 动效：完整 / 减少 / 关闭）、工具栏与视图的连续动画，以及线稿空状态插图。3.3 版本去掉了常驻的右侧检查器。今日是习惯列表：日期、一行进度、紧凑的心情、待完成，以及带时间的已排程。笔记和照片仍从“回顾今天”打开。专注在空闲时只是一个图标，会话开始后才出现时间和迷你播放条。侧边栏是今日、本周、日志、洞察和习惯。本周是按天堆叠的计划，选中的一天就地展开。日志仍包含时间线、照片和日历：时间线有快速记录，照片按月份成库，日历把月份和当天放在一起。洞察是一份报表，有区间、三个摘要，以及趋势、日历、习惯和表格四种视图。版本仍然只出现在设置的关于里。
+3.5 版本把同一张桌子收紧：今日标题会随早晨、傍晚和完成而变化，空状态共用一套线稿，所有动画都服从设置里的动效。搜索、撤销和专注不再互相挡住。3.4 版本增加了桌面动效设置（设置 → 动效：完整 / 减少 / 关闭）、工具栏与视图的连续动画，以及线稿空状态插图。3.3 版本去掉了常驻的右侧检查器。今日是习惯列表：日期、一行进度、紧凑的心情、待完成，以及带时间的已排程。笔记和照片仍从“回顾今天”打开。专注在空闲时只是一个图标，会话开始后才出现时间和迷你播放条。侧边栏是今日、本周、日志、洞察和习惯。本周是按天堆叠的计划，选中的一天就地展开。日志仍包含时间线、照片和日历：时间线有快速记录，照片按月份成库，日历把月份和当天放在一起。洞察是一份报表，有区间、三个摘要，以及趋势、日历、习惯和表格四种视图。版本仍然只出现在设置的关于里。
 
 3.2 版本按任务重排桌面。今日使用 12 栏：习惯和感想占较宽的一栏，心情和照片占较窄的一栏，专注仍在检查器里。侧边栏只有一个滑动的当前项，⌘K 打开命令面板，用来跳转视图、日期、习惯和设置。复盘先给出 7/30/90 天的摘要、趋势和热力。版本仍然只出现在设置的关于里。
 

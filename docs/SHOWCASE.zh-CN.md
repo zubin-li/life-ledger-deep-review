@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [返回中文 README](../README.zh-CN.md)
 
-Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地优先空间。以下截图使用虚构的 2026 年 7 月数据，仅用于产品演示。
+Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地优先空间。以下截图只使用虚构数据。桌面画面是 3.5 的桌子：今日是一张习惯列表，标题会随早晨、傍晚和完成变化，空状态是同一套线稿。
 
 ## 桌面体验
 

@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Polish — Life Ledger 3.5 (macOS desktop)
+
+- Closed the interaction loops from the 3.5 audit: search with no matches says so, future-day checks explain why they are off, habit deletion can be undone, settings changes confirm in place, and the toast no longer covers the focus mini-player. The all-done moment is one 600ms chip. Today’s header changes for morning, evening, and a finished day. Journal keeps the selected day in view. Insights with no completions shows the empty drawing instead of a flat zero chart. On a phone-width window the date stays readable and the five destinations stay on one bar.
+- Rebuilt the hairline drawings as one 160×120 system (`docs/hairline-system.md`). The finished-day plant grows slightly with the streak. Motion Full / Reduced / Off covers every animation. Version `3.5.0`; service-worker cache `life-ledger-pwa-3.5.0`. Storage keys are unchanged. This is not a tagged release.
+
 ### Motion & hairline — Life Ledger 3.4 (macOS desktop)
 
 - Added continuity motion helpers in `public/interaction.js` (elastic nav/segment indicator, submit-state chain, toolbar create popover, collapsible search, scroll-compact titles, FLIP transitions, and Settings → Motion: Full / Reduced / Off via `life-ledger-motion`). Hairline SVG empty states and launcher illustrations use the local `public/assets/hairline/` set. Version `3.4.0`; service-worker cache `life-ledger-pwa-3.4.0-r1`.
