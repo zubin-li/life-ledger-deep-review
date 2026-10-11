@@ -1,0 +1,874 @@
+[
+  {
+    "id": 1,
+    "surface": "Sidebar",
+    "control": "Today, Week, Journal, Insights, Habits",
+    "checks": {
+      "rendered": {
+        "status": "pass",
+        "detail": "Found 5 nav items"
+      },
+      "purpose": {
+        "status": "fail",
+        "detail": "Expected weekView, got week"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      },
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#motionSelect')\n    - locator resolved to <select id=\"motionSelect\" aria-label=\"Motion\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-1-failure.png"
+  },
+  {
+    "id": 2,
+    "surface": "Sidebar",
+    "control": "Settings",
+    "checks": {
+      "native": {
+        "status": "n/a",
+        "reason": "Invokes Tauri native window in desktop build",
+        "staticTest": "tests/desktop-v4-structure.test.mjs"
+      }
+    }
+  },
+  {
+    "id": 3,
+    "surface": "Sidebar",
+    "control": "Collapse",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Sidebar collapsed state active"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      },
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#motionSelect')\n    - locator resolved to <select id=\"motionSelect\" aria-label=\"Motion\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-3-failure.png"
+  },
+  {
+    "id": 4,
+    "surface": "Sidebar",
+    "control": "Sync dot",
+    "checks": {
+      "nonControl": {
+        "status": "n/a",
+        "reason": "Passive status indicator, not an interactive control",
+        "staticTest": "tests/desktop-v4-structure.test.mjs"
+      }
+    }
+  },
+  {
+    "id": 5,
+    "surface": "Sidebar",
+    "control": "Per-habit shortcuts",
+    "checks": {
+      "desktopHidden": {
+        "status": "n/a",
+        "reason": "Hidden on desktop viewports via CSS (display: none)",
+        "staticTest": "tests/desktop-v4-structure.test.mjs"
+      }
+    }
+  },
+  {
+    "id": 6,
+    "surface": "Toolbar",
+    "control": "Previous / next date",
+    "checks": {
+      "purpose": {
+        "status": "fail",
+        "detail": "Date unchanged: \"Week 40 · 28 Sept — 4 Oct 2026\""
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      },
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#motionSelect')\n    - locator resolved to <select id=\"motionSelect\" aria-label=\"Motion\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-6-failure.png"
+  },
+  {
+    "id": 7,
+    "surface": "Toolbar",
+    "control": "Date label",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Date popover opened"
+      },
+      "keyboard": {
+        "status": "pass",
+        "detail": "Escape closed date popover"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 8,
+    "surface": "Toolbar",
+    "control": "⌘K",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Command palette opened via shortcut"
+      },
+      "keyboard": {
+        "status": "pass",
+        "detail": "Escape closed command palette"
+      }
+    }
+  },
+  {
+    "id": 9,
+    "surface": "Toolbar",
+    "control": "Search",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Search field expanded"
+      },
+      "noMatch": {
+        "status": "fail",
+        "detail": "No-match state failed to render"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 10,
+    "surface": "Toolbar",
+    "control": "“+”",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Create popover opened"
+      },
+      "keyboard": {
+        "status": "pass",
+        "detail": "Escape dismissed create popover"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 11,
+    "surface": "Toolbar",
+    "control": "Focus chip",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Focus panel opened from toolbar chip"
+      },
+      "keyboard": {
+        "status": "pass",
+        "detail": "Escape closed focus panel and returned focus to chip"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 12,
+    "surface": "Today",
+    "control": "Mood Good / Calm / Low",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#quickMood button[data-mood=\\'很好\\']')\n    - locator resolved to <button type=\"button\" data-mood=\"很好\" aria-label=\"Good\" aria-pressed=\"false\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-12-failure.png"
+  },
+  {
+    "id": 13,
+    "surface": "Today",
+    "control": "Reflect on today",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#openDayDetail')\n    - locator resolved to <button type=\"button\" id=\"openDayDetail\" class=\"today-reflect\" aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-controls=\"dayDetailSheet\">Reflect on today</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-13-failure.png"
+  },
+  {
+    "id": 14,
+    "surface": "Today",
+    "control": "Habit check",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.today-habit-check').first()\n    - locator resolved to <button type=\"button\" aria-pressed=\"false\" class=\"today-habit-check\" aria-label=\"Mark Exercise done\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-14-failure.png"
+  },
+  {
+    "id": 15,
+    "surface": "Today",
+    "control": "Completed / Not in today’s score",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#todayCompletedGroup summary, #todayNotTodayGroup summary').first()\n    - locator resolved to <summary id=\"todayCompletedSummary\">Completed (0)</summary>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-15-failure.png"
+  },
+  {
+    "id": 16,
+    "surface": "Today",
+    "control": "Header",
+    "checks": {
+      "nonControl": {
+        "status": "n/a",
+        "reason": "Header display element, not an interactive control",
+        "staticTest": "tests/desktop-v4-structure.test.mjs"
+      }
+    }
+  },
+  {
+    "id": 17,
+    "surface": "Today",
+    "control": "All-done moment",
+    "checks": {
+      "celebration": {
+        "status": "pass",
+        "detail": "Celebration chip present in DOM with <=600ms transition"
+      }
+    }
+  },
+  {
+    "id": 18,
+    "surface": "Week",
+    "control": "Day row",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Selected day detail sheet populated in primary pane"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 19,
+    "surface": "Week",
+    "control": "In-day check",
+    "checks": {
+      "purpose": {
+        "status": "fail",
+        "detail": "Toggle failed: before=null, after=null"
+      },
+      "undo": {
+        "status": "fail",
+        "detail": "not found: visible #toastAction"
+      }
+    }
+  },
+  {
+    "id": 20,
+    "surface": "Week",
+    "control": "This week / Longer term",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Switched horizon to long term"
+      },
+      "switchBack": {
+        "status": "pass",
+        "detail": "Switched horizon back to week"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 21,
+    "surface": "Week",
+    "control": "Generate weekly review",
+    "checks": {
+      "purpose": {
+        "status": "fail",
+        "detail": "Review canvas dialog failed to open"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 22,
+    "surface": "Journal",
+    "control": "Timeline / Photos / Calendar",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Journal layout switched to photos"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 23,
+    "surface": "Journal",
+    "control": "Save note",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Journal note committed with status \"Saved\""
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 24,
+    "surface": "Journal",
+    "control": "All / Photos / Notes",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Timeline filter set to photos"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 25,
+    "surface": "Journal",
+    "control": "Month previous / next",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#nextMonth')\n    - locator resolved to <button id=\"nextMonth\" class=\"icon-button\" aria-label=\"Next month\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-25-failure.png"
+  },
+  {
+    "id": 26,
+    "surface": "Journal",
+    "control": "Calendar day",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.timeline-calendar-card .calendar-day').first()\n    - locator resolved to <button data-date=\"2026-09-28\" aria-label=\"September 28, 2026 · Monday · No record\" class=\"calendar-day mood-none  outside   current-week \">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-26-failure.png"
+  },
+  {
+    "id": 27,
+    "surface": "Journal",
+    "control": "Mood / Heatmap",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-calendar-view=\\'heatmap\\']')\n    - locator resolved to <button type=\"button\" aria-pressed=\"false\" data-calendar-view=\"heatmap\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-27-failure.png"
+  },
+  {
+    "id": 28,
+    "surface": "Insights",
+    "control": "Trend / Calendar / Habits / Table",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Insights switched to habits tab"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 29,
+    "surface": "Insights",
+    "control": "7 / 30 / 90 days",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Analytics window changed to 7 days"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 30,
+    "surface": "Insights",
+    "control": "Generate monthly review",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Monthly review canvas dialog opened"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 31,
+    "surface": "Insights",
+    "control": "Detailed metrics disclosure",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Detailed metrics disclosure opened"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 32,
+    "surface": "Habits",
+    "control": "Add habit",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Add habit opened editor form with name field"
+      },
+      "focus": {
+        "status": "fail",
+        "detail": ":focus-visible did not match (false)"
+      }
+    }
+  },
+  {
+    "id": 33,
+    "surface": "Habits",
+    "control": "Row",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.habit-settings-row, .habit-settings-item, #habitSettingsList [role=\\'row\\']').first()\n    - locator resolved to <article data-id=\"exercise\" class=\"setting-row habit-settings-row  \">…</article>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <input name=\"name\" required=\"\" placeholder=\"例如：阅读\"/> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <textarea rows=\"3\" name=\"note\" maxlength=\"500\" placeholder=\"What does this habit mean in practice?\"></textarea> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n  - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <textarea rows=\"3\" name=\"note\" maxlength=\"500\" placeholder=\"What does this habit mean in practice?\"></textarea> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n  2 × retrying click action\n      - waiting 100ms\n      - waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"form-grid\">…</div> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n  14 × retrying click action\n       - waiting 500ms\n       - waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <textarea rows=\"3\" name=\"note\" maxlength=\"500\" placeholder=\"What does this habit mean in practice?\"></textarea> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n       - waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <textarea rows=\"3\" name=\"note\" maxlength=\"500\" placeholder=\"What does this habit mean in practice?\"></textarea> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n       - waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div class=\"form-grid\">…</div> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n       - waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div class=\"form-grid\">…</div> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <textarea rows=\"3\" name=\"note\" maxlength=\"500\" placeholder=\"What does this habit mean in practice?\"></textarea> from <dialog open=\"\" id=\"habitDialog\">…</dialog> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-33-failure.png"
+  },
+  {
+    "id": 34,
+    "surface": "Habits",
+    "control": "Drag handle",
+    "checks": {
+      "drag": {
+        "status": "n/a",
+        "reason": "Pointer drag reorder requires mouse gestures not feasible in headless environment",
+        "staticTest": "tests/desktop-v4-structure.test.mjs"
+      }
+    }
+  },
+  {
+    "id": 35,
+    "surface": "Habits",
+    "control": "Active toggle",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#habitInspectorForm input[name=\\'active\\']')\n    - locator resolved to <input checked name=\"active\" role=\"switch\" type=\"checkbox\" class=\"desktop-switch\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-35-failure.png"
+  },
+  {
+    "id": 36,
+    "surface": "Habits",
+    "control": "Icon, color, mode, target, schedule, score, active",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Habit editor contains name, frequency, and target fields"
+      }
+    }
+  },
+  {
+    "id": 37,
+    "surface": "Habits",
+    "control": "Save",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#inspectorSaveHabitButton')\n    - locator resolved to <button type=\"submit\" class=\"primary-button\" id=\"inspectorSaveHabitButton\">Save</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-37-failure.png"
+  },
+  {
+    "id": 38,
+    "surface": "Habits",
+    "control": "Delete",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#inspectorDeleteHabitButton')\n    - locator resolved to <button type=\"button\" id=\"inspectorDeleteHabitButton\" class=\"danger-button text-destructive\">Delete</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-38-failure.png"
+  },
+  {
+    "id": 39,
+    "surface": "Focus",
+    "control": "Start",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#toolbarPrimaryAction')\n    - locator resolved to <button type=\"button\" title=\"FOCUS\" aria-label=\"FOCUS\" class=\"toolbar-focus\" aria-expanded=\"false\" aria-haspopup=\"dialog\" id=\"toolbarPrimaryAction\" aria-controls=\"focusPanel\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-39-failure.png"
+  },
+  {
+    "id": 40,
+    "surface": "Focus",
+    "control": "Stepper − / +",
+    "checks": {
+      "purpose": {
+        "status": "fail",
+        "detail": "not found: focus presets"
+      }
+    }
+  },
+  {
+    "id": 41,
+    "surface": "Focus",
+    "control": "Pause / Finish / Skip",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#focusQuickPrimary')\n    - locator resolved to <button type=\"button\" id=\"focusQuickPrimary\" data-icon-state=\"play\" class=\"primary-button focus-start-btn\">Start focus</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-41-failure.png"
+  },
+  {
+    "id": 42,
+    "surface": "Focus",
+    "control": "Mini-player",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#toolbarPrimaryAction')\n    - locator resolved to <button type=\"button\" title=\"FOCUS\" aria-label=\"FOCUS\" class=\"toolbar-focus\" aria-expanded=\"false\" aria-haspopup=\"dialog\" id=\"toolbarPrimaryAction\" aria-controls=\"focusPanel\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-42-failure.png"
+  },
+  {
+    "id": 43,
+    "surface": "Search",
+    "control": "No-match state",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#toolbarSearchToggle')\n    - locator resolved to <button type=\"button\" aria-label=\"Search\" aria-expanded=\"false\" id=\"toolbarSearchToggle\" aria-controls=\"quickFind\" class=\"toolbar-search-toggle icon-morph-host\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <dialog open=\"\" id=\"habitDialog\">…</dialog> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-43-failure.png"
+  },
+  {
+    "id": 44,
+    "surface": "Palette",
+    "control": "Command rows",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Command palette lists 27 command rows matching navigation"
+      }
+    }
+  },
+  {
+    "id": 45,
+    "surface": "Context menu",
+    "control": "Mark, Edit, Inactive, Delete",
+    "checks": {
+      "purpose": {
+        "status": "fail",
+        "detail": "Context menu failed to open"
+      }
+    }
+  },
+  {
+    "id": 46,
+    "surface": "Toast",
+    "control": "Undo",
+    "checks": {
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.today-habit-check').first()\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-46-failure.png"
+  },
+  {
+    "id": 47,
+    "surface": "Reflect",
+    "control": "Note",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Reflect note autosave status confirmed: \"● autosaved\""
+      }
+    }
+  },
+  {
+    "id": 48,
+    "surface": "Reflect",
+    "control": "Add photo",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Add photo button visible with count \"0 of 3\""
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 49,
+    "surface": "Reflect",
+    "control": "Close",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Reflect sheet dismisses on Escape"
+      }
+    }
+  },
+  {
+    "id": 50,
+    "surface": "Settings",
+    "control": "General / Data / Cloud / Calendar / Habits",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Settings switched to Data panel"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 51,
+    "surface": "Settings",
+    "control": "Reminder card",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Reminder card opened reminder dialog"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 52,
+    "surface": "Settings",
+    "control": "Appearance, Language, Motion",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Appearance and motion controls confirmed in place: dark=dark, light=light, motionOff=true"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 53,
+    "surface": "Settings",
+    "control": "Import & export",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Backup dialog opened from Settings Data panel"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 54,
+    "surface": "Settings",
+    "control": "Year / month selects",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Year and month selects honor hidden attribute"
+      }
+    }
+  },
+  {
+    "id": 55,
+    "surface": "Settings",
+    "control": "Switch workspace",
+    "checks": {
+      "native": {
+        "status": "n/a",
+        "reason": "Returns to launcher in desktop bridge mode; verified by native test",
+        "staticTest": "tests/desktop-v4-structure.test.mjs"
+      }
+    }
+  },
+  {
+    "id": 56,
+    "surface": "Settings",
+    "control": "Close",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Settings pane closed cleanly via close button"
+      },
+      "focus": {
+        "status": "fail",
+        "detail": ":focus-visible did not match (false)"
+      }
+    }
+  },
+  {
+    "id": 57,
+    "surface": "Backup dialog",
+    "control": "Export / Import tabs, Export, Done",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Backup dialog switched to import tab"
+      },
+      "focus": {
+        "status": "fail",
+        "detail": ":focus-visible did not match (false)"
+      }
+    }
+  },
+  {
+    "id": 58,
+    "surface": "Launcher",
+    "control": "Language",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Launcher language select toggled copy between \"本机模式\" and \"Local on this Mac\""
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 59,
+    "surface": "Launcher",
+    "control": "Open local app",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Launcher local action button rendered: \"Open local app\""
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 60,
+    "surface": "Launcher",
+    "control": "Open connected app",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Launcher validated cloud URL and displayed inline error"
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 61,
+    "surface": "Launcher",
+    "control": "Forget saved URL",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Stored cloud URL cleared and confirmed in place: \"Saved URL forgotten\""
+      },
+      "focus": {
+        "status": "pass",
+        "detail": ":focus-visible matches after keyboard focus"
+      }
+    }
+  },
+  {
+    "id": 62,
+    "surface": "Dialogs",
+    "control": "Close on reminder, mood reason, voice, review canvas, CloudBase, photo lightbox, focus timer",
+    "checks": {
+      "purpose": {
+        "status": "pass",
+        "detail": "Dialogs dismiss cleanly on Escape key"
+      },
+      "error": {
+        "status": "fail",
+        "detail": "TimeoutError: locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#motionSelect')\n    - locator resolved to <select id=\"motionSelect\" aria-label=\"Motion\">…</select>\n  - attempting select option action\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n    - waiting 20ms\n    2 × waiting for element to be visible and enabled\n      - element is not visible\n    - retrying select option action\n      - waiting 100ms\n    60 × waiting for element to be visible and enabled\n       - element is not visible\n     - retrying select option action\n       - waiting 500ms\n"
+      }
+    },
+    "failureScreenshot": "/home/runner/work/life-ledger-deep-review/life-ledger-deep-review/current/docs/phase-3-5-1/controls-failures/row-62-failure.png"
+  }
+]
