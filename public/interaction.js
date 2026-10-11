@@ -340,7 +340,8 @@
 
     root.document?.addEventListener("click", event => {
       if (popover.hidden) return;
-      if (event.target.closest?.(popover) || event.target.closest?.(trigger)) return;
+      const target = event.target;
+      if (target && (popover.contains(target) || trigger.contains(target))) return;
       close();
     });
 

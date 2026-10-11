@@ -68,6 +68,14 @@ test("review badge is real pending work and acknowledge clears it", () => {
   assert.deepEqual(JSON.parse(JSON.stringify(api.badgeVisibility(0, 0))), { visible: false, count: 0 });
 });
 
+test("an open popover closes on an outside click without passing an element to closest", () => {
+  const source = read("public/interaction.js");
+  const outside = source.slice(source.indexOf("root.document?.addEventListener(\"click\""));
+  assert.match(outside, /popover\.contains\(target\)/);
+  assert.match(outside, /trigger\.contains\(target\)/);
+  assert.doesNotMatch(outside, /closest\?\.\((popover|trigger)\)/);
+});
+
 test("the desktop shell exposes one sliding nav, a command palette, and a single Today column", () => {
   assert.match(html, /class="nav-indicator"/);
   assert.match(html, /id="commandPalette"/);
