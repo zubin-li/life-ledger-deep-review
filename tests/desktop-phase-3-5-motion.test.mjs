@@ -66,4 +66,9 @@ test("every animated selector is neutralized by Motion Off and travel-free under
   assert.doesNotMatch(css, /@keyframes focusComplete \{[^}]*filter:/);
   assert.match(css, /celebrateFade 600ms/);
   assert.doesNotMatch(css, /celebrateFade 1\.9s/);
+  assert.match(css, /\.week-agenda-meter i\s*\{[^}]*transform:\s*scaleX\(var\(--meter-fill/);
+  assert.match(css, /\.week-agenda-meter i\s*\{[^}]*transform-origin:\s*left/);
+  assert.doesNotMatch(css, /\.week-agenda-meter i\s*\{[^}]*transition:[^;]*\bwidth\b/);
+  assert.match(css, /html\.motion-off \.week-agenda-meter i \{ transition: none !important; \}/);
+  assert.match(css, /html\.motion-reduced \.week-agenda-meter i \{ transition-property: opacity !important; \}/);
 });

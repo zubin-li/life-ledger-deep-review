@@ -40,7 +40,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=3.5.0" />
+    <link rel="stylesheet" href="./styles.css?v=3.5.1" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -114,7 +114,7 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
                 <span id="focusToolbarTime" hidden>25:00</span>
               </button>
-              <div class="focus-panel" id="focusPanel" role="dialog" aria-label="Focus" hidden>
+              <div class="focus-panel" id="focusPanel" role="dialog" aria-label="Focus" tabindex="-1" hidden>
                 <section class="inspector-section inspector-focus" id="inspectorFocusSection">
                   <h3 class="inspector-heading" id="inspectorFocusHeading">Focus</h3>
                   <div class="focus-idle-hairline hairline-mount" id="focusIdleHairline" hidden aria-hidden="true"></div>
@@ -141,8 +141,8 @@
           <main class="main-content">
         <section class="view active today-desk today-stage" id="todayView">
           <header class="today-stage-header today-header">
+            <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
             <div class="today-stage-copy">
-              <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
               <p class="today-kicker" id="todayKicker">Today</p>
               <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
               <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
@@ -535,7 +535,7 @@
             </select>
           </label>
           <p class="settings-confirm" id="settingsConfirm" role="status"></p>
-          <p class="about-build" id="aboutBuild">Life Ledger 3.5.0</p>
+          <p class="about-build" id="aboutBuild">Life Ledger 3.5.1</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
           <p class="settings-save-mode" id="saveMode"><i></i><span>Local preview</span></p>
@@ -949,16 +949,16 @@
       <button class="focus-mini-action" id="focusMiniFinish" type="button" hidden>Finish</button>
       <button class="focus-mini-action" id="focusMiniSkip" type="button" hidden>Skip</button>
     </div>
-    <script src="./deployment-mode.js?v=3.5.0"></script>
-    <script src="./_init_tcb-env.js?v=3.5.0"></script>
-    <script src="./cloudbase-sync.js?v=3.5.0"></script>
-    <script src="./focus-timer.js?v=3.5.0"></script>
-    <script src="./voice-checkin.js?v=3.5.0"></script>
-    <script src="./photo-memories.js?v=3.5.0"></script>
-    <script src="./media-backup.js?v=3.5.0"></script>
-    <script type="module" src="./widget-contract.js?v=3.5.0"></script>
-    <script src="./habit-analytics.js?v=3.5.0"></script>
-    <script src="./interaction.js?v=3.5.0"></script>
-    <script src="./app.js?v=3.5.0"></script>
+    <script src="./deployment-mode.js?v=3.5.1"></script>
+    <script src="./_init_tcb-env.js?v=3.5.1"></script>
+    <script src="./cloudbase-sync.js?v=3.5.1"></script>
+    <script src="./focus-timer.js?v=3.5.1"></script>
+    <script src="./voice-checkin.js?v=3.5.1"></script>
+    <script src="./photo-memories.js?v=3.5.1"></script>
+    <script src="./media-backup.js?v=3.5.1"></script>
+    <script type="module" src="./widget-contract.js?v=3.5.1"></script>
+    <script src="./habit-analytics.js?v=3.5.1"></script>
+    <script src="./interaction.js?v=3.5.1"></script>
+    <script src="./app.js?v=3.5.1"></script>
   </body>
 </html>

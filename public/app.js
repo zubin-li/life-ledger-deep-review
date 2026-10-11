@@ -1611,6 +1611,9 @@ const googleCalendarLoadedMonths = new Set();
 const googleCalendarLoadingMonths = new Set();
 let focusWakeLock = null;
 let focusAudioContext = null;
+let focusUIState = "idle";
+let lastRecordedFocusSession = null;
+let lastRecordedFocusMinutes = 0;
 let pendingImport = null;
 let pendingMediaImport = null;
 let pendingMoodDate = null;
@@ -3433,6 +3436,8 @@ function renderWeekAgenda() {
       weekDone += completed;
       weekTotal += scored.length;
     }
+    const fill = scored.length ? (completed / scored.length).toFixed(3) : 0;
+    const meter = `<span class="week-agenda-meter" aria-hidden="true"><i style="--meter-fill:${fill};"></i></span>`;
     const progressLabel = future ? "—" : (scored.length ? `${completed}/${scored.length}` : "0/0");
     const moodGlyph = log.mood ? `<span class="week-agenda-mood" aria-label="${escapeHtml(moodLabel(log.mood))}">${moodCalendarIcon(log.mood)}</span>` : "<span class=\"week-agenda-mood empty\" aria-hidden=\"true\"></span>";
     const note = String(log.note || "").trim().split("\n")[0] || tr("week.noEntry");
@@ -3441,23 +3446,14 @@ function renderWeekAgenda() {
     const isToday = key === todayKey;
     const isSelected = key === selectedPlanningDate;
     const rowClass = `${isToday ? "today" : ""} ${isSelected && !isToday ? "selected" : ""}`.trim();
-    const pending = scored.filter(habit => !log.completed.includes(habit.id));
-    const timed = habit => scheduleLabel(versionFor(habit, key));
-    const scheduled = pending.filter(habit => timed(habit)).sort((a, b) => timed(a).localeCompare(timed(b)));
-    const open = pending.filter(habit => !timed(habit));
-    const body = isSelected ? `<div class="week-day-body">
-      ${open.length ? `<ul class="week-habit-list">${open.map(habit => weekHabitMarkup(habit, key, "")).join("")}</ul>` : ""}
-      ${scheduled.length ? `<h3 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h3><ul class="week-habit-list scheduled">${scheduled.map(habit => weekHabitMarkup(habit, key, timed(habit))).join("")}</ul>` : ""}
-      ${!open.length && !scheduled.length ? `<p class="week-day-empty">${escapeHtml(future ? tr("today.noHabits") : tr("today.completed", { count: completed }))}</p>` : ""}
-    </div>` : "";
     return `<li class="week-day-section ${isSelected ? "is-open" : ""}" role="listitem">
       <button type="button" class="week-agenda-row ${rowClass}" data-date="${key}">
         <span class="week-agenda-day"><span class="week-agenda-weekday">${escapeHtml(weekday)}</span><span class="week-agenda-date">${escapeHtml(dateLabel)}</span></span>
+        ${meter}
         <span class="week-agenda-progress">${escapeHtml(progressLabel)}</span>
         ${moodGlyph}
         <span class="week-agenda-note ${note === tr("week.noEntry") ? "empty" : ""}">${escapeHtml(note)}</span>
       </button>
-      ${body}
     </li>`;
   }).join("");
   window.LifeLedgerInteraction?.glideTo(agenda, agenda.querySelector(`[data-date="${selectedPlanningDate}"]`));
@@ -3530,7 +3526,7 @@ function renderWeeklyWorkspace() {
       <button class="weekly-goal-text" data-action="toggle">${escapeHtml(goal.text)}</button>
       <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </div>`).join("") : hairlineEmptyMarkup(
-      "./assets/hairline/empty-week.svg",
+      "./assets/hairline/empty-week-goals.svg",
       tr("week.goalsTitleProgress", { done: 0, total: 0 }),
       languageText("先写一件真正重要的事。", "Put one important thing here.", "Lege eine wirklich wichtige Sache hinein."),
     );
@@ -3800,34 +3796,44 @@ async function renderTimelineDetail() {
   const mood = log.mood
     ? `<span class="timeline-detail-mood-glyph">${moodCalendarIcon(log.mood)}</span><span>${escapeHtml(moodLabel(log.mood))}</span>`
     : escapeHtml(tr("today.noReflection"));
+  const photos = calendarPhotosByDate.get(date) || [];
   container.innerHTML = `
-    <div class="day-page">
+    <div class="day-page day-page-composed">
       <header class="day-page-header timeline-detail-header">
-        <h2 class="timeline-detail-date">${escapeHtml(label.detail)}</h2>
+        <div class="day-page-title-row">
+          <h2 class="timeline-detail-date">${escapeHtml(label.detail)}</h2>
+          <span class="day-page-status">${doneCount}/${scored.length} ${escapeHtml(tr("today.open"))}</span>
+        </div>
         <p class="timeline-detail-mood day-page-mood">${mood}</p>
       </header>
       <section class="day-page-note">
         <h3 class="day-page-label">${escapeHtml(tr("today.reflectionLabel"))}</h3>
-        ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<p class="timeline-detail-empty-note">${escapeHtml(tr("timeline.noNote"))}</p>`}
+        ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<div class="timeline-detail-empty-note">${hairlineEmptyMarkup("./assets/hairline/journal-no-reflection.svg", tr("today.reflectionLabel"), escapeHtml(tr("timeline.noNote")))}</div>`}
       </section>
-      <section class="day-page-side">
-        ${photoCollageMarkup(calendarPhotosByDate.get(date) || [])}
-        <section class="photo-library photo-library-story" id="timelineDetailPhotos" data-photo-editor>
-          <div class="mood-photo-heading day-page-meta"><div><strong data-photo-title></strong><small data-photo-help></small></div><span data-photo-count></span></div>
-          <div class="photo-drop" data-photo-drop><p class="photo-drop-empty" data-photo-empty></p><div class="mood-photo-list" data-photo-list></div></div>
-          <button class="mood-photo-add" data-photo-add type="button"><span></span></button>
-          <input data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-          <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-          <p class="mood-photo-status" data-photo-status role="status" hidden></p>
-        </section>
-        <section class="timeline-detail-habits">
-          <h3 class="day-page-meta"><span>${escapeHtml(tr("timeline.habitsHeading"))}</span><b>${doneCount}/${scored.length}</b></h3>
-          <ul class="timeline-habit-list">${scored.map(habit => `<li class="timeline-habit-row ${log.completed.includes(habit.id) ? "done" : ""}" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul>
-        </section>
-        ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
+      <section class="photo-library photo-library-story day-page-photos" id="timelineDetailPhotos" data-photo-editor>
+        <div class="mood-photo-heading day-page-meta">
+          <strong data-photo-title>${escapeHtml(tr("drawer.photos"))} · <span data-photo-count>${photos.length} of 3</span></strong>
+          <small data-photo-help></small>
+        </div>
+        <div class="photo-drop" data-photo-drop>
+          <div class="mood-photo-grid-composed">
+            <button class="mood-photo-add" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>${escapeHtml(languageText("添加照片", "Add photo", "Foto hinzufügen"))}</span></button>
+            <div class="mood-photo-list" data-photo-list></div>
+          </div>
+          <p class="photo-drop-empty" data-photo-empty hidden></p>
+        </div>
+        <input data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+        <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
+        <p class="mood-photo-status" data-photo-status role="status" hidden></p>
       </section>
+      <section class="timeline-detail-habits day-page-habits">
+        <h3 class="day-page-meta"><span>${escapeHtml(tr("timeline.habitsHeading"))}</span><b>${doneCount}/${scored.length}</b></h3>
+        <ul class="timeline-habit-list is-compact-grid">${scored.map(habit => `<li class="timeline-habit-row ${log.completed.includes(habit.id) ? "done" : ""}" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul>
+      </section>
+      ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
     </div>`;
   photoMemories?.mount($("#timelineDetailPhotos"))?.load(date);
+  hydrateHairlineMounts(container);
 }
 
 function renderTimelineInspector() {
@@ -4553,7 +4559,12 @@ function setFocusPanelOpen(open) {
   panel.hidden = !open;
   button?.setAttribute("aria-expanded", String(open));
   renderFocusTimer(focusTimer?.snapshot());
-  if (open) $("#focusQuickPrimary")?.focus();
+  if (open) {
+    if (!$("#focusQuickPrimary")?.hidden) $("#focusQuickPrimary")?.focus();
+    else panel.focus();
+  } else {
+    button?.focus();
+  }
 }
 
 function setJournalMode(mode) {
@@ -4599,7 +4610,55 @@ function renderWeekDayDetail() {
   const open = pending.filter(habit => !timed(habit));
   const completed = scored.filter(habit => log.completed.includes(habit.id));
   const habitList = items => items.map(habit => weekHabitMarkup(habit, date, timed(habit) || "")).join("");
-  host.innerHTML = `<header class="week-detail-header"><p class="week-detail-kicker">${escapeHtml(tr("viewTitles.week"))}</p><h2>${escapeHtml(label)}</h2><p>${escapeHtml(tr("today.summary", { done, total: scored.length }))}</p></header><p class="week-day-mood">${mood}</p>${note ? `<p class="week-detail-note">${escapeHtml(note)}</p>` : `<p class="week-detail-note empty">${escapeHtml(tr("week.noEntry"))}</p>`}<div class="week-detail-habits">${open.length ? `<ul class="week-habit-list">${habitList(open)}</ul>` : ""}${scheduled.length ? `<h3 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h3><ul class="week-habit-list scheduled">${habitList(scheduled)}</ul>` : ""}${completed.length ? `<h3 class="week-scheduled-heading">${escapeHtml(tr("today.completed", { count: completed.length }))}</h3><ul class="week-habit-list">${habitList(completed)}</ul>` : ""}</div>`;
+
+  const dayFocusMinutes = (state.focusSessions || [])
+    .filter(s => s.date === date && (s.outcome === "completed" || s.outcome === "finishedEarly"))
+    .reduce((acc, s) => acc + Math.round(s.actualMinutes || s.durationMinutes || 0), 0);
+  const photoCount = Array.isArray(log.photos) ? log.photos.length : 0;
+  const focusLabel = languageText(
+    `专注 ${dayFocusMinutes} 分钟`,
+    `${dayFocusMinutes} min focused`,
+    `${dayFocusMinutes} Min. Fokus`
+  );
+  const photoPresenceLabel = photoCount > 0
+    ? languageText(`${photoCount} 张照片`, `${photoCount} photo${photoCount > 1 ? "s" : ""}`, `${photoCount} Foto${photoCount > 1 ? "s" : ""}`)
+    : languageText("无照片", "No photos", "Keine Fotos");
+
+  host.innerHTML = `
+    <header class="week-detail-header">
+      <p class="week-detail-kicker">${escapeHtml(tr("viewTitles.week"))}</p>
+      <h2>${escapeHtml(label)}</h2>
+      <p class="week-detail-summary">${escapeHtml(tr("today.summary", { done, total: scored.length }))}</p>
+    </header>
+    <div class="week-day-sheet">
+      <div class="week-day-sheet-habits">
+        <h3 class="week-sheet-subheading">${escapeHtml(tr("today.habits"))}</h3>
+        <div class="week-detail-habits">
+          ${open.length ? `<ul class="week-habit-list">${habitList(open)}</ul>` : ""}
+          ${scheduled.length ? `<h4 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h4><ul class="week-habit-list scheduled">${habitList(scheduled)}</ul>` : ""}
+          ${completed.length ? `<h4 class="week-scheduled-heading">${escapeHtml(tr("today.completed", { count: completed.length }))}</h4><ul class="week-habit-list">${habitList(completed)}</ul>` : ""}
+          ${!scored.length ? `<p class="week-detail-note empty">${escapeHtml(languageText("今天没有安排习惯", "No habits scheduled today", "Heute keine Gewohnheiten"))}</p>` : ""}
+        </div>
+      </div>
+      <div class="week-day-sheet-meta">
+        <div class="week-sheet-card week-sheet-reflection">
+          <h3 class="week-sheet-subheading">${escapeHtml(tr("today.reflection"))}</h3>
+          <p class="week-day-mood">${mood}</p>
+          ${note ? `<blockquote class="week-detail-note">${escapeHtml(note)}</blockquote>` : `<p class="week-detail-note empty">${escapeHtml(tr("week.noEntry"))}</p>`}
+        </div>
+        <div class="week-sheet-card week-sheet-stats">
+          <div class="week-sheet-stat-pill">
+            <span class="week-sheet-stat-label">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span>
+            <strong class="week-sheet-stat-value">${escapeHtml(focusLabel)}</strong>
+          </div>
+          <div class="week-sheet-stat-pill">
+            <span class="week-sheet-stat-label">${escapeHtml(languageText("照片", "Photos", "Fotos"))}</span>
+            <strong class="week-sheet-stat-value">${escapeHtml(photoPresenceLabel)}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
   host.querySelectorAll(".week-habit-check").forEach(button => button.addEventListener("click", event => {
     event.stopPropagation();
     const row = button.closest(".week-habit-row");
@@ -6785,22 +6844,87 @@ function recordFocusSession(session) {
   renderReview();
 }
 
+let focusCancelTimer = null;
+
+function transitionFocusUI(event) {
+  if (focusCancelTimer && event !== "cancel") {
+    clearTimeout(focusCancelTimer);
+    focusCancelTimer = null;
+  }
+  const next = window.LifeLedgerFocusTimer?.focusTransition
+    ? window.LifeLedgerFocusTimer.focusTransition(focusUIState, event)
+    : focusUIState;
+  focusUIState = next;
+  return next;
+}
+
 function handleFocusComplete(session) {
   recordFocusSession(session);
   releaseFocusWakeLock();
   playFocusChime();
   const label = session.label || tr("focus.untitled");
-  sendFocusNotification(tr("focus.completed"), tr("focus.notificationBody", { label, minutes: Math.round(session.actualMinutes) }), `life-ledger-focus-${session.id}`);
-  showToast(session.outcome === "completed" ? tr("focus.completed") : tr("focus.interrupted"));
-  if (session.outcome === "completed") {
-    focusCompleteUntil = Date.now() + 2400;
-    const idleHairline = $("#focusIdleHairline");
-    if (idleHairline) delete idleHairline.dataset.hairlineSrc;
-  }
+  const actualMinutes = Math.max(1, Math.round(session.actualMinutes || session.durationMinutes || 1));
+  lastRecordedFocusSession = session;
+  lastRecordedFocusMinutes = actualMinutes;
+  transitionFocusUI("complete");
+  sendFocusNotification(tr("focus.completed"), tr("focus.notificationBody", { label, minutes: actualMinutes }), `life-ledger-focus-${session.id}`);
+
+  const toastMsg = languageText(
+    `已记录 ${actualMinutes} 分钟专注`,
+    `${actualMinutes} minutes recorded`,
+    `${actualMinutes} Minuten aufgezeichnet`
+  );
+  const undoLabel = languageText("撤销", "Undo", "Rückgängig");
+  showToast(toastMsg, {
+    actionLabel: undoLabel,
+    onAction: () => {
+      if (lastRecordedFocusSession) {
+        state.focusSessions = (state.focusSessions || []).filter(s => s.id !== lastRecordedFocusSession.id);
+        saveState();
+        lastRecordedFocusSession = null;
+        lastRecordedFocusMinutes = 0;
+        transitionFocusUI("undo");
+        renderFocusTimer(null);
+        renderFocusOverview();
+        renderReview();
+        showToast(languageText("已撤销", "Undone", "Rückgängig gemacht"));
+      }
+    },
+  });
+
   const clock = $("#focusClock");
   clock?.classList.remove("focus-complete");
   void clock?.offsetWidth;
   clock?.classList.add("focus-complete");
+  renderFocusTimer(null);
+}
+
+function handleFocusCancel() {
+  if (focusCancelTimer) {
+    clearTimeout(focusCancelTimer);
+    focusCancelTimer = null;
+  }
+  if (focusTimer?.snapshot()) {
+    focusTimer.clear();
+    releaseFocusWakeLock();
+  }
+  transitionFocusUI("cancel");
+  renderFocusTimer(null);
+  showToast(languageText("已取消专注", "Focus cancelled", "Fokus abgebrochen"));
+  focusCancelTimer = setTimeout(() => {
+    focusCancelTimer = null;
+    if (focusUIState === "cancelled") {
+      transitionFocusUI("reset");
+      renderFocusTimer(null);
+    }
+  }, 2400);
+}
+
+function handleFocusFinish() {
+  const snapshot = focusTimer?.snapshot();
+  if (!snapshot) return;
+  transitionFocusUI("finish");
+  focusTimer.endFocus("finishedEarly");
 }
 
 function handleFocusPhaseComplete(phase) {
@@ -6823,6 +6947,9 @@ function renderFocusTimer(snapshot) {
   const duration = snapshot?.durationMs || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes * 60000;
   const remaining = snapshot?.remainingMs ?? duration;
   const progress = snapshot ? Math.max(0, Math.min(1, 1 - remaining / Math.max(1, duration))) : 0;
+
+  const currentState = focusUIState;
+
   $("#focusClock")?.style.setProperty("--focus-progress", progress);
   setText("#focusTime", formatFocusTime(remaining));
   setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
@@ -6834,45 +6961,130 @@ function renderFocusTimer(snapshot) {
   setText("#focusPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
   $("#inspectorFocusRow")?.style.setProperty("--focus-inline-progress", progress);
-  setText("#focusInlineTime", formatFocusTime(remaining));
-  setText("#focusToolbarTime", formatFocusTime(remaining));
-  setText("#focusMiniTime", formatFocusTime(remaining));
-  setText("#focusMiniLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
-  const sessionLive = Boolean(snapshot);
-  const panelOpen = $("#focusPanel") ? !$("#focusPanel").hidden : false;
-  const clock = $("#focusToolbarTime");
-  if (clock) clock.hidden = !sessionLive;
+  setText("#focusInlineTime", currentState === "completed" ? `${lastRecordedFocusMinutes}:00` : formatFocusTime(remaining));
+
+  const chipTime = $("#focusToolbarTime");
+  if (chipTime) {
+    if (currentState === "running" || currentState === "paused") {
+      chipTime.hidden = false;
+      chipTime.textContent = formatFocusTime(remaining);
+    } else if (currentState === "completed") {
+      chipTime.hidden = false;
+      chipTime.textContent = `${lastRecordedFocusMinutes}m`;
+    } else {
+      chipTime.hidden = true;
+    }
+  }
+
   const player = $("#focusMiniPlayer");
-  // Kairos TimerMiniPlayer (MIT, fb1f18d) mounts only while a session is
-  // running, paused, or complete, and stays hidden on the timer surface.
-  if (player) player.hidden = !sessionLive || panelOpen;
-  setText("#focusMiniPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
-  $("#focusMiniFinish").hidden = !isFocus;
-  $("#focusMiniSkip").hidden = !isBreak;
-  setText("#focusInlineLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
-  setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
-  $("#focusQuickFinish").hidden = !isFocus;
-  $("#focusQuickSkip").hidden = !isBreak;
-  $("#focusQuickPrimary").disabled = isBreak && !readyBreak && !running && !paused;
+  const panelOpen = $("#focusPanel") ? !$("#focusPanel").hidden : false;
+  const sessionLive = currentState === "running" || currentState === "paused";
+  if (player) {
+    player.hidden = !sessionLive || panelOpen;
+    setText("#focusMiniTime", formatFocusTime(remaining));
+    setText("#focusMiniLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
+    setText("#focusMiniPrimary", running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
+    const miniFinish = $("#focusMiniFinish");
+    if (miniFinish) miniFinish.hidden = !isFocus;
+    const miniSkip = $("#focusMiniSkip");
+    if (miniSkip) miniSkip.hidden = !sessionLive;
+  }
+
+  const idleHairline = $("#focusIdleHairline");
+  const quickPresets = $("#focusQuickPresets");
+  const quickPrimary = $("#focusQuickPrimary");
+  const quickFinish = $("#focusQuickFinish");
+  const quickSkip = $("#focusQuickSkip");
+  const todaySummary = $("#focusTodaySummary");
+
+  if (currentState === "completed") {
+    if (idleHairline) {
+      idleHairline.hidden = false;
+      idleHairline.dataset.minutes = String(lastRecordedFocusMinutes);
+      const idleSrc = "./assets/hairline/focus-complete.svg";
+      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
+        idleHairline.dataset.hairlineReady = "true";
+        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.completed") });
+      }
+    }
+    if (quickPresets) quickPresets.hidden = true;
+    if (quickPrimary) quickPrimary.hidden = true;
+    if (quickFinish) quickFinish.hidden = true;
+    if (quickSkip) quickSkip.hidden = true;
+    if (todaySummary) {
+      todaySummary.textContent = languageText(
+        `已记录 ${lastRecordedFocusMinutes} 分钟`,
+        `${lastRecordedFocusMinutes} minutes recorded`,
+        `${lastRecordedFocusMinutes} Minuten aufgezeichnet`
+      );
+    }
+  } else if (currentState === "cancelled") {
+    if (idleHairline) {
+      idleHairline.hidden = false;
+      const idleSrc = "./assets/hairline/focus-cancelled.svg";
+      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
+        idleHairline.dataset.hairlineReady = "true";
+        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: languageText("已取消专注", "Focus cancelled", "Fokus abgebrochen") });
+      }
+    }
+    if (quickPresets) quickPresets.hidden = true;
+    if (quickPrimary) quickPrimary.hidden = true;
+    if (quickFinish) quickFinish.hidden = true;
+    if (quickSkip) quickSkip.hidden = true;
+    if (todaySummary) {
+      todaySummary.textContent = languageText("专注已取消", "Focus cancelled", "Fokus abgebrochen");
+    }
+  } else if (currentState === "running") {
+    if (idleHairline) idleHairline.hidden = true;
+    if (quickPresets) quickPresets.hidden = true;
+    if (quickPrimary) {
+      quickPrimary.hidden = false;
+      quickPrimary.textContent = tr("focus.pause");
+      LifeLedgerInteraction?.morphIconToggle(quickPrimary, "pause", { onState: "pause" });
+    }
+    if (quickFinish) quickFinish.hidden = false;
+    if (quickSkip) quickSkip.hidden = false;
+  } else if (currentState === "paused") {
+    if (idleHairline) {
+      idleHairline.hidden = false;
+      const idleSrc = "./assets/hairline/focus-paused.svg";
+      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
+        idleHairline.dataset.hairlineReady = "true";
+        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.pause") });
+      }
+    }
+    if (quickPresets) quickPresets.hidden = true;
+    if (quickPrimary) {
+      quickPrimary.hidden = false;
+      quickPrimary.textContent = tr("focus.resume");
+      LifeLedgerInteraction?.morphIconToggle(quickPrimary, "resume", { onState: "pause" });
+    }
+    if (quickFinish) quickFinish.hidden = false;
+    if (quickSkip) quickSkip.hidden = false;
+  } else {
+    if (idleHairline) {
+      idleHairline.hidden = false;
+      const idleSrc = "./assets/hairline/focus-idle.svg";
+      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
+        idleHairline.dataset.hairlineReady = "true";
+        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.untitled") });
+      }
+    }
+    if (quickPresets) quickPresets.hidden = false;
+    if (quickPrimary) {
+      quickPrimary.hidden = false;
+      quickPrimary.textContent = tr("focus.start");
+      LifeLedgerInteraction?.morphIconToggle(quickPrimary, "play", { onState: "pause" });
+    }
+    if (quickFinish) quickFinish.hidden = true;
+    if (quickSkip) quickSkip.hidden = true;
+  }
+
   renderFocusOverview();
   if (snapshot) {
     document.title = `${formatFocusTime(remaining)} · ${tr("title")}`;
   } else {
     document.title = tr("title");
-  }
-  const idleHairline = $("#focusIdleHairline");
-  if (idleHairline) {
-    idleHairline.hidden = Boolean(snapshot);
-    const idleSrc = Date.now() < focusCompleteUntil ? "./assets/hairline/focus-complete.svg" : "./assets/hairline/focus-idle.svg";
-    if (!snapshot && idleHairline.dataset.hairlineSrc !== idleSrc) {
-      idleHairline.dataset.hairlineReady = "true";
-      LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.untitled") });
-    }
-  }
-  const quickPrimary = $("#focusQuickPrimary");
-  if (quickPrimary) {
-    const morphState = running ? "pause" : paused ? "resume" : "play";
-    LifeLedgerInteraction?.morphIconToggle(quickPrimary, morphState, { onState: "pause" });
   }
 }
 
@@ -6905,14 +7117,17 @@ async function startFocusSession() {
   };
   saveState();
   if (state.focusSettings.notify) requestNotificationPermission();
+  transitionFocusUI("start");
   focusTimer.start({ date: isoDate(new Date()), label, linkedGoalId: "", preset, durationMinutes: values.focusMinutes, breakMinutes: values.breakMinutes });
   setDailyToolPage("focus");
   acquireFocusWakeLock();
+  renderFocusTimer(focusTimer.snapshot());
 }
 
 async function startQuickFocusSession() {
   const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
   if (settings.notify) requestNotificationPermission();
+  transitionFocusUI("start");
   focusTimer.start({
     date: isoDate(new Date()),
     label: settings.defaultTopic || tr("focus.untitled"),
@@ -6922,11 +7137,18 @@ async function startQuickFocusSession() {
   });
   setDailyToolPage("focus");
   acquireFocusWakeLock();
+  renderFocusTimer(focusTimer.snapshot());
 }
 
 function handleFocusPrimary() {
   const snapshot = focusTimer?.snapshot();
-  if (!snapshot) { startFocusSession(); return; }
+  if (!snapshot) {
+    if (focusUIState === "completed" || focusUIState === "cancelled") {
+      transitionFocusUI("reset");
+    }
+    startFocusSession();
+    return;
+  }
   if (snapshot.phase === "break" && snapshot.status === "ready") {
     focusTimer.startBreak();
     acquireFocusWakeLock();
@@ -6935,13 +7157,22 @@ function handleFocusPrimary() {
   if (snapshot.status === "running") {
     focusTimer.pause();
     releaseFocusWakeLock();
+    transitionFocusUI("pause");
+    renderFocusTimer(focusTimer.snapshot());
   } else if (snapshot.status === "paused") {
     focusTimer.resume();
     acquireFocusWakeLock();
+    transitionFocusUI("resume");
+    renderFocusTimer(focusTimer.snapshot());
   }
 }
 
 function handleFocusQuickPrimary() {
+  if (focusUIState === "completed" || focusUIState === "cancelled") {
+    transitionFocusUI("reset");
+    startQuickFocusSession();
+    return;
+  }
   if (!focusTimer?.snapshot()) {
     startQuickFocusSession();
     return;
@@ -6953,12 +7184,25 @@ function initFocusTimer() {
   if (!window.LifeLedgerFocusTimer) return;
   focusTimer = window.LifeLedgerFocusTimer.createTimer({
     storageKey: FOCUS_ACTIVE_KEY,
-    onChange: renderFocusTimer,
+    onChange: snapshot => {
+      if (snapshot?.status === "running" && focusUIState !== "running") {
+        transitionFocusUI(focusUIState === "paused" ? "resume" : "start");
+      } else if (snapshot?.status === "paused" && focusUIState !== "paused") {
+        transitionFocusUI("pause");
+      }
+      renderFocusTimer(snapshot);
+    },
     onFocusComplete: handleFocusComplete,
     onPhaseComplete: handleFocusPhaseComplete,
   });
   const active = focusTimer.initialize();
-  if (active?.status === "running") acquireFocusWakeLock();
+  if (active?.status === "running") {
+    focusUIState = "running";
+    acquireFocusWakeLock();
+  } else if (active?.status === "paused") {
+    focusUIState = "paused";
+  }
+  renderFocusTimer(active);
 }
 
 function bindEvents() {
@@ -7077,20 +7321,28 @@ function bindEvents() {
   $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
   $("#openFocusTimer")?.addEventListener("click", () => openFocusTimerDialog());
   $$('[data-quick-focus-preset]').forEach(button => button.addEventListener("click", () => selectQuickFocusPreset(button.dataset.quickFocusPreset)));
-  $("#focusQuickPrimary").addEventListener("click", handleFocusQuickPrimary);
-  $("#focusQuickFinish").addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
-  $("#focusQuickSkip").addEventListener("click", () => {
-    focusTimer?.skipBreak();
-    releaseFocusWakeLock();
+  $("#focusQuickPrimary")?.addEventListener("click", handleFocusQuickPrimary);
+  $("#focusQuickFinish")?.addEventListener("click", handleFocusFinish);
+  $("#focusQuickSkip")?.addEventListener("click", handleFocusCancel);
+  $("#focusPanel")?.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      setFocusPanelOpen(false);
+      return;
+    }
+    if (event.code === "Space" || event.key === " ") {
+      const tag = document.activeElement?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      event.preventDefault();
+      handleFocusQuickPrimary();
+    }
   });
   $$("#insightViewSwitch [data-insight-view]").forEach(button => button.addEventListener("click", () => setInsightView(button.dataset.insightView)));
   $("#focusMiniExpand")?.addEventListener("click", () => setFocusPanelOpen(true));
   $("#focusMiniPrimary")?.addEventListener("click", handleFocusQuickPrimary);
-  $("#focusMiniFinish")?.addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
-  $("#focusMiniSkip")?.addEventListener("click", () => {
-    focusTimer?.skipBreak();
-    releaseFocusWakeLock();
-  });
+  $("#focusMiniFinish")?.addEventListener("click", handleFocusFinish);
+  $("#focusMiniSkip")?.addEventListener("click", handleFocusCancel);
   $("#journalComposerSave")?.addEventListener("click", () => {
     const field = $("#journalQuickNote");
     if (!field) return;
@@ -7141,12 +7393,12 @@ function bindEvents() {
   $$('[data-focus-preset]').forEach(button => button.addEventListener("click", () => selectFocusPreset(button.dataset.focusPreset)));
   $("#focusPrimary").addEventListener("click", handleFocusPrimary);
   $("#focusFinish").addEventListener("click", () => {
-    focusTimer?.endFocus("finishedEarly");
+    handleFocusFinish();
     $("#focusDialog").close();
   });
   $("#focusInterrupt").addEventListener("click", () => {
     if (!window.confirm(tr("focus.confirmEnd"))) return;
-    focusTimer?.endFocus("interrupted");
+    handleFocusCancel();
     $("#focusDialog").close();
   });
   $("#focusSkipBreak").addEventListener("click", () => {

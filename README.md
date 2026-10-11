@@ -113,6 +113,16 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Responsive Apple-inspired interface for desktop and mobile
 
 <details>
+<summary><strong>What shipped in Life Ledger 3.5.1</strong></summary>
+
+- Unified focus timer state machine shared by toolbar chip, panel, and mini-player, featuring completion illustration with minute echo and toast Undo.
+- Reorganized week view with primary two-column day sheet at ≥1180px, day completion meters, and compact weekly goals.
+- Composed journal day page with reflection text directly below header, inline photo count, and compact habit grid.
+- Today header 3-column integration (80px illustration box, copy block, mood control); secondary text raised to 12px and `--secondaryLabel` darkened to #575953 on light.
+- Extended 160×120 hairline illustration set (`focus-paused.svg`, `focus-cancelled.svg`, `empty-week-goals.svg`, `journal-no-reflection.svg`).
+
+</details>
+<details>
 <summary><strong>What shipped in Life Ledger 1.3</strong></summary>
 
 - One selected date now moves the hero, habits, mood, schedule, and reflection together.

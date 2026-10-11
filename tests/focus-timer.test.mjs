@@ -74,3 +74,50 @@ test("break completion clears active timer and an early finish records invested 
   assert.equal(timer.snapshot(), null);
   assert.deepEqual(phases.slice(-2), ["focus", "break"]);
 });
+
+test("focus transition table follows explicit state model", () => {
+  const { focusTransition, FOCUS_TRANSITIONS } = globalThis.LifeLedgerFocusTimer;
+  assert.ok(focusTransition, "focusTransition must be exported");
+  assert.ok(FOCUS_TRANSITIONS, "FOCUS_TRANSITIONS table must be exported");
+
+  // Idle state transitions
+  assert.equal(focusTransition("idle", "start"), "running");
+  assert.equal(focusTransition("idle", "toggle"), "running");
+  assert.equal(focusTransition("idle", "pause"), "idle");
+  assert.equal(focusTransition("idle", "finish"), "idle");
+
+  // Running state transitions
+  assert.equal(focusTransition("running", "pause"), "paused");
+  assert.equal(focusTransition("running", "toggle"), "paused");
+  assert.equal(focusTransition("running", "finish"), "completed");
+  assert.equal(focusTransition("running", "complete"), "completed");
+  assert.equal(focusTransition("running", "cancel"), "cancelled");
+  assert.equal(focusTransition("running", "skip"), "cancelled");
+  assert.equal(focusTransition("running", "start"), "running");
+
+  // Paused state transitions
+  assert.equal(focusTransition("paused", "resume"), "running");
+  assert.equal(focusTransition("paused", "toggle"), "running");
+  assert.equal(focusTransition("paused", "finish"), "completed");
+  assert.equal(focusTransition("paused", "complete"), "completed");
+  assert.equal(focusTransition("paused", "cancel"), "cancelled");
+  assert.equal(focusTransition("paused", "skip"), "cancelled");
+  assert.equal(focusTransition("paused", "pause"), "paused");
+
+  // Completed state transitions
+  assert.equal(focusTransition("completed", "undo"), "idle");
+  assert.equal(focusTransition("completed", "reset"), "idle");
+  assert.equal(focusTransition("completed", "start"), "running");
+  assert.equal(focusTransition("completed", "toggle"), "running");
+  assert.equal(focusTransition("completed", "pause"), "completed");
+
+  // Cancelled state transitions
+  assert.equal(focusTransition("cancelled", "reset"), "idle");
+  assert.equal(focusTransition("cancelled", "start"), "running");
+  assert.equal(focusTransition("cancelled", "toggle"), "running");
+
+  // Default / invalid arguments
+  assert.equal(focusTransition(undefined, "start"), "running");
+  assert.equal(focusTransition(null, "start"), "running");
+  assert.equal(focusTransition("running", "invalid_event"), "running");
+});

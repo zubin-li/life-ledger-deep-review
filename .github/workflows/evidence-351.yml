@@ -1,0 +1,132 @@
+name: Evidence & Polish Verification 3.5.1
+
+on:
+  push:
+    branches:
+      - codex/macos-3-wip
+    paths:
+      - 'public/**'
+      - 'desktop/**'
+      - 'scripts/evidence/**'
+      - '.github/workflows/evidence-351.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify 3.5.1 Controls & Evidence
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current working branch
+        uses: actions/checkout@v4
+        with:
+          path: current
+
+      - name: Checkout 3.5.0 baseline (6279dcd)
+        uses: actions/checkout@v4
+        with:
+          ref: 6279dcd
+          path: before-350
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: current/package-lock.json
+
+      - name: Install dependencies
+        working-directory: current
+        run: |
+          npm ci
+          npm install --no-save playwright@1
+          npx playwright install --with-deps chromium
+
+      - name: Install CJK fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: Run unit and desktop checks
+        working-directory: current
+        run: |
+          npm test
+          npm run desktop:check
+
+      - name: Run executable control verification
+        if: always()
+        working-directory: current
+        run: node scripts/evidence/controls.mjs
+
+      - name: Capture screenshot matrix
+        if: always()
+        working-directory: current
+        run: node scripts/evidence/screens.mjs
+
+      - name: Generate before-after visual comparisons
+        if: always()
+        working-directory: current
+        run: node scripts/evidence/before-after.mjs --before ../before-350 --after .
+
+      - name: Record interaction video
+        if: always()
+        working-directory: current
+        run: node scripts/evidence/video.mjs
+
+      - name: Generate verification report
+        if: always()
+        working-directory: current
+        run: node scripts/evidence/report.mjs
+
+      - name: Upload evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: life-ledger-351-evidence
+          path: |
+            current/docs/phase-3-5-1/
+            current/docs/phase-3-5-1-polish-verification.md
+
+      - name: Assert quality gates (0 errors, 0 h-scroll, 0 control failures)
+        working-directory: current
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const summaryPath = "docs/phase-3-5-1/screens-summary.json";
+            if (!fs.existsSync(summaryPath)) {
+              console.error("Missing screens summary file");
+              process.exit(1);
+            }
+            const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+            if (summary.pageErrors && summary.pageErrors.length > 0) {
+              console.error("Console/page errors found in screens:", summary.pageErrors);
+              process.exit(1);
+            }
+            if (summary.horizontalScrolls && summary.horizontalScrolls.length > 0) {
+              console.error("Horizontal scroll detected:", summary.horizontalScrolls);
+              process.exit(1);
+            }
+            const controlsPath = "docs/phase-3-5-1/controls-results.json";
+            if (!fs.existsSync(controlsPath)) {
+              console.error("Missing controls results file");
+              process.exit(1);
+            }
+            const controls = JSON.parse(fs.readFileSync(controlsPath, "utf8"));
+            let failedCount = 0;
+            for (const c of controls) {
+              for (const [k, v] of Object.entries(c.checks || {})) {
+                if (v.status === "fail") {
+                  console.error(`Control failed: #${c.id} ${c.control} (${k}):`, v.detail);
+                  failedCount++;
+                }
+              }
+            }
+            if (failedCount > 0) {
+              console.error(`Quality gate failed: ${failedCount} control check(s) failed.`);
+              process.exit(1);
+            }
+            console.log("All 3.5.1 quality gates passed.");
+          '

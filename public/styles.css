@@ -1250,9 +1250,9 @@ html[data-desktop] {
   --text-large-title: 600 28px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   --text-section-title: 600 15px/1.3 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   --text-body-ui: 400 13px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  --text-secondary-ui: 500 11px/1.35 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --text-secondary-ui: 500 12px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   --label: #242522;
-  --secondaryLabel: #6f716b;
+  --secondaryLabel: #575953;
   --tertiaryLabel: #8a877e;
   --separator: rgba(36, 37, 34, 0.14);
   --selectedContentBackground: #e3e9e0;
@@ -3022,21 +3022,21 @@ html.motion-off *::before,
 html.motion-off *::after { animation: none !important; transition: none !important; }
 
 /* Round 2 — one primary region, one secondary, quiet chrome. */
-.week-day-detail { display: none; }
 html[data-desktop] body[data-active-view="today"] .main-content { overflow: hidden; }
 html[data-desktop] #todayView.active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; height: 100%; overflow: hidden; }
 html[data-desktop] .today-stage { flex: 1 1 auto; min-height: 0; }
-html[data-desktop] .today-stage-header { align-items: center; }
-html[data-desktop] .today-stage-copy { grid-template-columns: 128px minmax(0, 1fr); column-gap: 20px; align-items: center; }
-html[data-desktop] .today-header-art { width: 128px; align-self: center; }
+html[data-desktop] .today-stage-header { display: grid; grid-template-columns: 80px minmax(0, 1fr) auto; column-gap: 20px; align-items: center; }
+html[data-desktop] .today-stage-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+html[data-desktop] #todayHeaderArt,
+html[data-desktop] .today-header-art { width: 80px; height: 80px; flex: 0 0 80px; align-self: center; }
 html[data-desktop] .today-date-heading { font: 600 2.5rem/1.05 var(--font-display); letter-spacing: -0.03em; }
 html[data-desktop] .today-list { flex: 0 1 auto; min-height: 0; overflow: auto; }
 html[data-desktop] .today-day-context { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(200px, .7fr); gap: 28px; align-content: start; min-height: 168px; margin-top: 16px; padding: 16px 4px 8px; border-top: 1px solid var(--separator); }
 html[data-desktop] .today-context-week h3,
-html[data-desktop] .today-context-aside h3 { margin: 0 0 8px; font: 600 11px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .today-context-aside h3 { margin: 0 0 8px; font: 600 12px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
 html[data-desktop] .today-context-week ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
 html[data-desktop] .today-context-day { display: grid; justify-items: center; gap: 6px; width: 100%; min-height: 72px; padding: 8px 2px; border: 0; border-radius: 10px; background: transparent; color: var(--label); cursor: pointer; }
-html[data-desktop] .today-context-day span { font: 600 11px/1.2 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .today-context-day span { font: 600 12px/1.2 var(--font-body); color: var(--secondaryLabel); }
 html[data-desktop] .today-context-day b { font: 600 12px/1 var(--font-body); font-variant-numeric: tabular-nums; }
 html[data-desktop] .today-context-day i { display: block; width: min(28px, 100%); height: 4px; border-radius: 999px; background: color-mix(in srgb, var(--label) 12%, transparent); position: relative; overflow: hidden; }
 html[data-desktop] .today-context-day i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--fill, 0) * 100%); background: var(--controlAccent); }
@@ -3046,32 +3046,54 @@ html[data-desktop] .today-context-aside p { margin: 0 0 14px; font: 400 14px/1.4
 html[data-desktop] #weekView.active { display: flex; flex-direction: column; min-height: 0; height: 100%; }
 html[data-desktop] .week-plan-lede { margin: 0; padding: 10px 24px 8px; font: 500 13px/1.35 var(--font-body); color: var(--secondaryLabel); }
 html[data-desktop] .weekly-workspace { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; height: auto; }
-html[data-desktop] .week-split { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 0; padding: 0; border-top: 1px solid var(--separator); }
+html[data-desktop] .week-split { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(260px, 300px) minmax(0, 1fr); gap: 0; padding: 0; border-top: 1px solid var(--separator); }
 html[data-desktop] .week-agenda { overflow: auto; padding: 8px 0; border-right: 1px solid var(--separator); background: var(--surface-1); }
-html[data-desktop] .week-agenda-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; min-height: 40px; padding: 6px 14px; }
+html[data-desktop] .week-agenda-row { grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; min-height: 40px; padding: 6px 14px; }
+html[data-desktop] .week-agenda-meter { display: block; width: 32px; height: 4px; border-radius: 2px; background: var(--separator); overflow: hidden; align-self: center; }
+html[data-desktop] .week-agenda-meter i { display: block; width: 100%; height: 100%; background: var(--controlAccent); border-radius: 2px; transform-origin: left; transform: scaleX(var(--meter-fill, 0)); transition: transform 240ms var(--ease-move); }
+html.motion-off .week-agenda-meter i { transition: none !important; }
+html.motion-reduced .week-agenda-meter i { transition-property: opacity !important; }
 html[data-desktop] .week-agenda-note,
 html[data-desktop] .week-agenda-mood { display: none; }
 html[data-desktop] .week-agenda-date { font: 600 15px/1.1 var(--font-display); }
 html[data-desktop] .week-agenda-row.today,
 html[data-desktop] .week-agenda-row.selected { box-shadow: inset 3px 0 0 var(--controlAccent); background: color-mix(in srgb, var(--controlAccent) 10%, transparent); }
-html[data-desktop] .week-day-detail { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 28px 40px 24px; overflow: auto; background: var(--sheet); }
+html[data-desktop] .week-day-detail { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 24px 36px 20px; overflow: auto; background: var(--sheet); }
 html[data-desktop] .week-detail-kicker { margin: 0; font: 600 12px/1.3 var(--font-body); color: var(--secondaryLabel); }
 html[data-desktop] .week-detail-header h2,
-html[data-desktop] .week-day-detail h2 { margin: 2px 0 0; font: 600 2.35rem/1.1 var(--font-display); letter-spacing: -0.03em; color: var(--label); }
-html[data-desktop] .week-detail-header p { margin: 8px 0 0; font: 600 15px/1.35 var(--font-body); color: var(--label); }
-html[data-desktop] .week-day-mood { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; font: 500 14px/1.4 var(--font-body); color: var(--secondaryLabel); }
+html[data-desktop] .week-day-detail h2 { margin: 2px 0 0; font: 600 2.2rem/1.1 var(--font-display); letter-spacing: -0.03em; color: var(--label); }
+html[data-desktop] .week-detail-header p { margin: 6px 0 0; font: 600 14px/1.35 var(--font-body); color: var(--label); }
+html[data-desktop] .week-day-sheet { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(240px, 1fr); gap: 28px; align-items: start; margin-top: 14px; }
+html[data-desktop] .week-sheet-subheading { margin: 0 0 10px; font: 600 12px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .week-sheet-card { padding: 14px 16px; border: 1px solid var(--separator); border-radius: 12px; background: var(--surface-1); }
+html[data-desktop] .week-sheet-stats { display: flex; gap: 12px; margin-top: 12px; }
+html[data-desktop] .week-sheet-stat-pill { flex: 1; display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, var(--label) 4%, transparent); }
+html[data-desktop] .week-sheet-stat-label { font: 600 11px/1.2 var(--font-body); color: var(--secondaryLabel); text-transform: uppercase; letter-spacing: .05em; }
+html[data-desktop] .week-sheet-stat-value { font: 600 13px/1.3 var(--font-body); color: var(--label); }
+html[data-desktop] .week-day-mood { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; font: 500 13px/1.4 var(--font-body); color: var(--secondaryLabel); }
 html[data-desktop] .week-day-mood svg { width: 16px; height: 16px; }
-html[data-desktop] .week-detail-note { max-width: 42em; margin: 0; font: 400 15px/1.55 var(--font-body); color: var(--label); }
+html[data-desktop] .week-detail-note { max-width: 42em; margin: 0; font: 400 14px/1.55 var(--font-body); color: var(--label); }
 html[data-desktop] .week-detail-note.empty { color: var(--secondaryLabel); }
-html[data-desktop] .week-detail-habits { margin-top: 12px; max-width: 520px; }
-html[data-desktop] .weekly-goals-section { flex: 0 0 auto; max-height: 148px; margin: 0; padding: 10px 24px 12px; border-top: 1px solid var(--separator); background: color-mix(in srgb, var(--surface-1) 80%, transparent); }
+html[data-desktop] .week-detail-habits { margin-top: 4px; max-width: none; }
+html[data-desktop] .weekly-goals-section { flex: 0 0 auto; max-height: 160px; margin: 0; padding: 12px 36px 14px; border-top: 1px solid var(--separator); background: color-mix(in srgb, var(--surface-1) 85%, transparent); }
+html[data-desktop] .day-page-composed { display: flex; flex-direction: column; gap: 20px; max-width: 760px; }
+html[data-desktop] .timeline-composed-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid var(--separator); }
+html[data-desktop] .timeline-composed-header .timeline-detail-date { margin: 0; font: 600 2.2rem/1.15 var(--font-display); letter-spacing: -0.03em; }
+html[data-desktop] .timeline-composed-meta { display: flex; align-items: center; gap: 12px; }
+html[data-desktop] .timeline-composed-reflection { display: flex; flex-direction: column; gap: 8px; }
+html[data-desktop] .timeline-composed-reflection h3,
+html[data-desktop] .timeline-composed-photos h3,
+html[data-desktop] .timeline-composed-habits h3 { margin: 0; font: 600 12px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .journal-photo-grid-composed { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
+html[data-desktop] .photo-slot-faint { aspect-ratio: 1; border: 1px dashed var(--separator); border-radius: 10px; display: grid; place-items: center; color: var(--tertiaryLabel); background: color-mix(in srgb, var(--label) 2%, transparent); }
+html[data-desktop] .timeline-habit-list.is-compact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 16px; margin-top: 8px; }
 html[data-desktop] .day-page { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(200px, 280px); grid-template-areas: "header side" "note side"; column-gap: 36px; row-gap: 12px; align-items: start; }
 html[data-desktop] .day-page-header { grid-area: header; }
 html[data-desktop] .day-page-note { grid-area: note; max-width: 40em; }
 html[data-desktop] .day-page-side { grid-area: side; display: grid; gap: 18px; align-content: start; }
 html[data-desktop] .day-page-label,
 html[data-desktop] .day-page .timeline-detail-habits h3,
-html[data-desktop] .day-page .mood-photo-heading strong { margin: 0; font: 600 11px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
+html[data-desktop] .day-page .mood-photo-heading strong { margin: 0; font: 600 12px/1.3 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--secondaryLabel); }
 html[data-desktop] .timeline-detail .day-page .timeline-detail-date { margin: 0; font: 600 2.35rem/1.1 var(--font-display); letter-spacing: -0.03em; }
 html[data-desktop] .day-page-mood { margin: 8px 0 0; }
 html[data-desktop] .day-page .mood-photo-heading.day-page-meta { display: grid; grid-template-columns: max-content max-content; justify-content: start; align-items: baseline; column-gap: 10px; width: 100%; margin: 0 0 8px; }
@@ -3093,7 +3115,8 @@ html[data-desktop] .review-trend-note .hairline-mount { width: 120px; }
 html[data-desktop] .review-trend-note strong { font: 600 13px/1.3 var(--font-body); }
 html[data-desktop] .review-trend-note p { margin: 0; font: 400 12px/1.4 var(--font-body); }
 @media (max-width: 1180px) {
-  html[data-desktop] .week-split { grid-template-columns: 200px minmax(0, 1fr); }
+  html[data-desktop] .week-split { grid-template-columns: minmax(220px, 260px) minmax(0, 1fr); }
+  html[data-desktop] .week-day-sheet { grid-template-columns: 1fr; gap: 20px; }
   html[data-desktop] .today-day-context,
   html[data-desktop] .day-page,
   html[data-desktop] .review-trend-with-note { grid-template-columns: 1fr; }

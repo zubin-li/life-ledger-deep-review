@@ -4,6 +4,16 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Polish — Life Ledger 3.5.1 (macOS desktop)
+
+- Focus state machine unified across toolbar chip, panel, and mini-player (`idle` → `running` → `paused` → `running` … → `completed` | `cancelled`). Natural finish and Finish button display `focus-complete.svg` with minute echo and Undo action in toast removing the just-recorded session and returning to idle. Cancel/skip during live session clears timer without confirmation dialogs. Space toggles start/pause; Escape closes panel and returns focus to chip. Transition table verified in `tests/focus-timer.test.mjs`.
+- Week view reorganized: selected day rendered as primary two-column day sheet at ≥1180px (habits on left; reflection, photo presence, focus minutes on right), collapsing to one column below 1180px. Day rail features completion meters per day; weekly goals sit directly under the day sheet with compact margins, eliminating dead whitespace at 1440px.
+- Journal day page reorganized as a single composed sheet: header row (date, mood, status) → Reflection text block directly below with `journal-no-reflection.svg` fallback → photos grid with inline count "Photos · X of 3" and Add photo as first grid tile → completed habits as a compact two-column list.
+- Today header integrated into a 3-column grid (`80px minmax(0, 1fr) auto`) with fixed 80px illustration box; secondary text raised to 12px and `--secondaryLabel` darkened to #575953 on light (and #b7b9b2 on dark).
+- Hairline set updated: added `focus-paused.svg`, `focus-cancelled.svg`, `empty-week-goals.svg`, `journal-no-reflection.svg`, and updated `focus-complete.svg` with minute echo.
+- Executable verification: Playwright suite covering all 62 control matrix rows in `scripts/evidence/controls.mjs`, multi-viewport/multi-locale screenshots in `screens.mjs`, side-by-side before/after sheets in `before-after.mjs`, interaction video in `video.mjs`, and GitHub Actions workflow `.github/workflows/evidence-351.yml`.
+- Package version `3.5.1` and service worker cache `life-ledger-pwa-3.5.1`. Storage keys and schemas unchanged.
+
 ### Polish — Life Ledger 3.5 (macOS desktop)
 
 - Closed the interaction loops from the 3.5 audit: search with no matches says so, future-day checks explain why they are off, habit deletion can be undone, settings changes confirm in place, and the toast no longer covers the focus mini-player. The all-done moment is one 600ms chip. Today’s header changes for morning, evening, and a finished day, and the drawing sits with the weekday. Under the list, the last seven days, tomorrow’s habit count, and the day’s note fill the rest of the pane. Week keeps a narrow day rail; the selected day is the main pane. Journal’s detail is one day page: mood, note, photos, and habits. Insights with no completions keeps the chart axes and date range, with the empty drawing beside them. On a phone-width window the date stays readable and the five destinations stay on one bar.

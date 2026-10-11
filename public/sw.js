@@ -1,25 +1,25 @@
-const CACHE_NAME = "life-ledger-pwa-3.5.0";
+const CACHE_NAME = "life-ledger-pwa-3.5.1";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=3.5.0",
-  "./app.js?v=3.5.0",
-  "./habit-analytics.js?v=3.5.0",
-  "./interaction.js?v=3.5.0",
-  "./focus-timer.js?v=3.5.0",
-  "./voice-checkin.js?v=3.5.0",
-  "./photo-memories.js?v=3.5.0",
-  "./media-backup.js?v=3.5.0",
-  "./deployment-mode.js?v=3.5.0",
-  "./cloudbase-sync.js?v=3.5.0",
+  "./styles.css?v=3.5.1",
+  "./app.js?v=3.5.1",
+  "./habit-analytics.js?v=3.5.1",
+  "./interaction.js?v=3.5.1",
+  "./focus-timer.js?v=3.5.1",
+  "./voice-checkin.js?v=3.5.1",
+  "./photo-memories.js?v=3.5.1",
+  "./media-backup.js?v=3.5.1",
+  "./deployment-mode.js?v=3.5.1",
+  "./cloudbase-sync.js?v=3.5.1",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=3.5.0",
+  "./_init_tcb-env.js?v=3.5.1",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",
   "./assets/apple-touch-icon.png",
-  ...["empty-today-done", "today-morning", "today-evening", "today-open", "empty-first-run", "empty-journal", "empty-photos", "empty-insights", "focus-idle", "focus-complete", "empty-week", "empty-habits", "launcher-local", "launcher-cloud", "search-empty", "backup-success", "sync-offline"].map(name => `./assets/hairline/${name}.svg`),
+  ...["empty-today-done", "today-morning", "today-evening", "today-open", "empty-first-run", "empty-journal", "empty-photos", "empty-insights", "focus-idle", "focus-complete", "focus-paused", "focus-cancelled", "empty-week", "empty-week-goals", "journal-no-reflection", "empty-habits", "launcher-local", "launcher-cloud", "search-empty", "backup-success", "sync-offline"].map(name => `./assets/hairline/${name}.svg`),
 ];
 
 self.addEventListener("install", event => {

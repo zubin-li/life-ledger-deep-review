@@ -113,6 +113,16 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
 <details>
+<summary><strong>Was Life Ledger 3.5.1 gebracht hat</strong></summary>
+
+- Einheitliche Fokus-Timer-Zustandsmaschine für Symbolleiste, Bedienfeld und Mini-Player mit Abschluss-Illustration und Rückgängig-Aktion.
+- Überarbeitete Wochenansicht mit zweispaltigem Tagesblatt bei ≥1180px, Tagesabschlussanzeige und kompakten Wochenzielen.
+- Einheitliche Journal-Tagesseite: Reflexionstext direkt unter der Kopfzeile, Inline-Fotoanzahl und kompakte Gewohnheitsliste.
+- Integrierte dreispaltige Heute-Kopfzeile (80px-Illustrationsbox, Textbereich, Stimmungssteuerung); Sekundärtext auf 12px angehoben und `--secondaryLabel` im Hellmodus auf #575953 abgedunkelt.
+- Erweitertes 160×120-Haarlinien-Illustrationsset für pausierte/abgebrochene Fokusse und leere Zustände.
+
+</details>
+<details>
 <summary><strong>Was Life Ledger 1.3 gebracht hat</strong></summary>
 
 - Ein ausgewähltes Datum bewegt Fortschritt, Gewohnheiten, Stimmung, Termine und Reflexion gemeinsam.

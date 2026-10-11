@@ -33,4 +33,13 @@ The subject stays inside x 36–124 and y 28–96. Nothing floats in a distant c
 
 ## Where a drawing is allowed
 
-First run, all done, empty journal, empty photos, insights with no completions in the chart, focus idle, focus just completed, backup success, search with no matches, offline. A working list does not get a decoration.
+First run, all done, empty journal, empty photos, insights with no completions in the chart, focus idle, focus just completed, focus paused, focus cancelled, empty week goals, journal day with no reflection yet, backup success, search with no matches, offline. A working list does not get a decoration.
+
+## 3.5.1 changes
+
+- `focus-paused.svg`: Quiet paused clock dial with balanced hour ticks and parallel accent pause strokes (`M76 52v16M84 52v16`) on layer 3. Mounted in `#focusIdleHairline` when a running focus session is paused.
+- `focus-cancelled.svg`: Quiet resting clock dial with a calm horizontal baseline (`M68 60h24`) and an accent neutral indicator. Mounted when a focus session is cancelled.
+- `empty-week-goals.svg`: Quiet checklist clipboard with an accent top clip (`M72 32V26h16v6`). Mounted in `#weeklyGoalList` when the week has no planned goals.
+- `journal-no-reflection.svg`: Quiet dual-page ledger with faint ruled lines and an accent quill/pen stroke (`M96 76l14-14`). Mounted in the day detail sheet when no reflection note has been written for that date.
+- `focus-complete.svg`: Enhanced clock face with dial tick marks and an accent minute echo tick (`circle cx="72" cy="40" r="1.5"` with `[data-minute-echo]`) echoing the recorded focus duration.
+
