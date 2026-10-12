@@ -1977,6 +1977,8 @@ function mountFocusDurationStepper() {
     getValue: () => state.focusSettings?.focusMinutes || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes,
     onChange: minutes => {
       state.focusSettings = { ...state.focusSettings, focusMinutes: minutes, preset: "custom" };
+      const minutesInput = $("#focusMinutes");
+      if (minutesInput) minutesInput.value = minutes;
       saveState();
       renderFocusTimer(focusTimer?.snapshot());
     },

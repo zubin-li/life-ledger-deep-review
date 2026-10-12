@@ -32,24 +32,49 @@ async function verifyFocusVisible(locator) {
 
   const reachResult = await locator.evaluate((target) => {
     if (!target) return { ok: false, reason: "target element missing" };
-    const style = window.getComputedStyle(target);
-    if (style.display === "none" || style.visibility === "hidden") {
-      return { ok: false, reason: "target element is hidden via CSS" };
-    }
-    const isFocusable = (el) => {
-      if (!el || el.disabled || el.getAttribute("aria-hidden") === "true") return false;
+
+    const isRendered = (el) => {
+      if (!el) return false;
+      if (el.closest("[hidden], [inert], dialog:not([open])")) return false;
+      if (el.inert) return false;
+      if (typeof el.checkVisibility === "function") {
+        if (!el.checkVisibility({ checkOpacity: false, checkVisibilityCSS: true })) return false;
+      } else {
+        if (el.getClientRects().length === 0) return false;
+      }
       const s = window.getComputedStyle(el);
       if (s.display === "none" || s.visibility === "hidden") return false;
+      return true;
+    };
+
+    if (!isRendered(target)) {
+      return { ok: false, reason: "target element is not rendered / visible" };
+    }
+
+    const isFocusable = (el) => {
+      if (!el || el.disabled || el.getAttribute("aria-hidden") === "true") return false;
+      if (!isRendered(el)) return false;
+
       const tabIndex = el.getAttribute("tabindex");
       if (tabIndex !== null && Number(tabIndex) < 0) return false;
+
       const tag = el.tagName.toLowerCase();
       if (["input", "select", "textarea", "button"].includes(tag)) return true;
       if (tag === "a" && el.hasAttribute("href")) return true;
+      if (tag === "summary") {
+        const details = el.parentElement;
+        if (details && details.tagName.toLowerCase() === "details" && details.querySelector(":scope > summary") === el) {
+          return true;
+        }
+      }
       if (tabIndex !== null && Number(tabIndex) >= 0) return true;
       return false;
     };
 
-    const all = Array.from(document.querySelectorAll("a, button, input, select, textarea, [tabindex]")).filter(isFocusable);
+    const modalDialog = target.closest("dialog[open]");
+    const root = modalDialog || target.ownerDocument || document;
+
+    const all = Array.from(root.querySelectorAll("a, button, input, select, textarea, summary, [tabindex]")).filter(isFocusable);
     const targetIdx = all.indexOf(target);
     if (targetIdx === -1) {
       return { ok: false, reason: "unreachable by keyboard: element not in tab order" };
@@ -81,7 +106,8 @@ async function verifyFocusVisible(locator) {
   }
 
   const status = await locator.evaluate((target) => {
-    const isActive = document.activeElement === target;
+    const doc = target.ownerDocument || document;
+    const isActive = doc.activeElement === target;
     const isVisible = target.matches(":focus-visible");
     return { isActive, isVisible };
   });
@@ -448,14 +474,22 @@ async function runControls() {
           break;
         }
         case 14: { // Habit check (with Undo)
-          const habitCheck = page.locator(".today-habit-check").first();
+          const habitRow = page.locator(".today-habit-row").first();
+          if ((await habitRow.count()) === 0) {
+            result.checks.immediate = check(false, "", "not found: .today-habit-row");
+            break;
+          }
+          const habitId = await habitRow.getAttribute("data-id");
+          const habitCheck = page.locator(`.today-habit-row[data-id="${habitId}"] .today-habit-check`);
           if ((await habitCheck.count()) === 0) {
-            result.checks.immediate = check(false, "", "not found: .today-habit-check");
+            result.checks.immediate = check(false, "", `not found: .today-habit-row[data-id="${habitId}"] .today-habit-check`);
             break;
           }
           const pressedBefore = await habitCheck.getAttribute("aria-pressed");
           await habitCheck.click();
-          const pressedAfter = await habitCheck.getAttribute("aria-pressed");
+          await page.waitForTimeout(50);
+          const habitCheckAfter = page.locator(`.today-habit-row[data-id="${habitId}"] .today-habit-check`);
+          const pressedAfter = await habitCheckAfter.getAttribute("aria-pressed");
           const toast = page.locator("#toast");
           const toastShown = await toast.isVisible();
           result.checks.immediate = check(
@@ -470,14 +504,16 @@ async function runControls() {
           } else {
             await undoBtn.click();
             await page.waitForTimeout(50);
-            const pressedRestored = await habitCheck.getAttribute("aria-pressed");
+            const habitCheckRestored = page.locator(`.today-habit-row[data-id="${habitId}"] .today-habit-check`);
+            const pressedRestored = await habitCheckRestored.getAttribute("aria-pressed");
             result.checks.undo = check(
               pressedRestored === pressedBefore,
               `Undo restored habit state to ${pressedRestored}`,
               `Undo failed: expected ${pressedBefore}, got ${pressedRestored}`
             );
           }
-          result.checks.focus = await verifyFocusVisible(habitCheck);
+          const habitCheckFinal = page.locator(`.today-habit-row[data-id="${habitId}"] .today-habit-check`);
+          result.checks.focus = await verifyFocusVisible(habitCheckFinal);
           break;
         }
         case 15: { // Completed / Not in today disclosure
@@ -541,14 +577,22 @@ async function runControls() {
           const row = page.locator(".week-agenda-row").first();
           if ((await row.count()) > 0) await row.click();
 
-          const checkBtn = page.locator("#weekDayDetail .week-habit-check").first();
-          if ((await checkBtn.count()) === 0) {
-            result.checks.purpose = check(false, "", "not found: #weekDayDetail .week-habit-check");
+          const habitRow = page.locator("#weekDayDetail .week-habit-row").first();
+          if ((await habitRow.count()) === 0) {
+            result.checks.purpose = check(false, "", "not found: #weekDayDetail .week-habit-row");
             break;
           }
-          const pressedBefore = await checkBtn.getAttribute("aria-pressed");
-          await checkBtn.click();
-          const pressedAfter = await checkBtn.getAttribute("aria-pressed");
+          const habitId = await habitRow.getAttribute("data-id");
+          const habitCheck = page.locator(`#weekDayDetail .week-habit-row[data-id="${habitId}"] .week-habit-check`);
+          if ((await habitCheck.count()) === 0) {
+            result.checks.purpose = check(false, "", `not found: #weekDayDetail .week-habit-row[data-id="${habitId}"] .week-habit-check`);
+            break;
+          }
+          const pressedBefore = await habitCheck.getAttribute("aria-pressed");
+          await habitCheck.click();
+          await page.waitForTimeout(50);
+          const habitCheckAfter = page.locator(`#weekDayDetail .week-habit-row[data-id="${habitId}"] .week-habit-check`);
+          const pressedAfter = await habitCheckAfter.getAttribute("aria-pressed");
           const toast = page.locator("#toast");
           result.checks.purpose = check(
             pressedBefore !== pressedAfter && (await toast.isVisible()),
@@ -559,7 +603,8 @@ async function runControls() {
           if ((await undoBtn.count()) > 0 && (await undoBtn.isVisible())) {
             await undoBtn.click();
             await page.waitForTimeout(50);
-            const pressedRestored = await checkBtn.getAttribute("aria-pressed");
+            const habitCheckRestored = page.locator(`#weekDayDetail .week-habit-row[data-id="${habitId}"] .week-habit-check`);
+            const pressedRestored = await habitCheckRestored.getAttribute("aria-pressed");
             result.checks.undo = check(
               pressedRestored === pressedBefore,
               `Undo restored in-day habit check to ${pressedRestored}`,
@@ -568,6 +613,8 @@ async function runControls() {
           } else {
             result.checks.undo = check(false, "", "not found: visible #toastAction");
           }
+          const habitCheckFinal = page.locator(`#weekDayDetail .week-habit-row[data-id="${habitId}"] .week-habit-check`);
+          result.checks.focus = await verifyFocusVisible(habitCheckFinal);
           break;
         }
         case 20: { // Week This week / Longer term
@@ -654,11 +701,14 @@ async function runControls() {
           break;
         }
         case 25: { // Journal Month prev / next
+          await page.locator("[data-journal-mode='calendar']").click();
+          await page.waitForTimeout(80);
           const nextBtn = page.locator("#nextMonth");
           const prevBtn = page.locator("#prevMonth");
           const title = page.locator("#calendarTitle");
           if ((await nextBtn.count()) === 0 || (await title.count()) === 0) {
             result.checks.purpose = check(false, "", "not found: #nextMonth or #calendarTitle");
+            await page.locator("[data-journal-mode='timeline']").click();
             break;
           }
           const titleBefore = await title.textContent();
@@ -671,25 +721,33 @@ async function runControls() {
           );
           await prevBtn.click();
           result.checks.focus = await verifyFocusVisible(nextBtn);
+          await page.locator("[data-journal-mode='timeline']").click();
           break;
         }
         case 26: { // Journal Calendar day
+          await page.locator("[data-journal-mode='calendar']").click();
+          await page.waitForTimeout(80);
           const dayCell = page.locator(".timeline-calendar-card .calendar-day").first();
           if ((await dayCell.count()) === 0) {
             result.checks.purpose = check(false, "", "not found: .calendar-day");
+            await page.locator("[data-journal-mode='timeline']").click();
             break;
           }
           await dayCell.click();
           const isSelected = await dayCell.evaluate((node) => node.classList.contains("selected"));
           result.checks.purpose = check(isSelected, "Calendar day marked as selected", "Day cell failed to acquire selected class");
           result.checks.focus = await verifyFocusVisible(dayCell);
+          await page.locator("[data-journal-mode='timeline']").click();
           break;
         }
         case 27: { // Journal Mood / Heatmap
+          await page.locator("[data-journal-mode='calendar']").click();
+          await page.waitForTimeout(80);
           const heatmapBtn = page.locator("[data-calendar-view='heatmap']");
           const moodBtn = page.locator("[data-calendar-view='mood']");
           if ((await heatmapBtn.count()) === 0 || (await moodBtn.count()) === 0) {
             result.checks.purpose = check(false, "", "not found: calendar view switch buttons");
+            await page.locator("[data-journal-mode='timeline']").click();
             break;
           }
           await heatmapBtn.click();
@@ -697,6 +755,7 @@ async function runControls() {
           result.checks.purpose = check(heatActive, "Calendar encoding switched to heatmap", "Heatmap button did not gain active class");
           await moodBtn.click();
           result.checks.focus = await verifyFocusVisible(heatmapBtn);
+          await page.locator("[data-journal-mode='timeline']").click();
           break;
         }
         case 28: { // Insights Trend / Calendar / Habits / Table
@@ -943,6 +1002,17 @@ async function runControls() {
             result.checks.purpose = check(false, "", "not found: #focusQuickPrimary or #focusQuickFinish");
             break;
           }
+
+          const getSessionsOnDate = () =>
+            page.evaluate(() => {
+              const st = JSON.parse(localStorage.getItem("life-ledger-v1") || "{}");
+              return (st.focusSessions || []).filter((s) => s.outcome === "completed" && s.date === "2026-10-02");
+            });
+
+          const beforeSessions = await getSessionsOnDate();
+          const beforeCount = beforeSessions.length;
+          const beforeIds = new Set(beforeSessions.map((s) => s.id));
+
           await primaryBtn.click(); // Start
           await page.waitForTimeout(50);
           await primaryBtn.click(); // Pause
@@ -963,13 +1033,14 @@ async function runControls() {
           if ((await undoBtn.count()) > 0 && (await undoBtn.isVisible())) {
             await undoBtn.click();
             await page.waitForTimeout(100);
-            const stateInStorage = await page.evaluate(() => JSON.parse(localStorage.getItem("life-ledger-v1") || "{}"));
-            const remainingSessions = (stateInStorage.focusSessions || []).filter((s) => s.outcome === "completed" && s.date === "2026-10-02");
+            const afterSessions = await getSessionsOnDate();
+            const afterCount = afterSessions.length;
+            const newSessionIdGone = !afterSessions.some((s) => !beforeIds.has(s.id));
             const timeHidden = !(await page.locator("#focusToolbarTime").isVisible());
             result.checks.undo = check(
-              timeHidden && remainingSessions.length === 0,
+              timeHidden && afterCount === beforeCount && newSessionIdGone,
               "Undo cleared recorded session from life-ledger-v1 and returned to idle",
-              `Undo failed: timeHidden=${timeHidden}, remainingSessions=${remainingSessions.length}`
+              `Undo failed: timeHidden=${timeHidden}, beforeCount=${beforeCount}, afterCount=${afterCount}, newSessionIdGone=${newSessionIdGone}`
             );
           } else {
             result.checks.undo = check(false, "", "not found: visible #toastAction");
