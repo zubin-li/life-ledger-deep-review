@@ -151,7 +151,7 @@
       levelSamples = null;
       quietSince = 0;
       elements.orb.classList.remove("metering", "quiet");
-      meterBars.forEach(bar => { bar.style.height = ""; });
+      meterBars.forEach(bar => { bar.style.transform = ""; });
       recorder = null;
       segmentStartedAt = 0;
     }
@@ -240,7 +240,8 @@
         const level = calculateInputLevel(levelSamples);
         const pattern = [0.62, 0.86, 1, 0.78, 0.55];
         meterBars.forEach((bar, index) => {
-          bar.style.height = `${Math.round(4 + level * 18 * pattern[index])}px`;
+          const ratio = Math.min(1, (4 + level * 18 * pattern[index]) / 22);
+          bar.style.transform = `scaleY(${ratio.toFixed(3)})`;
         });
         if (level < 0.025) {
           quietSince ||= Date.now();

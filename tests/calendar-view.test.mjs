@@ -13,7 +13,7 @@ test("month calendar switches between mood and completion heatmap", () => {
   assert.match(app, /CALENDAR_VIEW_KEY = "life-ledger-calendar-view"/);
   assert.match(app, /function setCalendarViewMode\(mode\)/);
   assert.match(app, /function calendarHeatLevel\(progress\)/);
-  assert.match(app, /calendarGrid"\)\.dataset\.mode = calendarViewMode/);
+  assert.match(app, /const grid = \$\("#calendarGrid"\);[\s\S]*?grid\.dataset\.mode = calendarViewMode/);
 });
 
 test("calendar removes per-habit dots and uses icon-backed mood colors", () => {

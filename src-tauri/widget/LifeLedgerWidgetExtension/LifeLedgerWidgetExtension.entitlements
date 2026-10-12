@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- App extensions are required to be sandboxed regardless of the host app's own sandbox
+	     status. This does not restrict App Group container access, which both this entitlements
+	     file and the main app's (../../Entitlements.plist) grant via the same group id below. -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+
+	<!-- Substituted by scripts/build-widget.sh from the APP_GROUP_ID environment variable at
+	     packaging time; must exactly match src-tauri/Entitlements.plist. -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>__APP_GROUP_ID__</string>
+	</array>
+</dict>
+</plist>

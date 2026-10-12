@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Life Ledger 3.2 proportion prototype</title>
+  <style>
+    body { margin: 0; background: #f4f2ed; color: #242522; font: 14px/1.45 "Segoe UI", sans-serif; }
+    .frame { width: 100vw; height: 100vh; display: grid; grid-template-columns: 216px minmax(0, 1fr) minmax(280px, 32%); }
+    .side { background: #242522; color: #f4f2ed; padding: 18px 12px; display: grid; align-content: start; gap: 2px; }
+    .rail { background: #faf9f6; border-left: 1px solid #e9e6de; padding: 16px; }
+    .pill { height: 34px; border-radius: 10px; background: #e7efe4; color: #242522; display: flex; align-items: center; padding: 0 10px; font-weight: 650; }
+    .muted { height: 34px; display: flex; align-items: center; padding: 0 10px; color: #b7b9b2; }
+    main { padding: 16px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; align-content: start; overflow: auto; }
+    .c12 { grid-column: 1 / -1; } .c7 { grid-column: span 7; } .c5 { grid-column: span 5; } .c8 { grid-column: span 8; } .c4 { grid-column: span 4; }
+    .card { background: #faf9f6; border: 1px solid #e9e6de; border-radius: 14px; padding: 14px 16px; min-width: 0; }
+    h1 { margin: 0; font-size: 28px; letter-spacing: -0.03em; }
+    .meta { margin: 4px 0 0; color: #6f716b; }
+    .row { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-top: 1px solid #e9e6de; }
+    .editor, .photo { min-height: 148px; border-radius: 12px; }
+    .editor { border: 1px solid #e9e6de; background: #fff; }
+    .photo { background: #e9e6de; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stats strong { display: block; font-size: 26px; letter-spacing: -0.03em; }
+    .line { height: 120px; border-radius: 10px; background: linear-gradient(#faf9f6, #faf9f6) padding-box, linear-gradient(180deg, transparent, #5d7d68) border-box; border: 1px solid #e9e6de; position: relative; }
+    .line svg { width: 100%; height: 100%; }
+    .heat { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .heat i { display: block; aspect-ratio: 1; border-radius: 3px; background: #d7e3d6; }
+    .heat i.on { background: #5d7d68; }
+    .bar { height: 8px; border-radius: 99px; background: #e7efe4; margin: 8px 0; }
+    .bar i { display: block; height: 100%; background: #5d7d68; border-radius: inherit; }
+    .seg { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: #e9e6de; }
+    .seg b { background: #faf9f6; border-radius: 999px; padding: 4px 10px; }
+    .seg span { padding: 4px 10px; color: #6f716b; }
+  </style>
+</head>
+<body>
+  <div class="frame" id="root"></div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const kind = params.get("kind") || "today";
+    const active = kind === "review" ? "Review" : "Today";
+    const items = ["Today", "Week", "Timeline", "Review", "Habits"];
+    const side = `<aside class="side">${items.map(item => item === active ? `<div class="pill">${item}</div>` : `<div class="muted">${item}</div>`).join("")}</aside>`;
+    const rail = `<aside class="rail"><b>Focus</b><p class="meta">25:00 ready</p><b>This day</b><p class="meta">3 of 6 habits</p></aside>`;
+    const today = `<main>
+      <header class="c12"><h1>Friday</h1><p class="meta">2 October 2026 · 3 of 6 done</p></header>
+      <section class="card c7"><b>Habits</b><div class="row"><span>Read 20 pages</span><span>Done</span></div><div class="row"><span>Walk</span><span>Open</span></div><div class="row"><span>Write</span><span>Open</span></div><div class="row"><span>Stretch</span><span>Open</span></div></section>
+      <section class="card c5"><b>Mood</b><p>Calm</p><p class="meta">Reason stays with the day.</p></section>
+      <section class="card c7"><b>Reflection</b><div class="editor"></div><p class="meta">Autosaved</p></section>
+      <section class="card c5"><b>Photos</b><div class="photo"></div><p class="meta">0 of 3</p></section>
+    </main>`;
+    const review = `<main>
+      <header class="c12"><h1>October 2026</h1><div class="seg"><span>7 days</span><b>30 days</b><span>90 days</span></div></header>
+      <section class="stats c12"><div class="card"><strong>64%</strong><span class="meta">Completion</span></div><div class="card"><strong>5</strong><span class="meta">Current streak</span></div><div class="card"><strong>11</strong><span class="meta">Best streak</span></div></section>
+      <section class="card c7"><b>Completion trend</b><div class="line"><svg viewBox="0 0 200 80" preserveAspectRatio="none"><path d="M0 60 L30 50 L60 54 L90 30 L120 36 L150 20 L200 24" fill="none" stroke="#5d7d68" stroke-width="3"/></svg></div></section>
+      <section class="card c5"><b>Consistency</b><div class="heat">${Array.from({length: 28}, (_, i) => `<i class="${i % 3 ? "on" : ""}"></i>`).join("")}</div></section>
+      <section class="card c12"><b>Habit comparison</b><div>Read<div class="bar"><i style="width:80%"></i></div></div><div>Walk<div class="bar"><i style="width:55%"></i></div></div><div>Write<div class="bar"><i style="width:40%"></i></div></div></section>
+    </main>`;
+    document.getElementById("root").innerHTML = side + (kind === "review" ? review : today) + rail;
+  </script>
+</body>
+</html>
