@@ -7864,12 +7864,16 @@ function bindEvents() {
     renderTodayCalendar();
   });
   $("#todayCalendarCurrent")?.addEventListener("click", () => {
-    todayCalendarCursor = parseDate(selectedPlanningDate);
+    todayCalendarCursor = new Date();
     todayCalendarCursor.setDate(1);
+    todayCalendarCursor.setHours(12, 0, 0, 0);
     renderTodayCalendar();
   });
-  $("#todayFocusStartBtn")?.addEventListener("click", () => {
-    startQuickFocusSession();
+  $("#todayFocusStartBtn")?.addEventListener("click", event => {
+    // The 3.5 daily tool viewport is gone, so show the running timer in the focus panel.
+    event.stopPropagation();
+    if (!focusTimer?.snapshot()) handleFocusQuickPrimary();
+    setFocusPanelOpen(true);
   });
   $("#todayFocusOpenTimer")?.addEventListener("click", () => {
     openFocusTimerDialog();

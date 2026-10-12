@@ -146,7 +146,7 @@ async function runInteractionSequence(view, motion, browser, server, capturedFra
     bytes: await page.screenshot(),
   });
 
-  const dragHandle = board.locator(".module-drag-handle").first();
+  const dragHandle = board.locator(".module-edit-handle").first();
   if (await dragHandle.isVisible()) {
     await dragHandle.focus();
     await page.waitForTimeout(200);

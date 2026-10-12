@@ -672,9 +672,11 @@ async function runControls() {
           if ((await weekNote.count()) > 0) {
             await weekNote.click();
           }
-          const generateBtn = page.locator("#inspectorOpenWeeklyReviewCanvas");
+          // 3.6 promotes the weekly review action into the Week review module header;
+          // the legacy inspector duplicate stays hidden.
+          const generateBtn = page.locator("#openWeeklyReviewCanvas");
           if ((await generateBtn.count()) === 0) {
-            result.checks.purpose = check(false, "", "not found: #inspectorOpenWeeklyReviewCanvas");
+            result.checks.purpose = check(false, "", "not found: #openWeeklyReviewCanvas");
             break;
           }
           await generateBtn.click();
@@ -1402,7 +1404,7 @@ async function runControls() {
             const board = document.querySelector("#todayView");
             return board && board.classList.contains("is-editing-layout");
           });
-          const handleCount = await page.locator(".module-drag-handle").count();
+          const handleCount = await page.locator("#todayView .module-edit-handle:visible").count();
           result.checks.purpose = check(
             isPressed === "true" && boardHasClass && handleCount > 0,
             `Edit layout toggled active (aria-pressed=${isPressed}, is-editing-layout applied, ${handleCount} drag handles rendered)`,
@@ -1451,7 +1453,7 @@ async function runControls() {
           await todayBtn.click();
           await page.waitForTimeout(100);
           const backTitle = await page.locator("#todayMonthTitle").textContent();
-          const gridCells = await page.locator("#todayCalendarGrid button.calendar-day").count();
+          const gridCells = await page.locator("#todayCalendarGrid button.today-calendar-cell").count();
           result.checks.purpose = check(
             prevTitle !== initialTitle && backTitle === initialTitle && gridCells >= 28,
             `Calendar nav moved month (${initialTitle} → ${prevTitle}) and Today restored (${backTitle}), rendered ${gridCells} day cells`,
@@ -1460,7 +1462,7 @@ async function runControls() {
           break;
         }
         case 66: { // Today Calendar Month grid day cell
-          const dayCell = page.locator("#todayCalendarGrid button.calendar-day:not([disabled])").first();
+          const dayCell = page.locator("#todayCalendarGrid button.today-calendar-cell[tabindex='0']");
           result.checks.focus = await verifyFocusVisible(dayCell);
           await dayCell.click();
           await page.waitForTimeout(150);

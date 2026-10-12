@@ -6,6 +6,9 @@ All notable changes are documented here.
 
 ### Fixed
 - Modular desktop Today/Week dashboard: restore the missing `toolbar-trailing` wrapper so `content-split` stays inside `workspace-pane` instead of collapsing the main column to a blank strip.
+- Today calendar "Today" button returns to the current month instead of the selected planning date's month.
+- Today focus "Start focus" opens the focus panel with the running timer; it previously scrolled a 3.5 daily-tool viewport that no longer exists, so nothing visible happened.
+- 3.6 evidence controls target the real modular UI: promoted `#openWeeklyReviewCanvas`, `.module-edit-handle` and `.today-calendar-cell` instead of stale 3.5 selectors.
 
 ## [3.6.0] — Unreleased
 
