@@ -2034,6 +2034,10 @@ function setToolbarSearchExpanded(open) {
   shell.dataset.searchExpanded = String(expanded);
   toggle.setAttribute("aria-expanded", String(expanded));
   toggle.classList.toggle("icon-morph-on", expanded);
+  if (field) {
+    field.tabIndex = expanded ? 0 : -1;
+    field.setAttribute("aria-hidden", String(!expanded));
+  }
   if (expanded) field?.focus({ preventScroll: true });
   else if (!field?.value?.trim()) {
     field.value = "";
@@ -2045,6 +2049,7 @@ function setToolbarSearchExpanded(open) {
 function mountToolbarSearch() {
   const toggle = $("#toolbarSearchToggle");
   const field = $("#quickFind");
+  if (field) { field.tabIndex = -1; field.setAttribute("aria-hidden", "true"); }
   toggle?.addEventListener("click", () => setToolbarSearchExpanded($("#toolbarSearch")?.dataset.searchExpanded !== "true"));
   field?.addEventListener("keydown", event => {
     if (event.key === "Escape" && !field.value.trim()) {

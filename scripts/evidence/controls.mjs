@@ -46,7 +46,6 @@ async function verifyFocusVisible(locator) {
       if (el.closest("[hidden], [inert], dialog:not([open])")) return false;
       if (el.inert) return false;
       if (el.closest("[aria-hidden='true']")) return false;
-      if (el.closest('[data-search-expanded="false"] .toolbar-search-field')) return false;
       if (typeof el.checkVisibility === "function") {
         if (!el.checkVisibility({ checkOpacity: false, checkVisibilityCSS: true })) return false;
       } else {
