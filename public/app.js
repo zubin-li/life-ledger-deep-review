@@ -4227,7 +4227,7 @@ function renderInspector() {
     inspectorPhotos.innerHTML = "";
   }
   const stats = focusStatsForToday();
-  setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
+  if (focusUIState !== "completed") setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
 }
 
 function renderToolbarDateNav() {
@@ -6769,7 +6769,7 @@ function focusStatsForToday() {
 function renderFocusOverview() {
   const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
   const stats = focusStatsForToday();
-  setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
+  if (focusUIState !== "completed") setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
   const recentTopics = [...new Set([...(state.focusSessions || [])].reverse().map(session => String(session.label || "").trim()).filter(label => label && label !== tr("focus.untitled")))].slice(0, 8);
   const topicSuggestions = $("#focusTopicSuggestions");
   if (topicSuggestions) topicSuggestions.innerHTML = recentTopics.map(label => `<option value="${escapeHtml(label)}"></option>`).join("");
