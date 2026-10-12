@@ -8,7 +8,9 @@ import { applyFixture, FIXTURE_DATE } from "./fixture.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "../../");
 const publicDir = path.join(rootDir, "public");
-const outputDir = path.join(rootDir, "docs/phase-3-5-1");
+const outputDir = process.env.EVIDENCE_DIR
+  ? path.resolve(rootDir, process.env.EVIDENCE_DIR)
+  : path.join(rootDir, "docs/phase-3-5-1");
 const screensDir = path.join(outputDir, "controls-failures");
 
 fs.mkdirSync(outputDir, { recursive: true });
@@ -217,6 +219,13 @@ async function resetRowState(page, surface) {
     if (backdrop) backdrop.classList.remove("open");
     const search = document.getElementById("toolbarSearch");
     if (search) search.setAttribute("data-search-expanded", "false");
+    document.querySelectorAll(".is-editing-layout").forEach((b) => {
+      b.classList.remove("is-editing-layout");
+    });
+    const editToggle = document.getElementById("editLayoutToggle");
+    if (editToggle) editToggle.setAttribute("aria-pressed", "false");
+    const resetBtn = document.getElementById("resetLayoutButton");
+    if (resetBtn) resetBtn.hidden = true;
     const quickFind = document.getElementById("quickFind");
     if (quickFind && quickFind.value) {
       quickFind.value = "";
@@ -226,9 +235,14 @@ async function resetRowState(page, surface) {
 
   const viewMap = {
     Today: "today",
+    "Today Modular": "today",
+    "Today Calendar": "today",
+    "Today Focus": "today",
+    "Module System": "today",
     Sidebar: "today",
     Toolbar: "today",
     Week: "week",
+    "Week Review": "week",
     Journal: "timeline",
     Insights: "review",
     Habits: "habits",
@@ -1376,6 +1390,149 @@ async function runControls() {
             `reminderClosed=${reminderClosed}, moodClosed=${moodClosed}`
           );
           result.checks.motionOff = await verifyMotionOff(context, server.url, page, null, "#reminderDialog");
+          break;
+        }
+        case 63: { // Today Modular Edit layout toggle
+          const editToggle = page.locator("#editLayoutToggle");
+          result.checks.focus = await verifyFocusVisible(editToggle);
+          await editToggle.click();
+          await page.waitForTimeout(120);
+          const isPressed = await editToggle.getAttribute("aria-pressed");
+          const boardHasClass = await page.evaluate(() => {
+            const board = document.querySelector("#todayView");
+            return board && board.classList.contains("is-editing-layout");
+          });
+          const handleCount = await page.locator(".module-drag-handle").count();
+          result.checks.purpose = check(
+            isPressed === "true" && boardHasClass && handleCount > 0,
+            `Edit layout toggled active (aria-pressed=${isPressed}, is-editing-layout applied, ${handleCount} drag handles rendered)`,
+            `Edit layout failed to activate (pressed=${isPressed}, hasClass=${boardHasClass}, handles=${handleCount})`
+          );
+          await editToggle.click();
+          await page.waitForTimeout(80);
+          break;
+        }
+        case 64: { // Today Modular Reset layout
+          const editToggle = page.locator("#editLayoutToggle");
+          await editToggle.click();
+          await page.waitForTimeout(100);
+          const resetBtn = page.locator("#resetLayoutButton");
+          result.checks.focus = await verifyFocusVisible(resetBtn);
+          await resetBtn.click();
+          await page.waitForTimeout(100);
+          const isReset = await page.evaluate(() => {
+            const raw = localStorage.getItem("life-ledger-layout-v1");
+            if (!raw) return true;
+            try {
+              const parsed = JSON.parse(raw);
+              return !parsed.today;
+            } catch {
+              return true;
+            }
+          });
+          result.checks.purpose = check(
+            isReset,
+            "Reset layout cleared stored layout and restored defaults",
+            "Reset layout failed to clear localStorage key"
+          );
+          await editToggle.click();
+          await page.waitForTimeout(80);
+          break;
+        }
+        case 65: { // Today Calendar Month grid previous / next / today
+          const prevBtn = page.locator("#todayCalendarPrev");
+          const nextBtn = page.locator("#todayCalendarNext");
+          const todayBtn = page.locator("#todayCalendarCurrent");
+          result.checks.focus = await verifyFocusVisible(todayBtn);
+          const initialTitle = await page.locator("#todayMonthTitle").textContent();
+          await prevBtn.click();
+          await page.waitForTimeout(100);
+          const prevTitle = await page.locator("#todayMonthTitle").textContent();
+          await todayBtn.click();
+          await page.waitForTimeout(100);
+          const backTitle = await page.locator("#todayMonthTitle").textContent();
+          const gridCells = await page.locator("#todayCalendarGrid button.calendar-day").count();
+          result.checks.purpose = check(
+            prevTitle !== initialTitle && backTitle === initialTitle && gridCells >= 28,
+            `Calendar nav moved month (${initialTitle} → ${prevTitle}) and Today restored (${backTitle}), rendered ${gridCells} day cells`,
+            `Calendar navigation mismatch: initial="${initialTitle}", prev="${prevTitle}", back="${backTitle}", cells=${gridCells}`
+          );
+          break;
+        }
+        case 66: { // Today Calendar Month grid day cell
+          const dayCell = page.locator("#todayCalendarGrid button.calendar-day:not([disabled])").first();
+          result.checks.focus = await verifyFocusVisible(dayCell);
+          await dayCell.click();
+          await page.waitForTimeout(150);
+          const sheetOpen = await page.evaluate(() => {
+            const sheet = document.getElementById("dayDetailSheet");
+            return sheet && !sheet.hidden;
+          });
+          result.checks.purpose = check(
+            sheetOpen,
+            "Clicking month grid day cell opened day detail sheet",
+            "Day detail sheet did not open upon clicking day cell"
+          );
+          await page.keyboard.press("Escape");
+          await page.waitForTimeout(80);
+          break;
+        }
+        case 67: { // Today Focus Start / timer trigger
+          const startBtn = page.locator("#todayFocusStartBtn");
+          result.checks.focus = await verifyFocusVisible(startBtn);
+          await startBtn.click();
+          await page.waitForTimeout(150);
+          const panelOpen = await page.evaluate(() => {
+            const panel = document.getElementById("focusPanel");
+            return panel && !panel.hidden;
+          });
+          result.checks.purpose = check(
+            panelOpen,
+            "Today focus start button opened focus panel",
+            "Focus panel did not open after clicking Today focus start button"
+          );
+          await page.keyboard.press("Escape");
+          await page.waitForTimeout(80);
+          break;
+        }
+        case 68: { // Week Review Promoted weekly review write action
+          await page.locator(".sidebar .nav-item[data-view='week']").click();
+          await page.waitForTimeout(100);
+          const writeBtn = page.locator("#openWeeklyReviewCanvas");
+          result.checks.focus = await verifyFocusVisible(writeBtn);
+          await writeBtn.click();
+          await page.waitForTimeout(150);
+          const canvasOpen = await page.evaluate(() => {
+            const canvas = document.getElementById("reviewCanvasDialog");
+            return canvas && canvas.open;
+          });
+          result.checks.purpose = check(
+            canvasOpen,
+            "Promoted weekly review action opened review canvas dialog",
+            "Review canvas dialog did not open after clicking write review"
+          );
+          await page.keyboard.press("Escape");
+          await page.waitForTimeout(80);
+          break;
+        }
+        case 69: { // Module System collapse / expand toggle
+          await page.locator(".sidebar .nav-item[data-view='today']").click();
+          await page.waitForTimeout(100);
+          const toggle = page.locator("article[data-module='calendar'] .module-collapse-toggle");
+          result.checks.focus = await verifyFocusVisible(toggle);
+          const initialExpanded = await toggle.getAttribute("aria-expanded");
+          await toggle.click();
+          await page.waitForTimeout(100);
+          const collapsedExpanded = await toggle.getAttribute("aria-expanded");
+          const bodyHidden = await page.locator("#module-body-calendar").evaluate((el) => el.hidden || el.classList.contains("collapsed"));
+          await toggle.click();
+          await page.waitForTimeout(100);
+          const restoredExpanded = await toggle.getAttribute("aria-expanded");
+          result.checks.purpose = check(
+            initialExpanded === "true" && collapsedExpanded === "false" && bodyHidden && restoredExpanded === "true",
+            `Module toggle collapsed and restored: initial=${initialExpanded}, collapsed=${collapsedExpanded}, restored=${restoredExpanded}`,
+            `Module collapse failed: initial=${initialExpanded}, collapsed=${collapsedExpanded}, restored=${restoredExpanded}`
+          );
           break;
         }
       }

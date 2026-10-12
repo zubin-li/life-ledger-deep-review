@@ -4,7 +4,20 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-### Polish — Life Ledger 3.5.1 (macOS desktop)
+## [3.6.0] — Unreleased
+
+### Modular native-dashboard refinement — Life Ledger 3.6.0 (macOS desktop)
+
+- Modular board system (`public/modules.js`): Introduced reorderable, collapsible, hideable module canvases on Today and Week (`[data-module-board]`) with isolated preferences persisted under `life-ledger-layout-v1` (falling back safely on missing/corrupt keys, protecting core habits from being hidden).
+- Layout edit mode: "Edit layout" toolbar action (and `⌘⌥L` / `Ctrl+Alt+L` keyboard shortcut) providing drag handles, keyboard reordering with `Alt+ArrowUp/Down`, live ARIA announcements, dashed drop placeholders, and "Reset layout" defaults restoration.
+- Today unified scrollable canvas: Single vertical scroller composed of modules (`summary`, `habits`, `calendar`, `focus`, `photos`, `reflection`, `context`) forming a responsive two-column grid at ≥1180px and single column below, eliminating nested scrolling and whitespace dead zones.
+- Full month calendar module in Today: Interactive 7-column Monday-first grid showing habit completion intensity, today ring, selected day, month navigation, keyboard roving tabindex, and direct day detail access.
+- Week unified workspace: Single scroller composed of modules (`completed`, `insights`, `goals`, `review`) with promoted Weekly Review card and summary metrics cards (rate, best day, streak, focus minutes).
+- Brand palette realignment: Purged legacy warm/beige tints across light and dark modes. Light mode reconnected to neutral grey-white `--paper #f5f5f7`, solid `#ffffff` cards, `--sage #68725c`, `--amber #b86b3d`, `--blue #6e8c98`, and `--accent #0071e3`. Dark mode deepened to true deep black `--surface-base #0a0a0b`, `--surface-1 #141416`, `--surface-2 #1c1c1f`, `--surface-3 #26262a`, `--ink #f5f5f7`, and `--muted #a1a1a8` with high-contrast accessibility support.
+- Hairline illustration family extended: Added 16 original vector line-art SVGs covering empty states, calendar, week review, focus milestones, and layout edit hints, mounted via `LifeLedgerInteraction.mountHairline`.
+- Version bump: Package version `3.6.0`, desktop application `3.6.0`, and PWA service worker cache `life-ledger-pwa-3.6.0`. Data storage schema `life-ledger-v1` remains 100% backward-compatible.
+
+## [3.5.1] — 2026-10-10
 
 - Focus state machine unified across toolbar chip, panel, and mini-player (`idle` → `running` → `paused` → `running` … → `completed` | `cancelled`). Natural finish and Finish button display `focus-complete.svg` with minute echo and Undo action in toast removing the just-recorded session and returning to idle. Cancel/skip during live session clears timer without confirmation dialogs. Space toggles start/pause; Escape closes panel and returns focus to chip. Transition table verified in `tests/focus-timer.test.mjs`.
 - Week view reorganized: selected day rendered as primary two-column day sheet at ≥1180px (habits on left; reflection, photo presence, focus minutes on right), collapsing to one column below 1180px. Day rail features completion meters per day; weekly goals sit directly under the day sheet with compact margins, eliminating dead whitespace at 1440px.

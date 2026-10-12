@@ -113,6 +113,17 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
 <details>
+<summary><strong>Was Life Ledger 3.6.0 gebracht hat</strong></summary>
+
+- **Modulares natives Dashboard**: Heute- und Wochenansicht als durchgehende vertikale Arbeitsfläche mit 18–22px Blasenoberflächen, 1px Haarlinienrand und sanftem Schattenwurf.
+- **Layout-Bearbeitungsmodus**: Symbolleisten-Umschalter „Layout bearbeiten“ (⌘⌥L / Ctrl+Alt+L) mit Zeiger-Drag&Drop, Tastatur-Neuanordnung (`Alt+Pfeiltasten`), Einklappen und Zurücksetzen. Konfiguration ist isoliert gespeichert.
+- **Vollmonats-Gewohnheitsgitter in Heute**: 7-spaltiges Montags-Gitter mit täglicher Erledigungsintensität (0..4), Tastaturnavigation mit roving tabindex und Detailansicht.
+- **Integrierter Wochen-Arbeitsbereich**: Einheitliches Scrollen mit erledigten Tagen, Wochen-Insights-Karten (Abschlussrate, bester Tag, Serie, Fokuszeit), Zielen und hervorgehobener Wochenreflexion.
+- **Präzises Farbsystem**: Neutrales Hellgrau/Weiß (`--paper #f5f5f7`, `#ffffff` Karten) und tiefes Schwarz (`#0a0a0b`, Oberflächen `#141416`), frei von warmen Beigetönen.
+- **16 neue Haarlinien-Vektorillustrationen**: Originale Strichgrafiken für Kalender, Wochenrückblick, Fokus-Serien und leere Zustände.
+
+</details>
+<details>
 <summary><strong>Was Life Ledger 3.5.1 gebracht hat</strong></summary>
 
 - Einheitliche Fokus-Timer-Zustandsmaschine für Symbolleiste, Bedienfeld und Mini-Player mit Abschluss-Illustration und Rückgängig-Aktion.

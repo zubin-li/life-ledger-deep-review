@@ -7,13 +7,18 @@ import { applyFixture, FIXTURE_DATE } from "./fixture.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "../../");
-const outputDir = path.join(rootDir, "docs/phase-3-5-1");
+const evidenceBase = process.env.EVIDENCE_DIR || "docs/phase-3-5-1";
+const outputDir = path.resolve(rootDir, evidenceBase);
 
 fs.mkdirSync(outputDir, { recursive: true });
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  let beforeDir = path.resolve(rootDir, "../before-350");
+  let beforeDir = path.resolve(rootDir, "../before-351");
+  if (!fs.existsSync(beforeDir)) {
+    const fallback350 = path.resolve(rootDir, "../before-350");
+    if (fs.existsSync(fallback350)) beforeDir = fallback350;
+  }
   let afterDir = rootDir;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--before" && args[i + 1]) beforeDir = path.resolve(args[++i]);
@@ -86,6 +91,8 @@ async function runBeforeAfter() {
     const afterBase64 = afterBytes.toString("base64");
 
     const composerPage = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+    const beforeLabel = evidenceBase.includes("3-6") ? "Before (3.5.1)" : "Before (3.5.0)";
+    const afterLabel = evidenceBase.includes("3-6") ? "After (3.6.0)" : "After (3.5.1)";
     const htmlContent = `<!doctype html>
 <html>
 <head>
@@ -105,11 +112,11 @@ async function runBeforeAfter() {
   </div>
   <div class="grid">
     <div class="card">
-      <div class="caption">Before (3.5.0)</div>
+      <div class="caption">${beforeLabel}</div>
       <img src="data:image/png;base64,${beforeBase64}" />
     </div>
     <div class="card">
-      <div class="caption">After (3.5.1)</div>
+      <div class="caption">${afterLabel}</div>
       <img src="data:image/png;base64,${afterBase64}" />
     </div>
   </div>

@@ -10,15 +10,15 @@ const app = read("public/app.js");
 const lib = read("src-tauri/src/lib.rs");
 const pkg = JSON.parse(read("package.json"));
 
-test("3.5.1 is the install identity across package, assets, cache, and About", () => {
-  assert.equal(pkg.version, "3.5.1");
-  assert.match(html, /styles\.css\?v=3\.5\.1/);
-  assert.match(html, /app\.js\?v=3\.5\.1/);
-  assert.match(read("public/sw.js"), /life-ledger-pwa-3\.5\.1/);
-  assert.match(read("src-tauri/tauri.conf.json"), /"version": "3\.5\.1"/);
-  assert.match(read("src-tauri/Cargo.toml"), /version = "3\.5\.1"/);
+test("3.6.0 is the install identity across package, assets, cache, and About", () => {
+  assert.equal(pkg.version, "3.6.0");
+  assert.match(html, /styles\.css\?v=3\.6\.0/);
+  assert.match(html, /app\.js\?v=3\.6\.0/);
+  assert.match(read("public/sw.js"), /life-ledger-pwa-3\.6\.0/);
+  assert.match(read("src-tauri/tauri.conf.json"), /"version": "3\.6\.0"/);
+  assert.match(read("src-tauri/Cargo.toml"), /version = "3\.6\.0"/);
   assert.doesNotMatch(html, /id="appVersionLabel"/);
-  assert.match(html, /id="aboutBuild">Life Ledger 3\.5\.1</);
+  assert.match(html, /id="aboutBuild">Life Ledger 3\.6\.0</);
 });
 
 test("the five desktop first viewports are recomposed, not appended to the 3.0 list", () => {
@@ -44,8 +44,8 @@ test("the five desktop first viewports are recomposed, not appended to the 3.0 l
   assert.match(app, /function reportRangeSentence\(/);
   assert.match(html, /class="view habit-library"/);
   assert.match(css, /html\[data-desktop\] \.habit-settings-header \{ display: none; \}/);
-  assert.match(css, /--sidebar-ink: #e9e6de/);
-  assert.match(css, /--controlAccent: #5d7d68/);
+  assert.match(css, /--sidebar-ink: #29312c/);
+  assert.match(css, /--controlAccent: #0071e3/);
 });
 
 test("tauri-local retires the PWA service worker cache without deleting user data", () => {

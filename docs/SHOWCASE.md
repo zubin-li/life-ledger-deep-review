@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Back to README](../README.md)
 
-Life Ledger brings daily habits, practical planning, and long-form reflection into one local-first workspace. The screenshots below use fictional data created only for demonstration. The desktop frames show the 3.5 desk: one Today list with the last seven days under it, a morning or evening header, a selected day as the week’s main pane, and hairline empty states.
+Life Ledger brings daily habits, practical planning, and long-form reflection into one local-first workspace. The screenshots below use fictional data created only for demonstration. The 3.6 desk introduces a modular native dashboard: reorderable and collapsible bubble cards across Today and Week, an interactive month habit grid, full week insights, and refined line-art illustrations.
 
 ## Desktop experience
 

@@ -40,7 +40,7 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=3.5.1" />
+    <link rel="stylesheet" href="./styles.css?v=3.6.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -90,8 +90,14 @@
               <button class="secondary-button" id="datePopoverToday" type="button">Today</button>
             </div>
           </div>
-          <div class="toolbar-trailing">
             <button class="toolbar-command" id="openCommandPalette" type="button">⌘K</button>
+            <button class="toolbar-edit-layout" id="editLayoutToggle" type="button" aria-pressed="false" aria-label="Edit layout" title="Edit layout (⌘⌥L)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+              <span id="editLayoutLabel">Edit layout</span>
+            </button>
+            <button class="toolbar-reset-layout" id="resetLayoutButton" type="button" aria-label="Reset layout" title="Reset layout" hidden>
+              <span id="resetLayoutLabel">Reset layout</span>
+            </button>
             <div class="toolbar-search-slot">
               <div class="toolbar-search-collapsible" id="toolbarSearch" data-search-expanded="false">
                 <button class="toolbar-search-toggle icon-morph-host" id="toolbarSearchToggle" type="button" aria-label="Search" aria-expanded="false" aria-controls="quickFind">
@@ -139,77 +145,123 @@
 
         <div class="content-split">
           <main class="main-content">
-        <section class="view active today-desk today-stage" id="todayView">
-          <header class="today-stage-header today-header">
-            <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
-            <div class="today-stage-copy">
-              <p class="today-kicker" id="todayKicker">Today</p>
-              <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
-              <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
-              <p class="today-summary" id="todaySummary">0 of 0 done</p>
-              <div class="today-progress" aria-hidden="true"><span id="todayProgressFill"></span></div>
-            </div>
-            <div class="today-stage-meta">
-              <div class="mood-segmented today-mood" id="quickMood" role="group" aria-labelledby="inspectorMoodHeading">
-                <h3 class="sr-only" id="inspectorMoodHeading">Mood</h3>
-                <button type="button" data-mood="很好" aria-pressed="false">很好</button>
-                <button type="button" data-mood="平静" aria-pressed="false">平静</button>
-                <button type="button" data-mood="低落" aria-pressed="false">低落</button>
+        <section class="view active today-desk today-stage" id="todayView" data-module-board="today">
+          <article class="module-card" data-module="summary">
+            <header class="today-stage-header today-header module-header">
+              <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
+              <div class="today-stage-copy">
+                <p class="today-kicker" id="todayKicker">Today</p>
+                <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
+                <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
+                <p class="today-summary" id="todaySummary">0 of 0 done</p>
+                <div class="today-progress" aria-hidden="true"><span id="todayProgressFill"></span></div>
               </div>
-              <button class="mood-reason-summary" id="inspectorMoodReason" type="button" hidden></button>
-              <button class="today-reflect" id="openDayDetail" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="dayDetailSheet">Reflect on today</button>
+              <div class="today-stage-meta">
+                <div class="mood-segmented today-mood" id="quickMood" role="group" aria-labelledby="inspectorMoodHeading">
+                  <h3 class="sr-only" id="inspectorMoodHeading">Mood</h3>
+                  <button type="button" data-mood="很好" aria-pressed="false">很好</button>
+                  <button type="button" data-mood="平静" aria-pressed="false">平静</button>
+                  <button type="button" data-mood="低落" aria-pressed="false">低落</button>
+                </div>
+                <button class="mood-reason-summary" id="inspectorMoodReason" type="button" hidden></button>
+                <button class="today-reflect" id="openDayDetail" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="dayDetailSheet">Reflect on today</button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-summary" aria-label="Collapse summary module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-summary">
+              <div class="today-events-strip" id="todayEventsStrip" hidden role="list" aria-label="Today's events"></div>
             </div>
-          </header>
-          <div class="today-events-strip" id="todayEventsStrip" hidden role="list" aria-label="Today's events"></div>
-          <div class="today-list" data-disclosure-group="today">
-            <h3 class="today-list-heading" id="todayOpenHeading">Open</h3>
-            <ul class="today-habit-list" id="todayHabitList" role="list" tabindex="0" aria-label="Today's habits"></ul>
-            <section class="today-scheduled" id="todayScheduledGroup" hidden>
-              <h3 class="today-list-heading" id="todayScheduledHeading">Scheduled</h3>
-              <ul class="today-habit-list scheduled" id="todayScheduledList" role="list"></ul>
-            </section>
-            <details class="today-completed" id="todayCompletedGroup" hidden>
-              <summary id="todayCompletedSummary">Completed (0)</summary>
-              <ul class="today-habit-list completed" id="todayCompletedList" role="list"></ul>
-            </details>
-            <details class="today-not-today" id="todayNotTodayGroup" hidden>
-              <summary id="todayNotTodaySummary">Not scheduled today</summary>
-              <ul class="today-habit-list not-today" id="todayNotTodayList" role="list"></ul>
-            </details>
-          </div>
-          <aside class="today-day-context" id="todayDayContext" aria-label="Day context"></aside>
-          <div class="day-detail-layer" id="dayDetailSheet" hidden>
-            <button class="day-detail-scrim" type="button" data-close-day-detail aria-label="Close"></button>
-            <div class="day-detail-panel" role="dialog" aria-modal="true" aria-labelledby="dayDetailTitle">
-              <header class="day-detail-header">
-                <h2 id="dayDetailTitle">Reflect on today</h2>
-                <button class="icon-button" type="button" data-close-day-detail aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-              </header>
-              <section class="inspector-section inspector-context" id="inspectorDayContext">
-                <h3 class="inspector-heading" id="inspectorContextHeading">Day context</h3>
-                <ul class="inspector-context-list" id="inspectorContextList"></ul>
-                <div class="inspector-day-photos" id="inspectorDayPhotos" hidden></div>
-                <span id="inspectorEventsCount" hidden></span>
-              </section>
-              <section id="todayJournal" aria-labelledby="inspectorReflectionHeading">
-                <section class="inspector-section inspector-reflection">
-                  <div class="inspector-reflection-header">
-                    <h3 class="inspector-heading" id="inspectorReflectionHeading">Reflection</h3>
-                    <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
-                      <span id="voiceReflectionLabel">Quick record</span>
-                    </button>
-                  </div>
-                  <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
-                  <span class="autosave" id="homeJournalSave">● autosaved</span>
+          </article>
+
+          <article class="module-card" data-module="habits">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="habitsModuleKicker">DAILY HABITS</span>
+                <h3 class="module-title" id="habitsModuleTitle">Habits</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-habits" aria-label="Collapse habits module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-habits">
+              <div class="today-list" data-disclosure-group="today">
+                <h3 class="today-list-heading" id="todayOpenHeading">Open</h3>
+                <ul class="today-habit-list" id="todayHabitList" role="list" tabindex="0" aria-label="Today's habits"></ul>
+                <section class="today-scheduled" id="todayScheduledGroup" hidden>
+                  <h3 class="today-list-heading" id="todayScheduledHeading">Scheduled</h3>
+                  <ul class="today-habit-list scheduled" id="todayScheduledList" role="list"></ul>
                 </section>
-              </section>
-              <section class="photo-library" id="todayPhotoSection" data-photo-editor>
+                <details class="today-completed" id="todayCompletedGroup" hidden>
+                  <summary id="todayCompletedSummary">Completed (0)</summary>
+                  <ul class="today-habit-list completed" id="todayCompletedList" role="list"></ul>
+                </details>
+                <details class="today-not-today" id="todayNotTodayGroup" hidden>
+                  <summary id="todayNotTodaySummary">Not scheduled today</summary>
+                  <ul class="today-habit-list not-today" id="todayNotTodayList" role="list"></ul>
+                </details>
+              </div>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="calendar">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="calendarModuleKicker">MONTH IN VIEW</span>
+                <h3 class="module-title" id="todayMonthTitle">Calendar</h3>
+              </div>
+              <div class="module-calendar-nav">
+                <button class="icon-button" id="todayCalendarPrev" type="button" aria-label="Previous month"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
+                <button class="secondary-button" id="todayCalendarCurrent" type="button">Today</button>
+                <button class="icon-button" id="todayCalendarNext" type="button" aria-label="Next month"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-calendar" aria-label="Collapse calendar module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-calendar">
+              <div class="today-calendar-empty hairline-mount is-empty" id="todayCalendarEmptyArt" hidden aria-hidden="true"></div>
+              <div class="calendar-card today-calendar-card">
+                <div class="weekdays" id="todayCalendarWeekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+                <div class="calendar-grid" id="todayCalendarGrid" role="grid" aria-label="Month habits grid"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="focus">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="focusModuleKicker">FOCUS TIME</span>
+                <h3 class="module-title" id="focusModuleTitle">Focus</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-focus" aria-label="Collapse focus module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-focus">
+              <div class="today-focus-card">
+                <div class="today-focus-streak-art hairline-mount is-inline" id="todayFocusStreakArt" hidden aria-hidden="true"></div>
+                <div class="today-focus-stats">
+                  <strong class="today-focus-minutes" id="todayFocusMinutes">0 min</strong>
+                  <span class="today-focus-label" id="todayFocusLabel">Recorded today</span>
+                </div>
+                <div class="today-focus-actions">
+                  <button class="primary-button" id="todayFocusStartBtn" type="button">Start focus</button>
+                  <button class="secondary-button" id="todayFocusOpenTimer" type="button">Timer settings</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="photos">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="photosModuleKicker">MEMORY</span>
+                <h3 class="module-title" id="photosModuleTitle">Photos</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-photos" aria-label="Collapse photos module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-photos">
+              <section class="photo-library today-module-photos" id="todayPhotoSection" data-photo-editor>
                 <div class="mood-photo-heading">
                   <div><strong id="todayPhotoTitle" data-photo-title>Photo memories</strong><small id="todayPhotoHelp" data-photo-help>Up to three private photos for this day.</small></div>
                   <span id="todayPhotoCount" data-photo-count>0 of 3</span>
                 </div>
                 <div class="photo-drop" data-photo-drop>
+                  <div class="photo-empty-art hairline-mount is-empty" id="todayPhotoEmptyArt" hidden aria-hidden="true"></div>
                   <p class="photo-drop-empty" data-photo-empty>No photo for this day yet.</p>
                   <div class="mood-photo-list" id="todayPhotoList" data-photo-list></div>
                 </div>
@@ -219,25 +271,129 @@
                 <p class="mood-photo-status" id="todayPhotoStatus" data-photo-status role="status" hidden></p>
               </section>
             </div>
+          </article>
+
+          <article class="module-card" data-module="reflection">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="reflectionModuleKicker">DAILY REVIEW</span>
+                <h3 class="module-title" id="inspectorReflectionHeading">Reflection</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-reflection" aria-label="Collapse reflection module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-reflection">
+              <section id="todayJournal" aria-labelledby="inspectorReflectionHeading">
+                <section class="inspector-section inspector-reflection">
+                  <div class="inspector-reflection-header">
+                    <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
+                      <span id="voiceReflectionLabel">Quick record</span>
+                    </button>
+                  </div>
+                  <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
+                  <span class="autosave" id="homeJournalSave">● autosaved</span>
+                </section>
+              </section>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="context">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="contextModuleKicker">CONTEXT</span>
+                <h3 class="module-title" id="contextModuleTitle">7-Day Rhythm</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-context" aria-label="Collapse context module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-context">
+              <aside class="today-day-context" id="todayDayContext" aria-label="Day context"></aside>
+            </div>
+          </article>
+
+          <div class="day-detail-layer" id="dayDetailSheet" hidden>
+            <button class="day-detail-scrim" type="button" data-close-day-detail aria-label="Close"></button>
+            <div class="day-detail-panel" role="dialog" aria-modal="true" aria-labelledby="dayDetailTitle">
+              <header class="day-detail-header">
+                <h2 id="dayDetailTitle">Reflect on today</h2>
+                <div class="day-detail-perfect-mark hairline-mount is-mark" id="dayDetailPerfectMark" hidden aria-label="Perfect day"></div>
+                <button class="icon-button" type="button" data-close-day-detail aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+              </header>
+              <section class="inspector-section inspector-context" id="inspectorDayContext">
+                <h3 class="inspector-heading" id="inspectorContextHeading">Day context</h3>
+                <ul class="inspector-context-list" id="inspectorContextList"></ul>
+                <div class="inspector-day-photos" id="inspectorDayPhotos" hidden></div>
+                <div class="inspector-day-photos-empty hairline-mount is-empty" id="inspectorDayPhotosEmpty" hidden aria-hidden="true"></div>
+                <span id="inspectorEventsCount" hidden></span>
+              </section>
+            </div>
           </div>
         </section>
 
-        <section class="view week-board" id="weekView">
+        <section class="view week-board" id="weekView" data-module-board="week">
+          <h2 class="sr-only" id="weeklyWorkspaceTitle">Week</h2>
           <p class="week-plan-lede" id="weekPlanLede"></p>
-          <section class="weekly-workspace" aria-labelledby="weeklyWorkspaceTitle">
-            <h2 class="sr-only" id="weeklyWorkspaceTitle">Weekly Plan</h2>
-            <div class="week-split">
-              <ol class="week-agenda" id="weekAgenda" role="list" aria-label="Week agenda"></ol>
-              <article class="week-day-detail" id="weekDayDetail" aria-live="polite"></article>
+
+          <article class="module-card" data-module="completed">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekCompletedKicker">THIS WEEK</span>
+                <h3 class="module-title" id="weekCompletedTitle">Completed Days</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-completed" aria-label="Collapse completed days module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-completed">
+              <div class="week-all-done hairline-mount is-inline" id="weekAllDoneArt" hidden aria-hidden="true"></div>
+              <div class="week-split">
+                <ol class="week-agenda" id="weekAgenda" role="list" aria-label="Week agenda"></ol>
+                <article class="week-day-detail" id="weekDayDetail" aria-live="polite"></article>
+              </div>
             </div>
-            <section class="weekly-goals-section">
-              <header class="weekly-goals-header">
-                <h3 class="weekly-goals-title" id="weeklyGoalsTitle">Weekly goals · 0 of 0</h3>
-                <div class="goal-horizon-switch" id="goalHorizonSwitch" data-segment role="tablist" aria-label="Goal horizon">
-                  <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
-                  <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
+          </article>
+
+          <article class="module-card" data-module="insights">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekInsightsKicker">PROGRESS</span>
+                <h3 class="module-title" id="weekInsightsTitle">Weekly Insights</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-insights" aria-label="Collapse weekly insights module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-insights">
+              <div class="week-insights-empty hairline-mount is-empty" id="weekInsightsEmptyArt" hidden aria-hidden="true"></div>
+              <div class="week-insights-grid" id="weekInsightsGrid">
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekRateLabel">Completion Rate</span>
+                  <strong class="week-insight-value" id="weekCompletionRate">0%</strong>
                 </div>
-              </header>
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekBestDayLabel">Best Day</span>
+                  <strong class="week-insight-value" id="weekBestDay">—</strong>
+                </div>
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekStreakLabel">Active Streak</span>
+                  <strong class="week-insight-value" id="weekStreak">0 days</strong>
+                </div>
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekFocusMinutesLabel">Focus Time</span>
+                  <strong class="week-insight-value" id="weekFocusMinutes">0 min</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="goals">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekGoalsKicker">FOCUS & TARGETS</span>
+                <h3 class="module-title" id="weeklyGoalsTitle">Weekly goals · 0 of 0</h3>
+              </div>
+              <div class="goal-horizon-switch" id="goalHorizonSwitch" data-segment role="tablist" aria-label="Goal horizon">
+                <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
+                <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-goals" aria-label="Collapse goals module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-goals">
               <div id="weeklyGoalsPane">
                 <div class="weekly-goal-list" id="weeklyGoalList"></div>
                 <form class="weekly-goal-inline-add" id="weeklyGoalForm">
@@ -257,22 +413,38 @@
               <span id="basketYear" hidden></span>
               <span id="weeklyGoalProgress" hidden></span>
               <span id="longTermKicker" hidden></span>
-            </section>
-            <details class="week-note">
-              <summary id="inspectorWeekHeading">Weekly reflection</summary>
-              <p class="inspector-week-range" id="inspectorWeekRange"></p>
-              <div class="inspector-week-actions">
-                <button class="secondary-button review-canvas-trigger" id="inspectorOpenWeeklyReviewCanvas" type="button">Generate review</button>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="review">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekReviewKicker">DEEP REVIEW</span>
+                <h3 class="module-title" id="inspectorWeekHeading">Weekly Review</h3>
               </div>
-              <textarea id="weeklyOutputText" placeholder="这一周，我输出了什么？"></textarea>
-              <span class="inspector-week-autosave" id="inspectorWeekAutosave">Autosaved</span>
-              <span class="inspector-week-status" id="weeklyOutputStatus" hidden></span>
-            </details>
-            <button class="review-canvas-trigger week-review-trigger" id="openWeeklyReviewCanvas" type="button" hidden aria-hidden="true">Generate review</button>
-            <span id="weekRange" hidden></span>
-            <span id="weekRelativeLabel" hidden></span>
-            <span id="basketWeekLabel" hidden></span>
-          </section>
+              <div class="week-review-actions">
+                <button class="primary-button review-canvas-trigger" id="openWeeklyReviewCanvas" type="button">Write review</button>
+                <button class="secondary-button review-canvas-trigger" id="inspectorOpenWeeklyReviewCanvas" type="button" hidden>Generate review</button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-review" aria-label="Collapse review module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-review">
+              <div class="week-review-promoted-card">
+                <div class="week-review-art hairline-mount" id="weekReviewHairline" aria-hidden="true"></div>
+                <div class="week-review-content">
+                  <p class="inspector-week-range" id="inspectorWeekRange"></p>
+                  <textarea id="weeklyOutputText" placeholder="这一周，我输出了什么？"></textarea>
+                  <div class="week-review-footer">
+                    <span class="inspector-week-autosave" id="inspectorWeekAutosave">Autosaved</span>
+                    <span class="inspector-week-status" id="weeklyOutputStatus" hidden></span>
+                  </div>
+                </div>
+              </div>
+              <span id="weekRange" hidden></span>
+              <span id="weekRelativeLabel" hidden></span>
+              <span id="basketWeekLabel" hidden></span>
+            </div>
+          </article>
         </section>
 
         <section class="view timeline-journal" id="timelineView" data-journal-layout="timeline">
@@ -327,6 +499,7 @@
             <article class="timeline-detail" id="timelineDetail" aria-live="polite" aria-label="Entry detail"></article>
           </div>
           <div class="journal-photo-library" id="journalPhotoLibrary"></div>
+          <div class="journal-calendar-empty hairline-mount is-empty" id="journalCalendarEmptyArt" hidden aria-hidden="true"></div>
           <span id="timelineKicker" hidden></span>
           <span id="timelineTitle" hidden></span>
           <span id="timelineDescription" hidden></span>
@@ -535,7 +708,7 @@
             </select>
           </label>
           <p class="settings-confirm" id="settingsConfirm" role="status"></p>
-          <p class="about-build" id="aboutBuild">Life Ledger 3.5.1</p>
+          <p class="about-build" id="aboutBuild">Life Ledger 3.6.0</p>
         </section>
         <section class="settings-panel" data-settings-panel="data" role="tabpanel" hidden>
           <p class="settings-save-mode" id="saveMode"><i></i><span>Local preview</span></p>
@@ -838,6 +1011,7 @@
           <p class="import-error" id="importError" role="alert" hidden></p>
           <div class="import-preview" id="importPreview" hidden>
             <div class="import-preview-copy"><span class="import-file-badge">JSON</span><div><strong id="importFileName"></strong><small id="importSummary"></small></div></div>
+            <div class="import-restore-art hairline-mount is-inline" id="backupRestoreArt" hidden aria-hidden="true"></div>
             <div class="import-preview-actions">
               <button class="secondary-button" id="clearImportFile" type="button">重新选择</button>
               <button class="primary-button" id="restoreImport" type="button">恢复此备份</button>
@@ -949,16 +1123,17 @@
       <button class="focus-mini-action" id="focusMiniFinish" type="button" hidden>Finish</button>
       <button class="focus-mini-action" id="focusMiniSkip" type="button" hidden>Skip</button>
     </div>
-    <script src="./deployment-mode.js?v=3.5.1"></script>
-    <script src="./_init_tcb-env.js?v=3.5.1"></script>
-    <script src="./cloudbase-sync.js?v=3.5.1"></script>
-    <script src="./focus-timer.js?v=3.5.1"></script>
-    <script src="./voice-checkin.js?v=3.5.1"></script>
-    <script src="./photo-memories.js?v=3.5.1"></script>
-    <script src="./media-backup.js?v=3.5.1"></script>
-    <script type="module" src="./widget-contract.js?v=3.5.1"></script>
-    <script src="./habit-analytics.js?v=3.5.1"></script>
-    <script src="./interaction.js?v=3.5.1"></script>
-    <script src="./app.js?v=3.5.1"></script>
+    <script src="./deployment-mode.js?v=3.6.0"></script>
+    <script src="./_init_tcb-env.js?v=3.6.0"></script>
+    <script src="./cloudbase-sync.js?v=3.6.0"></script>
+    <script src="./focus-timer.js?v=3.6.0"></script>
+    <script src="./voice-checkin.js?v=3.6.0"></script>
+    <script src="./photo-memories.js?v=3.6.0"></script>
+    <script src="./media-backup.js?v=3.6.0"></script>
+    <script type="module" src="./widget-contract.js?v=3.6.0"></script>
+    <script src="./habit-analytics.js?v=3.6.0"></script>
+    <script src="./interaction.js?v=3.6.0"></script>
+    <script src="./modules.js?v=3.6.0"></script>
+    <script src="./app.js?v=3.6.0"></script>
   </body>
 </html>

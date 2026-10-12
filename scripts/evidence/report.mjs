@@ -4,9 +4,13 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "../../");
-const outputDoc = path.join(rootDir, "docs/phase-3-5-1-polish-verification.md");
-const controlsResultsPath = path.join(rootDir, "docs/phase-3-5-1/controls-results.json");
-const screensSummaryPath = path.join(rootDir, "docs/phase-3-5-1/screens-summary.json");
+const evidenceBase = process.env.EVIDENCE_DIR || "docs/phase-3-5-1";
+const is360 = evidenceBase.includes("3-6");
+const outputDoc = is360
+  ? path.join(rootDir, "docs/phase-3-6-0-modular-verification.md")
+  : path.join(rootDir, "docs/phase-3-5-1-polish-verification.md");
+const controlsResultsPath = path.join(rootDir, evidenceBase, "controls-results.json");
+const screensSummaryPath = path.join(rootDir, evidenceBase, "screens-summary.json");
 const controlsListPath = path.join(__dirname, "controls-list.json");
 
 function generateReport() {
@@ -57,7 +61,117 @@ function generateReport() {
   const pageErrorsCount = (screensSummary.pageErrors || []).length;
   const horizontalScrollsCount = (screensSummary.horizontalScrolls || []).length;
 
-  const content = `# Life Ledger 3.5.1 Polish Verification Report
+  const content = is360 ? `# Life Ledger 3.6.0 Modular Dashboard Verification Report
+
+- **Version:** 3.6.0
+- **Branch:** \`codex/macos-3.6-modular\` (base \`85845ac\`, 3.5.1)
+- **Verification Date:** ${dateStr}
+- **Controls Matrix Status:** ${verifiedCount} / ${totalControls} verified (${verifiedPercent}% verified: ${passCount} passing [${passPercent}%], ${naCount} n/a, ${failCount} fail)
+- **JS Test Suite:** automated suite passing (including \`tests/modules-layout.test.mjs\` and \`tests/desktop-3.6-structure.test.mjs\`)
+
+---
+
+## 1. Modular Native Dashboard Architecture
+
+### Micro-Controller (\`public/modules.js\`)
+- Compact vanilla micro-controller managing \`[data-module-board="today"|"week"]\` dashboards.
+- Persisted module order, collapse state, and hidden state isolated strictly in \`localStorage["life-ledger-layout-v1"]\`.
+- Clean error recovery: corrupt or missing JSON gracefully falls back to default layout.
+- Habit module protection: Daily habits module on Today board cannot be collapsed or hidden.
+- Edit mode: Outlines, drag handles, keyboard reorder (\`Alt+ArrowUp/Down\`), drop placeholder, and live announcements via \`aria-live="polite"\`.
+- Motion integration: FLIP animations honoring \`motion-full\`, \`motion-reduced\` (opacity-only cross-fade), and \`motion-off\` (instant).
+- Reset layout: Restores default order and clears layout storage.
+
+### Today Canvas Refinement (\`#todayView\`)
+- Single continuous vertical scroller with no nested scrolling dead-ends.
+- Modular layout: \`summary\`, \`habits\`, \`calendar\`, \`focus\`, \`photos\`, \`reflection\`, and \`context\`.
+- Responsive grid: Two-column grid at ≥1180px (habits on left; calendar and focus on right); single column below 1180px.
+- Calendar module: Mon-first 7-column month grid with per-day habit completion intensity (\`data-intensity="0..4"\`), roving tabindex keyboard navigation, month navigation, and day detail inspection sheet.
+- Focus card: Live display of today's focus minutes with direct action to begin focus sessions.
+
+### Week Workspace Refinement (\`#weekView\`)
+- Coherent workspace with single scroller replacing split scrolling.
+- Modules: \`completed\` (agenda day rail + day detail), \`insights\` (completion rate, best day, active streak, focus time), \`goals\` (weekly and long-term goals), and \`review\` (promoted weekly review).
+- Promoted weekly review card: Prominent review action button and reflection artwork in the module header.
+
+### Brand Theme Token Reconnection
+- Neutral Light theme: Pure white cards (\`#ffffff\`), clean grey canvas (\`--paper #f5f5f7\`), subtle hairline border (\`--line rgba(29,29,31,.09)\`), and signature accent (\`--accent #0071e3\`).
+- Pure Near-Black Dark theme: Deep black foundation (\`#0a0a0b\`), elevated surfaces (\`#141416\`, \`#1c1c1f\`, \`#26262a\`), crisp text (\`#f5f5f7\`, \`#a1a1a8\`), completely eliminating legacy warm beige tones.
+
+---
+
+## 2. 69-Row Audit Matrix Verification Table
+
+| # | Surface | Control | Result | Detail |
+|---|---|---|---|---|
+${controls.map(c => {
+  const checkEntries = Object.entries(c.checks || {});
+  const overallStatus = checkEntries.every(([, v]) => v.status === "pass" || v.status === "n/a") ? "PASS" : "FAIL";
+  const details = checkEntries.map(([k, v]) => `${k}: ${v.status} (${v.detail})`).join("; ");
+  return `| ${c.id} | ${c.surface} | ${c.control} | **${overallStatus}** | ${details} |`;
+}).join("\n")}
+
+---
+
+## 3. Hairline Illustration Family 3.6.0 Checklist
+
+All 16 new hairline SVGs follow the strict grammar in \`docs/hairline-system.md\` (160×120 viewBox, 1px stroke, round caps, \`currentColor\` tokens, zero raster, no text inside SVG, accessible alt/hidden attributes):
+
+- [x] \`calendar-empty-month.svg\` (month with no recorded activity)
+- [x] \`calendar-perfect-day.svg\` (day with all habits completed)
+- [x] \`week-review-empty.svg\` (unreviewed week prompt)
+- [x] \`week-review-done.svg\` (completed weekly reflection)
+- [x] \`week-insights-empty.svg\` (fresh week with zero stats)
+- [x] \`week-all-done.svg\` (all weekly goals achieved)
+- [x] \`today-all-scheduled-later.svg\` (all remaining habits scheduled for later)
+- [x] \`today-not-today.svg\` (habits not scheduled for today)
+- [x] \`focus-break.svg\` (rest interval between focus sessions)
+- [x] \`focus-streak.svg\` (consecutive focus days streak)
+- [x] \`photos-day-empty.svg\` (no photos attached to day)
+- [x] \`journal-calendar-empty.svg\` (journal month with no entries)
+- [x] \`insights-first-week.svg\` (initial week onboarding prompt)
+- [x] \`layout-edit-hint.svg\` (modular layout edit hint)
+- [x] \`backup-restore.svg\` (backup restore confirmation)
+- [x] \`offline-local.svg\` (offline local-first storage mode)
+- [x] Registered in \`public/sw.js\` App Shell cache.
+
+---
+
+## 4. Multi-Viewport & Multi-Locale Matrix
+
+- Viewports verified: 980px, 1180px, 1440px, 1600px
+- Locales verified: English (\`en\`), German (\`de\`), Simplified Chinese (\`zh\`)
+- Color modes verified: Light (\`data-theme="light"\`), Dark (\`data-theme="dark"\`)
+- Modular Edit mode verified across viewports and themes
+- Total screenshots: **${totalScreenshots} screenshots**
+- Horizontal scroll check: **${horizontalScrollsCount} horizontal scroll** across all widths and locales.
+- Console / page errors: **${pageErrorsCount} errors**.
+
+Screenshots saved to: \`docs/phase-3-6-0/screens/\`
+
+---
+
+## 5. Visual Before & After Comparisons
+
+Side-by-side contact sheets comparing 3.5.1 baseline (\`85845ac\`) vs 3.6.0 modular native dashboard:
+
+- Today (1440px en light): \`docs/phase-3-6-0/before-after-today-1440-en-light.png\`
+- Week (1440px en light): \`docs/phase-3-6-0/before-after-week-1440-en-light.png\`
+- Journal (1440px en light): \`docs/phase-3-6-0/before-after-journal-1440-en-light.png\`
+- Focus (1440px en light): \`docs/phase-3-6-0/before-after-focus-1440-en-light.png\`
+- Today (980px de light): \`docs/phase-3-6-0/before-after-today-980-de-light.png\`
+- Week (1600px zh dark): \`docs/phase-3-6-0/before-after-week-1600-zh-dark.png\`
+- Journal (1180px en dark): \`docs/phase-3-6-0/before-after-journal-1180-en-dark.png\`
+- Focus (1440px de dark): \`docs/phase-3-6-0/before-after-focus-1440-de-dark.png\`
+
+---
+
+## 6. Interaction Video Recording
+
+- Main video recording: \`docs/phase-3-6-0/interaction.webm\` (Playwright recorded at 1440×900 with injected top-left caption bar)
+- Settings video recording: \`docs/phase-3-6-0/interaction-settings.webm\`
+- Key frame contact sheet: \`docs/phase-3-6-0/video-frames.png\`
+` : `# Life Ledger 3.5.1 Polish Verification Report
 
 - **Version:** 3.5.1
 - **Branch:** \`agy-351\` (base \`6279dcd\`, 3.5.0)

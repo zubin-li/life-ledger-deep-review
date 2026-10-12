@@ -243,6 +243,65 @@ const i18n = {
       empty: "尚未记录",
       dayTitle: "{month}月{day}日",
       dayPercent: "{day}日 · {percent}%",
+      todayButton: "回到今天",
+      prevMonth: "上个月",
+      nextMonth: "下个月",
+      monthInView: "月历概览",
+    },
+    modules: {
+      editLayout: "编辑布局",
+      doneEditing: "完成",
+      resetLayout: "重置布局",
+      resetConfirm: "确定重置模块布局吗？",
+      summary: "今日概览",
+      habits: "习惯打卡",
+      calendar: "月历概览",
+      focus: "专注计时",
+      photos: "照片记忆",
+      reflection: "每日复盘",
+      context: "7日节律",
+      completed: "本周日程",
+      insights: "本周洞察",
+      goals: "本周目标",
+      review: "深度复盘",
+      names: {
+        summary: "今日概览",
+        habits: "习惯打卡",
+        calendar: "月历概览",
+        focus: "专注计时",
+        photos: "照片记忆",
+        reflection: "每日复盘",
+        context: "7日节律",
+        completed: "本周日程",
+        insights: "本周洞察",
+        goals: "本周目标",
+        review: "深度复盘",
+      },
+      startFocus: "开始专注",
+      timerSettings: "计时设置",
+      writeReview: "写复盘",
+      collapse: "收起模块",
+      expand: "展开模块",
+      editHint: "拖动把手或按 Alt+上下箭头 调整顺序",
+      up: "上移",
+      down: "下移",
+      movedDelta: "已向{direction}移动{step}位，当前第{pos}位（共{total}个）",
+      moved: "已移至第{pos}位（共{total}个）",
+      dragHandle: "{name} 拖拽手柄",
+      dragHint: "按 Alt+上下箭头 或拖动调整顺序",
+      moveUp: "上移模块",
+      moveDown: "下移模块",
+      show: "显示模块",
+      hide: "隐藏模块",
+      actionShow: "显示",
+      actionHide: "隐藏",
+      hidden: "已隐藏 {name}",
+      visible: "已显示 {name}",
+      hintTitle: "自定义你的看板",
+      hintDesc: "拖动把手或使用 Alt+上下方向键调整模块顺序。点击右侧完成保存。",
+      dismissHint: "知道了",
+      editEnabled: "已进入模块编辑模式",
+      editDisabled: "已退出模块编辑模式",
     },
     week: {
       kicker: "THIS WEEK",
@@ -263,6 +322,10 @@ const i18n = {
       goalsTitle: "本周目标",
       goalsTitleProgress: "本周目标 · {done} / {total}",
       habitsProgress: "{done}/{total} 个习惯",
+      completionRate: "完成率",
+      bestDay: "最佳一天",
+      streak: "活跃连续",
+      focusTime: "专注时长",
       noEntry: "无记录",
       goalPlaceholder: "添加目标",
       emptyGoals: "这一周还没有写下必须完成的事情。<br />先放一件真正重要的进来。",
@@ -703,6 +766,65 @@ const i18n = {
       empty: "No record",
       dayTitle: "{monthName} {day}",
       dayPercent: "{month}/{day} · {percent}%",
+      todayButton: "Today",
+      prevMonth: "Previous month",
+      nextMonth: "Next month",
+      monthInView: "Month in view",
+    },
+    modules: {
+      editLayout: "Edit layout",
+      doneEditing: "Done",
+      resetLayout: "Reset layout",
+      resetConfirm: "Reset module layout for this view?",
+      summary: "Summary",
+      habits: "Daily Habits",
+      calendar: "Month in View",
+      focus: "Focus",
+      photos: "Photos",
+      reflection: "Reflection",
+      context: "7-Day Rhythm",
+      completed: "Completed Days",
+      insights: "Weekly Insights",
+      goals: "Weekly Goals",
+      review: "Weekly Review",
+      names: {
+        summary: "Summary",
+        habits: "Daily Habits",
+        calendar: "Month in View",
+        focus: "Focus",
+        photos: "Photos",
+        reflection: "Reflection",
+        context: "7-Day Rhythm",
+        completed: "Completed Days",
+        insights: "Weekly Insights",
+        goals: "Weekly Goals",
+        review: "Weekly Review",
+      },
+      startFocus: "Start focus",
+      timerSettings: "Timer settings",
+      writeReview: "Write review",
+      collapse: "Collapse module",
+      expand: "Expand module",
+      editHint: "Drag handles or use Alt+Up/Down to reorder",
+      up: "up",
+      down: "down",
+      movedDelta: "Moved {direction} by {step} to position {pos} of {total}",
+      moved: "Moved to position {pos} of {total}",
+      dragHandle: "{name} drag handle",
+      dragHint: "Press Alt+Up/Down arrow or drag to reorder",
+      moveUp: "Move module up",
+      moveDown: "Move module down",
+      show: "Show module",
+      hide: "Hide module",
+      actionShow: "Show",
+      actionHide: "Hide",
+      hidden: "Hidden {name}",
+      visible: "Showing {name}",
+      hintTitle: "Customise your board",
+      hintDesc: "Drag handles or use Alt+Up/Down to reorder cards. Click Done when finished.",
+      dismissHint: "Got it",
+      editEnabled: "Layout edit mode enabled",
+      editDisabled: "Layout edit mode finished",
     },
     week: {
       kicker: "THIS WEEK",
@@ -723,6 +845,10 @@ const i18n = {
       goalsTitle: "Weekly Goals",
       goalsTitleProgress: "Weekly goals · {done} of {total}",
       habitsProgress: "{done}/{total} habits",
+      completionRate: "Completion Rate",
+      bestDay: "Best Day",
+      streak: "Active Streak",
+      focusTime: "Focus Time",
       noEntry: "No entry",
       goalPlaceholder: "Add goal",
       emptyGoals: "No must-finish tasks for this week yet.<br />Put one important thing here.",
@@ -1163,6 +1289,65 @@ const i18n = {
       empty: "Kein Eintrag",
       dayTitle: "{day}. {monthName}",
       dayPercent: "{day}.{month}. · {percent}%",
+      todayButton: "Heute",
+      prevMonth: "Vorheriger Monat",
+      nextMonth: "Nächster Monat",
+      monthInView: "Monatsübersicht",
+    },
+    modules: {
+      editLayout: "Layout bearbeiten",
+      doneEditing: "Fertig",
+      resetLayout: "Layout zurücksetzen",
+      resetConfirm: "Modullayout für diese Ansicht zurücksetzen?",
+      summary: "Tagesübersicht",
+      habits: "Gewohnheiten",
+      calendar: "Monatsübersicht",
+      focus: "Fokuszeit",
+      photos: "Fotoerinnerungen",
+      reflection: "Tagesreflexion",
+      context: "7-Tage-Rhythmus",
+      completed: "Erledigte Tage",
+      insights: "Wochen-Einblicke",
+      goals: "Wochenziele",
+      review: "Wochenrückblick",
+      names: {
+        summary: "Tagesübersicht",
+        habits: "Gewohnheiten",
+        calendar: "Monatsübersicht",
+        focus: "Fokuszeit",
+        photos: "Fotoerinnerungen",
+        reflection: "Tagesreflexion",
+        context: "7-Tage-Rhythmus",
+        completed: "Erledigte Tage",
+        insights: "Wochen-Einblicke",
+        goals: "Wochenziele",
+        review: "Wochenrückblick",
+      },
+      startFocus: "Fokus starten",
+      timerSettings: "Timer-Einstellungen",
+      writeReview: "Rückblick schreiben",
+      collapse: "Modul einklappen",
+      expand: "Modul ausklappen",
+      editHint: "Ziehgriffe ziehen oder Alt+Auf/Ab drücken",
+      up: "oben",
+      down: "unten",
+      movedDelta: "Um {step} nach {direction} verschoben, jetzt Position {pos} von {total}",
+      moved: "An Position {pos} von {total} verschoben",
+      dragHandle: "Ziehgriff für {name}",
+      dragHint: "Mit Alt+Auf/Ab oder Ziehen neu anordnen",
+      moveUp: "Modul nach oben verschieben",
+      moveDown: "Modul nach unten verschieben",
+      show: "Modul einblenden",
+      hide: "Modul ausblenden",
+      actionShow: "Einblenden",
+      actionHide: "Ausblenden",
+      hidden: "{name} ausgeblendet",
+      visible: "{name} eingeblendet",
+      hintTitle: "Board anpassen",
+      hintDesc: "Ziehgriffe ziehen oder Alt+Auf/Ab nutzen, um Karten neu anzuordnen. Fertig zum Speichern anklicken.",
+      dismissHint: "Verstanden",
+      editEnabled: "Layout-Bearbeitungsmodus aktiviert",
+      editDisabled: "Layout-Bearbeitungsmodus beendet",
     },
     week: {
       kicker: "DIESE WOCHE",
@@ -1183,6 +1368,10 @@ const i18n = {
       goalsTitle: "Wochenziele",
       goalsTitleProgress: "Wochenziele · {done} von {total}",
       habitsProgress: "{done}/{total} Gewohnheiten",
+      completionRate: "Abschlussrate",
+      bestDay: "Bester Tag",
+      streak: "Aktive Serie",
+      focusTime: "Fokuszeit",
       noEntry: "Kein Eintrag",
       goalPlaceholder: "Ziel hinzufügen",
       emptyGoals: "Für diese Woche gibt es noch keine Pflichtziele.<br />Lege eine wirklich wichtige Sache hinein.",
@@ -2331,6 +2520,21 @@ function switchToView(view, { animate = true } = {}) {
       populateHabitInspectorForm(selectedHabitSettingsId);
     }
     syncInteractionChrome(animate);
+    const board = $(`[data-module-board="${view}"]`);
+    const isModular = Boolean(board);
+    const toggleBtn = $("#editLayoutToggle");
+    const resetBtn = $("#resetLayoutButton");
+    if (toggleBtn) {
+      toggleBtn.hidden = !isModular;
+      if (isModular) {
+        const editing = window.LifeLedgerModules?.isEditMode(board) || false;
+        toggleBtn.setAttribute("aria-pressed", String(editing));
+        toggleBtn.textContent = editing ? tr("modules.doneEditing") : tr("modules.editLayout");
+        if (resetBtn) resetBtn.hidden = !editing;
+      } else if (resetBtn) {
+        resetBtn.hidden = true;
+      }
+    }
   };
   if (animate) run();
   else withoutMotion(run);
@@ -2456,6 +2660,7 @@ function initWidgetBridge() {
 function applyLanguage() {
   document.documentElement.lang = i18n[currentLang].locale;
   document.body.dataset.language = currentLang;
+  window.LifeLedgerModules?.setTranslator(tr);
   applyDesktopStatus();
   updateWidgetStatusUI();
   document.title = tr("title");
@@ -2706,6 +2911,36 @@ function applyLanguage() {
   applyTheme();
   applySidebarState();
   renderIconPicker();
+  const activeModularBoard = $(`[data-module-board="${activeView}"]`);
+  setText("#editLayoutToggle", window.LifeLedgerModules?.isEditMode(activeModularBoard) ? tr("modules.doneEditing") : tr("modules.editLayout"));
+  setText("#resetLayoutButton", tr("modules.resetLayout"));
+  setText("#todayCalendarCurrent", tr("calendar.todayButton"));
+  setAria("#todayCalendarPrev", tr("calendar.prevMonth"));
+  setAria("#todayCalendarNext", tr("calendar.nextMonth"));
+  setText("#todayFocusStartBtn", tr("modules.startFocus"));
+  setText("#todayFocusOpenTimer", tr("modules.timerSettings"));
+  setText("#openWeeklyReviewCanvas", tr("modules.writeReview"));
+  setText("#habitsModuleKicker", languageText("每日习惯", "DAILY HABITS", "TÄGLICHE GEWOHNHEITEN"));
+  setText("#habitsModuleTitle", tr("modules.habits"));
+  setText("#calendarModuleKicker", tr("calendar.kicker"));
+  setText("#focusModuleKicker", languageText("专注时间", "FOCUS TIME", "FOKUSZEIT"));
+  setText("#focusModuleTitle", tr("modules.focus"));
+  setText("#photosModuleKicker", languageText("记忆", "MEMORY", "ERINNERUNG"));
+  setText("#photosModuleTitle", tr("modules.photos"));
+  setText("#reflectionModuleKicker", languageText("每日复盘", "DAILY REVIEW", "TAGESRÜCKBLICK"));
+  setText("#reflectionModuleTitle", tr("modules.reflection"));
+  setText("#contextModuleKicker", languageText("节奏", "CONTEXT", "RHYTHMUS"));
+  setText("#contextModuleTitle", tr("modules.context"));
+  setText("#weekCompletedKicker", languageText("本周进展", "THIS WEEK", "DIESE WOCHE"));
+  setText("#weekCompletedTitle", tr("modules.completed"));
+  setText("#weekInsightsKicker", languageText("数据洞察", "PROGRESS", "FORTSCHRITT"));
+  setText("#weekInsightsTitle", tr("modules.insights"));
+  setText("#weekGoalsKicker", languageText("目标与焦点", "FOCUS & TARGETS", "FOKUS & ZIELE"));
+  setText("#weekReviewKicker", languageText("深度复盘", "DEEP REVIEW", "TIEFER RÜCKBLICK"));
+  setText("#weekRateLabel", tr("week.completionRate"));
+  setText("#weekBestDayLabel", tr("week.bestDay"));
+  setText("#weekStreakLabel", tr("week.streak"));
+  setText("#weekFocusMinutesLabel", tr("week.focusTime"));
   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
 }
 function applyReviewCanvasLanguage() {
@@ -3511,6 +3746,14 @@ function renderWeekAgenda() {
       `${weekDone} von ${weekTotal} diese Woche erledigt`,
     );
   }
+  const allWeekDone = weekTotal > 0 && weekDone === weekTotal;
+  const weekAllDoneArt = $("#weekAllDoneArt");
+  if (weekAllDoneArt) {
+    weekAllDoneArt.hidden = !allWeekDone;
+    if (allWeekDone) {
+      window.LifeLedgerInteraction?.mountHairline(weekAllDoneArt, "./assets/hairline/week-all-done.svg");
+    }
+  }
 }
 
 function weekDaysWithCompletion(key) {
@@ -3536,6 +3779,8 @@ function renderWeeklyWorkspace() {
   const weekOffset = weekDistance(currentKey, key);
   setText("#weekRelativeLabel", weekOffset === 0 ? tr("week.relativeCurrent") : weekOffset === 1 ? tr("week.relativeNext") : weekOffset === -1 ? tr("week.relativePrevious") : weekOffset > 0 ? tr("week.relativeFuture", { n: weekOffset }) : tr("week.relativePast", { n: Math.abs(weekOffset) }));
   renderWeekAgenda();
+  renderWeekInsights();
+  renderWeekPromotedReview();
   $("#weeklyGoalProgress").textContent = `${done} / ${goals.length}`;
   setText("#weeklyGoalsTitle", tr("week.goalsTitleProgress", { done, total: goals.length }));
   setText("#inspectorWeekRange", range);
@@ -3910,6 +4155,16 @@ async function renderTimeline() {
   renderJournalComposer();
   void renderTimelineDetail();
   $$(".calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
+  const calendarEmptyArt = $("#journalCalendarEmptyArt");
+  if (calendarEmptyArt) {
+    const isCalendarMode = journalMode === "calendar";
+    const isEmpty = entries.length === 0;
+    const shouldShow = isCalendarMode && isEmpty;
+    calendarEmptyArt.hidden = !shouldShow;
+    if (shouldShow) {
+      window.LifeLedgerInteraction?.mountHairline(calendarEmptyArt, "./assets/hairline/journal-calendar-empty.svg");
+    }
+  }
   timelineRendering = false;
 }
 function escapeHtml(text) {
@@ -4098,6 +4353,311 @@ function paintTodayHeader(date, allDone, streakBand = "short") {
   }
 }
 
+let todayCalendarCursor = new Date();
+todayCalendarCursor.setDate(1);
+todayCalendarCursor.setHours(12, 0, 0, 0);
+
+function renderTodayCalendar(selectedDate = selectedPlanningDate) {
+  const grid = $("#todayCalendarGrid");
+  const title = $("#todayMonthTitle");
+  const weekdaysEl = $("#todayCalendarWeekdays");
+  if (!grid) return;
+
+  const year = todayCalendarCursor.getFullYear();
+  const month = todayCalendarCursor.getMonth();
+
+  if (title) {
+    title.textContent = tr("calendar.title", {
+      year,
+      month: month + 1,
+      monthName: monthName(month),
+    });
+  }
+
+  if (weekdaysEl) {
+    const dayNames = i18n[currentLang]?.calendar?.weekdays || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    weekdaysEl.innerHTML = dayNames.map(day => `<span>${escapeHtml(day)}</span>`).join("");
+  }
+
+  const todayIso = isoDate(new Date());
+  const firstDay = new Date(year, month, 1, 12);
+  const startOffset = (firstDay.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthLastDate = new Date(year, month, 0).getDate();
+
+  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+  const cells = [];
+
+  for (let i = 0; i < totalCells; i++) {
+    let cellDate;
+    let isOutside = false;
+    let dayNumber = 0;
+
+    if (i < startOffset) {
+      dayNumber = prevMonthLastDate - (startOffset - 1 - i);
+      cellDate = new Date(year, month - 1, dayNumber, 12);
+      isOutside = true;
+    } else if (i < startOffset + daysInMonth) {
+      dayNumber = i - startOffset + 1;
+      cellDate = new Date(year, month, dayNumber, 12);
+    } else {
+      dayNumber = i - (startOffset + daysInMonth) + 1;
+      cellDate = new Date(year, month + 1, dayNumber, 12);
+      isOutside = true;
+    }
+
+    const iso = isoDate(cellDate);
+    const scored = dailyHabits(iso);
+    const log = getLog(iso);
+    const doneCount = scored.filter(h => log.completed.includes(h.id)).length;
+
+    let intensity = 0;
+    if (scored.length > 0) {
+      const pct = doneCount / scored.length;
+      if (pct >= 1) intensity = 4;
+      else if (pct >= 0.66) intensity = 3;
+      else if (pct >= 0.33) intensity = 2;
+      else if (doneCount > 0) intensity = 1;
+    }
+
+    const isToday = iso === todayIso;
+    const isSelected = iso === selectedDate;
+    const percent = scored.length ? Math.round((doneCount / scored.length) * 100) : 0;
+    const ariaLabel = tr("calendar.dayPercent", { day: dayNumber, percent });
+
+    cells.push({
+      iso,
+      dayNumber,
+      isOutside,
+      isToday,
+      isSelected,
+      intensity,
+      ariaLabel,
+      tabIndex: isSelected ? 0 : -1,
+    });
+  }
+
+  if (!cells.some(c => c.tabIndex === 0)) {
+    const todayCell = cells.find(c => c.isToday) || cells.find(c => !c.isOutside) || cells[0];
+    if (todayCell) todayCell.tabIndex = 0;
+  }
+
+  grid.innerHTML = cells.map(cell => `
+    <button type="button"
+      role="gridcell"
+      class="today-calendar-cell ${cell.isOutside ? "is-outside" : ""} ${cell.isToday ? "is-today" : ""} ${cell.isSelected ? "is-selected" : ""}"
+      data-date="${cell.iso}"
+      data-intensity="${cell.intensity}"
+      tabindex="${cell.tabIndex}"
+      aria-label="${escapeHtml(cell.ariaLabel)}"
+      aria-selected="${cell.isSelected}">
+      <span class="cell-day-num">${cell.dayNumber}</span>
+      <span class="cell-intensity-dot" aria-hidden="true"></span>
+    </button>
+  `).join("");
+
+  const cellButtons = $$(".today-calendar-cell", grid);
+  cellButtons.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
+      selectPlanningDate(btn.dataset.date);
+      setDayDetailOpen(true);
+    });
+
+    btn.addEventListener("keydown", event => {
+      let targetIndex = -1;
+      if (event.key === "ArrowLeft") targetIndex = index - 1;
+      else if (event.key === "ArrowRight") targetIndex = index + 1;
+      else if (event.key === "ArrowUp") targetIndex = index - 7;
+      else if (event.key === "ArrowDown") targetIndex = index + 7;
+      else if (event.key === "Home") targetIndex = 0;
+      else if (event.key === "End") targetIndex = cellButtons.length - 1;
+      else if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        btn.click();
+        return;
+      }
+
+      if (targetIndex >= 0 && targetIndex < cellButtons.length) {
+        event.preventDefault();
+        cellButtons.forEach(b => (b.tabIndex = -1));
+        const targetBtn = cellButtons[targetIndex];
+        targetBtn.tabIndex = 0;
+        targetBtn.focus();
+      }
+    });
+  });
+
+  const emptyArt = $("#todayCalendarEmptyArt");
+  if (emptyArt) {
+    const hasData = cells.some(c => !c.isOutside && c.intensity > 0);
+    emptyArt.hidden = hasData;
+    if (!hasData) {
+      window.LifeLedgerInteraction?.mountHairline(emptyArt, "./assets/hairline/calendar-empty-month.svg");
+    }
+  }
+}
+
+function renderTodayFocus() {
+  const stats = focusStatsForToday();
+  const minutesLabel = languageText(`${stats.minutes} 分钟`, `${stats.minutes} min`, `${stats.minutes} Min.`);
+  setText("#todayFocusMinutes", minutesLabel);
+  setText("#todayFocusLabel", languageText("今日专注记录", "Recorded today", "Heute aufgezeichnet"));
+  setText("#todayFocusStartBtn", tr("modules.startFocus"));
+  setText("#todayFocusOpenTimer", tr("modules.timerSettings"));
+
+  const streakArt = $("#todayFocusStreakArt");
+  if (streakArt) {
+    const focusDates = new Set((state.focusSessions || [])
+      .filter(s => (s.outcome === "completed" || s.outcome === "finishedEarly") && (s.actualMinutes || s.durationMinutes || 0) > 0)
+      .map(s => s.date));
+    let streak = 0;
+    let curr = parseDate(selectedPlanningDate);
+    while (focusDates.has(isoDate(curr))) {
+      streak += 1;
+      curr.setDate(curr.getDate() - 1);
+    }
+    const hasStreak = streak >= 3;
+    streakArt.hidden = !hasStreak;
+    if (hasStreak) {
+      window.LifeLedgerInteraction?.mountHairline(streakArt, "./assets/hairline/focus-streak.svg");
+    }
+  }
+}
+
+function renderWeekInsights() {
+  const grid = $("#weekInsightsGrid");
+  if (!grid) return;
+
+  const key = selectedWorkspaceWeek;
+  const { monday } = weekDatesFromKey(key);
+  const todayKey = isoDate(new Date());
+
+  let totalScored = 0;
+  let totalDone = 0;
+  let bestDayName = "—";
+  let maxDayDone = 0;
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dayIso = isoDate(d);
+    const scored = dailyHabits(dayIso);
+    const done = scored.filter(h => getLog(dayIso).completed.includes(h.id)).length;
+
+    if (dayIso <= todayKey) {
+      totalScored += scored.length;
+      totalDone += done;
+    }
+
+    if (done > maxDayDone) {
+      maxDayDone = done;
+      bestDayName = formatLocalizedDate(d, { weekday: "short" });
+    }
+  }
+
+  const rate = totalScored > 0 ? Math.round((totalDone / totalScored) * 100) : 0;
+  setText("#weekCompletionRate", `${rate}%`);
+  setText("#weekBestDay", bestDayName);
+
+  const activeHabitList = activeHabits(todayKey);
+  const maxStreak = activeHabitList.length ? Math.max(0, ...activeHabitList.map(h => habitStreak(h.id, todayKey))) : 0;
+  setText("#weekStreak", languageText(`${maxStreak} 天`, `${maxStreak} days`, `${maxStreak} Tage`));
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const startDay = isoDate(monday);
+  const endDay = isoDate(sunday);
+  const weekSessions = (state.focusSessions || []).filter(s => s.date >= startDay && s.date <= endDay && (s.outcome === "completed" || s.outcome === "finishedEarly"));
+  const weekFocusMinutes = weekSessions.reduce((acc, s) => acc + Math.round(s.actualMinutes || s.durationMinutes || 0), 0);
+  setText("#weekFocusMinutes", languageText(`${weekFocusMinutes} 分钟`, `${weekFocusMinutes} min`, `${weekFocusMinutes} Min.`));
+
+  setText("#weekRateLabel", tr("week.completionRate"));
+  setText("#weekBestDayLabel", tr("week.bestDay"));
+  setText("#weekStreakLabel", tr("week.streak"));
+  setText("#weekFocusMinutesLabel", tr("week.focusTime"));
+
+  const emptyArt = $("#weekInsightsEmptyArt");
+  if (emptyArt) {
+    const hasData = totalDone > 0 || weekFocusMinutes > 0;
+    emptyArt.hidden = hasData;
+    if (!hasData) {
+      window.LifeLedgerInteraction?.mountHairline(emptyArt, "./assets/hairline/week-insights-empty.svg");
+    }
+  }
+}
+
+function renderWeekPromotedReview() {
+  const key = selectedWorkspaceWeek;
+  const output = state.weeklyOutputs[key] || "";
+  const art = $("#weekReviewHairline");
+  const artSrc = output.trim() ? "./assets/hairline/week-review-done.svg" : "./assets/hairline/week-review-empty.svg";
+  if (art && art.dataset.hairlineSrc !== artSrc) {
+    art.dataset.hairlineSrc = artSrc;
+    art.dataset.hairlineReady = "true";
+    window.LifeLedgerInteraction?.mountHairline(art, artSrc);
+  }
+}
+
+function toggleActiveBoardEditMode() {
+  const view = document.body.dataset.activeView || "today";
+  const board = $(`[data-module-board="${view}"]`);
+  if (!board || !window.LifeLedgerModules) return;
+
+  const currentMode = LifeLedgerModules.isEditMode(board);
+  const nextMode = !currentMode;
+  LifeLedgerModules.setEditMode(board, nextMode);
+
+  const toggleBtn = $("#editLayoutToggle");
+  if (toggleBtn) {
+    toggleBtn.setAttribute("aria-pressed", String(nextMode));
+    toggleBtn.textContent = nextMode ? tr("modules.doneEditing") : tr("modules.editLayout");
+  }
+  const resetBtn = $("#resetLayoutButton");
+  if (resetBtn) resetBtn.hidden = !nextMode;
+}
+
+function resetActiveBoardLayout() {
+  const view = document.body.dataset.activeView || "today";
+  const board = $(`[data-module-board="${view}"]`);
+  if (!board || !window.LifeLedgerModules) return;
+
+  if (window.confirm(tr("modules.resetConfirm"))) {
+    LifeLedgerModules.resetLayout(board);
+    showToast(tr("modules.resetLayout"));
+  }
+}
+
+function initModuleBoards() {
+  if (window.LifeLedgerModules) LifeLedgerModules.setTranslator(tr);
+  const todayBoard = $("#todayView");
+  const weekBoard = $("#weekView");
+  if (todayBoard && window.LifeLedgerModules) LifeLedgerModules.initBoard(todayBoard);
+  if (weekBoard && window.LifeLedgerModules) LifeLedgerModules.initBoard(weekBoard);
+}
+
+function renderSyncOffline() {
+  const offline = !navigator.onLine;
+  const badge = $("#sidebarSyncStatus");
+  if (badge) {
+    badge.classList.toggle("offline", offline);
+    if (offline) {
+      const label = languageText("离线使用", "Offline mode", "Offline-Modus");
+      badge.setAttribute("title", label);
+      badge.setAttribute("aria-label", label);
+    }
+  }
+  const art = $("#syncOfflineArt");
+  const note = $("#syncOfflineNote");
+  if (art) art.hidden = !offline;
+  if (note) {
+    note.hidden = !offline;
+    note.textContent = offline ? languageText("当前离线，更改仍保存在这台设备上。", "You are offline. Changes stay on this device.", "Du bist offline. Änderungen bleiben auf diesem Gerät.") : "";
+  }
+  if (offline && art && art.dataset.hairlineSrc !== "./assets/hairline/offline-local.svg") {
+    window.LifeLedgerInteraction?.mountHairline(art, "./assets/hairline/offline-local.svg");
+  }
+}
+
 function renderToday() {
   const date = selectedPlanningDate;
   const selected = parseDate(date);
@@ -4128,13 +4688,16 @@ function renderToday() {
     const noMatches = Boolean(query) && !open.length && !scheduled.length && !completed.length;
     const bestStreak = allDone ? Math.max(0, ...scoredHabits.map(habit => habitStreak(habit.id, date))) : 0;
     const streakBand = bestStreak >= 7 ? "long" : bestStreak >= 3 ? "mid" : "short";
+    const allScheduledLater = !open.length && scheduled.length > 0;
     const empty = noMatches
       ? hairlineEmptyMarkup("./assets/hairline/search-empty.svg", tr("today.noSearch"), tr("today.noSearchHelp"))
       : allDone
         ? hairlineEmptyMarkup("./assets/hairline/empty-today-done.svg", tr("today.allDone"), tr("today.allDoneHelp"), `data-streak="${streakBand}"`)
-        : state.habits.length
-          ? escapeHtml(tr("today.noHabits"))
-          : hairlineEmptyMarkup("./assets/hairline/empty-first-run.svg", tr("today.noHabits"), tr("habits.emptyHelp"));
+        : allScheduledLater
+          ? hairlineEmptyMarkup("./assets/hairline/today-all-scheduled-later.svg", tr("today.scheduled"), languageText("所有待办习惯都已按特定时间排在稍后。", "All pending habits are scheduled for a specific time later.", "Alle anstehenden Gewohnheiten sind für später geplant."))
+          : state.habits.length
+            ? escapeHtml(tr("today.noHabits"))
+            : hairlineEmptyMarkup("./assets/hairline/empty-first-run.svg", tr("today.noHabits"), tr("habits.emptyHelp"));
     list.innerHTML = open.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
       || `<li class="today-habit-empty">${empty}</li>`;
     paintTodayHeader(date, allDone, streakBand);
@@ -4164,6 +4727,8 @@ function renderToday() {
   }
   bindTodayHabitRows();
   renderTodayEventsStrip();
+  renderTodayCalendar(date);
+  renderTodayFocus();
   renderTodayContext(date);
   renderHomeJournal();
   void todayPhotoMount?.load(date);
@@ -4219,6 +4784,21 @@ function renderInspector() {
       `<li>${escapeHtml(tr("today.eventsCount", { count: events.length }))}</li>`,
       photoCount ? `<li>${escapeHtml(tr("drawer.photoCount", { count: photoCount }))}</li>` : "",
     ].filter(Boolean).join("");
+  }
+  const photoCount = (calendarPhotosByDate.get(date) || []).length || todayPhotoMount?.photos?.().filter(photo => photo.date === date).length || 0;
+  const inspectorDayPhotosEmpty = $("#inspectorDayPhotosEmpty");
+  if (inspectorDayPhotosEmpty) {
+    inspectorDayPhotosEmpty.hidden = photoCount > 0;
+    if (photoCount === 0) {
+      window.LifeLedgerInteraction?.mountHairline(inspectorDayPhotosEmpty, "./assets/hairline/photos-day-empty.svg");
+    }
+  }
+  const todayPhotoEmptyArt = $("#todayPhotoEmptyArt");
+  if (todayPhotoEmptyArt) {
+    todayPhotoEmptyArt.hidden = photoCount > 0;
+    if (photoCount === 0) {
+      window.LifeLedgerInteraction?.mountHairline(todayPhotoEmptyArt, "./assets/hairline/photos-day-empty.svg");
+    }
   }
   setText("#inspectorEventsCount", tr("today.eventsCount", { count: events.length }));
   const inspectorPhotos = $("#inspectorDayPhotos");
@@ -4568,8 +5148,19 @@ function setDayDetailOpen(open) {
   if (!sheet) return;
   sheet.hidden = !open;
   trigger?.setAttribute("aria-expanded", String(open));
-  if (open) $("#homeDayNote")?.focus();
-  else trigger?.focus();
+  if (open) {
+    const scored = dailyHabits(selectedPlanningDate);
+    const log = getLog(selectedPlanningDate);
+    const perfect = scored.length > 0 && scored.every(h => log.completed.includes(h.id));
+    const perfectMark = $("#dayDetailPerfectMark");
+    if (perfectMark) {
+      perfectMark.hidden = !perfect;
+      if (perfect) {
+        window.LifeLedgerInteraction?.mountHairline(perfectMark, "./assets/hairline/calendar-perfect-day.svg");
+      }
+    }
+    $("#homeDayNote")?.focus();
+  } else trigger?.focus();
 }
 
 function setFocusPanelOpen(open) {
@@ -5033,9 +5624,11 @@ function renderReviewInsights() {
   const current = slotTotals(dates);
   const previous = slotTotals(analyticsApi().previousWindow(dates));
   const summary = reportSummaryMarkup(dates, current);
-  if (!current.eligible) {
+  const recordedDays = Object.keys(state.logs || {}).filter(k => (state.logs[k].completed?.length || state.logs[k].note || state.logs[k].mood)).length;
+  if (!current.eligible || recordedDays < 7) {
+    const artSrc = recordedDays < 7 ? "./assets/hairline/insights-first-week.svg" : "./assets/hairline/empty-insights.svg";
     container.innerHTML = `${summary}${hairlineEmptyMarkup(
-      "./assets/hairline/empty-insights.svg",
+      artSrc,
       languageText("洞察", "Insights", "Einblicke"),
       tr("review.insufficient"),
     )}`;
@@ -5900,19 +6493,6 @@ function showBackupSuccess() {
   showBackupSuccess.timer = setTimeout(() => { host.hidden = true; }, 2400);
 }
 
-function renderSyncOffline() {
-  const art = $("#syncOfflineArt");
-  const note = $("#syncOfflineNote");
-  const offline = typeof navigator !== "undefined" && navigator.onLine === false;
-  if (art) art.hidden = !offline;
-  if (note) {
-    note.hidden = !offline;
-    note.textContent = offline ? languageText("当前离线，更改仍保存在这台设备上。", "You are offline. Changes stay on this device.", "Du bist offline. Änderungen bleiben auf diesem Gerät.") : "";
-  }
-  if (offline && art && art.dataset.hairlineSrc !== "./assets/hairline/sync-offline.svg") {
-    window.LifeLedgerInteraction?.mountHairline(art, "./assets/hairline/sync-offline.svg");
-  }
-}
 
 function showCelebration() {
   const celebration = $("#celebration");
@@ -6526,6 +7106,8 @@ function clearImportSelection() {
   $("#importPreview").hidden = true;
   $("#importError").hidden = true;
   $("#chooseImportFile").hidden = false;
+  const restoreArt = $("#backupRestoreArt");
+  if (restoreArt) restoreArt.hidden = true;
 }
 async function previewImportFile(file) {
   clearImportSelection();
@@ -6548,6 +7130,11 @@ async function previewImportFile(file) {
     $(".import-file-badge").textContent = media ? "MEDIA" : "JSON";
     $("#chooseImportFile").hidden = true;
     $("#importPreview").hidden = false;
+    const restoreArt = $("#backupRestoreArt");
+    if (restoreArt) {
+      restoreArt.hidden = false;
+      window.LifeLedgerInteraction?.mountHairline(restoreArt, "./assets/hairline/backup-restore.svg");
+    }
   } catch (error) {
     console.warn("Backup validation failed", error);
     $("#importError").textContent = mediaBundle ? tr("backup.mediaInvalid") : tr("backup.invalid");
@@ -7266,6 +7853,34 @@ function bindEvents() {
   });
   $("#openDayDetail")?.addEventListener("click", () => setDayDetailOpen(true));
   $$("[data-close-day-detail]").forEach(button => button.addEventListener("click", () => setDayDetailOpen(false)));
+  $("#editLayoutToggle")?.addEventListener("click", toggleActiveBoardEditMode);
+  $("#resetLayoutButton")?.addEventListener("click", resetActiveBoardLayout);
+  $("#todayCalendarPrev")?.addEventListener("click", () => {
+    todayCalendarCursor.setMonth(todayCalendarCursor.getMonth() - 1);
+    renderTodayCalendar();
+  });
+  $("#todayCalendarNext")?.addEventListener("click", () => {
+    todayCalendarCursor.setMonth(todayCalendarCursor.getMonth() + 1);
+    renderTodayCalendar();
+  });
+  $("#todayCalendarCurrent")?.addEventListener("click", () => {
+    todayCalendarCursor = parseDate(selectedPlanningDate);
+    todayCalendarCursor.setDate(1);
+    renderTodayCalendar();
+  });
+  $("#todayFocusStartBtn")?.addEventListener("click", () => {
+    startQuickFocusSession();
+  });
+  $("#todayFocusOpenTimer")?.addEventListener("click", () => {
+    openFocusTimerDialog();
+  });
+  document.addEventListener("keydown", event => {
+    const mod = event.metaKey || event.ctrlKey;
+    if (mod && event.altKey && event.key.toLowerCase() === "l" && !isEditableTarget(event.target)) {
+      event.preventDefault();
+      toggleActiveBoardEditMode();
+    }
+  });
   $$("[data-journal-mode]").forEach(button => button.addEventListener("click", () => setJournalMode(button.dataset.journalMode)));
   document.addEventListener("click", event => {
     if ($("#focusPanel")?.hidden) return;
@@ -7854,7 +8469,7 @@ async function initMenuBridge() {
   if (!listen) return;
   await listen("menu://action", event => handleMenuAction(String(event.payload || "")));
 }
-initAppShell(); syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); renderAll(); armReminderClock(); void initMenuBridge(); initWebShortcuts(); initWidgetBridge();
+initAppShell(); syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); initModuleBoards(); renderAll(); armReminderClock(); void initMenuBridge(); initWebShortcuts(); initWidgetBridge();
 if (new URLSearchParams(location.search).get("settings") === "1") openSettings();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });

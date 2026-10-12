@@ -161,12 +161,36 @@ export function createFictionalState(date = FIXTURE_DATE) {
   };
 }
 
+export function createEmptyFictionalState(date = FIXTURE_DATE) {
+  return {
+    meta: {
+      updatedAt: Date.now(),
+      starterPackVersion: 2,
+    },
+    habits: [],
+    logs: {},
+    weeklyGoals: {},
+    longTermGoals: [],
+    weeklyOutputs: {},
+    focusSessions: [],
+    focusSettings: {
+      preset: "classic",
+      focusMinutes: 25,
+      breakMinutes: 5,
+      defaultTopic: "Core deep focus",
+      sound: true,
+      notify: false,
+      wakeLock: true,
+    },
+  };
+}
+
 export async function applyFixture(page, options = {}) {
   const date = options.date || FIXTURE_DATE;
   const theme = options.theme || "light";
   const motion = options.motion || "full";
   const language = options.language || "en";
-  const state = options.state || createFictionalState(date);
+  const state = options.state || (options.empty ? createEmptyFictionalState(date) : createFictionalState(date));
 
   await page.addInitScript(
     ({ stateStr, dateVal, themeVal, motionVal, langVal }) => {

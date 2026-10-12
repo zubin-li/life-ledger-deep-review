@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Zur deutschen README](../README.de-DE.md)
 
-Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche Reflexion in einem lokalen, selbstbestimmten Arbeitsbereich. Alle Screenshots enthalten ausschließlich fiktive Beispieldaten. Die Desktop-Bilder zeigen den 3.5-Schreibtisch: eine Heute-Liste mit den letzten sieben Tagen darunter, eine Überschrift für Morgen, Abend oder einen abgeschlossenen Tag, den gewählten Tag als Hauptfläche der Woche, und Haarlinien für leere Zustände.
+Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche Reflexion in einem lokalen, selbstbestimmten Arbeitsbereich. Alle Screenshots enthalten ausschließlich fiktive Beispieldaten. Version 3.6 führt ein modulares natives Dashboard ein: anpassbare und einklappbare Blasen-Karten in Heute und Woche, ein Monatsgitter für Gewohnheiten, Wochen-Insights und Haarlinien-Grafiken.
 
 ## Desktop
 

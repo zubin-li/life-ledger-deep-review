@@ -18,16 +18,16 @@ function loadAnalytics() {
   return context.LifeLedgerAnalytics;
 }
 
-test("3.5 cache key is unique while the displayed version stays 3.5.1", () => {
-  assert.match(sw, /life-ledger-pwa-3\.5\.1/);
-  assert.match(html, /habit-analytics\.js\?v=3\.5\.1/);
+test("3.6 cache key is unique while the displayed version stays 3.6.0", () => {
+  assert.match(sw, /life-ledger-pwa-3\.6\.0/);
+  assert.match(html, /habit-analytics\.js\?v=3\.6\.0/);
   assert.doesNotMatch(html, /id="appVersionLabel"/);
   assert.match(html, /option value="system"/);
   assert.match(app, /Math\.max\(156, Math\.min\(240/);
   assert.match(app, /Math\.max\(280, Math\.min\(440/);
   assert.match(app, /lifeLedgerSidebarWidth31/);
   assert.match(app, /lifeLedgerInspectorWidth31/);
-  assert.match(css, /--sage: #5d7d68/);
+  assert.match(css, /--sage: #68725c/);
   assert.match(css, /html\[data-desktop\] #sidebarHabitsHeading/);
   assert.doesNotMatch(css, /font:\s*500\s+9px/);
   assert.match(css, /preserveAspectRatio|review-trend-axis/);

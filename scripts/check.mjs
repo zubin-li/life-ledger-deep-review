@@ -4,6 +4,7 @@ import { join } from "node:path";
 const root = new URL("../", import.meta.url);
 const required = [
   "public/index.html",
+  "public/modules.js",
   "public/app.js",
   "public/voice-checkin.js",
   "public/photo-memories.js",

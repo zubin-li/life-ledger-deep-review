@@ -113,6 +113,17 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Responsive Apple-inspired interface for desktop and mobile
 
 <details>
+<summary><strong>What shipped in Life Ledger 3.6.0</strong></summary>
+
+- **Modular Native Dashboard**: Today and Week workspaces transformed into a continuous vertical canvas of bubble module cards with 18–22px rounded surfaces, 1px hairline borders, and soft shadows.
+- **Customizable Layout & Edit Mode**: Toolbar "Edit layout" toggle (and ⌘⌥L / Ctrl+Alt+L shortcut) enables visual drag & drop and keyboard reordering (`Alt+ArrowUp/Down`), collapse toggles, and layout reset. Preferences are safely isolated in a separate localStorage key.
+- **Full-Month Calendar Grid in Today**: 7-column Monday-first contribution grid displaying daily habit completion intensity (0..4), roving tabindex keyboard navigation, month browsing, and seamless day detail inspection.
+- **Integrated Week Workspace**: Single scroller combining completed days strip, weekly insights card cluster (completion rate, best day, streak, focus time), weekly/long-term goals, and promoted deep review card.
+- **Theme Token Reconnection**: Neutral grey/white light mode (`--paper #f5f5f7`, `#ffffff` cards) and true near-black dark mode (`--paper #0a0a0b`, `--surface-1 #141416`), completely replacing legacy beige tones.
+- **16 Original Hairline SVGs**: Line-art illustrations for calendar states, weekly review and insights, focus streaks, photo empty states, and local-first indicators.
+
+</details>
+<details>
 <summary><strong>What shipped in Life Ledger 3.5.1</strong></summary>
 
 - Unified focus timer state machine shared by toolbar chip, panel, and mini-player, featuring completion illustration with minute echo and toast Undo.
