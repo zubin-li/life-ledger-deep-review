@@ -3143,6 +3143,7 @@ html[data-desktop] .review-trend-note p { margin: 0; font: 400 12px/1.4 var(--fo
 /* Single vertical scroller for Today and Week */
 html[data-desktop] body[data-active-view="today"] .main-content,
 html[data-desktop] body[data-active-view="week"] .main-content {
+  max-width: none;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -3468,7 +3469,7 @@ html[data-theme="dark"] .module-card {
   color: var(--muted);
   font: 500 12px/1.3 var(--font-body);
   cursor: pointer;
-  transition: all 160ms ease;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, opacity 160ms ease;
   white-space: nowrap;
 }
 

@@ -18,6 +18,7 @@ jobs:
   verify:
     name: Verify 3.6.0 Controls & Modular Evidence
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     env:
       EVIDENCE_DIR: docs/phase-3-6-0
 
@@ -59,27 +60,27 @@ jobs:
           npm run desktop:check
 
       - name: Run executable control verification
-        if: always()
+        timeout-minutes: 15
         working-directory: current
         run: node scripts/evidence/controls.mjs
 
       - name: Capture screenshot matrix
-        if: always()
+        timeout-minutes: 20
         working-directory: current
         run: node scripts/evidence/screens.mjs
 
       - name: Generate before-after visual comparisons
-        if: always()
+        timeout-minutes: 10
         working-directory: current
         run: node scripts/evidence/before-after.mjs --before ../before-351 --after .
 
       - name: Record interaction video
-        if: always()
+        timeout-minutes: 20
         working-directory: current
         run: node scripts/evidence/video.mjs
 
       - name: Generate verification report
-        if: always()
+        timeout-minutes: 5
         working-directory: current
         run: node scripts/evidence/report.mjs
 
