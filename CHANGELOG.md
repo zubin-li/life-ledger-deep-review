@@ -4,6 +4,9 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Fixed
+- Modular desktop Today/Week dashboard: restore the missing `toolbar-trailing` wrapper so `content-split` stays inside `workspace-pane` instead of collapsing the main column to a blank strip.
+
 ## [3.6.0] — Unreleased
 
 ### Modular native-dashboard refinement — Life Ledger 3.6.0 (macOS desktop)
