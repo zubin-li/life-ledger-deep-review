@@ -21,35 +21,27 @@ async function setCaption(page, text) {
       bar = document.createElement("div");
       bar.id = "evidenceCaptionBar";
       bar.style.position = "fixed";
-      bar.style.bottom = "20px";
-      bar.style.left = "50%";
-      bar.style.transform = "translateX(-50%)";
+      bar.style.top = "12px";
+      bar.style.left = "12px";
+      bar.style.bottom = "auto";
+      bar.style.transform = "none";
+      bar.style.maxWidth = "46vw";
       bar.style.zIndex = "9999999";
       bar.style.background = "rgba(36, 37, 34, 0.94)";
       bar.style.color = "#faf9f6";
-      bar.style.padding = "9px 22px";
-      bar.style.borderRadius = "99px";
-      bar.style.font = "600 13px -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif";
+      bar.style.padding = "8px 16px";
+      bar.style.borderRadius = "10px";
+      bar.style.font = "600 12px -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif";
       bar.style.letterSpacing = "0.01em";
       bar.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.28)";
       bar.style.border = "1px solid rgba(255, 255, 255, 0.16)";
       bar.style.pointerEvents = "none";
+      bar.style.lineHeight = "1.35";
       bar.style.transition = "opacity 160ms ease";
       document.body.appendChild(bar);
     }
     bar.textContent = captionText;
   }, text);
-}
-
-async function setMotionViaSettings(context, serverUrl, mainPage, motionLevel) {
-  const settingsPage = await context.newPage();
-  await settingsPage.goto(`${serverUrl}/index.html?settings=1&desktop=tauri-local`);
-  await settingsPage.waitForLoadState("domcontentloaded");
-  const motionSelect = settingsPage.locator("#motionSelect");
-  await motionSelect.selectOption(motionLevel);
-  await motionSelect.dispatchEvent("change");
-  await mainPage.waitForTimeout(100);
-  await settingsPage.close();
 }
 
 async function runVideo() {
@@ -74,113 +66,166 @@ async function runVideo() {
 
   const capturedFrames = [];
 
-  // Step 1: Complete a habit with Space via keyboard -> Completed group -> Undo toast -> back to Open
-  await setCaption(page, "Step 1: Complete habit via keyboard Space → Completed group → Toast Undo");
+  // Step 1: Complete habit with keyboard Space -> focus ring visible -> Toast with Undo -> Restored after Undo
+  await setCaption(page, "Step 1: Keyboard Space → Focus ring → Toast with Undo → Restored");
   const firstHabitCheck = page.locator(".today-habit-check").first();
   await firstHabitCheck.focus();
   await page.waitForTimeout(600);
+  capturedFrames.push({ title: "Keyboard focus ring on habit check", bytes: await page.screenshot() });
+
   await page.keyboard.press("Space");
-  await page.waitForTimeout(1000);
-  capturedFrames.push({ title: "Step 1: Habit Completed", bytes: await page.screenshot() });
+  const toast = page.locator("#toast");
+  await toast.waitFor({ state: "visible", timeout: 5000 });
+  await page.waitForTimeout(1200); // hold 1.2 s with toast on screen
+  capturedFrames.push({ title: "Toast with Undo", bytes: await page.screenshot() });
 
   const toastAction = page.locator("#toastAction");
   if (await toastAction.isVisible()) {
-    await page.waitForTimeout(800); // keep toast Undo visible
     await toastAction.click();
-    await page.waitForTimeout(1500); // hold 1.5s on restored row
+    await page.waitForTimeout(1500); // hold 1.5 s on habit back in Open
+    capturedFrames.push({ title: "Restored after Undo", bytes: await page.screenshot() });
   }
 
-  // Step 2: Motion = Full: complete a habit (motion visible)
-  await setCaption(page, "Step 2: Motion = Full: complete habit → toast Undo → hold 1.5s on restored row");
-  await setMotionViaSettings(context, server.url, page, "full");
-  await firstHabitCheck.click();
+  // Open real settings window in the same context for motion testing
+  const settingsPage = await context.newPage();
+  await settingsPage.goto(`${server.url}/index.html?settings=1&desktop=tauri-local`);
+  await settingsPage.waitForLoadState("domcontentloaded");
+  await settingsPage.waitForTimeout(500);
+  const motionSelect = settingsPage.locator("#motionSelect");
+  await motionSelect.scrollIntoViewIfNeeded();
+
+  // Step 2: Motion = Full
+  await setCaption(page, "Step 2: Motion = Full: Settings change → mid-transition proof → Toast Undo");
+  await motionSelect.selectOption("full");
+  await motionSelect.dispatchEvent("change");
+  await settingsPage.waitForTimeout(300);
+  capturedFrames.push({ title: "Settings → Motion: Full", bytes: await settingsPage.screenshot() });
+
+  await page.waitForFunction(() => !document.documentElement.classList.contains("motion-off") && !document.documentElement.classList.contains("motion-reduced"));
+  const habitCheckFull = page.locator(".today-habit-check").first();
+  await habitCheckFull.click();
+  await page.waitForTimeout(120); // capture ~120 ms mid-transition
+  capturedFrames.push({ title: "Motion: Full (mid-transition)", bytes: await page.screenshot() });
+
+  await toast.waitFor({ state: "visible", timeout: 5000 });
   await page.waitForTimeout(1200);
-  capturedFrames.push({ title: "Step 2: Motion Full", bytes: await page.screenshot() });
-  const toastAction2 = page.locator("#toastAction");
-  if (await toastAction2.isVisible()) {
-    await page.waitForTimeout(800); // keep toast Undo visible
-    await toastAction2.click();
-    await page.waitForTimeout(1500); // hold 1.5s on restored row
+  if (await toastAction.isVisible()) {
+    await toastAction.click();
+    await page.waitForTimeout(1500);
   }
-  await page.waitForTimeout(300);
 
-  // Step 3: Motion = Reduced: same action (opacity only)
-  await setCaption(page, "Step 3: Motion = Reduced: same action → toast Undo → hold 1.5s on restored row");
-  await setMotionViaSettings(context, server.url, page, "reduced");
-  await firstHabitCheck.click();
+  // Step 3: Motion = Reduced
+  await setCaption(page, "Step 3: Motion = Reduced: Settings change → opacity transition → Toast Undo");
+  await motionSelect.selectOption("reduced");
+  await motionSelect.dispatchEvent("change");
+  await settingsPage.waitForTimeout(300);
+  capturedFrames.push({ title: "Settings → Motion: Reduced", bytes: await settingsPage.screenshot() });
+
+  await page.waitForFunction(() => document.documentElement.classList.contains("motion-reduced"));
+  const habitCheckReduced = page.locator(".today-habit-check").first();
+  await habitCheckReduced.click();
+  await page.waitForTimeout(120); // capture ~120 ms transition
+  capturedFrames.push({ title: "Motion: Reduced (mid-transition)", bytes: await page.screenshot() });
+
+  await toast.waitFor({ state: "visible", timeout: 5000 });
   await page.waitForTimeout(1200);
-  capturedFrames.push({ title: "Step 3: Motion Reduced", bytes: await page.screenshot() });
-  const toastAction3 = page.locator("#toastAction");
-  if (await toastAction3.isVisible()) {
-    await page.waitForTimeout(800); // keep toast Undo visible
-    await toastAction3.click();
-    await page.waitForTimeout(1500); // hold 1.5s on restored row
+  if (await toastAction.isVisible()) {
+    await toastAction.click();
+    await page.waitForTimeout(1500);
   }
-  await page.waitForTimeout(300);
 
-  // Step 4: Motion = Off: same action (instant)
-  await setCaption(page, "Step 4: Motion = Off: same action (instant) → toast Undo → hold 1.5s on restored row");
-  await setMotionViaSettings(context, server.url, page, "off");
-  await firstHabitCheck.click();
-  await page.waitForTimeout(1000);
-  capturedFrames.push({ title: "Step 4: Motion Off", bytes: await page.screenshot() });
-  const toastAction4 = page.locator("#toastAction");
-  if (await toastAction4.isVisible()) {
-    await page.waitForTimeout(800); // keep toast Undo visible
-    await toastAction4.click();
-    await page.waitForTimeout(1500); // hold 1.5s on restored row
+  // Step 4: Motion = Off
+  await setCaption(page, "Step 4: Motion = Off: Settings change → settled instant → Toast Undo");
+  await motionSelect.selectOption("off");
+  await motionSelect.dispatchEvent("change");
+  await settingsPage.waitForTimeout(300);
+  capturedFrames.push({ title: "Settings → Motion: Off", bytes: await settingsPage.screenshot() });
+
+  await page.waitForFunction(() => document.documentElement.classList.contains("motion-off"));
+  const habitCheckOff = page.locator(".today-habit-check").first();
+  await habitCheckOff.click();
+  await page.waitForTimeout(120); // capture ~120 ms settled
+  capturedFrames.push({ title: "Motion: Off (settled instant)", bytes: await page.screenshot() });
+
+  await toast.waitFor({ state: "visible", timeout: 5000 });
+  await page.waitForTimeout(1200);
+  if (await toastAction.isVisible()) {
+    await toastAction.click();
+    await page.waitForTimeout(1500);
   }
-  await page.waitForTimeout(300);
 
-  // Step 5: back to Full; ⌘F search -> type -> no-results illustration -> Escape
-  await setCaption(page, "Step 5: Motion = Full; ⌘F search → type filter → no-results illustration → Escape");
-  await setMotionViaSettings(context, server.url, page, "full");
+  // Reset motion to full for remaining steps
+  await motionSelect.selectOption("full");
+  await motionSelect.dispatchEvent("change");
+  await page.waitForFunction(() => !document.documentElement.classList.contains("motion-off") && !document.documentElement.classList.contains("motion-reduced"));
+  await settingsPage.waitForTimeout(300);
+
+  // Capture settings video path before closing settings page
+  const settingsVideoPath = await settingsPage.video()?.path();
+  await settingsPage.close();
+
+  // Step 5: Motion = Full; ⌘F search -> type query -> no-results illustration -> Escape
+  await setCaption(page, "Step 5: ⌘F search → type query → no-results illustration → Escape");
   await page.keyboard.press("Meta+f");
   await page.waitForTimeout(600);
   const searchInput = page.locator("#quickFind");
   await searchInput.fill("zenith nonexistent");
-  await page.waitForTimeout(1400);
-  capturedFrames.push({ title: "Step 5: Search No Results", bytes: await page.screenshot() });
+  await page.waitForTimeout(1200);
+  capturedFrames.push({ title: "Search: No Results Hairline", bytes: await page.screenshot() });
   await page.keyboard.press("Escape");
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(600);
 
-  // Step 6: "+" popover with keyboard
-  await setCaption(page, "Step 6: '+' create popover with keyboard navigation");
+  // Step 6: "+" popover with keyboard navigation -> Escape
+  await setCaption(page, "Step 6: '+' create popover with keyboard navigation → Escape");
   const createBtn = page.locator("#toolbarCreateButton");
   await createBtn.click();
-  await page.waitForTimeout(800);
-  capturedFrames.push({ title: "Step 6: '+' Popover", bytes: await page.screenshot() });
+  await page.waitForTimeout(600);
+  capturedFrames.push({ title: "'+' Popover Open", bytes: await page.screenshot() });
   await page.keyboard.press("ArrowDown");
   await page.waitForTimeout(400);
   await page.keyboard.press("Escape");
   await page.waitForTimeout(600);
 
-  // Step 7: Focus: start -> pause -> resume -> finish -> completion illustration visible >= 2s -> Undo
-  await setCaption(page, "Step 7: Focus: start → pause → resume → finish → completion illustration (≥2s with panel open) → Undo");
+  // Step 7: Focus: start -> pause -> resume -> finish -> completion illustration (≥2.5s with panel open) -> Undo -> idle
+  await setCaption(page, "Step 7: Focus: start → pause → resume → finish → completion illustration (≥2.5s) → Undo");
   const focusChip = page.locator("#toolbarPrimaryAction");
   await focusChip.click();
   await page.waitForTimeout(800);
   const focusPrimary = page.locator("#focusQuickPrimary");
   await focusPrimary.click(); // Start
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(1000);
   await focusPrimary.click(); // Pause
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(600);
   await focusPrimary.click(); // Resume
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(600);
   const focusFinish = page.locator("#focusQuickFinish");
   await focusFinish.click(); // Finish
-  await page.waitForTimeout(2500); // Completion illustration visible >= 2s with panel open
-  capturedFrames.push({ title: "Step 7: Focus Complete Illustration", bytes: await page.screenshot() });
 
+  // Wait for #focusIdleHairline to have data-hairline-src ending in focus-complete.svg
+  // and #focusTodaySummary to contain the minutes text
+  await page.waitForFunction(() => {
+    const hairline = document.querySelector("#focusIdleHairline");
+    const summary = document.querySelector("#focusTodaySummary");
+    const src = hairline?.getAttribute("data-hairline-src") || "";
+    const summaryText = summary?.textContent || "";
+    return src.endsWith("focus-complete.svg") && /minute|minuten|分钟/i.test(summaryText);
+  }, { timeout: 5000 });
+
+  // Keep the panel open; hold 2.5 s; key frame "Focus complete illustration"
+  await page.waitForTimeout(2500);
+  capturedFrames.push({ title: "Focus complete illustration", bytes: await page.screenshot() });
+
+  // Then click toast Undo and hold 1 s on idle
   const focusToastUndo = page.locator("#toastAction");
   if (await focusToastUndo.isVisible()) {
-    await focusToastUndo.click(); // Undo
-    await page.waitForTimeout(1200);
+    await focusToastUndo.click();
+    await page.waitForTimeout(1000);
+    capturedFrames.push({ title: "Focus restored to idle", bytes: await page.screenshot() });
   }
   await page.keyboard.press("Escape");
   await page.waitForTimeout(600);
 
-  // Step 8: Journal Timeline <-> Photos
+  // Step 8: Journal Timeline <-> Photos mode switch
   await setCaption(page, "Step 8: Journal Timeline ↔ Photos mode switch");
   const journalNav = page.locator(".sidebar .nav-item[data-view='timeline']");
   await journalNav.click();
@@ -188,12 +233,12 @@ async function runVideo() {
   const photosTab = page.locator("[data-journal-mode='photos']");
   await photosTab.click();
   await page.waitForTimeout(1200);
-  capturedFrames.push({ title: "Step 8: Journal Photos", bytes: await page.screenshot() });
+  capturedFrames.push({ title: "Journal Photos Mode", bytes: await page.screenshot() });
   const timelineTab = page.locator("[data-journal-mode='timeline']");
   await timelineTab.click();
   await page.waitForTimeout(1000);
 
-  // Step 9: Tab through the toolbar showing focus rings
+  // Step 9: Tab through toolbar controls showing visible focus rings
   await setCaption(page, "Step 9: Tab through toolbar controls showing visible focus rings");
   await page.locator(".sidebar .nav-item[data-view='today']").click();
   await page.waitForTimeout(600);
@@ -203,11 +248,14 @@ async function runVideo() {
     await page.keyboard.press("Tab");
     await page.waitForTimeout(400);
   }
-  capturedFrames.push({ title: "Step 9: Toolbar Focus Rings", bytes: await page.screenshot() });
+  capturedFrames.push({ title: "Toolbar Tab Sequence Focus", bytes: await page.screenshot() });
   await page.waitForTimeout(1000);
 
   await setCaption(page, "Interaction sequence completed.");
   await page.waitForTimeout(1000);
+
+  // Capture main video path before closing page
+  const mainVideoPath = await page.video()?.path();
 
   // Close context to finish video encoding
   await page.close();
@@ -215,14 +263,18 @@ async function runVideo() {
   await browser.close();
   await server.close();
 
-  // Find recorded video and move to output
-  const files = fs.readdirSync(videoDir);
-  const videoFile = files.find(f => f.endsWith(".webm"));
-  const targetVideo = path.join(outputDir, "interaction.webm");
-  if (videoFile) {
-    fs.copyFileSync(path.join(videoDir, videoFile), targetVideo);
-    const stat = fs.statSync(targetVideo);
-    console.log(`Saved video to ${targetVideo} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`);
+  // Copy videos directly to target outputs
+  const targetMainVideo = path.join(outputDir, "interaction.webm");
+  const targetSettingsVideo = path.join(outputDir, "interaction-settings.webm");
+  if (mainVideoPath && fs.existsSync(mainVideoPath)) {
+    fs.copyFileSync(mainVideoPath, targetMainVideo);
+    const stat = fs.statSync(targetMainVideo);
+    console.log(`Saved main video to ${targetMainVideo} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`);
+  }
+  if (settingsVideoPath && fs.existsSync(settingsVideoPath)) {
+    fs.copyFileSync(settingsVideoPath, targetSettingsVideo);
+    const stat = fs.statSync(targetSettingsVideo);
+    console.log(`Saved settings video to ${targetSettingsVideo} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`);
   }
 
   // Compose frame contact sheet

@@ -151,17 +151,18 @@ Side-by-side contact sheets generated without third-party image libraries via \`
 
 ## 6. Interaction Video Recording
 
-- Video recording: \`docs/phase-3-5-1/interaction.webm\` (Playwright recorded at 1440×900, slowMo paced, with injected on-screen caption bar)
-- Key frame contact sheet: \`docs/phase-3-5-1/video-frames.png\`
+- Main video recording: \`docs/phase-3-5-1/interaction.webm\` (Playwright recorded at 1440×900, slowMo paced, with injected top-left caption bar)
+- Settings video recording: \`docs/phase-3-5-1/interaction-settings.webm\` (Settings window recording verifying live cross-window motion sync)
+- Key frame contact sheet: \`docs/phase-3-5-1/video-frames.png\` (3-column grid containing all key frames)
 - File size: ≤ 8 MB
 - 9 verified interaction steps:
-  1. Habit completion with keyboard Space → Completed group → Toast Undo
-  2. Motion = Full: habit completion with visible motion
-  3. Motion = Reduced: habit completion with opacity-only transition
-  4. Motion = Off: instant state transition
+  1. Habit completion with keyboard Space → Focus ring visible → Toast Undo → Restored
+  2. Motion = Full: settings change → mid-transition proof → Toast Undo
+  3. Motion = Reduced: settings change → opacity-only transition → Toast Undo
+  4. Motion = Off: settings change → instant state transition → Toast Undo
   5. ⌘F search → type query → no-results illustration → Escape
-  6. "+" Create popover keyboard navigation
-  7. Focus: start → pause → resume → finish → completion illustration visible ≥2s → Undo
+  6. "+" Create popover keyboard navigation → Escape
+  7. Focus: start → pause → resume → finish → completion illustration visible ≥2.5s → Undo
   8. Journal Timeline ↔ Photos mode toggle
   9. Tab sequence through toolbar controls demonstrating visible focus rings
 `;
