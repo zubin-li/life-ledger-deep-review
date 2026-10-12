@@ -1976,6 +1976,9 @@ function mountFocusDurationStepper() {
     ariaLabel: languageText("专注时长", "Focus duration", "Fokusdauer"),
     getValue: () => state.focusSettings?.focusMinutes || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes,
     onChange: minutes => {
+      if (!focusTimer?.snapshot() && (focusUIState === "cancelled" || focusUIState === "completed")) {
+        transitionFocusUI("reset");
+      }
       state.focusSettings = { ...state.focusSettings, focusMinutes: minutes, preset: "custom" };
       const minutesInput = $("#focusMinutes");
       if (minutesInput) minutesInput.value = minutes;
@@ -4570,6 +4573,9 @@ function setFocusPanelOpen(open) {
   if (!panel) return;
   panel.hidden = !open;
   button?.setAttribute("aria-expanded", String(open));
+  if (open && !focusTimer?.snapshot() && (focusUIState === "cancelled" || focusUIState === "completed")) {
+    transitionFocusUI("reset");
+  }
   renderFocusTimer(focusTimer?.snapshot());
   if (open) {
     if (!$("#focusQuickPrimary")?.hidden) $("#focusQuickPrimary")?.focus();
@@ -7258,7 +7264,9 @@ function bindEvents() {
   $$("[data-journal-mode]").forEach(button => button.addEventListener("click", () => setJournalMode(button.dataset.journalMode)));
   document.addEventListener("click", event => {
     if ($("#focusPanel")?.hidden) return;
-    if (event.target.closest("#focusAnchor")) return;
+    const path = event.composedPath?.() || [];
+    if (path.includes($("#focusAnchor")) || path.includes($("#focusPanel"))) return;
+    if (event.target && typeof event.target.closest === "function" && event.target.closest("#focusAnchor")) return;
     setFocusPanelOpen(false);
   });
   document.addEventListener("keydown", event => {
@@ -7584,7 +7592,25 @@ function bindEvents() {
     }
   });
   $("#exportButton")?.addEventListener("click", openBackupDialog);
-  $$('[data-backup-tab]').forEach(button => button.addEventListener("click", () => setBackupTab(button.dataset.backupTab)));
+  const backupTabs = $$('[data-backup-tab]');
+  backupTabs.forEach(button => {
+    button.addEventListener("click", () => setBackupTab(button.dataset.backupTab));
+    button.addEventListener("keydown", event => {
+      const tabs = [...$$('[data-backup-tab]')];
+      const index = tabs.indexOf(button);
+      let nextIndex = -1;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % tabs.length;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + tabs.length) % tabs.length;
+      else if (event.key === "Home") nextIndex = 0;
+      else if (event.key === "End") nextIndex = tabs.length - 1;
+      if (nextIndex >= 0) {
+        event.preventDefault();
+        const nextTab = tabs[nextIndex];
+        setBackupTab(nextTab.dataset.backupTab);
+        nextTab.focus();
+      }
+    });
+  });
   $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";
   $("#cloudAccountButton").addEventListener("click", openCloudBaseAuth);
   $$(".close-cloudbase-auth").forEach(button => button.addEventListener("click", () => $("#cloudbaseAuthDialog").close()));

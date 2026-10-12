@@ -1012,6 +1012,7 @@ html[data-theme="dark"] .tracking-mode-choice label { border-color: var(--edge-s
 .backup-tabs button { min-height: 38px; border: 0; border-radius: 11px; background: transparent; color: var(--muted); font: 700 11px var(--font-body); cursor: pointer; transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, transform 140ms var(--ease-enter); }
 .backup-tabs button:active { transform: scale(.985); }
 .backup-tabs button.active { color: var(--ink); background: var(--card); box-shadow: 0 5px 15px rgba(29,29,31,.07), inset 0 1px 0 rgba(255,255,255,.64); }
+.backup-tabs button:focus-visible { outline: 2px solid var(--controlAccent, var(--sage)); outline-offset: 2px; }
 .backup-section[hidden] { display: none !important; }
 .backup-section { padding: 20px 26px 4px; }
 .backup-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; }

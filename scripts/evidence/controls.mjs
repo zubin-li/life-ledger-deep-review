@@ -33,15 +33,27 @@ async function verifyFocusVisible(locator) {
   const reachResult = await locator.evaluate((target) => {
     if (!target) return { ok: false, reason: "target element missing" };
 
+    const elDesc = (el) => {
+      if (!el) return "none";
+      const tag = el.tagName ? el.tagName.toLowerCase() : "";
+      const id = el.id ? `#${el.id}` : "";
+      const cls = el.className && typeof el.className === "string" ? `.${el.className.trim().split(/\s+/).filter(Boolean).join(".")}` : "";
+      return `${tag}${id}${cls}`;
+    };
+
     const isRendered = (el) => {
       if (!el) return false;
       if (el.closest("[hidden], [inert], dialog:not([open])")) return false;
       if (el.inert) return false;
+      if (el.closest("[aria-hidden='true']")) return false;
+      if (el.closest('[data-search-expanded="false"] .toolbar-search-field')) return false;
       if (typeof el.checkVisibility === "function") {
         if (!el.checkVisibility({ checkOpacity: false, checkVisibilityCSS: true })) return false;
       } else {
         if (el.getClientRects().length === 0) return false;
       }
+      const rects = el.getClientRects();
+      if (rects.length === 0 || (rects[0].width === 0 && rects[0].height === 0)) return false;
       const s = window.getComputedStyle(el);
       if (s.display === "none" || s.visibility === "hidden") return false;
       return true;
@@ -81,14 +93,14 @@ async function verifyFocusVisible(locator) {
     }
     if (targetIdx > 0) {
       all[targetIdx - 1].focus();
-      return { ok: true, method: "tabFromPrev" };
+      return { ok: true, method: "tabFromPrev", prevDesc: elDesc(all[targetIdx - 1]) };
     } else {
       if (all.length > 1) {
         all[1].focus();
-        return { ok: true, method: "shiftTabFromNext" };
+        return { ok: true, method: "shiftTabFromNext", prevDesc: elDesc(all[1]) };
       }
       target.focus();
-      return { ok: true, method: "direct" };
+      return { ok: true, method: "direct", prevDesc: "none" };
     }
   });
 
@@ -109,11 +121,16 @@ async function verifyFocusVisible(locator) {
     const doc = target.ownerDocument || document;
     const isActive = doc.activeElement === target;
     const isVisible = target.matches(":focus-visible");
-    return { isActive, isVisible };
+    const active = doc.activeElement;
+    const tag = active?.tagName ? active.tagName.toLowerCase() : "";
+    const id = active?.id ? `#${active.id}` : "";
+    const cls = active?.className && typeof active.className === "string" ? `.${active.className.trim().split(/\s+/).filter(Boolean).join(".")}` : "";
+    const activeDesc = active ? `${tag}${id}${cls}` : "none";
+    return { isActive, isVisible, activeDesc };
   });
 
   if (!status.isActive) {
-    return check(false, "", "unreachable by keyboard: target did not become activeElement after Tab");
+    return check(false, "", `unreachable by keyboard: target did not become activeElement after Tab (activeElement: ${status.activeDesc}, prevElement: ${reachResult.prevDesc || "none"})`);
   }
 
   return check(
@@ -454,6 +471,10 @@ async function runControls() {
           await moodBtn.click();
           const pressed = await moodBtn.getAttribute("aria-pressed");
           result.checks.purpose = check(pressed === "true", "Mood button set to pressed", `aria-pressed was ${pressed}`);
+          const reasonDialogOpen = await page.locator("#moodReasonDialog[open]").isVisible().catch(() => false);
+          if (reasonDialogOpen) {
+            await page.keyboard.press("Escape");
+          }
           result.checks.focus = await verifyFocusVisible(moodBtn);
           break;
         }
@@ -1250,14 +1271,34 @@ async function runControls() {
           break;
         }
         case 57: { // Backup dialog
-          await page.evaluate(() => document.getElementById("exportDialog").showModal());
-          const importTab = page.locator("#backupImportTab");
-          const exportTab = page.locator("#backupExportTab");
-          await importTab.click();
+          await page.evaluate(() => {
+            const dialog = document.getElementById("exportDialog");
+            if (window.openBackupDialog) window.openBackupDialog("export");
+            else dialog.showModal();
+            const closeBtn = dialog.querySelector(".close-export-dialog");
+            if (closeBtn) closeBtn.focus();
+          });
+          if (await page.evaluate(() => document.activeElement?.id !== "backupExportTab")) {
+            await page.keyboard.press("Tab");
+          }
+          await page.keyboard.press("ArrowRight");
+
           const importVisible = await page.locator("#backupImportPanel").isVisible();
-          result.checks.purpose = check(importVisible, "Backup dialog switched to import tab", "Import panel failed to display");
-          await exportTab.click();
-          result.checks.focus = await verifyFocusVisible(importTab);
+          const focusStatus = await page.locator("#backupImportTab").evaluate((tab) => ({
+            hasFocus: document.activeElement === tab,
+            isFocusVisible: tab.matches(":focus-visible"),
+          }));
+
+          result.checks.purpose = check(
+            importVisible && focusStatus.hasFocus,
+            "ArrowRight selected and focused Import tab, showing Import panel",
+            `Import tab navigation failed: importVisible=${importVisible}, hasFocus=${focusStatus.hasFocus}`
+          );
+          result.checks.focus = check(
+            focusStatus.isFocusVisible,
+            ":focus-visible matches on #backupImportTab after ArrowRight",
+            `:focus-visible did not match on #backupImportTab (${focusStatus.isFocusVisible})`
+          );
           await page.keyboard.press("Escape");
           break;
         }
