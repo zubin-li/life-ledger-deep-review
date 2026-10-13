@@ -4,7 +4,16 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+- Today 2.0 widget platform proof: project-owned `WidgetRegistry` and `TodayLayoutEngine` boundary (`public/widget-registry.js`, `public/layout-engine.js`) implementing layout schema v2 (`life-ledger-layout-v2`) with 12-column geometry, discrete Small/Medium/Large aspect states, deterministic collision resolution, transaction undo stack, and reset layout defaults.
+- All seven Today widgets (`summary`, `habits`, `calendar`, `focus`, `photos`, `reflection`, `context`) with distinct, size-specific content hierarchies for S, M, and L sizes per the Life Ledger 2.0 content matrix.
+- Non-destructive v1 migration: automatic one-time migration from `life-ledger-layout-v1` to `life-ledger-layout-v2` preserving the v1 key and user data untouched. Corrupt layout payloads fall back deterministically to default without deleting stored raw data.
+- Layout Edit Mode: interactive 2D direct drag tracking (zero easing during drag, 240ms settle snap), keyboard navigation with Arrow keys, explicit S/M/L selectors, hide/show toggles, transaction undo button, and Escape cancel. Normal mode preserves internal controls (`#openDayDetail`, `#todayCalendarPrev`, focus actions, habit check-ins) without accidental drag interception.
+- Life Ledger 2.0 Design DNA: macOS system typography with tabular numerals, cool-gray and neutral surfaces, floating island depth, and restrained sage/teal accent across light and dark modes. Motion contract enforced (no `transition: all`, direct drag zero easing, reduced and off motion modes respected).
+- Third-party adoption gate documentation: recorded GridStack evaluation (+97.1 KB bundle delta, forced reflow loops, animation continuous layout mutations) and NO-GO decision in `docs/third-party-notices.md` adopting the project-owned 0 KB engine.
+
 ### Fixed
+- Today 2.0 geometry repair: intrinsic `grid-auto-rows`, scoped S/M/L compact rules, measured grid drag snapping, widget recomposition via `data-widget-part`, localized undo chrome, reflection auto-grow gated to Large, and removal of fake context/calendar placeholder content.
 - Modular desktop Today/Week dashboard: restore the missing `toolbar-trailing` wrapper so `content-split` stays inside `workspace-pane` instead of collapsing the main column to a blank strip.
 - Today calendar "Today" button returns to the current month instead of the selected planning date's month.
 - Today focus "Start focus" opens the focus panel with the running timer; it previously scrolled a 3.5 daily-tool viewport that no longer exists, so nothing visible happened.

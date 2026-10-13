@@ -99,6 +99,9 @@
             <button class="toolbar-reset-layout" id="resetLayoutButton" type="button" aria-label="Reset layout" title="Reset layout" hidden>
               <span id="resetLayoutLabel">Reset layout</span>
             </button>
+            <button class="toolbar-undo-layout secondary-button" id="undoLayoutButton" type="button" aria-label="Undo layout" title="Undo layout (⌘Z)" hidden>
+              <span id="undoLayoutLabel">Undo</span>
+            </button>
             <div class="toolbar-search-slot">
               <div class="toolbar-search-collapsible" id="toolbarSearch" data-search-expanded="false">
                 <button class="toolbar-search-toggle icon-morph-host" id="toolbarSearchToggle" type="button" aria-label="Search" aria-expanded="false" aria-controls="quickFind">
@@ -147,7 +150,7 @@
         <div class="content-split">
           <main class="main-content">
         <section class="view active today-desk today-stage" id="todayView" data-module-board="today">
-          <article class="module-card" data-module="summary">
+          <article class="module-card" data-module="summary" style="--grid-x: 0; --grid-y: 0; --grid-w: 8; --grid-h: 2;" data-widget-size="large">
             <header class="today-stage-header today-header module-header">
               <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
               <div class="today-stage-copy">
@@ -155,6 +158,7 @@
                 <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
                 <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
                 <p class="today-summary" id="todaySummary">0 of 0 done</p>
+                <p class="today-summary-next" id="todaySummaryNext" data-widget-part="summary-next-item" hidden></p>
                 <div class="today-progress" aria-hidden="true"><span id="todayProgressFill"></span></div>
               </div>
               <div class="today-stage-meta">
@@ -174,7 +178,7 @@
             </div>
           </article>
 
-          <article class="module-card" data-module="habits">
+          <article class="module-card" data-module="habits" style="--grid-x: 0; --grid-y: 2; --grid-w: 8; --grid-h: 2;" data-widget-size="large">
             <header class="module-header">
               <div>
                 <span class="kicker" id="habitsModuleKicker">DAILY HABITS</span>
@@ -198,11 +202,12 @@
                   <summary id="todayNotTodaySummary">Not scheduled today</summary>
                   <ul class="today-habit-list not-today" id="todayNotTodayList" role="list"></ul>
                 </details>
+                <button type="button" class="text-button today-habits-show-all" id="todayHabitsShowAll" data-widget-part="habits-show-all" hidden></button>
               </div>
             </div>
           </article>
 
-          <article class="module-card" data-module="calendar">
+          <article class="module-card" data-module="calendar" style="--grid-x: 0; --grid-y: 5; --grid-w: 8; --grid-h: 2;" data-widget-size="large">
             <header class="module-header">
               <div>
                 <span class="kicker" id="calendarModuleKicker">MONTH IN VIEW</span>
@@ -224,7 +229,7 @@
             </div>
           </article>
 
-          <article class="module-card" data-module="focus">
+          <article class="module-card" data-module="focus" style="--grid-x: 8; --grid-y: 0; --grid-w: 4; --grid-h: 1;" data-widget-size="small">
             <header class="module-header">
               <div>
                 <span class="kicker" id="focusModuleKicker">FOCUS TIME</span>
@@ -247,7 +252,7 @@
             </div>
           </article>
 
-          <article class="module-card" data-module="photos">
+          <article class="module-card" data-module="photos" style="--grid-x: 0; --grid-y: 4; --grid-w: 8; --grid-h: 1;" data-widget-size="medium">
             <header class="module-header">
               <div>
                 <span class="kicker" id="photosModuleKicker">MEMORY</span>
@@ -274,7 +279,7 @@
             </div>
           </article>
 
-          <article class="module-card" data-module="reflection">
+          <article class="module-card" data-module="reflection" style="--grid-x: 8; --grid-y: 2; --grid-w: 4; --grid-h: 1;" data-widget-size="small">
             <header class="module-header">
               <div>
                 <span class="kicker" id="reflectionModuleKicker">DAILY REVIEW</span>
@@ -285,6 +290,8 @@
             <div class="module-body" id="module-body-reflection">
               <section id="todayJournal" aria-labelledby="inspectorReflectionHeading">
                 <section class="inspector-section inspector-reflection">
+                  <p class="reflection-status-copy" data-widget-part="reflection-status" hidden></p>
+                  <p class="reflection-prompt-line" data-widget-part="reflection-prompt" hidden></p>
                   <div class="inspector-reflection-header">
                     <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
                       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
@@ -292,13 +299,14 @@
                     </button>
                   </div>
                   <textarea id="homeDayNote" placeholder="What happened today? What moved forward? What is worth remembering?"></textarea>
+                  <p class="reflection-day-context" data-widget-part="reflection-day-context" hidden></p>
                   <span class="autosave" id="homeJournalSave">● autosaved</span>
                 </section>
               </section>
             </div>
           </article>
 
-          <article class="module-card" data-module="context">
+          <article class="module-card" data-module="context" style="--grid-x: 8; --grid-y: 1; --grid-w: 4; --grid-h: 1;" data-widget-size="small">
             <header class="module-header">
               <div>
                 <span class="kicker" id="contextModuleKicker">CONTEXT</span>
@@ -1134,6 +1142,8 @@
     <script type="module" src="./widget-contract.js?v=3.6.0"></script>
     <script src="./habit-analytics.js?v=3.6.0"></script>
     <script src="./interaction.js?v=3.6.0"></script>
+    <script src="./widget-registry.js?v=3.6.0"></script>
+    <script src="./layout-engine.js?v=3.6.0"></script>
     <script src="./modules.js?v=3.6.0"></script>
     <script src="./app.js?v=3.6.0"></script>
   </body>

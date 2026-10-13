@@ -8,9 +8,9 @@ Life Ledger brings daily habits, practical planning, and long-form reflection in
 
 ### Today: plan and reflect
 
-<img src="images/demo-preview/en-desktop/en-01-today-planning-v5.png" alt="Daily goals, reflection, and calendar on desktop" />
+<img src="images/demo-preview/en-desktop/en-01-today-planning-v5.png" alt="Today 2.0 modular widget platform with 12-column grid and discrete S/M/L sizing" />
 
-The selected day keeps concrete goals and an editable reflection side by side, with the month remaining visible underneath.
+Today 2.0 features the modular widget platform: a 12-column responsive grid with summary, habits, calendar, focus, photos, reflection, and context widgets supporting discrete Small, Medium, and Large sizing with zero-easing direct drag, keyboard navigation, and transaction undo.
 
 ### Daily review
 

@@ -111,6 +111,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Kompakte langfristige Einträge in der Desktop-Seitenleiste
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
+- Heute 2.0 Widget-Plattform: 12-spaltiges Raster, diskrete Größen S/M/L und direktes 2D-Drag ohne Easing
 
 <details>
 <summary><strong>Was Life Ledger 3.6.0 gebracht hat</strong></summary>

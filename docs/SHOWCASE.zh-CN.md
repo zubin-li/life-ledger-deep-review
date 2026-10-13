@@ -8,9 +8,9 @@ Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地�
 
 ### 今日：计划与复盘
 
-<img src="images/demo-preview/zh-desktop/zh-01-today-planning-v5.png" alt="中文桌面版每日目标、每日复盘与日历" />
+<img src="images/demo-preview/zh-desktop/zh-01-today-planning-v5.png" alt="Today 2.0 模块化小组件平台：12 列栅格与 S/M/L 离散尺寸" />
 
-选中某一天后，具体目标和可编辑的每日复盘并排呈现，下方仍然保留完整月历。
+Today 2.0 推出模块化小组件平台：12 列响应式栅格包含概览、习惯、日历、专注、照片、复盘与节奏卡片，支持小/中/大三种离散尺寸与差异化内容层级，直接无缓动二维拖拽、键盘方向键移动与事务级撤销。
 
 ### 单日记录
 

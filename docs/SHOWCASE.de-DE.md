@@ -8,9 +8,9 @@ Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche
 
 ### Heute: planen und reflektieren
 
-<img src="images/demo-preview/de-desktop/de-01-today-planning-v5.png" alt="Tagesziele, Reflexion und Kalender auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-01-today-planning-v5.png" alt="Heute 2.0 modularer Widget-Desk mit 12-Spalten-Raster und diskreter S/M/L-Größenanpassung" />
 
-Konkrete Ziele und eine bearbeitbare Tagesreflexion stehen nebeneinander; der vollständige Monatskalender bleibt darunter sichtbar.
+Heute 2.0 führt die modulare Widget-Plattform ein: ein responsives 12-Spalten-Raster mit Übersicht, Gewohnheiten, Kalender, Fokus, Fotos, Reflexion und Kontext, diskreten Größen S, M und L mit jeweils eigener Inhaltshierarchie, direktem Drag-and-Drop ohne Easing, Tastaturnavigation und Transaktions-Undo.
 
 ### Tagesrückblick
 

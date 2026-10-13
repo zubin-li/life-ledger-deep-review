@@ -1404,7 +1404,7 @@ async function runControls() {
             const board = document.querySelector("#todayView");
             return board && board.classList.contains("is-editing-layout");
           });
-          const handleCount = await page.locator("#todayView .module-edit-handle:visible").count();
+          const handleCount = await page.locator("#todayView .widget-drag-handle:visible").count();
           result.checks.purpose = check(
             isPressed === "true" && boardHasClass && handleCount > 0,
             `Edit layout toggled active (aria-pressed=${isPressed}, is-editing-layout applied, ${handleCount} drag handles rendered)`,

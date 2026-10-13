@@ -111,6 +111,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Compact long-term items in the desktop sidebar
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
+- Today 2.0 widget platform with 12-column layout, discrete S/M/L states, and zero-easing 2D drag
 
 <details>
 <summary><strong>What shipped in Life Ledger 3.6.0</strong></summary>

@@ -115,6 +115,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 桌面侧边栏中的精简长期待办
 - 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面
+- Today 2.0 小组件平台：12 列栅格引擎、S/M/L 离散尺寸与直接无缓动二维拖拽
 
 <details>
 <summary><strong>Life Ledger 3.6.0 带来的改进</strong></summary>
