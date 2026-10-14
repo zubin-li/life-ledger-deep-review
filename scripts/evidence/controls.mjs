@@ -557,6 +557,27 @@ async function runControls() {
             break;
           }
           const details = page.locator("#todayCompletedGroup, #todayNotTodayGroup").first();
+          if (!(await summary.isVisible())) {
+            const largeRail = page.locator('[data-module="habits"][data-widget-size="large"] .today-list');
+            const flattenedRows = largeRail.locator(
+              "#todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row",
+            );
+            const flattenedCount = await flattenedRows.count();
+            const renderedCount = await flattenedRows.evaluateAll(rows => rows.filter(row => {
+              const rect = row.getBoundingClientRect();
+              const style = getComputedStyle(row);
+              return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+            }).length);
+            result.checks.purpose = check(
+              (await largeRail.count()) === 1 && flattenedCount > 0 && renderedCount === flattenedCount,
+              `Large Habits rail renders ${renderedCount} completed/not-today row(s) without disclosure chrome`,
+              `Large Habits rail failed to render flattened rows: found=${flattenedCount}, rendered=${renderedCount}`,
+            );
+            result.checks.focus = await verifyFocusVisible(
+              largeRail.locator('.today-habit-row[tabindex="0"]').first(),
+            );
+            break;
+          }
           const wasOpen = await details.evaluate((node) => node.open);
           await summary.click();
           const isOpen = await details.evaluate((node) => node.open);
