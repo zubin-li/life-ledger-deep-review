@@ -4442,6 +4442,41 @@ function focusTodayHabitRow(id) {
   row?.focus();
 }
 
+// Roving tabindex: exactly one eligible habit row stays in the tab order.
+function setTodayHabitTabStop(stop) {
+  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
+    row.setAttribute("tabindex", row === stop ? "0" : "-1");
+  });
+}
+
+function syncTodayHabitTabStop() {
+  const visible = todayHabitsVisibleRows();
+  // While Today is not displayed nothing has layout, so fall back to rows that are not hidden.
+  const rows = visible.length
+    ? visible
+    : [...$$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row")].filter(row => !row.closest("[hidden]"));
+  const focused = document.activeElement;
+  setTodayHabitTabStop(
+    rows.find(row => row.contains(focused)) ||
+    rows.find(row => row.dataset.id === selectedTodayHabitId) ||
+    rows[0],
+  );
+}
+
+// Completion re-renders the rows; return focus to the same habit's connected row or check.
+function restoreTodayHabitFocus(id, part, input) {
+  const row = todayHabitsVisibleRows().find(candidate => candidate.dataset.id === id);
+  const target = row && part === "check" ? $(".today-habit-check", row) : row;
+  if (!target) {
+    // The habit left the visible rows (Small/Medium), so keep focus on the widget's tab stop.
+    $('[data-module="habits"] .today-habit-row[tabindex="0"]')?.focus({ preventScroll: true });
+    return;
+  }
+  target.focus({ preventScroll: true });
+  // Keyboard focus must stay visible; reveal it instantly and only as far as needed.
+  if (input === "keyboard") row.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+}
+
 function bindTodayHabitsRailWheel() {
   const module = document.querySelector('[data-module="habits"]');
   const list = module?.querySelector(".today-list");
@@ -4475,10 +4510,12 @@ function bindTodayHabitRows() {
       select();
     });
     row.addEventListener("contextmenu", event => openHabitContextMenu(event, id, date));
+    row.addEventListener("focusin", () => setTodayHabitTabStop(row));
     check?.addEventListener("click", event => {
       event.stopPropagation();
       if (future) return;
-      toggleHabit(date, id);
+      // detail 0 marks a keyboard or assistive-technology activation rather than a pointer click.
+      toggleHabit(date, id, { input: event.detail === 0 ? "keyboard" : "pointer" });
     });
     row.addEventListener("keydown", event => {
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -4511,12 +4548,12 @@ function bindTodayHabitRows() {
       }
       if (event.key === " ") {
         event.preventDefault();
-        if (!future) toggleHabit(date, id);
+        if (!future) toggleHabit(date, id, { input: "keyboard" });
         return;
       }
       if (event.key === "Enter") {
         event.preventDefault();
-        if (!future) toggleHabit(date, id);
+        if (!future) toggleHabit(date, id, { input: "keyboard" });
       }
     });
   });
@@ -4865,6 +4902,8 @@ function initModuleBoards() {
     LifeLedgerLayoutEngine.setTranslator(tr);
     const todayBoard = $("#todayView");
     if (todayBoard) LifeLedgerLayoutEngine.init(todayBoard);
+    // Layout changes notify before renderBoard re-renders sizes, so resync on the next frame.
+    LifeLedgerLayoutEngine.onLayoutChange(() => requestAnimationFrame(syncTodayHabitTabStop));
   }
   if (window.LifeLedgerModules) {
     LifeLedgerModules.setTranslator(tr);
@@ -4982,6 +5021,8 @@ function renderToday() {
   }
   void todayPhotoMount?.load(date);
   window.LifeLedgerLayoutEngine?.renderBoard();
+  // After renderBoard: the widget size decides which habit rows are visible.
+  syncTodayHabitTabStop();
   maybeAutoGrowHomeDayNote();
 }
 
@@ -5391,15 +5432,21 @@ function playHabitFlip(previous) {
     row.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
     row.offsetWidth;
     row.style.transition = "transform 240ms var(--ease-spring)";
-    row.classList.add("habit-row-flip");
     row.style.transform = "translate3d(0, 0, 0)";
-    const clear = () => {
+    let fallback = 0;
+    const clear = event => {
+      // Check and hover colour transitions bubble here too; only this row's move ends the FLIP.
+      if (event && (event.target !== row || event.propertyName !== "transform")) return;
+      window.clearTimeout(fallback);
       row.style.transition = "";
       row.style.transform = "";
       row.classList.remove("is-moving");
       row.removeEventListener("transitionend", clear);
+      row.removeEventListener("transitioncancel", clear);
     };
     row.addEventListener("transitionend", clear);
+    row.addEventListener("transitioncancel", clear);
+    fallback = window.setTimeout(clear, 320);
   });
 }
 
@@ -5541,9 +5588,14 @@ function renderWeekDayDetail() {
   }));
 }
 
-function toggleHabit(date, id) {
+function toggleHabit(date, id, { input = "" } = {}) {
   if (isFutureDate(date)) return;
-  const frames = date === selectedPlanningDate ? captureHabitFrames() : null;
+  // Keyboard activation reorders without travel or the decorative check pop.
+  const frames = date === selectedPlanningDate && input !== "keyboard" ? captureHabitFrames() : null;
+  // Today row toggles (input set) keep the rail's scroll and return focus to the same habit.
+  const focusPart = input === "keyboard" && document.activeElement?.classList.contains("today-habit-row") ? "row" : "check";
+  const rail = input && isTodayHabitsLargeRail() ? $('[data-module="habits"] .today-list') : null;
+  const railScrollLeft = rail?.scrollLeft ?? 0;
   const previous = cloneData(getLog(date));
   const log = { ...getLog(date), completed: [...getLog(date).completed] };
   const scored = activeHabits(date).filter(habit => countsTowardDaily(habit, date));
@@ -5560,7 +5612,10 @@ function toggleHabit(date, id) {
   };
   commit();
   revealCompletedOnRender = false;
-  if (i < 0) {
+  // Restore before the FLIP measures, so the move starts from what the user saw.
+  if (rail) rail.scrollLeft = railScrollLeft;
+  if (input) restoreTodayHabitFocus(id, focusPart, input);
+  if (i < 0 && input !== "keyboard") {
     $$(`.today-habit-row[data-id="${id}"] .today-habit-check`).forEach(node => {
       node.classList.add("is-completing");
       window.setTimeout(() => node.classList.remove("is-completing"), 220);

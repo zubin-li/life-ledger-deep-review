@@ -32,6 +32,10 @@
 
   const PROTECTED_WIDGETS = new Set(["habits", "today-habits"]);
 
+  // The hide/show action is icon-only; its localized name stays on aria-label and title.
+  const HIDE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12s3.6-6 9-6 9 6 9 6-3.6 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.6"/><path d="m4 4 16 16"/></svg>';
+  const SHOW_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12s3.6-6 9-6 9 6 9 6-3.6 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+
   let appTranslator = null;
 
   function setTranslator(fn) {
@@ -104,6 +108,7 @@
       this._isEditing = false;
       this._transactionHistory = [];
       this._dragState = null;
+      this._resizeState = null;
       this._editSessionSnapshot = null;
       this._hasInitListeners = false;
       this._changeListeners = new Set();
@@ -442,6 +447,9 @@
 
     setEditMode(enabled) {
       const nextMode = Boolean(enabled);
+      if (!nextMode && this._resizeState) {
+        this._resizeState.cancel();
+      }
       if (nextMode) {
         if (!this._isEditing) {
           this._editSessionSnapshot = clone(this.getLayout());
@@ -759,6 +767,18 @@
           editBar.hidden = true;
         }
 
+        let resizeHandle = card.querySelector(":scope > .widget-resize-handle");
+        if (isEditing) {
+          resizeHandle?.remove();
+          resizeHandle = root.document.createElement("button");
+          resizeHandle.type = "button";
+          resizeHandle.className = "widget-resize-handle";
+          card.appendChild(resizeHandle);
+          this._renderWidgetResizeHandle(resizeHandle, card, w);
+        } else if (resizeHandle) {
+          resizeHandle.hidden = true;
+        }
+
         // Ensure card DOM order matches sorted order
         this._container.appendChild(card);
       }
@@ -789,7 +809,7 @@
           <button type="button" class="widget-size-btn${size === "large" ? " is-active" : ""}" data-size="large" aria-checked="${size === "large"}" role="radio" title="${escapeHtml(tr("modules.sizeLarge", "Large"))}">L</button>
         </div>
         <div class="widget-edit-trailing">
-          ${isProtected ? "" : `<button type="button" class="widget-hide-btn secondary-button" data-action="toggle-hide" aria-label="${escapeHtml(hideLabel)}">${escapeHtml(hideText)}</button>`}
+          ${isProtected ? "" : `<button type="button" class="widget-hide-btn" data-action="toggle-hide" aria-label="${escapeHtml(hideLabel)}" title="${escapeHtml(hideText)}">${isHidden ? SHOW_ICON : HIDE_ICON}</button>`}
         </div>
       `;
 
@@ -833,6 +853,232 @@
           this._toggleWidgetHidden(widgetData.id);
         });
       }
+    }
+
+    _sizeLabel(size) {
+      const keys = {
+        small: "modules.sizeSmall",
+        medium: "modules.sizeMedium",
+        large: "modules.sizeLarge",
+      };
+      const fallbacks = { small: "Small", medium: "Medium", large: "Large" };
+      return tr(keys[size], fallbacks[size] || size);
+    }
+
+    _resizeHandleLabel(widgetName, size) {
+      return `${tr("modules.sizeSelector", "Widget size")}: ${widgetName} — ${this._sizeLabel(size)}`;
+    }
+
+    _renderWidgetResizeHandle(handle, card, widgetData) {
+      const name = tr(`modules.names.${widgetData.type}`, widgetData.type);
+      handle.hidden = false;
+      handle.setAttribute("aria-label", this._resizeHandleLabel(name, widgetData.size));
+      handle.setAttribute("title", tr("modules.sizeSelector", "Widget size"));
+      handle.innerHTML = `<span class="widget-resize-state" aria-hidden="true">${escapeHtml(widgetData.size.charAt(0).toUpperCase())}</span>`;
+      this._setupPointerResize(handle, card, widgetData, name);
+    }
+
+    _allowedWidgetSizes(widgetData) {
+      const widgetDef = root.LifeLedgerWidgetRegistry?.get(widgetData.type) ||
+        root.LifeLedgerWidgetRegistry?.get(widgetData.id);
+      const allowed = Array.isArray(widgetDef?.allowedSizes)
+        ? widgetDef.allowedSizes.filter(size => Object.hasOwn(SIZE_DIMENSIONS, size))
+        : [];
+      return allowed.length ? allowed : ["small", "medium", "large"];
+    }
+
+    _nearestResizeSize(state, dx, dy) {
+      const dimensions = state.allowedSizes.map(size => ({ size, ...this.getSizeDimensions(size) }));
+      const minW = Math.min(...dimensions.map(item => item.w));
+      const maxW = Math.max(...dimensions.map(item => item.w));
+      const minH = Math.min(...dimensions.map(item => item.h));
+      const maxH = Math.max(...dimensions.map(item => item.h));
+      const normalize = item => ({
+        x: maxW === minW ? 0 : (item.w - minW) / (maxW - minW),
+        y: maxH === minH ? 0 : (item.h - minH) / (maxH - minH),
+      });
+      const startDimensions = dimensions.find(item => item.size === state.originalSize) || dimensions[0];
+      const start = normalize(startDimensions);
+      const targetX = start.x + dx / state.horizontalSpan;
+      const targetY = start.y + dy / state.verticalSpan;
+
+      let nearest = dimensions[0].size;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      for (const item of dimensions) {
+        const point = normalize(item);
+        const distance = (point.x - targetX) ** 2 + 2 * (point.y - targetY) ** 2;
+        if (distance < nearestDistance) {
+          nearest = item.size;
+          nearestDistance = distance;
+        }
+      }
+      return nearest;
+    }
+
+    _previewWidgetSize(card, widgetData, size, widgetName) {
+      const dimensions = this.getSizeDimensions(size);
+      const previewX = Math.min(widgetData.x, Math.max(0, COLUMNS - dimensions.w));
+      card.style.setProperty("--grid-x", String(previewX));
+      card.style.setProperty("--grid-w", String(dimensions.w));
+      card.style.setProperty("--grid-h", String(dimensions.h));
+      card.dataset.widgetSize = size;
+
+      const widgetDef = root.LifeLedgerWidgetRegistry?.get(widgetData.type) ||
+        root.LifeLedgerWidgetRegistry?.get(widgetData.id);
+      widgetDef?.render?.({
+        element: card,
+        size,
+        data: {},
+        locale: root.document?.documentElement?.lang || "en",
+        motion: getMotionMode(),
+      });
+
+      card.querySelectorAll(".widget-size-btn").forEach(button => {
+        const active = button.dataset.size === size;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-checked", String(active));
+      });
+      const handle = card.querySelector(":scope > .widget-resize-handle");
+      const state = handle?.querySelector(".widget-resize-state");
+      if (state) state.textContent = size.charAt(0).toUpperCase();
+      handle?.setAttribute("aria-label", this._resizeHandleLabel(widgetName, size));
+    }
+
+    _settleResizedCard(card, previewRect, motion) {
+      card.classList.remove("is-resizing");
+      const finalRect = card.getBoundingClientRect();
+      const offsetX = previewRect.left - finalRect.left;
+      const offsetY = previewRect.top - finalRect.top;
+
+      if (motion === "off" || motion === "reduced") {
+        card.style.transition = "none";
+        card.style.transform = "";
+        card.style.opacity = "";
+        card.style.zIndex = "";
+        root.requestAnimationFrame?.(() => {
+          card.style.transition = "";
+        });
+        return;
+      }
+
+      card.style.transition = "none";
+      card.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+      card.style.opacity = "0.92";
+      card.getBoundingClientRect();
+      card.style.transition = "transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 240ms ease-out";
+      card.style.transform = "translate3d(0, 0, 0)";
+      card.style.opacity = "1";
+      root.setTimeout(() => {
+        card.style.transition = "";
+        card.style.transform = "";
+        card.style.opacity = "";
+        card.style.zIndex = "";
+      }, 240);
+    }
+
+    _setupPointerResize(handle, card, widgetData, widgetName) {
+      handle.addEventListener("pointerdown", event => {
+        if (
+          event.button !== 0 ||
+          event.isPrimary === false ||
+          !this._isEditing ||
+          this._resizeState ||
+          this._dragState
+        ) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+
+        const cardRect = card.getBoundingClientRect();
+        const metrics = this._measureGridMetrics();
+        const compact = root.matchMedia?.("(max-width: 1179px)")?.matches;
+        const fourColumnSpan = metrics.colTracks.slice(0, 4).reduce((sum, value) => sum + value, 0) +
+          metrics.colGap * 4;
+        const rowSpan = (metrics.rowTracks[widgetData.y] || metrics.rowTracks[0] || 180) + metrics.rowGap;
+        const horizontalSpan = compact
+          ? Math.max(120, Math.min(cardRect.width * 0.35, 180))
+          : Math.max(120, fourColumnSpan);
+        const verticalSpan = compact
+          ? Math.max(120, Math.min(cardRect.width * 0.28, 180))
+          : Math.max(120, rowSpan);
+        const motion = getMotionMode();
+        const pointerId = event.pointerId;
+
+        card.classList.add("is-resizing");
+        card.style.transition = "none";
+        card.style.zIndex = "100";
+
+        const state = {
+          pointerId,
+          originalSize: widgetData.size,
+          candidateSize: widgetData.size,
+          allowedSizes: this._allowedWidgetSizes(widgetData),
+          startX: event.clientX,
+          startY: event.clientY,
+          horizontalSpan,
+          verticalSpan,
+          cancel: null,
+        };
+        this._resizeState = state;
+
+        const cleanUp = () => {
+          handle.removeEventListener("pointermove", onMove);
+          handle.removeEventListener("pointerup", onUp);
+          handle.removeEventListener("pointercancel", onCancel);
+          try { handle.releasePointerCapture(pointerId); } catch {}
+        };
+
+        const finish = cancelled => {
+          if (this._resizeState !== state) return;
+          cleanUp();
+
+          if (cancelled || state.candidateSize === state.originalSize) {
+            this._previewWidgetSize(card, widgetData, state.originalSize, widgetName);
+            card.classList.remove("is-resizing");
+            card.style.transition = "";
+            card.style.transform = "";
+            card.style.opacity = "";
+            card.style.zIndex = "";
+            this._resizeState = null;
+            return;
+          }
+
+          const previewRect = card.getBoundingClientRect();
+          const candidateSize = state.candidateSize;
+          this._resizeState = null;
+          this._changeWidgetSize(widgetData.id, candidateSize);
+          this._settleResizedCard(card, previewRect, motion);
+        };
+
+        const onMove = moveEvent => {
+          if (moveEvent.pointerId !== pointerId || moveEvent.isPrimary === false) return;
+          moveEvent.preventDefault();
+          const candidate = this._nearestResizeSize(
+            state,
+            moveEvent.clientX - state.startX,
+            moveEvent.clientY - state.startY,
+          );
+          if (candidate === state.candidateSize) return;
+          state.candidateSize = candidate;
+          this._previewWidgetSize(card, widgetData, candidate, widgetName);
+        };
+
+        const onUp = upEvent => {
+          if (upEvent.pointerId !== pointerId || upEvent.isPrimary === false) return;
+          finish(false);
+        };
+        const onCancel = cancelEvent => {
+          if (cancelEvent.pointerId !== pointerId) return;
+          finish(true);
+        };
+
+        state.cancel = () => finish(true);
+        handle.addEventListener("pointermove", onMove);
+        handle.addEventListener("pointerup", onUp);
+        handle.addEventListener("pointercancel", onCancel);
+        try { handle.setPointerCapture(pointerId); } catch {}
+      });
     }
 
     _changeWidgetSize(widgetId, newSize) {
@@ -1088,7 +1334,11 @@
         if (!this._isEditing) return;
         if (e.key === "Escape") {
           e.preventDefault();
-          this.cancelEditSession();
+          if (this._resizeState) {
+            this._resizeState.cancel();
+          } else {
+            this.cancelEditSession();
+          }
         } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z" && !e.shiftKey) {
           e.preventDefault();
           this.undo();

@@ -190,14 +190,18 @@ export async function applyFixture(page, options = {}) {
   const theme = options.theme || "light";
   const motion = options.motion || "full";
   const language = options.language || "en";
+  const languageRequested = typeof options.language === "string";
   const state = options.state || (options.empty ? createEmptyFictionalState(date) : createFictionalState(date));
 
   await page.addInitScript(
-    ({ stateStr, dateVal, themeVal, motionVal, langVal }) => {
+    ({ stateStr, dateVal, themeVal, motionVal, langVal, languageRequestedVal }) => {
       localStorage.setItem("life-ledger-v1", stateStr);
       localStorage.setItem("life-ledger-theme", themeVal);
       localStorage.setItem("life-ledger-motion", motionVal);
       localStorage.setItem("life-ledger-language", langVal);
+      if (languageRequestedVal) {
+        localStorage.setItem("life-ledger-language-preference-set", "true");
+      }
       localStorage.setItem("life-ledger-first-run", "done");
       localStorage.setItem("life-ledger-welcome-seen", "true");
       sessionStorage.setItem("life-ledger-session-date", dateVal);
@@ -222,6 +226,7 @@ export async function applyFixture(page, options = {}) {
       themeVal: theme,
       motionVal: motion,
       langVal: language,
+      languageRequestedVal: languageRequested,
     }
   );
 }

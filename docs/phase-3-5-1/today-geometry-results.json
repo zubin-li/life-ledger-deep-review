@@ -1542,7 +1542,7 @@
   {
     "id": "drag-pointer",
     "status": "pass",
-    "detail": "{\"expectedX\":4,\"expectedY\":5,\"styleX\":4,\"styleY\":5,\"actualX\":4,\"actualY\":5,\"storageMatchesDom\":true,\"slotMatchesRendered\":true,\"relY\":764,\"rowTracks\":[180,180,380,1,180,180,380]}"
+    "detail": "{\"expectedX\":4,\"expectedY\":5,\"styleX\":4,\"styleY\":5,\"actualX\":4,\"actualY\":5,\"storageMatchesDom\":true,\"slotMatchesRendered\":true,\"relY\":1176,\"rowTracks\":[218,218,418,1,218,218,418]}"
   },
   {
     "id": "habits-large-full-list",

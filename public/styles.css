@@ -202,8 +202,10 @@ body.inspector-collapsed .inspector { opacity: 0; transform: translateX(12px); p
 .calendar-day.selected { outline: 2px solid var(--sage); outline-offset: -2px; }
 .inspector-heading { margin: 0 0 var(--space-2); font: 600 var(--text-caption)/1.35 var(--font-body); letter-spacing: 0; text-transform: none; color: var(--muted); }
 .mood-segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-.mood-segmented button { border: 1px solid var(--edge-soft); border-radius: var(--radius-md); background: var(--surface-0); padding: 8px 6px; font-size: var(--text-caption); color: var(--ink); }
+.mood-segmented button { display: grid; justify-items: center; gap: 4px; border: 1px solid var(--edge-soft); border-radius: var(--radius-md); background: var(--surface-0); padding: 8px 6px; font-size: var(--text-caption); color: var(--ink); }
 .mood-segmented button.active { border-color: var(--sage); background: color-mix(in srgb, var(--sage) 12%, var(--surface-1)); font-weight: 600; }
+.mood-segment-glyph { display: grid; place-items: center; }
+.mood-segment-glyph svg { width: 18px; height: 18px; color: currentColor; }
 .inspector-reflection textarea { width: 100%; min-height: 120px; resize: vertical; border: 1px solid var(--edge-soft); border-radius: var(--radius-md); background: var(--surface-0); padding: var(--space-3); }
 .inspector-focus-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 .inspector-day-photos { display: flex; gap: 6px; margin-top: var(--space-2); }
@@ -3421,6 +3423,24 @@ html[data-theme="dark"] .module-card {
   [data-module-board="today"] > [data-widget-size="large"] {
     min-height: 380px;
   }
+  /* Edit mode adds a control shelf; reserve its height so no card content is pushed
+     under a neighbour while the nominal non-edit heights stay untouched. */
+  [data-module-board="today"].is-editing-layout > [data-widget-size="small"],
+  [data-module-board="today"].is-editing-layout > [data-widget-size="medium"] {
+    min-height: calc(180px + var(--edit-shelf-reserve, 38px));
+  }
+  [data-module-board="today"].is-editing-layout > [data-widget-size="large"] {
+    min-height: calc(380px + var(--edit-shelf-reserve, 38px));
+  }
+  [data-module-board="today"] > [data-module="summary"][data-widget-size="large"] {
+    display: flex;
+    flex-direction: column;
+  }
+  [data-module="summary"][data-widget-size="large"] .today-stage-header {
+    flex: 1 1 auto;
+    align-content: center;
+    margin-bottom: 0;
+  }
   [data-module="photos"][data-widget-size="small"] #todayPhotoEmptyArt,
   [data-module="photos"][data-widget-size="medium"] #todayPhotoEmptyArt {
     display: none !important;
@@ -3455,6 +3475,70 @@ html[data-theme="dark"] .module-card {
   }
 }
 
+/* The compact desktop shell keeps the same hierarchy without allowing the
+   summary controls to push past their card. */
+@media (max-width: 760px) {
+  [data-module="summary"] .today-stage-header {
+    display: grid;
+    position: relative;
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 14px;
+    align-items: start;
+  }
+
+  [data-module="summary"] .today-header-art,
+  [data-module="summary"] #todayHeaderArt {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+  }
+
+  [data-module="summary"] .today-stage-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-right: 34px;
+  }
+
+  [data-module="summary"] .today-date-heading {
+    font-size: clamp(1.65rem, 8vw, 2rem);
+  }
+
+  [data-module="summary"] .today-stage-meta {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  [data-module="summary"] .today-mood {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  [data-module="summary"] .today-mood button {
+    width: auto;
+    min-width: 0;
+  }
+
+  [data-module="summary"] .today-reflect {
+    justify-self: start;
+    min-height: 32px;
+    padding: 6px 0;
+    border: 0;
+    background: transparent;
+    color: var(--controlAccent, var(--sage-dark));
+    font: 600 13px/1.3 var(--font-body);
+  }
+
+  [data-module="summary"] .module-collapse-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
 /* Tabular figures for dates, timers, metrics */
 .today-date-heading,
 .today-summary,
@@ -3465,97 +3549,335 @@ html[data-theme="dark"] .module-card {
   font-variant-numeric: tabular-nums;
 }
 
-/* Widget Edit Bar */
+/* Widget Edit Shelf — a quiet control strip that supports the card instead of covering it. */
 .widget-edit-bar {
-  display: flex;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 10px;
-  margin-bottom: 14px;
+  gap: 6px;
+  padding: 1px 4px;
+  margin-bottom: 8px;
   border-radius: 12px;
-  background: var(--surface-2, #1c1c1f);
-  border: 1px solid var(--edge-soft, rgba(0, 0, 0, 0.08));
+  background: color-mix(in srgb, var(--surface-2) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--separator, var(--line)) 35%, transparent);
+  -webkit-backdrop-filter: saturate(150%) blur(10px);
+  backdrop-filter: saturate(150%) blur(10px);
+}
+
+html[data-theme="dark"] .widget-edit-bar {
+  background: color-mix(in srgb, var(--surface-2) 45%, transparent);
 }
 
 .widget-drag-handle {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  min-height: 36px;
+  position: relative;
+  gap: 7px;
+  min-width: 44px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0 7px;
+  border: 0;
   border-radius: 8px;
-  background: var(--surface-1, #141416);
-  color: var(--label, var(--ink));
+  background: transparent;
+  color: var(--secondaryLabel, var(--muted));
   cursor: grab;
   user-select: none;
-  font: 600 13px/1.2 var(--font-body);
-  border: 1px solid var(--line, rgba(0, 0, 0, 0.08));
+  font: 600 12px/1.2 var(--font-body);
   font-family: inherit;
   text-align: left;
+  transition: background-color 150ms var(--ease-move), color 150ms var(--ease-move);
+}
+
+/* The shelf stays 30px tall; every control carries its own 44px pointer target. */
+.widget-drag-handle::after,
+.widget-size-btn::before,
+.widget-hide-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 44px;
+  transform: translateY(-50%);
+}
+
+.widget-drag-handle:hover {
+  background: color-mix(in srgb, var(--label, var(--ink)) 6%, transparent);
+  color: var(--label, var(--ink));
 }
 
 .widget-drag-handle:active {
   cursor: grabbing;
+  transform: scale(0.985);
+  transition: transform 120ms var(--ease-enter);
 }
 
 .widget-drag-handle:focus-visible {
   outline: 2px solid var(--controlAccent, #23705d);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 
 .widget-drag-handle svg {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   fill: currentColor;
-  flex: 0 0 14px;
+  stroke: none;
+  opacity: 0.65;
+  flex: 0 0 13px;
 }
 
-.widget-size-picker {
-  display: inline-flex;
+/* The title must stay on one line in every language; German truncates by ellipsis. */
+.widget-edit-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.widget-edit-trailing {
+  display: flex;
   align-items: center;
   gap: 2px;
-  background: var(--surface-base, #0a0a0b);
-  padding: 3px;
+}
+
+.widget-resize-handle {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  z-index: 12;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--controlAccent, #23705d);
+  cursor: nwse-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.widget-resize-handle::before {
+  content: "";
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  border-radius: 0 0 3px;
+  opacity: 0.34;
+  transition: opacity 150ms var(--ease-move);
+}
+
+/* The size state stays in the DOM for tests and assistive tech but only surfaces
+   on hover, focus or an active resize so it never duplicates the segmented control. */
+.widget-resize-state {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-1) 88%, transparent);
+  font: 700 10px/1 var(--font-body);
+  opacity: 0;
+  transition: opacity 150ms var(--ease-move);
+}
+
+.widget-resize-handle:hover {
+  background: color-mix(in srgb, var(--controlAccent, #23705d) 8%, transparent);
+}
+
+.widget-resize-handle:hover::before,
+.widget-resize-handle:focus-visible::before,
+[data-module].is-resizing .widget-resize-handle::before {
+  opacity: 0.9;
+}
+
+.widget-resize-handle:hover .widget-resize-state,
+.widget-resize-handle:focus-visible .widget-resize-state,
+[data-module].is-resizing .widget-resize-state {
+  opacity: 1;
+}
+
+.widget-resize-handle:focus-visible {
+  outline: 2px solid var(--controlAccent, #23705d);
+  outline-offset: -3px;
+}
+
+/* Segmented S/M/L: 44x44 pointer targets with a 28px-tall macOS-style pill. */
+.widget-size-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.widget-size-picker::before {
+  content: "";
+  position: absolute;
+  inset: 1px 0;
   border-radius: 8px;
-  border: 1px solid var(--edge-soft, rgba(0, 0, 0, 0.08));
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--separator, var(--line)) 65%, transparent);
+  pointer-events: none;
 }
 
 .widget-size-btn {
-  min-width: 32px;
-  min-height: 28px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  position: relative;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
   border: 0;
+  border-radius: 8px;
   background: transparent;
-  color: var(--muted, #6e6e73);
-  font: 700 12px/1.2 var(--font-body);
+  color: var(--secondaryLabel, var(--muted));
+  font: 600 12px/1 var(--font-body);
   cursor: pointer;
-  transition: background-color 140ms ease, color 140ms ease;
+  transition: color 150ms var(--ease-move);
+}
+
+.widget-size-btn::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 7px;
+  background: transparent;
+  transition: background-color 150ms var(--ease-move), box-shadow 150ms var(--ease-move);
 }
 
 .widget-size-btn:hover {
-  color: var(--ink, #111113);
+  color: var(--label, var(--ink));
+}
+
+.widget-size-btn:hover::after {
+  background: color-mix(in srgb, var(--label, var(--ink)) 6%, transparent);
+}
+
+.widget-size-btn:active::after {
+  background: color-mix(in srgb, var(--label, var(--ink)) 12%, transparent);
+  transition: background-color 120ms var(--ease-enter);
+}
+
+.widget-size-btn:focus-visible {
+  outline: 2px solid var(--controlAccent, #23705d);
+  outline-offset: -2px;
 }
 
 .widget-size-btn.is-active {
-  background: var(--surface-2, #26262a);
-  color: var(--ink, #f5f5f7);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  color: var(--controlAccent, #23705d);
+  font-weight: 700;
 }
 
+.widget-size-btn.is-active::after {
+  background: var(--surface-1, #fff);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), inset 0 0 0 1px color-mix(in srgb, var(--separator, var(--line)) 80%, transparent);
+}
+
+html[data-theme="dark"] .widget-size-btn.is-active::after {
+  background: color-mix(in srgb, var(--surface-3) 90%, transparent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), inset 0 0 0 1px color-mix(in srgb, var(--edge-strong) 80%, transparent);
+}
+
+/* Tertiary show/hide: available, never competing with Done. */
 .widget-hide-btn {
-  min-height: 32px;
-  padding: 4px 12px;
-  font: 600 12px var(--font-body);
+  position: relative;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  border: 0;
   border-radius: 8px;
+  background: transparent;
+  color: var(--secondaryLabel, var(--muted));
   cursor: pointer;
+  transition: color 150ms var(--ease-move);
+}
+
+.widget-hide-btn::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 7px;
+  background: transparent;
+  transition: background-color 150ms var(--ease-move);
+}
+
+.widget-hide-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.widget-hide-btn:hover {
+  color: var(--label, var(--ink));
+}
+
+.widget-hide-btn:hover::after {
+  background: color-mix(in srgb, var(--label, var(--ink)) 7%, transparent);
+}
+
+.widget-hide-btn:active::after {
+  background: color-mix(in srgb, var(--label, var(--ink)) 13%, transparent);
+  transition: background-color 120ms var(--ease-enter);
+}
+
+.widget-hide-btn:focus-visible {
+  outline: 2px solid var(--controlAccent, #23705d);
+  outline-offset: -2px;
+}
+
+[data-module].is-widget-hidden .widget-hide-btn {
+  color: var(--controlAccent, #23705d);
 }
 
 /* Edit Mode Outline & States */
+/* One restrained hairline boundary; emphasis is reserved for hover, focus, drag and resize. */
 [data-module-board="today"].is-editing-layout > [data-module] {
-  outline: 2px dashed var(--controlAccent, #23705d);
-  outline-offset: 4px;
+  --edit-shelf-reserve: 38px;
+  /* The shelf sits in reclaimed top padding so edit mode costs the card as little height as possible. */
+  padding-top: 10px !important;
+  outline: 1px solid color-mix(in srgb, var(--controlAccent, #23705d) 24%, transparent);
+  outline-offset: 2px;
+  transition: outline-color 180ms var(--ease-move), box-shadow 180ms var(--ease-move), opacity 180ms var(--ease-move);
+}
+
+[data-module-board="today"].is-editing-layout > [data-module]:hover,
+[data-module-board="today"].is-editing-layout > [data-module]:focus-within {
+  outline-color: color-mix(in srgb, var(--controlAccent, #23705d) 55%, transparent);
+}
+
+[data-module-board="today"].is-editing-layout > [data-module].is-dragging,
+[data-module-board="today"].is-editing-layout > [data-module].is-resizing {
+  outline-width: 2px;
+  outline-color: var(--controlAccent, #23705d);
 }
 
 [data-module-board="today"] > [data-module].is-widget-hidden {
@@ -3569,6 +3891,17 @@ html[data-theme="dark"] .module-card {
   cursor: grabbing !important;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24) !important;
   transition: none !important;
+}
+
+[data-module-board="today"] > [data-module].is-resizing {
+  z-index: 1000 !important;
+  outline-style: solid;
+  transition: none !important;
+}
+
+[data-module-board="today"] > [data-module].is-resizing .widget-resize-handle {
+  cursor: nwse-resize;
+  background: color-mix(in srgb, var(--controlAccent, #23705d) 12%, transparent);
 }
 
 /* Size Matrix Content Styling */
@@ -3991,7 +4324,13 @@ html[data-theme="dark"] .module-card {
 /* Motion Off and Reduced Overrides */
 html.motion-off [data-module-board="today"] .module-card,
 html.motion-off .widget-drag-handle,
-html.motion-off .widget-size-btn {
+html.motion-off .widget-resize-handle,
+html.motion-off .widget-size-btn,
+html.motion-off .widget-hide-btn,
+html.motion-off .widget-resize-state,
+html.motion-off .toolbar-edit-layout,
+html.motion-off .toolbar-reset-layout,
+html.motion-off .toolbar-undo-layout {
   transition: none !important;
   animation: none !important;
   transform: none !important;
@@ -4002,18 +4341,59 @@ html.motion-reduced [data-module-board="today"] .module-card {
   transform: none !important;
 }
 
+/* Reduced and off keep colour/opacity feedback but drop every movement. */
+html.motion-reduced .widget-drag-handle:active,
+html.motion-reduced .widget-size-btn:active,
+html.motion-reduced .widget-hide-btn:active,
+html.motion-reduced .toolbar-edit-layout:active,
+html.motion-reduced .toolbar-reset-layout:active,
+html.motion-reduced .toolbar-undo-layout:active,
+html.motion-off .widget-drag-handle:active,
+html.motion-off .widget-size-btn:active,
+html.motion-off .widget-hide-btn:active,
+html.motion-off .toolbar-edit-layout:active,
+html.motion-off .toolbar-reset-layout:active,
+html.motion-off .toolbar-undo-layout:active {
+  transform: none !important;
+}
 
-[data-module-board="week"] {
+@media (prefers-reduced-motion: reduce) {
+  .widget-drag-handle:active,
+  .widget-size-btn:active,
+  .widget-hide-btn:active,
+  .toolbar-edit-layout:active,
+  .toolbar-reset-layout:active,
+  .toolbar-undo-layout:active {
+    transform: none;
+  }
+}
+
+/* Direct manipulation never eases: the shelf state follows the pointer exactly. */
+[data-module].is-resizing .widget-size-btn,
+[data-module].is-resizing .widget-size-btn::after,
+[data-module].is-resizing .widget-resize-state,
+[data-module].is-resizing .widget-resize-handle::before,
+[data-module].is-dragging .widget-drag-handle {
+  transition: none !important;
+}
+
+
+[data-module-board="week"].active {
   display: flex !important;
   flex-direction: column !important;
   gap: 20px !important;
 }
 
 /* Week edit layout mode (Today keeps 12-column grid in edit mode) */
-[data-module-board="week"].is-editing-layout {
+[data-module-board="week"].active.is-editing-layout {
   display: flex !important;
   flex-direction: column !important;
   gap: 16px !important;
+}
+
+/* Board layout rules must never override the application view router. */
+[data-module-board].view:not(.active) {
+  display: none !important;
 }
 
 [data-module-board="week"].is-editing-layout > [data-module] {
@@ -4047,7 +4427,8 @@ html.motion-reduced [data-module-board="today"] .module-card {
   border: 1px solid var(--edge-soft);
 }
 
-.module-edit-handle {
+/* Scoped to the Week edit bar: Today's widget shelf owns its own drag/title control. */
+.module-edit-bar .module-edit-handle {
   display: grid;
   place-items: center;
   width: 30px;
@@ -4060,11 +4441,11 @@ html.motion-reduced [data-module-board="today"] .module-card {
   cursor: grab;
 }
 
-.module-edit-handle:active {
+.module-edit-bar .module-edit-handle:active {
   cursor: grabbing;
 }
 
-.module-edit-handle svg {
+.module-edit-bar .module-edit-handle svg {
   width: 14px;
   height: 14px;
   fill: currentColor;
@@ -4153,21 +4534,45 @@ html.motion-reduced [data-module-board="today"] .module-card {
   color: var(--label, var(--ink));
 }
 
-/* Toolbar Edit and Reset Layout buttons */
+/* Edit-mode toolbar hierarchy: Done is primary, Undo secondary, Reset tertiary.
+   Each keeps a 44px pointer target through a pseudo-element hit area. */
 .toolbar-edit-layout,
-.toolbar-reset-layout {
+.toolbar-reset-layout,
+.toolbar-undo-layout {
+  position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  min-height: 30px;
   padding: 4px 10px;
   border: 1px solid var(--edge-soft);
-  border-radius: var(--radius-control);
+  border-radius: 8px;
   background: var(--surface-1);
   color: var(--muted);
   font: 500 12px/1.3 var(--font-body);
   cursor: pointer;
-  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+  transition: background-color 160ms var(--ease-move), color 160ms var(--ease-move), border-color 160ms var(--ease-move), opacity 160ms var(--ease-move);
   white-space: nowrap;
+}
+
+.toolbar-edit-layout::after,
+.toolbar-reset-layout::after,
+.toolbar-undo-layout::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  min-width: 44px;
+  height: 44px;
+  transform: translateY(-50%);
+}
+
+/* The desktop shell shrinks secondary buttons; the edit trio stays one height. */
+html[data-desktop] .toolbar-undo-layout {
+  min-height: 30px;
+  padding-block: 4px;
 }
 
 .toolbar-edit-layout svg {
@@ -4179,18 +4584,43 @@ html.motion-reduced [data-module-board="today"] .module-card {
 }
 
 .toolbar-edit-layout:hover,
-.toolbar-reset-layout:hover {
+.toolbar-reset-layout:hover,
+.toolbar-undo-layout:hover {
   color: var(--ink);
   background: var(--surface-2);
+}
+
+.toolbar-edit-layout:active,
+.toolbar-reset-layout:active,
+.toolbar-undo-layout:active {
+  transform: scale(0.97);
+  transition: transform 120ms var(--ease-enter);
+}
+
+.toolbar-undo-layout {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.toolbar-reset-layout {
+  border-color: transparent;
+  background: transparent;
 }
 
 .toolbar-edit-layout[aria-pressed="true"] {
   background: var(--controlAccent);
   color: #fff;
   border-color: transparent;
+  font-weight: 600;
 }
 
-.toolbar-reset-layout[hidden] {
+.toolbar-edit-layout[aria-pressed="true"]:hover {
+  background: color-mix(in srgb, var(--controlAccent) 88%, #000);
+  color: #fff;
+}
+
+.toolbar-reset-layout[hidden],
+.toolbar-undo-layout[hidden] {
   display: none !important;
 }
 
@@ -4438,4 +4868,3 @@ html.motion-reduced .today-calendar-cell {
 .import-restore-art { aspect-ratio: 4 / 3; max-width: 140px; width: 100%; margin: 12px auto; }
 .layout-edit-hint-art { aspect-ratio: 4 / 3; max-width: 120px; width: 120px; flex-shrink: 0; }
 .sync-offline-art { aspect-ratio: 4 / 3; max-width: 120px; width: 100%; margin: 8px auto; }
-

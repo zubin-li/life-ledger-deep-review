@@ -13,11 +13,13 @@ All notable changes are documented here.
 - Third-party adoption gate documentation: recorded GridStack evaluation (+97.1 KB bundle delta, forced reflow loops, animation continuous layout mutations) and NO-GO decision in `docs/third-party-notices.md` adopting the project-owned 0 KB engine.
 
 ### Fixed
+- Today 2.0 view routing and responsive composition: inactive module boards can no longer override `.view` visibility and cover the active Today canvas; compact Summary mood controls stay inside the card; the Large desktop Summary now balances its content vertically without shrinking the safe interaction geometry. Added browser regression coverage for single-view visibility and narrow-width horizontal overflow.
 - Today 2.0 geometry repair: intrinsic `grid-auto-rows`, scoped S/M/L compact rules, measured grid drag snapping, widget recomposition via `data-widget-part`, localized undo chrome, reflection auto-grow gated to Large, and removal of fake context/calendar placeholder content.
 - Modular desktop Today/Week dashboard: restore the missing `toolbar-trailing` wrapper so `content-split` stays inside `workspace-pane` instead of collapsing the main column to a blank strip.
 - Today calendar "Today" button returns to the current month instead of the selected planning date's month.
 - Today focus "Start focus" opens the focus panel with the running timer; it previously scrolled a 3.5 daily-tool viewport that no longer exists, so nothing visible happened.
 - 3.6 evidence controls target the real modular UI: promoted `#openWeeklyReviewCanvas`, `.module-edit-handle` and `.today-calendar-cell` instead of stale 3.5 selectors.
+- Today 2.0 layout edit mode now reads as a native macOS surface instead of a debug overlay: each card carries a quiet translucent control shelf with a single-line drag/title control (German and Simplified Chinese names truncate by ellipsis instead of collapsing into a vertical stack), a segmented S/M/L selector and tertiary show/hide action with 44×44 pointer targets, one restrained hairline edit boundary that only strengthens on hover, focus, drag and resize, a coherent Done/Undo/Reset toolbar hierarchy, and a resize state label that surfaces only on hover, focus or an active resize. The Week edit bar rule no longer constrains the Today drag control.
 
 ## [3.6.0] — Unreleased
 

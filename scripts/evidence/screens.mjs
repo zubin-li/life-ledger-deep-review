@@ -19,6 +19,108 @@ const LANGUAGES = ["en", "de", "zh"];
 const THEMES = ["light", "dark"];
 const PRIMARY_VIEWS = ["today", "week", "journal", "focus"];
 const SECONDARY_VIEWS = ["insights", "habits"];
+const LOCALE_EXPECTATIONS = {
+  en: { documentLanguage: "en", bodyLanguage: "en", today: "Today", week: "Week" },
+  de: { documentLanguage: "de", bodyLanguage: "de", today: "Heute", week: "Woche" },
+  zh: { documentLanguage: "zh-CN", bodyLanguage: "zh", today: "今日", week: "本周" },
+};
+
+function evidenceUrl(baseUrl, language) {
+  const url = new URL("/index.html", baseUrl);
+  url.searchParams.set("desktop", "tauri-local");
+  url.searchParams.set("lang", language);
+  return url.toString();
+}
+
+async function verifyLocale(page, language, theme, screenshot, summary) {
+  const expected = LOCALE_EXPECTATIONS[language];
+  if (!expected) throw new Error(`Unsupported evidence locale "${language}" for ${screenshot}`);
+
+  const actual = await page.evaluate(() => {
+    const readSentinel = selector => {
+      const element = document.querySelector(selector);
+      const rect = element?.getBoundingClientRect();
+      const style = element ? getComputedStyle(element) : null;
+      return {
+        text: element?.textContent?.trim() || "",
+        visible: Boolean(
+          element &&
+          rect?.width &&
+          rect?.height &&
+          style?.display !== "none" &&
+          style?.visibility !== "hidden" &&
+          style?.opacity !== "0"
+        ),
+      };
+    };
+
+    return {
+      urlLanguage: new URL(location.href).searchParams.get("lang"),
+      documentLanguage: document.documentElement.lang,
+      bodyLanguage: document.body.dataset.language || "",
+      today: readSentinel('.sidebar .nav-item[data-view="today"] .nav-label'),
+      week: readSentinel('.sidebar .nav-item[data-view="week"] .nav-label'),
+    };
+  });
+
+  const mismatches = [];
+  if (actual.urlLanguage !== language) {
+    mismatches.push(`URL lang expected "${language}", got "${actual.urlLanguage || "(missing)"}"`);
+  }
+  if (actual.documentLanguage !== expected.documentLanguage) {
+    mismatches.push(`documentElement.lang expected "${expected.documentLanguage}", got "${actual.documentLanguage}"`);
+  }
+  if (actual.bodyLanguage !== expected.bodyLanguage) {
+    mismatches.push(`body.dataset.language expected "${expected.bodyLanguage}", got "${actual.bodyLanguage}"`);
+  }
+  for (const name of ["today", "week"]) {
+    if (!actual[name].visible) mismatches.push(`${name} nav sentinel is not visible`);
+    if (actual[name].text !== expected[name]) {
+      mismatches.push(`${name} nav sentinel expected "${expected[name]}", got "${actual[name].text}"`);
+    }
+  }
+
+  const check = {
+    screenshot,
+    requested: language,
+    theme,
+    url: actual.urlLanguage,
+    document: actual.documentLanguage,
+    body: actual.bodyLanguage,
+    sentinels: {
+      today: actual.today.text,
+      week: actual.week.text,
+    },
+  };
+  if (mismatches.length) {
+    summary.localeFailures.push({ ...check, mismatches });
+    fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), "utf8");
+    throw new Error(`Locale verification failed before ${screenshot}: ${mismatches.join("; ")}`);
+  }
+  let aggregate = summary.localeChecks.find(item => item.requested === language && item.theme === theme);
+  if (!aggregate) {
+    aggregate = {
+      requested: language,
+      theme,
+      url: actual.urlLanguage,
+      document: actual.documentLanguage,
+      body: actual.bodyLanguage,
+      sentinels: {
+        today: actual.today.text,
+        week: actual.week.text,
+      },
+      capturesVerified: 0,
+    };
+    summary.localeChecks.push(aggregate);
+  }
+  aggregate.capturesVerified += 1;
+}
+
+async function captureLocalizedScreenshot(page, file, language, theme, summary) {
+  await verifyLocale(page, language, theme, path.basename(file), summary);
+  await page.screenshot({ path: file });
+  summary.totalScreenshots += 1;
+}
 
 async function runScreenshots() {
   console.log("Starting static server for screenshot evidence...");
@@ -31,6 +133,8 @@ async function runScreenshots() {
     totalScreenshots: 0,
     pageErrors: [],
     horizontalScrolls: [],
+    localeChecks: [],
+    localeFailures: [],
   };
 
   for (const lang of LANGUAGES) {
@@ -47,7 +151,7 @@ async function runScreenshots() {
         });
 
         await applyFixture(page, { date: FIXTURE_DATE, theme, motion: "full", language: lang });
-        await page.goto(`${server.url}/index.html?desktop=tauri-local`);
+        await page.goto(evidenceUrl(server.url, lang));
         await page.waitForLoadState("domcontentloaded");
         await page.waitForTimeout(200);
 
@@ -65,8 +169,7 @@ async function runScreenshots() {
         });
         await page.waitForTimeout(100);
         const todayFile = path.join(outputDir, `today-${width}-${lang}-${theme}.png`);
-        await page.screenshot({ path: todayFile });
-        summary.totalScreenshots += 1;
+        await captureLocalizedScreenshot(page, todayFile, lang, theme, summary);
 
         // Week view
         await page.evaluate(() => {
@@ -74,8 +177,7 @@ async function runScreenshots() {
         });
         await page.waitForTimeout(100);
         const weekFile = path.join(outputDir, `week-${width}-${lang}-${theme}.png`);
-        await page.screenshot({ path: weekFile });
-        summary.totalScreenshots += 1;
+        await captureLocalizedScreenshot(page, weekFile, lang, theme, summary);
 
         // Journal day page
         await page.evaluate(() => {
@@ -83,8 +185,7 @@ async function runScreenshots() {
         });
         await page.waitForTimeout(100);
         const journalFile = path.join(outputDir, `journal-${width}-${lang}-${theme}.png`);
-        await page.screenshot({ path: journalFile });
-        summary.totalScreenshots += 1;
+        await captureLocalizedScreenshot(page, journalFile, lang, theme, summary);
 
         // Focus panel views
         await page.evaluate(() => {
@@ -95,8 +196,7 @@ async function runScreenshots() {
 
         // Focus Idle / Panel
         const focusFile = path.join(outputDir, `focus-${width}-${lang}-${theme}.png`);
-        await page.screenshot({ path: focusFile });
-        summary.totalScreenshots += 1;
+        await captureLocalizedScreenshot(page, focusFile, lang, theme, summary);
 
         // For 1440 width, capture Insights and Habits
         if (width === 1440) {
@@ -108,8 +208,7 @@ async function runScreenshots() {
           });
           await page.waitForTimeout(100);
           const insightsFile = path.join(outputDir, `insights-${width}-${lang}-${theme}.png`);
-          await page.screenshot({ path: insightsFile });
-          summary.totalScreenshots += 1;
+          await captureLocalizedScreenshot(page, insightsFile, lang, theme, summary);
 
           // Habits
           await page.evaluate(() => {
@@ -117,8 +216,7 @@ async function runScreenshots() {
           });
           await page.waitForTimeout(100);
           const habitsFile = path.join(outputDir, `habits-${width}-${lang}-${theme}.png`);
-          await page.screenshot({ path: habitsFile });
-          summary.totalScreenshots += 1;
+          await captureLocalizedScreenshot(page, habitsFile, lang, theme, summary);
 
           // Today Edit Mode
           await page.evaluate(() => {
@@ -130,9 +228,8 @@ async function runScreenshots() {
           });
           await page.waitForTimeout(120);
           const editFile = path.join(outputDir, `today-edit-${width}-${lang}-${theme}.png`);
-          await page.screenshot({ path: editFile });
+          await captureLocalizedScreenshot(page, editFile, lang, theme, summary);
           try { fs.copyFileSync(editFile, path.join(rootDir, evidenceBase, path.basename(editFile))); } catch {}
-          summary.totalScreenshots += 1;
           await page.evaluate(() => {
             document.querySelector("#editLayoutToggle")?.click();
           });
@@ -148,9 +245,8 @@ async function runScreenshots() {
           });
           await page.waitForTimeout(120);
           const weekEditFile = path.join(outputDir, `week-edit-${width}-${lang}-${theme}.png`);
-          await page.screenshot({ path: weekEditFile });
+          await captureLocalizedScreenshot(page, weekEditFile, lang, theme, summary);
           try { fs.copyFileSync(weekEditFile, path.join(rootDir, evidenceBase, path.basename(weekEditFile))); } catch {}
-          summary.totalScreenshots += 1;
           await page.evaluate(() => {
             document.querySelector("#editLayoutToggle")?.click();
           });
@@ -167,7 +263,7 @@ async function runScreenshots() {
     const emptyContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const emptyPage = await emptyContext.newPage();
     await applyFixture(emptyPage, { date: FIXTURE_DATE, theme: emptyTheme, motion: "full", language: "en", empty: true });
-    await emptyPage.goto(`${server.url}/index.html?desktop=tauri-local`);
+    await emptyPage.goto(evidenceUrl(server.url, "en"));
     await emptyPage.waitForLoadState("domcontentloaded");
     await emptyPage.waitForTimeout(200);
 
@@ -177,9 +273,8 @@ async function runScreenshots() {
     });
     await emptyPage.waitForTimeout(120);
     const todayEmptyFile = path.join(outputDir, `today-empty-1440-en-${emptyTheme}.png`);
-    await emptyPage.screenshot({ path: todayEmptyFile });
+    await captureLocalizedScreenshot(emptyPage, todayEmptyFile, "en", emptyTheme, summary);
     try { fs.copyFileSync(todayEmptyFile, path.join(rootDir, evidenceBase, path.basename(todayEmptyFile))); } catch {}
-    summary.totalScreenshots += 1;
 
     // Week empty
     await emptyPage.evaluate(() => {
@@ -187,9 +282,8 @@ async function runScreenshots() {
     });
     await emptyPage.waitForTimeout(120);
     const weekEmptyFile = path.join(outputDir, `week-empty-1440-en-${emptyTheme}.png`);
-    await emptyPage.screenshot({ path: weekEmptyFile });
+    await captureLocalizedScreenshot(emptyPage, weekEmptyFile, "en", emptyTheme, summary);
     try { fs.copyFileSync(weekEmptyFile, path.join(rootDir, evidenceBase, path.basename(weekEmptyFile))); } catch {}
-    summary.totalScreenshots += 1;
 
     await emptyContext.close();
   }
