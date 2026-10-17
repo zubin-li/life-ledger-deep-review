@@ -31,12 +31,12 @@ test("desktop review reads as a document and the five panes stay list-density", 
   assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewHabitCompare"'));
   assert.ok(review.indexOf('id="reviewHabitCompare"') < review.indexOf('id="reviewText"'));
   assert.ok(review.indexOf('id="reviewText"') < review.indexOf('id="reviewDetailedMetrics"'));
-  assert.match(css, /html\[data-desktop\] \.review-insights \{ display: grid;/);
-  assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 1\.375rem\/1\.2/);
-  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
-  assert.match(css, /html\[data-desktop\] body\[data-active-view="today"\] \.main-content,[\s\S]*?max-width: none;/);
-  assert.match(css, /html\[data-desktop\] \.habit-settings-list \{ gap: 0; \}/);
-  assert.match(css, /html\[data-desktop\] \.timeline-habit-list \{ display: grid;/);
+  assert.match(css, /html\[data-workspace\] \.review-insights \{ display: grid;/);
+  assert.match(css, /html\[data-workspace\] \.review-insight-value \{ font: 600 1\.375rem\/1\.2/);
+  assert.match(css, /html\[data-workspace\] \.today-date-heading \{[^}]*font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
+  assert.match(css, /html\[data-workspace\] body\[data-active-view="today"\] \.main-content,[\s\S]*?max-width: none;/);
+  assert.match(css, /html\[data-workspace\] \.habit-settings-list \{ gap: 0; \}/);
+  assert.match(css, /html\[data-workspace\] \.timeline-habit-list \{ display: grid;/);
   assert.match(app, /class="timeline-habit-list"/);
   assert.match(css, /@media \(max-width: 979px\) \{\s*#reviewView\.active \{ display: flex;/);
 });

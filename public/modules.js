@@ -13,7 +13,7 @@
       protected: ["habits"],
     },
     week: {
-      order: ["completed", "insights", "goals", "review"],
+      order: ["review", "completed", "insights", "goals"],
       collapsed: [],
       hidden: [],
       protected: [],

@@ -6,11 +6,56 @@ Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche
 
 ## Desktop
 
+16. Oktober, nur Heute: originale Website-Farben, maximal 1236px Zeichenfläche, quadratische Größen und kompakte Vier-Gewohnheiten-Vorgabe. Die Galerie enthält neue 1920px-/1000px-Belege. Isolierte Webansichten, keine Abnahme einer installierten Mac-App; visuelle Bestätigung steht aus.
+
+**Heute-Korrektur:** [Echte Standardanordnung, Größen-/Drag-Aufnahme und Prüfungen](local-web/today-repair/index.html). Keine nur für Screenshots gesetzten Positionen. <img src="local-web/today-repair/today-1440-de-light.png" alt="Deutsche Heute-Standardanordnung"><img src="local-web/today-repair/today-390-de-light.png" width="300" alt="Mobile Leseansicht mit fiktiven Einträgen">
+
+**Korrektur schmaler Fenster:** Bei 800px bleiben Seitenleiste und Inhalt nebeneinander; Aktionen und Datum stehen in getrennten Zeilen. [Desktop](local-web/breakpoints/today-800-de-light.png) · [Mobile Grenze](local-web/breakpoints/today-760-de-light.png) · [Regression](local-web/breakpoints/results.json). Isolierte Browserprüfung, keine Abnahme einer installierten macOS-App.
+
+**Echte lokale Website:** Nach `npm run preview:local` [direkt ausprobieren](http://127.0.0.1:43117/?mode=local&lang=de&preview=local). Gemeinsame Seiten/Karten mit Tauri, keine simulierte native Titelleiste. [Aufnahme und Prüfung](local-web/index.html). Nur die Bilder nutzen fiktive Daten; die lokale App speichert getrennte Browserdaten.
+
+<img src="local-web/today-de-light.png" alt="Deutsche lokale Website mit gemeinsamem Arbeitsbereich" />
+<img src="local-web/habits-390-de.png" width="300" alt="Deutsche mobile Website mit erreichbaren Einstellungen" />
+
+**Integrierter Fensterrahmen:** [Aufnahme und Prüfung](integrated-shell/index.html). Einheitliche Titelleiste, abgerundeter Rahmen, einklappbare Navigation und lokale Profileinstellungen. Native macOS-Knöpfe werden in Chromium nicht imitiert; nicht paketiert oder installiert.
+
+<img src="integrated-shell/today-de-light.png" alt="Deutscher integrierter Desktop-Rahmen" />
+<img src="integrated-shell/habits-390-de.png" width="300" alt="Deutsches mobiles Layout ohne Desktop-Titelleiste" />
+
+**Horizont / Gewohnheiten:** [Aufnahme und Vergleich](horizon-habits/index.html). Angehefteter Phasenfokus, datierte Planschritte, Archiv-Momentaufnahmen, Monatsrückblick und einheitliche Gewohnheitsbibliothek. Vorhandene Daten/Symbole bleiben; fiktive Beispiele, nicht installiert.
+
+<img src="horizon-habits/horizon-de-dark.png" alt="Deutscher Horizont mit angeheftetem Phasenfokus und Plankarten" />
+<img src="horizon-habits/habits-de-dark.png" alt="Deutsche Gewohnheitsbibliothek mit Suche und Einstellungen" />
+
+**Zeitleiste / Einblicke:** [Aufnahme und Vergleich](timeline-insights/index.html). Tages-, Wochen- und Monatsansicht auf einer vertikalen Achse, Texte zuerst und Wochenfotos auf Wunsch. Einblicke zeigen Erfassung, erkundbare Trends, vorhandene Gewohnheitssymbole und separate Periodenziele. Fiktive Daten; Bestätigung ausstehend, nicht installiert.
+
+<img src="timeline-insights/insights-de-dark.png" alt="Deutsche Einblicke mit Erfüllung, Erfassung und nachvollziehbaren Beobachtungen" />
+
+**Aktueller Woche-/Zeitleiste-Prüfstand:** [Aufnahme und Sprachvergleich](week-reflection/index.html). Wochenreflexion, schreibgeschützter Wochenkalender, Einblicke und Ziele; Zeitleiste mit Wochentexten und passenden Fotos. Begrüßung fest breit, Stimmung klein und quadratisch. Fiktive Kalender-/Bilddaten, noch nicht installiert oder visuell bestätigt.
+
+<img src="week-reflection/timeline-de-light.png" alt="Wochenzeitleiste mit vorhandenen Texten und gleichwöchigen Bildbeispielen" />
+
+**Aktuelle Wochenansicht/gemeinsame Oberflächen:** [Aufnahme und mehrsprachige helle/dunkle Bilder](week-polish/index.html). Sieben-Tage-Auswahl, ursprüngliche Symbole, Ziele und Reflexion ohne verschachteltes Scrollen; Today nutzt dieselbe neue äußere Gestaltung. Fiktive Daten; noch nicht installiert oder visuell bestätigt.
+
+<img src="week-polish/week-de-light.png" alt="Echte Wochenansicht mit Tagesauswahl und ursprünglichen Gewohnheitssymbolen" />
+
+**Aktueller Prüfstand: Wetter und Widget-Bibliothek.** [Echte Interaktionsaufnahme und helle/dunkle Ansichten](today-widgets/weather-gallery/index.html). Temperatur- und Zeitachsen mit Maus-/Tastatursteuerung; aktuelles Wetter bleibt separat. Alle 11 vorhandenen Widgets stehen im Katalog, nicht hinzugefügte Karten belegen keinen Platz im Bearbeitungsraster. Noch keine installierte Veröffentlichung; Stimmung und Monats-Heatmap folgen später.
+
+<img src="today-widgets/weather-gallery/today-de-light.png" alt="Aktueller Prüfstand mit Temperaturkurve, Wetterchip und separater Widget-Bibliothek" />
+
+**Optionaler Widget-Prüfstand:** Stimmung, achtstufige Gewohnheits-Heatmap, lokale Foto/GIF/Videowand und stündliches Wetter; einheitliche S/M/L-Querformate plus quadratisches L. Neue Widgets sind zunächst ausgeblendet; bestehende Layouts bleiben erhalten. [Größen und Grenzen](today-widgets/README.md). Das Wetter im Bild ist simuliert, nicht live. Noch nicht paketiert oder vom Nutzer visuell bestätigt.
+
+[Echte Bearbeitungsaufnahme ansehen](today-widgets/edit-cards/index.html): feste Karten im Normalmodus, karteneigene Einstellungen nur beim Bearbeiten, vollständiger Monat und kleine Heatmap-Punkte.
+
+<img src="today-widgets/edit-cards/normal-de-light.png" alt="Deutsches Today mit Monats-Heatmap ohne dauerhafte Einstellungen" />
+
 ### Heute: planen und reflektieren
 
-<img src="images/demo-preview/de-desktop/de-01-today-planning-v5.png" alt="Heute 2.0 modularer Widget-Desk mit 12-Spalten-Raster und diskreter S/M/L-Größenanpassung" />
+<img src="today-web-parity/screens/today-desktop-1440-de-light.png" alt="Heute-Entwurf mit vorhandenen Symbolen und drei Widget-Größen" />
 
 Heute 2.0 führt die modulare Widget-Plattform ein: ein responsives 12-Spalten-Raster mit Übersicht, Gewohnheiten, Kalender, Fokus, Fotos, Reflexion und Kontext, diskreten Größen S, M und L mit jeweils eigener Inhaltshierarchie, direktem Drag-and-Drop ohne Easing, Tastaturnavigation und Transaktions-Undo.
+
+**Heute-Prüfstand:** Die Desktop-Ansicht verwendet die Web-Farben und vorhandenen Symbole. S zeigt eine priorisierte Gewohnheit, M vier Gewohnheiten und L die vollständige horizontale Liste. Ein Klick auf die Kachel markiert sie als erledigt. Die Screenshots stammen aus einem isolierten Headless-Browser mit fiktiven Daten; dieser Stand ist noch nicht paketiert oder vom Nutzer visuell bestätigt.
 
 ### Tagesrückblick
 
@@ -50,11 +95,15 @@ Gewohnheiten können täglich, wöchentlich oder monatlich gelten, in die Tagesw
 
 ## Mobil
 
+<img src="horizon-habits/longrange-390-de.png" width="390" alt="Deutscher mobiler Horizont mit kompakter angehefteter Phase" />
+
+<img src="timeline-insights/timeline-390-de.png" width="390" alt="Deutsche mobile Wochenzeitleiste" />
+
 Die mobile Oberfläche verwendet eine feste Navigation am unteren Rand und macht den Tagesrückblick zu einem fokussierten, nahezu bildschirmfüllenden Bereich.
 
 <table>
   <tr>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-01-today-planning-v5.png" alt="Tagesplanung auf dem Smartphone" /></td>
+    <td width="33%"><img src="today-web-parity/screens/today-mobile-390-de-light.png" alt="Tagesplanung auf dem Smartphone" /></td>
     <td width="33%"><img src="images/demo-preview/de-mobile/de-02-daily-review-v5.png" alt="Tagesrückblick auf dem Smartphone" /></td>
     <td width="33%"><img src="images/demo-preview/de-mobile/de-03-weekly-plan-v5.png" alt="Wochenplanung auf dem Smartphone" /></td>
   </tr>

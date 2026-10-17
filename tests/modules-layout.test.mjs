@@ -72,7 +72,7 @@ test("modules.js exports expected controller and default boards", () => {
   ]);
   assert.deepEqual(toPlain(modules.DEFAULT_BOARDS.today.protected), ["habits"]);
   assert.deepEqual(toPlain(modules.DEFAULT_BOARDS.week.order), [
-    "completed", "insights", "goals", "review",
+    "review", "completed", "insights", "goals",
   ]);
 });
 
@@ -87,7 +87,7 @@ test("getBoardState returns defaults when storage is empty or missing", () => {
 
   const weekState = modules.getBoardState("week");
   assert.deepEqual(toPlain(weekState.order), [
-    "completed", "insights", "goals", "review",
+    "review", "completed", "insights", "goals",
   ]);
   assert.deepEqual(toPlain(weekState.collapsed), []);
   assert.deepEqual(toPlain(weekState.hidden), []);

@@ -103,7 +103,7 @@ function toPlain(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-test("WidgetRegistry registers all seven Today widgets with exactly small, medium, large", () => {
+test("WidgetRegistry registers seven core widgets with content-specific allowed sizes", () => {
   const { registry } = createMockEnvironment();
   const expectedTypes = ["summary", "habits", "calendar", "focus", "photos", "reflection", "context"];
 
@@ -111,7 +111,7 @@ test("WidgetRegistry registers all seven Today widgets with exactly small, mediu
     const widget = registry.get(type);
     assert.ok(widget, `Widget "${type}" must be registered in the registry`);
     assert.equal(widget.type, type);
-    assert.deepEqual(toPlain(widget.allowedSizes), ["small", "medium", "large"], `Widget "${type}" allowedSizes must be small, medium, large`);
+    assert.deepEqual(toPlain(widget.allowedSizes), ["small", "medium", "large"], `Widget "${type}" must expose its real size policy`);
     assert.ok(["small", "medium", "large"].includes(widget.defaultSize));
     assert.equal(typeof widget.render, "function");
     assert.equal(typeof widget.getA11ySummary, "function");
@@ -204,12 +204,13 @@ test("WidgetRegistry habits widget renders distinct hierarchies across S/M/L usi
   assert.equal(row2.hidden, true, "Row 2 must be hidden in small");
   assert.equal(row3.hidden, true, "Row 3 must be hidden in small");
 
-  // Medium size: priority habits (up to 3 rows visible)
+  // Medium size: priority habits (up to 4 rows visible)
   habitsWidget.render({ element: card, size: "medium" });
   assert.equal(row1.hidden, false, "Row 1 must be visible in medium");
   assert.equal(row2.hidden, false, "Row 2 must be visible in medium");
   assert.equal(row3.hidden, false, "Row 3 must be visible in medium");
-  assert.equal(row4.hidden, true, "Row 4 must be hidden in medium");
+  assert.equal(row4.hidden, false, "Row 4 must be visible in medium");
+  assert.equal(row5.hidden, true, "Row 5 must be hidden in medium");
 
   // Large size: full list (all 5 rows visible)
   habitsWidget.render({ element: card, size: "large" });

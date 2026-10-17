@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "1440-zh-light",
+    "1440-zh-dark",
+    "1440-en-light",
+    "1440-en-dark",
+    "1440-de-light",
+    "1440-de-dark",
+    "1180-de-dark-reduced",
+    "900-de-dark-reduced",
+    "650-de-dark-reduced",
+    "390-en-light-web",
+    "390-zh-light-web",
+    "390-de-light-web",
+    "1440-zh-selected-history",
+    "1440-zh-future-week",
+    "1440-zh-collapsed",
+    "1440-zh-edit"
+  ],
+  "interactions": "passed",
+  "runtimeErrors": [],
+  "fictionalData": true,
+  "nativeWebKit": false
+}

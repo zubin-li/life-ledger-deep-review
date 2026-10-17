@@ -28,7 +28,7 @@ test("3.6 cache key is unique while the displayed version stays 3.6.0", () => {
   assert.match(app, /lifeLedgerSidebarWidth31/);
   assert.match(app, /lifeLedgerInspectorWidth31/);
   assert.match(css, /--sage: #68725c/);
-  assert.match(css, /html\[data-desktop\] #sidebarHabitsHeading/);
+  assert.match(css, /html\[data-workspace\] #sidebarHabitsHeading/);
   assert.doesNotMatch(css, /font:\s*500\s+9px/);
   assert.match(css, /preserveAspectRatio|review-trend-axis/);
   assert.match(app, /preserveAspectRatio="xMidYMid meet"/);

@@ -73,7 +73,11 @@ test("weekly goals and long-term goals use progressive disclosure in one card", 
 });
 
 test("mobile Day Plan keeps one responsive schedule without horizontal scrolling", () => {
-  const mobile = css.slice(css.lastIndexOf("/* Day Plan:"));
+  // Check schedule rules, not every later component in this shared stylesheet.
+  // Habits intentionally has a horizontal icon rail; that is not Day Plan overflow.
+  const mobile = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter(([, selector]) => /\.(?:day-plan|day-schedule)[\w-]*/.test(selector))
+    .map(([, selector, declarations]) => `${selector}{${declarations}}`).join("\n");
   assert.match(css, /@media \(min-width: 1101px\)\s*\{\s*\.daily-planning-grid\s*\{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(mobile, /\.day-plan-dialog-body\s*\{\s*grid-template-columns:\s*1fr;/);
   assert.doesNotMatch(mobile, /overflow-x:\s*(auto|scroll)/);

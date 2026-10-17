@@ -1,5 +1,13 @@
 # Third-Party Notices and Architecture Decision Records
 
+## Offline UI primitives — 2026-10-15
+
+The weather chart now reuses [uPlot 1.6.32](https://github.com/leeoniya/uPlot) (MIT). Widget-entry opacity feedback uses the mini JavaScript entry of [Motion 14.2.0](https://github.com/motiondivision/motion) (MIT), without React or Motion+ services. Exact direct versions are pinned in package.json/package-lock.json. `npm run build:widget-vendor` builds `public/vendor/widget-ui.js` and `.css` from `src/widget-vendor.js`; the combined source notices (including motion-dom/motion-utils transitive packages) are in `public/vendor/widget-ui.LICENSE.txt`. The built JS/CSS total about 63 KB raw and are included in the service-worker shell. No CDN request is needed. This is actual code reuse, unlike the design-only app references below.
+
+## Today weather service (2026-10-15)
+
+The optional weather card calls the public [Open-Meteo forecast API](https://open-meteo.com/en/docs) and [geocoding API](https://open-meteo.com/en/docs/geocoding-api). Weather data attribution is displayed in the card: Open-Meteo, CC BY 4.0. No Open-Meteo server source is imported. The hosted free API is for non-commercial use; review the service plan before commercial distribution. The MIT [weather-now](https://github.com/gunjit-web/weather-now) project was evaluated as an integration reference, not copied: its React/TypeScript stack would add unnecessary dependencies to this vanilla-JavaScript app. Existing layout/registry, icon catalog and IndexedDB helper are reused instead; no new runtime package is added.
+
 ## ADR-0001: GridStack Evaluation for Life Ledger 2.0 Desktop Today Board
 
 **Status:** Evaluated and Rejected (NO-GO for GridStack; project-owned `LayoutEngine` adopted)

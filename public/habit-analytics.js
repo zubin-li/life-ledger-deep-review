@@ -69,6 +69,29 @@
     const value = Number(count) || 0;
     return `${value} ${value === 1 ? one : many}`;
   }
+  // Daily-scored opportunities only. Missing records stay visible as gaps, not
+  // invented evidence of failure or a causal claim about someone's behaviour.
+  function dailySummary(dates, habits, logs, eligibleOn) {
+    const rows = habits.filter(h => h.active).map(habit => {
+      const eligibleDates = dates.filter(date => eligibleOn(habit, date));
+      const completed = eligibleDates.filter(date => new Set(logs[date]?.completed || []).has(habit.id)).length;
+      return { id: habit.id, ...rate(completed, eligibleDates.length) };
+    }).filter(row => row.eligible > 0);
+    const points = dates.map(date => {
+      const eligible = habits.filter(h => h.active && eligibleOn(h, date));
+      const done = new Set(logs[date]?.completed || []);
+      const completed = eligible.filter(h => done.has(h.id)).length;
+      const log = logs[date];
+      const recorded = Boolean(log && (log.note?.trim() || log.mood || log.moodReason?.trim() || log.completed?.length));
+      return { date, ...rate(completed, eligible.length), recorded };
+    });
+    const totals = rate(rows.reduce((n,r)=>n+r.completed,0),rows.reduce((n,r)=>n+r.eligible,0));
+    const weekdays = Array.from({length:7},(_,index)=>{
+      const items = points.filter(p => (parseIso(p.date).getDay()+6)%7 === index);
+      return rate(items.reduce((n,p)=>n+p.completed,0),items.reduce((n,p)=>n+p.eligible,0));
+    });
+    return { ...totals, rows, points, weekdays, recordedDays: points.filter(p=>p.recorded).length, eligibleDays: points.filter(p=>p.eligible).length };
+  }
   root.LifeLedgerAnalytics = {
     windowDates,
     previousWindow,
@@ -77,5 +100,6 @@
     weekdayAverages,
     chartMode,
     pluralEn,
+    dailySummary,
   };
 })(typeof globalThis !== "undefined" ? globalThis : window);

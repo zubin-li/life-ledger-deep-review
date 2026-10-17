@@ -1,0 +1,26 @@
+{
+  "fictionalData": true,
+  "weather": "mocked for repeatable evidence",
+  "sizes": [
+    {
+      "preset": "S",
+      "width": 387,
+      "height": 180
+    },
+    {
+      "preset": "M",
+      "width": 793,
+      "height": 180
+    },
+    {
+      "preset": "L-wide",
+      "width": 793,
+      "height": 380
+    },
+    {
+      "preset": "L-square",
+      "width": 793,
+      "height": 793
+    }
+  ]
+}

@@ -55,11 +55,11 @@ test("desktop phase-3 motion tokens stay within mandated durations", () => {
   assert.match(styles, /--duration-popover: 160ms;/);
   assert.match(styles, /@keyframes dateShiftForward/);
   assert.match(styles, /@keyframes popoverIn/);
-  assert.match(styles, /html\[data-desktop\] \.main-content\.date-shift-forward \{ animation: dateShiftForward var\(--duration-date-shift\)/);
+  assert.match(styles, /html\[data-workspace\] \.main-content\.date-shift-forward \{ animation: dateShiftForward var\(--duration-date-shift\)/);
 });
 
 test("no keyframe or transition animates a layout-triggering property on the newly added selectors", () => {
-  const start = styles.indexOf("/* Desktop shell (Tauri)");
+  const start = styles.indexOf("/* Shared wide-screen workspace");
   const end = styles.indexOf("@media (min-width: 761px) {", start);
   const addedBlock = styles.slice(start, end);
   assert.ok(addedBlock.length > 0);

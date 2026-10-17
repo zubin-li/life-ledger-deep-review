@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "lang": "zh",
+      "theme": "light",
+      "normal": {
+        "issues": [],
+        "cards": 8,
+        "display": "grid",
+        "composition": {
+          "canvas": 1236,
+          "heroHeight": 380,
+          "habitsHeight": 180,
+          "moodHeight": 180,
+          "reflectionHeight": 180,
+          "moodFocusStack": 0,
+          "primaryDistance": 20,
+          "columns": 4,
+          "native": false
+        }
+      },
+      "sizes": {
+        "small": {
+          "w": 380,
+          "h": 180
+        },
+        "medium": {
+          "w": 780,
+          "h": 180
+        },
+        "large": {
+          "w": 780,
+          "h": 380
+        },
+        "square": {
+          "w": 780,
+          "h": 780
+        }
+      },
+      "realPointerDrag": true,
+      "reload": true,
+      "reflowPreservesStorage": true
+    }
+  ],
+  "errors": [],
+  "fictionalData": true,
+  "defaultLayoutNotOverridden": true,
+  "nativeAcceptance": false
+}

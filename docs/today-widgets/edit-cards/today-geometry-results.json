@@ -1,0 +1,1557 @@
+[
+  {
+    "id": "1024xlight-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1024xlight-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1024xlight-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1024xlight-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1024xlight-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1024xlight-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xlight-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1024xdark-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1024xdark-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1024xdark-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1024xdark-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1024xdark-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1024xdark-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1024xdark-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1180xlight-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-en-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-en-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-en-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-en-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-zh-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1180xlight-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-zh-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-zh-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1180xlight-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-zh-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1180xlight-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-de-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1180xlight-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xlight-de-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xlight-de-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1180xlight-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xlight-de-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xlight-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1180xdark-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-en-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-en-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-en-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-en-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-zh-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1180xdark-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-zh-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-zh-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1180xdark-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-zh-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1180xdark-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-de-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1180xdark-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1180xdark-de-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1180xdark-de-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1180xdark-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1180xdark-de-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1180xdark-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1440xlight-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-en-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-en-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-en-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-en-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-zh-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1440xlight-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-zh-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-zh-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1440xlight-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-zh-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1440xlight-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-de-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1440xlight-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xlight-de-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xlight-de-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1440xlight-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xlight-de-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xlight-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1440xdark-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-en-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-en-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-en-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-en-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-zh-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1440xdark-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-zh-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-zh-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1440xdark-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-zh-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1440xdark-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-de-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1440xdark-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1440xdark-de-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1440xdark-de-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1440xdark-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1440xdark-de-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1440xdark-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1728xlight-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-en-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-en-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-en-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-en-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-zh-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1728xlight-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-zh-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-zh-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1728xlight-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-zh-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1728xlight-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-de-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1728xlight-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xlight-de-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xlight-de-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1728xlight-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xlight-de-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xlight-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1728xdark-en-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-en-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-en-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-en-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-en-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-en-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-en-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-zh-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-zh-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-zh-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1728xdark-zh-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-zh-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-zh-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-zh-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1728xdark-zh-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-zh-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-zh-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"撤销\",\"aria\":\"撤销布局更改\",\"title\":\"撤销布局（⌘Z）\"}"
+  },
+  {
+    "id": "1728xdark-de-empty-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-de-empty-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-de-empty-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1728xdark-de-typical-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-summary",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-focus",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-context",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-habits",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-reflection",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-photos",
+    "status": "pass",
+    "detail": "height 180"
+  },
+  {
+    "id": "1728xdark-de-typical-nominal-calendar",
+    "status": "pass",
+    "detail": "height 380"
+  },
+  {
+    "id": "1728xdark-de-typical-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-de-typical-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "1728xdark-de-stress-geometry",
+    "status": "pass",
+    "detail": "card/control geometry"
+  },
+  {
+    "id": "1728xdark-de-stress-edit-grid",
+    "status": "pass",
+    "detail": "12-column grid in edit mode"
+  },
+  {
+    "id": "1728xdark-de-stress-undo-i18n",
+    "status": "pass",
+    "detail": "{\"label\":\"Rückgängig\",\"aria\":\"Layoutänderung rückgängig machen\",\"title\":\"Layout rückgängig (⌘Z)\"}"
+  },
+  {
+    "id": "sml-summary",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "sml-context",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "sml-calendar",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "sml-focus",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "sml-photos",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "sml-reflection",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "sml-habits",
+    "status": "pass",
+    "detail": "pairwise distinct data-widget-part sets"
+  },
+  {
+    "id": "drag-keyboard",
+    "status": "pass",
+    "detail": "x 4 -> 0"
+  },
+  {
+    "id": "drag-pointer",
+    "status": "pass",
+    "detail": "{\"expectedX\":4,\"expectedY\":5,\"styleX\":4,\"styleY\":5,\"actualX\":4,\"actualY\":5,\"storageMatchesDom\":true,\"slotMatchesRendered\":true,\"relY\":1176,\"rowTracks\":[218,218,180,218,218,218,180,218,418,1,218]}"
+  },
+  {
+    "id": "habits-large-full-list",
+    "status": "pass",
+    "detail": "visible tiles=12, scheduled=true"
+  },
+  {
+    "id": "habits-large-rail-overflow",
+    "status": "pass",
+    "detail": "scroll 2282/755"
+  }
+]
