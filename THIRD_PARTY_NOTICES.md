@@ -1,5 +1,9 @@
 # Third-party notices
 
+## SortableJS
+
+Web Today card reordering uses [SortableJS](https://github.com/SortableJS/Sortable) 1.15.7, vendored unmodified at `public/vendor/sortable.min.js` (header retained). MIT License, Copyright (c) 2019 All contributors to Sortable.
+
 ## Memos visual gallery layout
 
 The journal photo collage follows the count-to-grid rules in [Memos](https://github.com/usememos/memos) `web/src/components/MemoMetadata/Attachment/visualGalleryLayout.ts` at commit `0d989707f82c33f74bb852edd8965ec88fcf041b`, distributed under the MIT License. The adapted function is `photoCollageMarkup` in `public/app.js`. Tailwind class names and React components were not copied.

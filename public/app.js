@@ -1907,7 +1907,8 @@ let reviewCanvasScope = "week";
 let reviewCanvasKey = "";
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
-const HABITS_PER_PAGE = 4;
+// Web Today: the foundations card shows 4 or 8 habits per page by its chosen size.
+const habitsPerPage = () => document.querySelector('#todayView [data-module="habits"]')?.dataset.tgHabits === "h8" ? 8 : 4;
 let todayHabitPage = 0;
 let habitCarouselScrollFrame = 0;
 let dailyToolPage = "journal";
@@ -5094,6 +5095,8 @@ function renderSyncOffline() {
   }
 }
 
+// today-grid.js re-renders card contents after a size change.
+window.__tgRenderToday = () => renderToday();
 function renderToday() {
   const date = selectedPlanningDate;
   const selected = parseDate(date);
@@ -5438,11 +5441,11 @@ function renderHabitCarousel(habits, date, completedIds, locked = false) {
   const carousel = $("#todayHabitCarousel"), viewport = $("#todayHabitViewport");
   if (!carousel) return;
   const ordered = orderedTodayHabits(habits, completedIds);
-  const pageCount = Math.max(1, Math.ceil(ordered.length / HABITS_PER_PAGE));
+  const pageCount = Math.max(1, Math.ceil(ordered.length / habitsPerPage()));
   todayHabitPage = Math.min(todayHabitPage, pageCount - 1);
   carousel.dataset.pageCount = String(pageCount);
   $("#todayHabits").innerHTML = Array.from({ length: pageCount }, (_, page) => {
-    const group = ordered.slice(page * HABITS_PER_PAGE, (page + 1) * HABITS_PER_PAGE);
+    const group = ordered.slice(page * habitsPerPage(), (page + 1) * habitsPerPage());
     return `<div class="habit-page" data-page="${page}" aria-label="${escapeHtml(tr("foundations.page", { page: page + 1, total: pageCount }))}">${group.map(habit => habitCard(habit, date, completedIds.includes(habit.id), locked)).join("")}</div>`;
   }).join("");
   if (viewport) viewport.scrollLeft = viewport.clientWidth * todayHabitPage;

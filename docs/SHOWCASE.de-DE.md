@@ -8,6 +8,8 @@ Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche
 
 16. Oktober, nur Heute: originale Website-Farben, maximal 1236px Zeichenfläche, quadratische Größen und kompakte Vier-Gewohnheiten-Vorgabe. Die Galerie enthält neue 1920px-/1000px-Belege. Isolierte Webansichten, keine Abnahme einer installierten Mac-App; visuelle Bestätigung steht aus.
 
+**Web-Heute-Raster (18. Oktober):** einrastende Karten, per Ziehen sortierbar, Größen nur wo sich der Inhalt ändert; die Monatskarte zeigt die Stimmung. Fiktive Daten, nur Web. <img src="today-widgets/grid/today-de-desktop-light.png" alt="Deutsches Web-Heute-Raster"><img src="today-widgets/grid/today-de-mobile.png" width="300" alt="Handy: eine Spalte, gleiche Reihenfolge">
+
 **Heute-Korrektur:** [Echte Standardanordnung, Größen-/Drag-Aufnahme und Prüfungen](local-web/today-repair/index.html). Keine nur für Screenshots gesetzten Positionen. <img src="local-web/today-repair/today-1440-de-light.png" alt="Deutsche Heute-Standardanordnung"><img src="local-web/today-repair/today-390-de-light.png" width="300" alt="Mobile Leseansicht mit fiktiven Einträgen">
 
 **Korrektur schmaler Fenster:** Bei 800px bleiben Seitenleiste und Inhalt nebeneinander; Aktionen und Datum stehen in getrennten Zeilen. [Desktop](local-web/breakpoints/today-800-de-light.png) · [Mobile Grenze](local-web/breakpoints/today-760-de-light.png) · [Regression](local-web/breakpoints/results.json). Isolierte Browserprüfung, keine Abnahme einer installierten macOS-App.

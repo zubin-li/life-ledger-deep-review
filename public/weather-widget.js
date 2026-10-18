@@ -37,7 +37,7 @@
     if(key===signature)return;signature=key;
     plot?.destroy();host.replaceChildren();pointerActive=false;
     const ink=dark?'#9eafbe':'#738495',grid=dark?'rgba(200,220,235,.09)':'rgba(60,90,120,.09)';
-    const ticks=model.hours.map((h,i)=>({h,i})).filter(({h})=>['09','12','18','00'].includes(h.time.slice(11,13))).map(({i})=>i);
+    const ticks=model.hours.map((h,i)=>({h,i})).filter(({h})=>(width<420?['06','12','18']:['09','12','18','00']).includes(h.time.slice(11,13))).map(({i})=>i);
     plot=new root.LifeLedgerWidgetUI.uPlot({width,height,pxAlign:1,padding:[12,38,0,0],legend:{show:false},select:{show:false},
       cursor:{drag:{x:false,y:false},y:false,points:{size:7,fill:'#fff',stroke:'#249de8',width:2}},
       scales:{x:{time:false},y:{auto:true,range:(_u,min,max)=>[Math.floor(min-2),Math.ceil(max+2)]}},

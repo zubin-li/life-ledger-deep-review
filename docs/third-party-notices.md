@@ -1,5 +1,9 @@
 # Third-Party Notices and Architecture Decision Records
 
+## Web Today drag reorder — SortableJS (2026-10-18)
+
+Web Today reorders cards with [SortableJS 1.15.7](https://github.com/SortableJS/Sortable) (MIT), vendored unmodified as `public/vendor/sortable.min.js` (about 44 KB raw, in the service-worker shell, no CDN). Unlike GridStack (ADR-0001 below), SortableJS only moves DOM nodes: the browser's CSS grid does all placement, so there is no absolute positioning, no x/y state and no reflow loop. Stored layout is an ordered list of `[type, size]` pairs (`life-ledger-today-cards-v1`). Web only; the Mac app keeps the project-owned engine board.
+
 ## Offline UI primitives — 2026-10-15
 
 The weather chart now reuses [uPlot 1.6.32](https://github.com/leeoniya/uPlot) (MIT). Widget-entry opacity feedback uses the mini JavaScript entry of [Motion 14.2.0](https://github.com/motiondivision/motion) (MIT), without React or Motion+ services. Exact direct versions are pinned in package.json/package-lock.json. `npm run build:widget-vendor` builds `public/vendor/widget-ui.js` and `.css` from `src/widget-vendor.js`; the combined source notices (including motion-dom/motion-utils transitive packages) are in `public/vendor/widget-ui.LICENSE.txt`. The built JS/CSS total about 63 KB raw and are included in the service-worker shell. No CDN request is needed. This is actual code reuse, unlike the design-only app references below.

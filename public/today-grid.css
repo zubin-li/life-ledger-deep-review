@@ -1,0 +1,190 @@
+/* Web Today snap-to-grid (approved 2026-10-18). 4 / 2 / 1 columns, 132px rows;
+   stored state = order + size only. Web only: today-grid.js never runs under
+   data-desktop, so every #todayView.tg rule is inert in the Mac app. */
+#todayView.tg { scrollbar-width: none; }
+#todayView.tg::-webkit-scrollbar { display: none; width: 0; height: 0; }
+html:not([data-desktop]) .main-content { scrollbar-width: none; }
+html:not([data-desktop]) .main-content::-webkit-scrollbar { display: none; }
+
+/* Hide the old engine's per-card chrome; today-grid.js draws its own. */
+#todayView.tg > [data-module] > .widget-edit-bar,
+#todayView.tg > [data-module] > .widget-resize-handle,
+#todayView.tg > [data-module] > .widget-remove { display: none !important; }
+#todayView.tg > [data-tg-off] { display: none !important; }
+
+@media (min-width: 761px) {
+  html:not([data-desktop])[data-workspace] #todayView.tg.active {
+    display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-rows: 132px !important; grid-auto-flow: row dense !important; align-content: start;
+    column-gap: 20px !important; row-gap: 20px !important;
+    max-width: none !important; width: 100%; margin: 0; padding: 28px 36px 64px !important;
+  }
+  html:not([data-desktop])[data-workspace] #todayView.tg.active > .module-card[data-tg] {
+    grid-column: span var(--tgw) !important; grid-row: span var(--tgh) !important;
+  }
+}
+
+/* Tablet: two columns, same order. Wider cards clamp to two. */
+@media (min-width: 761px) and (max-width: 1279px) {
+  html:not([data-desktop])[data-workspace] #todayView.tg.active { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  html:not([data-desktop])[data-workspace] #todayView.tg.active > .module-card[data-tg] { grid-column: span min(var(--tgw), 2) !important; }
+}
+/* Phone: one column, natural heights, same order. */
+@media (max-width: 760px) {
+  html:not([data-desktop]) #todayView.tg.active { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; scrollbar-width: none; }
+  html:not([data-desktop]) #todayView.tg.active > .module-card[data-tg] { grid-column: 1 !important; grid-row: auto !important; margin: 0 !important; }
+}
+
+/* ---- Edit mode chrome: remove (–), size chips, grip. --------------------- */
+#todayView.tg .tg-edit { display: none; }
+#todayView.tg.is-editing-layout > [data-tg] { position: relative; overflow: visible !important; cursor: grab; }
+#todayView.tg.is-editing-layout > [data-tg] > .tg-edit {
+  display: flex; align-items: center; gap: 6px; position: absolute; z-index: 20;
+  top: -11px; left: -11px; right: 12px; pointer-events: none;
+}
+#todayView.tg.is-editing-layout > [data-tg] > .tg-edit > * { pointer-events: auto; }
+#todayView.tg .tg-remove {
+  width: 24px; height: 24px; flex: 0 0 auto; display: grid; place-items: center; padding: 0;
+  border: 0; border-radius: 50%; background: #8e8e93; color: #fff; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.18); transition: transform 160ms var(--ease-enter, ease), background-color 160ms ease;
+}
+#todayView.tg .tg-remove:hover { transform: scale(1.1); background: #ff453a; }
+#todayView.tg .tg-remove svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+#todayView.tg .tg-sizes {
+  margin-left: auto; display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--line);
+  border-radius: 12px; background: color-mix(in srgb, var(--card) 92%, transparent);
+  box-shadow: 0 6px 18px rgba(29,29,31,.10); backdrop-filter: blur(14px);
+  transform: translateY(18px);
+}
+#todayView.tg .tg-sizes button {
+  min-height: 26px; padding: 4px 10px; border: 0; border-radius: 9px; background: transparent;
+  color: var(--muted); font: 650 11px/1 var(--font-body); cursor: pointer; white-space: nowrap;
+  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+#todayView.tg .tg-sizes button[aria-checked="true"] { background: var(--ink); color: var(--card); }
+#todayView.tg .tg-grip {
+  width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 auto; color: var(--muted);
+  border-radius: 9px; transform: translateY(18px);
+}
+#todayView.tg .tg-sizes ~ .tg-grip { margin-left: 0; }
+#todayView.tg .tg-edit > .tg-grip:first-child, #todayView.tg .tg-remove + .tg-grip { margin-left: auto; }
+#todayView.tg .tg-grip svg { width: 16px; height: 16px; fill: currentColor; }
+/* Gentle jiggle-free edit cue: dashed outline, cards dim their inner controls. */
+#todayView.tg.is-editing-layout > [data-tg]::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  border: 1.5px dashed color-mix(in srgb, var(--sage, #5e7d6b) 45%, transparent);
+}
+#todayView.tg.is-editing-layout > [data-tg] > :not(.tg-edit) { pointer-events: none; }
+#todayView.tg .tg-ghost { opacity: .35; }
+#todayView.tg .tg-ghost::after { border-style: solid !important; }
+.tg-drag, .sortable-fallback.tg-drag { opacity: .96 !important; transform: rotate(1.2deg) scale(1.02); box-shadow: 0 30px 70px rgba(16,35,29,.22) !important; }
+html[data-theme="dark"] #todayView.tg .tg-sizes { background: color-mix(in srgb, #1c2124 92%, transparent); border-color: rgba(255,255,255,.1); }
+html[data-theme="dark"] #todayView.tg .tg-sizes button[aria-checked="true"] { background: #f2f2f2; color: #111; }
+
+/* Card fit fixes (step 1). */
+@media (min-width: 761px) {
+  /* Hero weather sits top-right, not under the progress line. */
+  html:not([data-desktop]) #todayView.tg [data-module="summary"] .today-summary-hero { position: relative; }
+  html:not([data-desktop]) #todayView.tg [data-module="summary"] #heroWeather { position: absolute; top: 38px; right: 42px; z-index: 2; margin: 0; }
+  /* Habits 4: 132×2 + gap holds cards + pager without clipping. */
+  html:not([data-desktop]) #todayView.tg [data-module="habits"] > .module-header { margin-bottom: 12px; }
+  html:not([data-desktop]) #todayView.tg [data-module="habits"] .habit-card { min-height: 164px; }
+  html:not([data-desktop]) #todayView.tg [data-module="habits"] .habit-carousel-nav { margin-top: 8px; min-height: 34px; }
+}
+/* Calendar cells are <button>s: drop the UA outset left/bottom border (the "heavy line" bug). */
+html:not([data-desktop]) #todayView.tg .today-month-card .calendar-day { border-left: 0; border-bottom: 0; }
+@media (max-width: 760px) { html:not([data-desktop]) #todayView.tg .today-month-card .calendar-day { border-width: .5px 0 0 .5px; border-style: solid; } }
+/* Heatmap wide: bigger dots fill the wide card instead of leaving a hole. */
+#todayView.tg [data-module="heatmap"][data-tg-size="w"] :is(#habitHeatmap, #heatmapWeekdays) { grid-template-columns: repeat(7, 24px); gap: 6px 26px; }
+#todayView.tg [data-module="heatmap"][data-tg-size="w"] :is(.heatmap-day, .heatmap-spacer) { width: 24px; height: 24px; border-radius: 7px; }
+#todayView.tg [data-module="heatmap"][data-tg-size="w"] #heatmapWeekdays span { text-align: center; }
+#todayView.tg [data-module="heatmap"][data-tg-size="w"] #habitHeatmap { margin-block: 8px auto; }
+#todayView.tg [data-module="heatmap"][data-tg-size="w"] > .module-body { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+#todayView.tg [data-module="heatmap"][data-tg-size="w"] #heatmapDescription { margin-top: 10px; }
+
+/* Hero: chip + weather on one row; quote never ellipsised (font steps down in JS). */
+html:not([data-desktop]) #todayView.tg .tg-hero-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+html:not([data-desktop]) #todayView.tg [data-module="summary"] #heroWeather { position: static !important; margin: 0 !important; }
+html:not([data-desktop]) #todayView.tg [data-module="summary"] .today-hero-quote { font-size: var(--tg-quote, clamp(26px, 2.6vw, 38px)) !important; -webkit-line-clamp: unset !important; display: block !important; overflow: visible !important; }
+/* Habits on a narrow card: 2 per row. */
+#todayView.tg [data-module="habits"][data-tg-compact] .habit-page { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+html:not([data-desktop]) #todayView.tg [data-module="habits"][data-tg-compact] .habit-card { min-height: 150px; }
+/* 8 habits: two rows of four on one page. */
+#todayView.tg [data-module="habits"][data-tg-size="h8"]:not([data-tg-compact]) .habit-card { min-height: 150px; }
+/* Weather rain hint may wrap to two lines instead of an ellipsis. */
+#todayView.tg #weatherPrecipHint { white-space: normal !important; text-overflow: clip !important; overflow: visible !important; line-height: 1.35; }
+/* Toolbar: Back-to-today never wraps vertically. */
+html:not([data-desktop]) #toolbarTodayButton { white-space: nowrap; flex-shrink: 0; }
+@media (min-width: 761px) { #todayView.tg [data-module="habits"]:not([data-tg-compact]) .habit-page { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
+/* Toolbar 1180–1279: use the same two-row toolbar the app already uses below 1180,
+   so the date nav never runs into "Back to today". */
+@media (min-width: 1180px) and (max-width: 1279px) {
+  html:not([data-desktop])[data-workspace] #appShell .app-toolbar { grid-template-columns: minmax(0,1fr) auto; row-gap: 4px; }
+  html:not([data-desktop])[data-workspace] #appShell .toolbar-leading { grid-column: 1; grid-row: 1; }
+  html:not([data-desktop])[data-workspace] #appShell .toolbar-trailing { grid-column: 2; grid-row: 1; }
+  html:not([data-desktop])[data-workspace] #appShell #toolbarDateNav { grid-column: 1 / -1; grid-row: 2; justify-content: center; padding-bottom: 6px; }
+}
+/* Drag clone: no edit chrome on the lifted card; toolbar "Add widget" never wraps. */
+.sortable-fallback .tg-edit, .sortable-fallback .widget-edit-bar { display: none !important; }
+.sortable-fallback { pointer-events: none; }
+#todayView.tg > .sortable-fallback { opacity: .97 !important; transform-origin: 30% 30%; rotate: 1.2deg; box-shadow: 0 32px 72px rgba(16,35,29,.24) !important; z-index: 50 !important; }
+html:not([data-desktop]) #addTodayWidget { white-space: nowrap; flex-shrink: 0; }
+/* Habits on a 2-up tablet card: slightly shorter tiles so tiles + pager fit 3 rows. */
+@media (min-width: 761px) { html:not([data-desktop]) #todayView.tg [data-module="habits"][data-tg-compact] .habit-card { min-height: 140px; padding: 18px; } html:not([data-desktop]) #todayView.tg [data-module="habits"][data-tg-compact] .habit-card h3 { margin-top: 16px; } }
+/* Phone month card: grid rows size to content so the 6th week is never clipped. */
+@media (max-width: 760px) {
+  html:not([data-desktop]) #todayView.tg .today-month-card { overflow: visible; }
+  html:not([data-desktop]) #todayView.tg .today-month-card .calendar-grid { grid-template-rows: repeat(6, minmax(52px, auto)) !important; flex: none !important; }
+}
+
+/* ===== Round 2 (user 10/18): web shell breathes like the 3.5 original ===== */
+@media (min-width: 761px) {
+  /* Floating sidebar island, no hard edges: margin, 30px radius, soft shadow. */
+  html:not([data-desktop])[data-workspace] #appShell { grid-template-columns: calc(var(--sidebar-width) + 16px) minmax(0, 1fr) !important; height: 100dvh !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; }
+  html:not([data-desktop])[data-workspace] body { background: radial-gradient(circle at 82% 4%, rgba(125,174,255,.18), transparent 30rem), radial-gradient(circle at 28% 72%, rgba(182,222,199,.18), transparent 34rem), var(--paper) !important; }
+  html[data-theme="dark"]:not([data-desktop])[data-workspace] body { background: radial-gradient(circle at 82% 4%, rgba(57,98,129,.16), transparent 30rem), #0d1012 !important; }
+  html:not([data-desktop])[data-workspace] #sidebar { margin: 16px 0 16px 16px !important; height: calc(100dvh - 32px) !important; top: 16px; border-radius: 30px !important; border: 1px solid rgba(255,255,255,.12) !important; box-shadow: 0 24px 70px rgba(21,25,23,.18) !important; background: linear-gradient(155deg, rgba(41,49,44,.96), rgba(25,29,27,.97)) !important; }
+  /* Toolbar and canvas share the page background: no divider line, no panel. */
+  html:not([data-desktop])[data-workspace] .app-toolbar { background: transparent !important; border-bottom: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+  html:not([data-desktop])[data-workspace] .app-toolbar::after { display: none !important; }
+  html:not([data-desktop])[data-workspace] .main-content,
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] #todayView { background: transparent !important; }
+  html:not([data-desktop])[data-workspace] #todayView.tg.active { column-gap: 24px !important; row-gap: 24px !important; padding: 18px 36px 72px !important; }
+  /* Habits = a normal card now (2×2 tiles, page to the next 4). */
+  html:not([data-desktop]) #todayView.tg.active > .module-card[data-module="habits"] { padding: 25px !important; border: 1px solid rgba(255,255,255,.66); border-radius: 26px; background: var(--card); box-shadow: 0 18px 55px rgba(29,29,31,.075), inset 0 1px 0 rgba(255,255,255,.88); overflow: hidden; }
+  html[data-theme="dark"]:not([data-desktop]) #todayView.tg.active > .module-card[data-module="habits"] { border-color: var(--edge-soft, rgba(255,255,255,.08)); background: linear-gradient(180deg, rgba(255,255,255,.035), transparent 36%), var(--surface-1, var(--card)); box-shadow: 0 18px 52px rgba(0,0,0,.22); }
+  html:not([data-desktop]) #todayView.tg [data-module="habits"] > .module-header .module-title { font-size: 18px !important; }
+  html:not([data-desktop]) #todayView.tg [data-module="habits"][data-tg-compact] .habit-card { min-height: 128px !important; padding: 16px !important; }
+  html:not([data-desktop]) #todayView.tg [data-module="habits"][data-tg-compact] .habit-card h3 { margin: 14px 0 4px !important; }
+  html:not([data-desktop]) #todayView.tg [data-module="habits"][data-tg-compact] .habit-icon { width: 32px; height: 32px; }
+
+  /* Month calendar = a normal card: mood only, compact header, grid fills the card. */
+  html:not([data-desktop]) #todayView.tg.active > .module-card[data-module="calendar"] { padding: 22px 25px !important; border: 1px solid rgba(255,255,255,.66) !important; border-radius: 26px !important; background: var(--card) !important; box-shadow: 0 18px 55px rgba(29,29,31,.075), inset 0 1px 0 rgba(255,255,255,.88) !important; overflow: hidden !important; }
+  html[data-theme="dark"]:not([data-desktop]) #todayView.tg.active > .module-card[data-module="calendar"] { border-color: var(--edge-soft, rgba(255,255,255,.08)) !important; background: linear-gradient(180deg, rgba(255,255,255,.035), transparent 36%), var(--surface-1, var(--card)) !important; box-shadow: 0 18px 52px rgba(0,0,0,.22) !important; }
+}
+#todayView.tg [data-module="calendar"] #todayMonthViewSwitch,
+#todayView.tg [data-module="calendar"] #todayMonthDesc,
+#todayView.tg [data-module="calendar"] .calendar-atmosphere { display: none !important; }
+#todayView.tg [data-module="calendar"] #todayMonthView { display: flex !important; flex-direction: column; height: 100%; min-height: 0; }
+#todayView.tg [data-module="calendar"] .today-month-view .calendar-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 10px; }
+#todayView.tg [data-module="calendar"] .today-month-view .calendar-toolbar h2 { margin: 3px 0 0 !important; font: 600 18px/1.3 "Noto Serif SC", var(--font-display) !important; }
+#todayView.tg [data-module="calendar"] .calendar-month-nav .icon-button { width: 32px !important; height: 32px !important; }
+#todayView.tg [data-module="calendar"] .today-month-card { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; overflow: visible !important; }
+#todayView.tg [data-module="calendar"] .weekdays span { padding: 2px 0 8px !important; font-size: 10px; }
+#todayView.tg [data-module="calendar"] .today-month-card .calendar-grid { flex: 1 1 auto !important; min-height: 0; grid-template-rows: repeat(6, minmax(0, 1fr)) !important; grid-auto-rows: unset; }
+#todayView.tg [data-module="calendar"] .today-month-card .calendar-day { min-height: 0 !important; padding: 5px !important; display: flex; align-items: flex-start; justify-content: space-between; }
+#todayView.tg [data-module="calendar"] .day-number { width: 24px; height: 24px; font-size: 11px; }
+#todayView.tg [data-module="calendar"] .day-mood { position: static !important; width: 24px; height: 24px; border-radius: 8px; }
+#todayView.tg [data-module="calendar"] .day-mood svg { width: 15px; height: 15px; }
+#todayView.tg [data-module="calendar"] .today-month-legend { margin-top: 8px !important; font-size: 10px; }
+#todayView.tg [data-module="calendar"][data-tg-size="cl"] .today-month-card .calendar-day { padding: 9px !important; }
+#todayView.tg [data-module="calendar"][data-tg-size="cl"] .day-number { width: 28px; height: 28px; font-size: 12px; }
+#todayView.tg [data-module="calendar"][data-tg-size="cl"] .day-mood { width: 30px; height: 30px; }
+#todayView.tg [data-module="calendar"][data-tg-size="cl"] .day-mood svg { width: 18px; height: 18px; }
+/* Phone: calendar keeps natural 6-row height inside the card. */
+@media (max-width: 760px) {
+  #todayView.tg [data-module="calendar"] .today-month-card .calendar-grid { grid-template-rows: repeat(6, minmax(46px, auto)) !important; flex: none !important; }
+}
+
+@media (min-width: 1280px) { html:not([data-desktop])[data-workspace] .app-toolbar { padding-inline: 36px !important; min-height: 64px !important; } }
+@media (min-width: 761px) and (max-width: 1279px) { html:not([data-desktop])[data-workspace] #todayView.tg.active { padding: 14px 24px 64px !important; column-gap: 20px !important; row-gap: 20px !important; } }

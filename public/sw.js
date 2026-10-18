@@ -1,10 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-3.6.0-today-classic";
+const CACHE_NAME = "life-ledger-pwa-3.6.0-today-grid";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css?v=3.6.0",
   "./desk-polish.css",
   "./today-classic.css",
+  "./today-grid.css",
+  "./today-grid.js",
+  "./vendor/sortable.min.js",
   "./desk-polish.js",
   "./long-range.js",
   "./window-shell.js",

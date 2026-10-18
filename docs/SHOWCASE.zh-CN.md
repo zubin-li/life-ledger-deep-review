@@ -8,6 +8,8 @@ Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地�
 
 10 月 16 日仅调整今日：恢复原网页配色，画布限制 1236px，保留方形比例和紧凑四习惯默认展示。下方图库新增 1920px／1000px 实测。全部为隔离的普通网页截图，不代表已安装 Mac 版验收；仍待你确认视觉。
 
+**网页版今日贴格子（10 月 18 日）：**卡片贴格子、拖动排序，只在内容会变化时提供尺寸；月历只显示心情。虚构数据，仅网页版。<img src="today-widgets/grid/today-zh-desktop-light.png" alt="中文网页版今日贴格子"><img src="today-widgets/grid/today-zh-mobile.png" width="300" alt="手机单列，顺序一致">
+
 **今日修正：**[真实默认排版、尺寸与拖动录屏](local-web/today-repair/index.html)，截图脚本未额外重新摆位。<img src="local-web/today-repair/today-1440-zh-light.png" alt="中文今日真实默认排版"><img src="local-web/today-repair/today-390-zh-light.png" width="300" alt="手机阅读布局与虚构记录">
 
 **窄窗口修正：**800px 时侧栏与内容并排，工具栏操作与日期分行，避免按钮被遮挡。[桌面截图](local-web/breakpoints/today-800-zh-light.png) · [移动断点截图](local-web/breakpoints/today-760-zh-light.png) · [回归结果](local-web/breakpoints/results.json)。这是隔离浏览器验收，不代表已安装 Mac 版通过验收。

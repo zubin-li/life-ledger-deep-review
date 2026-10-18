@@ -8,6 +8,8 @@ Life Ledger brings daily habits, practical planning, and long-form reflection in
 
 16 October, Today only: restored original website colors, a bounded 1236px canvas, square presets and a compact four-habit default. New 1920px/1000px evidence is in the gallery below. These are isolated ordinary-web screenshots, not installed Mac-app acceptance; visual confirmation is still pending.
 
+**Web Today grid (18 October):** snap-to-grid cards, drag to reorder, sizes only where content changes; month card shows mood. Fictional data, web only. <img src="today-widgets/grid/today-en-desktop-light.png" alt="English Web Today grid"><img src="today-widgets/grid/today-en-desktop-edit.png" alt="Edit cards: remove, size and drag handles"><img src="today-widgets/grid/today-en-mobile.png" width="300" alt="Phone: one column, same order">
+
 **Today correction:** [Actual default layout, size/drag recording and checks](local-web/today-repair/index.html). No screenshot-only position overrides. <img src="local-web/today-repair/today-1440-en-light.png" alt="Actual English Today default"><img src="local-web/today-repair/today-390-en-light.png" width="300" alt="Phone reading layout with fictional records">
 
 **Narrow-window correction:** the 800px workspace retains a side-by-side sidebar and a two-row toolbar. [Desktop](local-web/breakpoints/today-800-en-light.png) · [Mobile boundary](local-web/breakpoints/today-760-en-light.png) · [Regression results](local-web/breakpoints/results.json). These are isolated browser checks, not installed macOS acceptance.
