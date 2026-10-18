@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v5.png" width="100%" alt="Monatsrückblick von Life Ledger" />
+  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger" />
 </p>
 
 <p align="center">
@@ -94,28 +94,6 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 ## Funktionen
 
-**Web-Heute-Raster (18. Oktober) — ersetzt die Korrekturen unten:** Heute besteht aus einrastenden Karten: 4 Spalten auf breiten Bildschirmen, 2 auf Tablets, 1 auf dem Handy, überall gleiche Reihenfolge. Unter **Karten bearbeiten** Karten ziehen, mit − entfernen und, wo sinnvoll, die Größe wechseln (Grundlagen 4 oder 8 pro Seite; Wetter, Heatmap, Fotowand; Monatskarte Standard oder groß). Entfernte Karten hinterlassen keine Lücke; Rückgängig, Zurücksetzen und Esc funktionieren wie bisher. Die Monatskarte zeigt nur die Stimmung. Gespeichert werden nur Reihenfolge und Größe, in diesem Browser. Nur Web; die Mac-App bleibt unverändert. [Screenshots mit fiktiven Daten](docs/today-widgets/grid/).
-
-**Aktuelle Heute-Korrektur — ersetzt den älteren Prüfstand unten:** [Echte Seite und neue Aufnahme](docs/local-web/today-repair/index.html). Bestätigte Anordnung: Stimmung über Fokus, Gewohnheiten neben kompaktem Rückblick. Begrüßung mit S/M/L, Stimmung mit S/M; Bearbeiten vergrößert die Karten nicht künstlich. Direkte Größenknöpfe und Ziehgriffe; die bearbeitete Karte bleibt verankert, Nachbarn weichen aus, Rückgängig stellt Größe und Position wieder her. Daten/Anordnungen bleiben erhalten. Webnachweis, kein neues Mac-Paket; visuelle Bestätigung ausstehend.
-
-**Heute-Layout, 16. Oktober:** [Screenshots, Aufnahme und Prüfungen](docs/local-web/today-repair/index.html). Originale Papier-/Salbei-/Lichtfarben; maximal 1236px Zeichenfläche und 380px Begrüßung, quadratische Größen bleiben quadratisch. Vier Gewohnheiten erscheinen kompakt, der Rückblick größer und Fotos daneben; in schmalen Fenstern folgen Gewohnheiten direkt auf die Begrüßung. Größen, Einstellungen, Drag-Ziele, Rückgängig und Neuladen werden geprüft. Gespeicherte Anordnungen und Einträge bleiben erhalten; Bearbeiten → Layout zurücksetzen übernimmt die neuen Vorgaben. Echte Webansicht, kein neues macOS-Paket; visuelle Bestätigung steht aus.
-
-**Interaktive lokale Website:** `npm run preview:local` starten und [die echte lokale App öffnen](http://127.0.0.1:43117/?mode=local&lang=de&preview=local). Web und Tauri teilen Seiten, Karten und Interaktionen; das Web erhält keine native Identität. Mobile Navigation und Einstellungen bleiben zugänglich. Daten bleiben im Browser dieses stabilen lokalen Ursprungs, getrennt von bisheriger Website/App; keine Beispieldaten werden dort eingesetzt. [Aufnahme, 2× Bilder und Prüfung](docs/local-web/index.html). Keine Bereitstellung oder Installation; SQLite/Bibliotheksordner folgen später.
-
-**Integriertes Fenster:** [Bilder und Aufnahme](docs/integrated-shell/index.html). Einheitliche Overlay-Titelleiste mit Platz für native macOS-Fensterknöpfe, abgerundeter Rahmen für sechs Seiten, einklappbare Navigation und gerätelokales Profilbild/Name in den Einstellungen. Keine neue Anmeldung oder Profilsynchronisierung. Daten bleiben; nicht paketiert, bereitgestellt oder installiert. Native Fensterprüfung steht aus.
-
-**Horizont / Gewohnheiten – Prüfstand:** [Bilder und Aufnahme](docs/horizon-habits/index.html). Angeheftete aktuelle Phase, Plankarten nach Bereichen mit datierten Schritten, expliziter Phasenrückblick mit Archiv-Momentaufnahme und freiwilliger Übernahme offener Pläne. Dauerhafte Vorhaben und Notizen bleiben über Phasen hinweg. Monatsrückblicke nutzen dieselben Daten wie Zeitleiste/Einblicke. Gewohnheiten behalten Symbole, Gültigkeitsdatum und Sortierung; Such-/Statusfilter verlieren keine ausgeblendeten Einträge. Phasendaten sind in JSON-Sicherung/Wiederherstellung dieser Ausgabe enthalten. Fiktive Browserevidenz; nicht installiert oder visuell bestätigt.
-
-**Zeitleiste / Einblicke – Prüfstand:** [Bilder und Aufnahme](docs/timeline-insights/index.html). Tages-, Wochen- und Monatstexte teilen eine vertikale Achse mit Monatsfilter. Wochenfotos werden nur auf Wunsch geladen; Monatsrückblicke bleiben textzentriert. Einblicke trennen tägliche Erfüllung, Erfassung und Fokuszeit; Datumsnavigation und Vergleiche gleich langer Zeiträume mit ausreichenden Einträgen. Vorhandene Symbole, Daten und Rechenhilfen bleiben; Periodenziele separat. Fiktive Browserevidenz, nicht paketiert oder visuell bestätigt; ersetzt das ältere zweispaltige Wochenarchiv unten.
-
-**Woche / Zeitleiste zur Bestätigung:** Woche zeigt Rückblick, schreibgeschützten Wochenkalender, Einblicke und Ziele. Die Zeitleiste verbindet vorhandene Wochentexte mit den Fotos derselben Woche; Tagesnotizen, Fotos und Kalender bleiben erhalten. Begrüßung fest breit, Stimmung fest quadratisch; übrige Karten bieten sinnvolle Größen. [Aufnahme und Ansichten](docs/week-reflection/index.html). Vorhandene Daten/Layout bleiben erhalten; Kalender benötigt die verbundene Ausgabe. Fiktive Beispiele, noch keine paketierte/visuell bestätigte Veröffentlichung. Die Größenregeln ersetzen ältere einheitliche S/M/L-Prüfstände.
-
-**Wetter + Bibliothek:** [Bilder und Aufnahme](docs/today-widgets/weather-gallery/index.html). Aktuelles Wetter steht in der Übersicht; die optionale Wetterkarte nutzt ein lokal gebündeltes uPlot-Diagramm mit Maus-/Tastatursteuerung und Tageshöchst-/Tiefstwerten nach Ortsdatum. Karten bearbeiten → Widget hinzufügen öffnet den Katalog aller 11 vorhandenen Widgets. Nicht hinzugefügte/entfernte Karten belegen keine Rasterplätze. Daten/Layouts bleiben erhalten; noch nicht paketiert. Weitere visuelle Änderungen an Stimmung/Monatsraster folgen erst im nächsten Prüfstand.
-
-**Karten bearbeiten:** Im Normalmodus bleiben Karten fest. Erst **Karten bearbeiten** erlaubt Hinzufügen/Verschieben; Klick auf eine Karte (oder Fokus + Enter) öffnet ihre automatisch gespeicherten Größen-/Sichtbarkeits-/Spezialeinstellungen. Farben und Wetterort sind nicht dauerhaft auf der Karte. Die Heatmap zeigt den vollständigen Kalendermonat mit kleinen Punkten in Smaragd/Ozeanblau/Rot-bis-Blau. [Echte Interaktionsaufnahme](docs/today-widgets/edit-cards/index.html).
-
-**Today-Widget-Prüfstand (unveröffentlicht):** Unter **Widget hinzufügen** stehen Stimmung, Gewohnheitsrhythmus, Fotowand und Wetter zur Verfügung; vorhandene Symbole und Bedienelemente bleiben erhalten. Einheitliche S/M/L-Querformatgrößen erhalten eine quadratische L-Variante; acht Farbstufen zeigen den Erfüllungsgrad. Fotos/GIFs/abspielbare Videos bleiben lokal und sind noch nicht in Foto-Backup/Synchronisierung enthalten. Wetter nutzt eine manuell gewählte Stadt, einen zwischengespeicherten 24-Stunden-Ausblick von Open-Meteo und Regen-/Schneehinweise innerhalb der Karte, keine Systemwarnungen. Siehe [Größenvergleich und Grenzen](docs/today-widgets/README.md). Bestehende Layouts bleiben erhalten; keine installierte App wurde ersetzt.
-
 - Tägliche Gewohnheiten mit anpassbaren Zielen und Gültigkeitsdatum
 - Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen
 - Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
@@ -133,29 +111,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Kompakte langfristige Einträge in der Desktop-Seitenleiste
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
-- Heute 2.0 Widget-Plattform: 12-spaltiges Raster, diskrete Größen S/M/L und direktes 2D-Drag ohne Easing
 
-<details>
-<summary><strong>Was Life Ledger 3.6.0 gebracht hat</strong></summary>
-
-- **Modulares natives Dashboard**: Heute- und Wochenansicht als durchgehende vertikale Arbeitsfläche mit 18–22px Blasenoberflächen, 1px Haarlinienrand und sanftem Schattenwurf.
-- **Karten-Bearbeitungsmodus**: „Karten bearbeiten“ (⌘⌥L / Ctrl+Alt+L) aktiviert Drag&Drop, Tastatur-Neuanordnung und Zurücksetzen. Klick auf eine Karte öffnet ihre Einstellungen. Die Konfiguration ist isoliert gespeichert.
-- **Vollmonats-Gewohnheitsgitter in Heute**: 7-spaltiges Montags-Gitter mit täglicher Erledigungsintensität (0..4), Tastaturnavigation mit roving tabindex und Detailansicht.
-- **Integrierter Wochen-Arbeitsbereich**: Einheitliches Scrollen mit erledigten Tagen, Wochen-Insights-Karten (Abschlussrate, bester Tag, Serie, Fokuszeit), Zielen und hervorgehobener Wochenreflexion.
-- **Präzises Farbsystem**: Neutrales Hellgrau/Weiß (`--paper #f5f5f7`, `#ffffff` Karten) und tiefes Schwarz (`#0a0a0b`, Oberflächen `#141416`), frei von warmen Beigetönen.
-- **16 neue Haarlinien-Vektorillustrationen**: Originale Strichgrafiken für Kalender, Wochenrückblick, Fokus-Serien und leere Zustände.
-
-</details>
-<details>
-<summary><strong>Was Life Ledger 3.5.1 gebracht hat</strong></summary>
-
-- Einheitliche Fokus-Timer-Zustandsmaschine für Symbolleiste, Bedienfeld und Mini-Player mit Abschluss-Illustration und Rückgängig-Aktion.
-- Überarbeitete Wochenansicht mit zweispaltigem Tagesblatt bei ≥1180px, Tagesabschlussanzeige und kompakten Wochenzielen.
-- Einheitliche Journal-Tagesseite: Reflexionstext direkt unter der Kopfzeile, Inline-Fotoanzahl und kompakte Gewohnheitsliste.
-- Integrierte dreispaltige Heute-Kopfzeile (80px-Illustrationsbox, Textbereich, Stimmungssteuerung); Sekundärtext auf 12px angehoben und `--secondaryLabel` im Hellmodus auf #575953 abgedunkelt.
-- Erweitertes 160×120-Haarlinien-Illustrationsset für pausierte/abgebrochene Fokusse und leere Zustände.
-
-</details>
 <details>
 <summary><strong>Was Life Ledger 1.3 gebracht hat</strong></summary>
 
@@ -174,8 +130,8 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v5.png" alt="Tagesplanung und Reflexion" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v5.png" alt="Wochenziele und Wochenrückblick" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesplanung und Reflexion" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick" /></td>
   </tr>
   <tr>
     <td><strong>Klarheit für den Tag</strong><br />Sieh den echten Tageskalender und halte deine Gedanken direkt daneben fest, ohne Pläne doppelt zu pflegen.</td>
@@ -184,14 +140,14 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v5.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
+  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v3.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
 </p>
 <p align="center"><strong>Eine private Erinnerungslinie.</strong> Stimmung, Kontext und komprimierte Fotoerinnerungen wiedersehen, ohne das Leben in einen öffentlichen Feed zu verwandeln.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v5.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v5.png" width="30%" alt="Private Zeitleiste auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v5.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v2.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v3.png" width="30%" alt="Private Zeitleiste auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v2.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
 </p>
 
 <p align="center"><strong>Für kleine Bildschirme gestaltet.</strong> Als installierte PWA nutzt Life Ledger eine untere Navigation und einen fokussierten Tagesrückblick über die gesamte Höhe.</p>
@@ -291,21 +247,7 @@ Das Repository enthält jetzt eine erste Tauri-v2-macOS-Hülle mit zwei klaren O
 
 Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern. Das ist Datei-Backup, keine Live-Synchronisierung, Konfliktauflösung oder automatische Zwei-Wege-Synchronisierung.
 
-Die lokale Desktop-App kann die heutigen Gewohnheiten außerdem an ein echtes natives macOS-WidgetKit-Widget veröffentlichen (Schreibtisch oder Mitteilungszentrale), mit einer nativen Checkbox, die auch bei geschlossener App funktioniert. Das Widget zeigt niemals Tagebuchnotizen oder Stimmungsgründe und verändert nicht die Sicherheitsgrenze des verbundenen Cloud-Fensters. Architektur und Build-Schritte stehen in [docs/macos-widget.md](docs/macos-widget.md) (Englisch).
-
-Die Hülle zeigt die App selbst mit nativem macOS-Look: echte Ampel-Fensterknöpfe sitzen in einer transparenten Titelleiste, die Seitenleiste liegt randständig ohne Web-Karten-Rahmen, und ein dezentes **Lokaler Mac** / **Verbundene Cloud**-Statuslabel ersetzt den PWA-Installationshinweis, der außerhalb des Browsers verborgen bleibt. Standard-Tastenkürzel funktionieren außerhalb editierbarer Felder – Cmd+1–5 für Heute/Woche/Zeitleiste/Rückblick/Gewohnheiten, Cmd+B zum Ein-/Ausblenden der Seitenleiste, Cmd+, für das Einstellungsfenster und Cmd+Umschalt+E für Sicherung/Export – ohne ein Tastenkürzel der öffentlichen PWA zu verändern. Der Launcher ist jetzt eine kompakte native Arbeitsbereichsauswahl, und Fensterposition sowie -größe werden je Fenster über Neustarts hinweg gemerkt.
-
 Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
-
-### 7. Life Ledger 2.0 — ein ruhiges Instrumentenbrett
-
-Version 3.5 hält denselben Schreibtisch: die Heute-Überschrift wechselt zwischen Morgen, Abend und einem abgeschlossenen Tag, und die Zeichnung steht neben dem Wochentag. Unter der Liste liegen die letzten sieben Tage, die Gewohnheiten von morgen und die Notiz. In der Woche ist der gewählte Tag die Hauptfläche; die übrigen Tage bleiben in einer schmalen Leiste. Das Journal zeigt den Tag als eine Seite aus Stimmung, Notiz, Fotos und Gewohnheiten. Einblicke behalten die Achsen, auch wenn nichts erledigt ist. Leerzustände nutzen ein Haarlinien-System, und jede Animation folgt Einstellungen → Bewegung. Suche, Rückgängig und Fokus überdecken sich nicht mehr. Version 3.4 ergänzt Desktop-Bewegung (Einstellungen → Bewegung: Voll / Reduziert / Aus), Kontinuitätsanimationen in der Symbolleiste und Haarlinien-Leerzustände. Version 3.3 entfernt den festen Inspektor. Heute ist die Gewohnheitsliste: Datum, eine Fortschrittszeile, eine knappe Stimmung, offene Gewohnheiten und eine eigene Liste für Gewohnheiten mit Uhrzeit. Notiz und Fotos bleiben unter „Heute reflektieren“. Fokus ist ein Symbol, bis eine Sitzung läuft; erst dann erscheinen Uhr und Mini-Player. Die Seitenleiste heißt Heute, Woche, Journal, Einblicke und Gewohnheiten. Die Woche stapelt die Tage, und der gewählte Tag öffnet sich an Ort und Stelle. Das Journal führt Zeitstrahl, Fotos und Kalender: der Zeitstrahl hat ein Eingabefeld, Fotos sind eine Monatsbibliothek, der Kalender zeigt den Monat neben dem Tag. Einblicke sind ein Bericht mit Zeitraum, drei Kennzahlen und einem Wechsel zwischen Verlauf, Kalender, Gewohnheiten und Tabelle. Die Version steht weiterhin nur unter Einstellungen → Info.
-
-Version 3.2 ordnet den Desktop nach der Aufgabe. Heute nutzt zwölf Spalten: Gewohnheiten und Reflexion sind breiter, Stimmung und Fotos schmaler, der Fokus bleibt im Inspektor. Die Seitenleiste hat eine gleitende Auswahl, und ⌘K öffnet eine Befehlspalette für Ansichten, Daten, Gewohnheiten und Einstellungen. Der Rückblick beginnt mit der 7/30/90-Zusammenfassung, dem Trend und der Karte. Die Version steht weiterhin nur unter Einstellungen → Info.
-
-Version 3.1 behält den Desktop-Schreibtisch (ab 980px) und stellt die ruhige Salbei-und-Papier-Palette wieder her. Die installierte Version steht nur unter Einstellungen → Info. Heute ist zweispaltig: links die Gewohnheitsliste, rechts ein breiteres Blatt mit Fotos, Stimmung und Text des Tages. Die Woche sind sieben Tagespalten über die ganze Fläche. Die Zeitleiste legt die Journalseite nach links und den Monat nach rechts. Der Rückblick beginnt mit lokalen 7/30/90-Tage-Statistiken — Erledigungen durch anrechenbare Tage, Serien, Trend und eine Konsistenzkarte — und danach die Monatsreflexion. Gewohnheiten sind eine Zeilenbibliothek. Die Sprache kann der Systemsprache, English, 简体中文 oder Deutsch folgen und gilt sofort. Fotos bleiben auf diesem Gerät, oder in einem Cloudflare-Workspace, wenn das die angemeldete Bereitstellung ist, und ein gewählter Monat kann mit ihnen exportiert werden. Das lokale Mac-Fenster meldet einen alten Service Worker ab und löscht nur die App-Caches; Tagebuch, Gewohnheiten und Fotos bleiben. Das Mac-Menü bleibt (App, Ablage, Bearbeiten, Darstellung, Fenster, Hilfe): Cmd+, für ein eigenes Einstellungsfenster, Cmd+N für eine neue Gewohnheit, Cmd+F für die Suche, Cmd+1–5 für die Ansichten, Cmd+B für die Seitenleiste, Cmd+Option+0 für den Inspektor, Cmd+T / Cmd+[ / Cmd+] für das Datum und Cmd+Shift+E für Backup/Export. Der letzte Arbeitsbereich (Lokal oder verbundene Cloud) öffnet sich direkt; „Ablage → Arbeitsbereich wechseln…“ wechselt ihn. Schmale Browserlayouts, Daten, Backups, Sync, Sprachen und Themen bleiben kompatibel.
-
-Version 2.0 bringt eine vollständige Neugestaltung der Oberfläche über Web-App, PWA und macOS-Hülle hinweg mit sich — nicht nur eine Desktop-Optik. Seitenleiste, Werkzeugleiste und alle fünf Ansichten (Heute, Woche, Zeitleiste, Rückblick, Gewohnheiten/Einstellungen) teilen sich jetzt ein zurückhaltendes System: Systemschrift (keine dekorative Serifenschrift oder Web-Schriftart mehr für die Oberfläche selbst), eine 4px-Abstandsskala, eine Rundungsskala von 6–14px statt der bisherigen 18–30px großen „Karten"-Optik, und Schatten sind jetzt schwebenden Dialogen, Popovers und der Tages-Schublade vorbehalten statt jeder einzelnen Karte. Jedes verbliebene Text-/Emoji-Symbol (Navigation, Stimmungsauswahl, Schließen-Schaltflächen in Dialogen, Auf-/Zuklapp-Pfeile, Karussell- und Kalenderpfeile) ist jetzt ein einheitliches, lokal eingebettetes SVG-Icon-System; Hover- und Klick-Feedback sind jetzt sofortige Rahmen- oder Hintergrundänderungen statt eines der Maus folgenden Neige-/Leuchteffekts. Helles und dunkles Erscheinungsbild sind jeweils eigenständig abgestimmt, und Bewegungseffekte respektieren weiterhin `prefers-reduced-motion`. Bestehende Daten, der lokale/verbundene Cloud-Modus, Sicherung/Import/Export, Sprache, Theme, Tastenkürzel, Kalender-, Gewohnheits-, Fokus- und Rückblick-Verhalten bleiben unverändert.
 
 ## Datenhoheit
 

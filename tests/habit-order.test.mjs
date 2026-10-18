@@ -11,8 +11,7 @@ test("stable page layout stays fixed while habits expose a dedicated drag handle
   assert.match(app, /function moveHabitDrag\(/);
   assert.match(app, /function finishHabitSettingsDrag\(/);
   assert.match(app, /function moveHabit\(/);
-  assert.match(app, /\[state\.habits\[index\],state\.habits\[nextIndex\]\]=\[state\.habits\[nextIndex\],state\.habits\[index\]\]/);
-  assert.match(app, /state\.habits = state\.habits\.map\(habit => visible\.has\(habit\.id\) \? ordered\[visibleIndex\+\+\] : habit\)/);
+  assert.match(app, /state\.habits\.splice\(nextIndex, 0, habit\)/);
   assert.doesNotMatch(app, /class="habit-order-button"/);
 });
 

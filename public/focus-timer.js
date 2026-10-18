@@ -209,20 +209,5 @@
     return { initialize, snapshot, reconcile, start, startBreak, pause, resume, endFocus, skipBreak, clear };
   }
 
-  const FOCUS_TRANSITIONS = Object.freeze({
-    idle: Object.freeze({ start: "running", toggle: "running" }),
-    running: Object.freeze({ pause: "paused", toggle: "paused", finish: "completed", complete: "completed", cancel: "cancelled", skip: "cancelled" }),
-    paused: Object.freeze({ resume: "running", toggle: "running", finish: "completed", complete: "completed", cancel: "cancelled", skip: "cancelled" }),
-    completed: Object.freeze({ undo: "idle", reset: "idle", start: "running", toggle: "running" }),
-    cancelled: Object.freeze({ reset: "idle", start: "running", toggle: "running" }),
-  });
-
-  function focusTransition(state = "idle", event) {
-    const current = state || "idle";
-    return FOCUS_TRANSITIONS[current]?.[event] || current;
-  }
-
-  const exported = { createTimer, focusTransition, FOCUS_TRANSITIONS };
-  root.LifeLedgerFocusTimer = exported;
-  if (typeof module !== "undefined" && module.exports) module.exports = exported;
+  root.LifeLedgerFocusTimer = { createTimer };
 })(globalThis);

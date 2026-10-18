@@ -1,9 +1,0 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Life Ledger · 天气与组件库确认</title>
-<style>:root{color-scheme:light dark;font:15px/1.65 system-ui;background:#eff4f8;color:#243949}body{max-width:1200px;padding:0 24px;margin:32px auto}h1{letter-spacing:-.04em}p{max-width:85ch}video,img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 12px 40px #18354c12}section{margin:36px 0}nav{display:flex;gap:20px;flex-wrap:wrap}a{color:#197eb7}@media(prefers-color-scheme:dark){:root{background:#10191f;color:#e3edf4}a{color:#8acfff}}</style>
-<h1>天气曲线 × 自己选择组件</h1><p>这轮只修改天气、欢迎卡天气摘要及组件添加机制。心情与热力图的进一步视觉调整仍待下一检查点。以下是实际应用页面，不是另建的效果稿；虚构数据、固定模拟天气，未打包或替换本地 App。录屏中的字幕与蓝色指针仅为演示标注。</p>
-<video controls preload="metadata" poster="today-zh-light.png" src="weather-gallery.mp4"></video>
-<nav><a href="weather-gallery.mp4">MP4 录屏</a><a href="today-zh-dark.png">深色页面</a><a href="gallery-zh-dark.png">深色组件库</a></nav>
-<section><h2>此刻天气，在欢迎卡中</h2><p>小摘要只显示当前温度。鼠标探索未来小时，不改变“此刻”的读数。欢迎卡或天气卡的编辑设置均可选择城市；无需保留独立天气卡才能使用摘要。</p><img src="today-zh-light.png" alt="欢迎卡当前天气与可探索的温度曲线"></section>
-<section><h2>温度有曲线，时间有刻度</h2><p>复用 uPlot：温度纵轴、跨日时间轴、蓝色指示线和温度点。鼠标沿图表探索，键盘可用左右方向键、Home、End。今日最高最低按城市当地自然日计算；数据缓存与雨雪提示仍保留。</p><img src="weather-hover-zh.png" alt="真实鼠标悬停改变小时读数，欢迎卡保持当前天气"></section>
-<section><h2>11 个现有组件，在独立组件库里选择</h2><p>编辑卡片 → 添加组件。未添加项不再进入编辑栅格；移除也不留下占位卡。新添加的组件寻找可用位置，保留已有卡片位置和数据。添加淡入使用 Motion 的轻量原生代码；键盘和低动态模式不播放装饰性动画。</p><img src="gallery-zh-light.png" alt="11 个组件的线稿预览、说明与添加按钮"></section>
-<p>图表与动效资源均本地打包并保留 MIT 许可证；不依赖 CDN、未切换技术栈、未安装新全局 skill 或 MCP。原网页线上版本没有改动。</p></html>

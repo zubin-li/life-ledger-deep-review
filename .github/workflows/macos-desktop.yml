@@ -1,23 +1,17 @@
 name: macOS Desktop Verification
 
 on:
-  push:
-    branches: [codex/macos-3.6-modular]
   workflow_dispatch:
   pull_request:
     paths:
       - "desktop/**"
       - "src-tauri/**"
       - "public/app.js"
-      - "public/widget-contract.js"
       - "scripts/desktop-prepare.mjs"
-      - "scripts/build-widget.sh"
       - "package.json"
       - "package-lock.json"
       - "docs/macos-desktop.md"
-      - "docs/macos-widget.md"
       - "tests/desktop-*.test.mjs"
-      - "tests/widget-*.test.mjs"
       - ".github/workflows/macos-desktop.yml"
 
 permissions:

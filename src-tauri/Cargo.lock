@@ -2030,11 +2030,10 @@ dependencies = [
 
 [[package]]
 name = "life-ledger-deep-review-desktop"
-version = "3.6.0"
+version = "1.3.0"
 dependencies = [
  "rfd",
  "serde",
- "serde_json",
  "tauri",
  "tauri-build",
  "url",

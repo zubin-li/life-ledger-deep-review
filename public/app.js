@@ -2,12 +2,7 @@ const STORAGE_KEY = "life-ledger-v1";
 const LANGUAGE_KEY = "life-ledger-language";
 const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
 const THEME_KEY = "life-ledger-theme";
-const MOTION_KEY = "life-ledger-motion";
 const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
-const INSPECTOR_KEY = "life-ledger-inspector-collapsed";
-const SIDEBAR_WIDTH_KEY = "lifeLedgerSidebarWidth31";
-const INSPECTOR_WIDTH_KEY = "lifeLedgerInspectorWidth31";
-const DESKTOP_SHORTCUT_VIEWS = ["today", "week", "timeline", "review", "habits"];
 const CALENDAR_VIEW_KEY = "life-ledger-calendar-view";
 const REMINDER_KEY = "life-ledger-reminder";
 const RESTORE_SAFETY_KEY = "life-ledger-restore-safety-v1";
@@ -65,21 +60,11 @@ const i18n = {
     metaDescription: "一套会随着你成长的私人习惯与深度复盘系统。",
     brand: "Life Ledger",
     brandSmall: "深度复盘",
-    nav: { today: "今日", week: "本周", longrange: "长期", timeline: "时间轴", review: "洞察", habits: "习惯" },
+    nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", habits: "习惯设置" },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
     profileName: "个人复盘空间",
     exportTitle: "导入与导出",
     pwa: { install: "安装为应用", ready: "可安装", manual: "请使用浏览器菜单中的“添加到主屏幕”或“安装应用”。", installed: "Life Ledger 已安装" },
-    desktop: { statusLocal: "本地 Mac", statusCloud: "已连接云端" },
-    widget: {
-      title: "桌面小组件",
-      desc: "在 Mac 桌面上查看今日习惯与完成度，并可直接勾选完成——无需打开应用。小组件不会显示日记、心情原因等私密内容。添加方法：右键点击桌面，选择“编辑小组件”，搜索“Life Ledger”。",
-      connected: "已连接 · 上次同步 {time}",
-      idle: "尚未同步",
-      error: "同步失败，将自动重试",
-      justNow: "刚刚",
-      minutesAgo: "{minutes} 分钟前",
-    },
     theme: { label: "外观", system: "跟随系统", light: "浅色模式", dark: "深色模式" },
     toolbar: { open: "展开工具", close: "收起工具", short: "工具" },
     yearSuffix: "年",
@@ -108,75 +93,9 @@ const i18n = {
     viewTitles: {
       today: "今日",
       week: "本周",
-      longrange: "长期",
       timeline: "时间轴",
-      review: "洞察",
+      review: "月度复盘",
       habits: "习惯",
-    },
-    widgets: {
-      a11y: {
-        summary: "{date}：完成 {done}/{total}",
-        habits: "已完成 {completed}，待完成 {open}",
-      },
-    },
-    today: {
-      summary: "{done} / {total} 项完成",
-      completed: "已完成（{count}）",
-      streak: "{count} 天连续",
-      last7: "最近 7 天",
-      notScheduled: "未排程",
-      notToday: "非今日计分",
-      noHabits: "今天没有需要完成的习惯",
-      noSearch: "没有匹配的习惯",
-      noSearchHelp: "换一个词，或清空搜索。",
-      futureLocked: "未来的日子还不能勾选",
-      morning: "早上好",
-      evening: "晚上好",
-      doneKicker: "今天完成了",
-      allDone: "今天的习惯都完成了",
-      allDoneHelp: "可以回顾今天，或为自己留一点空白。",
-      open: "待完成",
-      scheduled: "已排程",
-      reflect: "回顾今天",
-      tomorrow: "明天",
-      tomorrowCount: "明天有 {count} 项",
-      reflectionLabel: "回顾",
-      habits: "习惯",
-      reflection: "回顾",
-      noReflection: "还没有回顾",
-      showAllHabits: "查看全部 {count} 项",
-      contextConsistency: "近 7 日完成率",
-      eventsCount: "{count} 个日程",
-      sidebarMore: "还有 {count} 项",
-    },
-    settings: {
-      title: "设置",
-      general: "通用",
-      data: "数据",
-      cloud: "云端与同步",
-      calendar: "日历",
-      habits: "习惯",
-      workspaceSwitch: "切换工作区",
-      inspector: "检查器",
-      motion: "动效",
-      motionFull: "完整",
-      motionReduced: "减少",
-      motionOff: "关闭",
-      saved: "已保存",
-    },
-    create: {
-      label: "新建",
-      habit: "新习惯",
-      journal: "日志条目",
-      weeklyGoal: "添加本周目标",
-      focus: "开始专注",
-    },
-    submit: {
-      saved: "已保存",
-      exported: "已导出",
-      saving: "保存中",
-      exporting: "导出中",
-      error: "未能完成，请重试",
     },
     hero: {
       quote: "不积小流，\n无以成江海。",
@@ -186,7 +105,7 @@ const i18n = {
       progressText: "{done} / {total} 项完成",
     },
     mood: {
-      kicker: "心情",
+      kicker: "MOOD",
       title: "今天整体感觉如何？",
       selectedTitle: "这一天整体感觉如何？",
       values: { 低落: "低落", 平静: "平静", 很好: "很好" },
@@ -194,7 +113,7 @@ const i18n = {
       source: "苏轼《水调歌头》",
     },
     moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
-    timeline: { kicker: "记忆时间轴", title: "时间轴", description: "沿着心情与照片，重新看见走过的日子。", previous: "上个月", next: "下个月", loading: "正在整理这段记忆……", summary: "{days} 个留下记录的日子 · {photos} 张照片", summaryOnePhoto: "{days} 个留下记录的日子 · 1 张照片", emptyTitle: "这个月还没有留下记忆", emptyHelp: "心情、原因或照片会沿着时间轴出现在这里。", noMood: "一日记忆", habitsCompleted: "{done} / {total} 个习惯", selectDay: "选择一天查看详情", noNote: "这一天没有笔记。", habitsHeading: "已完成习惯" },
+    timeline: { kicker: "记忆时间轴", title: "时间轴", description: "沿着心情与照片，重新看见走过的日子。", previous: "上个月", next: "下个月", loading: "正在整理这段记忆……", summary: "{days} 个留下记录的日子 · {photos} 张照片", summaryOnePhoto: "{days} 个留下记录的日子 · 1 张照片", emptyTitle: "这个月还没有留下记忆", emptyHelp: "心情、原因或照片会沿着时间轴出现在这里。", noMood: "一日记忆" },
     sidebarLongTerm: { title: "长期待办", open: "查看全部长期待办", empty: "还没有进行中的长期事项。" },
     todayGoals: {
       kicker: "日历", title: "每日日程", desc: "查看所选日期的日历安排。", previous: "前一天", next: "后一天",
@@ -209,7 +128,7 @@ const i18n = {
       hideRecurring: "默认收起重复日程", hideRecurringHelp: "固定日程仍会被记录，但不会占满每日计划。", save: "保存选择", saving: "正在保存…", close: "关闭", disconnect: "断开连接", disconnectConfirm: "断开后将删除 Life Ledger 中缓存的日历内容。Google 日历本身不会受到影响。",
       saved: "日历选择已保存", disconnected: "Google 日历已断开", stale: "暂时无法连接 Google，正在显示最近一次日程。", error: "日历暂时无法读取，请稍后重试。", authExpired: "Google 授权已失效，请重新连接。", noCalendars: "没有找到可读取的日历。", calendarEvents: "日程",
     },
-    journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么，推进了什么，值得记住什么？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存", tabReflection: "复盘", tabFocus: "专注", switchAria: "切换每日复盘与专注计时", showReflection: "显示每日复盘", showFocus: "显示专注计时" },
+    journal: { kicker: "日记与事件", title: "每日复盘", desc: "记下发生了什么、推进了什么，以及值得记住的事。", placeholder: "今天发生了什么？推进了什么？有什么值得记住？", futureLocked: "复盘会在这一天到来后开放。", autosaved: "● 自动保存", tabReflection: "复盘", tabFocus: "专注", switchAria: "切换每日复盘与专注计时", showReflection: "显示每日复盘", showFocus: "显示专注计时" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "明日目标", desc: "提前为明天留下一条清晰、从容的起点。", placeholder: "添加明天要完成的事情…", addLabel: "添加明日目标",
       empty: "明天还没有安排具体目标。<br />提前写下一件最重要的事。", added: "已加入明日目标",
@@ -252,84 +171,6 @@ const i18n = {
       empty: "尚未记录",
       dayTitle: "{month}月{day}日",
       dayPercent: "{day}日 · {percent}%",
-      todayButton: "回到今天",
-      prevMonth: "上个月",
-      nextMonth: "下个月",
-      monthInView: "月历概览",
-    },
-    modules: {
-      editLayout: "编辑卡片",
-      doneEditing: "完成",
-      resetLayout: "重置布局",
-      resetConfirm: "确定重置模块布局吗？",
-      summary: "今日概览",
-      habits: "习惯打卡",
-      calendar: "月历概览",
-      focus: "专注计时",
-      photos: "照片记忆",
-      reflection: "每日复盘",
-      context: "7日节律",
-      completed: "本周日程",
-      insights: "本周洞察",
-      goals: "本周目标",
-      review: "深度复盘",
-      names: {
-        summary: "今日概览",
-        mood: "心情", heatmap: "习惯热力图", wall: "照片墙", weather: "天气",
-        habits: "习惯打卡",
-        calendar: "月历概览",
-        focus: "专注计时",
-        photos: "照片记忆",
-        reflection: "每日复盘",
-        context: "7日节律", dayplan: "每日日程",
-        completed: "本周日程",
-        insights: "本周洞察",
-        goals: "本周目标",
-        review: "深度复盘",
-      },
-      startFocus: "开始专注",
-      startFocusShort: "开始",
-      undo: "撤销",
-      undoAria: "撤销布局更改",
-      undoTitle: "撤销布局（⌘Z）",
-      sizeSmall: "小",
-      sizeMedium: "中",
-      sizeLarge: "大号 · 横向",
-      sizeSquare: "大号 · 方形",
-      sizeSelector: "卡片尺寸",
-      sizeAria: "设置尺寸为 {size}",
-      dragAria: "拖动移动 {name}",
-      dragHint: "拖动或按方向键移动卡片",
-      cancel: "取消",
-      actionShow: "显示",
-      actionHide: "隐藏",
-      show: "显示 {name}",
-      hide: "隐藏 {name}",
-      timerSettings: "计时设置",
-      timerShort: "计时",
-      writeReview: "写复盘",
-      collapse: "收起模块",
-      expand: "展开模块",
-      editHint: "拖动把手或按 Alt+上下箭头 调整顺序",
-      up: "上移",
-      down: "下移",
-      movedDelta: "已向{direction}移动{step}位，当前第{pos}位（共{total}个）",
-      moved: "已移至第{pos}位（共{total}个）",
-      dragHandle: "{name} 拖拽手柄",
-      dragHint: "按 Alt+上下箭头 或拖动调整顺序",
-      moveUp: "上移模块",
-      moveDown: "下移模块",
-      show: "显示模块",
-      hide: "隐藏模块",
-      actionShow: "显示",
-      actionHide: "隐藏",
-      hidden: "已隐藏 {name}",
-      visible: "已显示 {name}",
-      hintTitle: "自定义你的看板",
-      hintDesc: "拖动把手或使用 Alt+上下方向键调整模块顺序。点击右侧完成保存。",
-      dismissHint: "知道了",
-      editEnabled: "已进入模块编辑模式",
-      editDisabled: "已退出模块编辑模式",
     },
     week: {
       kicker: "THIS WEEK",
@@ -348,14 +189,7 @@ const i18n = {
       rangeDate: "{year}年{m1}月{d1}日 — {m2}月{d2}日",
       checklist: "CHECKLIST",
       goalsTitle: "本周目标",
-      goalsTitleProgress: "本周目标 · {done} / {total}",
-      habitsProgress: "{done}/{total} 个习惯",
-      completionRate: "完成率",
-      bestDay: "最佳一天",
-      streak: "活跃连续",
-      focusTime: "专注时长",
-      noEntry: "无记录",
-      goalPlaceholder: "添加目标",
+      goalPlaceholder: "添加这一周必须完成的事情…",
       emptyGoals: "这一周还没有写下必须完成的事情。<br />先放一件真正重要的进来。",
       imageCaption: "THE DISCIPLINE OF A WEEK",
       outputKicker: "WEEKLY OUTPUT",
@@ -368,8 +202,6 @@ const i18n = {
       outputStatus: "{count} 字 · 持续编辑中",
       savedToWeek: "文字会持续保存在当前周",
       added: "已加入本周目标",
-      agendaLabel: "本周日程",
-      openDay: "打开今日",
     },
     longTerm: {
       tabWeek: "本周目标", tabLong: "长期目标", kicker: "HORIZON", title: "长期目标", description: "保留方向，不必强塞进这一周。", activeCount: "{count} 个活跃", empty: "还没有长期目标。<br />写下一个值得持续推进的方向。", add: "添加长期目标", dialogKicker: "长期目标", addTitle: "添加一个方向", editTitle: "编辑长期目标", name: "目标", next: "下一步", review: "回顾日期", status: "状态", active: "活跃", paused: "暂停", completed: "完成", noNext: "还没有写下一步", noReview: "暂未设置回顾日期", reviewOn: "{date} 回顾", delete: "删除", cancel: "取消", save: "保存", added: "长期目标已添加", updated: "长期目标已更新", removed: "长期目标已删除",
@@ -425,50 +257,6 @@ const i18n = {
       weekSelectLabel: "选择周",
       periodSummary: "{met}/{periods} 个周期达标",
       noDataYet: "这个月份还没有可比较的数据。",
-      detailedSummary: "详细指标",
-      insightsEmpty: "本月数据尚不足以生成摘要。",
-      insightAvg: "平均完成度",
-      insightBest: "最佳习惯",
-      insightFocus: "专注时长",
-      insightDelta: "较上月 {delta}",
-      insightDeltaUp: "+{delta} 点",
-      insightDeltaDown: "{delta} 点",
-      timeSingular: "次",
-      timePlural: "次",
-      window7: "7 天",
-      window30: "30 天",
-      window90: "90 天",
-      windowAria: "统计区间",
-      rateLabel: "完成率",
-      rangeTo: "至",
-      forPeriod: "本区间",
-      perDay: "每天 {count} 次",
-      viewTrend: "趋势",
-      viewCalendar: "日历",
-      viewHabits: "习惯",
-      viewTable: "表格",
-      vsPreviousUp: "比上一区间 +{delta}",
-      vsPreviousDown: "比上一区间 {delta}",
-      samePrevious: "与上一区间相同",
-      streakLabel: "当前连续",
-      bestStreakLabel: "最长连续",
-      weekdayTitle: "星期规律",
-      habitCompare: "各习惯",
-      heatmapTitle: "一致性",
-      valuesSummary: "数值表",
-      focusWindow: "本区间专注 {minutes} 分钟",
-      insufficient: "这个区间还没有可计入的完成记录。",
-      trendSummary: "{start} 至 {end}，完成 {completed}/{eligible}。",
-      datePopoverLabel: "选择日期",
-      datePopoverToday: "今天",
-      systemLanguage: "跟随系统",
-      narrativeTitle: "月度感想",
-      autosaved: "已自动保存",
-      habitColRate: "完成率",
-      focusMonth: "本月专注 {minutes} 分钟",
-      trendEmpty: "暂无趋势数据",
-      trendTitle: "每日完成度",
-      focusByTopic: "按主题专注",
       draft: {
         title: "# {year}年{month}月复盘",
         foundations: "## 基础目标",
@@ -489,10 +277,7 @@ const i18n = {
       source: "《大学》",
       desc: "调整目标会创建新版本，并从指定日期开始生效；往日标准仍按当时版本计算。",
       add: "＋ 新增习惯",
-      summary: "{count} 个习惯 · {active} 个生效",
-      summaryAll: "{count} 个习惯 · {active} 个生效",
-      emptyTitle: "还没有习惯",
-      emptyHelp: "从一个小而稳定的动作开始。",
+      summary: "{count} 个生效习惯",
       versions: "{count} 个目标版本",
       currentStandard: "当前标准",
       inDaily: "计入今日",
@@ -511,13 +296,6 @@ const i18n = {
       updated: "目标版本已更新",
       added: "新习惯已添加",
       deleted: "已删除“{habit}”",
-      paused: "已停用 {habit}",
-      resumed: "已启用 {habit}",
-      weeklyHint: "每周",
-      colName: "名称",
-      colSchedule: "周期",
-      colTarget: "目标",
-      colActive: "启用",
     },
     drawer: {
       close: "关闭",
@@ -537,7 +315,6 @@ const i18n = {
       futureLocked: "未来日期只用于规划目标，习惯、心情与复盘将在当天开放。",
       memoryEdit: "照片与原因",
       photoCount: "{count} 张照片",
-      photos: "照片记忆",
     },
     dialog: {
       kicker: "HABIT",
@@ -616,21 +393,11 @@ const i18n = {
     metaDescription: "A private habit and deep-review system that grows with you.",
     brand: "Life Ledger",
     brandSmall: "DEEP REVIEW",
-    nav: { today: "Today", week: "Week", longrange: "Horizon", timeline: "Timeline", review: "Insights", habits: "Habits" },
+    nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", habits: "Habits" },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
     profileName: "Personal Ledger",
     exportTitle: "Import & export",
     pwa: { install: "Install app", ready: "Ready to install", manual: "Use your browser menu and choose Add to Home Screen or Install app.", installed: "Life Ledger installed" },
-    desktop: { statusLocal: "Local Mac", statusCloud: "Connected Cloud" },
-    widget: {
-      title: "Desktop widget",
-      desc: "See today's habits and progress on your Mac desktop, and check one off directly — no need to open the app. The widget never shows journal notes or mood reasons. To add it: right-click your Desktop, choose “Edit Widgets”, and search for “Life Ledger”.",
-      connected: "Connected · last synced {time}",
-      idle: "Not synced yet",
-      error: "Sync failed, retrying automatically",
-      justNow: "just now",
-      minutesAgo: "{minutes} min ago",
-    },
     theme: { label: "Appearance", system: "Follow system", light: "Light mode", dark: "Dark mode" },
     toolbar: { open: "Show tools", close: "Hide tools", short: "Tools" },
     yearSuffix: "",
@@ -659,75 +426,9 @@ const i18n = {
     viewTitles: {
       today: "Today",
       week: "Week",
-      longrange: "Horizon",
       timeline: "Timeline",
-      review: "Insights",
+      review: "Monthly Review",
       habits: "Habits",
-    },
-    widgets: {
-      a11y: {
-        summary: "{date}: {done} of {total}",
-        habits: "{completed} completed, {open} open",
-      },
-    },
-    today: {
-      summary: "{done} of {total} done",
-      completed: "Completed ({count})",
-      streak: "{count}-day streak",
-      last7: "Last 7 days",
-      notScheduled: "Not scheduled",
-      notToday: "Not in today's score",
-      noHabits: "No habits scheduled for today",
-      noSearch: "No habits match this search",
-      noSearchHelp: "Try another word, or clear the search.",
-      futureLocked: "Future days cannot be checked yet",
-      morning: "Good morning",
-      evening: "Good evening",
-      doneKicker: "Today is complete",
-      allDone: "All of today's habits are done",
-      allDoneHelp: "Reflect on the day or leave a little space.",
-      open: "Open",
-      scheduled: "Scheduled",
-      reflect: "Reflect on today",
-      tomorrow: "Tomorrow",
-      tomorrowCount: "{count} habits tomorrow",
-      reflectionLabel: "Reflection",
-      habits: "Habits",
-      reflection: "Reflection",
-      noReflection: "No reflection yet",
-      showAllHabits: "Show all {count}",
-      contextConsistency: "7-day completion",
-      eventsCount: "{count} events",
-      sidebarMore: "+{count} more",
-    },
-    settings: {
-      title: "Settings",
-      general: "General",
-      data: "Data",
-      cloud: "Cloud & Sync",
-      calendar: "Calendar",
-      habits: "Habits",
-      workspaceSwitch: "Switch workspace",
-      inspector: "Inspector",
-      motion: "Motion",
-      motionFull: "Full",
-      motionReduced: "Reduced",
-      motionOff: "Off",
-      saved: "Saved",
-    },
-    create: {
-      label: "Create",
-      habit: "New habit",
-      journal: "Journal entry",
-      weeklyGoal: "Add weekly goal",
-      focus: "Start focus",
-    },
-    submit: {
-      saved: "Saved",
-      exported: "Exported",
-      saving: "Saving",
-      exporting: "Exporting",
-      error: "Could not finish. Try again.",
     },
     hero: {
       quote: "The secret of getting ahead\nis getting started.",
@@ -737,7 +438,7 @@ const i18n = {
       progressText: "{done} / {total} done",
     },
     mood: {
-      kicker: "Mood",
+      kicker: "MOOD",
       title: "How do you feel today?",
       selectedTitle: "How did this day feel?",
       values: { 低落: "Low", 平静: "Calm", 很好: "Good" },
@@ -745,7 +446,7 @@ const i18n = {
       source: "Attributed to the Buddha",
     },
     moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
-    timeline: { kicker: "MEMORY LINE", title: "Timeline", description: "Follow your moods and photos back through the days you lived.", previous: "Previous month", next: "Next month", loading: "Gathering this month’s memories…", summary: "{days} recorded days · {photos} photos", summaryOnePhoto: "{days} recorded days · 1 photo", emptyTitle: "No memories here yet", emptyHelp: "Moods, reasons, and photos will appear here as the month unfolds.", noMood: "Daily memory", habitsCompleted: "{done} of {total} habits", selectDay: "Select a day to view details", noNote: "No note for this day.", habitsHeading: "Habits completed" },
+    timeline: { kicker: "MEMORY LINE", title: "Timeline", description: "Follow your moods and photos back through the days you lived.", previous: "Previous month", next: "Next month", loading: "Gathering this month’s memories…", summary: "{days} recorded days · {photos} photos", summaryOnePhoto: "{days} recorded days · 1 photo", emptyTitle: "No memories here yet", emptyHelp: "Moods, reasons, and photos will appear here as the month unfolds.", noMood: "Daily memory" },
     sidebarLongTerm: { title: "Long-term list", open: "View all long-term items", empty: "No active long-term items yet." },
     todayGoals: {
       kicker: "CALENDAR", title: "Daily Calendar", desc: "Calendar events for the selected day.", previous: "Previous day", next: "Next day",
@@ -760,7 +461,7 @@ const i18n = {
       hideRecurring: "Collapse recurring routines", hideRecurringHelp: "Routine events remain available without taking over the day.", save: "Save selection", saving: "Saving…", close: "Close", disconnect: "Disconnect", disconnectConfirm: "Disconnecting removes cached calendar details from Life Ledger. Your Google Calendar will not be changed.",
       saved: "Calendar selection saved", disconnected: "Google Calendar disconnected", stale: "Google is unavailable, so the latest cached schedule is shown.", error: "Calendar could not be read. Please try again.", authExpired: "Google access expired. Please reconnect.", noCalendars: "No readable calendars were found.", calendarEvents: "Calendar events",
     },
-    journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened, what moved, and what is worth keeping?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved", tabReflection: "Reflection", tabFocus: "Focus", switchAria: "Switch between daily reflection and focus timer", showReflection: "Show daily reflection", showFocus: "Show focus timer" },
+    journal: { kicker: "JOURNAL & EVENTS", title: "Daily Reflection", desc: "Capture what happened, what moved, and what matters.", placeholder: "What happened today? What moved forward? What is worth remembering?", futureLocked: "Reflection opens when this day arrives.", autosaved: "● autosaved", tabReflection: "Reflection", tabFocus: "Focus", switchAria: "Switch between daily reflection and focus timer", showReflection: "Show daily reflection", showFocus: "Show focus timer" },
     tomorrowGoals: {
       kicker: "TOMORROW'S PLAN", title: "Tomorrow's Goals", desc: "Give tomorrow a clear and gentle starting point.", placeholder: "Add something for tomorrow…", addLabel: "Add tomorrow's goal",
       empty: "Nothing planned for tomorrow yet.<br />Give it one meaningful starting point.", added: "Added to tomorrow's goals",
@@ -803,84 +504,6 @@ const i18n = {
       empty: "No record",
       dayTitle: "{monthName} {day}",
       dayPercent: "{month}/{day} · {percent}%",
-      todayButton: "Today",
-      prevMonth: "Previous month",
-      nextMonth: "Next month",
-      monthInView: "Month in view",
-    },
-    modules: {
-      editLayout: "Edit cards",
-      doneEditing: "Done",
-      resetLayout: "Reset layout",
-      resetConfirm: "Reset module layout for this view?",
-      summary: "Summary",
-      habits: "Daily Habits",
-      calendar: "Month in View",
-      focus: "Focus",
-      photos: "Photos",
-      reflection: "Reflection",
-      context: "7-Day Rhythm",
-      completed: "Completed Days",
-      insights: "Weekly Insights",
-      goals: "Weekly Goals",
-      review: "Weekly Review",
-      names: {
-        summary: "Summary",
-        mood: "Mood", heatmap: "Habit rhythm", wall: "Photo wall", weather: "Weather",
-        habits: "Daily Habits",
-        calendar: "Month in View",
-        focus: "Focus",
-        photos: "Photos",
-        reflection: "Reflection",
-        context: "7-Day Rhythm", dayplan: "Daily calendar",
-        completed: "Completed Days",
-        insights: "Weekly Insights",
-        goals: "Weekly Goals",
-        review: "Weekly Review",
-      },
-      startFocus: "Start focus",
-      startFocusShort: "Start",
-      undo: "Undo",
-      undoAria: "Undo layout change",
-      undoTitle: "Undo layout (⌘Z)",
-      sizeSmall: "Small",
-      sizeMedium: "Medium",
-      sizeLarge: "Large · wide",
-      sizeSquare: "Large square",
-      sizeSelector: "Widget size",
-      sizeAria: "Set size to {size}",
-      dragAria: "Drag to move {name}",
-      dragHint: "Drag or Arrow keys to move",
-      cancel: "Cancel",
-      actionShow: "Show",
-      actionHide: "Hide",
-      show: "Show {name}",
-      hide: "Hide {name}",
-      timerSettings: "Timer settings",
-      timerShort: "Timer",
-      writeReview: "Write review",
-      collapse: "Collapse module",
-      expand: "Expand module",
-      editHint: "Drag handles or use Alt+Up/Down to reorder",
-      up: "up",
-      down: "down",
-      movedDelta: "Moved {direction} by {step} to position {pos} of {total}",
-      moved: "Moved to position {pos} of {total}",
-      dragHandle: "{name} drag handle",
-      dragHint: "Press Alt+Up/Down arrow or drag to reorder",
-      moveUp: "Move module up",
-      moveDown: "Move module down",
-      show: "Show module",
-      hide: "Hide module",
-      actionShow: "Show",
-      actionHide: "Hide",
-      hidden: "Hidden {name}",
-      visible: "Showing {name}",
-      hintTitle: "Customise your board",
-      hintDesc: "Drag handles or use Alt+Up/Down to reorder cards. Click Done when finished.",
-      dismissHint: "Got it",
-      editEnabled: "Layout edit mode enabled",
-      editDisabled: "Layout edit mode finished",
     },
     week: {
       kicker: "THIS WEEK",
@@ -899,14 +522,7 @@ const i18n = {
       rangeDate: "{month1} {d1} — {month2} {d2}, {year}",
       checklist: "CHECKLIST",
       goalsTitle: "Weekly Goals",
-      goalsTitleProgress: "Weekly goals · {done} of {total}",
-      habitsProgress: "{done}/{total} habits",
-      completionRate: "Completion Rate",
-      bestDay: "Best Day",
-      streak: "Active Streak",
-      focusTime: "Focus Time",
-      noEntry: "No entry",
-      goalPlaceholder: "Add goal",
+      goalPlaceholder: "Add a must-finish task for these dates…",
       emptyGoals: "No must-finish tasks for this week yet.<br />Put one important thing here.",
       imageCaption: "THE DISCIPLINE OF A WEEK",
       outputKicker: "WEEKLY OUTPUT",
@@ -919,8 +535,6 @@ const i18n = {
       outputStatus: "{count} chars · editing",
       savedToWeek: "Text is saved to the selected week",
       added: "Added to weekly goals",
-      agendaLabel: "Week agenda",
-      openDay: "Open Today",
     },
     longTerm: {
       tabWeek: "This week", tabLong: "Longer term", kicker: "HORIZON", title: "Long-term goals", description: "Keep the direction visible without forcing it into this week.", activeCount: "{count} active", empty: "No long-term goals yet.<br />Add one direction worth carrying forward.", add: "Add a long-term goal", dialogKicker: "LONG-TERM GOAL", addTitle: "Add direction", editTitle: "Edit long-term goal", name: "Goal", next: "Next step", review: "Review date", status: "Status", active: "Active", paused: "Paused", completed: "Completed", noNext: "No next step yet", noReview: "No review date", reviewOn: "Review {date}", delete: "Delete", cancel: "Cancel", save: "Save", added: "Long-term goal added", updated: "Long-term goal updated", removed: "Long-term goal deleted",
@@ -976,54 +590,10 @@ const i18n = {
       weekSelectLabel: "Choose week",
       periodSummary: "{met}/{periods} periods met",
       noDataYet: "There is no comparable data for this month yet.",
-      detailedSummary: "Detailed metrics",
-      insightsEmpty: "Not enough data yet for a summary.",
-      insightAvg: "average completion",
-      insightBest: "best habit",
-      insightFocus: "focused time",
-      insightDelta: "{delta} vs previous month",
-      insightDeltaUp: "+{delta} pts",
-      insightDeltaDown: "{delta} pts",
-      timeSingular: "time",
-      timePlural: "times",
-      window7: "7 days",
-      window30: "30 days",
-      window90: "90 days",
-      windowAria: "Statistics window",
-      rateLabel: "Completion",
-      rangeTo: "to",
-      forPeriod: "For this window",
-      perDay: "{count} per day",
-      viewTrend: "Trend",
-      viewCalendar: "Calendar",
-      viewHabits: "Habits",
-      viewTable: "Table",
-      vsPreviousUp: "+{delta} vs previous",
-      vsPreviousDown: "{delta} vs previous",
-      samePrevious: "Same as the previous window",
-      streakLabel: "Current streak",
-      bestStreakLabel: "Best streak",
-      weekdayTitle: "Weekday pattern",
-      habitCompare: "By habit",
-      heatmapTitle: "Consistency",
-      valuesSummary: "Values",
-      focusWindow: "{minutes} focused minutes in this window",
-      insufficient: "This window has no eligible completions yet.",
-      trendSummary: "{start} to {end}, {completed}/{eligible} complete.",
-      datePopoverLabel: "Choose date",
-      datePopoverToday: "Today",
-      systemLanguage: "System default",
-      narrativeTitle: "Monthly reflection",
-      autosaved: "Autosaved",
-      habitColRate: "Rate",
-      focusMonth: "{minutes} min focused this month",
-      trendEmpty: "No trend data yet",
-      trendTitle: "Daily completion",
-      focusByTopic: "Focus by topic",
       draft: {
         title: "# {monthName} {year} Review",
         foundations: "## Foundations",
-        line: "- {habit}: completed {countLabel}, monthly coverage {rate}%.",
+        line: "- {habit}: completed {count} times, monthly coverage {rate}%.",
         status: "## State & Events",
         mood: "The most recorded mood this month was “{mood}” ({days} days). You left {notes} journal/event notes.",
         noNotes: "- No written notes yet this month.",
@@ -1040,10 +610,7 @@ const i18n = {
       source: "Will Durant, The Story of Philosophy",
       desc: "Changing a goal creates a new version from the effective date; older records keep their original standard.",
       add: "＋ Add habit",
-      summary: "{count} habits · {active} active",
-      summaryAll: "{count} habits · {active} active",
-      emptyTitle: "No habits yet",
-      emptyHelp: "Start with one small, steady action.",
+      summary: "{count} active habits",
       versions: "{count} versions",
       currentStandard: "current standard",
       inDaily: "in daily score",
@@ -1062,13 +629,6 @@ const i18n = {
       updated: "Goal version updated",
       added: "New habit added",
       deleted: "Deleted “{habit}”",
-      paused: "{habit} paused",
-      resumed: "{habit} active",
-      weeklyHint: "weekly",
-      colName: "Name",
-      colSchedule: "Schedule",
-      colTarget: "Target",
-      colActive: "Active",
     },
     drawer: {
       close: "Close",
@@ -1088,7 +648,6 @@ const i18n = {
       futureLocked: "Future dates are for planning only. Habits, mood and reflection open on the day.",
       memoryEdit: "Photos & reason",
       photoCount: "{count} photos",
-      photos: "Photo memories",
     },
     dialog: {
       kicker: "HABIT",
@@ -1167,21 +726,11 @@ const i18n = {
     metaDescription: "Ein privates System für Gewohnheiten und tiefgehende Rückblicke, das mit dir wächst.",
     brand: "Life Ledger",
     brandSmall: "TIEFE REFLEXION",
-    nav: { today: "Heute", week: "Woche", longrange: "Horizont", timeline: "Zeitleiste", review: "Einblicke", habits: "Gewohnheiten" },
+    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", habits: "Gewohnheiten" },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
     profileName: "Persönliches Journal",
     exportTitle: "Import & Export",
     pwa: { install: "App installieren", ready: "Installationsbereit", manual: "Wähle im Browsermenü „Zum Home-Bildschirm“ oder „App installieren“.", installed: "Life Ledger wurde installiert" },
-    desktop: { statusLocal: "Lokaler Mac", statusCloud: "Verbundene Cloud" },
-    widget: {
-      title: "Desktop-Widget",
-      desc: "Zeigt die heutigen Gewohnheiten und den Fortschritt auf dem Mac-Schreibtisch und lässt dich eine direkt abhaken – ganz ohne die App zu öffnen. Das Widget zeigt niemals Tagebuchnotizen oder Stimmungsgründe. Hinzufügen: Rechtsklick auf den Schreibtisch, „Widgets bearbeiten“ wählen und nach „Life Ledger“ suchen.",
-      connected: "Verbunden · zuletzt synchronisiert {time}",
-      idle: "Noch nicht synchronisiert",
-      error: "Synchronisierung fehlgeschlagen, wird automatisch wiederholt",
-      justNow: "gerade eben",
-      minutesAgo: "vor {minutes} Min.",
-    },
     theme: { label: "Darstellung", system: "Systemeinstellung", light: "Heller Modus", dark: "Dunkler Modus" },
     toolbar: { open: "Werkzeuge anzeigen", close: "Werkzeuge ausblenden", short: "Werkzeuge" },
     yearSuffix: "",
@@ -1210,75 +759,9 @@ const i18n = {
     viewTitles: {
       today: "Heute",
       week: "Woche",
-      longrange: "Horizont",
       timeline: "Zeitleiste",
-      review: "Einblicke",
+      review: "Monatsrückblick",
       habits: "Gewohnheiten",
-    },
-    widgets: {
-      a11y: {
-        summary: "{date}: {done} von {total}",
-        habits: "{completed} erledigt, {open} offen",
-      },
-    },
-    today: {
-      summary: "{done} von {total} erledigt",
-      completed: "Erledigt ({count})",
-      streak: "{count} Tage in Folge",
-      notScheduled: "Nicht geplant",
-      notToday: "Nicht im Tagesscore",
-      noHabits: "Heute keine Gewohnheiten",
-      noSearch: "Keine passende Gewohnheit",
-      noSearchHelp: "Anderes Wort versuchen oder die Suche leeren.",
-      futureLocked: "Künftige Tage lassen sich noch nicht abhaken",
-      morning: "Guten Morgen",
-      evening: "Guten Abend",
-      doneKicker: "Heute ist erledigt",
-      allDone: "Alle Gewohnheiten für heute erledigt",
-      allDoneHelp: "Reflektiere den Tag oder lass etwas Raum.",
-      last7: "Letzte 7 Tage",
-      open: "Offen",
-      scheduled: "Geplant",
-      reflect: "Heute reflektieren",
-      tomorrow: "Morgen",
-      tomorrowCount: "{count} Gewohnheiten morgen",
-      reflectionLabel: "Reflexion",
-      habits: "Gewohnheiten",
-      reflection: "Reflexion",
-      noReflection: "Noch keine Reflexion",
-      showAllHabits: "Alle {count} anzeigen",
-      contextConsistency: "7-Tage-Erfüllung",
-      eventsCount: "{count} Termine",
-      sidebarMore: "+{count} weitere",
-    },
-    settings: {
-      title: "Einstellungen",
-      general: "Allgemein",
-      data: "Daten",
-      cloud: "Cloud & Sync",
-      calendar: "Kalender",
-      habits: "Gewohnheiten",
-      workspaceSwitch: "Arbeitsbereich wechseln",
-      inspector: "Inspektor",
-      motion: "Bewegung",
-      motionFull: "Voll",
-      motionReduced: "Reduziert",
-      motionOff: "Aus",
-      saved: "Gespeichert",
-    },
-    create: {
-      label: "Neu",
-      habit: "Neue Gewohnheit",
-      journal: "Journal-Eintrag",
-      weeklyGoal: "Wochenziel hinzufügen",
-      focus: "Fokus starten",
-    },
-    submit: {
-      saved: "Gespeichert",
-      exported: "Exportiert",
-      saving: "Speichert",
-      exporting: "Exportiert",
-      error: "Konnte nicht abgeschlossen werden.",
     },
     hero: {
       quote: "Es ist nicht genug zu wollen,\nman muss auch tun.",
@@ -1296,7 +779,7 @@ const i18n = {
       source: "Albert Schweitzer",
     },
     moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
-    timeline: { kicker: "ERINNERUNGSLINIE", title: "Zeitleiste", description: "Folge deinen Stimmungen und Fotos zurück durch die gelebten Tage.", previous: "Vormonat", next: "Nächster Monat", loading: "Erinnerungen dieses Monats werden gesammelt …", summary: "{days} festgehaltene Tage · {photos} Fotos", summaryOnePhoto: "{days} festgehaltene Tage · 1 Foto", emptyTitle: "Noch keine Erinnerungen in diesem Monat", emptyHelp: "Stimmungen, Gründe und Fotos erscheinen hier im Lauf des Monats.", noMood: "Tageserinnerung", habitsCompleted: "{done} von {total} Gewohnheiten", selectDay: "Wähle einen Tag für Details", noNote: "Keine Notiz für diesen Tag.", habitsHeading: "Erledigte Gewohnheiten" },
+    timeline: { kicker: "ERINNERUNGSLINIE", title: "Zeitleiste", description: "Folge deinen Stimmungen und Fotos zurück durch die gelebten Tage.", previous: "Vormonat", next: "Nächster Monat", loading: "Erinnerungen dieses Monats werden gesammelt …", summary: "{days} festgehaltene Tage · {photos} Fotos", summaryOnePhoto: "{days} festgehaltene Tage · 1 Foto", emptyTitle: "Noch keine Erinnerungen in diesem Monat", emptyHelp: "Stimmungen, Gründe und Fotos erscheinen hier im Lauf des Monats.", noMood: "Tageserinnerung" },
     sidebarLongTerm: { title: "Langfristig", open: "Alle langfristigen Punkte anzeigen", empty: "Noch keine aktiven langfristigen Punkte." },
     todayGoals: {
       kicker: "KALENDER", title: "Tageskalender", desc: "Kalendertermine für den ausgewählten Tag.", previous: "Voriger Tag", next: "Nächster Tag",
@@ -1311,7 +794,7 @@ const i18n = {
       hideRecurring: "Wiederkehrende Routinen einklappen", hideRecurringHelp: "Routinen bleiben verfügbar, ohne den Tagesplan zu überladen.", save: "Auswahl speichern", saving: "Wird gespeichert…", close: "Schließen", disconnect: "Trennen", disconnectConfirm: "Beim Trennen werden zwischengespeicherte Kalenderdaten aus Life Ledger entfernt. Dein Google Kalender bleibt unverändert.",
       saved: "Kalenderauswahl gespeichert", disconnected: "Google Kalender getrennt", stale: "Google ist nicht erreichbar; der zuletzt geladene Tagesplan wird angezeigt.", error: "Der Kalender konnte nicht gelesen werden. Bitte versuche es erneut.", authExpired: "Der Google-Zugriff ist abgelaufen. Bitte erneut verbinden.", noCalendars: "Keine lesbaren Kalender gefunden.", calendarEvents: "Kalendertermine",
     },
-    journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist passiert, was ging voran, was bleibt?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert", tabReflection: "Reflexion", tabFocus: "Fokus", switchAria: "Zwischen Tagesreflexion und Fokus-Timer wechseln", showReflection: "Tagesreflexion anzeigen", showFocus: "Fokus-Timer anzeigen" },
+    journal: { kicker: "TAGEBUCH & EREIGNISSE", title: "Tagesreflexion", desc: "Halte fest, was geschah, was voranging und was wichtig bleibt.", placeholder: "Was ist heute passiert? Was ging voran? Was ist erinnernswert?", futureLocked: "Die Reflexion öffnet sich, sobald dieser Tag erreicht ist.", autosaved: "● automatisch gespeichert", tabReflection: "Reflexion", tabFocus: "Fokus", switchAria: "Zwischen Tagesreflexion und Fokus-Timer wechseln", showReflection: "Tagesreflexion anzeigen", showFocus: "Fokus-Timer anzeigen" },
     tomorrowGoals: {
       kicker: "PLAN FÜR MORGEN", title: "Ziele für morgen", desc: "Gib dem morgigen Tag einen klaren und ruhigen Anfang.", placeholder: "Ein Ziel für morgen hinzufügen…", addLabel: "Ziel für morgen hinzufügen",
       empty: "Für morgen ist noch nichts geplant.<br />Setze einen sinnvollen Anfangspunkt.", added: "Zu den Zielen für morgen hinzugefügt",
@@ -1354,84 +837,6 @@ const i18n = {
       empty: "Kein Eintrag",
       dayTitle: "{day}. {monthName}",
       dayPercent: "{day}.{month}. · {percent}%",
-      todayButton: "Heute",
-      prevMonth: "Vorheriger Monat",
-      nextMonth: "Nächster Monat",
-      monthInView: "Monatsübersicht",
-    },
-    modules: {
-      editLayout: "Karten bearbeiten",
-      doneEditing: "Fertig",
-      resetLayout: "Layout zurücksetzen",
-      resetConfirm: "Modullayout für diese Ansicht zurücksetzen?",
-      summary: "Tagesübersicht",
-      habits: "Gewohnheiten",
-      calendar: "Monatsübersicht",
-      focus: "Fokuszeit",
-      photos: "Fotoerinnerungen",
-      reflection: "Tagesreflexion",
-      context: "7-Tage-Rhythmus",
-      completed: "Erledigte Tage",
-      insights: "Wochen-Einblicke",
-      goals: "Wochenziele",
-      review: "Wochenrückblick",
-      names: {
-        summary: "Tagesübersicht",
-        mood: "Stimmung", heatmap: "Gewohnheitsrhythmus", wall: "Fotowand", weather: "Wetter",
-        habits: "Gewohnheiten",
-        calendar: "Monatsübersicht",
-        focus: "Fokuszeit",
-        photos: "Fotoerinnerungen",
-        reflection: "Tagesreflexion",
-        context: "7-Tage-Rhythmus", dayplan: "Tagesplan",
-        completed: "Erledigte Tage",
-        insights: "Wochen-Einblicke",
-        goals: "Wochenziele",
-        review: "Wochenrückblick",
-      },
-      startFocus: "Fokus starten",
-      startFocusShort: "Start",
-      undo: "Rückgängig",
-      undoAria: "Layoutänderung rückgängig machen",
-      undoTitle: "Layout rückgängig (⌘Z)",
-      sizeSmall: "Klein",
-      sizeMedium: "Mittel",
-      sizeLarge: "Groß · breit",
-      sizeSquare: "Groß · quadratisch",
-      sizeSelector: "Modulgröße",
-      sizeAria: "Größe auf {size} festlegen",
-      dragAria: "{name} durch Ziehen verschieben",
-      dragHint: "Ziehen oder Pfeiltasten zum Verschieben",
-      cancel: "Abbrechen",
-      actionShow: "Einblenden",
-      actionHide: "Ausblenden",
-      show: "{name} einblenden",
-      hide: "{name} ausblenden",
-      timerSettings: "Timer-Einstellungen",
-      timerShort: "Timer",
-      writeReview: "Rückblick schreiben",
-      collapse: "Modul einklappen",
-      expand: "Modul ausklappen",
-      editHint: "Ziehgriffe ziehen oder Alt+Auf/Ab drücken",
-      up: "oben",
-      down: "unten",
-      movedDelta: "Um {step} nach {direction} verschoben, jetzt Position {pos} von {total}",
-      moved: "An Position {pos} von {total} verschoben",
-      dragHandle: "Ziehgriff für {name}",
-      dragHint: "Mit Alt+Auf/Ab oder Ziehen neu anordnen",
-      moveUp: "Modul nach oben verschieben",
-      moveDown: "Modul nach unten verschieben",
-      show: "Modul einblenden",
-      hide: "Modul ausblenden",
-      actionShow: "Einblenden",
-      actionHide: "Ausblenden",
-      hidden: "{name} ausgeblendet",
-      visible: "{name} eingeblendet",
-      hintTitle: "Board anpassen",
-      hintDesc: "Ziehgriffe ziehen oder Alt+Auf/Ab nutzen, um Karten neu anzuordnen. Fertig zum Speichern anklicken.",
-      dismissHint: "Verstanden",
-      editEnabled: "Layout-Bearbeitungsmodus aktiviert",
-      editDisabled: "Layout-Bearbeitungsmodus beendet",
     },
     week: {
       kicker: "DIESE WOCHE",
@@ -1450,14 +855,7 @@ const i18n = {
       rangeDate: "{d1}. {month1} — {d2}. {month2} {year}",
       checklist: "CHECKLISTE",
       goalsTitle: "Wochenziele",
-      goalsTitleProgress: "Wochenziele · {done} von {total}",
-      habitsProgress: "{done}/{total} Gewohnheiten",
-      completionRate: "Abschlussrate",
-      bestDay: "Bester Tag",
-      streak: "Aktive Serie",
-      focusTime: "Fokuszeit",
-      noEntry: "Kein Eintrag",
-      goalPlaceholder: "Ziel hinzufügen",
+      goalPlaceholder: "Wichtiges Ziel für diesen Zeitraum hinzufügen…",
       emptyGoals: "Für diese Woche gibt es noch keine Pflichtziele.<br />Lege eine wirklich wichtige Sache hinein.",
       imageCaption: "DIE DISZIPLIN EINER WOCHE",
       outputKicker: "WOCHENOUTPUT",
@@ -1470,8 +868,6 @@ const i18n = {
       outputStatus: "{count} Zeichen · in Bearbeitung",
       savedToWeek: "Text wird in der ausgewählten Woche gespeichert",
       added: "Zum Wochenplan hinzugefügt",
-      agendaLabel: "Wochenagenda",
-      openDay: "Heute öffnen",
     },
     longTerm: {
       tabWeek: "Diese Woche", tabLong: "Langfristig", kicker: "HORIZONT", title: "Langfristige Ziele", description: "Die Richtung bleibt sichtbar, ohne sie in diese Woche zu zwingen.", activeCount: "{count} aktiv", empty: "Noch keine langfristigen Ziele.<br />Lege eine Richtung fest, die du weiterverfolgen möchtest.", add: "Langfristiges Ziel hinzufügen", dialogKicker: "LANGFRISTIGES ZIEL", addTitle: "Richtung hinzufügen", editTitle: "Langfristiges Ziel bearbeiten", name: "Ziel", next: "Nächster Schritt", review: "Rückblick am", status: "Status", active: "Aktiv", paused: "Pausiert", completed: "Abgeschlossen", noNext: "Noch kein nächster Schritt", noReview: "Kein Rückblickdatum", reviewOn: "Rückblick am {date}", delete: "Löschen", cancel: "Abbrechen", save: "Speichern", added: "Langfristiges Ziel hinzugefügt", updated: "Langfristiges Ziel aktualisiert", removed: "Langfristiges Ziel gelöscht",
@@ -1527,50 +923,6 @@ const i18n = {
       weekSelectLabel: "Woche auswählen",
       periodSummary: "{met}/{periods} Perioden erreicht",
       noDataYet: "Für diesen Monat gibt es noch keine vergleichbaren Daten.",
-      detailedSummary: "Detaillierte Kennzahlen",
-      insightsEmpty: "Noch nicht genug Daten für eine Zusammenfassung.",
-      insightAvg: "durchschnittliche Erledigung",
-      insightBest: "beste Gewohnheit",
-      insightFocus: "Fokuszeit",
-      insightDelta: "{delta} vs. Vormonat",
-      insightDeltaUp: "+{delta} Pkt.",
-      insightDeltaDown: "{delta} Pkt.",
-      timeSingular: "Mal",
-      timePlural: "Mal",
-      window7: "7 Tage",
-      window30: "30 Tage",
-      window90: "90 Tage",
-      windowAria: "Statistikzeitraum",
-      rateLabel: "Erledigung",
-      rangeTo: "bis",
-      forPeriod: "In diesem Zeitraum",
-      perDay: "{count} pro Tag",
-      viewTrend: "Verlauf",
-      viewCalendar: "Kalender",
-      viewHabits: "Gewohnheiten",
-      viewTable: "Tabelle",
-      vsPreviousUp: "+{delta} zum vorherigen Zeitraum",
-      vsPreviousDown: "{delta} zum vorherigen Zeitraum",
-      samePrevious: "Wie im vorherigen Zeitraum",
-      streakLabel: "Aktuelle Serie",
-      bestStreakLabel: "Längste Serie",
-      weekdayTitle: "Wochentage",
-      habitCompare: "Nach Gewohnheit",
-      heatmapTitle: "Regelmäßigkeit",
-      valuesSummary: "Werte",
-      focusWindow: "{minutes} Fokusminuten in diesem Zeitraum",
-      insufficient: "In diesem Zeitraum gibt es noch keine anrechenbaren Erledigungen.",
-      trendSummary: "{start} bis {end}, {completed}/{eligible} erledigt.",
-      datePopoverLabel: "Datum wählen",
-      datePopoverToday: "Heute",
-      systemLanguage: "Systemstandard",
-      narrativeTitle: "Monatsreflexion",
-      autosaved: "Automatisch gespeichert",
-      habitColRate: "Quote",
-      focusMonth: "{minutes} Fokusmin. diesen Monat",
-      trendEmpty: "Noch keine Trenddaten",
-      trendTitle: "Tägliche Erledigung",
-      focusByTopic: "Fokus nach Thema",
       draft: {
         title: "# Rückblick {monthName} {year}",
         foundations: "## Basisziele",
@@ -1591,10 +943,7 @@ const i18n = {
       source: "Johann Wolfgang von Goethe",
       desc: "Eine Zieländerung erstellt ab dem Startdatum eine neue Version; alte Einträge behalten ihren damaligen Standard.",
       add: "＋ Gewohnheit hinzufügen",
-      summary: "{count} Gewohnheiten · {active} aktiv",
-      summaryAll: "{count} Gewohnheiten · {active} aktiv",
-      emptyTitle: "Noch keine Gewohnheiten",
-      emptyHelp: "Beginne mit einer kleinen, stabilen Gewohnheit.",
+      summary: "{count} aktive Gewohnheiten",
       versions: "{count} Versionen",
       currentStandard: "aktueller Standard",
       inDaily: "im Tagesscore",
@@ -1613,13 +962,6 @@ const i18n = {
       updated: "Zielversion aktualisiert",
       added: "Neue Gewohnheit hinzugefügt",
       deleted: "„{habit}“ gelöscht",
-      paused: "{habit} pausiert",
-      resumed: "{habit} aktiv",
-      weeklyHint: "wöchentlich",
-      colName: "Name",
-      colSchedule: "Rhythmus",
-      colTarget: "Ziel",
-      colActive: "Aktiv",
     },
     drawer: {
       close: "Schließen",
@@ -1639,7 +981,6 @@ const i18n = {
       futureLocked: "Zukünftige Tage dienen nur der Planung. Gewohnheiten, Stimmung und Reflexion öffnen am jeweiligen Tag.",
       memoryEdit: "Fotos & Grund",
       photoCount: "{count} Fotos",
-      photos: "Fotoerinnerungen",
     },
     dialog: {
       kicker: "GEWOHNHEIT",
@@ -1751,20 +1092,11 @@ const monthNames = {
 const supportedLanguages = ["en", "de", "zh"];
 const requestedLanguage = new URLSearchParams(location.search).get("lang");
 const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
-const languagePreferenceSet = localStorage.getItem(LANGUAGE_PREFERENCE_KEY) === "true";
-function languageFromChoice(choice) {
-  if (supportedLanguages.includes(choice)) return choice;
-  const nav = (navigator.language || "en").toLowerCase();
-  if (nav.startsWith("zh")) return "zh";
-  if (nav.startsWith("de")) return "de";
-  return "en";
-}
-let languageChoice = supportedLanguages.includes(requestedLanguage)
+let currentLang = supportedLanguages.includes(requestedLanguage)
   ? requestedLanguage
-  : languagePreferenceSet && (storedLanguage === "system" || supportedLanguages.includes(storedLanguage))
+  : localStorage.getItem(LANGUAGE_PREFERENCE_KEY) === "true" && supportedLanguages.includes(storedLanguage)
     ? storedLanguage
-    : "system";
-let currentLang = languageFromChoice(languageChoice);
+    : "en";
 const cloneData = value => typeof structuredClone === "function"
   ? structuredClone(value)
   : JSON.parse(JSON.stringify(value));
@@ -1799,7 +1131,6 @@ const seed = {
   dailyGoals: {},
   weeklyGoals: {},
   longTermGoals: [],
-  planning: { phases: [], currentPhaseId: "", note: "", updatedAt: 0 },
   weeklyOutputs: {},
   weeklyReviews: {},
   focusSessions: [],
@@ -1818,7 +1149,6 @@ let selectedPlanningDate = isoDate(cursor);
 let editingHabitId = null;
 let selectedReviewWeek = isoWeekKey(new Date());
 let focusReviewScope = "week";
-let focusCompleteUntil = 0;
 let selectedFocusReviewMonth = monthKey(new Date());
 let selectedWorkspaceWeek = isoWeekKey(new Date());
 let goalHorizon = "week";
@@ -1826,7 +1156,6 @@ let editingLongTermGoalId = null;
 let dayPlanRoutinesExpanded = false;
 let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
-let analyticsWindow = 30;
 let calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
 const previewName = new URLSearchParams(location.search).get("local-preview");
@@ -1849,25 +1178,7 @@ let authExpired = false;
 let cloudBaseLoginState = null;
 let deferredInstallPrompt = null;
 let themeChoice = ["system", "light", "dark"].includes(localStorage.getItem(THEME_KEY)) ? localStorage.getItem(THEME_KEY) : "system";
-let motionChoice = ["full", "reduced", "off"].includes(localStorage.getItem(MOTION_KEY)) ? localStorage.getItem(MOTION_KEY) : "full";
 let sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
-function readInspectorCollapsed() {
-  const stored = localStorage.getItem(INSPECTOR_KEY);
-  if (stored === "true") return true;
-  if (stored === "false") return false;
-  return window.matchMedia("(max-width: 1179px)").matches;
-}
-let inspectorCollapsed = readInspectorCollapsed();
-let inspectorBeforeTimeline = null;
-let selectedTodayHabitId = "";
-let selectedTimelineDate = isoDate(new Date());
-let selectedHabitSettingsId = "";
-let habitContextMenu = { open: false, habitId: "", anchor: null, date: "" };
-let quickFindQuery = "";
-let reviewBadgeSeen = 0;
-let commandPalette = null;
-let refreshToolbarCreateMenu = () => {};
-let lastHabitToggle = null;
 let reminderSettings = loadReminderSettings();
 let reminderTimer = null;
 let focusTimer = null;
@@ -1880,7 +1191,6 @@ let timelineCursor = new Date();
 timelineCursor.setDate(1);
 timelineCursor.setHours(12, 0, 0, 0);
 let timelineRenderVersion = 0;
-let timelineRendering = false;
 let googleCalendar = {
   configured: false,
   connected: false,
@@ -1892,13 +1202,8 @@ let googleCalendar = {
 const googleCalendarEvents = new Map();
 const googleCalendarLoadedMonths = new Set();
 const googleCalendarLoadingMonths = new Set();
-let weekCalendarReadError = false;
-let selectedArchiveWeek = '';
 let focusWakeLock = null;
 let focusAudioContext = null;
-let focusUIState = "idle";
-let lastRecordedFocusSession = null;
-let lastRecordedFocusMinutes = 0;
 let pendingImport = null;
 let pendingMediaImport = null;
 let pendingMoodDate = null;
@@ -1907,8 +1212,7 @@ let reviewCanvasScope = "week";
 let reviewCanvasKey = "";
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
-// Web Today: the foundations card shows 4 or 8 habits per page by its chosen size.
-const habitsPerPage = () => document.querySelector('#todayView [data-module="habits"]')?.dataset.tgHabits === "h8" ? 8 : 4;
+const HABITS_PER_PAGE = 4;
 let todayHabitPage = 0;
 let habitCarouselScrollFrame = 0;
 let dailyToolPage = "journal";
@@ -1952,19 +1256,7 @@ function applyTheme() {
   document.documentElement.dataset.theme = resolved;
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", resolved === "dark" ? "#17191d" : "#f5f5f7");
   if ($("#themeSelect")) $("#themeSelect").value = themeChoice;
-  const quickTheme = $("#toolbarThemeToggle");
-  if (quickTheme) {
-    quickTheme.innerHTML = resolved === "dark"
-      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>'
-      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>';
-    quickTheme.title = resolved === "dark" ? languageText("切换到浅色", "Switch to light", "Zu hell wechseln") : languageText("切换到深色", "Switch to dark", "Zu dunkel wechseln");
-    quickTheme.setAttribute("aria-label", quickTheme.title);
-  }
-  $("#themeCurrentIcon").innerHTML = {
-    system: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18Z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>',
-    light: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>',
-    dark: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>',
-  }[themeChoice];
+  setText("#themeCurrentIcon", { system: "◐", light: "☀", dark: "☾" }[themeChoice]);
 }
 function applySidebarState() {
   document.body.classList.toggle("sidebar-collapsed", sidebarCollapsed);
@@ -1976,821 +1268,26 @@ function applySidebarState() {
   button.setAttribute("aria-label", label);
   button.setAttribute("title", label);
   button.setAttribute("aria-expanded", String(!sidebarCollapsed));
-  button.classList.toggle("icon-morph-on", sidebarCollapsed);
-  window.LifeLedgerInteraction?.morphIconToggle(button, sidebarCollapsed ? "collapsed" : "expanded", { onState: "collapsed" });
-}
-function applyInspectorState() {
-  document.body.classList.toggle("inspector-collapsed", inspectorCollapsed);
-  const pane = $("#inspectorPane");
-  if (pane) pane.setAttribute("aria-hidden", String(inspectorCollapsed));
-}
-function applySidebarWidth(width) {
-  const shell = $("#appShell");
-  if (!shell) return;
-  const clamped = Math.max(156, Math.min(240, Math.round(width)));
-  shell.style.setProperty("--sidebar-width", `${clamped}px`);
-  localStorage.setItem(SIDEBAR_WIDTH_KEY, String(clamped));
-}
-function applyInspectorWidth(width) {
-  const shell = $("#appShell");
-  if (!shell) return;
-  const clamped = Math.max(280, Math.min(440, Math.round(width)));
-  shell.style.setProperty("--inspector-width", `${clamped}px`);
-  localStorage.setItem(INSPECTOR_WIDTH_KEY, String(clamped));
-}
-function toggleSidebar() {
-  withoutMotion(() => {
-    sidebarCollapsed = !sidebarCollapsed;
-    localStorage.setItem(SIDEBAR_KEY, String(sidebarCollapsed));
-    applySidebarState();
-  });
-}
-function toggleInspector() {
-  inspectorCollapsed = !inspectorCollapsed;
-  localStorage.setItem(INSPECTOR_KEY, String(inspectorCollapsed));
-  applyInspectorState();
-}
-function goToToday() {
-  jumpToDate(isoDate(new Date()));
-}
-function jumpToDate(iso) {
-  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
-  const date = parseDate(iso);
-  cursor = date;
-  selectedPlanningDate = isoDate(date);
-  todayMonthCursor = null;
-  selectedTimelineDate = isoDate(date);
-  timelineCursor = new Date(date.getFullYear(), date.getMonth(), 1, 12);
-  selectedWorkspaceWeek = isoWeekKey(date);
-  renderAll();
-  void loadGoogleCalendarMonth(cursor);
-}
-function setDatePopoverOpen(open) {
-  const popover = $("#datePopover");
-  const label = $("#dateNavLabel");
-  if (!popover) return;
-  popover.hidden = !open;
-  label?.setAttribute("aria-expanded", String(open));
-  if (open) {
-    const input = $("#datePopoverInput");
-    if (input) input.value = selectedPlanningDate;
-    input?.focus();
-  }
-}
-function toggleDatePopover() {
-  const popover = $("#datePopover");
-  setDatePopoverOpen(Boolean(popover?.hidden));
-}
-function handleMenuAction(action) {
-  if (!action) return;
-  if (action.startsWith("view:")) {
-    switchToView(action.slice(5), { animate: false });
-    return;
-  }
-  if (action === "sidebar:toggle") {
-    toggleSidebar();
-    return;
-  }
-  if (action === "inspector:toggle") {
-    setFocusPanelOpen($("#focusPanel")?.hidden !== false);
-    return;
-  }
-  if (action === "settings") {
-    openSettings();
-    return;
-  }
-  if (action === "find") {
-    commandPalette?.open() || $("#quickFind")?.focus({ preventScroll: true });
-    return;
-  }
-  if (action === "export") {
-    withoutMotion(() => openBackupDialog());
-    return;
-  }
-  if (action === "import") {
-    withoutMotion(() => openBackupDialog("import"));
-    return;
-  }
-  if (action === "new-habit") {
-    switchToView("habits", { animate: false });
-    $("#addHabitButton")?.click();
-    return;
-  }
-  if (action === "workspace:switch" && desktopMode?.startsWith("tauri")) {
-    void window.__TAURI__?.core.invoke("forget_workspace").then(() => {
-      window.__TAURI__?.webviewWindow?.getCurrent()?.close();
-    });
-    return;
-  }
-  if (action === "date:today") {
-    goToToday();
-    return;
-  }
-  if (action === "date:prev") {
-    shiftPlanningDay(-1);
-    return;
-  }
-  if (action === "date:next") {
-    shiftPlanningDay(1);
-    return;
-  }
-  if (action === "help") {
-    window.open("https://github.com/zubin-li/ll-redesign/blob/main/README.md", "_blank", "noopener");
-  }
-}
-function withoutMotion(run) {
-  document.documentElement.classList.add("motion-off");
-  run();
-  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove("motion-off")));
-}
-
-function applyMotionSetting() {
-  motionChoice = ["full", "reduced", "off"].includes(motionChoice) ? motionChoice : "full";
-  localStorage.setItem(MOTION_KEY, motionChoice);
-  window.LifeLedgerInteraction?.applyMotionPreference(document, motionChoice);
-  if ($("#motionSelect")) $("#motionSelect").value = motionChoice;
-}
-
-function announceSubmit(message) {
-  const region = $("#submitLiveRegion");
-  if (!region) return;
-  region.textContent = "";
-  requestAnimationFrame(() => {
-    region.textContent = message;
-  });
-}
-
-function hairlineEmptyMarkup(asset, title, help, attrs = "") {
-  return `<div class="hairline-empty"><div class="hairline-mount is-empty" data-hairline-src="${escapeHtml(asset)}" ${attrs} aria-hidden="true"></div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(help)}</p></div>`;
-}
-
-function hydrateHairlineMounts(scope = document) {
-  scope.querySelectorAll(".hairline-mount[data-hairline-src]:not([data-hairline-ready])").forEach(host => {
-    host.dataset.hairlineReady = "true";
-    window.LifeLedgerInteraction?.mountHairline(host, host.dataset.hairlineSrc);
-  });
-}
-
-function captureSiblingRects(selector, key = node => node.dataset.id || node.dataset.date) {
-  const map = new Map();
-  $$(selector).forEach(node => {
-    const id = key(node);
-    if (!id) return;
-    const rect = node.getBoundingClientRect();
-    map.set(id, { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
-  });
-  return map;
-}
-
-function playFlipFromMap(previous, selector, key = node => node.dataset.id || node.dataset.date) {
-  if (!previous?.size || window.LifeLedgerInteraction?.motionTravelDisabled()) return;
-  // ponytail: first 24 nodes travel, the rest snap; enough for any on-screen list.
-  $$(selector).slice(0, 24).forEach(node => {
-    const before = previous.get(key(node));
-    if (!before) return;
-    const rect = node.getBoundingClientRect();
-    const dx = before.x - rect.left;
-    const dy = before.y - rect.top;
-    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
-    node.classList.add("is-moving");
-    node.style.transition = "none";
-    node.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
-    node.offsetWidth;
-    node.style.transition = "transform 220ms var(--ease-spring)";
-    node.style.transform = "translate3d(0, 0, 0)";
-    const clear = () => {
-      node.style.transition = "";
-      node.style.transform = "";
-      node.classList.remove("is-moving");
-      node.removeEventListener("transitionend", clear);
-      node.removeEventListener("transitioncancel", clear);
-    };
-    node.addEventListener("transitionend", clear);
-    node.addEventListener("transitioncancel", clear);
-  });
-}
-
-function runSubmitButton(button, task, labels = {}) {
-  const api = window.LifeLedgerInteraction;
-  if (!button || !api) return Promise.resolve(task?.());
-  let state = "idle";
-  const idleLabel = labels.idle ?? button.dataset.submitIdle ?? button.textContent;
-  const busyLabel = labels.busy ?? tr("submit.saving");
-  const doneLabel = labels.done ?? tr("submit.saved");
-  const errorLabel = labels.error ?? tr("submit.error");
-  button.dataset.submitIdle = idleLabel;
-  button.style.setProperty("--submit-min-width", `${Math.max(button.offsetWidth, button.scrollWidth)}px`);
-  button.classList.add("submit-state-button");
-  const setState = next => {
-    state = api.submitStateStep(state, next);
-    button.dataset.submitState = state;
-    button.disabled = state === "busy";
-    if (state === "busy") button.textContent = busyLabel;
-    if (state === "done") {
-      button.textContent = doneLabel;
-      announceSubmit(doneLabel);
-    }
-    if (state === "idle") button.textContent = idleLabel;
-    if (state === "error") button.textContent = idleLabel;
-  };
-  setState("start");
-  return Promise.resolve()
-    .then(() => task?.())
-    .then(() => {
-      setState("success");
-      window.clearTimeout(button._submitResetTimer);
-      button._submitResetTimer = window.setTimeout(() => setState("reset"), 1200);
-    })
-    .catch(() => {
-      setState("fail");
-      const error = button.parentElement?.querySelector(".submit-state-error") || (() => {
-        const note = document.createElement("p");
-        note.className = "submit-state-error";
-        button.insertAdjacentElement("afterend", note);
-        return note;
-      })();
-      error.textContent = errorLabel;
-      announceSubmit(errorLabel);
-    });
-}
-
-function habitLast7Dots(habitId, date) {
-  const base = parseDate(date);
-  const dots = [];
-  for (let offset = 6; offset >= 0; offset -= 1) {
-    const day = new Date(base);
-    day.setDate(day.getDate() - offset);
-    const key = isoDate(day);
-    dots.push(`<i class="${getLog(key).completed.includes(habitId) ? "done" : ""}"></i>`);
-  }
-  return `<span class="habit-last7" aria-label="${escapeHtml(tr("today.last7"))}">${dots.join("")}</span>`;
-}
-
-function mountNumericStepper(host, { min, max, step, getValue, onChange, suffix = "", ariaLabel = "" }) {
-  if (!host || !window.LifeLedgerInteraction) return;
-  const paint = () => {
-    const value = getValue();
-    host.innerHTML = `<div class="stepper-chip" role="group" aria-label="${escapeHtml(ariaLabel)}">
-      <button type="button" class="stepper-minus" aria-label="-"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
-      <span class="stepper-value" data-stepper-value>${value}</span>
-      <button type="button" class="stepper-plus" aria-label="+"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-      ${suffix ? `<span class="stepper-suffix">${escapeHtml(suffix)}</span>` : ""}
-    </div>`;
-    const valueEl = host.querySelector("[data-stepper-value]");
-    host.querySelector(".stepper-minus")?.addEventListener("click", () => {
-      const previous = valueEl.textContent;
-      onChange(LifeLedgerInteraction.clampStepper(getValue() - step, min, max, step));
-      if (valueEl.isConnected) LifeLedgerInteraction.rollText(valueEl, String(getValue()), previous);
-    });
-    host.querySelector(".stepper-plus")?.addEventListener("click", () => {
-      const previous = valueEl.textContent;
-      onChange(LifeLedgerInteraction.clampStepper(getValue() + step, min, max, step));
-      if (valueEl.isConnected) LifeLedgerInteraction.rollText(valueEl, String(getValue()), previous);
-    });
-  };
-  paint();
-}
-
-function mountFocusDurationStepper() {
-  const host = $("#focusQuickPresets");
-  if (!host) return;
-  mountNumericStepper(host, {
-    min: 5,
-    max: 120,
-    step: 5,
-    suffix: languageText("分钟", "min", "Min."),
-    ariaLabel: languageText("专注时长", "Focus duration", "Fokusdauer"),
-    getValue: () => state.focusSettings?.focusMinutes || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes,
-    onChange: minutes => {
-      if (!focusTimer?.snapshot() && (focusUIState === "cancelled" || focusUIState === "completed")) {
-        transitionFocusUI("reset");
-      }
-      state.focusSettings = { ...state.focusSettings, focusMinutes: minutes, preset: "custom" };
-      const minutesInput = $("#focusMinutes");
-      if (minutesInput) minutesInput.value = minutes;
-      saveState();
-      renderFocusTimer(focusTimer?.snapshot());
-    },
-  });
-}
-
-function syncHabitPeriodStepper() {
-  const form = $("#habitInspectorForm");
-  const host = $("#habitInspectorPeriodStepper");
-  const input = form?.elements.periodTarget;
-  if (!form || !host || !input || form.elements.frequency.value === "daily") {
-    if (host) host.innerHTML = "";
-    return;
-  }
-  mountNumericStepper(host, {
-    min: 1,
-    max: 7,
-    step: 1,
-    ariaLabel: tr("dialog.periodTarget"),
-    getValue: () => Number(input.value) || 1,
-    onChange: value => {
-      input.value = String(value);
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    },
-  });
-}
-
-function mountReviewMetricsFlip() {
-  const details = $("#reviewDetailedMetrics");
-  if (!details || details.dataset.flipBound) return;
-  details.dataset.flipBound = "true";
-  const selector = "#reviewView > *:not(details)";
-  const key = node => node.id || node.className;
-  let previous = null;
-  details.querySelector("summary")?.addEventListener("click", () => { previous = captureSiblingRects(selector, key); });
-  details.addEventListener("toggle", () => {
-    if (!previous) return;
-    const before = previous;
-    previous = null;
-    playFlipFromMap(before, selector, key);
-  });
-}
-
-function setToolbarSearchExpanded(open) {
-  const shell = $("#toolbarSearch");
-  const toggle = $("#toolbarSearchToggle");
-  const field = $("#quickFind");
-  if (!shell || !toggle) return;
-  const expanded = Boolean(open);
-  shell.dataset.searchExpanded = String(expanded);
-  toggle.setAttribute("aria-expanded", String(expanded));
-  toggle.classList.toggle("icon-morph-on", expanded);
-  if (field) {
-    field.tabIndex = expanded ? 0 : -1;
-    field.setAttribute("aria-hidden", String(!expanded));
-  }
-  if (expanded) field?.focus({ preventScroll: true });
-  else if (!field?.value?.trim()) {
-    field.value = "";
-    quickFindQuery = "";
-    renderToday();
-  }
-}
-
-function mountToolbarSearch() {
-  const toggle = $("#toolbarSearchToggle");
-  const field = $("#quickFind");
-  if (field) { field.tabIndex = -1; field.setAttribute("aria-hidden", "true"); }
-  toggle?.addEventListener("click", () => setToolbarSearchExpanded($("#toolbarSearch")?.dataset.searchExpanded !== "true"));
-  field?.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !field.value.trim()) {
-      setToolbarSearchExpanded(false);
-      toggle?.focus();
-    }
-  });
-  field?.addEventListener("blur", () => {
-    if (!field.value.trim()) setToolbarSearchExpanded(false);
-  });
-  document.addEventListener("keydown", event => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f") {
-      event.preventDefault();
-      setToolbarSearchExpanded(true);
-      field?.focus({ preventScroll: true });
-      return;
-    }
-    if (event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
-      event.preventDefault();
-      setToolbarSearchExpanded(true);
-      field?.focus({ preventScroll: true });
-    }
-  });
-}
-
-function mountToolbarCreateMenu() {
-  const trigger = $("#toolbarCreateButton");
-  const popover = $("#toolbarCreateMenu");
-  if (!trigger || !popover || !window.LifeLedgerInteraction) return;
-  const items = [
-    { id: "habit", label: () => tr("create.habit") },
-    { id: "journal", label: () => tr("create.journal") },
-    { id: "weeklyGoal", label: () => tr("create.weeklyGoal") },
-    { id: "focus", label: () => tr("create.focus") },
-  ];
-  const paint = () => {
-    popover.innerHTML = items.map((item, index) => `<button type="button" role="menuitem" data-popover-item data-create-action="${item.id}" id="createMenuItem${index}">${escapeHtml(item.label())}</button>`).join("");
-    popover.querySelectorAll("[data-create-action]").forEach(button => button.addEventListener("click", () => handleCreateMenuAction(button.dataset.createAction)));
-  };
-  paint();
-  const controller = LifeLedgerInteraction.openAnchoredPopover({
-    trigger,
-    popover,
-    items,
-    onSelect: item => handleCreateMenuAction(item.id),
-  });
-  refreshToolbarCreateMenu = paint;
-  return controller;
-}
-
-function handleCreateMenuAction(action) {
-  if (action === "habit") {
-    switchToView("habits");
-    $("#addHabitButton")?.click();
-    return;
-  }
-  if (action === "journal") {
-    switchToView("timeline");
-    setJournalMode("timeline");
-    $("#journalQuickNote")?.focus({ preventScroll: true });
-    return;
-  }
-  if (action === "weeklyGoal") {
-    switchToView("week");
-    $("#weeklyGoalInput")?.focus({ preventScroll: true });
-    return;
-  }
-  if (action === "focus") {
-    setFocusPanelOpen(true);
-    $("#focusQuickPrimary")?.focus();
-  }
-}
-
-function mountScrollTitleObservers() {
-  const toolbar = $(".app-toolbar");
-  if (!toolbar || !("IntersectionObserver" in window)) return;
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const compact = !entry.isIntersecting;
-      toolbar.classList.toggle("is-scroll-compact", compact);
-    });
-  }, { root: $(".main-content"), threshold: 0 });
-  $$("[data-scroll-title-sentinel]").forEach(node => observer.observe(node));
-}
-
-function recentUnreflectedCount() {
-  let count = 0;
-  for (let offset = 1; offset <= 7; offset += 1) {
-    const date = new Date();
-    date.setDate(date.getDate() - offset);
-    const key = isoDate(date);
-    const habits = dailyHabits(key);
-    if (!habits.length) continue;
-    const log = getLog(key);
-    const done = habits.filter(habit => log.completed.includes(habit.id)).length;
-    if (done > 0 && !String(log.note || "").trim()) count += 1;
-  }
-  return count;
-}
-function updateReviewBadge() {
-  const badge = $(".nav-item[data-view='review'] .nav-badge");
-  if (!badge || !window.LifeLedgerInteraction) return;
-  const state = LifeLedgerInteraction.badgeVisibility(recentUnreflectedCount(), reviewBadgeSeen);
-  badge.hidden = !state.visible;
-  badge.textContent = state.visible ? String(state.count) : "";
-  badge.classList.toggle("is-live", state.visible);
-}
-function acknowledgeReviewBadge() {
-  const badge = $(".nav-item[data-view='review'] .nav-badge");
-  if (badge && !badge.hidden) badge.classList.add("is-acknowledged");
-  reviewBadgeSeen = recentUnreflectedCount();
-  window.setTimeout(updateReviewBadge, 180);
-}
-function syncInteractionChrome(animate = false) {
-  window.LifeLedgerInteraction?.moveNavIndicator({ animate });
-  window.LifeLedgerInteraction?.syncSegments(document);
-  updateReviewBadge();
-}
-function buildCommands() {
-  const text = (zh, en, de) => languageText(zh, en, de);
-  const commands = [
-    { id: "view:today", title: text("前往今日", "Go to Today", "Zu Heute"), keywords: "today view 今日", group: "view" },
-    { id: "view:week", title: text("前往本周", "Go to Week", "Zur Woche"), keywords: "week view 本周", group: "view" },
-    { id: "view:longrange", title: text("前往长期计划", "Go to Horizon", "Zum Horizont"), keywords: "longrange goals plan monthly 长期 计划 月复盘", group: "view" },
-    { id: "view:timeline", title: text("前往时间轴", "Go to Timeline", "Zur Zeitleiste"), keywords: "timeline journal 时间轴 日志", group: "view" },
-    { id: "view:review", title: text("前往洞察", "Go to Insights", "Zu Einblicken"), keywords: "review insights 洞察", group: "view" },
-    { id: "view:habits", title: text("前往习惯设置", "Go to Habits", "Zu Gewohnheiten"), keywords: "habits settings 习惯", group: "view" },
-    { id: "date:today", title: text("跳到今天", "Jump to today", "Zu heute springen"), keywords: "date today 今天", group: "date" },
-    { id: "date:yesterday", title: text("跳到昨天", "Jump to yesterday", "Zu gestern springen"), keywords: "date yesterday 昨天", group: "date" },
-    { id: "focus:start", title: text("开始专注", "Start focus", "Fokus starten"), keywords: "focus timer 专注", group: "action" },
-    { id: "settings", title: text("打开设置", "Open settings", "Einstellungen öffnen"), keywords: "settings 设置", group: "action" },
-    { id: "theme:cycle", title: text("切换外观", "Cycle appearance", "Erscheinung wechseln"), keywords: "theme dark light 主题", group: "action" },
-    { id: "lang:zh", title: text("使用简体中文", "Use Simplified Chinese", "Vereinfachtes Chinesisch"), keywords: "language zh 中文", group: "action" },
-    { id: "lang:en", title: text("使用英文", "Use English", "Englisch verwenden"), keywords: "language en english", group: "action" },
-    { id: "lang:de", title: text("使用德文", "Use German", "Deutsch verwenden"), keywords: "language de german deutsch", group: "action" },
-    { id: "backup:export", title: text("导出备份", "Export backup", "Sicherung exportieren"), keywords: "export backup 导出", group: "action" },
-    { id: "backup:import", title: text("导入备份", "Import backup", "Sicherung importieren"), keywords: "import backup 导入", group: "action" },
-    { id: "review:7", title: text("复盘改为 7 天", "Review the last 7 days", "Rückblick auf 7 Tage"), keywords: "review 7", group: "review" },
-    { id: "review:30", title: text("复盘改为 30 天", "Review the last 30 days", "Rückblick auf 30 Tage"), keywords: "review 30", group: "review" },
-    { id: "review:90", title: text("复盘改为 90 天", "Review the last 90 days", "Rückblick auf 90 Tage"), keywords: "review 90", group: "review" },
-    { id: "habit:new", title: text("添加习惯", "Add a habit", "Gewohnheit hinzufügen"), keywords: "new habit 添加", group: "habit" },
-  ];
-  activeHabits(isoDate(new Date())).forEach(habit => {
-    const name = displayHabitName(habit);
-    const done = getLog(isoDate(new Date())).completed.includes(habit.id);
-    commands.push({
-      id: `habit:toggle:${habit.id}`,
-      title: done ? text(`撤销今天的${name}`, `Undo ${name} today`, `${name} heute zurücknehmen`) : text(`完成今天的${name}`, `Mark ${name} done today`, `${name} heute erledigen`),
-      keywords: `${name} habit`,
-      group: "habit",
-    });
-  });
-  return commands;
-}
-function applyLanguageChoice(value) {
-  languageChoice = supportedLanguages.includes(value) || value === "system" ? value : "system";
-  currentLang = languageFromChoice(languageChoice);
-  localStorage.setItem(LANGUAGE_KEY, languageChoice);
-  localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
-  const url = new URL(location.href);
-  if (languageChoice === "system") url.searchParams.delete("lang");
-  else url.searchParams.set("lang", languageChoice);
-  history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-  document.body.classList.remove("language-changing");
-  void document.body.offsetWidth;
-  document.body.classList.add("language-changing");
-  voiceReflection?.setLanguage(currentLang);
-  renderAll();
-  if ($("#dayDrawer")?.classList.contains("open")) renderDrawer();
-  window.setTimeout(() => document.body.classList.remove("language-changing"), 260);
-}
-function runCommand(command) {
-  if (!command?.id) return;
-  if (command.id.startsWith("view:")) {
-    switchToView(command.id.slice(5));
-    return;
-  }
-  if (command.id === "date:today") {
-    goToToday();
-    return;
-  }
-  if (command.id === "date:yesterday") {
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    jumpToDate(isoDate(date));
-    return;
-  }
-  if (command.id === "focus:start") {
-    switchToView("today");
-    void startFocusSession();
-    return;
-  }
-  if (command.id === "settings") {
-    openSettings();
-    return;
-  }
-  if (command.id === "theme:cycle") {
-    const order = ["system", "light", "dark"];
-    themeChoice = order[(Math.max(0, order.indexOf(themeChoice)) + 1) % order.length];
-    localStorage.setItem(THEME_KEY, themeChoice);
-    applyTheme();
-    return;
-  }
-  if (command.id.startsWith("lang:")) {
-    applyLanguageChoice(command.id.slice(5));
-    return;
-  }
-  if (command.id === "backup:export") {
-    withoutMotion(() => openBackupDialog());
-    return;
-  }
-  if (command.id === "backup:import") {
-    withoutMotion(() => openBackupDialog("import"));
-    return;
-  }
-  if (command.id.startsWith("review:")) {
-    const next = Number(command.id.slice(7));
-    if ([7, 30, 90].includes(next)) {
-      analyticsWindow = next;
-      switchToView("review");
-      renderReview();
-    }
-    return;
-  }
-  if (command.id === "habit:new") {
-    switchToView("habits");
-    $("#addHabitButton")?.click();
-    return;
-  }
-  if (command.id.startsWith("habit:toggle:")) {
-    toggleHabit(isoDate(new Date()), command.id.slice(13));
-  }
-}
-function mountCommandPalette() {
-  const palette = $("#commandPalette");
-  if (!palette || !window.LifeLedgerInteraction || commandPalette) return;
-  commandPalette = LifeLedgerInteraction.mountCommandPalette({
-    root: palette,
-    getCommands: buildCommands,
-    onRun: runCommand,
-    text: { empty: () => languageText("没有匹配的命令", "No matching commands", "Keine passenden Befehle") },
-  });
-  $("#openCommandPalette")?.addEventListener("click", () => commandPalette.open());
-  document.addEventListener("keydown", event => {
-    const mod = event.metaKey || event.ctrlKey;
-    if (!mod || event.shiftKey || event.altKey || event.repeat) return;
-    if (event.key.toLowerCase() !== "k") return;
-    if (document.querySelector("dialog[open]")) return;
-    event.preventDefault();
-    commandPalette.toggle();
-  });
-}
-function switchToView(view, { animate = true } = {}) {
-  const button = $(`.nav-item[data-view="${view}"]`);
-  const section = $(`#${view}View`);
-  if (!button || !section) return;
-  const previousView = document.body.dataset.activeView || view;
-  const direction = window.LifeLedgerInteraction?.viewDirection(previousView, view) || 0;
-  const run = () => {
-    $$(".nav-item").forEach(item => {
-      const active = item === button;
-      item.classList.toggle("active", active);
-      if (active) item.setAttribute("aria-current", "page");
-      else item.removeAttribute("aria-current");
-    });
-    $$(".view").forEach(v => v.classList.remove("active"));
-    section.style.setProperty("--view-shift", `${direction * 8}px`);
-    section.classList.add("active");
-    section.scrollTop = 0;
-    document.body.dataset.activeView = view;
-    if (view === "review") acknowledgeReviewBadge();
-    window.LifeLedgerInteraction?.moveNavIndicator({ animate });
-    $("#viewTitle").textContent = tr(`viewTitles.${view}`);
-    renderToolbarDateNav();
-    updateInspectorForView();
-    if (view === "week") renderWeeklyWorkspace();
-    if (view === "timeline") void renderTimeline();
-    if (view === "review") renderReview();
-    if (view === "longrange") renderLongRange();
-    if (view === "habits") renderHabitSettings();
-    if (view === "habits" && !selectedHabitSettingsId && state.habits[0]) {
-      selectedHabitSettingsId = state.habits[0].id;
-      populateHabitInspectorForm(selectedHabitSettingsId);
-    }
-    syncInteractionChrome(animate);
-    const board = $(`[data-module-board="${view}"]`);
-    const isModular = Boolean(board);
-    const toggleBtn = $("#editLayoutToggle");
-    const resetBtn = $("#resetLayoutButton");
-    if (toggleBtn) {
-      toggleBtn.hidden = !isModular;
-      if (isModular) {
-        const editing = window.LifeLedgerModules?.isEditMode(board) || false;
-        toggleBtn.setAttribute("aria-pressed", String(editing));
-        toggleBtn.textContent = editing ? tr("modules.doneEditing") : tr("modules.editLayout");
-        if (resetBtn) resetBtn.hidden = !editing;
-      } else if (resetBtn) {
-        resetBtn.hidden = true;
-      }
-    }
-  };
-  if (animate) run();
-  else withoutMotion(run);
-}
-
-function updateInspectorForView() {
-  const view = document.body.dataset.activeView || "today";
-  document.body.classList.toggle("timeline-no-inspector", view === "timeline");
-}
-function isWorkspaceLayout() {
-  return document.documentElement.hasAttribute("data-workspace");
-}
-function applyDesktopStatus() {
-  const badge = $("#desktopModeBadge");
-  if (badge) {
-    if (desktopMode === "tauri-local") {
-      badge.hidden = false;
-      badge.textContent = tr("desktop.statusLocal");
-    } else if (desktopMode === "tauri-cloud") {
-      badge.hidden = false;
-      badge.textContent = tr("desktop.statusCloud");
-    } else {
-      badge.hidden = true;
-    }
-  }
-  const workspaceSwitch = $("#workspaceSwitchButton");
-  if (workspaceSwitch) workspaceSwitch.hidden = !(desktopMode === "tauri-local" || desktopMode === "tauri-cloud");
-}
-const widgetBridgeActive = desktopMode === "tauri-local"
-  && Boolean(desktopBridge?.publishWidgetSnapshot && desktopBridge?.readPendingWidgetMutations && desktopBridge?.ackWidgetMutations);
-const WIDGET_RECONCILE_INTERVAL_MS = 20000;
-let widgetSnapshotRevision = 0;
-let widgetLastSyncAt = 0;
-let widgetLastError = "";
-let widgetReconcileInFlight = null;
-function buildWidgetSnapshot(date) {
-  const log = getLog(date);
-  const habitsForDate = activeHabits(date).map(habit => ({
-    id: habit.id,
-    name: displayHabitName(habit),
-    icon: iconKey(habit),
-    color: colors[habit.color] ? habit.color : "sage",
-    countsTowardDaily: countsTowardDaily(habit, date),
-  }));
-  const scored = dailyHabits(date);
-  const scoredCompleted = scored.filter(habit => log.completed.includes(habit.id)).length;
-  widgetSnapshotRevision += 1;
-  return window.LifeLedgerWidgetContract.buildWidgetSnapshotFromHabits(habitsForDate, log.completed, {
-    date,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
-    revision: widgetSnapshotRevision,
-    scoredTotal: scored.length,
-    scoredCompleted,
-  });
-}
-function updateWidgetStatusUI() {
-  const card = $("#widgetStatusCard");
-  if (!card) return;
-  if (!widgetBridgeActive) {
-    card.hidden = true;
-    return;
-  }
-  card.hidden = false;
-  setText("#widgetStatusTitle", tr("widget.title"));
-  setText("#widgetStatusDesc", tr("widget.desc"));
-  const statusLine = $("#widgetStatusState");
-  if (!statusLine) return;
-  if (widgetLastError) {
-    statusLine.textContent = tr("widget.error");
-  } else if (!widgetLastSyncAt) {
-    statusLine.textContent = tr("widget.idle");
-  } else {
-    const elapsedMinutes = Math.floor((Date.now() - widgetLastSyncAt) / 60000);
-    const time = elapsedMinutes < 1 ? tr("widget.justNow") : tr("widget.minutesAgo", { minutes: elapsedMinutes });
-    statusLine.textContent = tr("widget.connected", { time });
-  }
-}
-async function publishWidgetSnapshot() {
-  if (!widgetBridgeActive) return;
-  try {
-    await desktopBridge.publishWidgetSnapshot(buildWidgetSnapshot(isoDate(new Date())));
-    widgetLastSyncAt = Date.now();
-    widgetLastError = "";
-  } catch (error) {
-    console.warn("Widget snapshot publish failed", error);
-    widgetLastError = String(error?.message || error || "error");
-  }
-  updateWidgetStatusUI();
-}
-async function reconcileWidgetMutations() {
-  if (!widgetBridgeActive) return;
-  if (widgetReconcileInFlight) return widgetReconcileInFlight;
-  widgetReconcileInFlight = (async () => {
-    try {
-      const queue = await desktopBridge.readPendingWidgetMutations();
-      const { toApply, ackIds } = window.LifeLedgerWidgetContract.planMutationApplication(
-        queue?.mutations,
-        (habitId, date) => getLog(date).completed.includes(habitId)
-      );
-      for (const mutation of toApply) toggleHabit(mutation.date, mutation.habitId);
-      if (ackIds.length > 0) await desktopBridge.ackWidgetMutations(ackIds);
-      await publishWidgetSnapshot();
-      widgetLastError = "";
-    } catch (error) {
-      console.warn("Widget mutation reconciliation failed", error);
-      widgetLastError = String(error?.message || error || "error");
-    }
-    updateWidgetStatusUI();
-  })();
-  try {
-    await widgetReconcileInFlight;
-  } finally {
-    widgetReconcileInFlight = null;
-  }
-}
-function initWidgetBridge() {
-  if (!widgetBridgeActive) return;
-  document.addEventListener("DOMContentLoaded", () => {
-    void reconcileWidgetMutations();
-    window.setInterval(() => { void reconcileWidgetMutations(); }, WIDGET_RECONCILE_INTERVAL_MS);
-  });
 }
 function applyLanguage() {
-  window.LifeLedgerWindowShell?.refresh();
   document.documentElement.lang = i18n[currentLang].locale;
   document.body.dataset.language = currentLang;
-  window.LifeLedgerModules?.setTranslator(tr);
-  if (window.LifeLedgerLayoutEngine) {
-    window.LifeLedgerLayoutEngine.setTranslator(tr);
-    window.LifeLedgerLayoutEngine.renderBoard();
-  }
-  if (window.LifeLedgerWidgetRegistry) {
-    window.LifeLedgerWidgetRegistry.setTranslator(tr);
-  }
-  updateUndoLayoutChrome();
-  applyDesktopStatus();
-  updateWidgetStatusUI();
   document.title = tr("title");
   document.querySelector('meta[name="description"]')?.setAttribute("content", tr("metaDescription"));
-    $$(".nav-item").forEach(button => {
-    const icon = $(".nav-icon", button)?.outerHTML || "";
-    const badge = button.dataset.view === "review" ? `<span class="nav-badge" hidden></span>` : "";
-    button.innerHTML = `${icon}<span class="nav-label">${tr(`nav.${button.dataset.view}`)}</span>${badge}`;
+  setText(".brand strong", tr("brand"));
+  setText(".brand small", tr("brandSmall"));
+  $(".brand")?.setAttribute("aria-label", tr("brand"));
+  $$(".nav-item").forEach(button => {
+    const icon = $(".nav-icon", button)?.textContent || "";
+    button.innerHTML = `<span class="nav-icon">${icon}</span><span class="nav-label">${tr(`nav.${button.dataset.view}`)}</span>`;
     button.setAttribute("title", tr(`nav.${button.dataset.view}`));
   });
-  updateReviewBadge();
-  const commandButton = $("#openCommandPalette");
-  if (commandButton) commandButton.setAttribute("aria-label", languageText("命令", "Commands", "Befehle"));
-  setText("#commandPaletteLabel", languageText("命令", "Commands", "Befehle"));
-  const commandInput = $("#commandPaletteInput");
-  if (commandInput) commandInput.placeholder = languageText("跳转、习惯或操作", "Jump, habits, or actions", "Springen, Gewohnheiten oder Aktionen");
   setAria(".main-nav", languageText("主导航", "Main navigation", "Hauptnavigation"));
-  setText("#sidebarSettingsLabel", tr("settings.title"));
-  setAria("#openSettingsButton", tr("settings.title"));
-  setAria("#mobileSettingsButton", tr("settings.title"));
+  setText(".sidebar-note p", "");
+  const note = $(".sidebar-note p");
+  const sidebarQuote = quoteFor(1);
+  if (note) note.innerHTML = `${escapeHtml(sidebarQuote.text)}<small>${escapeHtml(sidebarQuote.source)}</small>`;
+  setText(".profile strong", tr("profileName"));
   $("#exportButton")?.setAttribute("title", tr("exportTitle"));
   $("#exportButton")?.setAttribute("aria-label", tr("exportTitle"));
   setAria("#cloudAccountButton", tr("cloudbase.account"));
@@ -2799,125 +1296,79 @@ function applyLanguage() {
     button.setAttribute("title", deferredInstallPrompt ? tr("pwa.ready") : tr("pwa.install"));
     button.setAttribute("aria-label", tr("pwa.install"));
   });
+  setText("#mobileInstallLabel", tr("pwa.install"));
   const languageSelect = $("#languageSelect");
   const languageFlag = $("#languageFlag");
-  const systemOption = languageSelect?.querySelector('option[value="system"]');
-  if (systemOption) systemOption.textContent = tr("review.systemLanguage");
-  if (languageSelect) languageSelect.value = languageChoice;
+  if (languageSelect) languageSelect.value = currentLang;
   if (languageFlag) languageFlag.textContent = currentLang === "zh" ? "🇨🇳" : currentLang === "de" ? "🇩🇪" : "🇬🇧";
   setAria("#languageSelect", currentLang === "zh" ? "选择界面语言" : currentLang === "de" ? "Sprache der Oberfläche wählen" : "Select interface language");
-  setAria("#yearSelect", languageText("选择年份", "Select year", "Jahr wählen"));
-  setAria("#monthSelect", languageText("选择月份", "Select month", "Monat wählen"));
   const activeView = $(".nav-item.active")?.dataset.view || "today";
   document.body.dataset.activeView = activeView;
   setText("#viewTitle", tr(`viewTitles.${activeView}`));
-  setAria("#toolbarPrimaryAction", tr("focus.kicker"));
-  $("#toolbarPrimaryAction")?.setAttribute("title", tr("focus.kicker"));
-  setText("#openDayDetail", tr("today.reflect"));
-  setText("#dayDetailTitle", tr("today.reflect"));
-  setText("#journalModeWeeks", languageText("周度", "Weekly", "Wöchentlich"));
-  setText("#journalModeTimeline", languageText("日度", "Daily", "Täglich"));
-  setText("#journalModeMonths", languageText("月度", "Monthly", "Monatlich"));
-  setText("#journalModePhotos", languageText("照片", "Photos", "Fotos"));
-  setText("#journalModeCalendar", languageText("日历", "Calendar", "Kalender"));
-  setText("#reviewScoreSummary", languageText("习惯分数", "Habit scores", "Gewohnheitswerte"));
-  setText("#todayOpenHeading", tr("today.open"));
-  setText("#todayScheduledHeading", tr("today.scheduled"));
-  setText("#insightViewTrend", tr("review.viewTrend"));
-  setText("#insightViewHeatmap", tr("review.viewCalendar"));
-  setText("#insightViewHabits", tr("review.viewHabits"));
-  setText("#insightViewTable", tr("review.viewTable"));
-  setAria("#insightViewSwitch", languageText("报表视图", "Report view", "Berichtansicht"));
-  setPlaceholder("#journalQuickNote", languageText("这一天想记下什么？", "Any thoughts for this day?", "Was möchtest du zu diesem Tag notieren?"));
-  setAria("#journalComposerLabel", languageText("日志", "Note", "Notiz"));
-  setText("#journalComposerSave", languageText("保存", "Save", "Speichern"));
-  setAria("#journalModeSwitch", languageText("时间轴内容", "Timeline content", "Zeitleisteninhalt"));
-  setPlaceholder("#quickFind", languageText("搜索", "Search", "Suchen"));
-  setText("#motionSettingsLabel", tr("settings.motion"));
-  setAria("#motionSelect", tr("settings.motion"));
-  $$("#motionSelect option").forEach(option => {
-    if (option.value === "full") option.textContent = tr("settings.motionFull");
-    if (option.value === "reduced") option.textContent = tr("settings.motionReduced");
-    if (option.value === "off") option.textContent = tr("settings.motionOff");
-  });
-  setAria("#toolbarCreateButton", tr("create.label"));
-  setText("#journalScrollTitle", tr("viewTitles.timeline"));
-  setText("#insightsScrollTitle", tr("viewTitles.review"));
-  setText("#habitsScrollTitle", tr("viewTitles.habits"));
-  refreshToolbarCreateMenu();
-  setAria("#dateNavPrev", languageText("上一段", "Previous", "Zurück"));
-  setAria("#dateNavNext", languageText("下一段", "Next", "Weiter"));
-  setAria("#dateNavLabel", tr("review.datePopoverLabel"));
-  setAria("#datePopover", tr("review.datePopoverLabel"));
-  setText("#datePopoverToday", tr("review.datePopoverToday"));
-  setAria("#analyticsPeriod", tr("review.windowAria"));
-  $$("[data-analytics-window]").forEach(button => {
-    const days = button.dataset.analyticsWindow;
-    button.textContent = tr(`review.window${days}`);
-    const active = Number(days) === analyticsWindow;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-  setText("#settingsPaneTitle", tr("settings.title"));
-  $$("[data-settings-tab]").forEach(button => { button.textContent = tr(`settings.${button.dataset.settingsTab}`); });
-  setText("#workspaceSwitchButton", tr("settings.workspaceSwitch"));
-  setText("#themeSettingsLabel", tr("theme.label"));
-  setText("#languageSettingsLabel", languageText("语言", "Language", "Sprache"));
+  setText(".date-jump span:first-of-type", tr("yearSuffix"));
+  setText(".date-jump span:last-of-type", tr("monthSuffix"));
+  setAria("#yearSelect", languageText("选择年份", "Select year", "Jahr wählen"));
+  setAria("#monthSelect", languageText("选择月份", "Select month", "Monat wählen"));
+  setText("#todayButton", tr("todayButton"));
+  setText("#mobileToolbarLabel", tr("toolbar.short"));
+  setAria("#mobileToolbarToggle", mobileToolbarOpen ? tr("toolbar.close") : tr("toolbar.open"));
+  const heroQuote = quoteFor(0);
+  setText(".hero-copy h2", heroQuote.text);
+  setText(".quote-source", heroQuote.source);
+  setText(".progress-orbit-label", tr("hero.progress"));
+  setText(".mood-card .kicker", tr("mood.kicker"));
+  setText(".mood-card h3", tr("mood.title"));
+  setText("#moodNote", "");
+  const moodNote = $("#moodNote");
+  const moodQuote = quoteFor(2);
+  if (moodNote) moodNote.innerHTML = `${escapeHtml(moodQuote.text)}<small>${escapeHtml(moodQuote.source)}</small>`;
   applyMoodReasonLanguage();
   photoMemories?.setLanguage(currentLang);
-  $$("#quickMood button").forEach(button => {
-    const label = moodLabel(button.dataset.mood);
-    if (isWorkspaceLayout()) {
-      button.innerHTML = `<span class="mood-segment-glyph">${moodCalendarIcon(button.dataset.mood)}</span><span class="mood-segment-label">${escapeHtml(label)}</span>`;
-    } else {
-      button.innerHTML = `<span class="mood-segment-glyph">${moodCalendarIcon(button.dataset.mood)}</span><span>${escapeHtml(label)}</span>`;
-    }
-    button.setAttribute("aria-label", label);
+  $$("#quickMood button, #drawerMood button").forEach(button => {
+    button.innerHTML = `<span class="mood-option-icon mood-${button.dataset.mood === "低落" ? "low" : button.dataset.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(button.dataset.mood)}</span>${moodLabel(button.dataset.mood)}`;
   });
-  $$("#drawerMood button").forEach(button => {
-    button.textContent = moodLabel(button.dataset.mood);
-  });
-  setText("#sidebarHabitsHeading", languageText("今日习惯", "Today's habits", "Heutige Gewohnheiten"));
-  setText("#todayKicker", tr("viewTitles.today"));
-  $$("[data-timeline-filter]").forEach(button => {
-    const key = button.dataset.timelineFilter;
-    button.textContent = key === "photos"
-      ? languageText("有照片", "Photos", "Fotos")
-      : key === "notes"
-        ? languageText("有笔记", "Notes", "Notizen")
-        : languageText("全部", "All", "Alle");
-  });
-  setText("#habitColName", tr("habits.colName"));
-  setText("#habitColTarget", tr("habits.colTarget"));
-  setText("#habitColActive", tr("habits.colActive"));
-  setText("#reviewNarrativeTitle", tr("review.narrativeTitle"));
-  setText("#reviewNarrativeAutosave", tr("review.autosaved"));
-  setText("#habitInspectorBasicsLegend", languageText("基础", "Basics", "Grundlagen"));
-  setText("#habitInspectorTrackingLegend", languageText("追踪", "Tracking", "Tracking"));
-  setText("#habitInspectorScheduleLegend", languageText("计划", "Schedule", "Rhythmus"));
-  setText("#habitInspectorActiveLabel", tr("habits.active"));
-  setText("#habitInspectorCountsLabel", languageText("计入分数", "Counts toward score", "Zählt zur Wertung"));
-  setText("#habitInspectorEffectiveDateLabel", tr("dialog.effectiveDate"));
-  setPlaceholder('#habitInspectorForm input[name="name"]', tr("dialog.namePlaceholder"));
-  setText("#inspectorMoodHeading", tr("mood.kicker"));
-  setText("#inspectorReflectionHeading", tr("journal.title"));
-  setText("#inspectorFocusHeading", tr("focus.kicker"));
-  setText("#inspectorContextHeading", languageText("当日概况", "Day context", "Tageskontext"));
-  setText("#voiceReflectionLabel", languageText("快速记录", "Quick record", "Schnell aufnehmen"));
   setText("#timelineKicker", tr("timeline.kicker"));
   setText("#timelineTitle", tr("timeline.title"));
   setText("#timelineDescription", tr("timeline.description"));
   setAria("#timelinePreviousMonth", tr("timeline.previous"));
   setAria("#timelineNextMonth", tr("timeline.next"));
-  $$("[data-open-settings]").forEach(button => { button.textContent = tr("foundations.adjust"); });
+  setText("#sidebarLongTermTitle", tr("sidebarLongTerm.title"));
+  setAria("#sidebarLongTermOpen", tr("sidebarLongTerm.open"));
+  setText(".habits-heading .kicker", tr("foundations.kicker"));
+  setText(".habits-heading h2", tr("foundations.title"));
+  const settingsButton = $("[data-open-settings]");
+  if (settingsButton) settingsButton.innerHTML = `${tr("foundations.adjust")} <span>→</span>`;
+  setAria("#todayHabitCarousel", tr("foundations.carousel"));
+  setAria("#todayHabitViewport", tr("foundations.carousel"));
+  setAria("#habitCarouselNav", tr("foundations.carousel"));
+  setAria("#previousHabitPage", tr("foundations.previousPage"));
+  setAria("#nextHabitPage", tr("foundations.nextPage"));
   applyFocusLanguage();
+  setText('[data-plan="selected-day"] .kicker', tr("todayGoals.kicker"));
+  setText('[data-plan="selected-day"] .daily-goals-heading h3', tr("todayGoals.title"));
+  setText('[data-plan="selected-day"] .daily-goals-heading p', tr("todayGoals.desc"));
+  setAria("#previousPlanDay", tr("todayGoals.previous"));
+  setAria("#nextPlanDay", tr("todayGoals.next"));
+  setText("#openDayPlan span", tr("dayPlan.open"));
+  setAria("#openDayPlan", tr("dayPlan.open"));
   setText("#dayPlanDialogKicker", tr("todayGoals.kicker"));
   setText("#dayPlanDialogScheduleTitle", tr("dayPlan.schedule"));
   setText("#drawerScheduleTitle", tr("dayPlan.schedule"));
   setAria(".close-day-plan", tr("dayPlan.close"));
   applyCalendarLanguage();
+  setText(".daily-journal-card .kicker", tr("journal.kicker"));
+  setText(".daily-journal-card h3", tr("journal.title"));
+  setText(".daily-journal-card .daily-goals-heading p", tr("journal.desc"));
   setText("#homeJournalSave", tr("journal.autosaved"));
   setPlaceholder("#homeDayNote", tr("journal.placeholder"));
+  setText("#journalToolTab span", tr("journal.tabReflection"));
+  setText("#focusToolTab span", tr("journal.tabFocus"));
+  setAria("#dailyToolTabs", tr("journal.switchAria"));
+  setAria('#dailyToolTabs [data-daily-tool="journal"]', tr("journal.showReflection"));
+  setAria('#dailyToolTabs [data-daily-tool="focus"]', tr("journal.showFocus"));
+  setAria('[data-daily-tool-page="journal"]', tr("journal.showReflection"));
+  setAria('[data-daily-tool-page="focus"]', tr("journal.showFocus"));
+  setAria(".daily-tool-pagination", tr("journal.switchAria"));
   setText(".calendar-toolbar .kicker", tr("calendar.kicker"));
   setText(".calendar-toolbar p", tr("calendar.desc"));
   setAria("#prevMonth", tr("calendar.prev"));
@@ -2931,6 +1382,8 @@ function applyLanguage() {
   setText("#weeklyWorkspaceTitle", tr("week.title"));
   setAria("#previousWorkspaceWeek", tr("week.previous"));
   setAria("#nextWorkspaceWeek", tr("week.next"));
+  setText(".weekly-card-heading .kicker", tr("week.checklist"));
+  setText(".weekly-card-heading h3", tr("week.goalsTitle"));
   setText('[data-goal-horizon="week"]', tr("longTerm.tabWeek"));
   setText('[data-goal-horizon="long"]', tr("longTerm.tabLong"));
   setAria("#goalHorizonSwitch", languageText("目标周期", "Goal horizon", "Zielhorizont"));
@@ -2949,10 +1402,12 @@ function applyLanguage() {
   setText("#deleteLongTermGoal", tr("longTerm.delete"));
   setText("#longTermGoalForm .secondary-button", tr("longTerm.cancel"));
   setText("#saveLongTermGoal", tr("longTerm.save"));
-  setText("#inspectorWeekHeading", languageText("周复盘", "Weekly reflection", "Wochenreflexion"));
-  setText("#inspectorWeekAutosave", tr("review.autosaved"));
+  setText(".weekly-writing-heading .kicker", tr("week.outputKicker"));
+  setText(".weekly-writing-heading h3", tr("week.outputTitle"));
+  setText(".weekly-writing-heading .autosave", tr("week.autosave"));
   setPlaceholder("#weeklyOutputText", tr("week.outputPlaceholder"));
-  setText("#inspectorOpenWeeklyReviewCanvas", tr("reviewCanvas.openWeekly"));
+  const weeklyFooter = $(".weekly-writing-panel footer span:last-child");
+  if (weeklyFooter) weeklyFooter.textContent = tr("week.savedToWeek");
   setText("#generateReview", tr("review.generate"));
   setText(".chart-panel .kicker", languageText("节奏", "RHYTHM", "RHYTHMUS"));
   setText(".chart-panel h3", tr("review.rhythm"));
@@ -2964,7 +1419,11 @@ function applyLanguage() {
   setText('[data-analytics-chart="line"]', tr("review.lineView"));
   setText('[data-analytics-chart="bar"]', tr("review.barView"));
   setAria("#analyticsChartMode", tr("review.chartType"));
+  setText(".monthly-reflection-panel .kicker", languageText("月度感想", "MONTHLY REFLECTION", "MONATSREFLEXION"));
+  setText(".monthly-reflection-panel h3", tr("review.reflection"));
+  setText(".monthly-reflection-panel .autosave", tr("week.autosave"));
   setPlaceholder("#reviewText", tr("review.placeholder"));
+  setText(".settings-intro .kicker", languageText("习惯", "HABITS", "GEWOHNHEITEN"));
   setText("#addHabitButton", tr("habits.add"));
   applyDialogLanguage();
   setText("#saveState", tr("drawer.saveIdle"));
@@ -3024,40 +1483,6 @@ function applyLanguage() {
   applyTheme();
   applySidebarState();
   renderIconPicker();
-  const activeModularBoard = $(`[data-module-board="${activeView}"]`);
-  setText("#editLayoutToggle", window.LifeLedgerModules?.isEditMode(activeModularBoard) ? tr("modules.doneEditing") : tr("modules.editLayout"));
-  setText("#resetLayoutButton", tr("modules.resetLayout"));
-  setText("#todayCalendarCurrent", tr("calendar.todayButton"));
-  setAria("#todayCalendarPrev", tr("calendar.prevMonth"));
-  setAria("#todayCalendarNext", tr("calendar.nextMonth"));
-  setText("#todayFocusStartBtn", tr("modules.startFocus"));
-  setText("#todayFocusOpenTimer", tr("modules.timerSettings"));
-  setText("#openWeeklyReviewCanvas", tr("modules.writeReview"));
-  setText("#habitsModuleKicker", tr("foundations.kicker"));
-  setText("#habitsModuleTitle", tr("foundations.title"));
-  setText("#todayHabitsAdjustLabel", tr("foundations.adjust"));
-  setText("#todayMoodKicker", tr("mood.kicker"));
-  setText("#todayMoodHeading", tr("mood.title"));
-  setText("#todayProgressLabel", tr("hero.progress"));
-  setText("#calendarModuleKicker", tr("calendar.kicker"));
-  setText("#focusModuleKicker", languageText("专注时间", "FOCUS TIME", "FOKUSZEIT"));
-  setText("#focusModuleTitle", tr("modules.focus"));
-  setText("#photosModuleKicker", languageText("记忆", "MEMORY", "ERINNERUNG"));
-  setText("#photosModuleTitle", tr("modules.photos"));
-  setText("#reflectionModuleKicker", languageText("每日复盘", "DAILY REVIEW", "TAGESRÜCKBLICK"));
-  setText("#reflectionModuleTitle", tr("modules.reflection"));
-  setText("#contextModuleKicker", languageText("节奏", "CONTEXT", "RHYTHMUS"));
-  setText("#contextModuleTitle", tr("modules.context"));
-  setText("#weekCompletedKicker", languageText("本周进展", "THIS WEEK", "DIESE WOCHE"));
-  setText("#weekCompletedTitle", languageText('周日历', 'Week calendar', 'Wochenkalender'));
-  setText("#weekInsightsKicker", languageText("数据洞察", "PROGRESS", "FORTSCHRITT"));
-  setText("#weekInsightsTitle", tr("modules.insights"));
-  setText("#weekGoalsKicker", languageText("目标与焦点", "FOCUS & TARGETS", "FOKUS & ZIELE"));
-  setText("#weekReviewKicker", languageText("深度复盘", "DEEP REVIEW", "TIEFER RÜCKBLICK"));
-  setText("#weekRateLabel", tr("week.completionRate"));
-  setText("#weekBestDayLabel", tr("week.bestDay"));
-  setText("#weekStreakLabel", tr("week.streak"));
-  setText("#weekFocusMinutesLabel", tr("week.focusTime"));
   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
 }
 function applyReviewCanvasLanguage() {
@@ -3082,7 +1507,11 @@ function applyReviewCanvasLanguage() {
   populateReviewCanvasPeriods();
 }
 function applyFocusLanguage() {
+  setText("#focusOverviewKicker", tr("focus.kicker"));
+  setText("#focusOverviewTitle", tr("focus.overviewTitle"));
+  setText("#focusOverviewHint", tr("focus.overviewHint"));
   setText("#focusSettingsLabel", tr("focus.settings"));
+  setAria("#openFocusTimer", tr("focus.settings"));
   setAria("#focusQuickPresets", tr("focus.presetSummary", { focus: 25, break: 5 }));
   setText("#focusDialogKicker", tr("focus.dialogKicker"));
   setText("#focusDialogTitle", tr("focus.dialogTitle"));
@@ -3217,18 +1646,14 @@ async function requestPersistentStorage() {
   }
 }
 function setSaveMode(mode, text) {
-  window.LifeLedgerWindowShell?.setMode(text);
   const badge = $("#saveMode");
-  if (badge) {
-    badge.classList.toggle("cloud", mode === "cloud");
-    badge.classList.toggle("syncing", mode === "syncing");
-    badge.classList.toggle("auth", mode === "auth");
-    badge.title = mode === "auth"
-      ? cloudProvider === "cloudbase" ? tr("cloudbase.title") : tr("save.authTitle")
-      : "";
-    const span = $("span", badge);
-    if (span) span.textContent = text;
-  }
+  badge.classList.toggle("cloud", mode === "cloud");
+  badge.classList.toggle("syncing", mode === "syncing");
+  badge.classList.toggle("auth", mode === "auth");
+  badge.title = mode === "auth"
+    ? cloudProvider === "cloudbase" ? tr("cloudbase.title") : tr("save.authTitle")
+    : "";
+  $("span", badge).textContent = text;
   const profileMode = $("#profileSaveMode");
   if (profileMode) {
     profileMode.textContent = mode === "cloud"
@@ -3240,16 +1665,6 @@ function setSaveMode(mode, text) {
         : cloudMode
           ? tr("save.profilePending")
           : tr("save.profileLocal");
-  }
-  const syncStatus = $("#sidebarSyncStatus");
-  if (syncStatus) {
-    const label = mode === "cloud" || mode === "syncing" ? text : tr("save.localPreview");
-    syncStatus.setAttribute("aria-label", label);
-    syncStatus.setAttribute("title", label);
-    const labelEl = $("#sidebarSyncLabel");
-    if (labelEl) labelEl.textContent = label;
-    syncStatus.classList.toggle("syncing", mode === "syncing");
-    syncStatus.classList.toggle("cloud", mode === "cloud" || mode === "syncing");
   }
   $("#cloudAccountButton")?.classList.toggle("connected", cloudProvider === "cloudbase" && mode === "cloud");
 }
@@ -3367,7 +1782,7 @@ async function pullCloudState() {
 function applyCalendarLanguage() {
   const button = $("#calendarConnectionButton");
   if (button) {
-    button.textContent = googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger");
+    $("span", button).textContent = googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger");
     button.setAttribute("aria-label", googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger"));
   }
   setText("#calendarSettingsKicker", tr("calendarSync.kicker"));
@@ -3408,7 +1823,7 @@ function renderCalendarConnection() {
   if (trigger) {
     trigger.hidden = !available;
     trigger.classList.toggle("connected", googleCalendar.connected);
-    trigger.textContent = googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger");
+    $("span", trigger).textContent = googleCalendar.connected ? tr("calendarSync.connectedTrigger") : tr("calendarSync.trigger");
   }
   const disconnected = $("#calendarDisconnectedState");
   const connected = $("#calendarConnectedState");
@@ -3421,7 +1836,6 @@ function renderCalendarConnection() {
   $("#calendarAddAccountButton").hidden = googleCalendar.accounts.length >= 2;
   $("#calendarLastSync").textContent = formatCalendarSyncTime(googleCalendar.lastSyncedAt);
   if (googleCalendar.connected) renderCalendarPicker();
-  renderWeekCalendar();
 }
 
 function renderCalendarPicker() {
@@ -3435,7 +1849,7 @@ function renderCalendarPicker() {
     const selected = new Set(account.selectedCalendarIds || []);
     const calendars = account.calendars || [];
     return `<section class="calendar-account-card" data-connection-id="${escapeHtml(account.connectionId)}">
-      <header><div><strong>${escapeHtml(account.accountLabel || "Google Calendar")}</strong><small>${escapeHtml(account.errorCode ? tr("calendarSync.accountNeedsReconnect") : tr("calendarSync.accountCalendars"))}</small></div><button type="button" class="calendar-account-disconnect" aria-label="${escapeHtml(tr("calendarSync.disconnectAccount"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+      <header><div><strong>${escapeHtml(account.accountLabel || "Google Calendar")}</strong><small>${escapeHtml(account.errorCode ? tr("calendarSync.accountNeedsReconnect") : tr("calendarSync.accountCalendars"))}</small></div><button type="button" class="calendar-account-disconnect" aria-label="${escapeHtml(tr("calendarSync.disconnectAccount"))}">×</button></header>
       <div class="calendar-picker-list">${calendars.length ? calendars.map(calendar => `<label class="calendar-picker-option">
         <input type="checkbox" value="${escapeHtml(calendar.id)}" ${selected.has(calendar.id) ? "checked" : ""} />
         <i style="--calendar-color:${escapeHtml(calendar.color || "#6f95c8")}" aria-hidden="true"></i>
@@ -3508,8 +1922,7 @@ async function loadGoogleCalendarMonth(date, options = {}) {
   const range = calendarMonthRange(date);
   if (!options.force && (googleCalendarLoadedMonths.has(range.key) || googleCalendarLoadingMonths.has(range.key))) return;
   googleCalendarLoadingMonths.add(range.key);
-  weekCalendarReadError = false;
-  renderWeekCalendar();
+  renderDaySchedule();
   try {
     const query = new URLSearchParams({ timeMin: range.start.toISOString(), timeMax: range.end.toISOString() });
     const payload = await calendarApi(`events?${query}`);
@@ -3525,8 +1938,7 @@ async function loadGoogleCalendarMonth(date, options = {}) {
       setCalendarSettingsStatus(tr("calendarSync.accountNeedsReconnect"), true);
     }
     googleCalendarLoadedMonths.add(range.key);
-    renderTodayEventsStrip();
-    renderInspector();
+    renderDailyGoals();
     renderCalendar();
     if ($("#dayDrawer").classList.contains("open")) renderDrawer();
     if ($("#dayPlanDialog").open) renderDayPlanDialog();
@@ -3534,7 +1946,6 @@ async function loadGoogleCalendarMonth(date, options = {}) {
     if (googleCalendar.stale) setCalendarSettingsStatus(tr("calendarSync.stale"));
   } catch (error) {
     console.warn("Calendar event load failed", { code: error.code, status: error.status });
-    weekCalendarReadError = true;
     if (error.code === "CALENDAR_NOT_CONNECTED") {
       googleCalendar.connected = false;
       renderCalendarConnection();
@@ -3544,7 +1955,7 @@ async function loadGoogleCalendarMonth(date, options = {}) {
     }
   } finally {
     googleCalendarLoadingMonths.delete(range.key);
-    renderWeekCalendar();
+    renderDaySchedule();
   }
 }
 
@@ -3653,8 +2064,7 @@ async function disconnectGoogleCalendar(connectionId) {
     if (!googleCalendar.connected) $("#calendarSettingsDialog").close();
     else await loadGoogleCalendarChoices();
     renderCalendarConnection();
-    renderTodayEventsStrip();
-    renderInspector();
+    renderDailyGoals();
     renderCalendar();
     showToast(tr("calendarSync.disconnected"));
   } catch (error) {
@@ -3721,27 +2131,10 @@ function completionFor(date) {
   const log = getLog(date);
   return habits.length ? Math.round((log.completed.filter(id => habits.some(h => h.id === id)).length / habits.length) * 100) : 0;
 }
-function showToast(message, { actionLabel = "", onAction = null } = {}) {
-  const toast = $("#toast");
-  const action = $("#toastAction");
-  $("p", toast).textContent = message;
-  if (action) {
-    if (actionLabel && onAction) {
-      action.hidden = false;
-      action.textContent = actionLabel;
-      action.onclick = event => {
-        event.preventDefault();
-        toast.classList.remove("show");
-        onAction();
-      };
-    } else {
-      action.hidden = true;
-      action.onclick = null;
-    }
-  }
-  toast.classList.add("show");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove("show"), actionLabel ? 4200 : 1600);
+function showToast(message) {
+  const toast = $("#toast"); $("p", toast).textContent = message;
+  toast.classList.add("show"); clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove("show"), 1600);
 }
 
 function initSelects() {
@@ -3754,226 +2147,74 @@ function initSelects() {
 
 function renderAll() {
   applyLanguage();
-  if ($("#yearSelect")) $("#yearSelect").value = cursor.getFullYear();
-  if ($("#monthSelect")) $("#monthSelect").value = cursor.getMonth();
+  $("#yearSelect").value = cursor.getFullYear();
+  $("#monthSelect").value = cursor.getMonth();
   renderToday();
-  renderInspector();
+  updateDailyToolControls(dailyToolPage);
   renderFocusOverview();
   renderWeeklyWorkspace();
   renderCalendar();
   renderReview();
   renderHabitSettings();
-  if (document.body.dataset.activeView === 'longrange') renderLongRange();
-  renderSidebarHabits();
-  renderToolbarDateNav();
-  updateInspectorForView();
+  renderSidebarLongTermGoals();
   if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
-  if (document.body.dataset.activeView === "habits" && selectedHabitSettingsId) populateHabitInspectorForm(selectedHabitSettingsId);
-  syncInteractionChrome(false);
-  hydrateHairlineMounts(document);
-  renderSyncOffline();
+  decorateMotionSurfaces();
+}
+
+const motionSurfaceSelector = ".hero-card, .mood-card, .habit-card, .daily-goals-card, .calendar-card, .panel, .weekly-goals-panel, .weekly-writing-panel, .score-card, .setting-row";
+const tiltSurfaceSelector = ".mood-card, .habit-card, .daily-goals-card, .score-card, .setting-row";
+function motionAllowed() {
+  return matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+function decorateMotionSurfaces() {
+  if (!motionAllowed()) return;
+  $$(motionSurfaceSelector).forEach(surface => {
+    surface.classList.add("apple-interactive");
+    if (surface.matches(tiltSurfaceSelector)) surface.classList.add("apple-tilt");
+    if (!surface.querySelector(":scope > .pointer-aura")) {
+      const aura = document.createElement("span");
+      aura.className = "pointer-aura";
+      aura.setAttribute("aria-hidden", "true");
+      surface.prepend(aura);
+    }
+  });
+}
+function bindPointerMotion() {
+  if (!motionAllowed()) return;
+  let pendingFrame = 0;
+  let pointerEvent = null;
+  document.addEventListener("pointermove", event => {
+    const surface = event.target.closest?.(motionSurfaceSelector);
+    if (!surface) return;
+    pointerEvent = { surface, clientX: event.clientX, clientY: event.clientY };
+    if (pendingFrame) return;
+    pendingFrame = requestAnimationFrame(() => {
+      pendingFrame = 0;
+      if (!pointerEvent) return;
+      const { surface: activeSurface, clientX, clientY } = pointerEvent;
+      const rect = activeSurface.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+      activeSurface.style.setProperty("--pointer-x", `${x}px`);
+      activeSurface.style.setProperty("--pointer-y", `${y}px`);
+      if (activeSurface.matches(tiltSurfaceSelector)) {
+        activeSurface.style.setProperty("--tilt-x", `${((rect.height / 2 - y) / rect.height * 2.2).toFixed(2)}deg`);
+        activeSurface.style.setProperty("--tilt-y", `${((x - rect.width / 2) / rect.width * 2.2).toFixed(2)}deg`);
+      }
+    });
+  }, { passive: true });
+  document.addEventListener("pointerout", event => {
+    const surface = event.target.closest?.(motionSurfaceSelector);
+    if (!surface || surface.contains(event.relatedTarget)) return;
+    surface.style.setProperty("--tilt-x", "0deg");
+    surface.style.setProperty("--tilt-y", "0deg");
+  }, { passive: true });
 }
 
 function autoGrowTextarea(textarea) {
   if (!textarea) return;
   textarea.style.height = "auto";
   textarea.style.height = `${textarea.scrollHeight}px`;
-}
-
-function maybeAutoGrowHomeDayNote() {
-  const reflectionCard = document.querySelector('[data-module="reflection"]');
-  if (reflectionCard?.dataset.widgetSize !== "large") return;
-  autoGrowTextarea($("#homeDayNote"));
-}
-
-function updateUndoLayoutChrome() {
-  const btn = $("#undoLayoutButton");
-  const label = $("#undoLayoutLabel");
-  if (!btn) return;
-  const text = tr("modules.undo");
-  if (label) label.textContent = text;
-  btn.setAttribute("aria-label", tr("modules.undoAria"));
-  btn.setAttribute("title", tr("modules.undoTitle"));
-}
-
-function getTodayWidgetContext() {
-  const date = selectedPlanningDate;
-  const scored = dailyHabits(date);
-  const log = getLog(date);
-  const pending = scored.filter(habit => !log.completed.includes(habit.id));
-  const scheduledTime = habit => scheduleLabel(versionFor(habit, date));
-  const scheduled = pending.filter(habit => scheduledTime(habit));
-  const open = pending.filter(habit => !scheduledTime(habit));
-  const completed = scored.filter(habit => log.completed.includes(habit.id));
-  const nextHabit = open[0] || scheduled[0];
-  const bestStreak = scored.length ? Math.max(0, ...scored.map(h => habitStreak(h.id, date))) : 0;
-  const calendarStreakLabel = bestStreak > 1 ? tr("today.streak", { count: bestStreak }) : "";
-
-  const end = parseDate(date);
-  const miniBars = [];
-  let totalDone = 0;
-  let totalEligible = 0;
-  for (let offset = 6; offset >= 0; offset -= 1) {
-    const day = new Date(end);
-    day.setDate(end.getDate() - offset);
-    const key = isoDate(day);
-    const dayScored = dailyHabits(key);
-    const done = dayScored.filter(h => getLog(key).completed.includes(h.id)).length;
-    const total = dayScored.length;
-    if (!isFutureDate(key)) {
-      totalDone += done;
-      totalEligible += total;
-    }
-    miniBars.push(total ? done / total : 0);
-  }
-  const percent = totalEligible ? Math.round((totalDone / totalEligible) * 100) : 0;
-  const totalHabitRows = open.length + scheduled.length + completed.length;
-  const focusValues = focusPresetValues(state.focusSettings?.preset || "classic");
-  const note = String(log.note || "").trim();
-
-  return {
-    selectedDate: date,
-    locale: i18n[currentLang]?.locale || "en",
-    summaryNextItem: nextHabit ? `${tr("today.open")}: ${displayHabitName(nextHabit)}` : "",
-    habitsOverflowCount: Math.max(0, totalHabitRows - 8),
-    calendarStreakLabel,
-    contextSevenDayPercent: `${percent}%`,
-    contextConsistencyLabel: tr("today.contextConsistency"),
-    contextMiniBars: miniBars,
-    focusPresetMinutes: [15, 25, 50],
-    focusActivePreset: focusValues.focusMinutes,
-    reflectionStatus: note ? tr("journal.autosaved") : tr("today.noReflection"),
-    reflectionPrompt: tr("journal.placeholder"),
-  };
-}
-
-function weekAgendaSegmentBar(scored, log) {
-  if (!scored.length) return "";
-  return `<span class="week-agenda-segments" aria-hidden="true">${scored.map(habit => `<i class="week-agenda-segment ${log.completed.includes(habit.id) ? "done" : ""}" style="${habitStyle(habit)}"></i>`).join("")}</span>`;
-}
-
-function weekHabitMarkup(habit, date, time) {
-  const name = displayHabitName(habit);
-  const markLabel = languageText(`标记 ${name} 完成`, `Mark ${name} done`, `${name} als erledigt markieren`);
-  const timeHtml = time ? `<time class="week-habit-time">${escapeHtml(time)}</time>` : "";
-  const locked = isFutureDate(date);
-  const lockedAttr = locked ? `disabled title="${escapeHtml(tr("today.futureLocked"))}"` : "";
-  const done = getLog(date).completed.includes(habit.id);
-  return `<li class="week-habit-row ${done ? "done" : ""}" data-id="${escapeHtml(habit.id)}" data-date="${escapeHtml(date)}" style="${habitStyle(habit)}"><span class="week-habit-icon">${renderIcon(iconKey(habit))}</span><span class="week-habit-name">${escapeHtml(name)}${timeHtml}</span><button class="week-habit-check" type="button" aria-pressed="${done}" aria-label="${escapeHtml(markLabel)}" ${lockedAttr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button></li>`;
-}
-
-function renderWeekAgenda() {
-  const agenda = $("#weekAgenda");
-  if (!agenda) return;
-  const { monday } = weekDatesFromKey(selectedWorkspaceWeek);
-  const todayKey = isoDate(new Date());
-  let weekDone = 0;
-  let weekTotal = 0;
-  agenda.innerHTML = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(monday);
-    date.setDate(monday.getDate() + index);
-    const key = isoDate(date);
-    const log = getLog(key);
-    const scored = dailyHabits(key);
-    const completed = scored.filter(habit => log.completed.includes(habit.id)).length;
-    const future = key > todayKey;
-    if (!future) {
-      weekDone += completed;
-      weekTotal += scored.length;
-    }
-    const fill = scored.length ? (completed / scored.length).toFixed(3) : 0;
-    const meter = `<span class="week-agenda-meter" aria-hidden="true"><i style="--meter-fill:${fill};"></i></span>`;
-    const progressLabel = future ? "—" : (scored.length ? `${completed}/${scored.length}` : "0/0");
-    const moodGlyph = log.mood ? `<span class="week-agenda-mood" aria-label="${escapeHtml(moodLabel(log.mood))}">${moodCalendarIcon(log.mood)}</span>` : "<span class=\"week-agenda-mood empty\" aria-hidden=\"true\"></span>";
-    const note = String(log.note || "").trim().split("\n")[0] || tr("week.noEntry");
-    const weekday = formatLocalizedDate(date, { weekday: "short" });
-    const dateLabel = formatLocalizedDate(date, { day: "numeric", month: "short" });
-    const isToday = key === todayKey;
-    const isSelected = key === selectedPlanningDate;
-    const rowClass = `${isToday ? "today" : ""} ${isSelected && !isToday ? "selected" : ""}`.trim();
-    return `<li class="week-day-section ${isSelected ? "is-open" : ""}" role="listitem">
-      <button type="button" class="week-agenda-row ${rowClass}" data-date="${key}" aria-pressed="${isSelected}" tabindex="${isSelected ? '0' : '-1'}">
-        <span class="week-agenda-day"><span class="week-agenda-weekday">${escapeHtml(weekday)}</span><span class="week-agenda-date">${escapeHtml(dateLabel)}</span></span>
-        ${meter}
-        <span class="week-agenda-progress">${escapeHtml(progressLabel)}</span>
-        ${moodGlyph}
-        <span class="week-agenda-note ${note === tr("week.noEntry") ? "empty" : ""}">${escapeHtml(note)}</span>
-      </button>
-    </li>`;
-  }).join("");
-  window.LifeLedgerInteraction?.glideTo(agenda, agenda.querySelector(`[data-date="${selectedPlanningDate}"]`));
-  renderWeekDayDetail();
-  agenda.querySelectorAll(".week-agenda-row").forEach(row => {
-    const select = event => {
-      selectedPlanningDate = row.dataset.date;
-      renderWeekAgenda();
-      // Rerendering the rail must not drop keyboard/pointer focus to the body.
-      agenda.querySelector(`[data-date="${selectedPlanningDate}"]`)?.focus({ preventScroll: true });
-      renderToolbarDateNav();
-    };
-    row.addEventListener("click", select);
-    row.addEventListener("keydown", event => {
-      const buttons = [...agenda.querySelectorAll('.week-agenda-row')];
-      const at = buttons.indexOf(row);
-      if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
-      event.preventDefault();
-      const index = event.key === 'Home' ? 0 : event.key === 'End' ? 6 : Math.max(0, Math.min(6, at + (event.key === 'ArrowLeft' ? -1 : 1)));
-      buttons[index].click();
-    });
-  });
-  agenda.querySelectorAll(".week-habit-check").forEach(button => button.addEventListener("click", event => {
-    event.stopPropagation();
-    const row = button.closest(".week-habit-row");
-    if (row) toggleHabit(row.dataset.date, row.dataset.id);
-  }));
-  const lede = $("#weekPlanLede");
-  if (lede) {
-    lede.textContent = languageText(
-      `本周已完成 ${weekDone} / ${weekTotal}`,
-      `${weekDone} of ${weekTotal} done this week`,
-      `${weekDone} von ${weekTotal} diese Woche erledigt`,
-    );
-  }
-  const allWeekDone = weekTotal > 0 && weekDone === weekTotal;
-  const weekAllDoneArt = $("#weekAllDoneArt");
-  if (weekAllDoneArt) {
-    weekAllDoneArt.hidden = !allWeekDone;
-    if (allWeekDone) {
-      window.LifeLedgerInteraction?.mountHairline(weekAllDoneArt, "./assets/hairline/week-all-done.svg");
-    }
-  }
-}
-
-function weekDaysWithCompletion(key) {
-  const { monday } = weekDatesFromKey(key);
-  let filled = 0;
-  for (let index = 0; index < 7; index += 1) {
-    const date = new Date(monday);
-    date.setDate(monday.getDate() + index);
-    const day = isoDate(date);
-    if (getLog(day).completed.length) filled += 1;
-  }
-  return Math.min(7, filled);
-}
-
-function renderWeekCalendar() {
-  const host = $('#weekCalendar');
-  if (!host) return;
-  const {monday} = weekDatesFromKey(selectedWorkspaceWeek);
-  const range = calendarMonthRange(monday), loading = googleCalendarLoadingMonths.has(range.key);
-  const available = cloudProvider === 'cloudflare' && googleCalendar.configured;
-  let count = 0;
-  host.innerHTML = Array.from({length:7},(_,index)=>{
-    const day = new Date(monday);day.setDate(monday.getDate()+index);const key = isoDate(day);
-    const events = googleCalendar.connected ? calendarEventsForDate(key) : [];
-    count += events.length;
-    return `<section class="week-calendar-day ${key === isoDate(new Date()) ? 'is-today' : ''}" role="listitem"><header><span>${escapeHtml(formatLocalizedDate(day,{weekday:'short'}))}</span><strong>${escapeHtml(formatLocalizedDate(day,{month:'short',day:'numeric'}))}</strong></header><div>${events.length ? events.map(event=>`<article class="week-calendar-event"><time>${escapeHtml(event.allDay ? languageText('全天','All day','Ganztägig') : [event.start,event.end].filter(Boolean).join('–'))}</time><strong>${escapeHtml(event.title || languageText('未命名日程','Untitled event','Unbenannter Termin'))}</strong>${event.calendarName ? `<small>${escapeHtml(event.calendarName)}</small>` : ''}</article>`).join('') : `<p class="week-calendar-empty">${escapeHtml(googleCalendar.connected ? loading ? languageText('读取中…','Loading…','Wird geladen…') : languageText('留一点空白','Room to breathe','Raum für dich') : '—')}</p>`}</div></section>`;
-  }).join('');
-  const status = $('#weekCalendarStatus'), connect = $('#weekCalendarConnect');
-  status.textContent = !googleCalendar.connected ? available ? languageText('连接后，这一周的日程会显示在这里。','Connect to see this week’s schedule here.','Verbinde deinen Kalender für die Termine dieser Woche.') : languageText('在线连接版可读取 Google 日历；纯本地模式尚未连接。','Google Calendar is available in the connected edition; local mode is not connected.','Google Kalender ist in der verbundenen Ausgabe verfügbar; lokal nicht verbunden.') : loading ? languageText('正在读取本周日程…','Reading this week’s events…','Wochentermine werden geladen…') : weekCalendarReadError || googleCalendar.stale ? languageText('暂时无法更新，保留已缓存日程。','Cannot refresh. Showing any cached events.','Aktualisierung nicht möglich. Vorhandene Termine bleiben sichtbar.') : languageText(`${count} 项日程 · 只读`,`${count} events · Read only`,`${count} Termine · Nur lesen`);
-  connect.hidden = !available;
-  connect.textContent = googleCalendar.connected ? languageText('选择日历','Calendars','Kalender wählen') : tr('calendarSync.trigger');
-  host.dataset.connected = String(googleCalendar.connected);
 }
 
 function renderWeeklyWorkspace() {
@@ -3983,49 +2224,25 @@ function renderWeeklyWorkspace() {
   const done = goals.filter(goal => goal.done).length;
   const output = state.weeklyOutputs[key] || "";
   const range = formatWeekRange(key);
-  setText('#weekPageTitle', range);
-  setText('#inspectorWeekHeading',languageText('本周复盘','This week’s reflection','Rückblick dieser Woche'));
-  setText('#weekArchiveLink',languageText('在时间轴中回看 →','View in Timeline →','In der Zeitleiste ansehen →'));
-  setAria('#weeklyOutputText',languageText('本周复盘','Weekly reflection','Wochenrückblick'));
-  setPlaceholder('#weeklyOutputText',languageText('这一周，什么值得记住？\n什么想继续，什么想改变？','What is worth remembering this week?\nWhat will you keep, and what will you change?','Was bleibt von dieser Woche?\nWas möchtest du beibehalten, was ändern?'));
-  setText('#weekPageKicker', languageText('把一周，过成自己的节奏', 'A WEEK AT YOUR OWN PACE', 'DEINE WOCHE. DEIN RHYTHMUS.'));
-  setText("#weekRange", tr("week.range", { range }));
+  $("#weekRange").textContent = tr("week.range", { range });
   const weekOffset = weekDistance(currentKey, key);
-  setText("#weekRelativeLabel", weekOffset === 0 ? tr("week.relativeCurrent") : weekOffset === 1 ? tr("week.relativeNext") : weekOffset === -1 ? tr("week.relativePrevious") : weekOffset > 0 ? tr("week.relativeFuture", { n: weekOffset }) : tr("week.relativePast", { n: Math.abs(weekOffset) }));
-  renderWeekCalendar();
-  setText('#weekPlanLede', languageText('安排这一周，写下这一周。','Make room for the week. Put it into words.','Plane deine Woche. Halte sie fest.'));
-  if (googleCalendar.connected) void loadGoogleCalendarMonth(weekDatesFromKey(key).monday);
-  renderWeekInsights();
-  renderWeekPromotedReview();
+  $("#weekRelativeLabel").textContent = weekOffset === 0 ? tr("week.relativeCurrent") : weekOffset === 1 ? tr("week.relativeNext") : weekOffset === -1 ? tr("week.relativePrevious") : weekOffset > 0 ? tr("week.relativeFuture", { n: weekOffset }) : tr("week.relativePast", { n: Math.abs(weekOffset) });
+  $("#currentWorkspaceWeek").classList.toggle("away", weekOffset !== 0);
+  $("#currentWorkspaceWeek").title = weekOffset === 0 ? tr("week.currentTitle") : tr("week.returnCurrent");
   $("#weeklyGoalProgress").textContent = `${done} / ${goals.length}`;
-  setText("#weeklyGoalsTitle", tr("week.goalsTitleProgress", { done, total: goals.length }));
-  setText("#inspectorWeekRange", range);
-  $(".weekly-goals-section")?.classList.toggle("is-empty", !goals.length);
   $("#weeklyGoalList").innerHTML = goals.length ? goals.map(goal => `
     <div class="weekly-goal ${goal.done ? "done" : ""}" data-id="${goal.id}">
-      <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
+      <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}">✓</button>
       <button class="weekly-goal-text" data-action="toggle">${escapeHtml(goal.text)}</button>
-      <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-    </div>`).join("") : hairlineEmptyMarkup(
-      "./assets/hairline/empty-week-goals.svg",
-      tr("week.goalsTitleProgress", { done: 0, total: 0 }),
-      languageText("先写一件真正重要的事。", "Put one important thing here.", "Lege eine wirklich wichtige Sache hinein."),
-    );
-  if (!goals.length) {
-    hydrateHairlineMounts($("#weekView"));
-    const weekMount = $("#weeklyGoalList .hairline-mount");
-    if (weekMount) weekMount.dataset.filled = String(weekDaysWithCompletion(key));
-  }
+      <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}">×</button>
+    </div>`).join("") : `<p class="weekly-goal-empty">${tr("week.emptyGoals")}</p>`;
   $("#currentWeekNumber").textContent = range;
   $("#basketYear").textContent = "";
-  setText("#basketWeekLabel", range);
+  $("#basketWeekLabel").textContent = range;
   $("#weeklyGoalInput").placeholder = tr("week.goalPlaceholder");
-  const weeklyOutput = $("#weeklyOutputText");
-  if (weeklyOutput) {
-    weeklyOutput.value = output;
-    autoGrowTextarea(weeklyOutput);
-  }
-  setText("#weeklyOutputStatus", output.trim() ? tr("week.outputStatus", { count: output.trim().length }) : tr("week.outputEmpty"));
+  $("#weeklyOutputText").value = output;
+  autoGrowTextarea($("#weeklyOutputText"));
+  $("#weeklyOutputStatus").textContent = output.trim() ? tr("week.outputStatus", { count: output.trim().length }) : tr("week.outputEmpty");
   renderLongTermGoals();
   applyGoalHorizon();
   $$(".weekly-goal").forEach(row => row.addEventListener("click", event => {
@@ -4048,7 +2265,6 @@ function applyGoalHorizon() {
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", String(active));
   });
-  window.LifeLedgerInteraction?.syncSegments(document);
 }
 
 function formatLongTermReviewDate(value) {
@@ -4121,28 +2337,23 @@ function deleteLongTermGoal() {
   showToast(tr("longTerm.removed"));
 }
 
-function renderSidebarHabits() {
-  const list = $("#sidebarHabitsList");
+function renderSidebarLongTermGoals() {
+  const list = $("#sidebarLongTermList");
   if (!list) return;
-  const date = selectedPlanningDate;
-  const log = getLog(date);
-  const habits = activeHabits(date).filter(habit => habit.active);
-  const shown = habits.slice(0, 8);
-  const more = habits.length - shown.length;
-  list.innerHTML = `${shown.map(habit => {
-    const done = log.completed.includes(habit.id);
-    const version = versionFor(habit, date);
-    const weekly = version?.frequency && version.frequency !== "daily";
-    const hint = weekly ? `<span class="secondary">${escapeHtml(tr("habits.weeklyHint"))}</span>` : "";
-    const checkIcon = done ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg>` : "";
-    return `<li><button type="button" class="sidebar-habit-item ${done ? "done" : ""}" data-id="${escapeHtml(habit.id)}" aria-pressed="${done}" aria-label="${escapeHtml(displayHabitName(habit))}${weekly ? `, ${escapeHtml(tr("habits.weeklyHint"))}` : ""}" style="${habitStyle(habit)}"><span class="sidebar-habit-check" aria-hidden="true">${checkIcon}</span><span class="sidebar-habit-copy"><span class="sidebar-habit-name">${escapeHtml(displayHabitName(habit))}</span>${hint}</span></button></li>`;
-  }).join("")}${more > 0 ? `<li><button type="button" class="sidebar-habits-more" id="sidebarHabitsMore">${escapeHtml(tr("today.sidebarMore", { count: more }))}</button></li>` : ""}`;
-  list.querySelectorAll(".sidebar-habit-item").forEach(button => button.addEventListener("click", () => toggleHabit(date, button.dataset.id)));
-  $("#sidebarHabitsMore")?.addEventListener("click", () => switchToView("habits"));
+  const goals = (state.longTermGoals || [])
+    .filter(goal => (goal.status || "active") === "active")
+    .sort((a, b) => Number(b.updatedAt || b.createdAt || 0) - Number(a.updatedAt || a.createdAt || 0))
+    .slice(0, 3);
+  list.innerHTML = goals.length
+    ? goals.map(goal => `<button class="sidebar-long-term-item" type="button" data-id="${escapeHtml(goal.id)}"><i aria-hidden="true"></i><span>${escapeHtml(goal.name)}</span></button>`).join("")
+    : `<p class="sidebar-long-term-empty">${tr("sidebarLongTerm.empty")}</p>`;
+  list.querySelectorAll("button").forEach(button => button.addEventListener("click", () => openLongTermGoalDialog(button.dataset.id)));
 }
 
 function openLongTermWorkspace() {
-  switchToView('longrange');
+  goalHorizon = "long";
+  $(".nav-item[data-view='week']")?.click();
+  applyGoalHorizon();
 }
 
 function timelineRange(date) {
@@ -4153,1201 +2364,169 @@ function timelineRange(date) {
 
 function timelineDateLabel(value) {
   const date = parseDate(value);
+  const locale = currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
   return {
-    weekday: formatLocalizedDate(date, { weekday: "short" }),
-    day: formatLocalizedDate(date, { day: "numeric" }),
-    detail: formatLocalizedDate(date, { weekday: "long", day: "numeric", month: "long", year: "numeric" }),
+    main: new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date),
+    detail: new Intl.DateTimeFormat(locale, { weekday: "long", year: "numeric" }).format(date),
   };
 }
 
-// Layout counts follow Memos resolveVisualGalleryLayout (MIT, 0d989707):
-// 1 full, 2 columns, 3 with the first cell spanning both rows, 4 as a 2×2,
-// and 5 or more as a 2×3 whose last cell shows +N.
-function photoCollageMarkup(photos) {
-  const items = (photos || []).filter(photo => photo?.url);
-  if (!items.length) return "";
-  const cell = (photo, extra = "") => `<span class="journal-collage-cell ${extra}"><img src="${escapeHtml(photo.url)}" alt="" /></span>`;
-  if (items.length === 1) return `<span class="journal-collage is-single">${cell(items[0])}</span>`;
-  if (items.length === 2) return `<span class="journal-collage is-two">${items.map(photo => cell(photo)).join("")}</span>`;
-  if (items.length === 3) return `<span class="journal-collage is-mosaic">${cell(items[0], "is-span")}${cell(items[1])}${cell(items[2])}</span>`;
-  if (items.length === 4) return `<span class="journal-collage is-grid">${items.map(photo => cell(photo)).join("")}</span>`;
-  const visible = items.slice(0, 6);
-  const overflow = items.length - visible.length;
-  return `<span class="journal-collage is-six">${visible.map((photo, index) => `${cell(photo)}${index === visible.length - 1 && overflow > 0 ? `<b class="journal-collage-more">+${overflow}</b>` : ""}`).join("")}</span>`;
-}
-
-function renderJournalPhotoLibrary(photos) {
-  const host = $("#journalPhotoLibrary");
-  if (!host) return;
-  if (!photos.length) {
-    host.innerHTML = hairlineEmptyMarkup(
-      "./assets/hairline/empty-photos.svg",
-      languageText("照片", "Photos", "Fotos"),
-      languageText("这个月还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos this month yet. Add one from a day and it will appear here by month.", "Diesen Monat gibt es noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."),
-    );
-    hydrateHairlineMounts(host);
-    return;
-  }
-  const groups = new Map();
-  photos.forEach(photo => {
-    const key = String(photo.date || "").slice(0, 7);
-    if (!key) return;
-    groups.set(key, [...(groups.get(key) || []), photo]);
-  });
-  host.innerHTML = [...groups.entries()].sort((a, b) => b[0].localeCompare(a[0])).map(([key, items]) => {
-    const label = formatLocalizedDate(parseDate(`${key}-01`), { month: "long", year: "numeric" });
-    return `<section class="journal-library-month"><h3>${escapeHtml(label)}</h3><div class="journal-library-grid">${items.map(photo => `<button type="button" class="journal-library-card" data-date="${escapeHtml(photo.date)}"><img src="${escapeHtml(photo.url)}" alt="" /><span>${escapeHtml(formatLocalizedDate(parseDate(photo.date), { day: "numeric", month: "short" }))}</span></button>`).join("")}</div></section>`;
-  }).join("");
-  host.querySelectorAll(".journal-library-card").forEach(button => button.addEventListener("click", () => {
-    selectedTimelineDate = button.dataset.date;
-    openDrawer(selectedTimelineDate);
-  }));
-}
-
-function renderJournalComposer() {
-  const field = $("#journalQuickNote");
-  const status = $("#journalQuickSave");
-  if (!field || document.activeElement === field) return;
-  const date = selectedTimelineDate || isoDate(new Date());
-  field.dataset.date = date;
-  field.value = getLog(date).note || "";
-  if (status && !status.dataset.pending) status.textContent = languageText("已保存", "Saved", "Gespeichert");
-}
-
-function timelineEntriesForMonth(monthDate) {
-  const { from, to } = timelineRange(monthDate);
-  const dates = new Set(Object.keys(state.logs || {}).filter(date => date >= from && date <= to));
-  return [...dates]
-    .map(date => ({ date, log: getLog(date) }))
-    .filter(entry => entry.log.mood || entry.log.moodReason || entry.log.note || entry.log.completed.length)
-    .sort((a, b) => b.date.localeCompare(a.date));
-}
-
-function renderTimelineEntryList(entries = []) {
-  const container = $("#timelineEntryList");
-  if (!container) return;
-  if (!entries.length) {
-    container.innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"));
-    hydrateHairlineMounts(container);
-    return;
-  }
-  container.innerHTML = entries.map(entry => {
-    const label = timelineDateLabel(entry.date);
-    const noteLines = String(entry.log.note || "").trim().split("\n").filter(Boolean);
-    const excerpt = noteLines.slice(0, 2).join(" ");
-    const mood = entry.log.mood ? `<span class="timeline-entry-mood" aria-label="${escapeHtml(moodLabel(entry.log.mood))}">${moodCalendarIcon(entry.log.mood)}</span>` : "";
-    const photos = calendarPhotosByDate.get(entry.date) || [];
-    const collage = photoCollageMarkup(photos);
-    const photoIcon = photos.length && !collage ? `<span class="timeline-entry-photos" aria-label="${escapeHtml(tr("drawer.photoCount", { count: photos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg></span>` : "";
-    const trailing = mood || photoIcon || collage ? `<span class="timeline-entry-trailing">${mood}${photoIcon}${collage}</span>` : "";
-    return `<button type="button" class="timeline-entry-row ${entry.date === selectedTimelineDate ? "selected" : ""}" data-date="${entry.date}" role="listitem">
-      <span class="timeline-entry-date"><strong>${escapeHtml(label.weekday)}</strong><span>${escapeHtml(label.day)}</span></span>
-      <span class="timeline-entry-note">${escapeHtml(excerpt)}</span>
-      ${trailing}
-    </button>`;
-  }).join("");
-  container.querySelectorAll(".timeline-entry-row").forEach(button => button.addEventListener("click", () => {
-    selectedTimelineDate = button.dataset.date;
-    renderTimelineEntryList(entries);
-    renderTimelineDetail();
-    $$(".calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
-  }));
-  window.LifeLedgerInteraction?.glideTo(container, container.querySelector(".timeline-entry-row.selected"));
-}
-
-async function renderTimelineDetail() {
-  const container = $("#timelineDetail");
-  if (!container) return;
-  const date = selectedTimelineDate;
-  if (date && container.dataset.shownDate && container.dataset.shownDate !== date) {
-    window.LifeLedgerInteraction?.retarget(container);
-  }
-  if (date) container.dataset.shownDate = date;
-  if (!date) {
-    container.innerHTML = `<p class="timeline-detail-empty">${escapeHtml(tr("timeline.selectDay"))}</p>`;
-    return;
-  }
-  const log = getLog(date);
-  const label = timelineDateLabel(date);
-  const events = calendarEventsForDate(date).filter(event => !event.routine);
-  const scored = dailyHabits(date);
-  const doneCount = scored.filter(habit => log.completed.includes(habit.id)).length;
-  const mood = log.mood
-    ? `<span class="timeline-detail-mood-glyph">${moodCalendarIcon(log.mood)}</span><span>${escapeHtml(moodLabel(log.mood))}</span>`
-    : escapeHtml(tr("today.noReflection"));
-  const photos = calendarPhotosByDate.get(date) || [];
-  container.innerHTML = `
-    <div class="day-page day-page-composed">
-      <header class="day-page-header timeline-detail-header">
-        <div class="day-page-title-row">
-          <h2 class="timeline-detail-date">${escapeHtml(label.detail)}</h2>
-          <span class="day-page-status">${doneCount}/${scored.length} ${escapeHtml(tr("today.open"))}</span>
-        </div>
-        <p class="timeline-detail-mood day-page-mood">${mood}</p>
-      </header>
-      <section class="day-page-note">
-        <h3 class="day-page-label">${escapeHtml(tr("today.reflectionLabel"))}</h3>
-        ${log.note ? `<div class="timeline-detail-note">${escapeHtml(log.note)}</div>` : `<div class="timeline-detail-empty-note">${hairlineEmptyMarkup("./assets/hairline/journal-no-reflection.svg", tr("today.reflectionLabel"), escapeHtml(tr("timeline.noNote")))}</div>`}
-      </section>
-      <section class="photo-library photo-library-story day-page-photos" id="timelineDetailPhotos" data-photo-editor>
-        <div class="mood-photo-heading day-page-meta">
-          <strong data-photo-title>${escapeHtml(tr("drawer.photos"))}</strong><span class="photo-count-inline" data-photo-count>${photos.length} of 3</span>
-          <small data-photo-help></small>
-        </div>
-        <div class="photo-drop" data-photo-drop>
-          <div class="journal-photo-grid-composed">
-            <button class="mood-photo-add" data-photo-add type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><span>${escapeHtml(languageText("添加照片", "Add photo", "Foto hinzufügen"))}</span></button>
-            <div class="mood-photo-list" data-photo-list></div>
-          </div>
-          <p class="photo-drop-empty" data-photo-empty hidden></p>
-        </div>
-        <input data-photo-input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-        <input data-photo-replace type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden />
-        <p class="mood-photo-status" data-photo-status role="status" hidden></p>
-      </section>
-      <section class="timeline-detail-habits day-page-habits">
-        <h3 class="day-page-meta"><span>${escapeHtml(tr("timeline.habitsHeading"))}</span><b>${doneCount}/${scored.length}</b></h3>
-        <ul class="timeline-habit-list" data-layout="compact-grid">${scored.map(habit => `<li class="timeline-habit-row ${log.completed.includes(habit.id) ? "done" : ""}" style="${habitStyle(habit)}">${renderIcon(iconKey(habit))}<span>${escapeHtml(displayHabitName(habit))}</span></li>`).join("")}</ul>
-      </section>
-      ${events.length ? `<section class="timeline-detail-events"><h3>${escapeHtml(tr("dayPlan.schedule"))}</h3><ul>${events.map(event => `<li>${escapeHtml(event.allDay ? tr("dayPlan.allDay") : event.start)} · ${escapeHtml(event.title)}</li>`).join("")}</ul></section>` : ""}
-    </div>`;
-  photoMemories?.mount($("#timelineDetailPhotos"))?.load(date);
-  hydrateHairlineMounts(container);
-}
-
-function renderTimelineInspector() {
-  renderTimelineDetail();
-}
-
-async function renderInspectorPhotosInto(selector, date) {
-  const container = $(selector);
-  if (!container) return;
-  try {
-    const photos = await photoMemories?.listRange(date, date) || [];
-    container.innerHTML = photos.length ? `<div class="memory-entry-photos" data-count="${photos.length}">${photos.map(photo => `<figure class="memory-entry-photo"><img src="${photo.url}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" /></figure>`).join("")}</div>` : "";
-  } catch {
-    container.innerHTML = "";
-  }
-}
-
-function applyTimelineFilter(entries) {
-  if (timelineFilter === "photos") return entries.filter(entry => (calendarPhotosByDate.get(entry.date) || []).length);
-  if (timelineFilter === "notes") return entries.filter(entry => String(entry.log.note || "").trim());
-  return entries;
-}
-
-function openWeekFromTimeline(key) {
-  selectedWorkspaceWeek = key;
-  selectedPlanningDate = isoDate(weekDatesFromKey(key).monday);
-  switchToView('week');
-  $('#weeklyOutputText')?.focus({preventScroll:true});
-}
-
-function journalTextMarkup(text) {
-  return String(text).split(/\n\s*\n/).map(block => /^#{1,6}\s/.test(block)
-    ? `<h3>${escapeHtml(block.replace(/^#{1,6}\s*/, ''))}</h3>`
-    : `<p>${escapeHtml(block)}</p>`).join('');
-}
-
-async function renderJournalFeed(version) {
-  const mode = journalMode, month = $('#journalMonthFilter').value;
-  const host = $('#journalFeed');
-  const words = mode === 'weeks' ? languageText('周度','Weekly','Wöchentlich') : mode === 'months' ? languageText('月度','Monthly','Monatlich') : languageText('日度','Daily','Täglich');
-  $('#journalFeedKicker').textContent = languageText('留下来的，都是生活','LIFE, IN YOUR OWN WORDS','DAS LEBEN, IN EIGENEN WORTEN');
-  $('#journalFeedTitle').textContent = languageText(`${words}时间轴`,`${words} timeline`,`${words}e Zeitleiste`);
-  $('#journalFeedDescription').textContent = languageText('沿着时间向下读。文字在前，照片是偶尔的注脚。','Read down through time. Your words lead; photos are little footnotes.','Durch die Zeit nach unten lesen. Worte zuerst, Fotos als kleine Fußnoten.');
-  $('#journalMonthFilterLabel').textContent = languageText('定位月份','Go to month','Monat wählen');
-  $('#journalAllMonths').textContent = languageText('全部月份','All months','Alle Monate');
-  $('#journalAllMonths').disabled = !month;
-  let entries = [], photos = [], photoError = false;
-  if (mode === 'weeks') {
-    entries = [...new Set([...Object.keys(state.weeklyOutputs || {}), ...Object.keys(state.weeklyReviews || {})])]
-      .filter(key => /^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$/.test(key))
-      .map(key => { const {monday,sunday} = weekDatesFromKey(key); return {key,from:isoDate(monday),to:isoDate(sunday),text:state.weeklyReviews?.[key] || '',extra:state.weeklyOutputs?.[key] || '',label:formatWeekRange(key)}; });
-  } else if (mode === 'months') {
-    entries = Object.entries(state.reviews || {}).filter(([key]) => /^\d{4}-(0[1-9]|1[0-2])$/.test(key))
-      .map(([key,text]) => ({key,from:`${key}-01`,to:isoDate(new Date(Number(key.slice(0,4)),Number(key.slice(5,7)),0,12)),text,label:formatLocalizedDate(parseDate(`${key}-01`),{year:'numeric',month:'long'})}));
-  } else {
-    entries = Object.entries(state.logs || {}).filter(([,log]) => log.note || log.mood || log.moodReason)
-      .map(([date,log]) => ({key:date,from:date,to:date,text:log.note || log.moodReason || '',mood:log.mood,label:formatLocalizedDate(parseDate(date),{weekday:'short',month:'long',day:'numeric',year:'numeric'})}));
-  }
-  entries = entries.filter(e => mode === 'timeline' || String(e.text).trim() || String(e.extra || '').trim())
-    .filter(e => !month || (e.from.slice(0,7) <= month && e.to.slice(0,7) >= month)).sort((a,b) => b.from.localeCompare(a.from));
-  // Only daily mode fetches the month's photos up front. Weekly photos are optional,
-  // loaded on request; monthly reviews never duplicate daily media.
-  if (mode === 'timeline') {
-    const from = month ? `${month}-01` : '1970-01-01';
-    const to = month ? isoDate(new Date(Number(month.slice(0,4)),Number(month.slice(5,7)),0,12)) : [isoDate(new Date()),entries[0]?.to || ''].sort().at(-1);
-    try { photos = await photoMemories?.listRange(from,to) || []; } catch { photoError = true; }
-    if (version !== timelineRenderVersion) return;
-    photos.forEach(photo => { if (!entries.some(e => e.key === photo.date)) entries.push({key:photo.date,from:photo.date,to:photo.date,text:'',label:formatLocalizedDate(parseDate(photo.date),{weekday:'short',month:'long',day:'numeric',year:'numeric'})}); });
-    entries.sort((a,b) => b.from.localeCompare(a.from));
-  }
-  const visible = entries.slice(0,journalVisibleCount);
-  host.innerHTML = visible.length ? visible.map(e => {
-    const text = journalTextMarkup(e.text), extra = e.extra && e.extra !== e.text ? journalTextMarkup(e.extra) : '';
-    const images = photos.filter(p => p.date === e.key);
-    const photoDetails = mode === 'weeks' ? `<details class="feed-week-photos" data-from="${e.from}" data-to="${e.to}"><summary>${escapeHtml(languageText('看看这一周的照片','Photos from this week','Fotos dieser Woche'))}</summary><div class="feed-photo-list"></div></details>` : '';
-    return `<article class="journal-feed-entry" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
-  }).join('') : `<div class="feed-empty">${hairlineEmptyMarkup('./assets/hairline/empty-journal.svg',languageText('这里，留给以后的回看','Room for the next chapter','Platz für das nächste Kapitel'),languageText('这个范围还没有文字或照片。可以切换月份，或先写下一段复盘。','No writing or photos in this range yet. Try another month, or write a reflection.','Noch keine Texte oder Fotos in diesem Zeitraum. Wähle einen anderen Monat oder schreibe einen Rückblick.'))}</div>`;
-  if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
-  hydrateHairlineMounts(host);
-  $('#journalLoadMore').hidden = entries.length <= visible.length;
-  $('#journalLoadMore').textContent = languageText('继续向前翻','Read further back','Weiter zurücklesen');
-  host.querySelectorAll('[data-feed-open]').forEach(button => button.addEventListener('click',()=>{
-    const key=button.dataset.feedOpen;
-    if(mode==='weeks') openWeekFromTimeline(key);
-    else if(mode==='months'){cursor=parseDate(`${key}-01`);switchToView('review');$('#reviewText').focus({preventScroll:true});$('#reviewText').scrollIntoView({block:'center'});}
-    else openDrawer(key);
-  }));
-  host.querySelectorAll('[data-feed-day]').forEach(button=>button.addEventListener('click',()=>openDrawer(button.dataset.feedDay)));
-  host.querySelectorAll('.feed-week-photos').forEach(details=>details.addEventListener('toggle',async()=>{
-    if(!details.open || details.dataset.loaded==='true') return;
-    details.dataset.loaded='true';const list=details.querySelector('.feed-photo-list');
-    list.textContent=languageText('读取照片…','Loading photos…','Fotos werden geladen…');
-    try {
-      const items=await photoMemories?.listRange(details.dataset.from,details.dataset.to) || [];
-      if(!details.isConnected)return;
-      list.innerHTML=items.length?items.map(p=>`<button type="button" data-date="${escapeHtml(p.date)}" aria-label="${escapeHtml(p.date)}"><img src="${escapeHtml(p.url)}" alt="" loading="lazy"><span>${escapeHtml(formatLocalizedDate(parseDate(p.date),{month:'short',day:'numeric'}))}</span></button>`).join(''):escapeHtml(languageText('这一周没有照片。','No photos this week.','Keine Fotos in dieser Woche.'));
-      list.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>openDrawer(button.dataset.date)));
-    } catch {details.dataset.loaded='false';list.textContent=languageText('读取失败。收起后重试。','Could not load. Close and reopen to retry.','Laden fehlgeschlagen. Schließen und erneut öffnen.');}
-  }));
-}
-
 async function renderTimeline() {
-  if (['weeks','months','timeline'].includes(journalMode)) {
-    const version = ++timelineRenderVersion;
-    timelineRendering = false;
-    await renderJournalFeed(version);
-    return;
-  }
+  const container = $("#memoryTimeline");
+  if (!container) return;
   const version = ++timelineRenderVersion;
-  timelineRendering = true;
-  renderCalendar();
   const { from, to } = timelineRange(timelineCursor);
+  setText("#timelineMonthLabel", tr("calendar.title", { year: timelineCursor.getFullYear(), month: timelineCursor.getMonth() + 1, monthName: monthName(timelineCursor.getMonth()) }));
+  container.innerHTML = `<div class="memory-loading">${tr("timeline.loading")}</div>`;
   let photos = [];
   try {
     photos = await photoMemories?.listRange(from, to) || [];
   } catch {
     photos = [];
   }
-  if (version !== timelineRenderVersion) {
-    timelineRendering = false;
+  if (version !== timelineRenderVersion) return;
+  const photosByDate = new Map();
+  photos.forEach(photo => photosByDate.set(photo.date, [...(photosByDate.get(photo.date) || []), photo]));
+  const dates = new Set(Object.keys(state.logs || {}).filter(date => date >= from && date <= to));
+  photos.forEach(photo => dates.add(photo.date));
+  const entries = [...dates]
+    .map(date => ({ date, log: getLog(date), photos: photosByDate.get(date) || [] }))
+    .filter(entry => entry.log.mood || entry.log.moodReason || entry.photos.length)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  setText("#timelineSummary", tr(photos.length === 1 ? "timeline.summaryOnePhoto" : "timeline.summary", { days: entries.length, photos: photos.length }));
+  if (!entries.length) {
+    container.innerHTML = `<div class="memory-empty"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10.4 4.5 4.3 9.8 4 19c7.1.8 14.7-3.1 16-15Z"/><path d="M4 21c3.4-7.5 8-11.8 14.4-16"/></svg><strong>${tr("timeline.emptyTitle")}</strong><span>${tr("timeline.emptyHelp")}</span></div></div>`;
     return;
   }
-  [...calendarPhotosByDate.keys()].filter(day => day >= from && day <= to).forEach(day => calendarPhotosByDate.delete(day));
-  photos.forEach(photo => calendarPhotosByDate.set(photo.date, [...(calendarPhotosByDate.get(photo.date) || []), photo]));
-  const photoDates = new Set(photos.map(photo => photo.date));
-  const entries = timelineEntriesForMonth(timelineCursor);
-  photoDates.forEach(date => {
-    if (!entries.some(entry => entry.date === date)) entries.push({ date, log: getLog(date) });
-  });
-  if (selectedTimelineDate && !entries.some(entry => entry.date === selectedTimelineDate)) {
-    entries.push({ date: selectedTimelineDate, log: getLog(selectedTimelineDate) });
-  }
-  entries.sort((a, b) => b.date.localeCompare(a.date));
-  const visibleEntries = applyTimelineFilter(entries);
-  if (!visibleEntries.some(entry => entry.date === selectedTimelineDate)) {
-    const todayKey = isoDate(new Date());
-    selectedTimelineDate = visibleEntries[0]?.date || (todayKey >= from && todayKey <= to ? todayKey : to);
-  }
-  renderTimelineEntryList(visibleEntries);
-  renderJournalPhotoLibrary(photos);
-  renderJournalComposer();
-  void renderTimelineDetail();
-  $$(".calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
-  const calendarEmptyArt = $("#journalCalendarEmptyArt");
-  if (calendarEmptyArt) {
-    const isCalendarMode = journalMode === "calendar";
-    const isEmpty = entries.length === 0;
-    const shouldShow = isCalendarMode && isEmpty;
-    calendarEmptyArt.hidden = !shouldShow;
-    if (shouldShow) {
-      window.LifeLedgerInteraction?.mountHairline(calendarEmptyArt, "./assets/hairline/journal-calendar-empty.svg");
-    }
-  }
-  timelineRendering = false;
+  container.innerHTML = entries.map(entry => {
+    const label = timelineDateLabel(entry.date);
+    const moodClass = moodCalendarClass(entry.log.mood);
+    const mood = entry.log.mood
+      ? `<span class="memory-entry-mood">${moodCalendarIcon(entry.log.mood)}${escapeHtml(moodLabel(entry.log.mood))}</span>`
+      : `<span class="memory-entry-mood">${escapeHtml(tr("timeline.noMood"))}</span>`;
+    const reason = String(entry.log.moodReason || "").trim();
+    const gallery = entry.photos.length ? `<div class="memory-entry-photos" data-count="${entry.photos.length}">${entry.photos.map(photo => `<figure class="memory-entry-photo"><img src="${photo.url}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" /></figure>`).join("")}</div>` : "";
+    return `<article class="memory-entry ${moodClass}" data-date="${entry.date}">
+      <header class="memory-entry-header"><button class="memory-entry-date" type="button"><strong>${escapeHtml(label.main)}</strong><small>${escapeHtml(label.detail)}</small></button>${mood}</header>
+      ${reason ? `<p class="memory-entry-reason">${escapeHtml(reason)}</p>` : ""}${gallery}
+    </article>`;
+  }).join("");
+  container.querySelectorAll(".memory-entry-date").forEach(button => button.addEventListener("click", () => openDrawer(button.closest(".memory-entry").dataset.date)));
 }
 function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
 }
 
-function dateLocale() {
-  return currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
+function orderedTodayHabits(habits, completedIds) {
+  const byId = new Map(habits.map(habit => [habit.id, habit]));
+  const completed = new Set(completedIds);
+  const remaining = habits.filter(habit => !completed.has(habit.id));
+  const finished = completedIds.map(id => byId.get(id)).filter(Boolean);
+  return [...remaining, ...finished];
 }
 
-function formatTodayWeekday(date) {
-  return new Intl.DateTimeFormat(dateLocale(), { weekday: "long" }).format(date);
+function updateHabitCarouselNavigation(pageCount) {
+  const nav = $("#habitCarouselNav");
+  const previous = $("#previousHabitPage");
+  const next = $("#nextHabitPage");
+  const status = $("#habitCarouselStatus");
+  const pages = $("#habitCarouselPages");
+  if (!nav || !previous || !next || !status || !pages) return;
+  nav.hidden = pageCount <= 1;
+  previous.disabled = todayHabitPage === 0;
+  next.disabled = todayHabitPage >= pageCount - 1;
+  status.textContent = `${todayHabitPage + 1} / ${pageCount}`;
+  pages.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button type="button" class="habit-carousel-page ${index === todayHabitPage ? "active" : ""}" data-page="${index}" aria-label="${escapeHtml(tr("foundations.page", { page: index + 1, total: pageCount }))}" ${index === todayHabitPage ? 'aria-current="page"' : ""}><span></span></button>`).join("");
+  $$(".habit-carousel-page", pages).forEach(button => button.addEventListener("click", () => setTodayHabitPage(Number(button.dataset.page))));
 }
 
-function formatTodayDateSecondary(date) {
-  return new Intl.DateTimeFormat(dateLocale(), { day: "numeric", month: "long", year: "numeric" }).format(date);
+function setTodayHabitPage(page, behavior = "smooth") {
+  const viewport = $("#todayHabitViewport");
+  const pageCount = Number($("#todayHabitCarousel")?.dataset.pageCount || 1);
+  todayHabitPage = Math.max(0, Math.min(page, pageCount - 1));
+  updateHabitCarouselNavigation(pageCount);
+  if (viewport) viewport.scrollTo({ left: viewport.clientWidth * todayHabitPage, behavior });
 }
 
-function formatLocalizedDate(date, options = {}) {
-  return new Intl.DateTimeFormat(dateLocale(), options).format(date);
+function syncHabitCarouselPageFromScroll() {
+  const viewport = $("#todayHabitViewport");
+  if (!viewport?.clientWidth) return;
+  const pageCount = Number($("#todayHabitCarousel")?.dataset.pageCount || 1);
+  const page = Math.max(0, Math.min(Math.round(viewport.scrollLeft / viewport.clientWidth), pageCount - 1));
+  if (page === todayHabitPage) return;
+  todayHabitPage = page;
+  updateHabitCarouselNavigation(pageCount);
 }
 
-function formatTodayDateHeading(date) {
-  return formatTodayWeekday(date);
-}
-
-function animateMainContentShift(direction) {
-  const main = $(".main-content");
-  if (!main || document.documentElement.classList.contains("motion-off") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  main.classList.remove("date-shift-forward", "date-shift-back");
-  void main.offsetWidth;
-  main.classList.add(direction > 0 ? "date-shift-forward" : "date-shift-back");
-}
-
-function habitStreak(habitId, date) {
-  let streak = 0;
-  const cursorDate = parseDate(date);
-  for (let i = 0; i < 365; i++) {
-    const key = isoDate(cursorDate);
-    const log = getLog(key);
-    if (!log.completed.includes(habitId)) break;
-    streak += 1;
-    cursorDate.setDate(cursorDate.getDate() - 1);
-  }
-  return streak;
-}
-
-function habitRowStatus(habit, date) {
-  const version = versionFor(habit, date);
-  const progress = habitProgressLabel(habit, date);
-  if (progress) return progress;
-  const schedule = scheduleLabel(version);
-  if (schedule) return schedule;
-  const streak = habitStreak(habit.id, date);
-  if (streak > 1) return tr("today.streak", { count: streak });
-  if (!countsTowardDaily(habit, date)) return habitMetaLabel(version);
-  return "";
-}
-
-function habitProgressLabel(habit, date) {
-  const version = versionFor(habit, date);
-  if (trackingModeFor(version) === "check") return "";
-  const unit = String(version.unit || "").trim();
-  if (/^\d{1,2}:\d{2}/.test(unit)) return "";
-  return `${version.target}${displayUnit(unit) ? ` ${displayUnit(unit)}` : ""}`.trim();
-}
-
-function todayHabitTrailing(habit, date) {
-  const progress = habitProgressLabel(habit, date);
-  if (progress) return progress;
-  const streak = habitStreak(habit.id, date);
-  if (streak > 1) return tr("today.streak", { count: streak });
-  const status = habitRowStatus(habit, date);
-  return status;
-}
-
-function todayHabitDetailMarkup(habit, date) {
-  const version = versionFor(habit, date);
-  const parts = [];
-  const streak = habitStreak(habit.id, date);
-  if (streak > 1) parts.push(tr("today.streak", { count: streak }));
-  const note = String(version?.note || "").trim();
-  if (note) parts.push(note);
-  const meta = parts.length ? `<span class="today-habit-detail-meta">${escapeHtml(parts.join(" · "))}</span>` : "";
-  return `<span class="today-habit-detail">${habitLast7Dots(habit.id, date)}${meta}</span>`;
-}
-
-function todayHabitRowMarkup(habit, date, done, locked, selected, timeLabel = "") {
-  const name = displayHabitName(habit);
-  const trailing = todayHabitTrailing(habit, date);
-  const markLabel = languageText(`标记 ${name} 完成`, `Mark ${name} done`, `${name} als erledigt markieren`);
-  const detail = selected ? todayHabitDetailMarkup(habit, date) : "";
-  const time = timeLabel ? `<time class="today-habit-time">${escapeHtml(timeLabel)}</time>` : "";
-  const lockedAttr = locked ? `disabled title="${escapeHtml(tr("today.futureLocked"))}"` : "";
-    return `<li class="today-habit-row ${done ? "done" : ""} ${selected ? "selected" : ""} ${locked ? "future-locked" : ""}" data-id="${escapeHtml(habit.id)}" role="listitem" tabindex="${selected ? "0" : "-1"}" style="${habitStyle(habit)}">
-    ${time}
-    <span class="today-habit-icon habit-icon" aria-hidden="true">${renderIcon(iconKey(habit))}</span>
-    <button class="today-habit-check" type="button" aria-pressed="${done}" aria-label="${escapeHtml(markLabel)}" ${lockedAttr}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
-    <div class="today-habit-copy"><strong title="${escapeHtml(name)}">${escapeHtml(name)}</strong>${detail}</div>
-    <span class="today-habit-trailing">${escapeHtml(trailing)}</span>
-  </li>`;
-}
-
-function todayHabitsVisibleRows() {
-  return [...$$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row")].filter(
-    row => !row.hidden && row.offsetParent !== null,
-  );
-}
-
-// Must match the shared Today grid / horizontal rail breakpoint in styles.css.
-const TODAY_HABITS_RAIL_MEDIA = "(min-width: 761px)";
-
-function isTodayHabitsLargeRail() {
-  const module = document.querySelector('[data-module="habits"]');
-  return module?.dataset.widgetSize === "large" && window.matchMedia(TODAY_HABITS_RAIL_MEDIA).matches;
-}
-
-function focusTodayHabitRow(id) {
-  // renderToday() replaces the list markup, so focus the freshly rendered row rather than the detached one.
-  const row = [...$$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row")]
-    .find(candidate => candidate.dataset.id === id);
-  row?.focus();
-}
-
-// Roving tabindex: exactly one eligible habit row stays in the tab order.
-function setTodayHabitTabStop(stop) {
-  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
-    row.setAttribute("tabindex", row === stop ? "0" : "-1");
-  });
-}
-
-function syncTodayHabitTabStop() {
-  const visible = todayHabitsVisibleRows();
-  // While Today is not displayed nothing has layout, so fall back to rows that are not hidden.
-  const rows = visible.length
-    ? visible
-    : [...$$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row")].filter(row => !row.closest("[hidden]"));
-  const focused = document.activeElement;
-  setTodayHabitTabStop(
-    rows.find(row => row.contains(focused)) ||
-    rows.find(row => row.dataset.id === selectedTodayHabitId) ||
-    rows[0],
-  );
-}
-
-// Completion re-renders the rows; return focus to the same habit's connected row or check.
-function restoreTodayHabitFocus(id, part, input) {
-  const row = todayHabitsVisibleRows().find(candidate => candidate.dataset.id === id);
-  const target = row && part === "check" ? $(".today-habit-check", row) : row;
-  if (!target) {
-    // The habit left the visible rows (Small/Medium), so keep focus on the widget's tab stop.
-    $('[data-module="habits"] .today-habit-row[tabindex="0"]')?.focus({ preventScroll: true });
-    return;
-  }
-  target.focus({ preventScroll: true });
-  // Keyboard focus must stay visible; reveal it instantly and only as far as needed.
-  if (input === "keyboard" && isTodayHabitsLargeRail()) {
-    const rail = row.closest('.today-list'), bounds = rail.getBoundingClientRect(), rect = row.getBoundingClientRect();
-    if (rect.left < bounds.left) rail.scrollLeft -= bounds.left - rect.left;
-    else if (rect.right > bounds.right) rail.scrollLeft += rect.right - bounds.right;
-  } else if (input === "keyboard") row.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
-}
-
-function bindTodayHabitsRailWheel() {
-  const module = document.querySelector('[data-module="habits"]');
-  const list = module?.querySelector(".today-list");
-  if (!list || list.dataset.railWheelBound === "1") return;
-  list.dataset.railWheelBound = "1";
-  list.addEventListener("wheel", event => {
-    if (!isTodayHabitsLargeRail()) return;
-    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-    const outer = $("#todayView");
-    if (!outer) return;
-    outer.scrollTop += event.deltaY;
-    event.preventDefault();
-  }, { passive: false });
-}
-
-function bindTodayHabitRows() {
-  const date = selectedPlanningDate;
-  const future = isFutureDate(date);
-  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
-    const id = row.dataset.id;
-    const check = $(".today-habit-check", row);
-    const select = () => {
-      const previous = captureSiblingRects("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row");
-      selectedTodayHabitId = id;
-      renderToday();
-      playFlipFromMap(previous, "#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row");
-      renderInspector();
-    };
-    row.addEventListener("click", event => {
-      if (event.target.closest(".today-habit-check")) return;
-      const size = row.closest('[data-module="habits"]')?.dataset.widgetSize;
-      if (!future && isWorkspaceLayout() && window.matchMedia(TODAY_HABITS_RAIL_MEDIA).matches && size !== "small") {
-        toggleHabit(date, id, { input: event.detail === 0 ? "keyboard" : "pointer" });
-        return;
-      }
-      select();
-    });
-    row.addEventListener("contextmenu", event => openHabitContextMenu(event, id, date));
-    row.addEventListener("focusin", () => setTodayHabitTabStop(row));
-    check?.addEventListener("click", event => {
-      event.stopPropagation();
-      if (future) return;
-      // detail 0 marks a keyboard or assistive-technology activation rather than a pointer click.
-      toggleHabit(date, id, { input: event.detail === 0 ? "keyboard" : "pointer" });
-    });
-    row.addEventListener("keydown", event => {
-      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-        if (!isTodayHabitsLargeRail()) return;
-        event.preventDefault();
-        const rows = todayHabitsVisibleRows();
-        const index = rows.indexOf(row);
-        const next = rows[index + (event.key === "ArrowRight" ? 1 : -1)];
-        if (next) {
-          selectedTodayHabitId = next.dataset.id;
-          renderToday();
-          renderInspector();
-          focusTodayHabitRow(selectedTodayHabitId);
-        }
-        return;
-      }
-      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-        if (isTodayHabitsLargeRail()) return;
-        event.preventDefault();
-        const rows = [...$$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row")];
-        const index = rows.indexOf(row);
-        const next = rows[index + (event.key === "ArrowDown" ? 1 : -1)];
-        if (next) {
-          selectedTodayHabitId = next.dataset.id;
-          renderToday();
-          renderInspector();
-          focusTodayHabitRow(selectedTodayHabitId);
-        }
-        return;
-      }
-      if (event.key === " ") {
-        event.preventDefault();
-        if (!future) toggleHabit(date, id, { input: "keyboard" });
-        return;
-      }
-      if (event.key === "Enter") {
-        event.preventDefault();
-        if (!future) toggleHabit(date, id, { input: "keyboard" });
-      }
-    });
-  });
-}
-
-function renderTodayEventsStrip() {
-  const strip = $("#todayEventsStrip");
-  if (!strip) return;
-  const events = calendarEventsForDate(selectedPlanningDate).filter(event => !event.routine);
-  strip.hidden = !events.length;
-  strip.innerHTML = events.slice(0, 8).map(event => {
-    const time = event.allDay ? tr("dayPlan.allDay") : event.start;
-    return `<div class="today-event-chip" role="listitem"><time>${escapeHtml(time)}</time><span>${escapeHtml(event.title)}</span></div>`;
+function renderHabitCarousel(habits, date, completedIds, locked = false) {
+  const ordered = orderedTodayHabits(habits, completedIds);
+  const pageCount = Math.max(1, Math.ceil(ordered.length / HABITS_PER_PAGE));
+  todayHabitPage = Math.min(todayHabitPage, pageCount - 1);
+  const carousel = $("#todayHabitCarousel");
+  const viewport = $("#todayHabitViewport");
+  carousel.dataset.pageCount = String(pageCount);
+  $("#todayHabits").innerHTML = Array.from({ length: pageCount }, (_, page) => {
+    const group = ordered.slice(page * HABITS_PER_PAGE, (page + 1) * HABITS_PER_PAGE);
+    return `<div class="habit-page" data-page="${page}" aria-label="${escapeHtml(tr("foundations.page", { page: page + 1, total: pageCount }))}">${group.map(habit => habitCard(habit, date, completedIds.includes(habit.id), locked)).join("")}</div>`;
   }).join("");
-}
-
-function paintTodayHeader(date, allDone, streakBand = "short") {
-  const art = $("#todayHeaderArt");
-  const hour = new Date().getHours();
-  const isToday = date === isoDate(new Date());
-  let kicker = tr("viewTitles.today");
-  let src = "./assets/hairline/today-open.svg";
-  if (allDone) {
-    kicker = tr("today.doneKicker");
-    src = "./assets/hairline/empty-today-done.svg";
-  } else if (isToday && hour < 12) {
-    kicker = tr("today.morning");
-    src = "./assets/hairline/today-morning.svg";
-  } else if (isToday && hour >= 17) {
-    kicker = tr("today.evening");
-    src = "./assets/hairline/today-evening.svg";
-  }
-  setText("#todayKicker", kicker);
-  if (!art) return;
-  art.dataset.streak = allDone ? streakBand : "short";
-  if (art.dataset.hairlineSrc !== src) {
-    art.dataset.hairlineReady = "true";
-    window.LifeLedgerInteraction?.mountHairline(art, src);
-  }
-}
-
-let todayCalendarCursor = new Date();
-todayCalendarCursor.setDate(1);
-todayCalendarCursor.setHours(12, 0, 0, 0);
-
-function renderTodayCalendar(selectedDate = selectedPlanningDate) {
-  const grid = $("#todayCalendarGrid");
-  const title = $("#todayMonthTitle");
-  const weekdaysEl = $("#todayCalendarWeekdays");
-  if (!grid) return;
-
-  const year = todayCalendarCursor.getFullYear();
-  const month = todayCalendarCursor.getMonth();
-
-  if (title) {
-    title.textContent = tr("calendar.title", {
-      year,
-      month: month + 1,
-      monthName: monthName(month),
-    });
-  }
-
-  if (weekdaysEl) {
-    const dayNames = i18n[currentLang]?.calendar?.weekdays || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    weekdaysEl.innerHTML = dayNames.map(day => `<span>${escapeHtml(day)}</span>`).join("");
-  }
-
-  const todayIso = isoDate(new Date());
-  const firstDay = new Date(year, month, 1, 12);
-  const startOffset = (firstDay.getDay() + 6) % 7;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const prevMonthLastDate = new Date(year, month, 0).getDate();
-
-  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
-  const cells = [];
-
-  for (let i = 0; i < totalCells; i++) {
-    let cellDate;
-    let isOutside = false;
-    let dayNumber = 0;
-
-    if (i < startOffset) {
-      dayNumber = prevMonthLastDate - (startOffset - 1 - i);
-      cellDate = new Date(year, month - 1, dayNumber, 12);
-      isOutside = true;
-    } else if (i < startOffset + daysInMonth) {
-      dayNumber = i - startOffset + 1;
-      cellDate = new Date(year, month, dayNumber, 12);
-    } else {
-      dayNumber = i - (startOffset + daysInMonth) + 1;
-      cellDate = new Date(year, month + 1, dayNumber, 12);
-      isOutside = true;
-    }
-
-    const iso = isoDate(cellDate);
-    const scored = dailyHabits(iso);
-    const log = getLog(iso);
-    const doneCount = scored.filter(h => log.completed.includes(h.id)).length;
-
-    let intensity = 0;
-    if (scored.length > 0) {
-      const pct = doneCount / scored.length;
-      if (pct >= 1) intensity = 4;
-      else if (pct >= 0.66) intensity = 3;
-      else if (pct >= 0.33) intensity = 2;
-      else if (doneCount > 0) intensity = 1;
-    }
-
-    const isToday = iso === todayIso;
-    const isSelected = iso === selectedDate;
-    const percent = scored.length ? Math.round((doneCount / scored.length) * 100) : 0;
-    const ariaLabel = tr("calendar.dayPercent", { day: dayNumber, percent });
-
-    cells.push({
-      iso,
-      dayNumber,
-      isOutside,
-      isToday,
-      isSelected,
-      intensity,
-      ariaLabel,
-      tabIndex: isSelected ? 0 : -1,
-    });
-  }
-
-  if (!cells.some(c => c.tabIndex === 0)) {
-    const todayCell = cells.find(c => c.isToday) || cells.find(c => !c.isOutside) || cells[0];
-    if (todayCell) todayCell.tabIndex = 0;
-  }
-
-  grid.innerHTML = cells.map(cell => `
-    <button type="button"
-      role="gridcell"
-      class="today-calendar-cell ${cell.isOutside ? "is-outside" : ""} ${cell.isToday ? "is-today" : ""} ${cell.isSelected ? "is-selected" : ""}"
-      data-date="${cell.iso}"
-      data-intensity="${cell.intensity}"
-      tabindex="${cell.tabIndex}"
-      aria-label="${escapeHtml(cell.ariaLabel)}"
-      aria-selected="${cell.isSelected}">
-      <span class="cell-day-num">${cell.dayNumber}</span>
-      <span class="cell-intensity-dot" aria-hidden="true"></span>
-    </button>
-  `).join("");
-
-  const cellButtons = $$(".today-calendar-cell", grid);
-  cellButtons.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-      selectPlanningDate(btn.dataset.date);
-      setDayDetailOpen(true);
-    });
-
-    btn.addEventListener("keydown", event => {
-      let targetIndex = -1;
-      if (event.key === "ArrowLeft") targetIndex = index - 1;
-      else if (event.key === "ArrowRight") targetIndex = index + 1;
-      else if (event.key === "ArrowUp") targetIndex = index - 7;
-      else if (event.key === "ArrowDown") targetIndex = index + 7;
-      else if (event.key === "Home") targetIndex = 0;
-      else if (event.key === "End") targetIndex = cellButtons.length - 1;
-      else if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        btn.click();
-        return;
-      }
-
-      if (targetIndex >= 0 && targetIndex < cellButtons.length) {
-        event.preventDefault();
-        cellButtons.forEach(b => (b.tabIndex = -1));
-        const targetBtn = cellButtons[targetIndex];
-        targetBtn.tabIndex = 0;
-        targetBtn.focus();
-      }
+  if (viewport) viewport.scrollLeft = viewport.clientWidth * todayHabitPage;
+  updateHabitCarouselNavigation(pageCount);
+  $$("#todayHabits .habit-card").forEach(card => {
+    const activate = () => {
+      if (suppressHabitCardClick) return;
+      toggleHabit(date, card.dataset.id);
+    };
+    card.addEventListener("click", activate);
+    card.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      activate();
     });
   });
-
-  const emptyArt = $("#todayCalendarEmptyArt");
-  if (emptyArt) {
-    const hasData = cells.some(c => !c.isOutside && c.intensity > 0);
-    emptyArt.hidden = hasData;
-    if (!hasData) {
-      window.LifeLedgerInteraction?.mountHairline(emptyArt, "./assets/hairline/calendar-empty-month.svg");
-    }
-  }
 }
 
-function renderTodayFocus() {
-  const stats = focusStatsForToday();
-  const minutesLabel = languageText(`${stats.minutes} 分钟`, `${stats.minutes} min`, `${stats.minutes} Min.`);
-  setText("#todayFocusMinutes", minutesLabel);
-  setText("#todayFocusLabel", languageText("今日专注记录", "Recorded today", "Heute aufgezeichnet"));
-  setText("#todayFocusStartBtn", tr("modules.startFocus"));
-  const focusCard = document.querySelector('[data-module="focus"]');
-  const focusIsSmall = focusCard?.dataset.widgetSize === "small";
-  setText("#todayFocusStartBtn", focusIsSmall ? tr("modules.startFocusShort") : tr("modules.startFocus"));
-  setText("#todayFocusOpenTimer", focusIsSmall ? tr("modules.timerShort") : tr("modules.timerSettings"));
 
-  const streakArt = $("#todayFocusStreakArt");
-  if (streakArt) {
-    const focusDates = new Set((state.focusSessions || [])
-      .filter(s => (s.outcome === "completed" || s.outcome === "finishedEarly") && (s.actualMinutes || s.durationMinutes || 0) > 0)
-      .map(s => s.date));
-    let streak = 0;
-    let curr = parseDate(selectedPlanningDate);
-    while (focusDates.has(isoDate(curr))) {
-      streak += 1;
-      curr.setDate(curr.getDate() - 1);
-    }
-    const hasStreak = streak >= 3;
-    streakArt.hidden = !hasStreak;
-    if (hasStreak) {
-      window.LifeLedgerInteraction?.mountHairline(streakArt, "./assets/hairline/focus-streak.svg");
-    }
-  }
-}
-
-function renderWeekInsights() {
-  const grid = $("#weekInsightsGrid");
-  if (!grid) return;
-
-  const key = selectedWorkspaceWeek;
-  const { monday } = weekDatesFromKey(key);
-  const todayKey = isoDate(new Date());
-
-  let totalScored = 0;
-  let totalDone = 0;
-  let bestDayName = "—";
-  let maxDayDone = 0;
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    const dayIso = isoDate(d);
-    const scored = dailyHabits(dayIso);
-    const done = scored.filter(h => getLog(dayIso).completed.includes(h.id)).length;
-
-    if (dayIso <= todayKey) {
-      totalScored += scored.length;
-      totalDone += done;
-    }
-
-    if (dayIso <= todayKey && done > maxDayDone) {
-      maxDayDone = done;
-      bestDayName = formatLocalizedDate(d, { weekday: "short" });
-    }
-  }
-
-  const rate = totalScored > 0 ? Math.round((totalDone / totalScored) * 100) : 0;
-  setText("#weekCompletionRate", `${rate}%`);
-  setText("#weekBestDay", bestDayName);
-
-  const streakEnd = new Date(monday);
-  streakEnd.setDate(monday.getDate() + 6);
-  const streakDate = isoDate(streakEnd) < todayKey ? isoDate(streakEnd) : todayKey;
-  const activeHabitList = activeHabits(streakDate);
-  const maxStreak = isoDate(monday) > todayKey ? 0 : activeHabitList.length ? Math.max(0, ...activeHabitList.map(h => habitStreak(h.id, streakDate))) : 0;
-  setText("#weekStreak", languageText(`${maxStreak} 天`, `${maxStreak} days`, `${maxStreak} Tage`));
-
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-  const startDay = isoDate(monday);
-  const endDay = isoDate(sunday);
-  const weekSessions = (state.focusSessions || []).filter(s => s.date >= startDay && s.date <= endDay && (s.outcome === "completed" || s.outcome === "finishedEarly"));
-  const weekFocusMinutes = weekSessions.reduce((acc, s) => acc + Math.round(s.actualMinutes || s.durationMinutes || 0), 0);
-  setText("#weekFocusMinutes", languageText(`${weekFocusMinutes} 分钟`, `${weekFocusMinutes} min`, `${weekFocusMinutes} Min.`));
-
-  setText("#weekRateLabel", tr("week.completionRate"));
-  setText("#weekBestDayLabel", tr("week.bestDay"));
-  setText("#weekStreakLabel", languageText('最长习惯连续', 'Best habit streak', 'Längste Gewohnheitsserie'));
-  setText("#weekFocusMinutesLabel", tr("week.focusTime"));
-
-  const emptyArt = $("#weekInsightsEmptyArt");
-  if (emptyArt) {
-    const hasData = totalDone > 0 || weekFocusMinutes > 0;
-    emptyArt.hidden = hasData;
-    if (!hasData) {
-      window.LifeLedgerInteraction?.mountHairline(emptyArt, "./assets/hairline/week-insights-empty.svg");
-    }
-  }
-}
-
-function renderWeekPromotedReview() {
-  const key = selectedWorkspaceWeek;
-  const output = state.weeklyOutputs[key] || "";
-  const art = $("#weekReviewHairline");
-  const artSrc = output.trim() ? "./assets/hairline/week-review-done.svg" : "./assets/hairline/week-review-empty.svg";
-  if (art && art.dataset.hairlineSrc !== artSrc) {
-    art.dataset.hairlineSrc = artSrc;
-    art.dataset.hairlineReady = "true";
-    window.LifeLedgerInteraction?.mountHairline(art, artSrc);
-  }
-}
-
-function toggleActiveBoardEditMode() {
-  const view = document.body.dataset.activeView || "today";
-  if (view === "today" && window.LifeLedgerLayoutEngine) {
-    LifeLedgerLayoutEngine.toggleEditMode();
-    const isEdit = LifeLedgerLayoutEngine.isEditMode();
-    const toggleBtn = $("#editLayoutToggle");
-    if (toggleBtn) {
-      toggleBtn.setAttribute("aria-pressed", String(isEdit));
-      toggleBtn.textContent = isEdit ? tr("modules.doneEditing") : tr("modules.editLayout");
-    }
-    const resetBtn = $("#resetLayoutButton");
-    if (resetBtn) resetBtn.hidden = !isEdit;
-    const undoBtn = $("#undoLayoutButton");
-    if (undoBtn) undoBtn.hidden = !isEdit;
-    return;
-  }
-  const board = $(`[data-module-board="${view}"]`);
-  if (!board || !window.LifeLedgerModules) return;
-
-  const currentMode = LifeLedgerModules.isEditMode(board);
-  const nextMode = !currentMode;
-  LifeLedgerModules.setEditMode(board, nextMode);
-
-  const toggleBtn = $("#editLayoutToggle");
-  if (toggleBtn) {
-    toggleBtn.setAttribute("aria-pressed", String(nextMode));
-    toggleBtn.textContent = nextMode ? tr("modules.doneEditing") : tr("modules.editLayout");
-  }
-  const resetBtn = $("#resetLayoutButton");
-  if (resetBtn) resetBtn.hidden = !nextMode;
-}
-
-function resetActiveBoardLayout() {
-  const view = document.body.dataset.activeView || "today";
-  if (view === "today" && window.LifeLedgerLayoutEngine) {
-    if (window.confirm(tr("modules.resetConfirm"))) {
-      LifeLedgerLayoutEngine.resetLayout();
-      showToast(tr("modules.resetLayout"));
-    }
-    return;
-  }
-  const board = $(`[data-module-board="${view}"]`);
-  if (!board || !window.LifeLedgerModules) return;
-
-  if (window.confirm(tr("modules.resetConfirm"))) {
-    LifeLedgerModules.resetLayout(board);
-    showToast(tr("modules.resetLayout"));
-  }
-}
-
-function initModuleBoards() {
-  if (window.LifeLedgerWidgetRegistry) {
-    LifeLedgerWidgetRegistry.setTranslator(tr);
-    LifeLedgerWidgetRegistry.setContextProvider(() => getTodayWidgetContext());
-  }
-  if (window.LifeLedgerLayoutEngine) {
-    LifeLedgerLayoutEngine.setTranslator(tr);
-    const todayBoard = $("#todayView");
-    if (todayBoard) LifeLedgerLayoutEngine.init(todayBoard);
-    // Layout changes notify before renderBoard re-renders sizes, so resync on the next frame.
-    LifeLedgerLayoutEngine.onLayoutChange(() => requestAnimationFrame(syncTodayHabitTabStop));
-  }
-  if (window.LifeLedgerModules) {
-    LifeLedgerModules.setTranslator(tr);
-    const weekBoard = $("#weekView");
-    if (weekBoard) LifeLedgerModules.initBoard(weekBoard);
-  }
-}
-
-function renderSyncOffline() {
-  const offline = !navigator.onLine;
-  const badge = $("#sidebarSyncStatus");
-  if (badge) {
-    badge.classList.toggle("offline", offline);
-    if (offline) {
-      const label = languageText("离线使用", "Offline mode", "Offline-Modus");
-      badge.setAttribute("title", label);
-      badge.setAttribute("aria-label", label);
-    }
-  }
-  const art = $("#syncOfflineArt");
-  const note = $("#syncOfflineNote");
-  if (art) art.hidden = !offline;
-  if (note) {
-    note.hidden = !offline;
-    note.textContent = offline ? languageText("当前离线，更改仍保存在这台设备上。", "You are offline. Changes stay on this device.", "Du bist offline. Änderungen bleiben auf diesem Gerät.") : "";
-  }
-  if (offline && art && art.dataset.hairlineSrc !== "./assets/hairline/offline-local.svg") {
-    window.LifeLedgerInteraction?.mountHairline(art, "./assets/hairline/offline-local.svg");
-  }
-}
-
-// today-grid.js re-renders card contents after a size change.
-window.__tgRenderToday = () => renderToday();
 function renderToday() {
   const date = selectedPlanningDate;
   const selected = parseDate(date);
+  const viewingToday = date === isoDate(new Date());
   const future = isFutureDate(date);
   const log = getLog(date);
+  const habits = activeHabits(date);
   const scoredHabits = dailyHabits(date);
   const complete = log.completed.filter(id => scoredHabits.some(h => h.id === id)).length;
-  const query = quickFindQuery.trim().toLowerCase();
-  const matches = habit => !query || displayHabitName(habit).toLowerCase().includes(query);
-  const pending = scoredHabits.filter(habit => !log.completed.includes(habit.id) && matches(habit));
-  const scheduledTime = habit => scheduleLabel(versionFor(habit, date));
-  const scheduled = pending.filter(habit => scheduledTime(habit)).sort((a, b) => scheduledTime(a).localeCompare(scheduledTime(b)));
-  const open = pending.filter(habit => !scheduledTime(habit));
-  const completed = scoredHabits.filter(habit => log.completed.includes(habit.id) && matches(habit))
-    .sort((a, b) => log.completed.indexOf(a.id) - log.completed.indexOf(b.id));
-  const notTodayHabits = activeHabits(date).filter(habit => !countsTowardDaily(habit, date) && matches(habit));
-  const visibleIds = [...open, ...scheduled, ...completed, ...notTodayHabits].map(habit => habit.id);
-  if (selectedTodayHabitId && !visibleIds.includes(selectedTodayHabitId)) selectedTodayHabitId = "";
-  setText("#todayDateHeading", formatTodayWeekday(selected));
-  setText("#todayDateSecondary", formatTodayDateSecondary(selected));
-  const summaryText = tr("today.summary", { done: complete, total: scoredHabits.length });
-  setText("#todayHabitsCaption", summaryText);
-  if (window.LifeLedgerInteraction) LifeLedgerInteraction.rollText($("#todaySummary"), summaryText);
-  else setText("#todaySummary", summaryText);
-  const progressRatio = scoredHabits.length ? complete / scoredHabits.length : 0;
-  window.LifeLedgerTodayExtras?.update({
-    selectedDate: selectedPlanningDate, language: currentLang,
-    days: Array.from({ length: new Date(selected.getFullYear(), selected.getMonth() + 1, 0).getDate() }, (_, index) => {
-      const day = new Date(selected.getFullYear(), selected.getMonth(), index + 1);
-      const date = isoDate(day);
-      const habits = dailyHabits(date);
-      const done = habits.filter(habit => getLog(date).completed.includes(habit.id)).length;
-      return { date, done, total: habits.length, future: isFutureDate(date) };
-    }),
-  });
-  const progressFill = $("#todayProgressFill");
-  if (progressFill) progressFill.style.width = `${Math.round(progressRatio * 100)}%`;
-  const progressOrbit = $("#todayProgressOrbit");
-  if (progressOrbit) progressOrbit.style.setProperty("--progress", String(progressRatio));
-  const progressNumber = $("#todayProgressNumber");
-  if (progressNumber) {
-    const doneNode = progressNumber.querySelector("b");
-    const totalNode = progressNumber.querySelector("small");
-    if (doneNode) doneNode.textContent = String(complete);
-    if (totalNode) totalNode.textContent = `/ ${scoredHabits.length}`;
+  const progress = scoredHabits.length ? Math.round(complete / scoredHabits.length * 100) : 0;
+  $("#todayDateChip").textContent = formatDateChip(selected);
+  $("#heroProgressText").textContent = tr("hero.progressText", { done: complete, total: scoredHabits.length });
+  setText(".progress-orbit-label", tr(viewingToday ? "hero.progress" : "hero.selectedProgress"));
+  setText(".mood-card h3", tr(viewingToday ? "mood.title" : "mood.selectedTitle"));
+  setText(".habits-heading h2", tr(viewingToday ? "foundations.title" : "foundations.selectedTitle"));
+  const progressNumber = $("#progressNumber");
+  const progressCount = `${complete} / ${scoredHabits.length}`;
+  if (progressNumber.dataset.value !== progressCount) {
+    progressNumber.dataset.value = progressCount;
+    progressNumber.innerHTML = `<b>${complete}</b><small>/ ${scoredHabits.length}</small>`;
+    progressNumber.classList.remove("number-pop");
+    void progressNumber.offsetWidth;
+    progressNumber.classList.add("number-pop");
   }
-  const dateChip = $("#todayDateChip");
-  if (dateChip) dateChip.textContent = formatDateChip(selected);
-  const dailyQuote = quoteFor(selected.getDate());
-  const heroQuote = $("#todayHeroQuote");
-  const heroQuoteSource = $("#todayHeroQuoteSource");
-  if (heroQuote) heroQuote.textContent = dailyQuote.text;
-  if (heroQuoteSource) heroQuoteSource.textContent = dailyQuote.source;
-  const list = $("#todayHabitList");
-  if (list) {
-    const allDone = scoredHabits.length > 0 && complete === scoredHabits.length && !open.length && !scheduled.length;
-    const noMatches = Boolean(query) && !open.length && !scheduled.length && !completed.length;
-    const bestStreak = allDone ? Math.max(0, ...scoredHabits.map(habit => habitStreak(habit.id, date))) : 0;
-    const streakBand = bestStreak >= 7 ? "long" : bestStreak >= 3 ? "mid" : "short";
-    const allScheduledLater = !open.length && scheduled.length > 0;
-    const empty = noMatches
-      ? hairlineEmptyMarkup("./assets/hairline/search-empty.svg", tr("today.noSearch"), tr("today.noSearchHelp"))
-      : allDone
-        ? hairlineEmptyMarkup("./assets/hairline/empty-today-done.svg", tr("today.allDone"), tr("today.allDoneHelp"), `data-streak="${streakBand}"`)
-        : allScheduledLater
-          ? hairlineEmptyMarkup("./assets/hairline/today-all-scheduled-later.svg", tr("today.scheduled"), languageText("所有待办习惯都已按特定时间排在稍后。", "All pending habits are scheduled for a specific time later.", "Alle anstehenden Gewohnheiten sind für später geplant."))
-          : state.habits.length
-            ? escapeHtml(tr("today.noHabits"))
-            : hairlineEmptyMarkup("./assets/hairline/empty-first-run.svg", tr("today.noHabits"), tr("habits.emptyHelp"));
-    list.innerHTML = open.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId)).join("")
-      || `<li class="today-habit-empty">${empty}</li>`;
-    paintTodayHeader(date, allDone, streakBand);
-  }
-  hydrateHairlineMounts($("#todayView"));
-  const scheduledGroup = $("#todayScheduledGroup");
-  const scheduledList = $("#todayScheduledList");
-  if (scheduledGroup && scheduledList) {
-    scheduledGroup.hidden = !scheduled.length;
-    setText("#todayScheduledHeading", tr("today.scheduled"));
-    scheduledList.innerHTML = scheduled.map(habit => todayHabitRowMarkup(habit, date, false, future, habit.id === selectedTodayHabitId, scheduledTime(habit))).join("");
-  }
-  const completedGroup = $("#todayCompletedGroup");
-  const completedList = $("#todayCompletedList");
-  if (completedGroup && completedList) {
-    completedGroup.hidden = !completed.length;
-    if (revealCompletedOnRender) completedGroup.open = true;
-    setText("#todayCompletedSummary", tr("today.completed", { count: completed.length }));
-    completedList.innerHTML = completed.map(habit => todayHabitRowMarkup(habit, date, true, future, habit.id === selectedTodayHabitId)).join("");
-  }
-  const notTodayGroup = $("#todayNotTodayGroup");
-  const notTodayList = $("#todayNotTodayList");
-  if (notTodayGroup && notTodayList) {
-    notTodayGroup.hidden = !notTodayHabits.length;
-    setText("#todayNotTodaySummary", tr("today.notToday"));
-    notTodayList.style.setProperty("--not-today-label", JSON.stringify(tr("today.notToday")));
-    notTodayList.innerHTML = notTodayHabits.map(habit => todayHabitRowMarkup(habit, date, log.completed.includes(habit.id), future, habit.id === selectedTodayHabitId)).join("");
-  }
-  bindTodayHabitRows();
-  bindTodayHabitsRailWheel();
-  if (isWebToday()) renderWebTodayClassic(date, log, future);
-  renderTodayEventsStrip();
-  renderTodayCalendar(date);
-  renderTodayFocus();
-  renderTodayContext(date);
-  renderHomeJournal();
-  const widgetCtx = getTodayWidgetContext();
-  const nextSummary = $("#todaySummaryNext");
-  if (nextSummary) {
-    nextSummary.textContent = widgetCtx.summaryNextItem;
-    nextSummary.hidden = !widgetCtx.summaryNextItem;
-  }
-  const reflectionDayContext = document.querySelector('[data-widget-part="reflection-day-context"]');
-  if (reflectionDayContext) {
-    reflectionDayContext.textContent = `${tr("today.last7")} · ${formatTodayDateSecondary(parseDate(date))}`;
-  }
-  void todayPhotoMount?.load(date);
-  window.LifeLedgerLayoutEngine?.renderBoard();
-  // After renderBoard: the widget size decides which habit rows are visible.
-  syncTodayHabitTabStop();
-  maybeAutoGrowHomeDayNote();
-}
-
-function renderTodayContext(date) {
-  const host = $("#todayDayContext");
-  if (!host) return;
-  const end = parseDate(date);
-  const days = [];
-  for (let offset = 6; offset >= 0; offset -= 1) {
-    const day = new Date(end);
-    day.setDate(end.getDate() - offset);
-    const key = isoDate(day);
-    const scored = dailyHabits(key);
-    const done = scored.filter(habit => getLog(key).completed.includes(habit.id)).length;
-    days.push({
-      key,
-      label: formatLocalizedDate(day, { weekday: "narrow" }),
-      done,
-      total: scored.length,
-      future: isFutureDate(key),
-      selected: key === date,
-    });
-  }
-  const tomorrow = parseDate(date);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowKey = isoDate(tomorrow);
-  const tomorrowTotal = dailyHabits(tomorrowKey).length;
-  const note = String(getLog(date).note || "").replace(/\s+/g, " ").trim();
-  let totalDone = 0;
-  let totalEligible = 0;
-  days.forEach(day => {
-    if (!day.future) {
-      totalDone += day.done;
-      totalEligible += day.total;
-    }
-  });
-  const percent = totalEligible ? Math.round((totalDone / totalEligible) * 100) : 0;
-  const miniBars = days.map(day => (day.total ? day.done / day.total : 0));
-  host.innerHTML = `<div data-widget-part="context-compact" class="today-context-compact" hidden><span class="sr-only">${escapeHtml(tr("today.contextConsistency"))}</span><strong data-widget-part="context-percent">${percent}%</strong><div data-widget-part="context-mini-bars" class="today-context-mini-bars">${miniBars.map(fill => `<i style="--fill:${fill}"></i>`).join("")}</div></div><section data-widget-part="context-week-strip" class="today-context-week" aria-label="${escapeHtml(tr("today.last7"))}"><h3>${escapeHtml(tr("today.last7"))}</h3><ol>${days.map(day => `<li><button type="button" class="today-context-day${day.selected ? " is-selected" : ""}" data-date="${day.key}" ${day.future ? `disabled title="${escapeHtml(tr("today.futureLocked"))}"` : ""}><span>${escapeHtml(day.label)}</span><i style="--fill:${day.total ? day.done / day.total : 0}"></i><b>${day.future ? "—" : `${day.done}/${day.total}`}</b></button></li>`).join("")}</ol></section><section data-widget-part="context-aside" class="today-context-aside"><h3>${escapeHtml(tr("today.tomorrow"))}</h3><p>${escapeHtml(tr("today.tomorrowCount", { count: tomorrowTotal }))}</p><h3>${escapeHtml(tr("today.reflectionLabel"))}</h3><p>${escapeHtml(note || tr("today.noReflection"))}</p></section>`;
-  host.querySelectorAll(".today-context-day:not([disabled])").forEach(button => {
-    button.addEventListener("click", () => selectPlanningDate(button.dataset.date));
-  });
-}
-
-function renderInspector() {
-  const date = selectedPlanningDate;
-  const future = isFutureDate(date);
-  const log = getLog(date);
+  $("#progressOrbit").style.setProperty("--progress", progress);
+  renderHabitCarousel(habits, date, log.completed, future);
   $$("#quickMood button").forEach(button => {
-    const active = button.dataset.mood === log.mood;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+    button.classList.toggle("selected", button.dataset.mood === log.mood);
     button.disabled = future;
   });
-  renderMoodReasonSummary("#inspectorMoodReason", log);
-  const events = calendarEventsForDate(date).filter(event => !event.routine);
-  const contextList = $("#inspectorContextList");
-  if (contextList) {
-    const photoCount = (calendarPhotosByDate.get(date) || []).length || todayPhotoMount?.photos?.().filter(photo => photo.date === date).length || 0;
-    contextList.innerHTML = [
-      `<li>${escapeHtml(tr("today.eventsCount", { count: events.length }))}</li>`,
-      photoCount ? `<li>${escapeHtml(tr("drawer.photoCount", { count: photoCount }))}</li>` : "",
-    ].filter(Boolean).join("");
-  }
-  const photoCount = (calendarPhotosByDate.get(date) || []).length || todayPhotoMount?.photos?.().filter(photo => photo.date === date).length || 0;
-  const inspectorDayPhotosEmpty = $("#inspectorDayPhotosEmpty");
-  if (inspectorDayPhotosEmpty) {
-    inspectorDayPhotosEmpty.hidden = photoCount > 0;
-    if (photoCount === 0) {
-      window.LifeLedgerInteraction?.mountHairline(inspectorDayPhotosEmpty, "./assets/hairline/photos-day-empty.svg");
-    }
-  }
-  const todayPhotoEmptyArt = $("#todayPhotoEmptyArt");
-  if (todayPhotoEmptyArt) {
-    todayPhotoEmptyArt.hidden = photoCount > 0;
-    if (photoCount === 0) {
-      window.LifeLedgerInteraction?.mountHairline(todayPhotoEmptyArt, "./assets/hairline/photos-day-empty.svg");
-    }
-  }
-  setText("#inspectorEventsCount", tr("today.eventsCount", { count: events.length }));
-  const inspectorPhotos = $("#inspectorDayPhotos");
-  if (inspectorPhotos) {
-    inspectorPhotos.hidden = true;
-    inspectorPhotos.innerHTML = "";
-  }
-  const stats = focusStatsForToday();
-  if (focusUIState !== "completed") setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
+  renderMoodReasonSummary("#quickMoodReason", log);
+  renderDailyGoals();
 }
 
-function renderToolbarQuick() {
-  const today = $("#toolbarTodayButton");
-  if (today) {
-    today.textContent = languageText("回到今天", "Today", "Heute");
-    today.disabled = selectedPlanningDate === isoDate(new Date());
-  }
-  const lang = $("#toolbarLanguage");
-  if (lang) { lang.value = currentLang; lang.setAttribute("aria-label", languageText("界面语言", "Language", "Sprache")); }
-  const view = document.body.dataset.activeView || "today";
-  const quick = $("#toolbarQuick");
-  if (quick) quick.dataset.view = view;
-}
-function renderToolbarDateNav() {
-  renderToolbarQuick();
-  const label = $("#dateNavLabel");
-  const nav = $("#toolbarDateNav");
-  const prev = $("#dateNavPrev");
-  const next = $("#dateNavNext");
-  const view = document.body.dataset.activeView || "today";
-  if (!label || !nav) return;
-  nav.hidden = view === "habits" || view === "longrange";
-  if (prev) prev.hidden = view === "timeline";
-  if (next) next.hidden = view === "timeline";
-  label.hidden = false;
-  if (view === "today") {
-    // Narrow toolbars have ~60px for the label: drop the year so it never truncates.
-    const narrow = window.matchMedia?.("(max-width: 760px)")?.matches;
-    label.textContent = formatLocalizedDate(parseDate(selectedPlanningDate), narrow ? { weekday: "short", day: "numeric", month: "numeric" } : { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-    return;
-  }
-  if (view === "week") {
-    const { monday } = weekDatesFromKey(selectedWorkspaceWeek);
-    const weekNum = weekNumber(monday);
-    label.textContent = languageText(`第 ${weekNum} 周 · ${formatWeekRange(selectedWorkspaceWeek)}`, `Week ${weekNum} · ${formatWeekRange(selectedWorkspaceWeek)}`, `Woche ${weekNum} · ${formatWeekRange(selectedWorkspaceWeek)}`);
-    return;
-  }
-  if (view === "timeline") {
-    label.textContent = ['weeks','months','timeline'].includes(journalMode) ? tr('viewTitles.timeline') : tr("calendar.title", { year: timelineCursor.getFullYear(), month: timelineCursor.getMonth() + 1, monthName: monthName(timelineCursor.getMonth()) });
-    return;
-  }
-  if (view === "review") {
-    label.textContent = tr("review.title", { year: cursor.getFullYear(), month: cursor.getMonth() + 1, monthName: monthName(cursor.getMonth()) });
-  }
+function renderDailyGoals() {
+  renderDayRoll();
+  renderDaySchedule();
+  const selected = parseDate(selectedPlanningDate);
+  $("#todayPlanDate").textContent = formatDateChip(selected);
+  $("#journalPlanDate").textContent = formatDateChip(selected);
+  renderHomeJournal();
 }
 
 function calendarPreviewEvents(date) {
@@ -5397,91 +2576,11 @@ function scheduleEventMarkup(event, compact = false) {
   </article>`;
 }
 
-// ---- Web Today: the original 3.5 sections, rendered inside widgets --------
-function isWebToday() {
-  return !document.documentElement.hasAttribute("data-desktop");
-}
-
-function orderedTodayHabits(habits, completedIds) {
-  const completed = new Set(completedIds);
-  const byId = new Map(habits.map(habit => [habit.id, habit]));
-  return [...habits.filter(habit => !completed.has(habit.id)), ...completedIds.map(id => byId.get(id)).filter(Boolean)];
-}
-
-function updateHabitCarouselNavigation(pageCount) {
-  const nav = $("#habitCarouselNav"), previous = $("#previousHabitPage"), next = $("#nextHabitPage"), status = $("#habitCarouselStatus"), pages = $("#habitCarouselPages");
-  if (!nav || !previous || !next || !status || !pages) return;
-  nav.hidden = pageCount <= 1;
-  previous.disabled = todayHabitPage === 0;
-  next.disabled = todayHabitPage >= pageCount - 1;
-  status.textContent = `${todayHabitPage + 1} / ${pageCount}`;
-  pages.innerHTML = Array.from({ length: pageCount }, (_, index) => `<button type="button" class="habit-carousel-page ${index === todayHabitPage ? "active" : ""}" data-page="${index}" aria-label="${escapeHtml(tr("foundations.page", { page: index + 1, total: pageCount }))}" ${index === todayHabitPage ? 'aria-current="page"' : ""}><span></span></button>`).join("");
-  $$(".habit-carousel-page", pages).forEach(button => button.addEventListener("click", () => setTodayHabitPage(Number(button.dataset.page))));
-}
-
-function setTodayHabitPage(page, behavior = "smooth") {
-  const viewport = $("#todayHabitViewport");
-  const pageCount = Number($("#todayHabitCarousel")?.dataset.pageCount || 1);
-  todayHabitPage = Math.max(0, Math.min(page, pageCount - 1));
-  updateHabitCarouselNavigation(pageCount);
-  viewport?.scrollTo({ left: viewport.clientWidth * todayHabitPage, behavior });
-}
-
-function syncHabitCarouselPageFromScroll() {
-  const viewport = $("#todayHabitViewport");
-  if (!viewport?.clientWidth) return;
-  const pageCount = Number($("#todayHabitCarousel")?.dataset.pageCount || 1);
-  const page = Math.max(0, Math.min(Math.round(viewport.scrollLeft / viewport.clientWidth), pageCount - 1));
-  if (page === todayHabitPage) return;
-  todayHabitPage = page;
-  updateHabitCarouselNavigation(pageCount);
-}
-
-function renderHabitCarousel(habits, date, completedIds, locked = false) {
-  const carousel = $("#todayHabitCarousel"), viewport = $("#todayHabitViewport");
-  if (!carousel) return;
-  const ordered = orderedTodayHabits(habits, completedIds);
-  const pageCount = Math.max(1, Math.ceil(ordered.length / habitsPerPage()));
-  todayHabitPage = Math.min(todayHabitPage, pageCount - 1);
-  carousel.dataset.pageCount = String(pageCount);
-  $("#todayHabits").innerHTML = Array.from({ length: pageCount }, (_, page) => {
-    const group = ordered.slice(page * habitsPerPage(), (page + 1) * habitsPerPage());
-    return `<div class="habit-page" data-page="${page}" aria-label="${escapeHtml(tr("foundations.page", { page: page + 1, total: pageCount }))}">${group.map(habit => habitCard(habit, date, completedIds.includes(habit.id), locked)).join("")}</div>`;
-  }).join("");
-  if (viewport) viewport.scrollLeft = viewport.clientWidth * todayHabitPage;
-  updateHabitCarouselNavigation(pageCount);
-  $$("#todayHabits .habit-card").forEach(card => {
-    const activate = () => { if (!suppressHabitCardClick) toggleHabit(date, card.dataset.id); };
-    card.addEventListener("click", activate);
-    card.addEventListener("keydown", event => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      activate();
-    });
-  });
-}
-
-function renderDayRoll() {
-  const roll = $("#dayRoll");
-  if (!roll) return;
-  const selected = parseDate(selectedPlanningDate);
-  const today = isoDate(new Date());
-  roll.innerHTML = Array.from({ length: 5 }, (_, index) => {
-    const date = new Date(selected);
-    date.setDate(selected.getDate() + index - 2);
-    const key = isoDate(date);
-    return `<button type="button" class="day-roll-item ${key === selectedPlanningDate ? "active" : ""} ${key === today ? "today" : ""}" data-date="${key}"><span>${weekdayShortName(date.getDay())}</span><strong>${date.getDate()}</strong></button>`;
-  }).join("");
-  $$(".day-roll-item", roll).forEach(button => button.addEventListener("click", () => selectPlanningDate(button.dataset.date)));
-}
-
 function renderDaySchedule() {
-  const list = $("#dayScheduleList");
-  if (!list) return;
   const events = calendarEventsForDate(selectedPlanningDate);
   const important = events.filter(event => !event.routine);
   const routines = events.filter(event => event.routine);
-  list.innerHTML = important.length
+  $("#dayScheduleList").innerHTML = important.length
     ? important.slice(0, 3).map(event => scheduleEventMarkup(event, true)).join("")
     : `<p class="day-schedule-empty">${tr("dayPlan.noEvents")}</p>`;
   const toggle = $("#toggleRoutineEvents");
@@ -5491,103 +2590,6 @@ function renderDaySchedule() {
   $("b", toggle).textContent = dayPlanRoutinesExpanded ? "⌃" : "⌄";
   $("#routineEventList").hidden = !dayPlanRoutinesExpanded;
   $("#routineEventList").innerHTML = routines.map(event => scheduleEventMarkup(event)).join("");
-}
-
-let todayMonthCursor = null;
-function renderTodayMonthView() {
-  const grid = $("#todayMonthGrid");
-  if (!grid) return;
-  if (!todayMonthCursor) { todayMonthCursor = parseDate(selectedPlanningDate); todayMonthCursor.setDate(1); }
-  const year = todayMonthCursor.getFullYear(), month = todayMonthCursor.getMonth();
-  setText("#todayMonthKicker", tr("calendar.kicker"));
-  setText("#todayMonthHeading", tr("calendar.title", { year, month: month + 1, monthName: monthName(month) }));
-  setText("#todayMonthDesc", tr("calendar.desc"));
-  const weekdays = i18n[currentLang]?.calendar?.weekdays || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  $("#todayMonthWeekdays").innerHTML = weekdays.map(day => `<span>${escapeHtml(day)}</span>`).join("");
-  const first = new Date(year, month, 1, 12);
-  const start = new Date(year, month, 1 - (first.getDay() + 6) % 7, 12);
-  const today = isoDate(new Date());
-  let total = 0;
-  const cells = Array.from({ length: 42 }, (_, i) => {
-    const d = new Date(start); d.setDate(start.getDate() + i);
-    const key = isoDate(d), log = getLog(key), scored = dailyHabits(key);
-    const progress = scored.length ? Math.round(scored.filter(h => log.completed.includes(h.id)).length / scored.length * 100) : 0;
-    if (d.getMonth() === month) total += progress;
-    const moodClass = calendarViewMode === "mood" ? moodCalendarClass(log.mood) : "";
-    const heatClass = calendarViewMode === "heatmap" ? `heat-${calendarHeatLevel(progress)}` : "";
-    const label = `${formatDateChip(d)} · ${calendarViewMode === "mood" ? (log.mood ? moodLabel(log.mood) : tr("calendar.empty")) : `${progress}%`}`;
-    return `<button type="button" class="calendar-day ${moodClass} ${heatClass} ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${key === selectedPlanningDate ? "selected" : ""}" data-date="${key}" aria-label="${escapeHtml(label)}"><span class="day-number">${d.getDate()}</span>${calendarViewMode === "mood" && log.mood ? `<span class="day-mood mood-${log.mood === "低落" ? "low" : log.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(log.mood)}</span>` : ""}${calendarViewMode === "heatmap" ? `<span class="day-percent">${progress}%</span>` : ""}</button>`;
-  });
-  setText("#todayMonthMark", String(month + 1).padStart(2, "0"));
-  setText("#todayMonthCompletion", `${Math.round(total / new Date(year, month + 1, 0).getDate())}%`);
-  setText("#todayMonthCompletionLabel", tr("calendar.monthCompletion"));
-  grid.dataset.mode = calendarViewMode;
-  grid.innerHTML = cells.join("");
-  $$("#todayMonthViewSwitch [data-calendar-view]").forEach(button => {
-    const active = button.dataset.calendarView === calendarViewMode;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
-    $("span", button).textContent = tr(button.dataset.calendarView === "mood" ? "calendar.viewMood" : "calendar.viewHeatmap");
-  });
-  const legend = $(".today-month-legend");
-  if (legend) legend.innerHTML = calendarViewMode === "mood"
-    ? `<span><i class="legend-mood mood-good">${moodCalendarIcon("很好")}</i>${tr("calendar.moodGood")}</span><span><i class="legend-mood mood-calm">${moodCalendarIcon("平静")}</i>${tr("calendar.moodCalm")}</span><span><i class="legend-mood mood-low">${moodCalendarIcon("低落")}</i>${tr("calendar.moodLow")}</span>`
-    : `<span><i class="legend-heat heat-0"></i>${tr("calendar.heatNone")}</span><span><i class="legend-heat heat-1"></i>${tr("calendar.heatLow")}</span><span><i class="legend-heat heat-2"></i>${tr("calendar.heatMedium")}</span><span><i class="legend-heat heat-4"></i>${tr("calendar.heatHigh")}</span>`;
-  $$(".calendar-day", grid).forEach(day => day.addEventListener("click", () => {
-    if (isFutureDate(day.dataset.date)) selectPlanningDate(day.dataset.date);
-    else openDrawer(day.dataset.date);
-  }));
-}
-
-let reflectionTab = "journal";
-function renderReflectionTabs() {
-  const card = $('#todayView [data-module="reflection"]');
-  if (!card) return;
-  card.dataset.reflectionTab = reflectionTab;
-  $$("#reflectionTabs [data-reflection-tab]").forEach(button => {
-    const active = button.dataset.reflectionTab === reflectionTab;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-    $("span", button).textContent = tr(button.dataset.reflectionTab === "focus" ? "journal.tabFocus" : "journal.tabReflection");
-  });
-  $("#reflectionFocusPage").hidden = reflectionTab !== "focus";
-  $("#todayJournal").hidden = reflectionTab !== "journal";
-  const stats = focusStatsForToday();
-  setText("#reflectionFocusKicker", tr("focus.kicker"));
-  setText("#reflectionFocusTitle", tr("focus.overviewTitle"));
-  setText("#reflectionFocusHint", tr("focus.overviewHint"));
-  setText("#reflectionFocusMinutes", tr("focus.todaySummary", { minutes: stats.minutes }));
-  setText("#reflectionFocusStart", focusTimer?.snapshot() ? tr("focus.openActive") : tr("focus.open"));
-  setText("#reflectionFocusSettings", tr("focus.settings"));
-}
-
-function renderWebTodayClassic(date, log, future) {
-  renderHabitCarousel(activeHabits(date), date, log.completed, future);
-  const viewingToday = date === isoDate(new Date());
-  setText("#habitsModuleKicker", tr("foundations.kicker"));
-  setText("#habitsModuleTitle", tr(viewingToday ? "foundations.title" : "foundations.selectedTitle"));
-  setText("#todayHabitsAdjustLabel", tr("foundations.adjust"));
-  setText("#dayPlanKicker", tr("todayGoals.kicker"));
-  setText("#dayPlanTitle", tr("todayGoals.title"));
-  setText("#dayPlanDesc", tr("todayGoals.desc"));
-  setText("#todayPlanDate", formatDateChip(parseDate(date)));
-  setText("#openDayPlan span", tr("dayPlan.open"));
-  renderDayRoll();
-  renderDaySchedule();
-  setText("#moodModuleKicker", tr("mood.kicker"));
-  const moodNote = $("#todayMoodNote");
-  if (moodNote) {
-    const quote = quoteFor(2);
-    moodNote.innerHTML = `${escapeHtml(quote.text)}<small>${escapeHtml(quote.source)}</small>`;
-    moodNote.hidden = false;
-  }
-  setText("#reflectionModuleKicker", tr("journal.kicker"));
-  setText("#inspectorReflectionHeading", tr("journal.title"));
-  const reflectionSub = $("#reflectionSub"), journalDate = $("#journalPlanDate");
-  if (reflectionSub) { reflectionSub.textContent = tr("journal.desc"); reflectionSub.hidden = false; }
-  if (journalDate) { journalDate.textContent = formatDateChip(parseDate(date)); journalDate.hidden = false; }
-  renderReflectionTabs();
-  renderTodayMonthView();
 }
 
 function formatDayPlanDialogDate(date) {
@@ -5609,19 +2611,32 @@ function openDayPlanDialog() {
   $("#dayPlanDialog").showModal();
 }
 
+function renderDayRoll() {
+  const selected = parseDate(selectedPlanningDate);
+  const today = isoDate(new Date());
+  $("#dayRoll").innerHTML = Array.from({ length: 5 }, (_, index) => {
+    const date = new Date(selected);
+    date.setDate(selected.getDate() + index - 2);
+    const key = isoDate(date);
+    return `<button type="button" class="day-roll-item ${key === selectedPlanningDate ? "active" : ""} ${key === today ? "today" : ""}" data-date="${key}">
+      <span>${weekdayShortName(date.getDay())}</span><strong>${date.getDate()}</strong>
+    </button>`;
+  }).join("");
+  $$("#dayRoll .day-roll-item").forEach(button => button.addEventListener("click", () => selectPlanningDate(button.dataset.date)));
+}
+
 function selectPlanningDate(date, options = {}) {
   selectedPlanningDate = date;
-  todayMonthCursor = null;
   dayPlanRoutinesExpanded = false;
   const selected = parseDate(date);
   cursor = new Date(selected);
+  setDailyToolPage("journal", { smooth: false });
   renderAll();
   void loadGoogleCalendarMonth(selected);
-  if (options.scroll) $("#todayView")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (options.scroll) $(".daily-planning-grid")?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function shiftPlanningDay(amount) {
-  animateMainContentShift(amount);
   const date = parseDate(selectedPlanningDate);
   date.setDate(date.getDate() + amount);
   selectPlanningDate(isoDate(date));
@@ -5691,10 +2706,10 @@ function voiceContextTerms(date) {
 function renderHomeJournal() {
   const future = isFutureDate(selectedPlanningDate);
   const textarea = $("#homeDayNote");
-  if (!textarea) return;
   textarea.value = getLog(selectedPlanningDate).note || "";
   textarea.disabled = future;
-  textarea.setAttribute("aria-description", future ? tr("journal.futureLocked") : "");
+  $(".daily-journal-card").classList.toggle("future-locked", future);
+  $("#journalAvailability").textContent = future ? tr("journal.futureLocked") : "";
   voiceReflection?.setContext({
     date: selectedPlanningDate,
     isToday: selectedPlanningDate === isoDate(new Date()),
@@ -5748,31 +2763,25 @@ function initVoiceReflection() {
   }
 }
 
-let todayPhotoMount = null;
-let timelineFilter = "all";
-
 function initPhotoMemories() {
   if (!window.LifeLedgerPhotoMemories) return;
   photoMemories = window.LifeLedgerPhotoMemories.create({
     section: $("#moodPhotoSection"),
-    transport: hostedCloudMode ? "cloud" : "local",
-    enabled: true,
+    enabled: hostedCloudMode,
     language: currentLang,
     onToast: showToast,
-    onUndo: ({ message, label, restore }) => showToast(message, { actionLabel: label, onAction: () => { void restore(); } }),
     onChange: ({ date, photos }) => {
       calendarPhotosByDate.set(date, photos);
       calendarPhotoLoadedMonths.delete(date.slice(0, 7));
       renderCalendar();
       if ($("#dayDrawer")?.classList.contains("open") && selectedDate === date) renderDrawerMemory(date);
-      if ($("#timelineView")?.classList.contains("active") && !timelineRendering) void renderTimeline();
+      if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
     },
   });
-  todayPhotoMount = photoMemories.mount($("#todayPhotoSection"));
 }
 
 async function loadCalendarPhotoMonth(date) {
-  if (!photoMemories) return;
+  if (!photoMemories || !hostedCloudMode) return;
   const key = monthKey(date);
   if (calendarPhotoLoadedMonths.has(key) || calendarPhotoLoadingMonths.has(key)) return;
   calendarPhotoLoadingMonths.add(key);
@@ -5800,271 +2809,37 @@ function habitCard(habit, date, done, locked = false) {
   const periodNote = countsTowardDaily(habit, date) ? "" : `<span class="period-note">${tr("foundations.periodNote")}</span>`;
   const transitionName = `habit-${String(habit.id).replace(/[^a-z0-9_-]/gi, "-")}`;
   return `<article class="habit-card ${done ? "completed" : ""} ${locked ? "future-locked" : ""}" data-id="${habit.id}" role="button" tabindex="${locked ? "-1" : "0"}" aria-pressed="${done}" ${locked ? 'aria-disabled="true"' : ""} style="${habitStyle(habit)};view-transition-name:${transitionName}">
-    <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></span></div>
+    <div class="habit-card-top"><span class="habit-icon">${renderIcon(iconKey(habit))}</span><span class="habit-check">✓</span></div>
     <h3>${escapeHtml(displayHabitName(habit))}</h3><p>${target}</p>${periodNote}
   </article>`;
 }
-let revealCompletedOnRender = false;
-let journalMode = "weeks";
-let journalVisibleCount = 24;
-let insightView = "trend";
-let journalSaveTimer = 0;
-
-function captureHabitFrames() {
-  const frames = new Map();
-  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
-    const rect = row.getBoundingClientRect();
-    if (!rect.width && !rect.height) return;
-    frames.set(row.dataset.id, { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
-  });
-  return frames;
-}
-
-function playHabitFlip(previous) {
-  if (!previous?.size) return;
-  if (window.LifeLedgerInteraction?.motionTravelDisabled?.()) return;
-  $$("#todayHabitList .today-habit-row, #todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row, #todayNotTodayList .today-habit-row").forEach(row => {
-    const before = previous.get(row.dataset.id);
-    if (!before) return;
-    const rect = row.getBoundingClientRect();
-    const dx = before.x - rect.left;
-    const dy = before.y - rect.top;
-    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
-    row.classList.add("is-moving");
-    row.style.transition = "none";
-    row.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
-    row.offsetWidth;
-    row.style.transition = "transform 240ms var(--ease-spring)";
-    row.style.transform = "translate3d(0, 0, 0)";
-    let fallback = 0;
-    const clear = event => {
-      // Check and hover colour transitions bubble here too; only this row's move ends the FLIP.
-      if (event && (event.target !== row || event.propertyName !== "transform")) return;
-      window.clearTimeout(fallback);
-      row.style.transition = "";
-      row.style.transform = "";
-      row.classList.remove("is-moving");
-      row.removeEventListener("transitionend", clear);
-      row.removeEventListener("transitioncancel", clear);
-    };
-    row.addEventListener("transitionend", clear);
-    row.addEventListener("transitioncancel", clear);
-    fallback = window.setTimeout(clear, 320);
-  });
-}
-
-function setDayDetailOpen(open) {
-  const sheet = $("#dayDetailSheet");
-  const trigger = $("#openDayDetail");
-  if (!sheet) return;
-  sheet.hidden = !open;
-  trigger?.setAttribute("aria-expanded", String(open));
-  if (open) {
-    const scored = dailyHabits(selectedPlanningDate);
-    const log = getLog(selectedPlanningDate);
-    const perfect = scored.length > 0 && scored.every(h => log.completed.includes(h.id));
-    const perfectMark = $("#dayDetailPerfectMark");
-    if (perfectMark) {
-      perfectMark.hidden = !perfect;
-      if (perfect) {
-        window.LifeLedgerInteraction?.mountHairline(perfectMark, "./assets/hairline/calendar-perfect-day.svg");
-      }
-    }
-    $("#homeDayNote")?.focus();
-  } else trigger?.focus();
-}
-
-function setFocusPanelOpen(open) {
-  const panel = $("#focusPanel");
-  const button = $("#toolbarPrimaryAction");
-  if (!panel) return;
-  panel.hidden = !open;
-  button?.setAttribute("aria-expanded", String(open));
-  if (open && !focusTimer?.snapshot() && (focusUIState === "cancelled" || focusUIState === "completed")) {
-    transitionFocusUI("reset");
-  }
-  renderFocusTimer(focusTimer?.snapshot());
-  if (open) {
-    if (!$("#focusQuickPrimary")?.hidden) $("#focusQuickPrimary")?.focus();
-    else panel.focus();
-  } else {
-    button?.focus();
-  }
-}
-
-function setJournalMode(mode) {
-  const previousRects = journalMode === "photos" || mode === "photos"
-    ? captureSiblingRects(".journal-photo-library img, .timeline-entry-list img", node => node.src)
-    : null;
-  journalMode = ['weeks','months','photos','calendar'].includes(mode) ? mode : 'timeline';
-  journalVisibleCount = 24;
-  const layout = $(".timeline-layout");
-  if (layout) layout.dataset.journalLayout = journalMode;
-  const journal = $("#timelineView");
-  if (journal) journal.dataset.journalLayout = journalMode;
-  renderToolbarDateNav();
-  $$("[data-journal-mode]").forEach(button => {
-    const active = button.dataset.journalMode === journalMode;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-  });
-  if (journalMode === "photos") timelineFilter = "photos";
-  else if (timelineFilter === "photos") timelineFilter = "all";
-  $$("[data-timeline-filter]").forEach(button => button.classList.toggle("active", button.dataset.timelineFilter === timelineFilter));
-  if ($("#timelineView")?.classList.contains("active")) {
-    void renderTimeline();
-    requestAnimationFrame(() => {
-      if (previousRects?.size) playFlipFromMap(previousRects, ".journal-photo-library img, .timeline-entry-list img", node => node.src);
-    });
-  }
-}
-
-function renderWeekDayDetail() {
-  const host = $("#weekDayDetail");
-  if (!host) return;
-  const date = selectedPlanningDate;
-  if (host.dataset.shownDate && host.dataset.shownDate !== date) window.LifeLedgerInteraction?.retarget(host);
-  host.dataset.shownDate = date;
-  const log = getLog(date);
-  const scored = dailyHabits(date);
-  const done = scored.filter(habit => log.completed.includes(habit.id)).length;
-  const label = formatLocalizedDate(parseDate(date), { weekday: "long", day: "numeric", month: "long" });
-  const note = String(log.note || "").trim();
-  const mood = log.mood ? `${moodCalendarIcon(log.mood)} ${escapeHtml(moodLabel(log.mood))}` : escapeHtml(tr("today.noReflection"));
-  const pending = scored.filter(habit => !log.completed.includes(habit.id));
-  const timed = habit => scheduleLabel(versionFor(habit, date));
-  const scheduled = pending.filter(habit => timed(habit)).sort((a, b) => timed(a).localeCompare(timed(b)));
-  const open = pending.filter(habit => !timed(habit));
-  const completed = scored.filter(habit => log.completed.includes(habit.id));
-  const habitList = items => items.map(habit => weekHabitMarkup(habit, date, timed(habit) || "")).join("");
-
-  const dayFocusMinutes = (state.focusSessions || [])
-    .filter(s => s.date === date && (s.outcome === "completed" || s.outcome === "finishedEarly"))
-    .reduce((acc, s) => acc + Math.round(s.actualMinutes || s.durationMinutes || 0), 0);
-  const photoCount = Array.isArray(log.photos) ? log.photos.length : 0;
-  const focusLabel = languageText(
-    `专注 ${dayFocusMinutes} 分钟`,
-    `${dayFocusMinutes} min focused`,
-    `${dayFocusMinutes} Min. Fokus`
-  );
-  const photoPresenceLabel = photoCount > 0
-    ? languageText(`${photoCount} 张照片`, `${photoCount} photo${photoCount > 1 ? "s" : ""}`, `${photoCount} Foto${photoCount > 1 ? "s" : ""}`)
-    : languageText("无照片", "No photos", "Keine Fotos");
-
-  host.innerHTML = `
-    <header class="week-detail-header">
-      <p class="week-detail-kicker">${escapeHtml(tr("viewTitles.week"))}</p>
-      <h2>${escapeHtml(label)}</h2>
-      <p class="week-detail-summary">${escapeHtml(tr("today.summary", { done, total: scored.length }))}</p>
-      <button class="week-open-day" type="button">${escapeHtml(languageText('打开这一天 →', 'Open this day →', 'Diesen Tag öffnen →'))}</button>
-    </header>
-    <div class="week-day-sheet">
-      <div class="week-day-sheet-habits">
-        <h3 class="week-sheet-subheading">${escapeHtml(languageText('当天习惯', 'Day’s habits', 'Gewohnheiten des Tages'))}</h3>
-        <div class="week-detail-habits">
-          ${open.length ? `<ul class="week-habit-list">${habitList(open)}</ul>` : ""}
-          ${scheduled.length ? `<h4 class="week-scheduled-heading">${escapeHtml(tr("today.scheduled"))}</h4><ul class="week-habit-list scheduled">${habitList(scheduled)}</ul>` : ""}
-          ${completed.length ? `<h4 class="week-scheduled-heading">${escapeHtml(tr("today.completed", { count: completed.length }))}</h4><ul class="week-habit-list">${habitList(completed)}</ul>` : ""}
-          ${!scored.length ? `<p class="week-detail-note empty">${escapeHtml(languageText("今天没有安排习惯", "No habits scheduled today", "Heute keine Gewohnheiten"))}</p>` : ""}
-        </div>
-      </div>
-      <div class="week-day-sheet-meta">
-        <div class="week-sheet-card week-sheet-reflection">
-          <h3 class="week-sheet-subheading">${escapeHtml(tr("today.reflectionLabel"))}</h3>
-          <p class="week-day-mood">${mood}</p>
-          ${note ? `<blockquote class="week-detail-note">${escapeHtml(note)}</blockquote>` : `<p class="week-detail-note empty">${escapeHtml(tr("week.noEntry"))}</p>`}
-        </div>
-        <div class="week-sheet-card week-sheet-stats">
-          <div class="week-sheet-stat-pill">
-            <span class="week-sheet-stat-label">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span>
-            <strong class="week-sheet-stat-value">${escapeHtml(focusLabel)}</strong>
-          </div>
-          <div class="week-sheet-stat-pill">
-            <span class="week-sheet-stat-label">${escapeHtml(languageText("照片", "Photos", "Fotos"))}</span>
-            <strong class="week-sheet-stat-value">${escapeHtml(photoPresenceLabel)}</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-  host.querySelector('.week-open-day')?.addEventListener('click', () => switchToView('today'));
-  host.querySelectorAll(".week-habit-check").forEach(button => button.addEventListener("click", event => {
-    event.stopPropagation();
-    const row = button.closest(".week-habit-row");
-    if (row) {
-      const id = row.dataset.id;
-      toggleHabit(row.dataset.date, id);
-      host.querySelector(`[data-id="${CSS.escape(id)}"] .week-habit-check`)?.focus({ preventScroll: true });
-    }
-  }));
-}
-
-function refreshHabitViews() {
-  // The Today state stays ready for return navigation, but hidden analytics/editors
-  // need not be rebuilt for every checkmark. Their existing view entry renders them.
-  renderToday();
-  renderSidebarHabits();
-  renderInspector();
-  const view = document.body.dataset.activeView;
-  if (view === "week") renderWeeklyWorkspace();
-  if (view === "review") renderReview();
-  if (view === "timeline") { renderCalendar(); void renderTimeline(); }
-  if (view === "habits") renderHabitSettings();
-  hydrateHairlineMounts($("#todayView"));
-}
-function toggleHabit(date, id, { input = "" } = {}) {
+function toggleHabit(date, id) {
   if (isFutureDate(date)) return;
-  // Keyboard activation reorders without travel or the decorative check pop.
-  const frames = date === selectedPlanningDate && input !== "keyboard" ? captureHabitFrames() : null;
-  // Today row toggles (input set) keep the rail's scroll and return focus to the same habit.
-  const focusPart = input === "keyboard" && document.activeElement?.classList.contains("today-habit-row") ? "row" : "check";
-  const rail = input && isTodayHabitsLargeRail() ? $('[data-module="habits"] .today-list') : null;
-  const railScrollLeft = rail?.scrollLeft ?? 0;
-  const boardScrollTop = input ? $('#todayView').scrollTop : null;
-  const previous = cloneData(getLog(date));
   const log = { ...getLog(date), completed: [...getLog(date).completed] };
   const scored = activeHabits(date).filter(habit => countsTowardDaily(habit, date));
   const wasComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   const i = log.completed.indexOf(id);
   if (i >= 0) log.completed.splice(i, 1); else log.completed.push(id);
-  if (i < 0) revealCompletedOnRender = true;
   const commit = () => {
     state.logs[date] = log;
     saveState();
-    refreshHabitViews();
+    renderAll();
     if ($("#dayDrawer").classList.contains("open")) renderDrawer();
-    if (date === isoDate(new Date())) void publishWidgetSnapshot();
   };
-  commit();
-  revealCompletedOnRender = false;
-  // Restore before the FLIP measures, so the move starts from what the user saw.
-  if (rail) rail.scrollLeft = railScrollLeft;
-  if (input) restoreTodayHabitFocus(id, focusPart, input);
-  if (boardScrollTop !== null) $('#todayView').scrollTop = boardScrollTop;
-  if (i < 0 && input !== "keyboard") {
-    $$(`.today-habit-row[data-id="${id}"] .today-habit-check`).forEach(node => {
-      node.classList.add("is-completing");
-      window.setTimeout(() => node.classList.remove("is-completing"), 220);
-    });
+  const animateReorder = date === isoDate(new Date())
+    && $("#todayView").classList.contains("active")
+    && typeof document.startViewTransition === "function"
+    && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (animateReorder) {
+    document.documentElement.classList.add("habit-reordering");
+    const finishReorder = () => document.documentElement.classList.remove("habit-reordering");
+    document.startViewTransition(commit).finished.then(finishReorder, finishReorder);
+  } else {
+    commit();
   }
-  if (frames) playHabitFlip(frames);
   const isComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
   if (!wasComplete && isComplete) showCelebration();
-  lastHabitToggle = { date, previous };
-  const undoLabel = languageText("撤销", "Undo", "Rückgängig");
-  showToast(i >= 0 ? tr("toast.habitOff") : tr("toast.habitOn"), {
-    actionLabel: undoLabel,
-    onAction: () => {
-      if (!lastHabitToggle || lastHabitToggle.date !== date) return;
-      const undoFrames = captureHabitFrames();
-      state.logs[date] = cloneData(lastHabitToggle.previous);
-      saveState();
-      refreshHabitViews();
-      playHabitFlip(undoFrames);
-      if ($("#dayDrawer").classList.contains("open")) renderDrawer();
-      if (date === isoDate(new Date())) void publishWidgetSnapshot();
-    },
-  });
+  showToast(i >= 0 ? tr("toast.habitOff") : tr("toast.habitOn"));
 }
 function renderMoodReasonSummary(selector, log) {
   const button = $(selector);
@@ -6139,7 +2914,7 @@ function saveMoodReason(event) {
 
 function moodCalendarIcon(mood) {
   const paths = moodCalendarIcons[mood];
-  return paths ? `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>` : "";
+  return paths ? `<svg viewBox="0 0 24 24" aria-hidden="true">${paths}</svg>` : "";
 }
 
 function moodCalendarClass(mood) {
@@ -6170,11 +2945,7 @@ function setCalendarViewMode(mode) {
 }
 
 function renderCalendar() {
-  const grid = $("#calendarGrid");
-  if (!grid) return;
-  const onTimeline = $("#timelineView")?.classList.contains("active");
-  const viewDate = onTimeline ? timelineCursor : cursor;
-  const year = viewDate.getFullYear(), month = viewDate.getMonth();
+  const year = cursor.getFullYear(), month = cursor.getMonth();
   $("#calendarTitle").textContent = tr("calendar.title", { year, month: month + 1, monthName: monthName(month) });
   const first = new Date(year, month, 1, 12);
   const offset = (first.getDay() + 6) % 7;
@@ -6197,32 +2968,26 @@ function renderCalendar() {
     const moodText = log.mood ? moodLabel(log.mood) : tr("calendar.empty");
     const memoryStatus = [reason ? tr("moodReason.summary", { reason }) : "", dayPhotos.length ? tr("drawer.photoCount", { count: dayPhotos.length }) : ""].filter(Boolean).join(" · ");
     const accessibleStatus = [calendarViewMode === "mood" ? moodText : `${progress}%`, memoryStatus].filter(Boolean).join(" · ");
-    cells.push(`<button class="calendar-day ${moodClass} ${heatClass} ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${isoWeekKey(d) === currentWeek ? "current-week" : ""} ${onTimeline && key === selectedTimelineDate ? "selected" : ""}" data-date="${key}" aria-label="${escapeHtml(formatDateChip(d))} · ${escapeHtml(accessibleStatus)}">
+    cells.push(`<button class="calendar-day ${moodClass} ${heatClass} ${d.getMonth() !== month ? "outside" : ""} ${key === today ? "today" : ""} ${key > today ? "future" : ""} ${isoWeekKey(d) === currentWeek ? "current-week" : ""}" data-date="${key}" aria-label="${escapeHtml(formatDateChip(d))} · ${escapeHtml(accessibleStatus)}">
       <span class="day-number">${d.getDate()}</span>${calendarViewMode === "mood" && log.mood ? `<span class="day-mood mood-${log.mood === "低落" ? "low" : log.mood === "平静" ? "calm" : "good"}">${moodCalendarIcon(log.mood)}</span>` : ""}
       ${reason || dayPhotos.length ? `<span class="day-memory-status">${dayPhotos.length ? `<i class="day-photo-marker" title="${escapeHtml(tr("drawer.photoCount", { count: dayPhotos.length }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m5 18 5-4 3 2 3-3 3 5"/></svg><b>${dayPhotos.length}</b></i>` : ""}${reason ? `<i class="day-reason-marker" title="${escapeHtml(reason)}">“</i>` : ""}</span>` : ""}
       ${schedule.length ? `<span class="day-calendar-status" title="${escapeHtml(tr("calendarSync.calendarEvents"))}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 9.5h17"/></svg><b>${schedule.length}</b></span>` : ""}
       ${calendarViewMode === "heatmap" ? `<span class="day-percent">${progress}%</span>` : ""}
     </button>`);
   }
-  const monthMark = $("#calendarMonthMark");
-  if (monthMark) monthMark.textContent = String(month + 1).padStart(2, "0");
-  const monthCompletion = $("#monthCompletion");
-  if (monthCompletion) monthCompletion.textContent = `${Math.round(monthProgressTotal / new Date(year, month + 1, 0).getDate())}%`;
-  grid.dataset.mode = calendarViewMode;
-  grid.innerHTML = cells.join("");
+  $("#calendarMonthMark").textContent = String(month + 1).padStart(2, "0");
+  $("#monthCompletion").textContent = `${Math.round(monthProgressTotal / new Date(year, month + 1, 0).getDate())}%`;
+  $("#monthCompletion").parentElement.lastChild.textContent = ` ${tr("calendar.monthCompletion")}`;
+  $("#calendarGrid").dataset.mode = calendarViewMode;
+  $("#calendarGrid").innerHTML = cells.join("");
   $$('[data-calendar-view]').forEach(button => {
     const active = button.dataset.calendarView === calendarViewMode;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
   renderCalendarLegend();
-  void loadCalendarPhotoMonth(viewDate);
+  void loadCalendarPhotoMonth(cursor);
   $$(".calendar-day").forEach(day => day.addEventListener("click", () => {
-    if (onTimeline) {
-      selectedTimelineDate = day.dataset.date;
-      void renderTimeline();
-      return;
-    }
     if (isFutureDate(day.dataset.date)) selectPlanningDate(day.dataset.date, { scroll: true });
     else openDrawer(day.dataset.date);
   }));
@@ -6231,17 +2996,11 @@ function renderCalendar() {
 function renderReview() {
   const key = monthKey(cursor), year = cursor.getFullYear(), month = cursor.getMonth();
   $("#reviewTitle").textContent = tr("review.title", { year, month: month + 1, monthName: monthName(month) });
-  setText("#reviewDetailedSummary", tr("review.detailedSummary"));
   const days = new Date(year, month + 1, 0).getDate();
   const monthDates = Array.from({ length: days }, (_, i) => isoDate(new Date(year, month, i + 1, 12)));
   const todayKey = isoDate(new Date());
   const elapsedDates = monthDates.filter(date => date <= todayKey);
   const habits = activeHabits(monthDates[monthDates.length - 1]);
-  setInsightView(insightView);
-  renderReviewInsights();
-  renderReviewTrendChart();
-  renderReviewInspectorTable();
-  renderInsightDashboard();
   $("#scoreGrid").innerHTML = habits.map(h => {
     const version = versionFor(h, monthDates[monthDates.length - 1]);
     const count = elapsedDates.filter(date => getLog(date).completed.includes(h.id)).length;
@@ -6263,367 +3022,6 @@ function renderReview() {
   renderPeriodicGoals(monthDates);
   $("#reviewText").value = state.reviews[key] || "";
   renderFocusReview(year, month);
-  window.LifeLedgerInteraction?.syncSegments(document);
-}
-
-function previousMonthElapsedDates(cursorDate) {
-  const prev = new Date(cursorDate.getFullYear(), cursorDate.getMonth() - 1, 1, 12);
-  const days = new Date(prev.getFullYear(), prev.getMonth() + 1, 0).getDate();
-  const todayKey = isoDate(new Date());
-  const prevMonthEnd = isoDate(new Date(prev.getFullYear(), prev.getMonth() + 1, 0, 12));
-  const cutoff = prevMonthEnd < todayKey ? prevMonthEnd : todayKey;
-  return Array.from({ length: days }, (_, i) => isoDate(new Date(prev.getFullYear(), prev.getMonth(), i + 1, 12))).filter(date => date <= cutoff);
-}
-
-function analyticsApi() {
-  return globalThis.LifeLedgerAnalytics;
-}
-function countLabel(count) {
-  const value = Number(count) || 0;
-  const api = analyticsApi();
-  if (currentLang === "en" && api?.pluralEn) return api.pluralEn(value, tr("review.timeSingular"), tr("review.timePlural"));
-  if (currentLang === "de") return `${value} Mal`;
-  return `${value} 次`;
-}
-function analyticsEndIso() {
-  const today = isoDate(new Date());
-  const cursorIso = isoDate(cursor);
-  return cursorIso > today ? today : cursorIso;
-}
-function analyticsDates() {
-  const api = analyticsApi();
-  if (!api) return [];
-  return api.windowDates(analyticsEndIso(), analyticsWindow);
-}
-function slotTotals(dates) {
-  let completed = 0;
-  let eligible = 0;
-  dates.forEach(date => {
-    const habits = dailyHabits(date);
-    const done = new Set(getLog(date).completed);
-    eligible += habits.length;
-    completed += habits.filter(habit => done.has(habit.id)).length;
-  });
-  return analyticsApi().rate(completed, eligible);
-}
-function habitWindowStats(habit, dates) {
-  let completed = 0;
-  const flags = [];
-  dates.forEach(date => {
-    if (!countsTowardDaily(habit, date)) return;
-    const done = getLog(date).completed.includes(habit.id);
-    flags.push(done);
-    if (done) completed += 1;
-  });
-  const rated = analyticsApi().rate(completed, flags.length);
-  const today = isoDate(new Date());
-  const ignoreTrailingMiss = dates[dates.length - 1] === today;
-  return { ...rated, flags, streaks: analyticsApi().streaks(flags, { ignoreTrailingMiss }) };
-}
-function formatRate(stats) {
-  if (!stats || stats.percent == null) return "—";
-  return `${stats.percent}%`;
-}
-function analyticsDeltaLabel(current, previous) {
-  if (current.percent == null || previous.percent == null) return "";
-  const delta = current.percent - previous.percent;
-  if (delta > 0) return tr("review.vsPreviousUp", { delta });
-  if (delta < 0) return tr("review.vsPreviousDown", { delta });
-  return tr("review.samePrevious");
-}
-// Actual ReportSummary (MIT, 8e165c0) prints the end date only when it
-// differs from the start, then one period total and one per-interval average.
-function reportRangeSentence(dates) {
-  if (!dates.length) return "";
-  const label = value => formatLocalizedDate(parseDate(value), { day: "numeric", month: "short" });
-  const start = label(dates[0]);
-  const end = label(dates[dates.length - 1]);
-  return start === end ? start : `${start} ${tr("review.rangeTo")} ${end}`;
-}
-
-function reportSummaryMarkup(dates, current) {
-  const raw = dates.length ? (current?.completed || 0) / dates.length : 0;
-  const average = new Intl.NumberFormat(dateLocale(), { maximumFractionDigits: 1 }).format(raw);
-  return `<p class="review-range-line">${escapeHtml(reportRangeSentence(dates))}</p><p class="review-period-line"><strong>${escapeHtml(tr("review.forPeriod"))}</strong><span>${escapeHtml(tr("review.perDay", { count: average }))}</span></p>`;
-}
-
-function setInsightView(view) {
-  insightView = ["heatmap", "habits", "table"].includes(view) ? view : "trend";
-  const review = $("#reviewView");
-  if (review) review.dataset.insightView = insightView;
-  const table = $(".review-score-table");
-  if (table) table.open = insightView === "table";
-  $$("#insightViewSwitch [data-insight-view]").forEach(button => {
-    const active = button.dataset.insightView === insightView;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-  });
-}
-
-function renderReviewInsights() {
-  const container = $("#reviewInsights");
-  if (!container || !analyticsApi()) return;
-  const dates = analyticsDates();
-  const current = slotTotals(dates);
-  const previous = slotTotals(analyticsApi().previousWindow(dates));
-  const summary = reportSummaryMarkup(dates, current);
-  const recordedDays = Object.keys(state.logs || {}).filter(k => (state.logs[k].completed?.length || state.logs[k].note || state.logs[k].mood)).length;
-  if (!current.eligible || recordedDays < 7) {
-    const artSrc = recordedDays < 7 ? "./assets/hairline/insights-first-week.svg" : "./assets/hairline/empty-insights.svg";
-    container.innerHTML = `${summary}${hairlineEmptyMarkup(
-      artSrc,
-      languageText("洞察", "Insights", "Einblicke"),
-      tr("review.insufficient"),
-    )}`;
-    hydrateHairlineMounts(container);
-    return;
-  }
-  const habits = activeHabits(dates[dates.length - 1]).filter(habit => countsTowardDaily(habit, dates[dates.length - 1]));
-  const ranked = habits.map(habit => ({ habit, stats: habitWindowStats(habit, dates) }))
-    .sort((a, b) => b.stats.streaks.current - a.stats.streaks.current || b.stats.streaks.best - a.stats.streaks.best);
-  const lead = ranked[0];
-  const delta = analyticsDeltaLabel(current, previous);
-  const deltaClass = current.percent != null && previous.percent != null && current.percent > previous.percent ? "up" : current.percent < previous.percent ? "down" : "";
-  const previousRate = container.dataset.rateValue || "";
-  const nextRate = formatRate(current);
-  container.innerHTML = `${summary}
-    <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(nextRate)}</strong><span class="review-insight-label">${escapeHtml(tr("review.rateLabel"))}</span><span class="review-insight-delta">${escapeHtml(`${current.completed}/${current.eligible}`)}</span>${delta ? `<span class="review-insight-delta ${deltaClass}">${escapeHtml(delta)}</span>` : ""}</div>
-    <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.current : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.streakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? displayHabitName(lead.habit) : "—")}</span></div>
-    <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.best : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.bestStreakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? countLabel(lead.stats.streaks.best) : "")}</span></div>`;
-  const rate = container.querySelector(".review-insight-value");
-  if (rate) LifeLedgerInteraction?.rollText(rate, nextRate, previousRate);
-  container.dataset.rateValue = nextRate;
-}
-
-function insightDailyModel(dates) {
-  return analyticsApi().dailySummary(dates,state.habits,state.logs,(habit,date)=>Boolean(versionFor(habit,date)) && countsTowardDaily(habit,date));
-}
-
-function renderInsightDashboard() {
-  if (!analyticsApi()?.dailySummary) return;
-  const dates=analyticsDates();if(!dates.length)return;
-  const model=insightDailyModel(dates), previous=insightDailyModel(analyticsApi().previousWindow(dates));
-  const enough=model.recordedDays>=7 && previous.recordedDays>=7 && model.eligible>0 && previous.eligible>0;
-  const delta=enough ? model.percent-previous.percent : null;
-  const minutes=Math.round(focusSessionsBetween(dates[0],dates.at(-1)).reduce((n,s)=>n+focusSessionMinutes(s),0));
-  $('#reviewTitle').textContent=languageText('看见自己的节奏','Find your rhythm','Den eigenen Rhythmus erkennen');
-  $('#insightViewTrend').textContent=languageText('概览','Overview','Übersicht');
-  const range=reportRangeSentence(dates);
-  $('#reviewInsights').innerHTML=`<div class="insight-range"><span class="kicker">${escapeHtml(languageText('习惯洞察 · 只读你的记录','HABIT INSIGHTS · FROM YOUR RECORDS','GEWOHNHEITEN · AUS DEINEN EINTRÄGEN'))}</span><h3>${escapeHtml(range)}</h3><p>${escapeHtml(languageText('看趋势，也给没记录的日子留一点余地。','Notice the pattern. Leave room for the days you didn’t record.','Muster erkennen – und nicht erfassten Tagen Raum lassen.'))}</p></div><div class="insight-metrics"><article><span>${escapeHtml(languageText('日常习惯完成率','Daily habit completion','Erfüllung täglicher Gewohnheiten'))}</span><strong>${formatRate(model)}</strong><small>${model.completed} / ${model.eligible} ${escapeHtml(languageText('计划次数','planned check-ins','geplante Check-ins'))}</small></article><article><span>${escapeHtml(languageText('留下记录的日子','Days with an entry','Tage mit Einträgen'))}</span><strong>${model.recordedDays}<em> / ${dates.length}</em></strong><small>${escapeHtml(languageText('包含打卡、文字或心情','Check-ins, writing or mood','Check-ins, Texte oder Stimmung'))}</small></article><article><span>${escapeHtml(languageText('专注时光','Time in focus','Fokuszeit'))}</span><strong>${minutes}<em> ${escapeHtml(languageText('分钟','min','Min.'))}</em></strong><small>${escapeHtml(languageText('来自已保存的专注记录','From saved focus sessions','Aus gespeicherten Fokuseinheiten'))}</small></article></div>`;
-  const comparable=model.rows.map(row=>({...row,old:previous.rows.find(p=>p.id===row.id)})).filter(r=>r.eligible>=7 && r.old?.eligible>=7);
-  const steady=[...model.rows].filter(r=>r.eligible>=7 && r.completed>0).sort((a,b)=>b.percent-a.percent || b.completed-a.completed)[0];
-  const changed=enough ? [...comparable].sort((a,b)=>Math.abs(b.percent-b.old.percent)-Math.abs(a.percent-a.old.percent))[0] : null;
-  const name=id=>displayHabitName(state.habits.find(h=>h.id===id));
-  const steadyText=steady && model.recordedDays>=7
-    ? languageText(`${name(steady.id)}：${steady.completed}/${steady.eligible} 次，有 ${steady.percent}% 的计划留下了完成记录。`,`${name(steady.id)}: ${steady.completed}/${steady.eligible} planned check-ins recorded (${steady.percent}%).`,`${name(steady.id)}: ${steady.completed}/${steady.eligible} geplante Check-ins erfasst (${steady.percent} %).`)
-    : languageText('先积累至少 7 天记录和一些完成记录，再判断哪些习惯更稳定。','Build at least 7 days of entries and some completed check-ins before drawing a consistency conclusion.','Erst mindestens 7 Tage und einige erledigte Check-ins erfassen, bevor sich Regelmäßigkeit beurteilen lässt.');
-  const change=changed ? changed.percent-changed.old.percent : 0;
-  const changeText=changed ? languageText(`${name(changed.id)}：${changed.old.percent}% → ${changed.percent}%，${change>0?'+':''}${change} 个百分点。也可能与记录频率有关。`,`${name(changed.id)}: ${changed.old.percent}% → ${changed.percent}% (${change>0?'+':''}${change} pp). Logging frequency may also play a part.`,`${name(changed.id)}: ${changed.old.percent} % → ${changed.percent} % (${change>0?'+':''}${change} Prozentpunkte). Auch die Erfassungshäufigkeit kann eine Rolle spielen.`)
-    : languageText('本期和上一等长周期都至少有 7 天记录后，再做变化比较。','A comparison needs at least 7 recorded days in both equal-length windows.','Für einen Vergleich braucht es in beiden gleich langen Zeiträumen mindestens 7 erfasste Tage.');
-  $('#reviewObservations').innerHTML=`<article><span class="insight-note-icon">${renderIcon('sunrise')}</span><h3>${escapeHtml(languageText('值得继续','Worth continuing','Was bleiben darf'))}</h3><p>${escapeHtml(steadyText)}</p></article><article><span class="insight-note-icon">${renderIcon('footprints')}</span><h3>${escapeHtml(languageText('留意这个变化','A change to notice','Eine Veränderung im Blick'))}</h3><p>${escapeHtml(changeText)}</p>${delta==null?'':`<small>${escapeHtml(languageText(`整体完成率 ${delta>0?'+':''}${delta} 个百分点 · 与上一等长周期相比`,`Overall ${delta>0?'+':''}${delta} pp · vs previous equal window`,`Insgesamt ${delta>0?'+':''}${delta} Prozentpunkte · zum vorherigen Zeitraum`))}</small>`}</article>`;
-  const habitRows=[...model.rows].sort((a,b)=>b.percent-a.percent).map(row=>{
-    const habit=state.habits.find(h=>h.id===row.id),old=previous.rows.find(p=>p.id===row.id);
-    const diff=enough && row.eligible>=7 && old?.eligible>=7 ? row.percent-old.percent : null;
-    return `<article class="insight-habit-row" style="${habitStyle(habit)}"><span class="insight-habit-icon">${renderIcon(iconKey(habit))}</span><div><strong>${escapeHtml(displayHabitName(habit))}</strong><span>${row.completed}/${row.eligible} · ${escapeHtml(languageText('已记录 / 计划','recorded / planned','erfasst / geplant'))}</span><div class="insight-habit-track" aria-hidden="true"><i style="width:${row.percent}%"></i></div></div><div class="insight-habit-rate"><strong>${row.percent}%</strong><small>${diff==null?'—':`${diff>0?'+':''}${diff} ${escapeHtml(languageText('百分点','pp','Pp.'))}`}</small></div></article>`;
-  }).join('');
-  const weekday= model.weekdays.map((r,i)=>`<div class="insight-weekday"><span>${escapeHtml(i18n[currentLang].calendar.weekdays[i])}</span><div class="insight-weekday-track" aria-hidden="true"><i style="height:${r.percent||0}%"></i></div><strong>${formatRate(r)}</strong><small>${r.completed}/${r.eligible}</small></div>`).join('');
-  $('#reviewHabitCompare').innerHTML=`<section class="insight-habit-panel"><header><h3>${escapeHtml(languageText('每个习惯，各有自己的节奏','Every habit has its rhythm','Jede Gewohnheit hat ihren Rhythmus'))}</h3><p>${escapeHtml(languageText('只比较计入日常评分的习惯；箭头为百分点变化。','Daily-scored habits only; changes are percentage points.','Nur täglich bewertete Gewohnheiten; Änderungen in Prozentpunkten.'))}</p></header>${habitRows || `<p>${escapeHtml(tr('review.insufficient'))}</p>`}</section><section class="insight-weekday-panel"><h3>${escapeHtml(languageText('一周里的节奏','Your weekly rhythm','Der Rhythmus der Woche'))}</h3><p>${escapeHtml(languageText('按实际计划次数加权，不把无计划的日子记成 0%。','Weighted by planned check-ins. Days without a plan aren’t scored 0%.','Nach geplanten Check-ins gewichtet. Tage ohne Plan zählen nicht als 0 %.'))}</p><div class="insight-weekday-grid">${weekday}</div></section>`;
-  const periodic=activeHabits(dates.at(-1)).filter(h=>!countsTowardDaily(h,dates.at(-1)) && ['weekly','monthly'].includes(versionFor(h,dates.at(-1))?.frequency)).map(h=>{
-    const v=versionFor(h,dates.at(-1)),end=parseDate(dates.at(-1)),start=v.frequency==='monthly'?isoDate(new Date(end.getFullYear(),end.getMonth(),1,12)):isoDate(weekDatesFromKey(isoWeekKey(end)).monday);
-    const days=analyticsApi().windowDates(dates.at(-1),Math.round((parseDate(dates.at(-1))-parseDate(start))/86400000)+1);
-    const count=days.filter(d=>versionFor(h,d)?.frequency===v.frequency && getLog(d).completed.includes(h.id)).length;
-    return `<article style="${habitStyle(h)}"><span class="insight-habit-icon">${renderIcon(iconKey(h))}</span><div><strong>${escapeHtml(displayHabitName(h))}</strong><small>${escapeHtml(frequencyLabel(v))}</small></div><b>${count} / ${periodTargetFor(v)}</b></article>`;
-  }).join('');
-  $('#reviewPeriodHabits').innerHTML=periodic?`<h3>${escapeHtml(languageText('按周、按月，另算一步','Weekly & monthly, counted separately','Wöchentlich und monatlich – separat gezählt'))}</h3><p>${escapeHtml(languageText('截止所选日期的本周／本月进度，不混入日常完成率。','Current week/month progress as of the selected end date; excluded from daily completion.','Stand der aktuellen Woche/des Monats zum gewählten Enddatum; nicht in der täglichen Quote enthalten.'))}</p><div>${periodic}</div>`:'';
-  renderInsightTrend(model);
-  $('#reviewNarrativeTitle').textContent=formatLocalizedDate(cursor,{year:'numeric',month:'long'})+' · '+languageText('月度复盘','Monthly reflection','Monatsrückblick');
-  const method=languageText('口径：仅统计当前启用、在当天已生效且计入日常评分的习惯。未记录的计划仍在分母内，但不代表实际未完成。过去的停用习惯不在此比较中。周／月目标单列；心情不用于推断因果；所有分析均在本地计算。','Method: currently active, effective daily-scored habits only. Unlogged plans remain in the denominator; this does not prove they were missed. Archived habits are excluded. Weekly/monthly targets are separate; mood is not used to infer causality. All calculations run locally.','Methode: nur aktuell aktive, am jeweiligen Tag gültige und täglich bewertete Gewohnheiten. Nicht erfasste Pläne bleiben im Nenner – das beweist kein Versäumnis. Archivierte Gewohnheiten sind ausgeschlossen. Wochen-/Monatsziele separat, keine Kausalität aus Stimmung. Alle Berechnungen erfolgen lokal.');
-  $('#reviewObservations').insertAdjacentHTML('beforeend',`<details class="insight-method"><summary>${escapeHtml(languageText('这些数字怎么算？','How are these numbers calculated?','Wie werden diese Zahlen berechnet?'))}</summary><p>${escapeHtml(method)}</p></details>`);
-}
-
-function renderInsightTrend(model) {
-  const chart=$('#reviewTrendChart'),points=model.points,w=640,h=200,left=42,right=20,top=20,bottom=32;
-  const x=i=>left+i/Math.max(1,points.length-1)*(w-left-right),y=p=>top+(1-p/100)*(h-top-bottom);
-  let drawing=false;
-  const path=points.map((p,i)=>{if(!p.recorded || p.percent==null){drawing=false;return '';}const command=drawing?'L':'M';drawing=true;return `${command}${x(i)},${y(p.percent)}`;}).join(' ');
-  const circles=points.map((p,i)=>p.recorded && p.percent!=null?`<circle cx="${x(i)}" cy="${y(p.percent)}" r="3"/>`:'').join('');
-  const grid=[0,50,100].map(p=>`<line x1="${left}" y1="${y(p)}" x2="${w-right}" y2="${y(p)}"/><text x="0" y="${y(p)+4}">${p}%</text>`).join('');
-  const labels=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])].map(i=>`<text x="${x(i)}" y="${h-4}" text-anchor="${i===0?'start':i===points.length-1?'end':'middle'}">${escapeHtml(formatLocalizedDate(parseDate(points[i].date),{month:'short',day:'numeric'}))}</text>`).join('');
-  chart.innerHTML=`<header class="insight-chart-heading"><div><h3>${escapeHtml(languageText('日子连起来，才看见趋势','A pattern, one day at a time','Tag für Tag wird ein Muster sichtbar'))}</h3><p>${escapeHtml(languageText('空白表示没有记录，不把它画成失败。','Gaps mean no entry, not a failed day.','Lücken bedeuten: kein Eintrag, nicht: gescheitert.'))}</p></div><output id="insightPointReadout" aria-live="polite"></output></header><svg id="insightTrendSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="${escapeHtml(tr('review.trendTitle'))}"><g class="insight-plot-grid">${grid}${labels}</g><path class="insight-plot-line" d="${path}"/><g class="insight-plot-dots">${circles}</g><line id="insightCursorLine" y1="${top}" y2="${h-bottom}"/></svg><label class="insight-chart-explore"><span>${escapeHtml(languageText('左右探索日期','Explore dates','Datum erkunden'))}</span><input id="insightDateScrubber" type="range" min="0" max="${points.length-1}" value="${points.length-1}" step="1"></label>`;
-  const input=$('#insightDateScrubber'),readout=$('#insightPointReadout'),line=$('#insightCursorLine');
-  const update=i=>{const point=points[i];input.value=i;const label=formatLocalizedDate(parseDate(point.date),{month:'short',day:'numeric'});const value=point.eligible===0?languageText('无日常计划','No daily plan','Kein Tagesplan'):!point.recorded?languageText('未记录','Not recorded','Nicht erfasst'):`${point.percent}% · ${point.completed}/${point.eligible}`;readout.textContent=`${label} · ${value}`;input.setAttribute('aria-valuetext',readout.textContent);line.setAttribute('x1',x(i));line.setAttribute('x2',x(i));};
-  input.addEventListener('input',()=>update(Number(input.value)));
-  const explore=event=>{const rect=event.currentTarget.getBoundingClientRect(),px=(event.clientX-rect.left)/rect.width*w;update(Math.max(0,Math.min(points.length-1,Math.round((px-left)/(w-left-right)*(points.length-1)))));};
-  $('#insightTrendSvg').addEventListener('pointermove',event=>{if(event.pointerType!=='touch')explore(event);});
-  $('#insightTrendSvg').addEventListener('click',explore);update(points.length-1);
-}
-
-function renderTrendSvg(points, summary) {
-  const width = 640;
-  const height = 200;
-  const left = 48;
-  const right = 36;
-  const top = 16;
-  const bottom = 32;
-  const plotW = width - left - right;
-  const plotH = height - top - bottom;
-  const coords = points.map((point, index) => {
-    const x = left + (points.length === 1 ? plotW / 2 : (index / (points.length - 1)) * plotW);
-    const y = top + (1 - Math.max(0, Math.min(100, point.value)) / 100) * plotH;
-    return { ...point, x, y };
-  });
-  const path = coords.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
-  const last = coords[coords.length - 1];
-  const grid = [0, 50, 100].map(pct => {
-    const y = top + (1 - pct / 100) * plotH;
-    return `<line x1="${left}" y1="${y.toFixed(1)}" x2="${width - right}" y2="${y.toFixed(1)}" class="review-trend-gridline"/><text x="4" y="${(y + 4).toFixed(1)}" class="review-trend-axis">${pct}%</text>`;
-  }).join("");
-  const labelIndexes = points.length <= 3 ? points.map((_, index) => index) : [0, Math.floor((points.length - 1) / 2), points.length - 1];
-  const labels = labelIndexes.map(index => {
-    const point = coords[index];
-    const label = formatLocalizedDate(parseDate(point.date), { day: "numeric", month: "short" });
-    const anchor = index === 0 ? "start" : index === points.length - 1 ? "end" : "middle";
-    const x = index === 0 ? left : index === points.length - 1 ? width - 8 : point.x;
-    return `<text x="${x.toFixed(1)}" y="${height - 8}" text-anchor="${anchor}" class="review-trend-axis">${escapeHtml(label)}</text>`;
-  }).join("");
-  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${escapeHtml(summary)}"><title>${escapeHtml(summary)}</title>${grid}<path d="${path}" pathLength="1" class="review-trend-line"/><circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="4" class="review-trend-dot"/>${labels}</svg>`;
-}
-function renderCompactValues(points) {
-  return `<ul class="analytics-compact">${points.map(point => {
-    const label = formatLocalizedDate(parseDate(point.date), { day: "numeric", month: "short" });
-    return `<li><span>${escapeHtml(label)}</span><strong>${point.value}%</strong></li>`;
-  }).join("")}</ul>`;
-}
-function renderWeekdayBars(points) {
-  const averages = analyticsApi().weekdayAverages(points);
-  const names = i18n[currentLang].calendar.weekdays;
-  return `<section class="analytics-bars" aria-label="${escapeHtml(tr("review.weekdayTitle"))}"><h3>${escapeHtml(tr("review.weekdayTitle"))}</h3>${averages.map((value, index) => `
-    <div class="analytics-bar-row">
-      <strong>${escapeHtml(names[index] || "")}</strong>
-      <span>${value == null ? "—" : `${value}%`}</span>
-      <div class="analytics-bar-track" aria-hidden="true"><i style="width:${value == null ? 0 : value}%"></i></div>
-    </div>`).join("")}</section>`;
-}
-function renderHabitBars(dates) {
-  const habits = activeHabits(dates[dates.length - 1]);
-  const rows = habits.map(habit => ({ habit, stats: habitWindowStats(habit, dates) })).filter(row => row.stats.eligible > 0);
-  if (!rows.length) return "";
-  return `<section class="analytics-bars" aria-label="${escapeHtml(tr("review.habitCompare"))}"><h3>${escapeHtml(tr("review.habitCompare"))}</h3>${rows.map(({ habit, stats }) => `
-    <div class="analytics-bar-row">
-      <strong title="${escapeHtml(displayHabitName(habit))}">${escapeHtml(displayHabitName(habit))}</strong>
-      <span>${formatRate(stats)} · ${stats.completed}/${stats.eligible} · ${escapeHtml(tr("review.streakLabel"))} ${stats.streaks.current}</span>
-      <div class="analytics-bar-track" aria-hidden="true"><i style="width:${stats.percent || 0}%"></i></div>
-    </div>`).join("")}</section>`;
-}
-function renderConsistencyHeatmap(dates) {
-  const first = parseDate(dates[0]);
-  const lead = (first.getDay() + 6) % 7;
-  const points = insightDailyModel(dates).points;
-  const cells = [...Array.from({ length: lead }, () => null), ...points.map(p => ({date:p.date,value:p.recorded?p.percent:null}))];
-  const valueLabel = value => value == null ? languageText('未记录或无日常计划','Not recorded or no daily plan','Nicht erfasst oder kein Tagesplan') : `${value}%`;
-  const weeks = [];
-  for (let index = 0; index < cells.length; index += 7) weeks.push(cells.slice(index, index + 7));
-  const level = value => {
-    if (value == null) return "empty";
-    if (value <= 0) return "0";
-    if (value <= 25) return "1";
-    if (value <= 50) return "2";
-    if (value <= 75) return "3";
-    return "4";
-  };
-  const grid = weeks.map(week => `<div class="analytics-heat-week">${week.map(cell => {
-    if (!cell) return `<span class="analytics-heat-cell is-pad" aria-hidden="true"></span>`;
-    const label = formatLocalizedDate(parseDate(cell.date), { day: "numeric", month: "short" });
-    return `<span class="analytics-heat-cell level-${level(cell.value)}" title="${escapeHtml(`${label}: ${valueLabel(cell.value)}`)}" aria-label="${escapeHtml(`${label}: ${valueLabel(cell.value)}`)}"></span>`;
-  }).join("")}</div>`).join("");
-  const table = points.map(point => {
-    const {date}=point,value=point.recorded?point.percent:null;
-    const label = formatLocalizedDate(parseDate(date), { weekday: "short", day: "numeric", month: "short" });
-    return `<tr><th scope="row">${escapeHtml(label)}</th><td>${escapeHtml(valueLabel(value))}</td></tr>`;
-  }).join("");
-  return `<section class="analytics-heatmap" aria-label="${escapeHtml(tr("review.heatmapTitle"))}"><h3>${escapeHtml(tr("review.heatmapTitle"))}</h3><div class="analytics-heat-grid">${grid}</div><ul class="analytics-heat-legend"><li><i class="level-0"></i><span>0%</span></li><li><i class="level-2"></i><span>50%</span></li><li><i class="level-4"></i><span>100%</span></li></ul><details class="analytics-heat-fallback"><summary>${escapeHtml(tr("review.valuesSummary"))}</summary><table><tbody>${table}</tbody></table></details></section>`;
-}
-function renderReviewTrendChart() {
-  const chart = $("#reviewTrendChart");
-  if (!chart || !analyticsApi()) return;
-  const dates = analyticsDates();
-  const current = slotTotals(dates);
-  if (!current.eligible) {
-    chart.innerHTML = "";
-    const heatmap = $("#reviewHeatmap");
-    const compare = $("#reviewHabitCompare");
-    if (heatmap) heatmap.innerHTML = "";
-    if (compare) compare.innerHTML = "";
-    return;
-  }
-  if (!current.completed) {
-    const points = dates.map(date => ({ date, value: completionFor(date) }));
-    const range = tr("review.trendSummary", {
-      start: formatLocalizedDate(parseDate(dates[0]), { day: "numeric", month: "short" }),
-      end: formatLocalizedDate(parseDate(dates[dates.length - 1]), { day: "numeric", month: "short" }),
-      completed: current.completed,
-      eligible: current.eligible,
-    });
-    chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))} <span class="review-trend-range">${escapeHtml(range)}</span></h3><div class="review-trend-plot review-trend-with-note">${renderTrendSvg(points, range)}<aside class="review-trend-note">${hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.trendTitle"), tr("review.insufficient"))}</aside></div>`;
-    hydrateHairlineMounts(chart);
-    const heatmap = $("#reviewHeatmap");
-    const compare = $("#reviewHabitCompare");
-    if (heatmap) heatmap.innerHTML = renderConsistencyHeatmap(dates);
-    if (compare) compare.innerHTML = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
-    return;
-  }
-  const points = dates.map(date => ({ date, value: completionFor(date) }));
-  const summary = tr("review.trendSummary", {
-    start: formatLocalizedDate(parseDate(dates[0]), { day: "numeric", month: "short" }),
-    end: formatLocalizedDate(parseDate(dates[dates.length - 1]), { day: "numeric", month: "short" }),
-    completed: current.completed,
-    eligible: current.eligible,
-  });
-  const mode = analyticsApi().chartMode(points.length);
-  const trend = mode === "line" ? renderTrendSvg(points, summary) : renderCompactValues(points);
-  const minutes = Math.round(focusSessionsBetween(dates[0], dates[dates.length - 1]).reduce((sum, session) => sum + focusSessionMinutes(session), 0));
-  const focus = minutes > 0 ? `<p class="analytics-focus">${escapeHtml(tr("review.focusWindow", { minutes }))}</p>` : "";
-  const plot = chart.querySelector(".review-trend-plot");
-  if (!chart.querySelector(".review-trend-title") || !plot) {
-    chart.innerHTML = `<h3 class="review-trend-title"></h3><div class="review-trend-plot"></div>`;
-  }
-  chart.querySelector(".review-trend-title").textContent = tr("review.trendTitle");
-  const host = chart.querySelector(".review-trend-plot");
-  if (host.dataset.signature && host.dataset.signature !== String(dates.length)) {
-    window.LifeLedgerInteraction?.retarget(host);
-  }
-  host.dataset.signature = String(dates.length);
-  host.innerHTML = `${trend}${focus}`;
-  const heatmap = $("#reviewHeatmap");
-  if (heatmap) heatmap.innerHTML = renderConsistencyHeatmap(dates);
-  const compare = $("#reviewHabitCompare");
-  if (compare) compare.innerHTML = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
-}
-
-function renderReviewInspectorTable() {
-  const table = $("#inspectorReviewTable");
-  if (!table || !analyticsApi()) return;
-  const dates = analyticsDates();
-  const current = slotTotals(dates);
-  if (!current.eligible) {
-    table.innerHTML = `<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
-    const focusPanel = $("#inspectorReviewFocus");
-    if (focusPanel) focusPanel.innerHTML = "";
-    return;
-  }
-  const habits = activeHabits(dates[dates.length - 1]);
-  table.innerHTML = `<div class="inspector-stat-list">${habits.map(habit => {
-    const stats = habitWindowStats(habit, dates);
-    if (!stats.eligible) return "";
-    return `<article><strong>${escapeHtml(displayHabitName(habit))}</strong><span>${stats.completed}/${stats.eligible} · ${formatRate(stats)}</span><span>${escapeHtml(tr("review.streakLabel"))} ${stats.streaks.current} · ${escapeHtml(tr("review.bestStreakLabel"))} ${stats.streaks.best}</span></article>`;
-  }).join("")}</div>`;
-  const focusPanel = $("#inspectorReviewFocus");
-  if (focusPanel) {
-    const sessions = focusSessionsBetween(dates[0], dates[dates.length - 1]);
-    const byTopic = focusTopics(sessions);
-    const rows = byTopic.slice(0, 4).map(([label, minutes]) => `<span>${escapeHtml(label)} · ${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</span>`).join("");
-    focusPanel.innerHTML = rows ? `<h4 class="inspector-review-focus-title">${escapeHtml(tr("review.focusByTopic"))}</h4>${rows}` : "";
-  }
 }
 
 function periodDateGroups(dates, frequency) {
@@ -6824,10 +3222,7 @@ function weekNumber(date) {
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
-function isoWeekKey(date) {
-  const thursday = new Date(date);thursday.setDate(date.getDate()+4-(date.getDay()||7));
-  return `${thursday.getFullYear()}-W${String(weekNumber(date)).padStart(2, "0")}`;
-}
+function isoWeekKey(date) { return `${date.getFullYear()}-W${String(weekNumber(date)).padStart(2, "0")}`; }
 function shiftWeekKey(key, amount) {
   const { monday } = weekDatesFromKey(key);
   monday.setDate(monday.getDate() + amount * 7);
@@ -6893,279 +3288,22 @@ function formatWeekRangeInMonth(key, year, month) {
   return formatCompactDateSpan(monday < monthStart ? monthStart : monday, sunday > monthEnd ? monthEnd : sunday);
 }
 
-let habitLibraryFilter = 'all';
-let habitLibrarySearch = '';
-function renderLongRange() {
-  window.LifeLedgerLongRange?.render({
-    state:()=>state,save:()=>saveState(),text:languageText,escape:escapeHtml,iso:isoDate,
-    date:value=>formatLocalizedDate(parseDate(value),{year:'numeric',month:'short',day:'numeric'}),
-    icon:renderIcon,status:value=>tr(`longTerm.${value}`),changed:()=>renderWeeklyWorkspace(),
-    openMonth:key=>{$('#journalMonthFilter').value=key;setJournalMode('months');switchToView('timeline');},
-  });
-}
 function renderHabitSettings() {
-  $('#habitInspectorForm').hidden = !state.habits.length;
-  if (!state.habits.some(h=>h.id===selectedHabitSettingsId)) selectedHabitSettingsId=null;
   const activeCount = state.habits.filter(habit => habit.active).length;
-  $("#habitSummary").textContent = tr("habits.summary", { count: state.habits.length, active: activeCount });
-  $('#habitLibraryKicker').textContent=languageText('把好习惯，养成自己的节奏','MAKE GOOD HABITS YOUR OWN','GUTE GEWOHNHEITEN, DEIN RHYTHMUS');
-  $('#habitLibraryTitle').textContent=languageText('一点一点，变成日常。','Small things, part of your day.','Kleine Dinge werden Alltag.');
-  const daily=state.habits.filter(h=>h.active && versionFor(h,isoDate(new Date()))?.frequency==='daily').length;
-  const periodic=state.habits.filter(h=>h.active && ['weekly','monthly'].includes(versionFor(h,isoDate(new Date()))?.frequency)).length;
-  $('#habitLibraryOverview').innerHTML=[
-    [languageText('启用中','Active','Aktiv'),activeCount,languageText('按自己的节奏','At your own pace','Im eigenen Tempo')],
-    [languageText('每天的习惯','Daily habits','Tägliche Gewohnheiten'),daily,languageText('让小事稳定发生','Make small things steady','Kleines beständig tun')],
-    [languageText('周期习惯','Periodic habits','Periodische Gewohnheiten'),periodic,languageText('按周或按月安排','Weekly or monthly','Wöchentlich oder monatlich')],
-  ].map(([label,value,note])=>`<article><span>${escapeHtml(label)}</span><strong>${value}</strong><small>${escapeHtml(note)}</small></article>`).join('');
-  const labels={all:languageText('全部','All','Alle'),active:languageText('启用中','Active','Aktiv'),paused:languageText('已暂停','Paused','Pausiert')};
-  $$('#habitLibraryFilters button').forEach(b=>{b.textContent=labels[b.dataset.habitFilter];b.classList.toggle('active',b.dataset.habitFilter===habitLibraryFilter);b.setAttribute('aria-pressed',String(b.dataset.habitFilter===habitLibraryFilter));});
-  $('#habitLibraryFilters').setAttribute('aria-label',languageText('筛选习惯','Filter habits','Gewohnheiten filtern'));
-  $('#habitLibrarySearchLabel').textContent=languageText('寻找一个习惯','Find a habit','Gewohnheit suchen');
-  $('#habitEditorKicker').textContent=languageText('习惯设置','HABIT SETTINGS','GEWOHNHEIT EINSTELLEN');
-  $('#habitEditorHelp').textContent=languageText('频率、目标与备注按生效日期保存；名称、图标和启用状态全局更新。','Frequency, targets and notes use the effective date. Name, icon and enabled state change globally.','Häufigkeit, Ziele und Notizen gelten ab dem gewählten Datum. Name, Symbol und Aktivierung ändern sich global.');
-  const fields={habitInspectorBasicsLegend:languageText('基础','Basics','Grundlagen'),habitInspectorTrackingLegend:languageText('记录方式','Tracking','Erfassung'),habitInspectorScheduleLegend:languageText('安排','Schedule','Zeitplan'),habitInspectorNameLabel:tr('dialog.name'),habitInspectorNoteLabel:tr('dialog.note'),habitInspectorIconLabel:tr('dialog.icon'),habitInspectorColorLabel:tr('dialog.color'),habitInspectorTrackingModeLabel:tr('dialog.trackingMode'),habitInspectorTrackingCheckLabel:tr('dialog.trackingCheck'),habitInspectorTrackingMeasuredLabel:tr('dialog.trackingMeasured'),habitInspectorTargetLabel:tr('dialog.target'),habitInspectorUnitLabel:tr('dialog.unit'),habitInspectorFrequencyLabel:tr('dialog.frequency'),habitInspectorScheduleLabel:tr('dialog.schedule'),habitInspectorPeriodTargetLabel:tr('dialog.periodTarget'),habitInspectorEffectiveDateLabel:tr('dialog.effectiveDate'),habitInspectorCountsLabel:tr('dialog.dailyScore'),habitInspectorActiveLabel:tr('habits.active'),inspectorDeleteHabitButton:tr('dialog.delete'),inspectorSaveHabitButton:tr('dialog.save')};
-  Object.entries(fields).forEach(([id,label])=>setText('#'+id,label));
-  $('#habitInspectorForm [name="frequency"]').querySelectorAll('option').forEach(option=>{option.textContent=option.value==='daily'?tr('habits.daily'):option.value==='weekly'?languageText('每周','Weekly','Wöchentlich'):languageText('每月','Monthly','Monatlich');});
-  if (!state.habits.length) {
-    $("#habitSettingsList").innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-habits.svg", tr("habits.emptyTitle"), tr("habits.emptyHelp"));
-    hydrateHairlineMounts($("#habitsView"));
-    return;
-  }
-  const visible=state.habits.filter(h=>(habitLibraryFilter==='all'||(habitLibraryFilter==='active'?h.active:!h.active)) && displayHabitName(h).toLocaleLowerCase().includes(habitLibrarySearch.toLocaleLowerCase()));
-  $("#habitSettingsList").innerHTML = visible.map(h => {
+  $("#habitSummary").textContent = tr("habits.summary", { count: activeCount });
+  $("#habitSettingsList").innerHTML = state.habits.map(h => {
     const v = versionFor(h, isoDate(new Date())) || h.versions[h.versions.length - 1];
-    const selected = h.id === selectedHabitSettingsId;
-    const target = trackingModeFor(v) === "measured" ? `${v.target}${displayUnit(v.unit) ? ` ${displayUnit(v.unit)}` : ""}` : habitMetaLabel(v);
-    return `<article class="setting-row habit-settings-row ${h.active ? "" : "disabled"} ${selected ? "selected" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
-      <button class="habit-drag-handle" type="button" data-id="${h.id}" aria-label="${tr("habits.reorder", { habit: displayHabitName(h) })}"><span aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button>
-      <span class="habit-icon habit-list-icon">${renderIcon(iconKey(h))}</span>
-      <button class="setting-main habit-settings-main" type="button" data-id="${h.id}">
-        <strong>${escapeHtml(displayHabitName(h))}</strong>
-        <span>${escapeHtml([frequencyLabel(v), scheduleLabel(v)].filter(Boolean).join(" · "))}</span>
-      </button>
-      <span class="habit-settings-target">${escapeHtml(trackingModeFor(v) === "measured" ? target : "")}</span>
-      <label class="habit-enabled-switch"><input class="desktop-switch habit-enabled-toggle" type="checkbox" role="switch" data-id="${h.id}" ${h.active ? "checked" : ""} aria-label="${escapeHtml(displayHabitName(h))}" /><span class="sr-only">${escapeHtml(h.active ? tr("habits.active") : tr("habits.inactive"))}</span></label>
+    return `<article class="setting-row" style="${habitStyle(h)}">
+      <span class="habit-icon">${renderIcon(iconKey(h))}</span>
+      <div class="setting-main"><strong>${escapeHtml(displayHabitName(h))}</strong><span>${escapeHtml(habitMetaLabel(v))}</span>${v?.note ? `<small class="setting-note">${escapeHtml(v.note)}</small>` : ""}</div>
+      <div class="setting-actions">
+        <button class="habit-drag-handle" type="button" data-id="${h.id}" aria-label="${tr("habits.reorder", { habit: displayHabitName(h) })}" title="${tr("habits.reorder", { habit: displayHabitName(h) })}"><span aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button>
+        <button class="icon-button edit-habit" type="button" data-id="${h.id}" aria-label="${tr("habits.editLabel", { habit: displayHabitName(h) })}">···</button>
+      </div>
     </article>`;
-  }).join("") || `<p class="habit-filter-empty">${escapeHtml(languageText('没有匹配的习惯。试试其他筛选。','No matching habits. Try another filter.','Keine passende Gewohnheit. Einen anderen Filter versuchen.'))}</p>`;
-  $$(".habit-settings-main").forEach(button => button.addEventListener("click", () => {
-    selectedHabitSettingsId = button.dataset.id;
-    populateHabitInspectorForm(selectedHabitSettingsId);
-    renderHabitSettings();
-    if (matchMedia('(max-width:1100px)').matches) $('#habitInspectorForm').scrollIntoView({block:'start'});
-  }));
-  $$(".habit-settings-row").forEach(row => {
-    row.addEventListener("contextmenu", event => openHabitContextMenu(event, row.dataset.id, selectedPlanningDate));
-  });
-  $$(".habit-enabled-toggle").forEach(input => input.addEventListener("change", () => {
-    const habit = state.habits.find(item => item.id === input.dataset.id);
-    if (!habit) return;
-    habit.active = input.checked;
-    saveState();
-    showToast(tr(habit.active ? "habits.resumed" : "habits.paused", { habit: displayHabitName(habit) }));
-    renderHabitSettings();
-    if (habitLibraryFilter!=='all') $('#habitLibraryFilters .active')?.focus({preventScroll:true});
-  }));
-  $$(".habit-drag-handle").forEach(bindHabitDragHandle);
-  if (!selectedHabitSettingsId && state.habits[0]) {
-    selectedHabitSettingsId = state.habits[0].id;
-    populateHabitInspectorForm(selectedHabitSettingsId);
-  }
-  const selected=state.habits.find(h=>h.id===selectedHabitSettingsId);
-  $('#habitEditorTitle').textContent=selected?displayHabitName(selected):languageText('选择一个习惯','Choose a habit','Gewohnheit wählen');
-}
-
-function renderInspectorColorSwatches() {
-  const row = $("#inspectorColorSwatches");
-  const input = $('#habitInspectorForm input[name="color"]');
-  if (!row || !input) return;
-  const selected = colors[input.value] ? input.value : "sage";
-  row.innerHTML = Object.keys(colors).map(key => `<button type="button" class="color-swatch ${key === selected ? "selected" : ""}" data-color="${key}" style="--swatch:${colors[key].solid}" aria-label="${escapeHtml(tr(`dialog.colors.${key}`))}"></button>`).join("");
-  $$(".color-swatch", row).forEach(button => button.addEventListener("click", () => {
-    input.value = button.dataset.color;
-    renderInspectorColorSwatches();
-  }));
-}
-
-function renderInspectorIconPicker() {
-  const input = $('#habitInspectorForm input[name="icon"]');
-  const popover = $("#inspectorIconPickerPopover");
-  const trigger = $("#inspectorIconPickerTrigger");
-  if (!input || !popover || !trigger) return;
-  const selected = iconCatalog[input.value] ? input.value : "target";
-  $("#inspectorIconPickerPreview").innerHTML = renderIcon(selected);
-  $("#inspectorIconPickerName").textContent = iconLabels[currentLang][selected];
-  popover.innerHTML = Object.keys(iconCatalog).map(key => `<button type="button" class="icon-choice ${key === selected ? "selected" : ""}" data-icon="${key}" title="${escapeHtml(iconLabels[currentLang][key])}">${renderIcon(key)}</button>`).join("");
-  $$(".icon-choice", popover).forEach(button => button.addEventListener("click", () => {
-    input.value = button.dataset.icon;
-    popover.hidden = true;
-    trigger.setAttribute("aria-expanded", "false");
-    renderInspectorIconPicker();
-  }));
-}
-
-function populateHabitInspectorForm(id) {
-  const form = $("#habitInspectorForm");
-  if (!form) return;
-  const habit = state.habits.find(item => item.id === id);
-  if (!habit) return;
-  const v = versionFor(habit, isoDate(new Date())) || habit.versions[habit.versions.length - 1];
-  form.elements.name.value = habit.name || "";
-  form.elements.note.value = v?.note || "";
-  form.elements.icon.value = iconKey(habit);
-  form.elements.color.value = habit.color || "sage";
-  form.elements.target.value = v?.target || 30;
-  form.elements.unit.value = v?.unit || "min";
-  form.elements.trackingMode.value = trackingModeFor(v);
-  form.elements.frequency.value = v?.frequency || "daily";
-  form.elements.scheduleTime.value = v?.scheduleTime || "";
-  form.elements.periodTarget.value = periodTargetFor(v);
-  form.elements.countsTowardDaily.checked = countsTowardDaily(habit, isoDate(new Date()));
-  if (form.elements.active) form.elements.active.checked = habit.active;
-  form.elements.effectiveDate.value = isoDate(new Date());
-  updateHabitInspectorRules();
-  renderInspectorColorSwatches();
-  renderInspectorIconPicker();
-  renderHabitStreakCalendar(id);
-}
-
-function renderHabitStreakCalendar(habitId) {
-  const host = $("#habitStreakCalendar");
-  if (!host) return;
-  if (!habitId) {
-    host.innerHTML = "";
-    return;
-  }
-  const today = isoDate(new Date());
-  const start = parseDate(today);
-  start.setDate(start.getDate() - 27);
-  const cells = Array.from({ length: 28 }, (_, index) => {
-    const date = new Date(start);
-    date.setDate(start.getDate() + index);
-    const key = isoDate(date);
-    const done = getLog(key).completed.includes(habitId);
-    return `<i class="${done ? "done" : ""}" title="${key}"></i>`;
   }).join("");
-  const streak = habitStreak(habitId, today);
-  host.innerHTML = `<p>${escapeHtml(languageText(`${streak} 天连续`, `${streak}-day streak`, `${streak} Tage in Folge`))}</p><div class="habit-streak-grid" aria-hidden="true">${cells}</div>`;
-}
-
-function updateHabitInspectorRules() {
-  const form = $("#habitInspectorForm");
-  if (!form) return;
-  const measured = form.elements.trackingMode.value === "measured";
-  const frequency = form.elements.frequency.value;
-  $("#habitInspectorTargetField").hidden = !measured;
-  $("#habitInspectorPeriodTargetField").style.display = frequency === "daily" ? "none" : "";
-  syncHabitPeriodStepper();
-}
-
-function saveHabitFromInspector(event) {
-  event.preventDefault();
-  if (!selectedHabitSettingsId) return openHabitDialog();
-  const form = event.currentTarget;
-  runSubmitButton($("#inspectorSaveHabitButton"), () => {
-  editingHabitId = selectedHabitSettingsId;
-  const measured = form.elements.trackingMode.value === "measured";
-  const version = {
-    trackingMode: measured ? "measured" : "check",
-    note: String(form.elements.note.value || "").trim(),
-    target: measured ? +form.elements.target.value : 1,
-    unit: measured ? String(form.elements.unit.value || "").trim() : "",
-    frequency: form.elements.frequency.value,
-    scheduleTime: form.elements.scheduleTime.value || "",
-    periodTarget: form.elements.frequency.value === "daily" ? null : +form.elements.periodTarget.value,
-    weeklyTarget: form.elements.frequency.value === "weekly" ? +form.elements.periodTarget.value : null,
-    countsTowardDaily: form.elements.countsTowardDaily.checked,
-    effectiveDate: form.elements.effectiveDate.value,
-  };
-  const habit = state.habits.find(item => item.id === selectedHabitSettingsId);
-  if (!habit) return;
-  habit.name = form.elements.name.value.trim();
-  habit.icon = form.elements.icon.value;
-  habit.color = form.elements.color.value;
-  habit.active = form.elements.active?.checked ?? habit.active;
-  habit.versions = habit.versions.filter(item => item.effectiveDate !== version.effectiveDate);
-  habit.versions.push(version);
-  saveState();
-  renderAll();
-  showToast(tr("habits.updated"));
-  });
-}
-
-function deleteHabitFromInspector() {
-  const habit = state.habits.find(item => item.id === selectedHabitSettingsId);
-  if (!habit || !window.confirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) }))) return;
-  const removed = cloneData(habit);
-  const index = state.habits.findIndex(item => item.id === habit.id);
-  state.habits = state.habits.filter(item => item.id !== habit.id);
-  Object.values(state.logs).forEach(log => {
-    if (Array.isArray(log.completed)) log.completed = log.completed.filter(id => id !== habit.id);
-  });
-  saveState();
-  selectedHabitSettingsId = state.habits[index]?.id || state.habits[0]?.id || "";
-  renderAll();
-  showToast(tr("habits.deleted", { habit: displayHabitName(habit) }), {
-    actionLabel: languageText("撤销", "Undo", "Rückgängig"),
-    onAction: () => {
-      state.habits.splice(index, 0, removed);
-      saveState();
-      selectedHabitSettingsId = removed.id;
-      renderAll();
-    },
-  });
-}
-
-function openHabitContextMenu(event, habitId, date = selectedPlanningDate) {
-  event.preventDefault();
-  const menu = $("#habitContextMenu");
-  if (!menu) return;
-  habitContextMenu = { open: true, habitId, anchor: { x: event.clientX, y: event.clientY }, date };
-  const habit = state.habits.find(item => item.id === habitId);
-  const done = getLog(date).completed.includes(habitId);
-  setText("#habitContextToggle", done ? tr("drawer.undoComplete") : tr("drawer.markComplete"));
-  setText("#habitContextEdit", tr("habits.editLabel", { habit: displayHabitName(habit || { name: "" }) }));
-  setText("#habitContextDisable", habit?.active ? tr("habits.inactive") : tr("habits.active"));
-  setText("#habitContextDelete", tr("dialog.delete"));
-  menu.hidden = false;
-  menu.style.left = `${event.clientX}px`;
-  menu.style.top = `${event.clientY}px`;
-  menu.querySelector("[data-habit-context]")?.focus();
-}
-
-function closeHabitContextMenu() {
-  const menu = $("#habitContextMenu");
-  if (!menu) return;
-  menu.hidden = true;
-  habitContextMenu = { open: false, habitId: "", anchor: null, date: "" };
-}
-
-function handleHabitContextAction(action) {
-  const { habitId, date } = habitContextMenu;
-  const habit = state.habits.find(item => item.id === habitId);
-  closeHabitContextMenu();
-  if (!habit) return;
-  if (action === "toggle") {
-    toggleHabit(date, habitId);
-    return;
-  }
-  if (action === "edit") {
-    if (document.body.dataset.activeView === "habits") {
-      selectedHabitSettingsId = habitId;
-      populateHabitInspectorForm(habitId);
-      renderHabitSettings();
-    } else openHabitDialog(habitId);
-    return;
-  }
-  if (action === "disable") {
-    habit.active = !habit.active;
-    saveState();
-    renderAll();
-    return;
-  }
-  if (action === "delete") {
-    selectedHabitSettingsId = habitId;
-    deleteHabitFromInspector();
-  }
+  $$(".edit-habit").forEach(b => b.addEventListener("click", () => openHabitDialog(b.dataset.id)));
+  $$(".habit-drag-handle").forEach(bindHabitDragHandle);
 }
 
 function bindHabitDragHandle(handle) {
@@ -7181,7 +3319,6 @@ function bindHabitDragHandle(handle) {
     document.body.classList.add("habit-is-dragging");
   });
   handle.addEventListener("keydown", event => {
-    if (!event.altKey) return;
     const direction = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : 0;
     if (!direction) return;
     event.preventDefault();
@@ -7213,10 +3350,7 @@ function finishHabitSettingsDrag(event) {
   habitDrag = null;
   if (!moved) return;
   const byId = new Map(state.habits.map(habit => [habit.id, habit]));
-  const ordered = $$(".setting-row", container).map(item => byId.get(item.querySelector(".habit-drag-handle")?.dataset.id)).filter(Boolean);
-  const visible = new Set(ordered.map(habit => habit.id));
-  let visibleIndex = 0;
-  state.habits = state.habits.map(habit => visible.has(habit.id) ? ordered[visibleIndex++] : habit);
+  state.habits = $$(".setting-row", container).map(item => byId.get(item.querySelector(".habit-drag-handle")?.dataset.id)).filter(Boolean);
   saveState();
   renderAll();
   showToast(tr("habits.moved"));
@@ -7224,11 +3358,10 @@ function finishHabitSettingsDrag(event) {
 
 function moveHabit(id, direction) {
   const index = state.habits.findIndex(habit => habit.id === id);
-  const visible = $$('#habitSettingsList .habit-drag-handle').map(button=>button.dataset.id);
-  const target = visible[visible.indexOf(id)+direction];
-  const nextIndex = state.habits.findIndex(habit=>habit.id===target);
-  if (index < 0 || nextIndex < 0) return;
-  [state.habits[index],state.habits[nextIndex]]=[state.habits[nextIndex],state.habits[index]];
+  const nextIndex = index + direction;
+  if (index < 0 || nextIndex < 0 || nextIndex >= state.habits.length) return;
+  const [habit] = state.habits.splice(index, 1);
+  state.habits.splice(nextIndex, 0, habit);
   saveState();
   renderAll();
   showToast(tr("habits.moved"));
@@ -7287,7 +3420,7 @@ function renderColorPicker() {
     <button type="button" class="color-choice ${key === selected ? "selected" : ""}" data-color="${key}">
       <i style="--choice-color:${value.solid};--choice-soft:${value.soft}" aria-hidden="true"></i>
       <span>${escapeHtml(tr(`dialog.colors.${key}`))}</span>
-      <b aria-hidden="true">${key === selected ? '<svg viewBox="0 0 24 24"><path d="m5 12 5 5L19 8"/></svg>' : ""}</b>
+      <b aria-hidden="true">${key === selected ? "✓" : ""}</b>
     </button>`).join("");
   $$(".color-choice", popover).forEach(button => button.addEventListener("click", () => {
     input.value = button.dataset.color;
@@ -7324,34 +3457,14 @@ function updateHabitFormPreview() {
   previewNote.hidden = !version.note;
 }
 
-function confirmSettingsChange() {
-  const note = $("#settingsConfirm");
-  if (!note) return;
-  note.textContent = tr("settings.saved");
-  clearTimeout(confirmSettingsChange.timer);
-  confirmSettingsChange.timer = setTimeout(() => { note.textContent = ""; }, 1600);
-}
-
-function showBackupSuccess() {
-  const host = $("#backupSuccess");
-  if (!host) return;
-  host.hidden = false;
-  if (host.dataset.hairlineSrc !== "./assets/hairline/backup-success.svg") {
-    window.LifeLedgerInteraction?.mountHairline(host, "./assets/hairline/backup-success.svg");
-  }
-  clearTimeout(showBackupSuccess.timer);
-  showBackupSuccess.timer = setTimeout(() => { host.hidden = true; }, 2400);
-}
-
-
 function showCelebration() {
   const celebration = $("#celebration");
-  if (!celebration || document.documentElement.classList.contains("motion-off")) return;
+  if (!celebration || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   celebration.classList.remove("show");
   void celebration.offsetWidth;
   celebration.classList.add("show");
   clearTimeout(showCelebration.timer);
-  showCelebration.timer = setTimeout(() => celebration.classList.remove("show"), 600);
+  showCelebration.timer = setTimeout(() => celebration.classList.remove("show"), 1900);
 }
 
 function openDrawer(date) {
@@ -7362,8 +3475,7 @@ function openDrawer(date) {
 function closeDrawer() {
   $("#dayDrawer").classList.remove("open"); $("#drawerBackdrop").classList.remove("open");
   $("#dayDrawer").setAttribute("aria-hidden", "true");
-  renderTodayEventsStrip();
-  renderInspector();
+  renderDailyGoals();
 }
 function renderDrawerMemory(date) {
   const log = getLog(date);
@@ -7396,7 +3508,7 @@ function renderDrawer() {
     const habitNote = String(v?.note || "").trim();
     const target = habitMetaLabel(v);
     return `<details class="drawer-habit ${done ? "done" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
-      <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'}</span></summary>
+      <summary><span><span class="habit-icon">${renderIcon(iconKey(h))}</span><strong>${escapeHtml(displayHabitName(h))}</strong></span><span class="habit-check">${done ? "✓" : "⌄"}</span></summary>
       <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${habitNote ? `<p class="drawer-habit-note">${escapeHtml(habitNote)}</p>` : ""}${periodNote}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
     </details>`;
   }).join("");
@@ -7492,8 +3604,6 @@ function saveHabitFromForm(event) {
 function deleteHabit() {
   const habit = state.habits.find(h => h.id === editingHabitId);
   if (!habit || !window.confirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) }))) return;
-  const removed = cloneData(habit);
-  const index = state.habits.findIndex(item => item.id === habit.id);
   state.habits = state.habits.filter(h => h.id !== habit.id);
   Object.values(state.logs).forEach(log => {
     if (Array.isArray(log.completed)) log.completed = log.completed.filter(id => id !== habit.id);
@@ -7501,14 +3611,7 @@ function deleteHabit() {
   saveState();
   closeHabitDialog();
   renderAll();
-  showToast(tr("habits.deleted", { habit: displayHabitName(habit) }), {
-    actionLabel: languageText("撤销", "Undo", "Rückgängig"),
-    onAction: () => {
-      state.habits.splice(index, 0, removed);
-      saveState();
-      renderAll();
-    },
-  });
+  showToast(tr("habits.deleted", { habit: displayHabitName(habit) }));
 }
 
 function datesForReview(scope, key) {
@@ -7686,7 +3789,6 @@ function exportRange(scope) {
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
   const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
-  result.planning = cloneData(state.planning || seed.planning);
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -7728,119 +3830,34 @@ function setBackupTab(tab = "export") {
   $$('[data-backup-panel]').forEach(panel => { panel.hidden = panel.dataset.backupPanel !== selected; });
   $("#exportConfirm").hidden = selected !== "export";
 }
-function openBackupDialog(tab = "export") {
+function openBackupDialog() {
   $("#exportMonth").value = monthKey(new Date());
   $("#exportDate").value = isoDate(new Date());
   updateExportFields();
   clearImportSelection();
   $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
-  $("#mediaBackupOption").hidden = !photoMemories;
-  setBackupTab(tab === "import" ? "import" : "export");
+  $("#mediaBackupOption").hidden = !hostedCloudMode;
+  setBackupTab("export");
   $("#exportDialog").showModal();
 }
-function syncExportButtonPlacement() {}
-function syncMobileToolbar() {}
-function openSettings() {
-  const params = new URLSearchParams(location.search);
-  if (params.get("settings") === "1") {
-    document.body.classList.add("settings-mode");
-    $("#settingsPane")?.removeAttribute("hidden");
-    return;
-  }
-  if (desktopMode === "tauri-local") {
-    void window.__TAURI__?.core.invoke("open_settings_window");
-    return;
-  }
-  const dialog = $("#settingsDialog");
-  const pane = $("#settingsPane");
-  const mount = $("#settingsDialogMount");
-  if (dialog && pane && mount && !mount.children.length) {
-    mount.appendChild(pane);
-    pane.removeAttribute("hidden");
-  }
-  dialog?.showModal();
+function syncExportButtonPlacement() {
+  const button = $("#exportButton");
+  const anchor = $("#exportButtonAnchor");
+  const topActions = $(".top-actions");
+  if (!button || !anchor || !topActions) return;
+  if (window.matchMedia("(max-width: 760px)").matches) topActions.append(button);
+  else anchor.after(button);
 }
-function setSettingsTab(tab) {
-  $$("[data-settings-tab]").forEach(button => {
-    const active = button.dataset.settingsTab === tab;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-  });
-  $$("[data-settings-panel]").forEach(panel => {
-    const active = panel.dataset.settingsPanel === tab;
-    panel.hidden = !active;
-    panel.classList.toggle("active", active);
-  });
-}
-function bindPaneResize(handle, { read, write, invert = false }) {
-  if (!handle) return;
-  let startX = 0;
-  let startWidth = 0;
-  handle.addEventListener("pointerdown", event => {
-    startX = event.clientX;
-    startWidth = read();
-    handle.setPointerCapture(event.pointerId);
-    document.documentElement.classList.add("is-resizing");
-  });
-  handle.addEventListener("pointermove", event => {
-    if (!handle.hasPointerCapture(event.pointerId)) return;
-    const delta = event.clientX - startX;
-    write(startWidth + (invert ? -delta : delta));
-  });
-  const end = event => {
-    if (handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
-    document.documentElement.classList.remove("is-resizing");
-  };
-  handle.addEventListener("pointerup", end);
-  handle.addEventListener("pointercancel", end);
-}
-function initAppShell() {
-  window.LifeLedgerWindowShell.init({ text: languageText, openSettings });
-  const workspaceMedia = window.matchMedia("(min-width: 761px)");
-  workspaceMedia.addEventListener("change", () => {
-    if (document.documentElement.hasAttribute("data-desktop")) return;
-    document.documentElement.toggleAttribute("data-workspace", workspaceMedia.matches);
-    // Only presentation changes here; do not reset data, layouts or an open editor.
-    renderToday();
-  });
-  const savedWidth = Number(localStorage.getItem(SIDEBAR_WIDTH_KEY));
-  if (savedWidth) applySidebarWidth(savedWidth);
-  else applySidebarWidth(168);
-  const savedInspector = Number(localStorage.getItem(INSPECTOR_WIDTH_KEY));
-  if (savedInspector) applyInspectorWidth(savedInspector);
-  else applyInspectorWidth(320);
-  applyInspectorState();
-  applySidebarState();
-  bindPaneResize($("#sidebarResizeHandle"), {
-    read: () => $("#sidebar")?.getBoundingClientRect().width || 168,
-    write: applySidebarWidth,
-  });
-  bindPaneResize($("#inspectorResizeHandle"), {
-    read: () => $("#inspectorPane")?.getBoundingClientRect().width || 320,
-    write: applyInspectorWidth,
-    invert: true,
-  });
-  if (window.matchMedia("(max-width: 1179px)").matches) {
-    inspectorCollapsed = true;
-    applyInspectorState();
-  }
-  window.addEventListener("storage", event => {
-    if (event.key === MOTION_KEY) {
-      motionChoice = localStorage.getItem(MOTION_KEY) || "full";
-      applyMotionSetting();
-      return;
-    }
-    if ([THEME_KEY, LANGUAGE_KEY].includes(event.key)) {
-      themeChoice = localStorage.getItem(THEME_KEY) || "system";
-      const stored = localStorage.getItem(LANGUAGE_KEY);
-      if (stored) {
-        languageChoice = stored;
-        currentLang = languageFromChoice(languageChoice);
-      }
-      applyTheme();
-      renderAll();
-    }
-  });
+function syncMobileToolbar() {
+  const mobile = window.matchMedia("(max-width: 760px)").matches;
+  const button = $("#mobileToolbarToggle");
+  const actions = $("#mobileTopActions");
+  if (!button || !actions) return;
+  button.hidden = !mobile;
+  actions.classList.toggle("mobile-collapsed", mobile && !mobileToolbarOpen);
+  actions.classList.toggle("mobile-open", mobile && mobileToolbarOpen);
+  button.setAttribute("aria-expanded", String(mobile && mobileToolbarOpen));
+  button.setAttribute("aria-label", mobileToolbarOpen ? tr("toolbar.close") : tr("toolbar.open"));
 }
 function createBackup(scope) {
   const range = exportRange(scope);
@@ -7870,41 +3887,39 @@ async function saveBackupBlob(blob, filename) {
   if (!desktopNativeBackup || blob.type !== "application/json") {
     triggerFileDownload(blob, filename);
     showToast(tr("toast.exported"));
-    showBackupSuccess();
     return;
   }
   const contents = await blob.text();
   const result = await desktopBridge.saveBackupJson({ filename, contents });
-  if (!result?.cancelled) {
-    showToast(tr("toast.exported"));
-    showBackupSuccess();
-  }
+  if (!result?.cancelled) showToast(tr("toast.exported"));
 }
 async function downloadExport(event) {
   event.preventDefault();
   const scope = $('#exportForm input[name="exportScope"]:checked').value;
   const backup = createBackup(scope);
-  const includePhotos = Boolean(photoMemories) && $("#includePhotos")?.checked;
+  const includePhotos = hostedCloudMode && $("#includePhotos")?.checked;
   const confirmButton = $("#exportConfirm");
-  await runSubmitButton(confirmButton, async () => {
+  const originalLabel = confirmButton.textContent;
+  confirmButton.disabled = true;
+  try {
     if (includePhotos) {
       if (scope !== "month") throw new Error("photo-backup-month-only");
+      confirmButton.textContent = tr("backup.mediaExporting");
       const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
       const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
       triggerFileDownload(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
       showToast(tr("toast.exported"));
-      showBackupSuccess();
-      return;
+    } else {
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
     }
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-    await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
-  }, {
-    busy: tr("submit.exporting"),
-    done: tr("submit.exported"),
-  }).catch(error => {
+  } catch (error) {
     console.warn("Backup export failed", error);
     window.alert(error?.message === "photo-backup-month-only" ? tr("backup.mediaOnlyMonth") : tr("backup.mediaInvalid"));
-  });
+  } finally {
+    confirmButton.disabled = false;
+    confirmButton.textContent = originalLabel;
+  }
 }
 
 function isRecord(value) {
@@ -7921,7 +3936,6 @@ function importedPayload(raw) {
   }
   if (payload.focusSessions !== undefined && !Array.isArray(payload.focusSessions)) throw new Error("invalid-focusSessions");
   if (payload.longTermGoals !== undefined && !Array.isArray(payload.longTermGoals)) throw new Error("invalid-longTermGoals");
-  if (payload.planning !== undefined && !window.LifeLedgerLongRange.valid(payload.planning)) throw new Error("invalid-planning");
   if (payload.focusSettings !== undefined && !isRecord(payload.focusSettings)) throw new Error("invalid-focusSettings");
   const scope = modern ? raw.scope : payload.exportMeta?.scope || "all";
   return {
@@ -7937,7 +3951,6 @@ function importedPayload(raw) {
       dailyGoals: cloneData(payload.dailyGoals || {}),
       weeklyGoals: cloneData(payload.weeklyGoals || {}),
       longTermGoals: cloneData(payload.longTermGoals || []),
-      planning: cloneData(payload.planning || seed.planning),
       weeklyOutputs: cloneData(payload.weeklyOutputs || {}),
       weeklyReviews: cloneData(payload.weeklyReviews || {}),
       focusSessions: cloneData(payload.focusSessions || []),
@@ -7967,8 +3980,6 @@ function clearImportSelection() {
   $("#importPreview").hidden = true;
   $("#importError").hidden = true;
   $("#chooseImportFile").hidden = false;
-  const restoreArt = $("#backupRestoreArt");
-  if (restoreArt) restoreArt.hidden = true;
 }
 async function previewImportFile(file) {
   clearImportSelection();
@@ -7982,7 +3993,7 @@ async function previewImportFile(file) {
   }
   try {
     const media = mediaBundle ? await window.LifeLedgerMediaBackup.parseBundle(file) : null;
-    if (media && !photoMemories) throw new Error("media-cloud-only");
+    if (media && !hostedCloudMode) throw new Error("media-cloud-only");
     const candidate = importedPayload(media ? media.manifest.backup : JSON.parse(await file.text()));
     pendingImport = candidate;
     pendingMediaImport = media;
@@ -7991,11 +4002,6 @@ async function previewImportFile(file) {
     $(".import-file-badge").textContent = media ? "MEDIA" : "JSON";
     $("#chooseImportFile").hidden = true;
     $("#importPreview").hidden = false;
-    const restoreArt = $("#backupRestoreArt");
-    if (restoreArt) {
-      restoreArt.hidden = false;
-      window.LifeLedgerInteraction?.mountHairline(restoreArt, "./assets/hairline/backup-restore.svg");
-    }
   } catch (error) {
     console.warn("Backup validation failed", error);
     $("#importError").textContent = mediaBundle ? tr("backup.mediaInvalid") : tr("backup.invalid");
@@ -8024,7 +4030,6 @@ function mergeBackupData(current, incoming) {
     dailyGoals: { ...(current.dailyGoals || {}), ...(incoming.dailyGoals || {}) },
     weeklyGoals: { ...(current.weeklyGoals || {}), ...(incoming.weeklyGoals || {}) },
     longTermGoals: [...new Map([...(current.longTermGoals || []), ...(incoming.longTermGoals || [])].map(goal => [goal.id, cloneData(goal)])).values()],
-    planning: window.LifeLedgerLongRange.merge(current.planning, incoming.planning),
     weeklyOutputs: { ...(current.weeklyOutputs || {}), ...(incoming.weeklyOutputs || {}) },
     weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
@@ -8058,7 +4063,6 @@ async function restorePendingImport() {
   $("#exportDialog").close();
   renderAll();
   showToast(tr("toast.restored"));
-  showBackupSuccess();
   restoreButton.disabled = false;
   restoreButton.textContent = originalLabel;
 }
@@ -8211,17 +4215,21 @@ function focusTodayStats() {
   };
 }
 
-function focusStatsForToday() {
-  return focusTodayStats();
-}
-
 function renderFocusOverview() {
   const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
-  const stats = focusStatsForToday();
-  if (focusUIState !== "completed") setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: stats.minutes }));
+  const today = focusTodayStats();
+  setText("#focusPresetSummary", tr("focus.presetSummary", { focus: settings.focusMinutes, break: settings.breakMinutes }));
+  setText("#focusTodaySummary", tr("focus.todaySummary", { minutes: today.minutes }));
+  const todayKey = isoDate(new Date());
+  const byTopic = [...focusSessionsBetween(todayKey, todayKey).reduce((groups, session) => {
+    const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+    groups.set(label, (groups.get(label) || 0) + focusSessionMinutes(session));
+    return groups;
+  }, new Map()).entries()].filter(([, minutes]) => minutes >= .5).sort((a, b) => b[1] - a[1]);
+  $("#focusTodayBreakdown").hidden = !byTopic.length;
+  $("#focusTodayBreakdown").innerHTML = byTopic.slice(0, 3).map(([label, minutes]) => `<span><b>${escapeHtml(label)}</b><small>${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</small></span>`).join("");
   const recentTopics = [...new Set([...(state.focusSessions || [])].reverse().map(session => String(session.label || "").trim()).filter(label => label && label !== tr("focus.untitled")))].slice(0, 8);
-  const topicSuggestions = $("#focusTopicSuggestions");
-  if (topicSuggestions) topicSuggestions.innerHTML = recentTopics.map(label => `<option value="${escapeHtml(label)}"></option>`).join("");
+  $("#focusTopicSuggestions").innerHTML = recentTopics.map(label => `<option value="${escapeHtml(label)}"></option>`).join("");
   $$('[data-quick-focus-preset]').forEach(button => {
     button.classList.toggle("active", button.dataset.quickFocusPreset === settings.preset);
     button.disabled = Boolean(focusTimer?.snapshot());
@@ -8321,87 +4329,17 @@ function recordFocusSession(session) {
   renderReview();
 }
 
-let focusCancelTimer = null;
-
-function transitionFocusUI(event) {
-  if (focusCancelTimer && event !== "cancel") {
-    clearTimeout(focusCancelTimer);
-    focusCancelTimer = null;
-  }
-  const next = window.LifeLedgerFocusTimer?.focusTransition
-    ? window.LifeLedgerFocusTimer.focusTransition(focusUIState, event)
-    : focusUIState;
-  focusUIState = next;
-  return next;
-}
-
 function handleFocusComplete(session) {
   recordFocusSession(session);
   releaseFocusWakeLock();
   playFocusChime();
   const label = session.label || tr("focus.untitled");
-  const actualMinutes = Math.max(1, Math.round(session.actualMinutes || session.durationMinutes || 1));
-  lastRecordedFocusSession = session;
-  lastRecordedFocusMinutes = actualMinutes;
-  transitionFocusUI("complete");
-  sendFocusNotification(tr("focus.completed"), tr("focus.notificationBody", { label, minutes: actualMinutes }), `life-ledger-focus-${session.id}`);
-
-  const toastMsg = languageText(
-    `已记录 ${actualMinutes} 分钟专注`,
-    `${actualMinutes} minutes recorded`,
-    `${actualMinutes} Minuten aufgezeichnet`
-  );
-  const undoLabel = languageText("撤销", "Undo", "Rückgängig");
-  showToast(toastMsg, {
-    actionLabel: undoLabel,
-    onAction: () => {
-      if (lastRecordedFocusSession) {
-        state.focusSessions = (state.focusSessions || []).filter(s => s.id !== lastRecordedFocusSession.id);
-        saveState();
-        lastRecordedFocusSession = null;
-        lastRecordedFocusMinutes = 0;
-        transitionFocusUI("undo");
-        renderFocusTimer(null);
-        renderFocusOverview();
-        renderReview();
-        showToast(languageText("已撤销", "Undone", "Rückgängig gemacht"));
-      }
-    },
-  });
-
+  sendFocusNotification(tr("focus.completed"), tr("focus.notificationBody", { label, minutes: Math.round(session.actualMinutes) }), `life-ledger-focus-${session.id}`);
+  showToast(session.outcome === "completed" ? tr("focus.completed") : tr("focus.interrupted"));
   const clock = $("#focusClock");
   clock?.classList.remove("focus-complete");
   void clock?.offsetWidth;
   clock?.classList.add("focus-complete");
-  renderFocusTimer(null);
-}
-
-function handleFocusCancel() {
-  if (focusCancelTimer) {
-    clearTimeout(focusCancelTimer);
-    focusCancelTimer = null;
-  }
-  if (focusTimer?.snapshot()) {
-    focusTimer.clear();
-    releaseFocusWakeLock();
-  }
-  transitionFocusUI("cancel");
-  renderFocusTimer(null);
-  showToast(languageText("已取消专注", "Focus cancelled", "Fokus abgebrochen"));
-  focusCancelTimer = setTimeout(() => {
-    focusCancelTimer = null;
-    if (focusUIState === "cancelled") {
-      transitionFocusUI("reset");
-      renderFocusTimer(null);
-    }
-  }, 2400);
-}
-
-function handleFocusFinish() {
-  const snapshot = focusTimer?.snapshot();
-  if (!snapshot) return;
-  transitionFocusUI("finish");
-  focusTimer.endFocus("finishedEarly");
 }
 
 function handleFocusPhaseComplete(phase) {
@@ -8424,9 +4362,6 @@ function renderFocusTimer(snapshot) {
   const duration = snapshot?.durationMs || focusPresetValues(state.focusSettings?.preset || "classic").focusMinutes * 60000;
   const remaining = snapshot?.remainingMs ?? duration;
   const progress = snapshot ? Math.max(0, Math.min(1, 1 - remaining / Math.max(1, duration))) : 0;
-
-  const currentState = focusUIState;
-
   $("#focusClock")?.style.setProperty("--focus-progress", progress);
   setText("#focusTime", formatFocusTime(remaining));
   setText("#focusPhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
@@ -8437,126 +4372,22 @@ function renderFocusTimer(snapshot) {
   $("#focusSkipBreak").hidden = !isBreak;
   setText("#focusPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
-  $("#inspectorFocusRow")?.style.setProperty("--focus-inline-progress", progress);
-  setText("#focusInlineTime", currentState === "completed" ? `${lastRecordedFocusMinutes}:00` : formatFocusTime(remaining));
-
-  const chipTime = $("#focusToolbarTime");
-  if (chipTime) {
-    if (currentState === "running" || currentState === "paused") {
-      chipTime.hidden = false;
-      chipTime.textContent = formatFocusTime(remaining);
-    } else if (currentState === "completed") {
-      chipTime.hidden = false;
-      chipTime.textContent = `${lastRecordedFocusMinutes}m`;
-    } else {
-      chipTime.hidden = true;
-    }
+  $("#focusInlineTimer")?.style.setProperty("--focus-inline-progress", progress);
+  setText("#focusInlineTime", formatFocusTime(remaining));
+  setText("#focusInlinePhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
+  setText("#focusInlineLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
+  setText("#focusQuickPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
+  $("#focusQuickFinish").hidden = !isFocus;
+  $("#focusQuickSkip").hidden = !isBreak;
+  $("#focusQuickPrimary").disabled = isBreak && !readyBreak && !running && !paused;
+  const miniStatus = $("#focusMiniStatus");
+  if (miniStatus) {
+    miniStatus.hidden = !snapshot;
+    miniStatus.classList.toggle("running", running);
+    miniStatus.setAttribute("aria-label", snapshot ? `${formatFocusTime(remaining)} · ${snapshot.label || state.focusSettings?.defaultTopic || tr("focus.untitled")}` : tr("journal.showFocus"));
   }
-
-  const player = $("#focusMiniPlayer");
-  const panelOpen = $("#focusPanel") ? !$("#focusPanel").hidden : false;
-  const sessionLive = currentState === "running" || currentState === "paused";
-  if (player) {
-    player.hidden = !sessionLive || panelOpen;
-    setText("#focusMiniTime", formatFocusTime(remaining));
-    setText("#focusMiniLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
-    setText("#focusMiniPrimary", running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
-    const miniFinish = $("#focusMiniFinish");
-    if (miniFinish) miniFinish.hidden = !isFocus;
-    const miniSkip = $("#focusMiniSkip");
-    if (miniSkip) miniSkip.hidden = !sessionLive;
-  }
-
-  const idleHairline = $("#focusIdleHairline");
-  const quickPresets = $("#focusQuickPresets");
-  const quickPrimary = $("#focusQuickPrimary");
-  const quickFinish = $("#focusQuickFinish");
-  const quickSkip = $("#focusQuickSkip");
-  const todaySummary = $("#focusTodaySummary");
-
-  if (currentState === "completed") {
-    if (idleHairline) {
-      idleHairline.hidden = false;
-      idleHairline.dataset.minutes = String(lastRecordedFocusMinutes);
-      const idleSrc = "./assets/hairline/focus-complete.svg";
-      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
-        idleHairline.dataset.hairlineReady = "true";
-        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.completed") });
-      }
-    }
-    if (quickPresets) quickPresets.hidden = true;
-    if (quickPrimary) quickPrimary.hidden = true;
-    if (quickFinish) quickFinish.hidden = true;
-    if (quickSkip) quickSkip.hidden = true;
-    if (todaySummary) {
-      todaySummary.textContent = languageText(
-        `已记录 ${lastRecordedFocusMinutes} 分钟`,
-        `${lastRecordedFocusMinutes} minutes recorded`,
-        `${lastRecordedFocusMinutes} Minuten aufgezeichnet`
-      );
-    }
-  } else if (currentState === "cancelled") {
-    if (idleHairline) {
-      idleHairline.hidden = false;
-      const idleSrc = "./assets/hairline/focus-cancelled.svg";
-      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
-        idleHairline.dataset.hairlineReady = "true";
-        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: languageText("已取消专注", "Focus cancelled", "Fokus abgebrochen") });
-      }
-    }
-    if (quickPresets) quickPresets.hidden = true;
-    if (quickPrimary) quickPrimary.hidden = true;
-    if (quickFinish) quickFinish.hidden = true;
-    if (quickSkip) quickSkip.hidden = true;
-    if (todaySummary) {
-      todaySummary.textContent = languageText("专注已取消", "Focus cancelled", "Fokus abgebrochen");
-    }
-  } else if (currentState === "running") {
-    if (idleHairline) idleHairline.hidden = true;
-    if (quickPresets) quickPresets.hidden = true;
-    if (quickPrimary) {
-      quickPrimary.hidden = false;
-      quickPrimary.textContent = tr("focus.pause");
-      LifeLedgerInteraction?.morphIconToggle(quickPrimary, "pause", { onState: "pause" });
-    }
-    if (quickFinish) quickFinish.hidden = false;
-    if (quickSkip) quickSkip.hidden = false;
-  } else if (currentState === "paused") {
-    if (idleHairline) {
-      idleHairline.hidden = false;
-      const idleSrc = "./assets/hairline/focus-paused.svg";
-      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
-        idleHairline.dataset.hairlineReady = "true";
-        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.pause") });
-      }
-    }
-    if (quickPresets) quickPresets.hidden = true;
-    if (quickPrimary) {
-      quickPrimary.hidden = false;
-      quickPrimary.textContent = tr("focus.resume");
-      LifeLedgerInteraction?.morphIconToggle(quickPrimary, "resume", { onState: "pause" });
-    }
-    if (quickFinish) quickFinish.hidden = false;
-    if (quickSkip) quickSkip.hidden = false;
-  } else {
-    if (idleHairline) {
-      idleHairline.hidden = false;
-      const idleSrc = "./assets/hairline/focus-idle.svg";
-      if (idleHairline.dataset.hairlineSrc !== idleSrc) {
-        idleHairline.dataset.hairlineReady = "true";
-        LifeLedgerInteraction?.mountHairline(idleHairline, idleSrc, { alt: tr("focus.untitled") });
-      }
-    }
-    if (quickPresets) quickPresets.hidden = false;
-    if (quickPrimary) {
-      quickPrimary.hidden = false;
-      quickPrimary.textContent = tr("focus.start");
-      LifeLedgerInteraction?.morphIconToggle(quickPrimary, "play", { onState: "pause" });
-    }
-    if (quickFinish) quickFinish.hidden = true;
-    if (quickSkip) quickSkip.hidden = true;
-  }
-
+  setText("#focusMiniTime", formatFocusTime(remaining));
+  setText("#focusMiniLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
   renderFocusOverview();
   if (snapshot) {
     document.title = `${formatFocusTime(remaining)} · ${tr("title")}`;
@@ -8594,17 +4425,14 @@ async function startFocusSession() {
   };
   saveState();
   if (state.focusSettings.notify) requestNotificationPermission();
-  transitionFocusUI("start");
   focusTimer.start({ date: isoDate(new Date()), label, linkedGoalId: "", preset, durationMinutes: values.focusMinutes, breakMinutes: values.breakMinutes });
   setDailyToolPage("focus");
   acquireFocusWakeLock();
-  renderFocusTimer(focusTimer.snapshot());
 }
 
 async function startQuickFocusSession() {
   const settings = { ...seed.focusSettings, ...(state.focusSettings || {}) };
   if (settings.notify) requestNotificationPermission();
-  transitionFocusUI("start");
   focusTimer.start({
     date: isoDate(new Date()),
     label: settings.defaultTopic || tr("focus.untitled"),
@@ -8614,18 +4442,11 @@ async function startQuickFocusSession() {
   });
   setDailyToolPage("focus");
   acquireFocusWakeLock();
-  renderFocusTimer(focusTimer.snapshot());
 }
 
 function handleFocusPrimary() {
   const snapshot = focusTimer?.snapshot();
-  if (!snapshot) {
-    if (focusUIState === "completed" || focusUIState === "cancelled") {
-      transitionFocusUI("reset");
-    }
-    startFocusSession();
-    return;
-  }
+  if (!snapshot) { startFocusSession(); return; }
   if (snapshot.phase === "break" && snapshot.status === "ready") {
     focusTimer.startBreak();
     acquireFocusWakeLock();
@@ -8634,22 +4455,13 @@ function handleFocusPrimary() {
   if (snapshot.status === "running") {
     focusTimer.pause();
     releaseFocusWakeLock();
-    transitionFocusUI("pause");
-    renderFocusTimer(focusTimer.snapshot());
   } else if (snapshot.status === "paused") {
     focusTimer.resume();
     acquireFocusWakeLock();
-    transitionFocusUI("resume");
-    renderFocusTimer(focusTimer.snapshot());
   }
 }
 
 function handleFocusQuickPrimary() {
-  if (focusUIState === "completed" || focusUIState === "cancelled") {
-    transitionFocusUI("reset");
-    startQuickFocusSession();
-    return;
-  }
   if (!focusTimer?.snapshot()) {
     startQuickFocusSession();
     return;
@@ -8661,316 +4473,93 @@ function initFocusTimer() {
   if (!window.LifeLedgerFocusTimer) return;
   focusTimer = window.LifeLedgerFocusTimer.createTimer({
     storageKey: FOCUS_ACTIVE_KEY,
-    onChange: snapshot => {
-      if (snapshot?.status === "running" && focusUIState !== "running") {
-        transitionFocusUI(focusUIState === "paused" ? "resume" : "start");
-      } else if (snapshot?.status === "paused" && focusUIState !== "paused") {
-        transitionFocusUI("pause");
-      }
-      renderFocusTimer(snapshot);
-    },
+    onChange: renderFocusTimer,
     onFocusComplete: handleFocusComplete,
     onPhaseComplete: handleFocusPhaseComplete,
   });
   const active = focusTimer.initialize();
-  if (active?.status === "running") {
-    focusUIState = "running";
-    acquireFocusWakeLock();
-  } else if (active?.status === "paused") {
-    focusUIState = "paused";
-  }
-  renderFocusTimer(active);
+  if (active?.status === "running") acquireFocusWakeLock();
 }
 
 function bindEvents() {
-  applyMotionSetting();
-  window.LifeLedgerInteraction?.mountNavIndicator();
-  window.LifeLedgerInteraction?.mountDisclosures(document);
-  mountCommandPalette();
-  mountToolbarSearch();
-  mountToolbarCreateMenu();
-  mountScrollTitleObservers();
-  mountFocusDurationStepper();
-  mountReviewMetricsFlip();
   window.addEventListener("pointermove", moveHabitDrag, { passive: false });
   window.addEventListener("pointerup", finishHabitSettingsDrag);
   window.addEventListener("pointercancel", finishHabitSettingsDrag);
-  $("#themeSelect")?.addEventListener("change", event => {
+  $("#themeSelect").addEventListener("change", event => {
     themeChoice = event.target.value;
     localStorage.setItem(THEME_KEY, themeChoice);
     applyTheme();
-    confirmSettingsChange();
   });
-  $("#motionSelect")?.addEventListener("change", event => {
-    motionChoice = event.target.value;
-    applyMotionSetting();
-    confirmSettingsChange();
+  $("#sidebarToggle").addEventListener("click", () => {
+    sidebarCollapsed = !sidebarCollapsed;
+    localStorage.setItem(SIDEBAR_KEY, String(sidebarCollapsed));
+    applySidebarState();
   });
-  window.addEventListener("online", renderSyncOffline);
-  window.addEventListener("offline", renderSyncOffline);
-  $("#sidebarToggle")?.addEventListener("click", toggleSidebar);
-  $("#toolbarPrimaryAction")?.addEventListener("click", event => {
-    event.stopPropagation();
-    setFocusPanelOpen(Boolean($("#focusPanel")?.hidden));
-  });
-  $("#openDayDetail")?.addEventListener("click", () => setDayDetailOpen(true));
-  $$("[data-close-day-detail]").forEach(button => button.addEventListener("click", () => setDayDetailOpen(false)));
-  $("#editLayoutToggle")?.addEventListener("click", toggleActiveBoardEditMode);
-  $("#resetLayoutButton")?.addEventListener("click", resetActiveBoardLayout);
-  $("#undoLayoutButton")?.addEventListener("click", () => {
-    const view = document.body.dataset.activeView || "today";
-    if (view === "today" && window.LifeLedgerLayoutEngine) {
-      const undone = LifeLedgerLayoutEngine.undo();
-      if (undone) {
-        showToast(tr("modules.undo"));
-      }
-    }
-  });
-  $("#todayHabitsShowAll")?.addEventListener("click", () => switchToView("habits"));
-  $("#todayCalendarPrev")?.addEventListener("click", () => {
-    todayCalendarCursor.setMonth(todayCalendarCursor.getMonth() - 1);
-    renderTodayCalendar();
-  });
-  $("#todayCalendarNext")?.addEventListener("click", () => {
-    todayCalendarCursor.setMonth(todayCalendarCursor.getMonth() + 1);
-    renderTodayCalendar();
-  });
-  $("#todayCalendarCurrent")?.addEventListener("click", () => {
-    todayCalendarCursor = new Date();
-    todayCalendarCursor.setDate(1);
-    todayCalendarCursor.setHours(12, 0, 0, 0);
-    renderTodayCalendar();
-  });
-  $("#todayFocusStartBtn")?.addEventListener("click", event => {
-    // The 3.5 daily tool viewport is gone, so show the running timer in the focus panel.
-    event.stopPropagation();
-    if (!focusTimer?.snapshot()) handleFocusQuickPrimary();
-    setFocusPanelOpen(true);
-  });
-  $("#todayFocusOpenTimer")?.addEventListener("click", () => {
-    openFocusTimerDialog();
-  });
-  document.addEventListener("keydown", event => {
-    const mod = event.metaKey || event.ctrlKey;
-    if (mod && event.altKey && event.key.toLowerCase() === "l" && !isEditableTarget(event.target)) {
-      event.preventDefault();
-      toggleActiveBoardEditMode();
-    }
-  });
-  $$("[data-journal-mode]").forEach(button => button.addEventListener("click", () => setJournalMode(button.dataset.journalMode)));
-  $('#journalMonthFilter').addEventListener('change',()=>{journalVisibleCount=24;void renderTimeline();});
-  $('#journalAllMonths').addEventListener('click',()=>{$('#journalMonthFilter').value='';journalVisibleCount=24;void renderTimeline();});
-  $('#journalLoadMore').addEventListener('click',()=>{journalVisibleCount+=24;void renderTimeline();});
-  $$('#habitLibraryFilters button').forEach(button=>button.addEventListener('click',()=>{habitLibraryFilter=button.dataset.habitFilter;renderHabitSettings();}));
-  $('#habitLibrarySearch').addEventListener('input',event=>{habitLibrarySearch=event.target.value;renderHabitSettings();});
-  document.addEventListener("click", event => {
-    if ($("#focusPanel")?.hidden) return;
-    const path = event.composedPath?.() || [];
-    if (path.includes($("#focusAnchor")) || path.includes($("#focusPanel"))) return;
-    if (event.target && typeof event.target.closest === "function" && event.target.closest("#focusAnchor")) return;
-    setFocusPanelOpen(false);
-  });
-  document.addEventListener("keydown", event => {
-    if (event.key !== "Escape" || event.defaultPrevented) return;
-    if (!$("#dayDetailSheet")?.hidden) {
-      setDayDetailOpen(false);
-      event.preventDefault();
-      return;
-    }
-    if (!$("#focusPanel")?.hidden) {
-      setFocusPanelOpen(false);
-      event.preventDefault();
-    }
-  });
-  $("#openSettingsButton")?.addEventListener("click", openSettings);
-  $("#mobileSettingsButton")?.addEventListener("click", openSettings);
-  $("#closeSettingsPane")?.addEventListener("click", () => {
-    if (new URLSearchParams(location.search).get("settings") === "1") {
-      const settingsWindow = window.__TAURI__?.window?.getCurrentWindow();
-      if (settingsWindow) void settingsWindow.close().catch(() => showToast(languageText("无法关闭设置窗口，请使用窗口关闭按钮。", "Could not close Settings. Use the window close button.", "Einstellungen konnten nicht geschlossen werden. Bitte den Fensterknopf verwenden.")));
-      return;
-    }
-    $("#settingsDialog")?.close();
-    if (new URLSearchParams(location.search).get("settings") !== "1") $("#settingsPane")?.setAttribute("hidden", "");
-  });
-  $$("[data-settings-tab]").forEach(button => button.addEventListener("click", () => setSettingsTab(button.dataset.settingsTab)));
-  $("#workspaceSwitchButton")?.addEventListener("click", () => handleMenuAction("workspace:switch"));
-  $("#dateNavPrev")?.addEventListener("click", () => navigateToolbarDate(-1));
-  $("#dateNavNext")?.addEventListener("click", () => navigateToolbarDate(1));
-  $("#dateNavLabel")?.addEventListener("click", toggleDatePopover);
-  $("#datePopoverToday")?.addEventListener("click", () => {
-    setDatePopoverOpen(false);
-    goToToday();
-  });
-  $("#datePopoverInput")?.addEventListener("change", event => {
-    jumpToDate(event.target.value);
-    setDatePopoverOpen(false);
-  });
-    $$("[data-analytics-window]").forEach(button => button.addEventListener("click", () => {
-    const next = Number(button.dataset.analyticsWindow);
-    if (![7, 30, 90].includes(next) || next === analyticsWindow) return;
-    analyticsWindow = next;
-    $$("[data-analytics-window]").forEach(item => {
-      const active = item === button;
-      item.classList.toggle("active", active);
-      item.setAttribute("aria-pressed", String(active));
-    });
-    renderReview();
-  }));
-  $$("[data-timeline-filter]").forEach(button => button.addEventListener("click", () => {
-    timelineFilter = button.dataset.timelineFilter || "all";
-    $$("[data-timeline-filter]").forEach(item => {
-      const active = item === button;
-      item.classList.toggle("active", active);
-      item.setAttribute("aria-pressed", String(active));
-    });
-    void renderTimeline();
-  }));
-  $("#quickFind")?.addEventListener("input", event => {
-    quickFindQuery = event.target.value;
-    renderToday();
+  $("#mobileToolbarToggle").addEventListener("click", () => {
+    mobileToolbarOpen = !mobileToolbarOpen;
+    syncMobileToolbar();
   });
   systemTheme.addEventListener("change", () => { if (themeChoice === "system") applyTheme(); });
-  // Web Today classic sections.
-  $("#previousHabitPage")?.addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
-  $("#nextHabitPage")?.addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
-  $("#todayHabitViewport")?.addEventListener("scroll", () => {
-    cancelAnimationFrame(habitCarouselScrollFrame);
-    habitCarouselScrollFrame = requestAnimationFrame(syncHabitCarouselPageFromScroll);
-  }, { passive: true });
-  $("#todayHabitViewport")?.addEventListener("keydown", event => {
-    if ((event.key !== "ArrowLeft" && event.key !== "ArrowRight") || event.target.closest(".habit-card")) return;
-    event.preventDefault();
-    setTodayHabitPage(todayHabitPage + (event.key === "ArrowRight" ? 1 : -1));
-  });
-  $("#todayHabitViewport")?.addEventListener("pointerdown", event => {
-    if (event.pointerType !== "mouse" || event.button !== 0 || event.target.closest(".habit-card")) return;
-    habitCarouselDrag = { pointerId: event.pointerId, startX: event.clientX, startScroll: event.currentTarget.scrollLeft, moved: false };
-    event.currentTarget.setPointerCapture(event.pointerId);
-    event.currentTarget.classList.add("dragging");
-  });
-  $("#todayHabitViewport")?.addEventListener("pointermove", event => {
-    if (!habitCarouselDrag || event.pointerId !== habitCarouselDrag.pointerId) return;
-    const delta = event.clientX - habitCarouselDrag.startX;
-    if (Math.abs(delta) > 5) habitCarouselDrag.moved = true;
-    if (habitCarouselDrag.moved) event.currentTarget.scrollLeft = habitCarouselDrag.startScroll - delta;
-  });
-  const finishCarouselDrag = event => {
-    if (!habitCarouselDrag || event.pointerId !== habitCarouselDrag.pointerId) return;
-    const viewport = event.currentTarget;
-    suppressHabitCardClick = habitCarouselDrag.moved;
-    viewport.classList.remove("dragging");
-    if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
-    habitCarouselDrag = null;
-    setTodayHabitPage(Math.round(viewport.scrollLeft / Math.max(1, viewport.clientWidth)));
-    window.setTimeout(() => { suppressHabitCardClick = false; }, 0);
-  };
-  $("#todayHabitViewport")?.addEventListener("pointerup", finishCarouselDrag);
-  $("#todayHabitViewport")?.addEventListener("pointercancel", finishCarouselDrag);
-  $("#previousPlanDay")?.addEventListener("click", () => shiftPlanningDay(-1));
-  $("#nextPlanDay")?.addEventListener("click", () => shiftPlanningDay(1));
-  $("#toggleRoutineEvents")?.addEventListener("click", () => { dayPlanRoutinesExpanded = !dayPlanRoutinesExpanded; renderDaySchedule(); });
-  $("#openDayPlan")?.addEventListener("click", openDayPlanDialog);
-  $$("#reflectionTabs [data-reflection-tab]").forEach(button => button.addEventListener("click", () => { reflectionTab = button.dataset.reflectionTab; renderReflectionTabs(); }));
-  $("#reflectionFocusStart")?.addEventListener("click", () => { if (!focusTimer?.snapshot()) handleFocusQuickPrimary(); setFocusPanelOpen(true); });
-  $("#reflectionFocusSettings")?.addEventListener("click", () => openFocusTimerDialog());
-  $("#todayMonthPrev")?.addEventListener("click", () => { todayMonthCursor?.setMonth(todayMonthCursor.getMonth() - 1); renderTodayMonthView(); });
-  $("#todayMonthNext")?.addEventListener("click", () => { todayMonthCursor?.setMonth(todayMonthCursor.getMonth() + 1); renderTodayMonthView(); });
-  $$("#todayMonthViewSwitch [data-calendar-view]").forEach(button => button.addEventListener("click", () => { setCalendarViewMode(button.dataset.calendarView); renderTodayMonthView(); }));
-  // Toolbar quick controls (web): back to today, light/dark, language — always one click away.
-  $("#toolbarTodayButton")?.addEventListener("click", goToToday);
-  $("#toolbarThemeToggle")?.addEventListener("click", () => {
-    const resolved = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    themeChoice = resolved === "dark" ? "light" : "dark";
-    localStorage.setItem(THEME_KEY, themeChoice);
-    applyTheme();
-  });
-  $("#toolbarLanguage")?.addEventListener("change", event => applyLanguageChoice(event.target.value));
-  $("#languageSelect")?.addEventListener("change", event => {
-    applyLanguageChoice(event.target.value);
-    confirmSettingsChange();
-  });
-  $$(".nav-item").forEach(button => button.addEventListener("click", () => switchToView(button.dataset.view)));
-  $("#timelinePreviousMonth")?.addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() - 1); void renderTimeline(); });
-  $("#timelineNextMonth")?.addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() + 1); void renderTimeline(); });
-  $("#prevMonth")?.addEventListener("click", () => {
-    if ($("#timelineView")?.classList.contains("active")) timelineCursor.setMonth(timelineCursor.getMonth() - 1);
-    else cursor.setMonth(cursor.getMonth() - 1);
+  $("#languageSelect").addEventListener("change", event => {
+    currentLang = event.target.value;
+    localStorage.setItem(LANGUAGE_KEY, currentLang);
+    localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
+    const url = new URL(location.href);
+    url.searchParams.set("lang", currentLang);
+    history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    document.body.classList.remove("language-changing");
+    void document.body.offsetWidth;
+    document.body.classList.add("language-changing");
+    voiceReflection?.setLanguage(currentLang);
     renderAll();
-    void loadGoogleCalendarMonth($("#timelineView")?.classList.contains("active") ? timelineCursor : cursor);
+    if ($("#dayDrawer").classList.contains("open")) renderDrawer();
+    window.setTimeout(() => document.body.classList.remove("language-changing"), 260);
   });
-  $("#nextMonth")?.addEventListener("click", () => {
-    if ($("#timelineView")?.classList.contains("active")) timelineCursor.setMonth(timelineCursor.getMonth() + 1);
-    else cursor.setMonth(cursor.getMonth() + 1);
-    renderAll();
-    void loadGoogleCalendarMonth($("#timelineView")?.classList.contains("active") ? timelineCursor : cursor);
-  });
+  $$(".nav-item").forEach(button => button.addEventListener("click", () => {
+    $$(".nav-item").forEach(b => b.classList.toggle("active", b === button));
+    $$(".view").forEach(v => v.classList.remove("active"));
+    $(`#${button.dataset.view}View`).classList.add("active");
+    document.body.dataset.activeView = button.dataset.view;
+    $("#viewTitle").textContent = tr(`viewTitles.${button.dataset.view}`);
+    if (button.dataset.view === "week") renderWeeklyWorkspace();
+    if (button.dataset.view === "timeline") void renderTimeline();
+    if (button.dataset.view === "review") renderReview();
+  }));
+  $("#timelinePreviousMonth").addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() - 1); void renderTimeline(); });
+  $("#timelineNextMonth").addEventListener("click", () => { timelineCursor.setMonth(timelineCursor.getMonth() + 1); void renderTimeline(); });
+  $("#sidebarLongTermOpen").addEventListener("click", openLongTermWorkspace);
+  $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
+  $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
-  $("#openFocusTimer")?.addEventListener("click", () => openFocusTimerDialog());
+  $("#todayButton").addEventListener("click", () => {
+    cursor = new Date();
+    cursor.setHours(12, 0, 0, 0);
+    selectedPlanningDate = isoDate(cursor);
+    setDailyToolPage("journal", { smooth: false });
+    renderAll();
+    void loadGoogleCalendarMonth(cursor);
+  });
+  $("#previousHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage - 1));
+  $("#nextHabitPage").addEventListener("click", () => setTodayHabitPage(todayHabitPage + 1));
+  $$('[data-daily-tool]').forEach(button => button.addEventListener("click", () => setDailyToolPage(button.dataset.dailyTool)));
+  $$('[data-daily-tool-page]').forEach(button => button.addEventListener("click", () => setDailyToolPage(button.dataset.dailyToolPage)));
+  $("#focusMiniStatus").addEventListener("click", () => setDailyToolPage("focus"));
+  $("#dailyToolViewport").addEventListener("scroll", () => {
+    cancelAnimationFrame(dailyToolScrollFrame);
+    dailyToolScrollFrame = requestAnimationFrame(syncDailyToolPageFromScroll);
+  }, { passive: true });
+  $("#dailyToolViewport").addEventListener("keydown", event => {
+    if (event.target !== event.currentTarget || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+    event.preventDefault();
+    setDailyToolPage(event.key === "ArrowRight" ? "focus" : "journal");
+  });
+  $("#openFocusTimer").addEventListener("click", () => openFocusTimerDialog());
   $$('[data-quick-focus-preset]').forEach(button => button.addEventListener("click", () => selectQuickFocusPreset(button.dataset.quickFocusPreset)));
-  $("#focusQuickPrimary")?.addEventListener("click", handleFocusQuickPrimary);
-  $("#focusQuickFinish")?.addEventListener("click", handleFocusFinish);
-  $("#focusQuickSkip")?.addEventListener("click", handleFocusCancel);
-  $("#focusPanel")?.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      event.stopPropagation();
-      setFocusPanelOpen(false);
-      return;
-    }
-    if (event.code === "Space" || event.key === " ") {
-      const tag = document.activeElement?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-      event.preventDefault();
-      handleFocusQuickPrimary();
-    }
-  });
-  $$("#insightViewSwitch [data-insight-view]").forEach(button => button.addEventListener("click", () => setInsightView(button.dataset.insightView)));
-  $("#focusMiniExpand")?.addEventListener("click", () => setFocusPanelOpen(true));
-  $("#focusMiniPrimary")?.addEventListener("click", handleFocusQuickPrimary);
-  $("#focusMiniFinish")?.addEventListener("click", handleFocusFinish);
-  $("#focusMiniSkip")?.addEventListener("click", handleFocusCancel);
-  $("#journalComposerSave")?.addEventListener("click", () => {
-    const field = $("#journalQuickNote");
-    if (!field) return;
-    const date = field.dataset.date || selectedTimelineDate || isoDate(new Date());
-    runSubmitButton($("#journalComposerSave"), () => {
-      state.logs[date] = { ...getLog(date), note: field.value };
-      saveState();
-      const status = $("#journalQuickSave");
-      if (status) {
-        delete status.dataset.pending;
-        status.textContent = languageText("已保存", "Saved", "Gespeichert");
-      }
-      selectedTimelineDate = date;
-      if ($("#timelineView")?.classList.contains("active")) {
-        renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
-        void renderTimelineDetail();
-      }
-    });
-  });
-  $("#journalQuickNote")?.addEventListener("input", event => {
-    const field = event.currentTarget;
-    const date = field.dataset.date || selectedTimelineDate || isoDate(new Date());
-    const status = $("#journalQuickSave");
-    if (status) {
-      status.dataset.pending = "1";
-      status.textContent = languageText("正在保存", "Saving", "Speichert");
-    }
-    window.clearTimeout(journalSaveTimer);
-    journalSaveTimer = window.setTimeout(() => {
-      state.logs[date] = { ...getLog(date), note: field.value };
-      saveState();
-      if (status) {
-        delete status.dataset.pending;
-        status.textContent = languageText("已保存", "Saved", "Gespeichert");
-      }
-      selectedTimelineDate = date;
-      if ($("#timelineView")?.classList.contains("active")) {
-        renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
-        void renderTimelineDetail();
-      }
-    }, 280);
+  $("#focusQuickPrimary").addEventListener("click", handleFocusQuickPrimary);
+  $("#focusQuickFinish").addEventListener("click", () => focusTimer?.endFocus("finishedEarly"));
+  $("#focusQuickSkip").addEventListener("click", () => {
+    focusTimer?.skipBreak();
+    releaseFocusWakeLock();
   });
   $$(".close-focus-dialog").forEach(button => button.addEventListener("click", () => $("#focusDialog").close()));
   $("#focusDialog").addEventListener("cancel", event => {
@@ -8980,12 +4569,12 @@ function bindEvents() {
   $$('[data-focus-preset]').forEach(button => button.addEventListener("click", () => selectFocusPreset(button.dataset.focusPreset)));
   $("#focusPrimary").addEventListener("click", handleFocusPrimary);
   $("#focusFinish").addEventListener("click", () => {
-    handleFocusFinish();
+    focusTimer?.endFocus("finishedEarly");
     $("#focusDialog").close();
   });
   $("#focusInterrupt").addEventListener("click", () => {
     if (!window.confirm(tr("focus.confirmEnd"))) return;
-    handleFocusCancel();
+    focusTimer?.endFocus("interrupted");
     $("#focusDialog").close();
   });
   $("#focusSkipBreak").addEventListener("click", () => {
@@ -8993,9 +4582,44 @@ function bindEvents() {
     releaseFocusWakeLock();
     $("#focusDialog").close();
   });
+  $("#todayHabitViewport").addEventListener("scroll", () => {
+    cancelAnimationFrame(habitCarouselScrollFrame);
+    habitCarouselScrollFrame = requestAnimationFrame(syncHabitCarouselPageFromScroll);
+  }, { passive: true });
+  $("#todayHabitViewport").addEventListener("keydown", event => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (event.target.closest(".habit-card")) return;
+    event.preventDefault();
+    setTodayHabitPage(todayHabitPage + (event.key === "ArrowRight" ? 1 : -1));
+  });
+  $("#todayHabitViewport").addEventListener("pointerdown", event => {
+    if (event.pointerType !== "mouse" || event.button !== 0 || event.target.closest(".habit-card")) return;
+    const viewport = event.currentTarget;
+    habitCarouselDrag = { pointerId: event.pointerId, startX: event.clientX, startScroll: viewport.scrollLeft, moved: false };
+    viewport.setPointerCapture(event.pointerId);
+    viewport.classList.add("dragging");
+  });
+  $("#todayHabitViewport").addEventListener("pointermove", event => {
+    if (!habitCarouselDrag || event.pointerId !== habitCarouselDrag.pointerId) return;
+    const delta = event.clientX - habitCarouselDrag.startX;
+    if (Math.abs(delta) > 5) habitCarouselDrag.moved = true;
+    if (habitCarouselDrag.moved) event.currentTarget.scrollLeft = habitCarouselDrag.startScroll - delta;
+  });
+  const finishHabitDrag = event => {
+    if (!habitCarouselDrag || event.pointerId !== habitCarouselDrag.pointerId) return;
+    const viewport = event.currentTarget;
+    suppressHabitCardClick = habitCarouselDrag.moved;
+    viewport.classList.remove("dragging");
+    if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
+    habitCarouselDrag = null;
+    setTodayHabitPage(Math.round(viewport.scrollLeft / Math.max(1, viewport.clientWidth)));
+    window.setTimeout(() => { suppressHabitCardClick = false; }, 0);
+  };
+  $("#todayHabitViewport").addEventListener("pointerup", finishHabitDrag);
+  $("#todayHabitViewport").addEventListener("pointercancel", finishHabitDrag);
   $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(selectedPlanningDate, b.dataset.mood)));
   $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood)));
-  $("#inspectorMoodReason")?.addEventListener("click", () => {
+  $("#quickMoodReason").addEventListener("click", () => {
     const date = selectedPlanningDate;
     const log = getLog(date);
     if (log.mood) openMoodReasonDialog(date, log.mood);
@@ -9014,6 +4638,13 @@ function bindEvents() {
     event.preventDefault();
     closeMoodReasonDialog();
   });
+  $("#previousPlanDay").addEventListener("click", () => shiftPlanningDay(-1));
+  $("#nextPlanDay").addEventListener("click", () => shiftPlanningDay(1));
+  $("#toggleRoutineEvents").addEventListener("click", () => {
+    dayPlanRoutinesExpanded = !dayPlanRoutinesExpanded;
+    renderDaySchedule();
+  });
+  $("#openDayPlan").addEventListener("click", openDayPlanDialog);
   $$(".close-day-plan").forEach(button => button.addEventListener("click", () => $("#dayPlanDialog").close()));
   $("#dayPlanDialog").addEventListener("cancel", event => { event.preventDefault(); $("#dayPlanDialog").close(); });
   $("#calendarConnectionButton").addEventListener("click", openGoogleCalendarSettings);
@@ -9074,22 +4705,21 @@ function bindEvents() {
     renderReview();
   }));
   $("#addPeriodTarget").addEventListener("click", () => openHabitDialog());
-  $("#openWeeklyReviewCanvas").addEventListener("click", () => runSubmitButton($("#openWeeklyReviewCanvas"), () => openReviewCanvas("week")));
-  $("#generateReview").addEventListener("click", () => runSubmitButton($("#generateReview"), () => openReviewCanvas("month")));
+  $("#openWeeklyReviewCanvas").addEventListener("click", () => openReviewCanvas("week"));
+  $("#generateReview").addEventListener("click", () => openReviewCanvas("month"));
   $$('[data-review-scope]').forEach(button => button.addEventListener("click", () => setReviewCanvasScope(button.dataset.reviewScope)));
   $("#reviewCanvasWeek").addEventListener("change", event => { reviewCanvasKey = event.target.value || selectedWorkspaceWeek; renderReviewCanvas(); });
   $("#reviewCanvasMonth").addEventListener("change", event => { reviewCanvasKey = event.target.value || monthKey(cursor); renderReviewCanvas(); });
-  $("#regenerateReviewCanvas").addEventListener("click", () => runSubmitButton($("#regenerateReviewCanvas"), () => regenerateReviewCanvas()));
+  $("#regenerateReviewCanvas").addEventListener("click", regenerateReviewCanvas);
   $("#reviewCanvasText").addEventListener("input", event => { reviewCanvasStore()[reviewCanvasKey] = event.target.value; saveState(); });
-  $("#copyReviewCanvas").addEventListener("click", () => {
+  $("#copyReviewCanvas").addEventListener("click", async () => {
     const text = $("#reviewCanvasText").value;
-    runSubmitButton($("#copyReviewCanvas"), async () => {
-      try { await navigator.clipboard.writeText(text); }
-      catch {
-        $("#reviewCanvasText").select();
-        document.execCommand("copy");
-      }
-    }, { done: tr("reviewCanvas.copied") });
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      $("#reviewCanvasText").select();
+      document.execCommand("copy");
+    }
+    showToast(tr("reviewCanvas.copied"));
   });
   $$(".close-review-canvas").forEach(button => button.addEventListener("click", () => $("#reviewCanvasDialog").close()));
   $("#reviewCanvasDialog").addEventListener("cancel", event => { event.preventDefault(); $("#reviewCanvasDialog").close(); });
@@ -9103,7 +4733,6 @@ function bindEvents() {
     input.value = ""; saveState(); renderWeeklyWorkspace(); showToast(tr("week.added"));
   });
   $$('[data-goal-horizon]').forEach(button => button.addEventListener("click", () => {
-    if (button.dataset.goalHorizon==='long') {openLongTermWorkspace();return;}
     goalHorizon = button.dataset.goalHorizon === "long" ? "long" : "week";
     applyGoalHorizon();
   }));
@@ -9118,64 +4747,22 @@ function bindEvents() {
     autoGrowTextarea(event.target);
     $("#weeklyOutputStatus").textContent = event.target.value.trim() ? tr("week.outputStatus", { count: event.target.value.trim().length }) : tr("week.outputEmpty");
   });
-  $('#weekCalendarConnect').addEventListener('click',openGoogleCalendarSettings);
-  $('#weekArchiveLink').addEventListener('click',()=>{selectedArchiveWeek=selectedWorkspaceWeek;$('#journalMonthFilter').value=isoDate(weekDatesFromKey(selectedWorkspaceWeek).monday).slice(0,7);setJournalMode('weeks');switchToView('timeline');});
-  $("#inspectorOpenWeeklyReviewCanvas")?.addEventListener("click", () => runSubmitButton($("#inspectorOpenWeeklyReviewCanvas"), () => openReviewCanvas("week")));
-  $("#habitInspectorForm")?.addEventListener("submit", saveHabitFromInspector);
-  $("#habitInspectorForm")?.elements.frequency?.addEventListener("change", updateHabitInspectorRules);
-  $$('#habitInspectorForm input[name="trackingMode"]').forEach(input => input.addEventListener("change", updateHabitInspectorRules));
-  $("#inspectorIconPickerTrigger")?.addEventListener("click", () => {
-    const popover = $("#inspectorIconPickerPopover");
-    const trigger = $("#inspectorIconPickerTrigger");
-    if (!popover || !trigger) return;
-    const opening = popover.hidden;
-    popover.hidden = !opening;
-    trigger.setAttribute("aria-expanded", String(opening));
+  $("#previousWorkspaceWeek").addEventListener("click", () => {
+    selectedWorkspaceWeek = shiftWeekKey(selectedWorkspaceWeek, -1);
+    renderWeeklyWorkspace();
   });
-  $("#inspectorDeleteHabitButton")?.addEventListener("click", deleteHabitFromInspector);
-  $$("#habitContextMenu [data-habit-context]").forEach(button => button.addEventListener("click", () => handleHabitContextAction(button.dataset.habitContext)));
-  document.addEventListener("click", event => {
-    if (!event.target.closest("#habitContextMenu")) closeHabitContextMenu();
+  $("#nextWorkspaceWeek").addEventListener("click", () => {
+    selectedWorkspaceWeek = shiftWeekKey(selectedWorkspaceWeek, 1);
+    renderWeeklyWorkspace();
   });
-  document.addEventListener("keydown", event => {
-    if (!habitContextMenu.open) return;
-    const menu = $("#habitContextMenu");
-    const items = [...$$("#habitContextMenu [role='menuitem']")];
-    const index = items.indexOf(document.activeElement);
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeHabitContextMenu();
-      return;
-    }
-    if (event.key === "ArrowDown" && items.length) {
-      event.preventDefault();
-      items[(index + 1 + items.length) % items.length]?.focus();
-    }
-    if (event.key === "ArrowUp" && items.length) {
-      event.preventDefault();
-      items[(index - 1 + items.length) % items.length]?.focus();
-    }
+  $("#currentWorkspaceWeek").addEventListener("click", () => {
+    const currentKey = isoWeekKey(new Date());
+    if (selectedWorkspaceWeek === currentKey) return;
+    selectedWorkspaceWeek = currentKey;
+    renderWeeklyWorkspace();
   });
-  $("#exportButton")?.addEventListener("click", openBackupDialog);
-  const backupTabs = $$('[data-backup-tab]');
-  backupTabs.forEach(button => {
-    button.addEventListener("click", () => setBackupTab(button.dataset.backupTab));
-    button.addEventListener("keydown", event => {
-      const tabs = [...$$('[data-backup-tab]')];
-      const index = tabs.indexOf(button);
-      let nextIndex = -1;
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % tabs.length;
-      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + tabs.length) % tabs.length;
-      else if (event.key === "Home") nextIndex = 0;
-      else if (event.key === "End") nextIndex = tabs.length - 1;
-      if (nextIndex >= 0) {
-        event.preventDefault();
-        const nextTab = tabs[nextIndex];
-        setBackupTab(nextTab.dataset.backupTab);
-        nextTab.focus();
-      }
-    });
-  });
+  $("#exportButton").addEventListener("click", openBackupDialog);
+  $$('[data-backup-tab]').forEach(button => button.addEventListener("click", () => setBackupTab(button.dataset.backupTab)));
   $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";
   $("#cloudAccountButton").addEventListener("click", openCloudBaseAuth);
   $$(".close-cloudbase-auth").forEach(button => button.addEventListener("click", () => $("#cloudbaseAuthDialog").close()));
@@ -9281,7 +4868,7 @@ function bindEvents() {
     clearImportSelection();
     $("#exportDialog").close();
   }));
-  $("#saveMode")?.addEventListener("click", () => {
+  $("#saveMode").addEventListener("click", () => {
     if (!authExpired) return;
     if (cloudProvider === "cloudbase") openCloudBaseAuth();
     else location.reload();
@@ -9294,7 +4881,6 @@ function bindEvents() {
     if (!document.hidden) {
       maybeSendDailyReminder();
       if (focusTimer?.snapshot()?.status === "running") acquireFocusWakeLock();
-      void reconcileWidgetMutations();
     }
   });
   window.addEventListener("beforeinstallprompt", event => {
@@ -9314,11 +4900,7 @@ function bindEvents() {
     syncExportButtonPlacement();
     syncMobileToolbar();
     autoGrowTextarea($("#weeklyOutputText"));
-    maybeAutoGrowHomeDayNote();
-    if (window.matchMedia("(max-width: 1179px)").matches && !inspectorCollapsed) {
-      inspectorCollapsed = true;
-      applyInspectorState();
-    }
+    setDailyToolPage(dailyToolPage, { smooth: false });
   }, { passive: true });
   document.addEventListener("pointerdown", event => {
     if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;
@@ -9328,25 +4910,8 @@ function bindEvents() {
     if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;
     closeHabitPickers();
   });
-  document.addEventListener("pointerdown", event => {
-    const popover = $("#datePopover");
-    if (!popover || popover.hidden) return;
-    if (event.target.closest("#datePopover, #dateNavLabel")) return;
-    setDatePopoverOpen(false);
-  });
   document.addEventListener("keydown", e => {
     if (e.key !== "Escape") return;
-    const popover = $("#datePopover");
-    if (popover && !popover.hidden) {
-      e.preventDefault();
-      setDatePopoverOpen(false);
-      return;
-    }
-    if (habitContextMenu.open) {
-      e.preventDefault();
-      closeHabitContextMenu();
-      return;
-    }
     const pickerOpen = [$("#iconPickerPopover"), $("#colorPickerPopover")].some(panel => panel && !panel.hidden);
     if (pickerOpen) {
       e.preventDefault();
@@ -9358,64 +4923,7 @@ function bindEvents() {
   }, true);
 }
 
-function isEditableTarget(target) {
-  return Boolean(target?.closest?.("input, textarea, select, [contenteditable='true']"));
-}
-function navigateToolbarDate(amount) {
-  const view = document.body.dataset.activeView || "today";
-  if (view === "today") {
-    shiftPlanningDay(amount);
-    return;
-  }
-  animateMainContentShift(amount);
-  if (view === "week") {
-    selectedWorkspaceWeek = shiftWeekKey(selectedWorkspaceWeek, amount);
-    renderWeeklyWorkspace();
-    renderToolbarDateNav();
-  } else if (view === "timeline") {
-    timelineCursor.setMonth(timelineCursor.getMonth() + amount);
-    void renderTimeline();
-    renderToolbarDateNav();
-  } else if (view === "review") {
-    cursor.setMonth(cursor.getMonth() + amount);
-    renderAll();
-    void loadGoogleCalendarMonth(cursor);
-  }
-}
-function initWebShortcuts() {
-  if (desktopMode === "tauri-local" || desktopMode === "tauri-cloud") return;
-  document.addEventListener("keydown", event => {
-    const mod = event.metaKey || event.ctrlKey;
-    if (!mod || event.repeat || isEditableTarget(event.target)) return;
-    if (/^[1-5]$/.test(event.key)) {
-      event.preventDefault();
-      switchToView(DESKTOP_SHORTCUT_VIEWS[Number(event.key) - 1], { animate: false });
-      return;
-    }
-    if (!event.shiftKey && event.key.toLowerCase() === "b") {
-      event.preventDefault();
-      toggleSidebar();
-      return;
-    }
-    if (!event.shiftKey && event.key === ",") {
-      event.preventDefault();
-      openSettings();
-      return;
-    }
-    if (!event.shiftKey && event.key.toLowerCase() === "f") {
-      event.preventDefault();
-      $("#quickFind")?.focus({ preventScroll: true });
-    }
-  });
-}
-async function initMenuBridge() {
-  if (desktopMode !== "tauri-local" && desktopMode !== "tauri-cloud") return;
-  const listen = window.__TAURI__?.event?.listen;
-  if (!listen) return;
-  await listen("menu://action", event => handleMenuAction(String(event.payload || "")));
-}
-initAppShell(); syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); initModuleBoards(); renderAll(); armReminderClock(); void initMenuBridge(); initWebShortcuts(); initWidgetBridge();
-if (new URLSearchParams(location.search).get("settings") === "1") openSettings();
+syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); bindPointerMotion(); renderAll(); armReminderClock();
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }
@@ -9454,26 +4962,7 @@ async function initializeCloudSync() {
   }
 }
 initializeCloudSync();
-async function retireDesktopServiceWorker() {
-  if ("serviceWorker" in navigator) {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(registrations.map(registration => registration.unregister()));
-  }
-  if (typeof caches !== "undefined" && caches.keys) {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith("life-ledger-pwa-")).map(key => caches.delete(key)));
-  }
-}
-if (document.documentElement.dataset.desktop === "tauri-local") {
-  window.addEventListener("load", () => {
-    retireDesktopServiceWorker().catch(error => console.warn("Desktop service worker retirement failed", error));
-  });
-} else if (new URLSearchParams(location.search).get("preview") === "local" && ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname)) {
-  // This isolated preview origin must not keep showing an earlier cached UI.
-  window.addEventListener("load", () => {
-    retireDesktopServiceWorker().catch(error => console.warn("Local preview cache cleanup failed", error));
-  });
-} else if ("serviceWorker" in navigator && location.protocol !== "file:") {
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
       .then(registration => registration.update())
