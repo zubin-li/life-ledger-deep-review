@@ -4,14 +4,16 @@
 // No card content leaking out of its frame or onto a neighbour.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chromium } from 'playwright';
+// Browser tests skip where Playwright is not installed (CI runs npm ci without it), like today-layout-interaction.
+const { chromium } = await import('playwright').catch(() => ({}));
+const skip = !chromium;
 import { startStaticServer } from '../scripts/evidence/server.mjs';
 import { applyFixture, FIXTURE_DATE } from '../scripts/evidence/fixture.mjs';
 
 const publicDir = new URL('../public', import.meta.url).pathname;
 const DEFAULT_ORDER = ['summary', 'mood', 'weather', 'habits', 'dayplan', 'reflection', 'calendar'];
 
-test('Web Today: classic sections as widgets, no S/M/L, no overflow or overlap at 1440/1180/800/390', async () => {
+test('Web Today: classic sections as widgets, no S/M/L, no overflow or overlap at 1440/1180/800/390', { skip }, async () => {
   const server = await startStaticServer(publicDir), browser = await chromium.launch({ headless: true });
   try {
     for (const width of [1440, 1180, 800, 390]) {
@@ -56,7 +58,7 @@ test('Web Today: classic sections as widgets, no S/M/L, no overflow or overlap a
   } finally { await browser.close(); await server.close(); }
 });
 
-test('Web Today grid: stores order + size only; resize, remove, undo, Escape and reset act on that list', async () => {
+test('Web Today grid: stores order + size only; resize, remove, undo, Escape and reset act on that list', { skip }, async () => {
   const server = await startStaticServer(publicDir), browser = await chromium.launch({ headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } }), errors = [];

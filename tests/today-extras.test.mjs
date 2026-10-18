@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chromium } from 'playwright';
+// Browser tests skip where Playwright is not installed (CI runs npm ci without it), like today-layout-interaction.
+const { chromium } = await import('playwright').catch(() => ({}));
+const skip = !chromium;
 import { startStaticServer } from '../scripts/evidence/server.mjs';
 import { applyFixture, FIXTURE_DATE } from '../scripts/evidence/fixture.mjs';
 
@@ -38,7 +40,7 @@ async function configure(page,type) {
   await page.locator('#widgetSettings').waitFor({state:'visible'});
 }
 
-test('Content-specific sizing preserves the confirmed compact composition and stays editable',()=>open(async page=>{
+test('Content-specific sizing preserves the confirmed compact composition and stays editable', { skip },()=>open(async page=>{
   const heroWidth=await page.locator('[data-module="summary"]').evaluate(card=>({card:card.getBoundingClientRect().width,hero:card.querySelector('.today-summary-hero').getBoundingClientRect().width}));
   assert.ok(heroWidth.hero>=heroWidth.card-2,'Independent mood must not leave an empty half in the Large welcome card');
   const before=await page.locator('[data-module="mood"]').boundingBox();
@@ -68,7 +70,7 @@ test('Content-specific sizing preserves the confirmed compact composition and st
   assert.equal(await page.locator('#standaloneMood #quickMood').count(),1,'The original controls still exist without duplication');
 }));
 
-test('Habit heatmap uses eight real completion levels and persists its palette',()=>open(async page=>{
+test('Habit heatmap uses eight real completion levels and persists its palette', { skip },()=>open(async page=>{
   await show(page,'heatmap');
   const before=await page.locator(`.heatmap-day[data-date="${FIXTURE_DATE}"]`).getAttribute('data-level');
   assert.equal(before,'2','One of four completed maps to level 2/8');
@@ -85,7 +87,7 @@ test('Habit heatmap uses eight real completion levels and persists its palette',
   assert.equal(await page.locator('#heatmapPalette').inputValue(),'spectrum');
 }));
 
-test('Card configuration and movement are edit-only; Escape closes only the settings sheet',()=>open(async page=>{
+test('Card configuration and movement are edit-only; Escape closes only the settings sheet', { skip },()=>open(async page=>{
   await show(page,'heatmap');
   const card=page.locator('[data-module="heatmap"]');
   const before=await page.evaluate(()=>JSON.stringify(window.LifeLedgerLayoutEngine.getLayout()));
@@ -112,7 +114,7 @@ test('Card configuration and movement are edit-only; Escape closes only the sett
   assert.equal(await page.evaluate(()=>window.LifeLedgerLayoutEngine.getLayout().widgets.find(w=>w.type==='heatmap').settings.palette),'blue');
 }));
 
-test('Optional cards fit S, M, landscape L and square L at wide and narrow desktop widths',()=>open(async page=>{
+test('Optional cards fit S, M, landscape L and square L at wide and narrow desktop widths', { skip },()=>open(async page=>{
   const types=['heatmap','wall','weather'];
   for(const width of [1440,1180]) {
     await page.setViewportSize({width,height:1000});
@@ -139,7 +141,7 @@ test('Optional cards fit S, M, landscape L and square L at wide and narrow deskt
   }
 }));
 
-test('Weather city search, hourly scrubbing, rain/snow hint and offline cache',()=>open(async page=>{
+test('Weather city search, hourly scrubbing, rain/snow hint and offline cache', { skip },()=>open(async page=>{
   let weatherCalls=0;
   await page.route(/https:\/\/(geocoding-api|api)\.open-meteo\.com\//,route=>{
     const url=route.request().url();if(url.includes('/forecast'))weatherCalls++;
@@ -171,7 +173,7 @@ test('Weather city search, hourly scrubbing, rain/snow hint and offline cache',(
   }
 }));
 
-test('Widget library contains all existing widgets without hidden edit-grid placeholders',()=>open(async page=>{
+test('Widget library contains all existing widgets without hidden edit-grid placeholders', { skip },()=>open(async page=>{
   await page.locator('#editLayoutToggle').click();
   assert.equal(await page.locator('#todayView > [data-module]:not([hidden])').count(),8);
   assert.equal(await page.locator('#todayView .is-widget-hidden').count(),0);
@@ -191,7 +193,7 @@ test('Widget library contains all existing widgets without hidden edit-grid plac
   assert.equal(await page.locator('[data-module="wall"]').isVisible(),false,'Removal is persisted');
 }));
 
-test('Weather chart uses city-local day labels and never mixes next-day temperatures into today’s range',()=>open(async page=>{
+test('Weather chart uses city-local day labels and never mixes next-day temperatures into today’s range', { skip },()=>open(async page=>{
   const result=await page.evaluate(forecast=>{
     const data=structuredClone(forecast);data.current.time='2026-10-02T00:30';
     data.hourly.temperature_2m=data.hourly.temperature_2m.map((temp,i)=>i>=24?70:temp);
@@ -203,7 +205,7 @@ test('Weather chart uses city-local day labels and never mixes next-day temperat
   assert.equal(result.hours.at(-1).time,'2026-10-03T00:00');
 }));
 
-test('Photo wall persists images, GIFs and playable video; reduced motion stops playback',()=>open(async page=>{
+test('Photo wall persists images, GIFs and playable video; reduced motion stops playback', { skip },()=>open(async page=>{
   await show(page,'wall');await page.locator('#wallCount').filter({hasText:'0 / 0'}).waitFor();
   await page.locator('#wallFiles').setInputFiles(new URL('../public/assets/weekly-minimal-still-life-v2.jpg',import.meta.url).pathname);
   await page.waitForFunction(()=>document.querySelector('#wallCount').textContent==='1 / 1');
