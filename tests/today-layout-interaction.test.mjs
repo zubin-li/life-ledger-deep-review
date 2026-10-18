@@ -10,6 +10,13 @@ const hasPlaywright = await import("playwright")
   .then(() => true)
   .catch(() => false);
 
+async function cardSetting(page,type,field,value){
+  await page.locator(`[data-module="${type}"] .widget-configure`).click();
+  if(field==='size')await page.locator('#widgetSettingsSize').selectOption(value);
+  else await page.locator('#widgetSettingsVisible').setChecked(value);
+  await page.locator('#widgetSettingsClose').click();
+}
+
 test(
   "Today 2.0 layout: edit mode, 2D drag, discrete S/M/L, keyboard move, undo, reset, and persistence",
   { skip: !hasPlaywright, timeout: 60_000 },
@@ -49,7 +56,8 @@ test(
         }));
       });
 
-      assert.equal(initialCards.length, 7, "All 7 Today modules must exist");
+      assert.equal(initialCards.length, 12, "Core and optional Today modules must exist");
+      assert.equal(initialCards.find(c => c.module === "dayplan")?.hidden, true, "The web-only day plan stays out of the desktop app");
       const summaryCard = initialCards.find(c => c.module === "summary");
       assert.equal(summaryCard?.size, "large");
       assert.equal(summaryCard?.hidden, false);
@@ -86,7 +94,7 @@ test(
             height: rect.height,
           };
         }));
-      assert.equal(resizeHandles.length, 7, "Every visible Today card must expose a resize handle in edit mode");
+      assert.equal(resizeHandles.length, 8, "Every added card exposes a real resize handle, including welcome and mood");
       for (const handle of resizeHandles) {
         assert.ok(handle.name, "Every resize handle must have an accessible name");
         assert.ok(handle.width >= 44, "Resize handle pointer target must be at least 44px wide");
@@ -105,39 +113,38 @@ test(
       assert.equal(toolbarButtonsVisible.resetVisible, true, "Reset button visible in edit mode");
 
       // 4. Test discrete S/M/L switching
-      // Switch summary card from Large to Small
-      const summarySmallBtn = page.locator('[data-module="summary"] .widget-size-btn[data-size="small"]');
-      await summarySmallBtn.click();
+      // Switch habits card from the compact default to Small.
+      await cardSetting(page,'habits','size','small');
       await page.waitForTimeout(150);
 
-      const summaryAfterSmall = await page.evaluate(() => {
-        const c = document.querySelector('[data-module="summary"]');
+      const habitsAfterSmall = await page.evaluate(() => {
+        const c = document.querySelector('[data-module="habits"]');
         return {
           size: c.dataset.widgetSize,
           gridW: c.style.getPropertyValue("--grid-w"),
           gridH: c.style.getPropertyValue("--grid-h"),
         };
       });
-      assert.equal(summaryAfterSmall.size, "small");
-      assert.equal(summaryAfterSmall.gridW, "4");
-      assert.equal(summaryAfterSmall.gridH, "1");
+      assert.equal(habitsAfterSmall.size, "small");
+      assert.equal(habitsAfterSmall.gridW, "4");
+      assert.equal(habitsAfterSmall.gridH, "1");
 
       // 5. Test undo: reverting size change
       const undoBtn = page.locator("#undoLayoutButton");
       await undoBtn.click();
       await page.waitForTimeout(150);
 
-      const summaryAfterUndo = await page.evaluate(() => {
-        const c = document.querySelector('[data-module="summary"]');
+      const habitsAfterUndo = await page.evaluate(() => {
+        const c = document.querySelector('[data-module="habits"]');
         return {
           size: c.dataset.widgetSize,
           gridW: c.style.getPropertyValue("--grid-w"),
           gridH: c.style.getPropertyValue("--grid-h"),
         };
       });
-      assert.equal(summaryAfterUndo.size, "large");
-      assert.equal(summaryAfterUndo.gridW, "8");
-      assert.equal(summaryAfterUndo.gridH, "2");
+      assert.equal(habitsAfterUndo.size, "medium");
+      assert.equal(habitsAfterUndo.gridW, "8");
+      assert.equal(habitsAfterUndo.gridH, "1");
 
       // 6. Test keyboard movement (Arrow keys) and sizing (S/M/L keys) on drag handle
       const focusHandle = page.locator('[data-module="focus"] .widget-drag-handle');
@@ -151,7 +158,7 @@ test(
           gridX: c.style.getPropertyValue("--grid-x"),
         };
       });
-      // Focus was at x: 8, ArrowLeft moves by 4 to x: 4
+      // Focus starts in the right column of the approved composition.
       assert.equal(focusGridPos.gridX, "4", "ArrowLeft should shift widget x by 4 columns");
 
       // Test keyboard sizing: press M to change to medium
@@ -173,15 +180,14 @@ test(
       assert.equal(focusSizeAfterKeyS, "small", "Pressing 's' on focused handle must set size to small");
 
       // 7. Test hide / show toggle
-      const reflectionHideBtn = page.locator('[data-module="reflection"] [data-action="toggle-hide"]');
-      await reflectionHideBtn.click();
+      await cardSetting(page,'reflection','visible',false);
       await page.waitForTimeout(150);
 
       const reflectionHidden = await page.evaluate(() => {
         const c = document.querySelector('[data-module="reflection"]');
-        return c.classList.contains("is-widget-hidden");
+        return c.hidden;
       });
-      assert.equal(reflectionHidden, true, "Reflection card should be marked .is-widget-hidden in edit mode");
+      assert.equal(reflectionHidden, true, "Removed cards must leave the edit grid, not become ghost placeholders");
 
       // 8. Test Escape key cancels active edit session and restores pre-edit snapshot
       await page.keyboard.press("Escape");
@@ -202,7 +208,7 @@ test(
         };
       });
       assert.equal(reflectionAfterEscape.reflectionHidden, false, "Escape cancels edit session and restores reflection visibility");
-      assert.equal(reflectionAfterEscape.focusGridX, "8", "Escape cancels edit session and restores focus position");
+      assert.equal(reflectionAfterEscape.focusGridX, "8", "Escape restores the right-column default focus position");
 
       // Now enter edit mode again, make changes, and click Done to persist
       await page.locator("#editLayoutToggle").click();
@@ -211,7 +217,7 @@ test(
       await focusHandle2.focus();
       await page.keyboard.press("ArrowLeft");
       await page.waitForTimeout(120);
-      await page.locator('[data-module="reflection"] [data-action="toggle-hide"]').click();
+      await cardSetting(page,'reflection','visible',false);
       await page.waitForTimeout(120);
       // Click Done button to save
       await page.locator("#editLayoutToggle").click();
@@ -263,7 +269,7 @@ test(
           reflectionHidden: reflectionW?.hidden,
         };
       });
-      assert.equal(afterReset.focusX, 8, "Reset layout restores default focus x: 8");
+      assert.equal(afterReset.focusX, 8, "Reset restores the content-specific default focus position");
       assert.equal(afterReset.reflectionHidden, false, "Reset layout restores default reflection hidden: false");
 
     } finally {
@@ -308,8 +314,9 @@ test(
       const focusHandle = page.locator('[data-module="focus"] .widget-drag-handle');
       await focusHandle.scrollIntoViewIfNeeded();
 
-      // Dispatch pointerdown on the drag handle
-      await focusHandle.dispatchEvent("pointerdown", { button: 0, clientX: 100, clientY: 100, pointerId: 1 });
+      const handleBox=await focusHandle.boundingBox();
+      const pointerX=handleBox.x+handleBox.width/2,pointerY=handleBox.y+handleBox.height/2;
+      await page.mouse.move(pointerX,pointerY);await page.mouse.down();
 
       // Check that during drag, card has zero easing (transition: none) and is-dragging class
       const draggingState = await page.evaluate(() => {
@@ -323,12 +330,7 @@ test(
       assert.equal(draggingState.transition, "none", "Direct drag must have zero easing / transition: none");
 
       // Move pointer down by 240px and release
-      await page.evaluate(() => {
-        window.dispatchEvent(new PointerEvent("pointermove", { clientX: 100, clientY: 340, pointerId: 1 }));
-      });
-      await page.evaluate(() => {
-        window.dispatchEvent(new PointerEvent("pointerup", { clientX: 100, clientY: 340, pointerId: 1 }));
-      });
+      await page.mouse.move(pointerX,pointerY+160,{steps:12});await page.mouse.up();
       await page.waitForTimeout(300);
 
       const afterRelease = await page.evaluate(() => {
@@ -375,14 +377,18 @@ test(
           await page.locator("#editLayoutToggle").click();
           await page.waitForTimeout(120);
 
-          const storedSummarySize = () => page.evaluate(() => {
+          // This gesture contract starts at L, independently of the default.
+          // Choose it through the same settings UI a user would use.
+          await cardSetting(page, 'habits', 'size', 'large');
+
+          const storedHabitsSize = () => page.evaluate(() => {
             const raw = localStorage.getItem("life-ledger-layout-v2");
             if (!raw) return null;
             const layout = JSON.parse(raw);
-            return layout.widgets.find(widget => widget.type === "summary").size;
+            return layout.widgets.find(widget => widget.type === "habits").size;
           });
-          const renderedSummary = () => page.evaluate(() => {
-            const card = document.querySelector('[data-module="summary"]');
+          const renderedHabits = () => page.evaluate(() => {
+            const card = document.querySelector('[data-module="habits"]');
             const marker = card.querySelector(".widget-resize-state");
             return {
               size: card.dataset.widgetSize,
@@ -392,7 +398,7 @@ test(
             };
           });
           const beginResize = async (deltaX, deltaY) => {
-            const handle = page.locator('[data-module="summary"] > .widget-resize-handle');
+            const handle = page.locator('[data-module="habits"] > .widget-resize-handle');
             await handle.scrollIntoViewIfNeeded();
             const box = await handle.boundingBox();
             assert.ok(box, `Resize handle must be measurable at ${width}px`);
@@ -406,47 +412,47 @@ test(
 
           // Escape restores the preview without leaving edit mode or changing storage.
           await beginResize(0, -220);
-          assert.equal((await renderedSummary()).size, "medium", `Large must preview Medium at ${width}px`);
-          assert.equal(await storedSummarySize(), null, "Preview must not create a stored layout");
+          assert.equal((await renderedHabits()).size, "medium", `Large must preview Medium at ${width}px`);
+          assert.equal(await storedHabitsSize(), "large", "Preview must not change the saved Large size");
           await page.keyboard.press("Escape");
           await page.mouse.up();
-          const afterEscape = await renderedSummary();
+          const afterEscape = await renderedHabits();
           assert.equal(afterEscape.size, "large", "Escape must restore the original rendered size");
           assert.equal(afterEscape.editing, true, "Escape during resize must keep layout edit mode active");
-          assert.equal(await storedSummarySize(), null, "Escape must not persist the preview size");
+          assert.equal(await storedHabitsSize(), "large", "Escape must not persist the preview size");
 
           // pointercancel has the same no-commit behavior.
           const cancelledGesture = await beginResize(0, -220);
-          assert.equal((await renderedSummary()).size, "medium", "pointercancel setup must expose the candidate preview");
+          assert.equal((await renderedHabits()).size, "medium", "pointercancel setup must expose the candidate preview");
           await cancelledGesture.handle.dispatchEvent("pointercancel", { pointerId: 1, isPrimary: true });
           await page.mouse.up();
-          assert.equal((await renderedSummary()).size, "large", "pointercancel must restore the original rendered size");
-          assert.equal(await storedSummarySize(), null, "pointercancel must not persist the preview size");
+          assert.equal((await renderedHabits()).size, "large", "pointercancel must restore the original rendered size");
+          assert.equal(await storedHabitsSize(), "large", "pointercancel must not persist the preview size");
 
           // A real mouse-backed pointer sequence previews Medium, then commits once on release.
           await beginResize(0, -220);
-          const preview = await renderedSummary();
+          const preview = await renderedHabits();
           assert.equal(preview.size, "medium", `Vertical contraction must preview Medium at ${width}px`);
           assert.equal(preview.marker, "M", "The visible resize marker must identify the Medium candidate");
           assert.equal(preview.markerVisible, true, "The candidate marker must remain visible during manipulation");
-          assert.equal(await storedSummarySize(), null, "Pointermove must not persist the candidate");
+          assert.equal(await storedHabitsSize(), "large", "Pointermove must not persist the candidate");
           await page.mouse.up();
 
           const settlingTransition = await page.evaluate(() =>
-            document.querySelector('[data-module="summary"]').style.transition);
+            document.querySelector('[data-module="habits"]').style.transition);
           assert.doesNotMatch(settlingTransition, /\b(?:all|width|height|top|left)\b/, "Resize settle may animate only transform/opacity");
           await page.waitForTimeout(280);
-          assert.equal((await renderedSummary()).size, "medium", "Pointerup must commit the previewed Medium size");
-          assert.equal(await storedSummarySize(), "medium", "Rendered and stored sizes must match after pointerup");
+          assert.equal((await renderedHabits()).size, "medium", "Pointerup must commit the previewed Medium size");
+          assert.equal(await storedHabitsSize(), "medium", "Rendered and stored sizes must match after pointerup");
 
           // The reverse gesture reaches Large again from Medium.
           await beginResize(0, 220);
-          assert.equal((await renderedSummary()).size, "large", `Vertical expansion must preview Large at ${width}px`);
-          assert.equal(await storedSummarySize(), "medium", "Reverse preview must still leave storage unchanged");
+          assert.equal((await renderedHabits()).size, "large", `Vertical expansion must preview Large at ${width}px`);
+          assert.equal(await storedHabitsSize(), "medium", "Reverse preview must still leave storage unchanged");
           await page.mouse.up();
           await page.waitForTimeout(280);
-          assert.equal((await renderedSummary()).size, "large", "Pointerup must commit Large from Medium");
-          assert.equal(await storedSummarySize(), "large", "The reverse commit must persist Large");
+          assert.equal((await renderedHabits()).size, "large", "Pointerup must commit Large from Medium");
+          assert.equal(await storedHabitsSize(), "large", "The reverse commit must persist Large");
 
           const persistedSizes = await page.evaluate(() =>
             JSON.parse(localStorage.getItem("life-ledger-layout-v2")).widgets.map(widget => widget.size));
@@ -458,25 +464,25 @@ test(
           // One undo reverses exactly the last pointer resize transaction.
           await page.locator("#undoLayoutButton").click();
           await page.waitForTimeout(120);
-          assert.equal((await renderedSummary()).size, "medium", "A single undo must reverse one pointer resize commit");
-          assert.equal(await storedSummarySize(), "medium", "Undo must keep rendered and stored sizes aligned");
+          assert.equal((await renderedHabits()).size, "medium", "A single undo must reverse one pointer resize commit");
+          assert.equal(await storedHabitsSize(), "medium", "Undo must keep rendered and stored sizes aligned");
 
           // Horizontal intent selects between the two compact-height states in both directions.
           await beginResize(-220, 0);
-          assert.equal((await renderedSummary()).size, "small", `Horizontal contraction must preview Small at ${width}px`);
-          assert.equal(await storedSummarySize(), "medium", "Horizontal preview must leave storage unchanged");
+          assert.equal((await renderedHabits()).size, "small", `Horizontal contraction must preview Small at ${width}px`);
+          assert.equal(await storedHabitsSize(), "medium", "Horizontal preview must leave storage unchanged");
           await page.mouse.up();
           await page.waitForTimeout(280);
-          assert.equal((await renderedSummary()).size, "small", "Pointerup must commit Small from Medium");
-          assert.equal(await storedSummarySize(), "small", "The horizontal contraction must persist Small");
+          assert.equal((await renderedHabits()).size, "small", "Pointerup must commit Small from Medium");
+          assert.equal(await storedHabitsSize(), "small", "The horizontal contraction must persist Small");
 
           await beginResize(220, 0);
-          assert.equal((await renderedSummary()).size, "medium", `Horizontal expansion must preview Medium at ${width}px`);
-          assert.equal(await storedSummarySize(), "small", "Reverse horizontal preview must leave storage unchanged");
+          assert.equal((await renderedHabits()).size, "medium", `Horizontal expansion must preview Medium at ${width}px`);
+          assert.equal(await storedHabitsSize(), "small", "Reverse horizontal preview must leave storage unchanged");
           await page.mouse.up();
           await page.waitForTimeout(280);
-          assert.equal((await renderedSummary()).size, "medium", "Pointerup must commit Medium from Small");
-          assert.equal(await storedSummarySize(), "medium", "The horizontal expansion must persist Medium");
+          assert.equal((await renderedHabits()).size, "medium", "Pointerup must commit Medium from Small");
+          assert.equal(await storedHabitsSize(), "medium", "The horizontal expansion must persist Medium");
         } finally {
           await page.close().catch(() => {});
           await context.close().catch(() => {});
@@ -527,7 +533,7 @@ test(
         });
 
         assert.equal(checks.theme, theme);
-        assert.equal(checks.visibleCards, 7, `All 7 Today cards must be visible in ${theme} theme`);
+        assert.equal(checks.visibleCards, 8, `Eight default cards include the independent mood in ${theme} theme`);
       }
     } finally {
       await page?.close().catch(() => {});
@@ -582,9 +588,10 @@ test(
 
         if (motion !== "full") {
           await page.locator("#editLayoutToggle").click();
-          await page.locator('[data-module="summary"] .widget-drag-handle').focus();
+          await page.locator('[data-module="habits"] .widget-drag-handle').focus();
           await page.keyboard.press("l");
-          const resizeHandle = page.locator('[data-module="summary"] > .widget-resize-handle');
+          const resizeHandle = page.locator('[data-module="habits"] > .widget-resize-handle');
+          await resizeHandle.scrollIntoViewIfNeeded();
           const box = await resizeHandle.boundingBox();
           assert.ok(box, `${motion} motion resize handle must be measurable`);
           const x = box.x + box.width / 2;
@@ -593,19 +600,19 @@ test(
           await page.mouse.down();
           await page.mouse.move(x, y - 220, { steps: 4 });
           const preview = await page.evaluate(() => ({
-            size: document.querySelector('[data-module="summary"]').dataset.widgetSize,
-            marker: document.querySelector('[data-module="summary"] .widget-resize-state')?.textContent,
+            size: document.querySelector('[data-module="habits"]').dataset.widgetSize,
+            marker: document.querySelector('[data-module="habits"] .widget-resize-state')?.textContent,
           }));
           assert.equal(preview.size, "medium", `${motion} motion must preserve the resize candidate preview`);
           assert.equal(preview.marker, "M", `${motion} motion must keep the candidate state clear`);
           await page.mouse.up();
           await page.waitForTimeout(50);
           const committed = await page.evaluate(() => {
-            const card = document.querySelector('[data-module="summary"]');
+            const card = document.querySelector('[data-module="habits"]');
             const layout = JSON.parse(localStorage.getItem("life-ledger-layout-v2"));
             return {
               renderedSize: card.dataset.widgetSize,
-              storedSize: layout.widgets.find(widget => widget.type === "summary").size,
+              storedSize: layout.widgets.find(widget => widget.type === "habits").size,
               resizing: card.classList.contains("is-resizing"),
               transition: card.style.transition,
             };
@@ -678,24 +685,24 @@ test(
         const editBarData = await page.evaluate(() => {
           const summaryBar = document.querySelector('[data-module="summary"] .widget-edit-bar');
           const title = summaryBar?.querySelector(".widget-edit-title")?.textContent?.trim();
-          const sizePicker = summaryBar?.querySelector(".widget-size-picker");
+          const sizePicker = document.querySelector('[data-module="habits"] .widget-size-picker');
           const sizePickerLabel = sizePicker?.getAttribute("aria-label");
           const smallBtnTitle = sizePicker?.querySelector('[data-size="small"]')?.getAttribute("title");
           return { title, sizePickerLabel, smallBtnTitle };
         });
 
         if (language === "en") {
-          assert.equal(langData.editBtnText, "Edit layout");
+          assert.equal(langData.editBtnText, "Edit cards");
           assert.equal(editBarData.title, "Summary");
           assert.equal(editBarData.sizePickerLabel, "Widget size");
           assert.equal(editBarData.smallBtnTitle, "Small");
         } else if (language === "zh") {
-          assert.equal(langData.editBtnText, "编辑布局");
+          assert.equal(langData.editBtnText, "编辑卡片");
           assert.equal(editBarData.title, "今日概览");
           assert.equal(editBarData.sizePickerLabel, "卡片尺寸");
           assert.equal(editBarData.smallBtnTitle, "小");
         } else if (language === "de") {
-          assert.equal(langData.editBtnText, "Layout bearbeiten");
+          assert.equal(langData.editBtnText, "Karten bearbeiten");
           assert.equal(editBarData.title, "Tagesübersicht");
           assert.equal(editBarData.sizePickerLabel, "Modulgröße");
           assert.equal(editBarData.smallBtnTitle, "Klein");
@@ -770,7 +777,7 @@ test(
   async () => {
     const { chromium } = await import("playwright");
     const { startStaticServer } = await import("../scripts/evidence/server.mjs");
-    const { applyFixture, FIXTURE_DATE } = await import("../scripts/evidence/fixture.mjs");
+    const { applyFixture, createFictionalState, FIXTURE_DATE } = await import("../scripts/evidence/fixture.mjs");
 
     let server;
     let browser;
@@ -783,7 +790,13 @@ test(
       context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
       page = await context.newPage();
 
-      await applyFixture(page, { date: FIXTURE_DATE, theme: "light", motion: "full", language: "en" });
+      // More than four habits exercises the new M=4/L=all contract without
+      // changing shared fixtures or weakening the S/M/L hierarchy assertions.
+      const state = createFictionalState(FIXTURE_DATE);
+      for (const [id, name, icon] of [["extra-meditation", "Meditation", "brain"], ["extra-water", "Hydration", "droplets"]]) {
+        state.habits.push({ ...structuredClone(state.habits[0]), id, name, icon });
+      }
+      await applyFixture(page, { date: FIXTURE_DATE, theme: "light", motion: "full", language: "en", state });
       await page.goto(`${server.url}/index.html?desktop=tauri-local&lang=en`);
       await page.waitForLoadState("domcontentloaded");
       await page.waitForTimeout(300);
@@ -871,7 +884,9 @@ test(
 
       assert.equal(visibleHabitsSmall, 1, "Habits small size must show exactly 1 priority row");
       assert.ok(visibleHabitsMedium > visibleHabitsSmall, "Habits medium size must show more rows than small");
+      assert.equal(visibleHabitsMedium, 4, "Medium must show four habits across groups");
       assert.ok(visibleHabitsLarge > visibleHabitsMedium, "Habits large size must show full habit list");
+      assert.equal(visibleHabitsLarge, state.habits.length, "Large must retain every habit");
 
       // Exit edit mode before switching to the compact viewport, where toolbar
       // controls intentionally collapse into the mobile navigation treatment.
@@ -886,13 +901,16 @@ test(
         const cardRect = card.getBoundingClientRect();
         const selectors = ["#quickMood", "#inspectorMoodReason", "#openDayDetail", ".module-collapse-toggle"];
         const controls = selectors.map(selector => {
-          const element = card.querySelector(selector);
+          const element = document.querySelector(selector);
           const rect = element.getBoundingClientRect();
+          const ownerRect=element.closest('.module-card').getBoundingClientRect();
           return {
             selector,
             hidden: element.hidden,
             left: rect.left,
             right: rect.right,
+            ownerLeft: ownerRect.left,
+            ownerRight: ownerRect.right,
           };
         });
         return {
@@ -906,8 +924,8 @@ test(
 
       assert.ok(compactSummary.scrollWidth <= compactSummary.clientWidth + 1, "Compact Summary must not scroll horizontally");
       for (const control of compactSummary.controls.filter(item => !item.hidden)) {
-        assert.ok(control.left >= compactSummary.left - 1, `${control.selector} must stay inside the Summary left edge`);
-        assert.ok(control.right <= compactSummary.right + 1, `${control.selector} must stay inside the Summary right edge`);
+        assert.ok(control.left >= control.ownerLeft - 1, `${control.selector} must stay inside its card's left edge`);
+        assert.ok(control.right <= control.ownerRight + 1, `${control.selector} must stay inside its card's right edge`);
       }
 
     } finally {
@@ -956,6 +974,7 @@ async function openTodayWithLargeHabits(width, { extraHabits = 0 } = {}) {
     await browser.close().catch(() => {});
     if (server?.close) await server.close().catch(() => {});
   };
+  await page.locator('[data-module="habits"]').scrollIntoViewIfNeeded();
   return { page, close };
 }
 
@@ -1077,16 +1096,16 @@ test(
 );
 
 test(
-  "Today Habits Large below 1180px: vertical list uses ArrowUp/ArrowDown and does not intercept ArrowLeft/ArrowRight",
+  "Today Habits Large on phones: vertical list uses ArrowUp/ArrowDown and does not intercept ArrowLeft/ArrowRight",
   { skip: !hasPlaywright, timeout: 30_000 },
   async () => {
-    const { page, close } = await openTodayWithLargeHabits(1024);
+    const { page, close } = await openTodayWithLargeHabits(390);
     try {
       const size = await page.evaluate(() => document.querySelector('[data-module="habits"]').dataset.widgetSize);
       assert.equal(size, "large");
       const listDisplay = await page.evaluate(() =>
         getComputedStyle(document.querySelector('[data-module="habits"] .today-list')).display);
-      assert.notEqual(listDisplay, "flex", "Below 1180px Habits Large must not render the horizontal rail");
+      assert.notEqual(listDisplay, "flex", "Phone Habits Large must not render the desktop horizontal rail");
       const ids = await habitRowIds(page);
       assert.ok(ids.length >= 3, `Need at least 3 habit rows for list navigation, got ${ids.length}`);
 
@@ -1349,7 +1368,8 @@ test(
                   const handle = card.querySelector(".widget-drag-handle");
                   const sizeButtons = [...card.querySelectorAll(".widget-size-btn")];
                   const hide = card.querySelector('[data-action="toggle-hide"]');
-                  const controls = [handle, ...sizeButtons, hide].filter(Boolean);
+                  const configure = card.querySelector('.widget-configure');
+                  const controls = [handle, configure].filter(Boolean);
                   const cardRect = card.getBoundingClientRect();
                   const shelfRect = shelf.getBoundingClientRect();
                   const titleRect = title.getBoundingClientRect();
@@ -1362,6 +1382,7 @@ test(
                     shelfOverflow: shelf.scrollWidth - shelf.clientWidth,
                     shelfInside: shelfRect.left >= cardRect.left - 1 && shelfRect.right <= cardRect.right + 1,
                     sizeButtonCount: sizeButtons.length,
+                    configureCount: configure ? 1 : 0,
                     missingNames: controls
                       .filter(control => !(control.getAttribute("aria-label") || control.textContent.trim()))
                       .map(control => control.className),
@@ -1382,7 +1403,7 @@ test(
                 return { cards, toolbar };
               });
 
-              assert.equal(report.cards.length, 7, `${where}: every Today card must expose an edit shelf`);
+              assert.equal(report.cards.length, 8, `${where}: only the eight added cards expose an edit shelf`);
               for (const card of report.cards) {
                 assert.ok(
                   card.titleLines <= 1.01,
@@ -1397,7 +1418,8 @@ test(
                   card.shelfOverflow <= 1 && card.shelfInside,
                   `${where}: ${card.module} edit shelf must stay inside the card without overflow`,
                 );
-                assert.equal(card.sizeButtonCount, 3, `${where}: ${card.module} must offer S, M and L`);
+                assert.equal(card.sizeButtonCount, card.module==='mood' ? 2 : 3, `${where}: ${card.module} offers content-appropriate inline sizes`);
+                assert.equal(card.configureCount,1,`${where}: card settings remain reachable without a resident size/hide toolbar`);
                 assert.deepEqual(card.missingNames, [], `${where}: ${card.module} edit controls must all have accessible names`);
                 assert.deepEqual(
                   card.smallTargets,
@@ -1464,9 +1486,9 @@ test(
           };
           return [
             read('[data-module="summary"] .widget-drag-handle'),
-            read('[data-module="summary"] .widget-size-btn'),
+            read('[data-module="habits"] .widget-size-btn'),
             read('[data-module="summary"] [data-action="toggle-hide"]'),
-            read('[data-module="summary"] > .widget-resize-handle .widget-resize-state'),
+            read('[data-module="habits"] > .widget-resize-handle .widget-resize-state'),
           ];
         });
 
@@ -1491,7 +1513,7 @@ test(
         }
 
         const idle = await page.evaluate(() => ({
-          button: getComputedStyle(document.querySelector('[data-module="summary"] .widget-size-btn')).transform,
+          button: getComputedStyle(document.querySelector('[data-module="habits"] .widget-size-btn')).transform,
           card: getComputedStyle(document.querySelector('[data-module="summary"]')).transform,
         }));
         assert.equal(idle.button, "none", `${motion}: idle size buttons must not hold a transform`);

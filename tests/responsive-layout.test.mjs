@@ -12,7 +12,9 @@ test("Today uses compact header and vertical habit rows instead of the old hero 
   assert.match(html, /<ul class="today-habit-list" id="todayHabitList" role="list"/);
   assert.match(app, /function renderToday\(\)/);
   assert.match(app, /todayHabitRowMarkup\(/);
-  assert.doesNotMatch(html, /progressOrbit|todayHabitCarousel|heroProgressText/);
+  assert.doesNotMatch(html, /heroProgressText/);
+  // The web surface restores the 3.5 foundations carousel; the app keeps the rows.
+  assert.match(html, /class="habit-carousel" id="todayHabitCarousel"/);
 
   assert.match(css, /\.today-habit-check \{[^}]*transition:[^}]*200ms cubic-bezier\(\.2,\.8,\.2,1\)/);
   assert.match(css, /\.today-date-heading \{[^}]*transition:[^}]*160ms cubic-bezier\(\.2,\.8,\.2,1\)/);
@@ -31,12 +33,12 @@ test("desktop review reads as a document and the five panes stay list-density", 
   assert.ok(review.indexOf('id="reviewTrendChart"') < review.indexOf('id="reviewHabitCompare"'));
   assert.ok(review.indexOf('id="reviewHabitCompare"') < review.indexOf('id="reviewText"'));
   assert.ok(review.indexOf('id="reviewText"') < review.indexOf('id="reviewDetailedMetrics"'));
-  assert.match(css, /html\[data-desktop\] \.review-insights \{ display: grid;/);
-  assert.match(css, /html\[data-desktop\] \.review-insight-value \{ font: 600 1\.375rem\/1\.2/);
-  assert.match(css, /html\[data-desktop\] \.today-date-heading \{[^}]*font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
-  assert.match(css, /html\[data-desktop\] body\[data-active-view="today"\] \.main-content,[\s\S]*?max-width: none;/);
-  assert.match(css, /html\[data-desktop\] \.habit-settings-list \{ gap: 0; \}/);
-  assert.match(css, /html\[data-desktop\] \.timeline-habit-list \{ display: grid;/);
+  assert.match(css, /html\[data-workspace\] \.review-insights \{ display: grid;/);
+  assert.match(css, /html\[data-workspace\] \.review-insight-value \{ font: 600 1\.375rem\/1\.2/);
+  assert.match(css, /html\[data-workspace\] \.today-date-heading \{[^}]*font: 600 1\.75rem\/1\.2 var\(--font-display\)/);
+  assert.match(css, /html\[data-workspace\] body\[data-active-view="today"\] \.main-content,[\s\S]*?max-width: none;/);
+  assert.match(css, /html\[data-workspace\] \.habit-settings-list \{ gap: 0; \}/);
+  assert.match(css, /html\[data-workspace\] \.timeline-habit-list \{ display: grid;/);
   assert.match(app, /class="timeline-habit-list"/);
   assert.match(css, /@media \(max-width: 979px\) \{\s*#reviewView\.active \{ display: flex;/);
 });

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life Ledger · 四种尺寸对照</title>
+<style>
+  :root { color-scheme: light dark; font: 15px/1.6 system-ui,sans-serif; color: #203441; background:#eff4f8; }
+  body { max-width:1200px; margin:40px auto; padding:0 24px; } h1 { letter-spacing:-.04em; } p { max-width:75ch; }
+  section { margin:32px 0; padding:20px; border-radius:24px; background:#fff; box-shadow:0 8px 32px #19354b09; }
+  .pair { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; } figure { margin:0; min-width:0; } img { width:100%; height:auto; display:block; border-radius:16px; } figcaption { color:#596d7b; margin-top:8px; }
+  @media(max-width:600px){.pair{grid-template-columns:1fr}} @media(prefers-color-scheme:dark){:root{background:#14212b;color:#e9f1f7}section{background:#1b2b37}figcaption{color:#afc3d2}a{color:#86cfff}}
+</style>
+<h1>同一种尺寸，同样的外框。</h1>
+<p>以下是实际桌面路由的截图，不是另一套应用或静态设计稿。欢迎与心情在同一预设下尺寸一致。这里把截图缩到相同栏宽方便比较，请以标注的实测尺寸为准；正式页面中可拖动排布和切换尺寸。</p>
+<p><a href="README.md">功能与限制说明</a> · <a href="widgets-light.png">浅色整体</a> · <a href="widgets-dark.png">深色整体</a></p>
+<section><h2>S · 387 × 180</h2><p>只保留优先信息和快速操作，不把长文字塞进小格。</p><div class="pair"><figure><img src="S-summary.png" alt="S 欢迎卡"><figcaption>欢迎 / 当日进度</figcaption></figure><figure><img src="S-mood.png" alt="S 心情卡"><figcaption>原有心情图标 / 快速记录</figcaption></figure></div></section>
+<section><h2>M · 793 × 180</h2><p>更宽，不变高；适合并排信息、四项习惯、天气小时轴。</p><div class="pair"><figure><img src="M-summary.png" alt="M 欢迎卡"><figcaption>展开欢迎信息</figcaption></figure><figure><img src="M-mood.png" alt="M 心情卡"><figcaption>心情与原因</figcaption></figure></div></section>
+<section><h2>L · 横向 · 793 × 380</h2><p>完整信息层级。习惯使用内部横向图标轨道，文字卡片不增加横向滚动。</p><div class="pair"><figure><img src="L-wide-summary.png" alt="横向 L 欢迎卡"></figure><figure><img src="L-wide-mood.png" alt="横向 L 心情卡"></figure></div></section>
+<section><h2>L□ · 方形 · 793 × 793</h2><p>同样的宽度，正方形画布；尤其适合照片墙。不是把所有内容机械放大。</p><div class="pair"><figure><img src="L-square-summary.png" alt="方形 L 欢迎卡"></figure><figure><img src="L-square-mood.png" alt="方形 L 心情卡"></figure></div></section>
+<section><h2>方形照片墙</h2><div class="pair"><figure><img src="photo-wall-light.png" alt="浅色照片墙"></figure><figure><img src="photo-wall-dark.png" alt="深色照片墙"></figure></div></section>
+<p>示例数据均为虚构。天气截图为固定模拟预报，并非你的实时天气。尚未打包或替换已安装的 App，等待你确认视觉方向。</p>
+</html>

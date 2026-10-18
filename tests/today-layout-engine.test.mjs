@@ -93,7 +93,7 @@ test("TodayLayoutEngine schema v2 validation accepts valid layout and appends mi
   const result = engine.validateLayout(validAll7);
   assert.equal(result.valid, true);
   assert.equal(result.errors.length, 0);
-  assert.equal(result.layout.widgets.length, 7);
+  assert.equal(result.layout.widgets.length, 11);
   assert.equal(result.layout.schemaVersion, 2);
 
   // When only 2 widgets are supplied, validateLayout appends missing default widgets
@@ -106,7 +106,7 @@ test("TodayLayoutEngine schema v2 validation accepts valid layout and appends mi
     ],
   };
   const partialResult = engine.validateLayout(partial);
-  assert.equal(partialResult.layout.widgets.length, 7, "Missing required widgets must be appended safely");
+  assert.equal(partialResult.layout.widgets.length, 11, "Missing required widgets must be appended safely");
 });
 
 test("TodayLayoutEngine migrates v1 layout non-destructively", () => {
@@ -128,7 +128,7 @@ test("TodayLayoutEngine migrates v1 layout non-destructively", () => {
   assert.equal(layout.schemaVersion, 2);
   assert.equal(layout.view, "today");
   assert.ok(Array.isArray(layout.widgets));
-  assert.equal(layout.widgets.length, 7);
+  assert.equal(layout.widgets.length, 11);
 
   // v1 data in localStorage must remain untouched
   const v1Raw = storage["life-ledger-layout-v1"];
@@ -154,7 +154,7 @@ test("TodayLayoutEngine corrupt JSON in v2 falls back to default without deletin
 
   const layout = engine.readStoredLayout();
   assert.equal(layout.schemaVersion, 2);
-  assert.equal(layout.widgets.length, 7);
+  assert.equal(layout.widgets.length, 11);
 
   // Raw corrupt payload must NOT be deleted from storage
   const rawAfter = storage["life-ledger-layout-v2"];
@@ -247,15 +247,15 @@ test("TodayLayoutEngine transaction undo reverts previous layout change", () => 
   const { engine } = createMockEnvironment();
   const initial = engine.getLayout();
   const habitsWidget = initial.widgets.find(w => w.type === "habits");
-  assert.equal(habitsWidget.size, "large");
+  assert.equal(habitsWidget.size, "medium");
 
   // Push size change
   engine._pushTransaction();
-  habitsWidget.size = "medium";
+  habitsWidget.size = "large";
   engine.writeStoredLayout(initial);
 
   const updated = engine.getLayout();
-  assert.equal(updated.widgets.find(w => w.type === "habits").size, "medium");
+  assert.equal(updated.widgets.find(w => w.type === "habits").size, "large");
   assert.equal(engine.canUndo(), true);
 
   // Undo
@@ -263,27 +263,27 @@ test("TodayLayoutEngine transaction undo reverts previous layout change", () => 
   assert.equal(undone, true);
 
   const restored = engine.getLayout();
-  assert.equal(restored.widgets.find(w => w.type === "habits").size, "large");
+  assert.equal(restored.widgets.find(w => w.type === "habits").size, "medium");
 });
 
 test("TodayLayoutEngine resetLayout restores default layout", () => {
   const { engine } = createMockEnvironment();
   const layout = engine.getLayout();
-  // Mutate photos widget to small and hidden
+  // Mutate photos away from its compact default, then reset both properties.
   const photos = layout.widgets.find(w => w.type === "photos");
-  photos.size = "small";
+  photos.size = "medium";
   photos.hidden = true;
   engine.writeStoredLayout(layout);
 
   const modified = engine.getLayout();
-  assert.equal(modified.widgets.find(w => w.type === "photos").size, "small");
+  assert.equal(modified.widgets.find(w => w.type === "photos").size, "medium");
   assert.equal(modified.widgets.find(w => w.type === "photos").hidden, true);
 
   // Reset
   const def = engine.resetLayout();
-  assert.equal(def.widgets.length, 7);
+  assert.equal(def.widgets.length, 11);
   const resetPhotos = engine.getLayout().widgets.find(w => w.type === "photos");
-  assert.equal(resetPhotos.size, "medium");
+  assert.equal(resetPhotos.size, "small");
   assert.equal(resetPhotos.hidden, false);
 });
 
@@ -291,7 +291,7 @@ test("TodayLayoutEngine cancelEditSession restores pre-edit snapshot on Escape",
   const { engine } = createMockEnvironment();
   const initial = engine.getLayout();
   const photos = initial.widgets.find(w => w.type === "photos");
-  assert.equal(photos.size, "medium");
+  assert.equal(photos.size, "small");
   assert.equal(photos.hidden, false);
 
   // Enter edit mode -> takes session snapshot
@@ -299,12 +299,12 @@ test("TodayLayoutEngine cancelEditSession restores pre-edit snapshot on Escape",
   assert.equal(engine.isEditMode(), true);
 
   // Perform multiple mutations during edit mode
-  engine._changeWidgetSize("today-photos", "small");
+  engine._changeWidgetSize("today-photos", "medium");
   engine._toggleWidgetHidden("today-photos");
 
   const duringEdit = engine.getLayout();
   const photosDuring = duringEdit.widgets.find(w => w.type === "photos");
-  assert.equal(photosDuring.size, "small");
+  assert.equal(photosDuring.size, "medium");
   assert.equal(photosDuring.hidden, true);
 
   // Cancel edit session (Escape) -> restores initial layout
@@ -313,8 +313,43 @@ test("TodayLayoutEngine cancelEditSession restores pre-edit snapshot on Escape",
 
   const afterCancel = engine.getLayout();
   const photosRestored = afterCancel.widgets.find(w => w.type === "photos");
-  assert.equal(photosRestored.size, "medium", "Size must be restored to pre-edit state");
+  assert.equal(photosRestored.size, "small", "Size must be restored to pre-edit state");
   assert.equal(photosRestored.hidden, false, "Hidden flag must be restored to pre-edit state");
+});
+
+test("Compact lanes reflow without mutating the source and retain discrete size geometry", () => {
+  const {engine}=createMockEnvironment();
+  const source=engine.getLayout(),before=JSON.stringify(source);
+  engine._smallColumns=6;
+  const compact=engine.validateLayout(source).layout;
+  assert.equal(JSON.stringify(source),before);
+  assert.equal(compact.laneColumns,6);
+  assert.deepEqual({...engine.getSizeDimensions('small')},{w:6,h:1});
+  assert.deepEqual({...engine.getSizeDimensions('medium')},{w:12,h:1});
+  assert.deepEqual({...engine.getSizeDimensions('large')},{w:12,h:2});
+  for(const w of compact.widgets.filter(w=>!w.hidden))assert.ok(w.x+engine.getSizeDimensions(w.size,w.settings).w<=12);
+  assert.equal(engine.validateLayout(compact).layout.widgets.length,compact.widgets.length);
+  assert.equal(JSON.stringify(engine.validateLayout(compact).layout),JSON.stringify(compact),'same breakpoint preserves exact saved placement');
+});
+
+test("Resizing keeps the edited card anchored instead of dropping it behind neighbours",()=>{
+  const {engine}=createMockEnvironment();
+  const before=JSON.stringify(engine.getLayout()),focus=engine.getLayout().widgets.find(w=>w.type==='focus');
+  engine._changeWidgetSize(focus.id,'medium');
+  const resized=engine.getLayout().widgets.find(w=>w.id===focus.id);
+  assert.equal(resized.y,focus.y,'Only colliding neighbours move down');
+  assert.equal(resized.x,4,'Growing at the right edge expands toward the available columns');
+  engine.undo();assert.equal(JSON.stringify(engine.getLayout()),before,'Undo restores sizes and positions together');
+});
+
+test("A deliberate drop owns its target while neighbours move out of the way",()=>{
+  const {engine}=createMockEnvironment();
+  const layout=engine.getLayout(),focus=layout.widgets.find(w=>w.type==='focus');
+  focus.x=0;focus.y=0;
+  const resolved=engine._resolveAllCollisions(layout.widgets,focus.id);
+  assert.equal(resolved.find(w=>w.id===focus.id).x,0);
+  assert.equal(resolved.find(w=>w.id===focus.id).y,0);
+  assert.ok(resolved.find(w=>w.type==='summary').y>=1);
 });
 
 test("TodayLayoutEngine _changeWidgetSize enforces discrete dimensions and clamps to columns", () => {

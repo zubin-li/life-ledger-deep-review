@@ -6,11 +6,56 @@ Life Ledger 把每日习惯、具体计划和长期复盘放进同一个本地�
 
 ## 桌面体验
 
+10 月 16 日仅调整今日：恢复原网页配色，画布限制 1236px，保留方形比例和紧凑四习惯默认展示。下方图库新增 1920px／1000px 实测。全部为隔离的普通网页截图，不代表已安装 Mac 版验收；仍待你确认视觉。
+
+**今日修正：**[真实默认排版、尺寸与拖动录屏](local-web/today-repair/index.html)，截图脚本未额外重新摆位。<img src="local-web/today-repair/today-1440-zh-light.png" alt="中文今日真实默认排版"><img src="local-web/today-repair/today-390-zh-light.png" width="300" alt="手机阅读布局与虚构记录">
+
+**窄窗口修正：**800px 时侧栏与内容并排，工具栏操作与日期分行，避免按钮被遮挡。[桌面截图](local-web/breakpoints/today-800-zh-light.png) · [移动断点截图](local-web/breakpoints/today-760-zh-light.png) · [回归结果](local-web/breakpoints/results.json)。这是隔离浏览器验收，不代表已安装 Mac 版通过验收。
+
+**真实本地网站：**执行 `npm run preview:local` 后[直接操作](http://127.0.0.1:43117/?mode=local&lang=zh&preview=local)。与 Tauri 复用页面／卡片源码，不伪造系统窗口栏。[录屏与检查](local-web/index.html)。下图是虚构示例；实际本地网站保存独立的浏览器记录。
+
+<img src="local-web/today-zh-light.png" alt="中文本地网页共用已确认的桌面设计" />
+<img src="local-web/habits-390-zh.png" width="300" alt="中文窄屏网页与可达设置入口" />
+
+**窗口整合：**[录屏与验证](integrated-shell/index.html)。统一顶部、圆角外框、可收起导航、底部个人空间。Chromium 截图不伪造系统红黄绿按钮；未打包或安装。
+
+<img src="integrated-shell/today-zh-light.png" alt="中文完整桌面外框" />
+<img src="integrated-shell/habits-390-zh.png" width="300" alt="中文手机布局不添加 Mac 顶栏" />
+
+**长期／习惯确认版：**[录屏与对照](horizon-habits/index.html)。当前阶段置顶、计划步骤记日期、阶段回看留快照、月复盘有入口，习惯页统一外观。复用旧记录与原图标；虚构示例，未安装。
+
+<img src="horizon-habits/horizon-zh-light.png" alt="长期页：阶段置顶、分领域计划和步骤记录" />
+<img src="horizon-habits/habits-zh-light.png" alt="习惯页：搜索筛选、原图标和生效日期设置" />
+
+**时间轴／洞察确认版：**[录屏和对照](timeline-insights/index.html)。日／周／月沿同一条轴向下浏览，文字优先，周照片按需展开。洞察展示记录覆盖、可探索趋势、原习惯图标和单列周期目标。虚构演示数据，待亲自确认，未安装。
+
+<img src="timeline-insights/insights-zh-light.png" alt="中文洞察：完成率、记录覆盖及基于记录的观察" />
+
+**最新本周 / 时间轴确认点：** [录屏与多语言对照](week-reflection/index.html)。本周以复盘为主，保留周日历、洞察和目标；时间轴按周回看文字与照片。寄语固定横向双格，心情固定小方格。以下日历/图片是虚构测试数据，未安装发布、未获用户视觉确认。
+
+<img src="week-reflection/timeline-zh-light.png" alt="周复盘时间轴：按周选择原有文字与同周照片占位图" />
+
+**最新本周/共用外框确认点：** [录屏与多语言深浅色截图](week-polish/index.html)。七天选择、原习惯图标、整页滚动的目标和复盘；今日同步更新外框与鼠标光影。虚构数据，未安装发布、未获用户视觉确认。
+
+<img src="week-polish/week-zh-light.png" alt="实际本周界面：七天选择、当天详情与复用原习惯图标" />
+
+**本轮确认点：天气与组件库。** [查看真实操作录屏及深浅色截图](today-widgets/weather-gallery/index.html)。天气采用温度/时间双轴曲线，支持鼠标与键盘探索；欢迎卡保留当前天气。11 个现有组件在独立目录中选择，未添加卡片不再占据编辑栅格。本轮不是已安装发布版；心情与月度热力图的视觉重做仍待下一步。
+
+<img src="today-widgets/weather-gallery/today-zh-light.png" alt="本轮实际界面：温度曲线、当前天气与独立组件库" />
+
 ### 今日：计划与复盘
 
-<img src="images/demo-preview/zh-desktop/zh-01-today-planning-v5.png" alt="Today 2.0 模块化小组件平台：12 列栅格与 S/M/L 离散尺寸" />
+**可选组件检查点：** 添加独立心情、八级习惯热力图、本机照片/GIF/视频墙和逐小时天气；外框统一 S/M/横向 L，并提供方形 L。新组件默认隐藏，保留已有布局。[尺寸对照与已知限制](today-widgets/README.md)。以下天气为模拟数据，不是实时预报；尚未打包安装或获得用户视觉确认。
+
+[查看实际操作录屏](today-widgets/edit-cards/index.html)：普通卡片固定；编辑时点卡片打开专属设置；热力图为完整自然月与小色点。
+
+<img src="today-widgets/edit-cards/normal-zh-light.png" alt="中文：完整月份热力图，普通模式不常驻设置" />
+
+<img src="today-web-parity/screens/today-desktop-1440-zh-light.png" alt="今日确认版：原有习惯图标、冷色画布与三种组件尺寸" />
 
 Today 2.0 推出模块化小组件平台：12 列响应式栅格包含概览、习惯、日历、专注、照片、复盘与节奏卡片，支持小/中/大三种离散尺寸与差异化内容层级，直接无缓动二维拖拽、键盘方向键移动与事务级撤销。
+
+**今日确认版：** 实际桌面路由复用网页配色与原图标。小号显示优先习惯，中号合并显示四个习惯，大号保留完整横向轨道；点击习惯卡片即可打卡，重排后保留键盘焦点。截图使用隔离的无界面浏览器与虚构数据；本检查点尚未打包，也尚未经用户确认视觉效果。
 
 ### 单日记录
 
@@ -50,11 +95,15 @@ Today 2.0 推出模块化小组件平台：12 列响应式栅格包含概览、�
 
 ## 手机体验
 
+<img src="horizon-habits/longrange-390-zh.png" width="390" alt="中文移动端长期页，紧凑阶段置顶条" />
+
+<img src="timeline-insights/timeline-390-zh.png" width="390" alt="中文移动端纵向周度时间轴" />
+
 手机布局采用固定底部导航，并把单日抽屉变成专注、接近全屏的纵向复盘空间。
 
 <table>
   <tr>
-    <td width="33%"><img src="images/demo-preview/zh-mobile/zh-01-today-planning-v5.png" alt="中文手机版每日规划" /></td>
+    <td width="33%"><img src="today-web-parity/screens/today-mobile-390-zh-light.png" alt="中文手机版每日规划" /></td>
     <td width="33%"><img src="images/demo-preview/zh-mobile/zh-02-daily-review-v5.png" alt="中文手机版单日复盘" /></td>
     <td width="33%"><img src="images/demo-preview/zh-mobile/zh-03-weekly-plan-v5.png" alt="中文手机版本周计划" /></td>
   </tr>

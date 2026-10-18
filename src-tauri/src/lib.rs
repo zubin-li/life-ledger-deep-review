@@ -519,6 +519,16 @@ fn with_desktop_cloud_flag(mut url: Url) -> Url {
 #[tauri::command]
 fn open_cloud_window(app: AppHandle, raw_url: String) -> Result<(), String> {
     let normalized = with_desktop_cloud_flag(validate_cloud_url(&raw_url)?);
+    // Only window movement for the explicitly selected server, never filesystem or
+    // account commands. Third-party destinations outside this origin get no grant.
+    app.add_capability(
+        tauri::ipc::CapabilityBuilder::new("connected-window-chrome")
+            .local(false)
+            .window("cloud")
+            .remote(format!("{}/*", normalized.origin().ascii_serialization()))
+            .permission("core:window:allow-start-dragging")
+            .permission("core:window:allow-internal-toggle-maximize"),
+    ).map_err(|e| e.to_string())?;
     if let Some(window) = app.get_webview_window("cloud") {
         window.navigate(normalized).map_err(|e| e.to_string())?;
         window.show().map_err(|e| e.to_string())?;

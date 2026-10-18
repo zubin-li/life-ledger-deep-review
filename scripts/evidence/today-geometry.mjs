@@ -393,11 +393,13 @@ async function runCase(page, meta, results) {
       return cards.map(c => ({
         module: c.dataset.module,
         size: c.dataset.widgetSize,
+        shape: c.dataset.widgetShape,
+        w: Math.round(c.getBoundingClientRect().width),
         h: Math.round(c.getBoundingClientRect().height),
       }));
     });
     for (const row of heights) {
-      const nominal = row.size === "large" ? 380 : 180;
+      const nominal = row.shape === 'square' ? row.w : row.size === "large" ? 380 : 180;
       if (Math.abs(row.h - nominal) > 1) {
         fail(results, `${id}-nominal-${row.module}`, `height ${row.h} vs ${nominal}±1`);
       } else {
@@ -475,6 +477,13 @@ async function runSmLMatrix(page, serverUrl, results) {
 
   const modules = ["summary", "context", "calendar", "focus", "photos", "reflection", "habits"];
   for (const mod of modules) {
+    const allowed=await page.evaluate(type=>window.LifeLedgerWidgetRegistry.get(type).allowedSizes,mod);
+    if(allowed.length===1){
+      const buttons=await page.locator(`[data-module="${mod}"] .widget-size-btn`).count();
+      if(buttons!==0)fail(results,`fixed-${mod}`,'Fixed content must not expose arbitrary size controls');
+      else pass(results,`fixed-${mod}`,'Content-specific fixed footprint, no arbitrary S/M/L or resize handle');
+      continue;
+    }
     const signatures = {};
     for (const size of ["small", "medium", "large"]) {
       await page.locator(`[data-module="${mod}"] .widget-size-btn[data-size="${size}"]`).click();
@@ -507,7 +516,7 @@ async function runDragKeyboard(page, serverUrl, results) {
   const before = await page.evaluate(() => document.querySelector('[data-module="focus"]').style.getPropertyValue("--grid-x"));
   const handle = page.locator('[data-module="focus"] .widget-drag-handle');
   await handle.focus();
-  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowRight");
   await page.waitForTimeout(200);
   const after = await page.evaluate(() => document.querySelector('[data-module="focus"]').style.getPropertyValue("--grid-x"));
   if (before === after) {

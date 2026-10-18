@@ -227,12 +227,12 @@
     };
   }
 
-  function idbStore() {
+  function idbStore(databaseName = "life-ledger-photos") {
     let dbPromise;
     function open() {
       if (!dbPromise) {
         dbPromise = new Promise((resolve, reject) => {
-          const request = indexedDB.open("life-ledger-photos", 1);
+          const request = indexedDB.open(databaseName, 1);
           request.onupgradeneeded = () => {
             const database = request.result;
             if (!database.objectStoreNames.contains("photos")) database.createObjectStore("photos", { keyPath: "id" });
@@ -768,6 +768,6 @@
 
   root.LifeLedgerPhotoMemories = {
     MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile,
-    createLocalLibrary, memoryStore,
+    createLocalLibrary, memoryStore, createBlobStore: idbStore,
   };
 })(window);

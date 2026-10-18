@@ -13,12 +13,12 @@ test("desktop mode is detected before the stylesheet loads, from the desktop que
   assert.match(headSection, /document\.documentElement\.dataset\.desktop = desktopMode/);
 });
 
-test("desktop presentation CSS is scoped under html[data-desktop] and layers a titlebar-inset adjustment onto the shared base layout", () => {
-  assert.match(styles, /html\[data-desktop\] \.sidebar \{[^}]*height: calc\(100vh - var\(--desktop-inset\)\);/s);
-  assert.match(styles, /html\[data-desktop\] \.main-content \{[^}]*max-width: none;/s);
+test("workspace presentation is shared by desktop web and Tauri, separate from native runtime detection", () => {
+  assert.match(styles, /html\[data-workspace\] \.sidebar \{[^}]*height: calc\(100vh - var\(--desktop-inset\)\);/s);
+  assert.match(styles, /html\[data-workspace\] \.main-content \{[^}]*max-width: none;/s);
   // Since Life Ledger 2.0, the base (non-desktop) sidebar and main content are already the
   // edge-attached, full-bleed "calm instrument panel" layout shared by web/PWA and desktop —
-  // html[data-desktop] only layers the titlebar-inset height and full-bleed content padding
+  // html[data-workspace] shares the content layout; native-only chrome remains separate.
   // on top of it, it no longer switches between two different visual designs.
   assert.match(styles, /^\.sidebar \{ position: sticky; top: 0; height: 100vh; margin: 0;/m);
   assert.match(styles, /^\.main-content \{ min-width: 0; max-width: 100%; padding: var\(--space-5\)/m);
@@ -49,7 +49,7 @@ test("the active nav item is marked with aria-current and switchToView keeps it 
   assert.match(appJs, /item\.removeAttribute\("aria-current"\)/);
 });
 
-test("normal web mode is untouched: no desktop query param means no desktop dataset and no badge reveal", () => {
+test("ordinary web does not gain native identity or a Mac badge without a native route flag", () => {
   // Simulate the exact head-script logic against a URL with no desktop param.
   const params = new URLSearchParams("");
   const desktopMode = params.get("desktop");

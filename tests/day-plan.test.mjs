@@ -6,14 +6,14 @@ const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf
 const css = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 
-test("Today keeps the compact event strip and removes daily flexible goals", () => {
+test("Today keeps the compact event strip, restores the classic web day plan, and drops daily flexible goals", () => {
   const todayView = html.match(/<section class="view active today-desk today-stage" id="todayView"[^>]*>([\s\S]*?)<section class="view week-board" id="weekView"[^>]*>/);
   assert.ok(todayView, "Today view is missing");
   assert.match(todayView[1], /class="today-events-strip" id="todayEventsStrip"/);
   assert.match(todayView[1], /class="today-habit-list" id="todayHabitList"/);
-  assert.doesNotMatch(todayView[1], /id="dayScheduleList"/);
-  assert.doesNotMatch(todayView[1], /id="toggleRoutineEvents"/);
-  assert.doesNotMatch(todayView[1], /id="openDayPlan"/);
+  // Web Today brings back the 3.5 daily calendar as its own widget.
+  assert.match(todayView[1], /data-module="dayplan"[\s\S]*id="dayRoll"[\s\S]*id="dayScheduleList"[\s\S]*id="toggleRoutineEvents"/);
+  assert.match(app, /function renderDaySchedule\(/);
   assert.doesNotMatch(todayView[1], /id="dayScheduleCount"/);
   assert.doesNotMatch(todayView[1], /class="day-schedule-summary"/);
   assert.doesNotMatch(todayView[1], /id="dayPlanViewSwitch"/);
@@ -28,7 +28,6 @@ test("Today keeps the compact event strip and removes daily flexible goals", () 
   assert.match(app, /event\.routine/);
   assert.doesNotMatch(app, /function setDayPlanPane\(pane\)/);
   assert.doesNotMatch(app, /const dailyGoals = dates\.flatMap/);
-  assert.doesNotMatch(app, /function renderDaySchedule\(/);
 });
 
 test("the selected Day Plan date drives the complete Today workspace", () => {
@@ -73,7 +72,11 @@ test("weekly goals and long-term goals use progressive disclosure in one card", 
 });
 
 test("mobile Day Plan keeps one responsive schedule without horizontal scrolling", () => {
-  const mobile = css.slice(css.lastIndexOf("/* Day Plan:"));
+  // Check schedule rules, not every later component in this shared stylesheet.
+  // Habits intentionally has a horizontal icon rail; that is not Day Plan overflow.
+  const mobile = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter(([, selector]) => /\.(?:day-plan|day-schedule)[\w-]*/.test(selector))
+    .map(([, selector, declarations]) => `${selector}{${declarations}}`).join("\n");
   assert.match(css, /@media \(min-width: 1101px\)\s*\{\s*\.daily-planning-grid\s*\{\s*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(mobile, /\.day-plan-dialog-body\s*\{\s*grid-template-columns:\s*1fr;/);
   assert.doesNotMatch(mobile, /overflow-x:\s*(auto|scroll)/);

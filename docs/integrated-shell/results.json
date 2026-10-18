@@ -1,0 +1,1065 @@
+{
+  "checks": [
+    {
+      "label": "today-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "collapsed-zh-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "collapsed-zh-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "collapsed-en-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "collapsed-en-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "collapsed-de-light",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "collapsed-de-dark",
+      "shell": {
+        "top": 52,
+        "bottom": 992,
+        "width": 1424,
+        "scroll": 1424
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 1000,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-980-de",
+      "shell": {
+        "top": 52,
+        "bottom": 892,
+        "width": 964,
+        "scroll": 964
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "week-980-de",
+      "shell": {
+        "top": 52,
+        "bottom": 892,
+        "width": 964,
+        "scroll": 964
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "longrange-980-de",
+      "shell": {
+        "top": 52,
+        "bottom": 892,
+        "width": 964,
+        "scroll": 964
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "timeline-980-de",
+      "shell": {
+        "top": 52,
+        "bottom": 892,
+        "width": 964,
+        "scroll": 964
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "review-980-de",
+      "shell": {
+        "top": 52,
+        "bottom": 892,
+        "width": 964,
+        "scroll": 964
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "habits-980-de",
+      "shell": {
+        "top": 52,
+        "bottom": 892,
+        "width": 964,
+        "scroll": 964
+      },
+      "bar": {
+        "top": 0,
+        "height": 52
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": "windowSidebarControl"
+    },
+    {
+      "label": "today-390-zh",
+      "shell": {
+        "top": 0,
+        "bottom": 2865.125,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "week-390-zh",
+      "shell": {
+        "top": 0,
+        "bottom": 2595.828125,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "longrange-390-zh",
+      "shell": {
+        "top": 0,
+        "bottom": 2427.875,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "timeline-390-zh",
+      "shell": {
+        "top": 0,
+        "bottom": 900,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "review-390-zh",
+      "shell": {
+        "top": 0,
+        "bottom": 2938.375,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "habits-390-zh",
+      "shell": {
+        "top": 0,
+        "bottom": 2121.953125,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "today-390-en",
+      "shell": {
+        "top": 0,
+        "bottom": 2841.171875,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "week-390-en",
+      "shell": {
+        "top": 0,
+        "bottom": 2644.625,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "longrange-390-en",
+      "shell": {
+        "top": 0,
+        "bottom": 2527.265625,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "timeline-390-en",
+      "shell": {
+        "top": 0,
+        "bottom": 900,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "review-390-en",
+      "shell": {
+        "top": 0,
+        "bottom": 2992.25,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "habits-390-en",
+      "shell": {
+        "top": 0,
+        "bottom": 2203.328125,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "today-390-de",
+      "shell": {
+        "top": 0,
+        "bottom": 2821.625,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "week-390-de",
+      "shell": {
+        "top": 0,
+        "bottom": 2658.921875,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "longrange-390-de",
+      "shell": {
+        "top": 0,
+        "bottom": 2642.765625,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "timeline-390-de",
+      "shell": {
+        "top": 0,
+        "bottom": 936.0625,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "review-390-de",
+      "shell": {
+        "top": 0,
+        "bottom": 3160.71875,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    },
+    {
+      "label": "habits-390-de",
+      "shell": {
+        "top": 0,
+        "bottom": 2159.75,
+        "width": 390,
+        "scroll": 390
+      },
+      "bar": {
+        "top": 0,
+        "height": 0
+      },
+      "overflow": 0,
+      "viewport": 900,
+      "toggleParent": ""
+    }
+  ],
+  "profile": "name/photo persistence, invalid-image rejection, removal, settings-window propagation passed",
+  "localSettingsHandoff": "passed",
+  "runtimeErrors": [],
+  "nativeControls": "OS-owned; not rendered or tested by Chromium",
+  "nativeWebKit": false
+}

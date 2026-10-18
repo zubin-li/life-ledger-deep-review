@@ -1,8 +1,13 @@
-const CACHE_NAME = "life-ledger-pwa-3.6.0";
+const CACHE_NAME = "life-ledger-pwa-3.6.0-today-classic";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css?v=3.6.0",
+  "./desk-polish.css",
+  "./today-classic.css",
+  "./desk-polish.js",
+  "./long-range.js",
+  "./window-shell.js",
   "./widget-registry.js?v=3.6.0",
   "./layout-engine.js?v=3.6.0",
   "./modules.js?v=3.6.0",
@@ -18,6 +23,11 @@ const APP_SHELL = [
   "./vendor/cloudbase-sdk.js",
   "./_init_tcb-env.js?v=3.6.0",
   "./manifest.webmanifest",
+  "./today-extras.js?v=3.6.0",
+  "./weather-widget.js?v=3.6.0",
+  "./widget-gallery.js?v=3.6.0",
+  "./vendor/widget-ui.js",
+  "./vendor/widget-ui.css",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",

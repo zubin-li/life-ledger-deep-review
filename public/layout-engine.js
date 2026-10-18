@@ -7,6 +7,7 @@
 (function (root) {
   const SCHEMA_VERSION = 2;
   const STORAGE_KEY_V2 = "life-ledger-layout-v2";
+  const WEB_STORAGE_KEY_V2 = "life-ledger-layout-v2-web";
   const STORAGE_KEY_V1 = "life-ledger-layout-v1";
   const COLUMNS = 12;
 
@@ -21,14 +22,66 @@
     view: "today",
     widgets: [
       { id: "today-summary", type: "summary", size: "large", x: 0, y: 0, hidden: false, settings: {} },
-      { id: "today-focus", type: "focus", size: "small", x: 8, y: 0, hidden: false, settings: {} },
-      { id: "today-context", type: "context", size: "small", x: 8, y: 1, hidden: false, settings: {} },
-      { id: "today-habits", type: "habits", size: "large", x: 0, y: 2, hidden: false, settings: {} },
+      { id: "today-mood", type: "mood", size: "small", x: 8, y: 0, hidden: false, settings: {shape:"wide"} },
+      { id: "today-focus", type: "focus", size: "small", x: 8, y: 1, hidden: false, settings: {} },
+      { id: "today-context", type: "context", size: "small", x: 8, y: 3, hidden: false, settings: {} },
+      { id: "today-habits", type: "habits", size: "medium", x: 0, y: 2, hidden: false, settings: {} },
       { id: "today-reflection", type: "reflection", size: "small", x: 8, y: 2, hidden: false, settings: {} },
-      { id: "today-photos", type: "photos", size: "medium", x: 0, y: 4, hidden: false, settings: {} },
-      { id: "today-calendar", type: "calendar", size: "large", x: 0, y: 5, hidden: false, settings: {} },
+      { id: "today-photos", type: "photos", size: "small", x: 8, y: 4, hidden: false, settings: {} },
+      { id: "today-calendar", type: "calendar", size: "large", x: 0, y: 3, hidden: false, settings: {} },
+      { id: "today-heatmap", type: "heatmap", size: "medium", x: 0, y: 7, hidden: true, settings: {} },
+      { id: "today-wall", type: "wall", size: "large", x: 0, y: 8, hidden: true, settings: {} },
+      { id: "today-weather", type: "weather", size: "large", x: 0, y: 10, hidden: true, settings: {} },
     ],
   };
+
+  // The browser and the installed desktop app share widgets and behavior, but
+  // not their starting composition. Keep the user's desktop layout untouched
+  // while the web surface starts from the approved, more expansive dashboard.
+  // Web Today = the original 3.5 page rhythm, now as widgets (user decision
+  // 2026-10-17): hero + mood, a full-width foundations row, daily calendar +
+  // reflection side by side, then the month in view. Newer widgets (weather,
+  // heatmap, photos, wall, 7-day rhythm) start in the library, not on the page.
+  const WEB_DEFAULT_TODAY_LAYOUT = {
+    schemaVersion: 2,
+    view: "today",
+    widgets: [
+      { id: "today-summary", type: "summary", size: "large", x: 0, y: 0, hidden: false, settings: {} },
+      { id: "today-mood", type: "mood", size: "small", x: 8, y: 0, hidden: false, settings: {} },
+      { id: "today-habits", type: "habits", size: "large", x: 0, y: 2, hidden: false, settings: {} },
+      { id: "today-dayplan", type: "dayplan", size: "large", x: 0, y: 4, hidden: false, settings: {} },
+      { id: "today-reflection", type: "reflection", size: "large", x: 6, y: 4, hidden: false, settings: {} },
+      { id: "today-calendar", type: "calendar", size: "large", x: 0, y: 7, hidden: false, settings: {} },
+      { id: "today-focus", type: "focus", size: "small", x: 0, y: 14, hidden: true, settings: {} },
+      { id: "today-weather", type: "weather", size: "large", x: 0, y: 16, hidden: true, settings: {} },
+      { id: "today-heatmap", type: "heatmap", size: "small", x: 8, y: 16, hidden: true, settings: {} },
+      { id: "today-photos", type: "photos", size: "small", x: 0, y: 19, hidden: true, settings: {} },
+      { id: "today-context", type: "context", size: "small", x: 4, y: 19, hidden: true, settings: {} },
+      { id: "today-wall", type: "wall", size: "large", x: 0, y: 22, hidden: true, settings: {} },
+    ],
+  };
+
+  // One designed footprint per web widget, in 12-column units at the widest
+  // canvas (w) and in 132px rows (h). No S/M/L on the web.
+  const WEB_DIMS = {
+    summary: { w: 8, h: 2 }, mood: { w: 4, h: 2 }, habits: { w: 12, h: 2 },
+    dayplan: { w: 6, h: 3 }, reflection: { w: 6, h: 3 }, calendar: { w: 12, h: 7 },
+    focus: { w: 4, h: 2 }, weather: { w: 8, h: 3 }, heatmap: { w: 4, h: 3 },
+    photos: { w: 4, h: 3 }, context: { w: 4, h: 2 }, wall: { w: 8, h: 3 },
+  };
+  const WEB_ROW = 132;
+  const WEB_FOOTPRINTS = Object.fromEntries(Object.keys(WEB_DIMS).map(type => [type, ["large"]]));
+
+  const WEB_FOOTPRINT_VERSION = 5;
+
+  function isWebSurface() {
+    const doc = root.document?.documentElement;
+    return Boolean(
+      root.location?.protocol &&
+      typeof doc?.hasAttribute === "function" &&
+      !doc.hasAttribute("data-desktop")
+    );
+  }
 
   const PROTECTED_WIDGETS = new Set(["habits", "today-habits"]);
 
@@ -96,12 +149,13 @@
 
   class TodayLayoutEngine {
     constructor() {
-      this.STORAGE_KEY = STORAGE_KEY_V2;
+      this._isWebSurface = isWebSurface();
+      this.STORAGE_KEY = this._isWebSurface ? WEB_STORAGE_KEY_V2 : STORAGE_KEY_V2;
       this.V1_STORAGE_KEY = STORAGE_KEY_V1;
       this.SCHEMA_VERSION = SCHEMA_VERSION;
       this.COLUMNS = COLUMNS;
       this.SIZE_DIMENSIONS = SIZE_DIMENSIONS;
-      this.DEFAULT_LAYOUT = DEFAULT_TODAY_LAYOUT;
+      this.DEFAULT_LAYOUT = this._isWebSurface ? WEB_DEFAULT_TODAY_LAYOUT : DEFAULT_TODAY_LAYOUT;
 
       this._container = null;
       this._activeLayout = null;
@@ -112,20 +166,32 @@
       this._editSessionSnapshot = null;
       this._hasInitListeners = false;
       this._changeListeners = new Set();
+      this._smallColumns = 4;
     }
 
     setTranslator(fn) {
       setTranslator(fn);
     }
 
-    getSizeDimensions(size) {
-      return SIZE_DIMENSIONS[size] || SIZE_DIMENSIONS.medium;
+    getSizeDimensions(size, settings = {}, type = "") {
+      if (this._isWebSurface && WEB_DIMS[type]) {
+        const { w, h } = WEB_DIMS[type];
+        // Narrower canvases stack every section full width (as the original
+        // tablet layout did); foundations then shows 2×2 cards and needs a row more.
+        if (this._smallColumns === 4) return { w, h };
+        return { w: COLUMNS, h: type === "habits" ? 3 : h };
+      }
+      const small = this._smallColumns;
+      const wide = Math.min(COLUMNS, small * 2);
+      if (size === "small") return {w:small, h:settings?.shape === "square" ? 2 : 1};
+      if (size === "square" || (size === "large" && settings?.shape === "square")) return {w:wide, h:4};
+      return {w:wide, h:size === "large" ? 2 : 1};
     }
 
     validateLayout(data) {
       const errors = [];
       if (!data || typeof data !== "object") {
-        return { valid: false, errors: ["Layout data is not an object"], layout: clone(DEFAULT_TODAY_LAYOUT) };
+        return { valid: false, errors: ["Layout data is not an object"], layout: clone(this.DEFAULT_LAYOUT) };
       }
       if (data.schemaVersion !== 2) {
         errors.push(`Invalid schemaVersion ${data.schemaVersion}; expected 2`);
@@ -135,22 +201,41 @@
       }
       if (!Array.isArray(data.widgets)) {
         errors.push("Layout widgets is not an array");
-        return { valid: false, errors, layout: clone(DEFAULT_TODAY_LAYOUT) };
+        return { valid: false, errors, layout: clone(this.DEFAULT_LAYOUT) };
       }
 
       const validatedWidgets = [];
-      const defaultWidgetsMap = new Map(DEFAULT_TODAY_LAYOUT.widgets.map(w => [w.type, w]));
+      const defaultWidgetsMap = new Map(this.DEFAULT_LAYOUT.widgets.map(w => [w.type, w]));
 
-      for (const w of data.widgets) {
+      // Positions saved under the old S/M/L web sizes no longer fit the fixed
+      // footprints and left staggered gaps. Re-seat them once on the designed
+      // layout, keeping only the user's hidden/shown choices.
+      let storedWidgets = data.widgets;
+      if (this._isWebSurface && data.webFootprints !== WEB_FOOTPRINT_VERSION) {
+        const hiddenByType = new Map(data.widgets.filter(Boolean).map(w => [String(w.type || w.id || "").replace(/^today-/, ""), Boolean(w.hidden)]));
+        storedWidgets = this.DEFAULT_LAYOUT.widgets.map(w => ({ ...clone(w), hidden: w.hidden || Boolean(hiddenByType.get(w.type)) }));
+        data = { ...data, laneColumns: undefined };
+      }
+      const sourceWidgets = (data.laneColumns || 4) === this._smallColumns
+        ? storedWidgets : this._reflowWidgets(storedWidgets);
+      for (const w of sourceWidgets) {
         if (!w || typeof w !== "object") continue;
         const type = String(w.type || w.id || "").replace(/^today-/, "");
         const id = w.id || `today-${type}`;
+        const definition=root.LifeLedgerWidgetRegistry?.get(type);
+        const settings=typeof w.settings === 'object' && w.settings ? {...w.settings} : {};
+        // Small mood squares came from the old forced footprint, not a size
+        // offered by the editor. Retire that restriction without writing storage.
+        if(type==='mood' && w.size==='small' && settings.shape==='square')settings.shape='wide';
         let size = w.size;
+        if(definition?.allowedSizes && !definition.allowedSizes.includes(size))size=definition.defaultSize;
+        if(definition?.fixedShape)settings.shape=definition.fixedShape;
+        if(this._isWebSurface && WEB_FOOTPRINTS[type]){[size,settings.shape="wide"]=WEB_FOOTPRINTS[type];}
         if (!["small", "medium", "large"].includes(size)) {
           size = defaultWidgetsMap.get(type)?.size || "medium";
           errors.push(`Widget ${id} has invalid size "${w.size}"; normalized to "${size}"`);
         }
-        const dims = this.getSizeDimensions(size);
+        const dims = this.getSizeDimensions(size, settings, type);
 
         let x = Number.isInteger(w.x) ? w.x : 0;
         let y = Number.isInteger(w.y) ? w.y : 0;
@@ -177,7 +262,7 @@
           x,
           y,
           hidden,
-          settings: typeof w.settings === "object" && w.settings ? { ...w.settings } : {},
+          settings,
         });
       }
 
@@ -198,13 +283,43 @@
         layout: {
           schemaVersion: 2,
           view: "today",
+          ...(this._isWebSurface ? {webFootprints: WEB_FOOTPRINT_VERSION} : {}),
+          ...(this._smallColumns !== 4 || data.laneColumns ? {laneColumns:this._smallColumns} : {}),
           widgets: resolvedWidgets,
         },
       };
     }
 
-    _resolveAllCollisions(widgets) {
-      const items = widgets.map(w => ({ ...w, ...this.getSizeDimensions(w.size) }));
+    _reflowWidgets(widgets) {
+      const placed = [];
+      // On a narrower canvas, keep the primary daily action near the greeting.
+      // This only changes presentation during reflow; explicit saved positions
+      // at the current lane count and the source layout remain untouched.
+      // The web keeps the original section order at every width.
+      const priority = w => this._smallColumns >= 6 && !this._isWebSurface ? ({summary:-2, habits:-1}[w.type] || 0) : 0;
+      const ordered = [...widgets].filter(Boolean).sort((a,b) => priority(a)-priority(b) || (a.y-b.y) || (a.x-b.x));
+      for (const widget of ordered) {
+        const item = {...widget, ...this.getSizeDimensions(widget.size,widget.settings,widget.type)};
+        if (!item.hidden) {
+          let row = 0, found = false;
+          while (!found) {
+            for (let x=0; x+item.w<=COLUMNS; x+=this.getLaneStep()) {
+              const candidate = {...item,x,y:row};
+              if (!placed.some(other=>!other.hidden&&rectsOverlap(candidate,other))) {
+                item.x=x;item.y=row;found=true;break;
+              }
+            }
+            row++;
+          }
+        }
+        placed.push(item);
+      }
+      return placed.map(({w,h,...widget})=>widget);
+    }
+
+    _resolveAllCollisions(widgets, priorityId) {
+      const ordered = priorityId ? [...widgets.filter(w => w.id === priorityId), ...widgets.filter(w => w.id !== priorityId)] : widgets;
+      const items = ordered.map(w => ({ ...w, ...this.getSizeDimensions(w.size, w.settings, w.type) }));
       const placed = [];
 
       for (const item of items) {
@@ -235,7 +350,7 @@
 
     migrateFromV1(v1Data) {
       if (!v1Data || typeof v1Data !== "object") {
-        return clone(DEFAULT_TODAY_LAYOUT);
+        return clone(this.DEFAULT_LAYOUT);
       }
       let order = [];
       let collapsed = new Set();
@@ -256,8 +371,8 @@
       }
 
       const widgets = [];
-      const defaultWidgetsMap = new Map(DEFAULT_TODAY_LAYOUT.widgets.map(w => [w.type, w]));
-      const allKnownTypes = ["summary", "habits", "calendar", "focus", "photos", "reflection", "context"];
+      const defaultWidgetsMap = new Map(this.DEFAULT_LAYOUT.widgets.map(w => [w.type, w]));
+      const allKnownTypes = this.DEFAULT_LAYOUT.widgets.map(widget => widget.type);
 
       const resolvedOrder = [...order];
       for (const t of allKnownTypes) {
@@ -284,7 +399,7 @@
         }
 
         const isProtected = PROTECTED_WIDGETS.has(type);
-        const isHidden = isProtected ? false : (hidden.has(type) || hidden.has(rawId));
+        const isHidden = isProtected ? false : (hidden.has(type) || hidden.has(rawId) || (defaultWidget.hidden && !order.includes(type) && !order.includes(rawId)));
 
         widgets.push({
           id: `today-${type}`,
@@ -312,7 +427,7 @@
 
     readStoredLayout() {
       try {
-        const rawV2 = root.localStorage ? root.localStorage.getItem(STORAGE_KEY_V2) : null;
+        const rawV2 = root.localStorage ? root.localStorage.getItem(this.STORAGE_KEY) : null;
         if (rawV2) {
           try {
             const parsed = JSON.parse(rawV2);
@@ -320,12 +435,12 @@
             return layout;
           } catch {
             // Corrupt JSON: return deterministic default without deleting the raw value in localStorage
-            return clone(DEFAULT_TODAY_LAYOUT);
+            return this.validateLayout(clone(this.DEFAULT_LAYOUT)).layout;
           }
         }
 
         // V2 not yet in storage: check v1 for one-time non-destructive migration
-        const rawV1 = root.localStorage ? root.localStorage.getItem(STORAGE_KEY_V1) : null;
+        const rawV1 = !this._isWebSurface && root.localStorage ? root.localStorage.getItem(STORAGE_KEY_V1) : null;
         if (rawV1) {
           try {
             const parsedV1 = JSON.parse(rawV1);
@@ -338,9 +453,9 @@
           } catch {}
         }
 
-        return clone(DEFAULT_TODAY_LAYOUT);
+        return this.validateLayout(clone(this.DEFAULT_LAYOUT)).layout;
       } catch {
-        return clone(DEFAULT_TODAY_LAYOUT);
+        return this.validateLayout(clone(this.DEFAULT_LAYOUT)).layout;
       }
     }
 
@@ -348,14 +463,14 @@
       try {
         if (!root.localStorage) return;
         const { layout: normalized } = this.validateLayout(layout);
-        root.localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(normalized));
+        root.localStorage.setItem(this.STORAGE_KEY, JSON.stringify(normalized));
         this._activeLayout = normalized;
         this._notifyChange(normalized);
       } catch {}
     }
 
     resetLayout() {
-      const def = clone(DEFAULT_TODAY_LAYOUT);
+      const def = clone(this.DEFAULT_LAYOUT);
       this.writeStoredLayout(def);
       if (this._container) {
         this.renderBoard();
@@ -370,8 +485,9 @@
       return clone(this._activeLayout);
     }
 
-    setLayout(layout) {
+    setLayout(layout, priorityId) {
       this._pushTransaction();
+      if(priorityId)layout={...layout,widgets:this._resolveAllCollisions(layout.widgets,priorityId)};
       this.writeStoredLayout(layout);
       if (this._container) {
         this.renderBoard();
@@ -443,6 +559,16 @@
       }
 
       this.renderBoard();
+      if (!this._resizeObserver && root.ResizeObserver) {
+        let width = 0;
+        this._resizeObserver = new root.ResizeObserver(entries => {
+          const next = Math.round(entries[0].contentRect.width);
+          if (!next || next === width) return;
+          width = next;
+          if (!this._dragState && !this._resizeState) this.renderBoard();
+        });
+        this._resizeObserver.observe(container);
+      }
     }
 
     setEditMode(enabled) {
@@ -530,6 +656,15 @@
       }
       if (!rowTracks.length) {
         rowTracks = [180];
+      }
+
+      // A CSS grid already exposes its real tracks. Spanning cards must not be
+      // mistaken for single-row heights, and padding/scroll belong in the origin.
+      if (style.display === "grid") {
+        const paddingTop = parseFloat(style.paddingTop) || 0;
+        return {colTracks, rowTracks, colGap, rowGap,
+          originX: parseFloat(style.paddingLeft) || 0,
+          rowStarts: this._trackStartPositions(rowTracks, rowGap).map(y => y + paddingTop - this._container.scrollTop)};
       }
 
       rowTracks = this._rowTracksFromPlacedCards(rowTracks, rowGap);
@@ -650,12 +785,17 @@
     }
 
     /** Map pointer/card top-left (container-relative px) to grid column start (0,4,8). */
+    getLaneStep() {
+      return this._isWebSurface && this._smallColumns === 4 ? 2 : this._smallColumns;
+    }
+
     _pointerToGridColumn(relX, metrics) {
-      const colIndex = this._nearestTrackIndex(relX, metrics.colTracks, metrics.colGap);
-      // S/M/L widgets align to 4-column slots (matches keyboard ArrowLeft/Right step of 4).
-      let targetX = Math.round(colIndex / 4) * 4;
+      const colIndex = this._nearestTrackIndex(relX - (metrics.originX || 0), metrics.colTracks, metrics.colGap);
+      // The same lane width owns both pointer and keyboard movement.
+      const step = this.getLaneStep();
+      let targetX = Math.round(colIndex / step) * step;
       if (targetX < 0) targetX = 0;
-      if (targetX > COLUMNS - 1) targetX = COLUMNS - 4;
+      if (targetX > COLUMNS - 1) targetX = COLUMNS - step;
       return targetX;
     }
 
@@ -704,6 +844,23 @@
 
     renderBoard() {
       if (!this._container) return;
+      const available = this._container.clientWidth;
+      if (available && root.getComputedStyle) {
+        const style = root.getComputedStyle(this._container);
+        const content = available - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+        const columns = content >= 840 ? 4 : content >= 480 ? 6 : 12;
+        if (columns !== this._smallColumns) {
+          this._smallColumns = columns;
+          // Reflow is a presentation change, not permission to overwrite a saved layout.
+          this._activeLayout = this.readStoredLayout();
+        }
+        // The capped canvas bounds the approved 180/380px rhythm. Within it,
+        // keep square presets genuinely square as columns become narrower.
+        const lanes = COLUMNS / columns;
+        const gap = parseFloat(style.columnGap) || 20;
+        const row = this._isWebSurface ? WEB_ROW : Math.min(180, Math.max(100, ((content - (lanes - 1) * gap) / lanes - gap) / 2));
+        this._container.style.setProperty("--today-row", `${row}px`);
+      }
       const layout = this.getLayout();
       const registry = root.LifeLedgerWidgetRegistry;
       const isEditing = this._isEditing;
@@ -724,16 +881,21 @@
       for (const w of sortedWidgets) {
         const card = cardMap.get(w.type) || cardMap.get(w.id);
         if (!card) continue;
+        card.setAttribute('aria-label',tr(`modules.names.${w.type}`,w.type));
 
         // Position in 12-column grid via CSS variables
-        const dims = this.getSizeDimensions(w.size);
+        const dims = this.getSizeDimensions(w.size, w.settings, w.type);
         card.style.setProperty("--grid-x", String(w.x));
         card.style.setProperty("--grid-y", String(w.y));
         card.style.setProperty("--grid-w", String(dims.w));
         card.style.setProperty("--grid-h", String(dims.h));
-        card.dataset.widgetSize = w.size;
+        card.style.setProperty("--card-i", String(sortedWidgets.indexOf(w)));
+        // A web square footprint (380x380) shows the full content state.
+        const shownSize = this._isWebSurface && WEB_DIMS[w.type] ? "large" : w.size;
+        card.dataset.widgetSize = shownSize;
+        card.dataset.widgetShape = w.settings?.shape === "square" ? "square" : "wide";
 
-        if (w.hidden && !isEditing) {
+        if (w.hidden) {
           card.hidden = true;
           card.classList.remove("is-widget-hidden");
         } else {
@@ -746,7 +908,7 @@
         if (widgetDef && typeof widgetDef.render === "function") {
           widgetDef.render({
             element: card,
-            size: w.size,
+            size: shownSize,
             data: {},
             locale: root.document?.documentElement?.lang || "en",
             motion: getMotionMode(),
@@ -765,10 +927,11 @@
           this._renderWidgetEditBar(editBar, card, w);
         } else if (editBar) {
           editBar.hidden = true;
+          card.querySelector(':scope > .widget-remove')?.remove();
         }
 
         let resizeHandle = card.querySelector(":scope > .widget-resize-handle");
-        if (isEditing) {
+        if (isEditing && this._allowedWidgetSizes(w).length > 1) {
           resizeHandle?.remove();
           resizeHandle = root.document.createElement("button");
           resizeHandle.type = "button";
@@ -789,6 +952,7 @@
       const isProtected = PROTECTED_WIDGETS.has(type) || PROTECTED_WIDGETS.has(widgetData.id);
       const isHidden = Boolean(widgetData.hidden);
       const size = widgetData.size;
+      const chosenSize = size === "large" && widgetData.settings?.shape === "square" ? "square" : size;
 
       const nameKey = `modules.names.${type}`;
       const name = tr(nameKey, type);
@@ -806,7 +970,7 @@
         <div class="widget-size-picker" role="radiogroup" aria-label="${escapeHtml(tr("modules.sizeSelector", "Widget size"))}">
           <button type="button" class="widget-size-btn${size === "small" ? " is-active" : ""}" data-size="small" aria-checked="${size === "small"}" role="radio" title="${escapeHtml(tr("modules.sizeSmall", "Small"))}">S</button>
           <button type="button" class="widget-size-btn${size === "medium" ? " is-active" : ""}" data-size="medium" aria-checked="${size === "medium"}" role="radio" title="${escapeHtml(tr("modules.sizeMedium", "Medium"))}">M</button>
-          <button type="button" class="widget-size-btn${size === "large" ? " is-active" : ""}" data-size="large" aria-checked="${size === "large"}" role="radio" title="${escapeHtml(tr("modules.sizeLarge", "Large"))}">L</button>
+          <button type="button" class="widget-size-btn${chosenSize === "large" ? " is-active" : ""}" data-size="large" aria-checked="${chosenSize === "large"}" role="radio" title="${escapeHtml(tr("modules.sizeLarge", "Large"))}">L</button>
         </div>
         <div class="widget-edit-trailing">
           ${isProtected ? "" : `<button type="button" class="widget-hide-btn" data-action="toggle-hide" aria-label="${escapeHtml(hideLabel)}" title="${escapeHtml(hideText)}">${isHidden ? SHOW_ICON : HIDE_ICON}</button>`}
@@ -815,18 +979,49 @@
 
       // Setup 2D pointer drag on the drag handle
       const handle = editBar.querySelector(".widget-drag-handle");
+      const configure = root.document.createElement('button');
+      configure.type = 'button'; configure.className = 'widget-configure';
+      configure.setAttribute('aria-label', `${tr('modules.sizeSelector', 'Widget size')}: ${name}`);
+      configure.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 4 6 6M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14Z"/></svg>';
+      configure.addEventListener('click', () => card.dispatchEvent(new root.CustomEvent('widget-configure', {bubbles:true})));
+      editBar.appendChild(configure);
+      // Web: every removable widget gets a visible "remove" (−) control; it can be
+      // added back from the widget library.
+      if (this._isWebSurface && !isProtected) {
+        const remove = root.document.createElement('button');
+        remove.type = 'button'; remove.className = 'widget-remove';
+        const lang = (root.document.documentElement.lang || 'en').split('-')[0];
+        const label = ({zh:`移除「${name}」`, de:`${name} entfernen`}[lang]) || `Remove ${name}`;
+        remove.setAttribute('aria-label', label); remove.title = label;
+        remove.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"/></svg>';
+        remove.addEventListener('pointerdown', e => e.stopPropagation());
+        remove.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this._toggleWidgetHidden(widgetData.id); });
+        card.querySelector(':scope > .widget-remove')?.remove();
+        card.appendChild(remove);
+      }
       if (handle) {
         this._setupPointerDrag(handle, card, widgetData);
         this._setupKeyboardMove(handle, widgetData);
       }
 
       // Size buttons with arrow key traversal (radiogroup behavior)
-      const sizeBtns = Array.from(editBar.querySelectorAll(".widget-size-btn"));
+      let sizeBtns = Array.from(editBar.querySelectorAll(".widget-size-btn"));
+      const allowed=this._allowedWidgetSizes(widgetData);
+      sizeBtns.forEach(button=>{if(!allowed.includes(button.dataset.size))button.remove();});
+      sizeBtns=sizeBtns.filter(button=>allowed.includes(button.dataset.size));
+      if(allowed.length===1){
+        const picker=editBar.querySelector('.widget-size-picker');
+        picker.replaceChildren();const label=root.document.createElement('span');label.className='widget-fixed-size';
+        const lang=(root.document.documentElement.lang||'en').split('-')[0];
+        const fixed={zh:['固定尺寸','固定尺寸'],de:['Feste Größe','Feste Größe'],en:['Fixed size','Fixed size']};
+        const square=widgetData.settings?.shape==='square';
+        label.textContent=(fixed[lang]||fixed.en)[allowed[0]==='small'&&!square?1:0];picker.appendChild(label);
+      }
       sizeBtns.forEach((btn, idx) => {
         btn.addEventListener("click", e => {
           e.preventDefault();
           const targetSize = btn.dataset.size;
-          if (targetSize && targetSize !== widgetData.size) {
+          if (targetSize && targetSize !== chosenSize) {
             this._changeWidgetSize(widgetData.id, targetSize);
           }
         });
@@ -862,6 +1057,7 @@
         large: "modules.sizeLarge",
       };
       const fallbacks = { small: "Small", medium: "Medium", large: "Large" };
+      if (size === "square") return tr("modules.sizeSquare", "Large square");
       return tr(keys[size], fallbacks[size] || size);
     }
 
@@ -879,12 +1075,14 @@
     }
 
     _allowedWidgetSizes(widgetData) {
+      if (this._isWebSurface && WEB_FOOTPRINTS[widgetData.type]) return [WEB_FOOTPRINTS[widgetData.type][0]];
       const widgetDef = root.LifeLedgerWidgetRegistry?.get(widgetData.type) ||
         root.LifeLedgerWidgetRegistry?.get(widgetData.id);
       const allowed = Array.isArray(widgetDef?.allowedSizes)
         ? widgetDef.allowedSizes.filter(size => Object.hasOwn(SIZE_DIMENSIONS, size))
         : [];
-      return allowed.length ? allowed : ["small", "medium", "large"];
+      const sizes = allowed.length ? allowed : ["small", "medium", "large"];
+      return sizes.includes("large") && !widgetDef?.fixedShape ? [...sizes, "square"] : sizes;
     }
 
     _nearestResizeSize(state, dx, dy) {
@@ -921,13 +1119,14 @@
       card.style.setProperty("--grid-x", String(previewX));
       card.style.setProperty("--grid-w", String(dimensions.w));
       card.style.setProperty("--grid-h", String(dimensions.h));
-      card.dataset.widgetSize = size;
+      card.dataset.widgetSize = size === "square" ? "large" : size;
+      card.dataset.widgetShape = size === "square" ? "square" : "wide";
 
       const widgetDef = root.LifeLedgerWidgetRegistry?.get(widgetData.type) ||
         root.LifeLedgerWidgetRegistry?.get(widgetData.id);
       widgetDef?.render?.({
         element: card,
-        size,
+        size: size === "square" ? "large" : size,
         data: {},
         locale: root.document?.documentElement?.lang || "en",
         motion: getMotionMode(),
@@ -945,6 +1144,7 @@
     }
 
     _settleResizedCard(card, previewRect, motion) {
+      root.clearTimeout(card._settleTimer);
       card.classList.remove("is-resizing");
       const finalRect = card.getBoundingClientRect();
       const offsetX = previewRect.left - finalRect.left;
@@ -968,7 +1168,7 @@
       card.style.transition = "transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 240ms ease-out";
       card.style.transform = "translate3d(0, 0, 0)";
       card.style.opacity = "1";
-      root.setTimeout(() => {
+      card._settleTimer = root.setTimeout(() => {
         card.style.transition = "";
         card.style.transform = "";
         card.style.opacity = "";
@@ -1011,13 +1211,13 @@
 
         const state = {
           pointerId,
-          originalSize: widgetData.size,
-          candidateSize: widgetData.size,
+          originalSize: widgetData.size === "large" && widgetData.settings?.shape === "square" ? "square" : widgetData.size,
+          candidateSize: widgetData.size === "large" && widgetData.settings?.shape === "square" ? "square" : widgetData.size,
           allowedSizes: this._allowedWidgetSizes(widgetData),
           startX: event.clientX,
           startY: event.clientY,
           horizontalSpan,
-          verticalSpan,
+          verticalSpan: this._allowedWidgetSizes(widgetData).includes("square") ? verticalSpan * 3 : verticalSpan,
           cancel: null,
         };
         this._resizeState = state;
@@ -1082,13 +1282,15 @@
     }
 
     _changeWidgetSize(widgetId, newSize) {
-      if (!["small", "medium", "large"].includes(newSize)) return;
+      if (!["small", "medium", "large", "square"].includes(newSize)) return;
       const layout = this.getLayout();
       const widget = layout.widgets.find(w => w.id === widgetId);
       if (!widget) return;
+      if(!this._allowedWidgetSizes(widget).includes(newSize))return;
 
       this._pushTransaction();
-      widget.size = newSize;
+      widget.size = newSize === "square" ? "large" : newSize;
+      widget.settings = { ...widget.settings, shape: newSize === "square" ? "square" : "wide" };
       const dims = this.getSizeDimensions(newSize);
 
       // Clamp x if it exceeds 12
@@ -1097,7 +1299,7 @@
       }
 
       // Resolve collisions
-      layout.widgets = this._resolveAllCollisions(layout.widgets);
+      layout.widgets = this._resolveAllCollisions(layout.widgets, widgetId);
       this.writeStoredLayout(layout);
       this.renderBoard();
     }
@@ -1118,14 +1320,16 @@
       let suppressMouseDown = false;
 
       const beginDrag = e => {
-        if (e.button !== 0 || !this._isEditing) return;
+        if (e.button !== 0 || e.isPrimary === false || !this._isEditing || this._dragState || this._resizeState) return;
         e.preventDefault();
+        root.clearTimeout(card._settleTimer);
 
         const startX = e.clientX;
         const startY = e.clientY;
         const cardRect = card.getBoundingClientRect();
         const containerRect = this._container.getBoundingClientRect();
         const gridMetrics = this._measureGridMetrics();
+        const startScroll = this._container.scrollTop;
         const motion = getMotionMode();
 
         const pointerLike = String(e.type || "").startsWith("pointer");
@@ -1152,16 +1356,21 @@
 
         const onMove = moveEvent => {
           if (!this._dragState) return;
+          if (pointerLike && (moveEvent.pointerId !== e.pointerId || moveEvent.isPrimary === false)) return;
           const dx = moveEvent.clientX - startX;
           const dy = moveEvent.clientY - startY;
           this._dragState.lastClientX = moveEvent.clientX;
           this._dragState.lastClientY = moveEvent.clientY;
 
           // Direct follow with zero easing
-          card.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+          const bounds = this._container.getBoundingClientRect();
+          if (moveEvent.clientY > bounds.bottom - 44) this._container.scrollTop += 18;
+          if (moveEvent.clientY < bounds.top + 44) this._container.scrollTop -= 18;
+          card.style.transform = `translate3d(${dx}px, ${dy + this._container.scrollTop - startScroll}px, 0)`;
         };
 
         const onUp = upEvent => {
+          if (pointerLike && upEvent.pointerId !== e.pointerId) return;
           cleanUp();
           if (!this._dragState) return;
 
@@ -1171,11 +1380,12 @@
           const endY = dragState.lastClientY ?? upEvent.clientY;
           const dx = endX - dragState.startX;
           const dy = endY - dragState.startY;
-          const relX = dragState.cardRect.left - containerRectNow.left + dx;
-          const relY = dragState.cardRect.top - containerRectNow.top + dy;
+          const droppedRect = card.getBoundingClientRect();
+          const relX = droppedRect.left - containerRectNow.left;
+          const relY = droppedRect.top - containerRectNow.top;
           const metrics = this._measureGridMetrics();
 
-          const dims = this.getSizeDimensions(widgetData.size);
+          const dims = this.getSizeDimensions(widgetData.size, widgetData.settings, widgetData.type);
           let targetX = this._pointerToGridColumn(relX, metrics);
           let targetY = this._pointerToGridRow(relY, metrics);
 
@@ -1190,31 +1400,18 @@
             if (w) {
               w.x = targetX;
               w.y = targetY;
-              layout.widgets = this._resolveAllCollisions(layout.widgets);
+              layout.widgets = this._resolveAllCollisions(layout.widgets, w.id);
               this.writeStoredLayout(layout);
             }
           }
 
-          // Settle transition
-          if (motion === "off" || motion === "reduced") {
-            card.style.transition = "none";
-            card.style.transform = "none";
-            card.style.zIndex = "";
-            card.classList.remove("is-dragging");
-            this.renderBoard();
-          } else {
-            card.style.transition = "transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1)";
-            card.style.transform = "translate3d(0, 0, 0)";
-            setTimeout(() => {
-              card.style.transition = "";
-              card.style.transform = "";
-              card.style.zIndex = "";
-              card.classList.remove("is-dragging");
-              this.renderBoard();
-            }, 240);
-          }
-
+          const previewRect = card.getBoundingClientRect();
           this._dragState = null;
+          card.classList.remove("is-dragging");
+          card.style.transform = "";
+          this.renderBoard();
+          this._settleResizedCard(card, previewRect, motion);
+          card.querySelector('.widget-drag-handle')?.focus({preventScroll:true});
         };
 
         const onCancel = () => {
@@ -1296,8 +1493,8 @@
         let deltaX = 0;
         let deltaY = 0;
 
-        if (e.key === "ArrowLeft") deltaX = -4;
-        else if (e.key === "ArrowRight") deltaX = 4;
+        if (e.key === "ArrowLeft") deltaX = -this.getLaneStep();
+        else if (e.key === "ArrowRight") deltaX = this.getLaneStep();
         else if (e.key === "ArrowUp") deltaY = -1;
         else if (e.key === "ArrowDown") deltaY = 1;
         else return;
@@ -1307,7 +1504,7 @@
         const w = layout.widgets.find(item => item.id === widgetData.id);
         if (!w) return;
 
-        const dims = this.getSizeDimensions(w.size);
+        const dims = this.getSizeDimensions(w.size, w.settings, w.type);
         let newX = w.x + deltaX;
         let newY = Math.max(0, w.y + deltaY);
 
@@ -1319,7 +1516,7 @@
         this._pushTransaction();
         w.x = newX;
         w.y = newY;
-        layout.widgets = this._resolveAllCollisions(layout.widgets);
+        layout.widgets = this._resolveAllCollisions(layout.widgets, w.id);
         this.writeStoredLayout(layout);
         this.renderBoard();
 

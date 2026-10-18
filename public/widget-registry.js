@@ -101,6 +101,7 @@
         render,
         getA11ySummary: definition.getA11ySummary || (() => ""),
         settingsSchema: definition.settingsSchema || {},
+        fixedShape: definition.fixedShape || null,
         migrateSettings: definition.migrateSettings || (p => p || {}),
       };
 
@@ -142,6 +143,7 @@
         id: "today-summary",
         type: "summary",
         allowedSizes: ["small", "medium", "large"],
+        fixedShape: "wide",
         defaultSize: "large",
         defaultPlacement: { x: 0, y: 0, size: "large" },
         render({ element, size }) {
@@ -150,6 +152,13 @@
           const ctx = contextProvider();
 
           const art = element.querySelector("#todayHeaderArt");
+          const heroShell = element.querySelector(".today-summary-hero");
+          const dateChip = element.querySelector("#todayDateChip");
+          const heroQuote = element.querySelector("#todayHeroQuote");
+          const heroQuoteSource = element.querySelector("#todayHeroQuoteSource");
+          const progressOrbit = element.querySelector("#todayProgressOrbit");
+          const progressBar = element.querySelector(".today-progress");
+          const moodHeading = element.querySelector(".today-mood-heading");
           const dateSec = element.querySelector("#todayDateSecondary");
           const meta = element.querySelector(".today-stage-meta");
           const mood = element.querySelector("#quickMood");
@@ -161,14 +170,26 @@
           const summaryLine = element.querySelector("#todaySummary");
 
           if (art) art.dataset.widgetPart = "summary-greeting";
+          if (heroShell) heroShell.dataset.widgetPart = "summary-hero-shell";
           if (dateHeading) dateHeading.dataset.widgetPart = "summary-date";
           if (summaryLine) summaryLine.dataset.widgetPart = "summary-completion";
           if (mood) mood.dataset.widgetPart = "summary-mood";
           if (eventsStrip) eventsStrip.dataset.widgetPart = "summary-events";
           if (reflectBtn) reflectBtn.dataset.widgetPart = "summary-review";
 
-          if (art) art.hidden = size !== "large";
-          if (dateSec) dateSec.hidden = size === "small";
+          const docEl = root.document?.documentElement;
+          const isDesktop = Boolean(docEl && typeof docEl.hasAttribute === "function" && (docEl.hasAttribute("data-workspace") || docEl.hasAttribute("data-desktop")));
+          const heroParity = size !== "small" && isDesktop;
+          if (heroShell) heroShell.classList.toggle("is-web-hero", heroParity);
+          if (meta?.classList) meta.classList.toggle("is-web-mood", heroParity);
+          if (art) art.hidden = heroParity || size !== "large";
+          if (dateChip) dateChip.hidden = !heroParity;
+          if (heroQuote) heroQuote.hidden = !heroParity;
+          if (heroQuoteSource) heroQuoteSource.hidden = !heroParity;
+          if (progressOrbit) progressOrbit.hidden = !heroParity;
+          if (progressBar) progressBar.hidden = heroParity;
+          if (moodHeading) moodHeading.hidden = size === "small" || !heroParity;
+          if (dateSec) dateSec.hidden = size === "small" || heroParity;
           if (meta) meta.hidden = size === "small";
           if (mood) mood.hidden = size === "small";
           if (reason) reason.hidden = size === "small";
@@ -176,7 +197,7 @@
           if (eventsStrip) eventsStrip.hidden = size === "small";
 
           if (nextItem) {
-            nextItem.hidden = size === "small";
+            nextItem.hidden = size !== "large";
             if (size !== "small" && ctx.summaryNextItem) {
               nextItem.textContent = ctx.summaryNextItem;
             }
@@ -205,10 +226,13 @@
           const ctx = contextProvider();
 
           const openRows = Array.from(element.querySelectorAll("#todayHabitList .today-habit-row, .today-habit-item"));
+          const railRows = [...new Set([...openRows, ...element.querySelectorAll("#todayScheduledList .today-habit-row, #todayCompletedList .today-habit-row")])];
           const scheduled = element.querySelector("#todayScheduledGroup");
           const completed = element.querySelector("#todayCompletedGroup");
           const notToday = element.querySelector("#todayNotTodayGroup");
           const showAll = part(element, "habits-show-all");
+          const caption = part(element, "habits-caption");
+          if (caption) caption.hidden = size !== "large";
           const openHeading = element.querySelector("#todayOpenHeading");
           if (openHeading) openHeading.dataset.widgetPart = "habits-open-heading";
           if (scheduled) scheduled.dataset.widgetPart = "habits-scheduled";
@@ -227,15 +251,18 @@
               row.hidden = idx > 0;
             });
           } else if (size === "medium") {
-            if (scheduled) scheduled.hidden = true;
-            if (completed) completed.hidden = true;
             if (notToday) notToday.hidden = true;
             if (showAll) showAll.hidden = true;
-            openRows.forEach((row, idx) => {
-              row.hidden = idx >= 3;
+            railRows.forEach((row, idx) => {
+              row.hidden = idx >= 4;
             });
+            if (scheduled) scheduled.hidden = !Array.from(scheduled.querySelectorAll(".today-habit-row")).some(row => !row.hidden);
+            if (completed) {
+              completed.hidden = !Array.from(completed.querySelectorAll(".today-habit-row")).some(row => !row.hidden);
+              if (!completed.hidden) completed.open = true;
+            }
           } else {
-            openRows.forEach(row => { row.hidden = false; });
+            railRows.forEach(row => { row.hidden = false; });
             if (scheduled) scheduled.hidden = !scheduled.querySelector("li");
             if (completed) {
               completed.hidden = !completed.querySelector("li");
@@ -509,8 +536,10 @@
             prompt.textContent = ctx.reflectionPrompt;
           }
 
+          // Web: voice availability is decided by app.js (cloud voice service), not by card size.
+          const webCard = !root.document?.documentElement?.hasAttribute("data-desktop");
           if (size === "small") {
-            if (voiceBtn) voiceBtn.hidden = true;
+            if (voiceBtn && !webCard) voiceBtn.hidden = true;
             if (status) status.hidden = false;
             if (prompt) prompt.hidden = false;
             if (dayContext) dayContext.hidden = true;
@@ -519,7 +548,7 @@
               textarea.classList.add("is-compact-reflection");
             }
           } else if (size === "medium") {
-            if (voiceBtn) voiceBtn.hidden = false;
+            if (voiceBtn && !webCard) voiceBtn.hidden = false;
             if (status) status.hidden = true;
             if (prompt) prompt.hidden = true;
             if (dayContext) dayContext.hidden = true;
@@ -528,7 +557,7 @@
               textarea.classList.remove("is-compact-reflection");
             }
           } else {
-            if (voiceBtn) voiceBtn.hidden = false;
+            if (voiceBtn && !webCard) voiceBtn.hidden = false;
             if (status) status.hidden = true;
             if (prompt) prompt.hidden = true;
             if (dayContext) dayContext.hidden = false;

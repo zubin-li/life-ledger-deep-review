@@ -37,13 +37,27 @@
         if (desktopMode === "tauri-local" || desktopMode === "tauri-cloud") {
           document.documentElement.dataset.desktop = desktopMode;
         }
+        // Shared workspace presentation is not a native permission/runtime flag.
+        if (document.documentElement.dataset.desktop || matchMedia("(min-width: 761px)").matches) {
+          document.documentElement.dataset.workspace = "true";
+        }
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="./styles.css?v=3.6.0" />
+    <link rel="stylesheet" href="./desk-polish.css" />
+    <link rel="stylesheet" href="./today-classic.css" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
+    <header class="desktop-windowbar" id="desktopWindowbar" data-tauri-drag-region>
+      <span class="native-window-controls-space" aria-hidden="true" data-tauri-drag-region></span>
+      <span id="windowSidebarControl"></span>
+      <span class="windowbar-divider" aria-hidden="true" data-tauri-drag-region></span>
+      <span class="windowbar-title" data-tauri-drag-region>Life Ledger</span>
+      <span class="windowbar-space" data-tauri-drag-region></span>
+      <span class="windowbar-mode" id="windowbarMode" data-tauri-drag-region></span>
+    </header>
     <div class="app-shell" id="appShell">
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-resize-handle" id="sidebarResizeHandle" aria-hidden="true"></div>
@@ -57,6 +71,7 @@
           <span class="nav-indicator" aria-hidden="true" hidden></span>
           <button class="nav-item active" data-view="today" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">今日</span></button>
           <button class="nav-item" data-view="week"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/><path d="m16 16 1.5 1.5L21 14"/></svg></span><span class="nav-label">本周</span></button>
+          <button class="nav-item" data-view="longrange"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V4m0 1c5-5 9 5 14 0v10c-5 5-9-5-14 0"/></svg></span><span class="nav-label">长期</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><circle cx="7" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">日志</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg></span><span class="nav-label">洞察</span></button>
           <button class="nav-item" data-view="habits"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><span class="nav-label">习惯设置</span></button>
@@ -64,6 +79,11 @@
         <h2 class="sidebar-group-heading" id="sidebarHabitsHeading">Habits</h2>
         <ul class="sidebar-habits" id="sidebarHabitsList" role="list" aria-label="Today's habits"></ul>
         <footer class="sidebar-footer">
+          <button class="sidebar-account" id="sidebarAccount" type="button">
+            <span class="profile-avatar" id="sidebarAvatar" aria-hidden="true">L</span>
+            <span class="sidebar-account-copy"><strong id="sidebarProfileName">Life Ledger</strong><small id="sidebarProfileMode"></small></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+          </button>
           <button class="sidebar-settings" id="openSettingsButton" type="button" aria-label="Settings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2.1 2.1 0 0 1-1.5 3.6 2.1 2.1 0 0 1-1.5-.6l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2.1 2.1 0 0 1-4.2 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2.1 2.1 0 0 1-3.6-1.5 2.1 2.1 0 0 1 .6-1.5l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2.1 2.1 0 0 1 0-4.2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2.1 2.1 0 0 1 1.5-3.6 2.1 2.1 0 0 1 1.5.6l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V3a2.1 2.1 0 0 1 4.2 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2.1 2.1 0 0 1 3.6 1.5 2.1 2.1 0 0 1-.6 1.5l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1H21a2.1 2.1 0 0 1 0 4.2h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
             <span id="sidebarSettingsLabel">Settings</span>
@@ -75,9 +95,10 @@
       <div class="workspace-pane">
         <header class="app-toolbar" data-tauri-drag-region>
           <div class="toolbar-leading">
+            <button class="mobile-settings-toggle" id="mobileSettingsButton" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg></button>
             <button class="toolbar-sidebar-toggle icon-morph-host" id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true">
-              <span class="icon-morph-layer is-on" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></span>
-              <span class="icon-morph-layer is-off" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></span>
+              <span class="icon-morph-layer is-on" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16m4-11 3 3-3 3"/></svg></span>
+              <span class="icon-morph-layer is-off" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16m7-11-3 3 3 3"/></svg></span>
             </button>
             <h1 class="toolbar-view-title" id="viewTitle">今日</h1>
           </div>
@@ -91,7 +112,13 @@
             </div>
           </div>
           <div class="toolbar-trailing">
+            <div class="toolbar-quick" id="toolbarQuick">
+              <button class="toolbar-quick-today" id="toolbarTodayButton" type="button">Today</button>
+              <button class="toolbar-quick-icon" id="toolbarThemeToggle" type="button" aria-label="Appearance"></button>
+              <label class="toolbar-quick-language"><span class="sr-only" id="toolbarLanguageLabel">Language</span><select id="toolbarLanguage"><option value="zh">中文</option><option value="en">EN</option><option value="de">DE</option></select></label>
+            </div>
             <button class="toolbar-command" id="openCommandPalette" type="button">⌘K</button>
+            <button type="button" id="addTodayWidget" aria-haspopup="dialog">Add widget</button>
             <button class="toolbar-edit-layout" id="editLayoutToggle" type="button" aria-pressed="false" aria-label="Edit layout" title="Edit layout (⌘⌥L)">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
               <span id="editLayoutLabel">Edit layout</span>
@@ -152,16 +179,32 @@
         <section class="view active today-desk today-stage" id="todayView" data-module-board="today">
           <article class="module-card" data-module="summary" style="--grid-x: 0; --grid-y: 0; --grid-w: 8; --grid-h: 2;" data-widget-size="large">
             <header class="today-stage-header today-header module-header">
-              <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
-              <div class="today-stage-copy">
-                <p class="today-kicker" id="todayKicker">Today</p>
-                <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
-                <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
-                <p class="today-summary" id="todaySummary">0 of 0 done</p>
-                <p class="today-summary-next" id="todaySummaryNext" data-widget-part="summary-next-item" hidden></p>
-                <div class="today-progress" aria-hidden="true"><span id="todayProgressFill"></span></div>
+              <div class="today-summary-hero" data-widget-part="summary-hero">
+                <svg class="today-hero-arcs" viewBox="0 0 440 220" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M440 110c-72 0-72-88-144-88s-72 88-144 88 72 88 144 88 72-88 144-88 72 88 144 88" stroke="rgba(111, 198, 181, 0.22)" stroke-width="1.2"/>
+                  <path d="M440 60c-56 0-56-68-112-68s-56 68-112 68 56 68 112 68 56-68 112-68 56 68 112 68" stroke="rgba(94, 168, 214, 0.18)" stroke-width="1"/>
+                  <path d="M440 170c-48 0-48-58-96-58s-48 58-96 58 48 58 96 58 48-58 96-58 48 58 96 58" stroke="rgba(111, 198, 181, 0.14)" stroke-width="1"/>
+                </svg>
+                <div class="today-header-art hairline-mount is-mark" id="todayHeaderArt" aria-hidden="true"></div>
+                <div class="today-stage-copy">
+                  <span class="date-chip today-date-chip" id="todayDateChip" hidden></span>
+                  <p class="today-kicker" id="todayKicker">Today</p>
+                  <h2 class="today-date-heading" id="todayDateHeading">Friday</h2>
+                  <p class="today-hero-quote" id="todayHeroQuote" hidden></p>
+                  <span class="quote-source today-hero-quote-source" id="todayHeroQuoteSource" hidden></span>
+                  <p class="today-date-secondary" id="todayDateSecondary">2 October 2026</p>
+                  <p class="today-summary" id="todaySummary">0 of 0 done</p>
+                  <p class="today-summary-next" id="todaySummaryNext" data-widget-part="summary-next-item" hidden></p>
+                  <span id="heroWeather" class="hero-weather" hidden></span>
+                  <div class="today-progress" aria-hidden="true"><span id="todayProgressFill"></span></div>
+                </div>
+                <div class="progress-orbit" id="todayProgressOrbit" style="--progress: 0" hidden>
+                  <span class="progress-orbit-ring" aria-hidden="true"></span>
+                  <div><strong id="todayProgressNumber"><b>0</b><small>/ 0</small></strong><span class="progress-orbit-label" id="todayProgressLabel">Completed today</span></div>
+                </div>
               </div>
-              <div class="today-stage-meta">
+              <div class="today-stage-meta today-mood-surface">
+                <div class="today-mood-heading" hidden><span class="kicker" id="todayMoodKicker">Mood</span><h3 id="todayMoodHeading">How do you feel today?</h3></div>
                 <div class="mood-segmented today-mood" id="quickMood" role="group" aria-labelledby="inspectorMoodHeading">
                   <h3 class="sr-only" id="inspectorMoodHeading">Mood</h3>
                   <button type="button" data-mood="很好" aria-pressed="false">很好</button>
@@ -183,10 +226,25 @@
               <div>
                 <span class="kicker" id="habitsModuleKicker">DAILY HABITS</span>
                 <h3 class="module-title" id="habitsModuleTitle">Habits</h3>
+                <p class="today-habits-caption" id="todayHabitsCaption" data-widget-part="habits-caption" hidden></p>
+              </div>
+              <div class="today-habits-toolbar">
+                <button class="text-button today-habits-adjust" type="button" data-open-settings><span id="todayHabitsAdjustLabel">Adjust goals</span><span aria-hidden="true">→</span></button>
               </div>
               <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-habits" aria-label="Collapse habits module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
             </header>
             <div class="module-body" id="module-body-habits">
+              <section class="habit-carousel" id="todayHabitCarousel" aria-label="Today's habits" hidden>
+                <div class="habit-carousel-viewport" id="todayHabitViewport" tabindex="0">
+                  <div class="habit-carousel-track" id="todayHabits"></div>
+                </div>
+                <nav class="habit-carousel-nav" id="habitCarouselNav" aria-label="Habit groups" hidden>
+                  <button class="habit-carousel-arrow" id="previousHabitPage" type="button" aria-label="Previous habit group">←</button>
+                  <div class="habit-carousel-pages" id="habitCarouselPages"></div>
+                  <span class="habit-carousel-status" id="habitCarouselStatus" aria-live="polite">1 / 1</span>
+                  <button class="habit-carousel-arrow" id="nextHabitPage" type="button" aria-label="Next habit group">→</button>
+                </nav>
+              </section>
               <div class="today-list" data-disclosure-group="today">
                 <h3 class="today-list-heading" id="todayOpenHeading">Open</h3>
                 <ul class="today-habit-list" id="todayHabitList" role="list" tabindex="0" aria-label="Today's habits"></ul>
@@ -221,6 +279,31 @@
               <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-calendar" aria-label="Collapse calendar module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
             </header>
             <div class="module-body" id="module-body-calendar">
+              <section class="today-month-view" id="todayMonthView" hidden>
+                <div class="calendar-toolbar">
+                  <div><span class="kicker" id="todayMonthKicker">MONTH IN VIEW</span><h2 id="todayMonthHeading"></h2><p id="todayMonthDesc"></p></div>
+                  <div class="calendar-controls">
+                    <div class="calendar-view-switch" role="group" id="todayMonthViewSwitch">
+                      <button type="button" data-calendar-view="mood"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Mood</span></button>
+                      <button type="button" data-calendar-view="heatmap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Heatmap</span></button>
+                    </div>
+                    <div class="calendar-month-nav">
+                      <button class="icon-button" id="todayMonthPrev" type="button" aria-label="Previous month"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
+                      <button class="icon-button" id="todayMonthNext" type="button" aria-label="Next month"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="calendar-card today-month-card">
+                  <div class="calendar-atmosphere">
+                    <span id="todayMonthMark">10</span>
+                    <p><strong id="todayMonthCompletion">0%</strong> <span id="todayMonthCompletionLabel"></span></p>
+                    <div class="month-orbit" aria-hidden="true"></div>
+                  </div>
+                  <div class="weekdays" id="todayMonthWeekdays"></div>
+                  <div class="calendar-grid" id="todayMonthGrid"></div>
+                </div>
+                <div class="calendar-legend today-month-legend"></div>
+              </section>
               <div class="today-calendar-empty hairline-mount is-empty" id="todayCalendarEmptyArt" hidden aria-hidden="true"></div>
               <div class="calendar-card today-calendar-card">
                 <div class="weekdays" id="todayCalendarWeekdays"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
@@ -279,15 +362,55 @@
             </div>
           </article>
 
+          <article class="module-card" data-module="dayplan" data-widget-size="large" hidden>
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="dayPlanKicker">CALENDAR</span>
+                <h3 class="module-title" id="dayPlanTitle">Daily Calendar</h3>
+                <p class="day-plan-desc" id="dayPlanDesc"></p>
+                <small class="day-plan-date" id="todayPlanDate"></small>
+              </div>
+              <button class="day-plan-expand" id="openDayPlan" type="button"><span>Open day</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+            </header>
+            <div class="module-body">
+              <div class="day-roll-control">
+                <button class="day-roll-arrow" id="previousPlanDay" type="button" aria-label="Previous day">←</button>
+                <div class="day-roll" id="dayRoll"></div>
+                <button class="day-roll-arrow" id="nextPlanDay" type="button" aria-label="Next day">→</button>
+              </div>
+              <section class="day-schedule-column">
+                <div class="day-schedule-list" id="dayScheduleList"></div>
+                <button class="routine-disclosure" id="toggleRoutineEvents" type="button" aria-expanded="false" hidden><span></span><b>⌄</b></button>
+                <div class="routine-event-list" id="routineEventList" hidden></div>
+              </section>
+            </div>
+          </article>
+
           <article class="module-card" data-module="reflection" style="--grid-x: 8; --grid-y: 2; --grid-w: 4; --grid-h: 1;" data-widget-size="small">
+            <div class="reflection-tabs" id="reflectionTabs" role="tablist" hidden>
+              <button class="active" type="button" role="tab" aria-selected="true" data-reflection-tab="journal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg><span>Reflection</span></button>
+              <button type="button" role="tab" aria-selected="false" data-reflection-tab="focus"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>Focus</span></button>
+            </div>
             <header class="module-header">
               <div>
                 <span class="kicker" id="reflectionModuleKicker">DAILY REVIEW</span>
                 <h3 class="module-title" id="inspectorReflectionHeading">Reflection</h3>
+                <p class="reflection-sub" id="reflectionSub" hidden></p>
+                <small class="reflection-date" id="journalPlanDate" hidden></small>
               </div>
               <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-reflection" aria-label="Collapse reflection module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
             </header>
             <div class="module-body" id="module-body-reflection">
+              <section class="reflection-focus-page" id="reflectionFocusPage" hidden>
+                <span class="kicker" id="reflectionFocusKicker">FOCUS</span>
+                <h3 id="reflectionFocusTitle">Focus Time</h3>
+                <p id="reflectionFocusHint"></p>
+                <strong class="reflection-focus-minutes" id="reflectionFocusMinutes">0 min</strong>
+                <div class="reflection-focus-actions">
+                  <button class="primary-button" id="reflectionFocusStart" type="button">Start focus</button>
+                  <button class="secondary-button" id="reflectionFocusSettings" type="button">Settings</button>
+                </div>
+              </section>
               <section id="todayJournal" aria-labelledby="inspectorReflectionHeading">
                 <section class="inspector-section inspector-reflection">
                   <p class="reflection-status-copy" data-widget-part="reflection-status" hidden></p>
@@ -319,6 +442,23 @@
             </div>
           </article>
 
+          <article class="module-card" data-module="mood" data-widget-size="small" hidden>
+            <header class="module-header"><span class="kicker" id="moodModuleKicker">MOOD</span><h3 class="module-title" data-extra-label="mood">Mood</h3></header>
+            <div class="module-body" id="standaloneMood"></div>
+            <p class="mood-note" id="todayMoodNote" hidden></p>
+          </article>
+          <article class="module-card" data-module="heatmap" data-widget-size="medium" hidden>
+            <header class="module-header"><h3 class="module-title" data-extra-label="heatmap">Habit rhythm</h3><span id="heatmapMonth"></span></header>
+            <div class="module-body"><div id="heatmapWeekdays" aria-hidden="true"></div><div id="habitHeatmap" role="list"></div><p id="heatmapDescription" class="extra-caption"></p></div>
+          </article>
+          <article class="module-card" data-module="wall" data-widget-size="large" hidden>
+            <header class="module-header"><h3 class="module-title" data-extra-label="wall">Photo wall</h3><button type="button" id="wallAdd" class="extra-file-button" data-extra-label="addMedia">Add media</button><input id="wallFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple hidden></header>
+            <div class="module-body"><div id="wallStage"><p data-extra-label="wallEmpty">Add photos, GIFs or a video.</p></div><div class="wall-controls"><button type="button" id="wallPrev" aria-label="Previous">‹</button><button type="button" id="wallPlay" data-extra-label="play">Play</button><button type="button" id="wallNext" aria-label="Next">›</button><span id="wallCount"></span><button type="button" id="wallRemove" data-extra-label="remove">Remove</button></div><p class="extra-caption" id="wallStatus" role="status"></p></div>
+          </article>
+          <article class="module-card" data-module="weather" data-widget-size="medium" hidden>
+            <header class="module-header"><h3 class="module-title" data-extra-label="weather">Weather</h3><span id="weatherCityName"></span></header>
+            <div class="module-body"><div class="weather-current-line"><div id="weatherDetail"></div><span id="weatherDailyRange"></span></div><div id="weatherPlot" tabindex="0" role="group" aria-label="Hourly temperature chart"></div><input id="weatherHour" class="sr-only" type="range" min="0" max="23" value="0" aria-label="Forecast hour" hidden><span id="weatherPrecipHint" class="weather-rain-hint"></span><div class="weather-footer"><span id="weatherStatus" class="extra-caption" role="status"></span><a class="extra-attribution" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo · CC BY 4.0</a></div></div>
+          </article>
           <div class="day-detail-layer" id="dayDetailSheet" hidden>
             <button class="day-detail-scrim" type="button" data-close-day-detail aria-label="Close"></button>
             <div class="day-detail-panel" role="dialog" aria-modal="true" aria-labelledby="dayDetailTitle">
@@ -340,7 +480,10 @@
 
         <section class="view week-board" id="weekView" data-module-board="week">
           <h2 class="sr-only" id="weeklyWorkspaceTitle">Week</h2>
-          <p class="week-plan-lede" id="weekPlanLede"></p>
+          <header class="week-page-header">
+            <div><span class="kicker" id="weekPageKicker">A WEEK AT A TIME</span><h1 id="weekPageTitle"></h1><p class="week-plan-lede" id="weekPlanLede"></p></div>
+            <img class="week-page-art" src="./assets/hairline/week-review-empty.svg" alt="" aria-hidden="true">
+          </header>
 
           <article class="module-card" data-module="completed">
             <header class="module-header">
@@ -351,10 +494,14 @@
               <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-completed" aria-label="Collapse completed days module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
             </header>
             <div class="module-body" id="module-body-completed">
+              <div class="week-calendar-heading"><p id="weekCalendarStatus" role="status"></p><button class="secondary-button" id="weekCalendarConnect" type="button">Connect calendar</button></div>
+              <div class="week-calendar" id="weekCalendar" role="list" aria-label="Week calendar"></div>
+              <div hidden>
               <div class="week-all-done hairline-mount is-inline" id="weekAllDoneArt" hidden aria-hidden="true"></div>
               <div class="week-split">
                 <ol class="week-agenda" id="weekAgenda" role="list" aria-label="Week agenda"></ol>
                 <article class="week-day-detail" id="weekDayDetail" aria-live="polite"></article>
+              </div>
               </div>
             </div>
           </article>
@@ -445,6 +592,7 @@
                   <textarea id="weeklyOutputText" placeholder="这一周，我输出了什么？"></textarea>
                   <div class="week-review-footer">
                     <span class="inspector-week-autosave" id="inspectorWeekAutosave">Autosaved</span>
+                    <button type="button" class="text-button" id="weekArchiveLink">View in timeline →</button>
                     <span class="inspector-week-status" id="weeklyOutputStatus" hidden></span>
                   </div>
                 </div>
@@ -456,16 +604,23 @@
           </article>
         </section>
 
-        <section class="view timeline-journal" id="timelineView" data-journal-layout="timeline">
+        <section class="view timeline-journal" id="timelineView" data-journal-layout="weeks">
           <header class="view-scroll-header">
-            <h2 class="view-large-title" id="journalScrollTitle">Journal</h2>
+            <h2 class="view-large-title" id="journalScrollTitle">Timeline</h2>
             <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
           </header>
           <div class="journal-mode-switch" id="journalModeSwitch" data-segment role="tablist" aria-label="Journal mode">
-            <button type="button" class="active" role="tab" data-journal-mode="timeline" aria-selected="true" id="journalModeTimeline">Timeline</button>
+            <button type="button" role="tab" data-journal-mode="timeline" aria-selected="false" id="journalModeTimeline">Daily</button>
+            <button type="button" class="active" role="tab" data-journal-mode="weeks" aria-selected="true" id="journalModeWeeks">Weekly</button>
+            <button type="button" role="tab" data-journal-mode="months" aria-selected="false" id="journalModeMonths">Monthly</button>
             <button type="button" role="tab" data-journal-mode="photos" aria-selected="false" id="journalModePhotos">Photos</button>
             <button type="button" role="tab" data-journal-mode="calendar" aria-selected="false" id="journalModeCalendar">Calendar</button>
           </div>
+          <section id="journalFeedPane" aria-label="Timeline">
+            <header class="journal-feed-heading"><div><span class="kicker" id="journalFeedKicker"></span><h2 id="journalFeedTitle"></h2><p id="journalFeedDescription"></p></div><div class="journal-feed-filter"><label for="journalMonthFilter" id="journalMonthFilterLabel">Month</label><input type="month" id="journalMonthFilter"><button type="button" id="journalAllMonths" class="text-button">All months</button></div></header>
+            <div id="journalFeed" aria-live="polite"></div>
+            <button type="button" id="journalLoadMore" class="secondary-button" hidden>Load more</button>
+          </section>
           <div class="timeline-layout" data-journal-layout="timeline">
             <aside class="timeline-sidebar">
               <section class="calendar-embedded timeline-calendar-column" aria-labelledby="calendarTitle">
@@ -538,9 +693,11 @@
             </div>
           </div>
           <div class="review-insights" id="reviewInsights" aria-live="polite"></div>
+          <section id="reviewObservations" class="insight-observations" aria-live="polite"></section>
           <div class="review-trend-chart" id="reviewTrendChart" aria-label="Monthly completion trend"></div>
           <div class="review-heatmap-card" id="reviewHeatmap"></div>
           <div class="review-habit-compare" id="reviewHabitCompare"></div>
+          <section id="reviewPeriodHabits" class="insight-period-habits"></section>
           <details class="review-score-table">
             <summary id="reviewScoreSummary">Habit scores</summary>
             <div class="inspector-review-table" id="inspectorReviewTable"></div>
@@ -599,15 +756,19 @@
           </details>
         </section>
 
+        <section class="view longrange-workspace" id="longrangeView"><div id="longRangeWorkspace"></div></section>
+
         <section class="view habit-library" id="habitsView">
           <header class="view-scroll-header">
             <h2 class="view-large-title" id="habitsScrollTitle">Habits</h2>
             <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
           </header>
           <header class="habits-view-header">
-            <p class="habits-view-summary" id="habitSummary">4 active habits</p>
+            <div><span class="kicker" id="habitLibraryKicker">YOUR DAILY RHYTHM</span><h2 id="habitLibraryTitle">Small habits, your own rhythm.</h2><p class="habits-view-summary" id="habitSummary">4 active habits</p></div>
             <button class="primary-button" id="addHabitButton">＋ Add habit</button>
           </header>
+          <section id="habitLibraryOverview" aria-label="Habit overview"></section>
+          <div class="habit-library-tools"><div id="habitLibraryFilters" role="group" aria-label="Filter habits"><button type="button" class="active" data-habit-filter="all">All</button><button type="button" data-habit-filter="active">Active</button><button type="button" data-habit-filter="paused">Paused</button></div><label class="habit-library-search"><span id="habitLibrarySearchLabel">Find a habit</span><input type="search" id="habitLibrarySearch"></label></div>
           <div class="widget-status-card" id="widgetStatusCard" hidden>
             <div class="widget-status-copy">
               <strong id="widgetStatusTitle"></strong>
@@ -626,6 +787,7 @@
             <div class="habit-settings-list" id="habitSettingsList" role="rowgroup"></div>
           </div>
           <form class="habit-inspector-form habit-management-editor" id="habitInspectorForm">
+                <header class="habit-editor-heading"><span class="kicker" id="habitEditorKicker">EDIT HABIT</span><h3 id="habitEditorTitle"></h3><p id="habitEditorHelp"></p></header>
                 <fieldset class="habit-inspector-group">
                   <legend class="inspector-heading" id="habitInspectorBasicsLegend">Basics</legend>
                   <label class="habit-form-row"><span id="habitInspectorNameLabel">Name</span><input name="name" required placeholder="e.g. Reading" /></label>
@@ -682,6 +844,13 @@
       </div>
       <div class="settings-panels">
         <section class="settings-panel active" data-settings-panel="general" role="tabpanel">
+          <section class="personal-profile" aria-labelledby="profileHeading">
+            <h3 id="profileHeading"></h3>
+            <div class="profile-editor-row"><span class="profile-avatar" id="settingsAvatar" aria-hidden="true">L</span><div><button type="button" class="secondary-button" id="profileChoosePhoto"></button><button type="button" class="text-button" id="profileRemovePhoto"></button></div></div>
+            <input id="profilePhotoFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <label for="profileDisplayName" id="profileNameLabel"></label><input id="profileDisplayName" type="text" maxlength="60" autocomplete="nickname">
+            <p id="profileDeviceNote"></p><p id="profileFeedback" role="status"></p>
+          </section>
           <button class="habit-reminder-card" id="habitReminderCard" type="button">
             <span class="habit-reminder-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M10 21h4"/></svg></span>
             <span class="habit-reminder-copy"><small id="habitReminderKicker">DAILY RHYTHM</small><strong id="habitReminderTitle">Daily review reminder</strong><span id="habitReminderStatus">Off</span></span>
@@ -1137,6 +1306,15 @@
     <script src="./cloudbase-sync.js?v=3.6.0"></script>
     <script src="./focus-timer.js?v=3.6.0"></script>
     <script src="./voice-checkin.js?v=3.6.0"></script>
+    <dialog id="widgetGallery" aria-labelledby="widgetGalleryTitle"><header><div><span class="kicker" id="widgetGalleryKicker"></span><h2 id="widgetGalleryTitle"></h2></div><button type="button" id="widgetGalleryClose"></button></header><p id="widgetGalleryHint"></p><div id="widgetGalleryList"></div></dialog>
+    <dialog id="widgetSettings" aria-labelledby="widgetSettingsTitle">
+      <header><div><span class="kicker" data-extra-label="cardSettings">Card settings</span><h2 id="widgetSettingsTitle"></h2></div><button type="button" id="widgetSettingsClose" data-extra-label="done">Done</button></header>
+      <p class="widget-settings-note" data-extra-label="settingsHint">Changes save automatically. Cards only move in edit mode.</p>
+      <label class="widget-settings-row"><span data-extra-label="size">Size</span><select id="widgetSettingsSize"><option value="small">S</option><option value="medium">M</option><option value="large">L</option><option value="square">L□</option></select></label>
+      <label class="widget-settings-row"><span data-extra-label="showCard">Show card</span><input type="checkbox" id="widgetSettingsVisible"></label>
+      <label class="widget-settings-row" id="heatmapSettings" hidden><span data-extra-label="palette">Palette</span><select id="heatmapPalette"><option value="green" data-extra-label="green">Emerald</option><option value="blue" data-extra-label="blue">Blue</option><option value="spectrum" data-extra-label="spectrum">Red to blue</option></select></label>
+      <section id="weatherSettings" hidden><h3 data-extra-label="location">Location</h3><form id="weatherSearch"><label for="weatherCity" data-extra-label="city">City</label><input id="weatherCity" type="search" maxlength="100" autocomplete="off" required><button type="submit" data-extra-label="search">Search</button></form><div id="weatherCities"></div><p id="weatherSearchStatus" role="status"></p></section>
+    </dialog>
     <script src="./photo-memories.js?v=3.6.0"></script>
     <script src="./media-backup.js?v=3.6.0"></script>
     <script type="module" src="./widget-contract.js?v=3.6.0"></script>
@@ -1145,6 +1323,14 @@
     <script src="./widget-registry.js?v=3.6.0"></script>
     <script src="./layout-engine.js?v=3.6.0"></script>
     <script src="./modules.js?v=3.6.0"></script>
+    <link rel="stylesheet" href="./vendor/widget-ui.css">
+    <script src="./vendor/widget-ui.js"></script>
+    <script src="./weather-widget.js?v=3.6.0"></script>
+    <script src="./widget-gallery.js?v=3.6.0"></script>
+    <script src="./today-extras.js?v=3.6.0"></script>
+    <script src="./desk-polish.js"></script>
+    <script src="./long-range.js"></script>
+    <script src="./window-shell.js"></script>
     <script src="./app.js?v=3.6.0"></script>
   </body>
 </html>
