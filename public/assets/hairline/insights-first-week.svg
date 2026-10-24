@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M30 96h100"/>
+    <path d="M40 96V76"/>
+    <path d="M60 96V64"/>
+    <path d="M80 96V52"/>
+    <path d="M100 96V40"/>
+    <path d="M120 96V28"/>
+  </g>
+  <g data-layer="2" stroke="var(--accent, #0071e3)" stroke-width="1.2" vector-effect="non-scaling-stroke">
+    <path d="M40 76l20-12 20-12 20-12 20-12"/>
+    <circle cx="120" cy="28" r="4"/>
+  </g>
+  <g data-layer="3" stroke="var(--sage, #68725c)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M40 28c8 0 14 6 14 14s-6 14-14 14"/>
+    <path d="M40 42h16"/>
+  </g>
+</svg>

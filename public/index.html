@@ -21,10 +21,15 @@
         const choice = localStorage.getItem("life-ledger-theme") || "system";
         const dark = choice === "dark" || (choice === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
         document.documentElement.dataset.theme = dark ? "dark" : "light";
+        const font = localStorage.getItem("life-ledger-font");
+        if (font === "rounded" || font === "serif") document.documentElement.dataset.font = font;
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=1.3.0" />
+    <link rel="stylesheet" href="./styles.css?v=2.0.0" />
+    <link rel="stylesheet" href="./pages-858.css?v=2.0.0" />
+    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.0" />
+    <link rel="stylesheet" href="./today-cards.css?v=2.0.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -44,15 +49,16 @@
         <nav class="main-nav" aria-label="主导航">
           <button class="nav-item active" data-view="today"><span class="nav-icon">▦</span><span class="nav-label">今日</span></button>
           <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
+          <button class="nav-item" data-view="longrange"><span class="nav-icon">⚑</span><span class="nav-label">长期</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
           <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
         </nav>
 
-        <section class="sidebar-long-term" id="sidebarLongTerm">
-          <header><span id="sidebarLongTermTitle">长期待办</span><button id="sidebarLongTermOpen" type="button" aria-label="查看全部长期待办">→</button></header>
-          <div id="sidebarLongTermList"></div>
-        </section>
+        <div class="sidebar-note">
+          <span class="pulse-dot"></span>
+          <p>不积跬步，<br />无以至千里。<small>《荀子·劝学》</small></p>
+        </div>
 
         <div class="profile">
           <div class="profile-identity">
@@ -89,14 +95,9 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
               <span id="mobileInstallLabel">安装应用</span>
             </button>
-            <label class="theme-switcher" id="themeControl" for="themeSelect">
-              <span class="theme-current-icon" id="themeCurrentIcon" aria-hidden="true">◐</span>
-              <select id="themeSelect" aria-label="外观">
-                <option value="system">跟随系统</option>
-                <option value="light">浅色模式</option>
-                <option value="dark">深色模式</option>
-              </select>
-            </label>
+            <button class="icon-button settings-button" id="settingsButton" type="button" title="设置" aria-label="设置">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+            </button>
             <label class="language-switcher" for="languageSelect">
               <span class="language-flag" id="languageFlag" aria-hidden="true">🇬🇧</span>
               <select id="languageSelect" aria-label="Select interface language">
@@ -114,6 +115,14 @@
             <button class="primary-button" id="todayButton">回到今天</button>
           </div>
         </header>
+
+        <aside class="demo-workspace-notice" id="demoWorkspaceNotice" hidden aria-live="polite">
+          <p id="demoWorkspaceNoticeText"></p>
+          <div class="demo-workspace-actions">
+            <button class="secondary-button" id="demoPreviewReset" type="button" hidden></button>
+            <button class="secondary-button" id="clearDemoWorkspace" type="button"></button>
+          </div>
+        </aside>
 
         <section class="view active" id="todayView">
           <div class="hero-grid">
@@ -140,7 +149,7 @@
                 <button data-mood="低落"><span>☂</span>低落</button>
               </div>
               <button class="mood-reason-summary" id="quickMoodReason" type="button" hidden></button>
-              <p class="mood-note" id="moodNote">人有悲欢离合，月有阴晴圆缺。<small>苏轼《水调歌头》</small></p>
+              <ol class="mood-week" id="moodWeek"></ol>
             </article>
           </div>
 
@@ -298,137 +307,355 @@
           </section>
         </section>
 
-        <section class="view" id="weekView">
-          <section class="weekly-workspace" aria-labelledby="weeklyWorkspaceTitle">
-            <div class="section-heading weekly-heading">
-              <h2 class="sr-only" id="weeklyWorkspaceTitle">Weekly Plan</h2>
-              <div class="week-navigator" aria-label="切换计划周">
-                <button class="week-nav-button" id="previousWorkspaceWeek" type="button" aria-label="上一周">←</button>
-                <button class="week-current-button" id="currentWorkspaceWeek" type="button">
-                  <strong id="weekRange"></strong>
-                  <span id="weekRelativeLabel">本周</span>
-                </button>
-                <button class="week-nav-button" id="nextWorkspaceWeek" type="button" aria-label="下一周">→</button>
+        <section class="view week-board" id="weekView" data-module-board="week">
+          <h2 class="sr-only" id="weeklyWorkspaceTitle">Week</h2>
+          <header class="week-page-header">
+            <div><span class="kicker" id="weekPageKicker">A WEEK AT A TIME</span><h1 id="weekPageTitle"></h1><p class="week-plan-lede" id="weekPlanLede"></p></div>
+            <img class="week-page-art" src="./assets/hairline/week-review-empty.svg" alt="" aria-hidden="true">
+          <div class="week-navigation"><button class="icon-button" id="previousWorkspaceWeek" type="button">‹</button><button class="secondary-button" id="currentWorkspaceWeek" type="button">This week</button><button class="icon-button" id="nextWorkspaceWeek" type="button">›</button></div></header>
+
+          <article class="module-card" data-module="review">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekReviewKicker">DEEP REVIEW</span>
+                <h3 class="module-title" id="inspectorWeekHeading">Weekly Review</h3>
+              </div>
+              <div class="week-review-actions">
+                <button class="primary-button review-canvas-trigger" id="openWeeklyReviewCanvas" type="button">Write review</button>
+                <button class="secondary-button review-canvas-trigger" id="inspectorOpenWeeklyReviewCanvas" type="button" hidden>Generate review</button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-review" aria-label="Collapse review module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-review">
+              <div class="week-review-promoted-card">
+                <div class="week-review-art hairline-mount" id="weekReviewHairline" aria-hidden="true"></div>
+                <div class="week-review-content">
+                  <p class="inspector-week-range" id="inspectorWeekRange"></p>
+                  <textarea id="weeklyOutputText" placeholder="这一周，我输出了什么？"></textarea>
+                  <div class="week-review-footer">
+                    <span class="inspector-week-autosave" id="inspectorWeekAutosave">Autosaved</span>
+                    <button type="button" class="text-button" id="weekArchiveLink">View in timeline →</button>
+                    <span class="inspector-week-status" id="weeklyOutputStatus" hidden></span>
+                  </div>
+                </div>
+              </div>
+              <span id="weekRange" hidden></span>
+              <span id="weekRelativeLabel" hidden></span>
+              <span id="basketWeekLabel" hidden></span>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="completed">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekCompletedKicker">THIS WEEK</span>
+                <h3 class="module-title" id="weekCompletedTitle">Completed Days</h3>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-completed" aria-label="Collapse completed days module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-completed">
+              <div class="week-calendar-heading"><p id="weekCalendarStatus" role="status"></p><button class="secondary-button" id="weekCalendarConnect" type="button">Connect calendar</button></div>
+              <div class="week-calendar" id="weekCalendar" role="list" aria-label="Week calendar"></div>
+              <div hidden>
+              <div class="week-all-done hairline-mount is-inline" id="weekAllDoneArt" hidden aria-hidden="true"></div>
+              <div class="week-split">
+                <ol class="week-agenda" id="weekAgenda" role="list" aria-label="Week agenda"></ol>
+                <article class="week-day-detail" id="weekDayDetail" aria-live="polite"></article>
+              </div>
               </div>
             </div>
-            <article class="weekly-goals-panel">
-              <section class="weekly-goals-card">
-                <div class="week-stamp-row"><span id="currentWeekNumber">2026年6月22日 — 6月28日</span><span id="basketYear"></span></div>
-                  <div class="goal-horizon-switch" id="goalHorizonSwitch" role="tablist" aria-label="Goal horizon">
-                    <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
-                    <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
-                  </div>
-                <div id="weeklyGoalsPane">
-                  <div class="weekly-card-heading">
-                    <div><span class="kicker">CHECKLIST</span><h3>本周目标</h3></div>
-                    <strong id="weeklyGoalProgress">0 / 0</strong>
-                  </div>
-                  <div class="weekly-goal-list" id="weeklyGoalList"></div>
-                  <form class="weekly-goal-form" id="weeklyGoalForm">
-                    <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" />
-                    <button aria-label="添加本周目标">＋</button>
-                  </form>
-                </div>
-                <div id="longTermGoalsPane" hidden>
-                  <div class="weekly-card-heading long-term-heading">
-                    <div><span class="kicker" id="longTermKicker">HORIZON</span><h3 id="longTermTitle">Long-term goals</h3><p id="longTermDescription">Keep the direction visible without forcing it into this week.</p></div>
-                    <strong id="longTermGoalCount">0 active</strong>
-                  </div>
-                  <div class="long-term-goal-list" id="longTermGoalList"></div>
-                  <button class="long-term-add-button" id="addLongTermGoal" type="button"><span>＋</span><b>Add a long-term goal</b></button>
-                </div>
-              </section>
-              <figure class="weekly-classical-image weekly-minimal-image">
-                <img src="./assets/weekly-minimal-still-life-v2.jpg" alt="Minimal journal, pencil and clock on a softly lit desk" />
-              </figure>
-            </article>
+          </article>
 
-            <article class="weekly-writing-panel">
-              <div class="weekly-writing-heading">
-                <div><span class="kicker">WEEKLY OUTPUT</span><h3>本周输出与感想</h3></div>
-                <div><button class="review-canvas-trigger" id="openWeeklyReviewCanvas" type="button">Generate review</button><span class="autosave">● 自动保存</span><strong id="basketWeekLabel">2026年6月22日 — 6月28日</strong></div>
+          <article class="module-card" data-module="insights">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekInsightsKicker">PROGRESS</span>
+                <h3 class="module-title" id="weekInsightsTitle">Weekly Insights</h3>
               </div>
-              <textarea id="weeklyOutputText" placeholder="这一周，我输出了什么？&#10;&#10;完成的作品、推进的项目、一次重要表达，或者一段真正想清楚的思考……"></textarea>
-              <footer><span id="weeklyOutputStatus">尚未开始</span><span>文字会持续保存在当前周</span></footer>
-            </article>
-          </section>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-insights" aria-label="Collapse weekly insights module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-insights">
+              <div class="week-insights-empty hairline-mount is-empty" id="weekInsightsEmptyArt" hidden aria-hidden="true"></div>
+              <div class="week-insights-grid" id="weekInsightsGrid">
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekRateLabel">Completion Rate</span>
+                  <strong class="week-insight-value" id="weekCompletionRate">0%</strong>
+                </div>
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekBestDayLabel">Best Day</span>
+                  <strong class="week-insight-value" id="weekBestDay">—</strong>
+                </div>
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekStreakLabel">Active Streak</span>
+                  <strong class="week-insight-value" id="weekStreak">0 days</strong>
+                </div>
+                <div class="week-insight-card">
+                  <span class="week-insight-label" id="weekFocusMinutesLabel">Focus Time</span>
+                  <strong class="week-insight-value" id="weekFocusMinutes">0 min</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="module-card" data-module="goals">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekGoalsKicker">FOCUS & TARGETS</span>
+                <h3 class="module-title" id="weeklyGoalsTitle">Weekly goals · 0 of 0</h3>
+              </div>
+              <div class="goal-horizon-switch" id="goalHorizonSwitch" data-segment role="tablist" aria-label="Goal horizon">
+                <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
+                <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-goals" aria-label="Collapse goals module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-goals">
+              <div id="weeklyGoalsPane">
+                <div class="weekly-goal-list" id="weeklyGoalList"></div>
+                <form class="weekly-goal-inline-add" id="weeklyGoalForm">
+                  <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" aria-label="Add weekly goal" />
+                </form>
+              </div>
+              <div id="longTermGoalsPane" hidden>
+                <header class="long-term-header">
+                  <h3 id="longTermTitle">Long-term goals</h3>
+                  <span id="longTermGoalCount">0 active</span>
+                </header>
+                <p class="long-term-description" id="longTermDescription">Keep the direction visible without forcing it into this week.</p>
+                <div class="long-term-goal-list" id="longTermGoalList"></div>
+                <button class="long-term-add-button" id="addLongTermGoal" type="button"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><b>Add a long-term goal</b></button>
+              </div>
+              <span id="currentWeekNumber" hidden></span>
+              <span id="basketYear" hidden></span>
+              <span id="weeklyGoalProgress" hidden></span>
+              <span id="longTermKicker" hidden></span>
+            </div>
+          </article>
         </section>
 
-        <section class="view" id="timelineView">
-          <header class="timeline-intro">
-            <div><span class="kicker" id="timelineKicker">MEMORY LINE</span><h2 id="timelineTitle">时间轴</h2><p id="timelineDescription">沿着心情与照片，重新看见走过的日子。</p></div>
-            <div class="timeline-month-nav">
-              <button class="icon-button" id="timelinePreviousMonth" type="button" aria-label="上个月">←</button>
-              <strong id="timelineMonthLabel">2026年8月</strong>
-              <button class="icon-button" id="timelineNextMonth" type="button" aria-label="下个月">→</button>
-            </div>
+        <section class="view longrange-workspace" id="longrangeView"><div id="longRangeWorkspace"></div></section>
+
+        <section class="view timeline-journal" id="timelineView" data-journal-layout="weeks">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="journalScrollTitle">Timeline</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
           </header>
-          <div class="timeline-summary" id="timelineSummary"></div>
-          <div class="memory-timeline" id="memoryTimeline" aria-live="polite"></div>
+          <div class="journal-mode-switch" id="journalModeSwitch" data-segment role="tablist" aria-label="Journal mode">
+            <button type="button" role="tab" data-journal-mode="timeline" aria-selected="false" id="journalModeTimeline">Daily</button>
+            <button type="button" class="active" role="tab" data-journal-mode="weeks" aria-selected="true" id="journalModeWeeks">Weekly</button>
+            <button type="button" role="tab" data-journal-mode="months" aria-selected="false" id="journalModeMonths">Monthly</button>
+            <button type="button" role="tab" data-journal-mode="photos" aria-selected="false" id="journalModePhotos">Photos</button>
+            <button type="button" role="tab" data-journal-mode="calendar" aria-selected="false" id="journalModeCalendar">Calendar</button>
+          </div>
+          <section id="journalFeedPane" aria-label="Timeline">
+            <header class="journal-feed-heading"><div><span class="kicker" id="journalFeedKicker"></span><h2 id="journalFeedTitle"></h2><p id="journalFeedDescription"></p></div><div class="journal-feed-filter"><label for="journalMonthFilter" id="journalMonthFilterLabel">Month</label><select id="journalMonthFilter"><option value="">All months</option></select><button type="button" id="journalAllMonths" class="text-button" hidden>All months</button></div></header>
+            <div id="journalFeed" aria-live="polite"></div>
+            <button type="button" id="journalLoadMore" class="secondary-button" hidden>Load more</button>
+          </section>
+          <div class="timeline-layout" data-journal-layout="timeline">
+            <aside class="timeline-sidebar">
+              <section class="calendar-embedded timeline-calendar-column" aria-labelledby="journalCalendarTitle">
+                <div class="calendar-toolbar">
+                  <h2 class="calendar-month-title" id="journalCalendarTitle">October 2026</h2>
+                  <div class="calendar-controls">
+                    <div class="calendar-view-switch" id="journalCalendarViewSwitch" role="group" aria-label="日历显示方式">
+                      <button class="active" type="button" data-calendar-view="mood"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>心情</span></button>
+                      <button type="button" data-calendar-view="heatmap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>热力图</span></button>
+                    </div>
+                    <div class="calendar-month-nav">
+                      <button class="icon-button" id="journalPrevMonth" aria-label="上个月"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></button>
+                      <button class="icon-button" id="journalNextMonth" aria-label="下个月"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="calendar-card timeline-calendar-card">
+                  <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+                  <div class="calendar-grid" id="journalCalendarGrid"></div>
+                </div>
+                <form class="journal-composer" id="journalComposer">
+                  <label class="sr-only" for="journalQuickNote" id="journalComposerLabel">Note</label>
+                  <textarea id="journalQuickNote" rows="2" placeholder="Any thoughts for this day?"></textarea>
+                  <div class="journal-composer-actions">
+                    <button class="secondary-button submit-state-button" id="journalComposerSave" type="button">Save</button>
+                    <span class="journal-composer-status" id="journalQuickSave" role="status" aria-live="polite"></span>
+                  </div>
+                </form>
+                <div class="timeline-filter" id="timelineFilter" role="group" aria-label="Timeline filter">
+                  <button type="button" class="active" data-timeline-filter="all">All</button>
+                  <button type="button" data-timeline-filter="photos">Photos</button>
+                  <button type="button" data-timeline-filter="notes">Notes</button>
+                </div>
+                <div class="timeline-entry-list" id="timelineEntryList" role="list" aria-label="Timeline entries"></div>
+                <div class="calendar-legend timeline-calendar-legend"></div>
+                <span id="journalCalendarMonthMark" hidden></span>
+                <span id="journalMonthCompletion" hidden></span>
+              </section>
+            </aside>
+            <article class="timeline-detail" id="timelineDetail" aria-live="polite" aria-label="Entry detail"></article>
+          </div>
+          <div class="journal-photo-library" id="journalPhotoLibrary"></div>
+          <div class="journal-calendar-empty hairline-mount is-empty" id="journalCalendarEmptyArt" hidden aria-hidden="true"></div>
+          <span id="timelineKicker" hidden></span>
+          <span id="timelineTitle" hidden></span>
+          <span id="timelineDescription" hidden></span>
+          <span id="timelineMonthLabel" hidden></span>
+          <button id="timelinePreviousMonth" type="button" hidden aria-hidden="true"></button>
+          <button id="timelineNextMonth" type="button" hidden aria-hidden="true"></button>
+          <span id="timelineSummary" hidden></span>
         </section>
 
-        <section class="view" id="reviewView">
+        <section class="view review-document review-manuscript" id="reviewView" data-disclosure-group="review" data-insight-view="trend">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="insightsScrollTitle">Insights</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
           <div class="review-intro quiet-intro">
             <h2 id="reviewTitle">June 2026</h2>
+            <div class="insight-view-switch" id="insightViewSwitch" role="tablist" aria-label="Report view">
+              <button type="button" class="active" role="tab" data-insight-view="trend" aria-selected="true" id="insightViewTrend">Trend</button>
+              <button type="button" role="tab" data-insight-view="heatmap" aria-selected="false" id="insightViewHeatmap">Calendar</button>
+              <button type="button" role="tab" data-insight-view="habits" aria-selected="false" id="insightViewHabits">Habits</button>
+              <button type="button" role="tab" data-insight-view="table" aria-selected="false" id="insightViewTable">Table</button>
+            </div>
+            <div class="analytics-period" id="analyticsPeriod" data-segment role="group" aria-label="Statistics window">
+              <button type="button" data-analytics-window="7">7 days</button>
+              <button type="button" class="active" data-analytics-window="30" aria-pressed="true">30 days</button>
+              <button type="button" data-analytics-window="90">90 days</button>
+            </div>
           </div>
-          <div class="score-grid" id="scoreGrid"></div>
-          <article class="panel focus-review-panel">
-            <div class="panel-heading">
-              <div><span class="kicker" id="focusReviewKicker">FOCUS REVIEW</span><h3 id="focusReviewTitle">Focused time</h3></div>
-              <div class="focus-review-controls">
-                <div class="focus-review-scope" id="focusReviewScope" role="group" aria-label="Focus review period"><button class="active" type="button" data-focus-review-scope="week">Week</button><button type="button" data-focus-review-scope="month">Month</button></div>
-                <label class="review-week-select" id="focusReviewWeekField"><span id="focusReviewWeekLabel">Week</span><select id="focusReviewWeekSelect"></select></label>
-                <label class="review-week-select" id="focusReviewMonthField" hidden><span id="focusReviewMonthLabel">Month</span><select id="focusReviewMonthSelect"></select></label>
-              </div>
-            </div>
-            <div class="focus-review-content">
-              <div class="focus-review-summary">
-                <span id="focusReviewRange">10 Aug — 16 Aug</span>
-                <strong><b id="focusReviewTotal">0</b><small id="focusReviewUnit">min</small></strong>
-                <p id="focusReviewComparison">No focus time recorded this week.</p>
-                <div class="focus-review-breakdown" id="focusReviewBreakdown" hidden></div>
-              </div>
-              <div class="focus-review-chart" id="focusReviewBars" aria-label="Focused minutes by day"></div>
-            </div>
-            <footer class="focus-review-footer"><span id="focusReviewMonthTotal">August · 0 min total</span></footer>
-          </article>
-          <div class="review-grid">
-            <article class="panel chart-panel">
-              <div class="panel-heading"><div><span class="kicker">RHYTHM</span><h3>每日完成节奏</h3></div><span class="panel-meta">按日期</span></div>
-              <div class="bar-chart" id="barChart"></div>
-            </article>
-            <article class="panel resistance-panel">
-              <div class="panel-heading analytics-dashboard-heading">
-                <div><span class="kicker">METRIC TRENDS</span><h3>Habit comparison</h3></div>
-                <button class="period-add-button" id="addPeriodTarget" type="button">＋ Add metric</button>
-              </div>
-              <div class="analytics-dashboard-controls">
-                <div><span class="analytics-control-label" id="analyticsMetricLabel">Choose up to 2</span><div class="analytics-metric-picker" id="analyticsMetricPicker"></div></div>
-                <div class="chart-mode-switch" id="analyticsChartMode" role="group" aria-label="Chart type">
-                  <button class="active" type="button" data-analytics-chart="line">Line</button>
-                  <button type="button" data-analytics-chart="bar">Bars</button>
+          <div class="review-insights" id="reviewInsights" aria-live="polite"></div>
+          <section id="reviewObservations" class="insight-observations" aria-live="polite"></section>
+          <div class="review-trend-chart" id="reviewTrendChart" aria-label="Monthly completion trend"></div>
+          <div class="review-heatmap-card" id="reviewHeatmap"></div>
+          <div class="review-habit-compare" id="reviewHabitCompare"></div>
+          <section id="reviewPeriodHabits" class="insight-period-habits"></section>
+          <details class="review-score-table">
+            <summary id="reviewScoreSummary">Habit scores</summary>
+            <div class="inspector-review-table" id="inspectorReviewTable"></div>
+            <div class="inspector-review-focus" id="inspectorReviewFocus"></div>
+          </details>
+          <section class="review-narrative monthly-reflection-panel">
+            <header class="review-narrative-header">
+              <h3 id="reviewNarrativeTitle">Monthly reflection</h3>
+              <div class="reflection-actions"><span class="review-narrative-autosave" id="reviewNarrativeAutosave">Autosaved</span><button class="secondary-button review-generate-button" id="generateReview" type="button">Start guided review</button></div>
+            </header>
+            <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
+          </section>
+          <details class="review-detailed-metrics" id="reviewDetailedMetrics">
+            <summary id="reviewDetailedSummary">Detailed metrics</summary>
+            <article class="panel focus-review-panel">
+              <div class="panel-heading">
+                <div><span class="kicker" id="focusReviewKicker">FOCUS REVIEW</span><h3 id="focusReviewTitle">Focused time</h3></div>
+                <div class="focus-review-controls">
+                  <div class="focus-review-scope" id="focusReviewScope" role="group" aria-label="Focus review period"><button class="active" type="button" data-focus-review-scope="week">Week</button><button type="button" data-focus-review-scope="month">Month</button></div>
+                  <label class="review-week-select" id="focusReviewWeekField"><span id="focusReviewWeekLabel">Week</span><select id="focusReviewWeekSelect"></select></label>
+                  <label class="review-week-select" id="focusReviewMonthField" hidden><span id="focusReviewMonthLabel">Month</span><select id="focusReviewMonthSelect"></select></label>
                 </div>
               </div>
-              <div class="comparison-dashboard" id="weeklyResistance"></div>
+              <div class="focus-review-content">
+                <div class="focus-review-summary">
+                  <span id="focusReviewRange">10 Aug — 16 Aug</span>
+                  <strong><b id="focusReviewTotal">0</b><small id="focusReviewUnit">min</small></strong>
+                  <p id="focusReviewComparison">No focus time recorded this week.</p>
+                  <div class="focus-review-breakdown" id="focusReviewBreakdown" hidden></div>
+                </div>
+                <div class="focus-review-chart" id="focusReviewBars" aria-label="Focused minutes by day"></div>
+              </div>
+              <footer class="focus-review-footer"><span id="focusReviewMonthTotal">August · 0 min total</span></footer>
             </article>
-          </div>
-          <article class="panel monthly-reflection-panel">
-            <div class="panel-heading"><div><span class="kicker">MONTHLY REFLECTION</span><h3>General Reflection</h3></div><div class="reflection-actions"><span class="autosave">● autosaved</span><button class="secondary-button" id="generateReview" type="button">Start guided review</button></div></div>
-            <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
-          </article>
+            <div class="score-grid" id="scoreGrid"></div>
+            <div class="review-grid">
+              <article class="panel chart-panel">
+                <div class="panel-heading"><div><span class="kicker">RHYTHM</span><h3>每日完成节奏</h3></div><span class="panel-meta">按日期</span></div>
+                <div class="bar-chart" id="barChart"></div>
+              </article>
+              <article class="panel resistance-panel">
+                <div class="panel-heading analytics-dashboard-heading">
+                  <div><span class="kicker">METRIC TRENDS</span><h3>Habit comparison</h3></div>
+                  <button class="period-add-button" id="addPeriodTarget" type="button">＋ Add metric</button>
+                </div>
+                <div class="analytics-dashboard-controls">
+                  <div><span class="analytics-control-label" id="analyticsMetricLabel">Choose up to 2</span><div class="analytics-metric-picker" id="analyticsMetricPicker"></div></div>
+                  <div class="chart-mode-switch" id="analyticsChartMode" role="group" aria-label="Chart type">
+                    <button class="active" type="button" data-analytics-chart="line">Line</button>
+                    <button type="button" data-analytics-chart="bar">Bars</button>
+                  </div>
+                </div>
+                <div class="comparison-dashboard" id="weeklyResistance"></div>
+              </article>
+            </div>
+          </details>
         </section>
 
-        <section class="view" id="habitsView">
-          <div class="settings-intro quiet-intro">
-            <div><span class="kicker">HABITS</span><p id="habitSummary">4 active habits</p></div>
-            <button class="primary-button" id="addHabitButton">＋ 新增习惯</button>
-          </div>
+        <section class="view habit-library" id="habitsView">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="habitsScrollTitle">Habits</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
+          <header class="habits-view-header">
+            <div><span class="kicker" id="habitLibraryKicker">YOUR DAILY RHYTHM</span><h2 id="habitLibraryTitle">Small habits, your own rhythm.</h2><p class="habits-view-summary" id="habitSummary">4 active habits</p></div>
+            <button class="primary-button" id="addHabitButton">＋ Add habit</button>
+          </header>
           <button class="habit-reminder-card" id="habitReminderCard" type="button">
             <span class="habit-reminder-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>
             <span class="habit-reminder-copy"><small id="habitReminderKicker">DAILY RHYTHM</small><strong id="habitReminderTitle">Daily review reminder</strong><span id="habitReminderStatus">Off</span></span>
             <span class="habit-reminder-arrow" aria-hidden="true">→</span>
           </button>
-          <div class="habit-settings-list" id="habitSettingsList"></div>
+          <section id="habitLibraryOverview" aria-label="Habit overview"></section>
+          <div class="habit-library-tools"><div id="habitLibraryFilters" role="group" aria-label="Filter habits"><button type="button" class="active" data-habit-filter="all">All</button><button type="button" data-habit-filter="active">Active</button><button type="button" data-habit-filter="paused">Paused</button></div><label class="habit-library-search"><span id="habitLibrarySearchLabel">Find a habit</span><input type="search" id="habitLibrarySearch"></label></div>
+          <div class="widget-status-card" id="widgetStatusCard" hidden>
+            <div class="widget-status-copy">
+              <strong id="widgetStatusTitle"></strong>
+              <p id="widgetStatusDesc"></p>
+              <small id="widgetStatusState"></small>
+            </div>
+          </div>
+          <div class="habit-settings-table" role="table" aria-label="Habits">
+            <div class="habit-settings-header" role="row">
+              <span class="habit-col-spacer" aria-hidden="true"></span>
+              <span class="habit-col-spacer" aria-hidden="true"></span>
+              <span role="columnheader" id="habitColName">Name</span>
+              <span role="columnheader" id="habitColTarget">Target</span>
+              <span role="columnheader" id="habitColActive">Active</span>
+            </div>
+            <div class="habit-settings-list" id="habitSettingsList" role="rowgroup"></div>
+          </div>
+          <form class="habit-inspector-form habit-management-editor" id="habitInspectorForm">
+                <header class="habit-editor-heading"><span class="kicker" id="habitEditorKicker">EDIT HABIT</span><h3 id="habitEditorTitle"></h3><p id="habitEditorHelp"></p></header>
+                <fieldset class="habit-inspector-group">
+                  <legend class="inspector-heading" id="habitInspectorBasicsLegend">Basics</legend>
+                  <label class="habit-form-row"><span id="habitInspectorNameLabel">Name</span><input name="name" required placeholder="e.g. Reading" /></label>
+                  <label class="habit-form-row"><span id="habitInspectorNoteLabel">Note</span><textarea name="note" maxlength="500" rows="2"></textarea></label>
+                  <label class="habit-form-row icon-picker-field"><span id="habitInspectorIconLabel">Icon</span><input name="icon" type="hidden" value="target" /><button class="icon-picker-trigger" id="inspectorIconPickerTrigger" type="button"><span id="inspectorIconPickerPreview"></span><span id="inspectorIconPickerName">Target</span></button><div class="icon-picker-popover" id="inspectorIconPickerPopover" hidden></div></label>
+                  <label class="habit-form-row color-picker-field"><span id="habitInspectorColorLabel">Color</span><input name="color" type="hidden" value="sage" /><div class="color-swatch-row" id="inspectorColorSwatches"></div></label>
+                </fieldset>
+                <fieldset class="habit-inspector-group">
+                  <legend class="inspector-heading" id="habitInspectorTrackingLegend">Tracking</legend>
+                  <div class="habit-form-row tracking-mode-segmented" role="group" aria-labelledby="habitInspectorTrackingModeLabel">
+                    <span id="habitInspectorTrackingModeLabel">Mode</span>
+                    <div class="segmented-control">
+                      <label><input name="trackingMode" type="radio" value="check" checked /><span id="habitInspectorTrackingCheckLabel">Check</span></label>
+                      <label><input name="trackingMode" type="radio" value="measured" /><span id="habitInspectorTrackingMeasuredLabel">Measured</span></label>
+                    </div>
+                  </div>
+                  <label class="habit-form-row habit-target-row" id="habitInspectorTargetField"><span id="habitInspectorTargetLabel">Target</span><span class="habit-target-inputs"><input name="target" type="number" min="1" value="30" /><input name="unit" value="min" aria-labelledby="habitInspectorUnitLabel" /><span class="sr-only" id="habitInspectorUnitLabel">Unit</span></span></label>
+                </fieldset>
+                <fieldset class="habit-inspector-group">
+                  <legend class="inspector-heading" id="habitInspectorScheduleLegend">Schedule</legend>
+                  <label class="habit-form-row"><span id="habitInspectorFrequencyLabel">Frequency</span><select name="frequency"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
+                  <label class="habit-form-row" id="habitInspectorScheduleField"><span id="habitInspectorScheduleLabel">Time</span><input name="scheduleTime" type="time" /></label>
+                  <label class="habit-form-row" id="habitInspectorPeriodTargetField"><span id="habitInspectorPeriodTargetLabel">Period target</span><input name="periodTarget" type="number" min="1" max="31" value="3" /><div id="habitInspectorPeriodStepper"></div></label>
+                  <label class="habit-form-row"><span id="habitInspectorEffectiveDateLabel">Effective date</span><input name="effectiveDate" required type="date" /></label>
+                  <label class="habit-form-row habit-switch-row"><span id="habitInspectorCountsLabel">Counts toward score</span><input class="desktop-switch" name="countsTowardDaily" type="checkbox" role="switch" /></label>
+                  <label class="habit-form-row habit-switch-row"><span id="habitInspectorActiveLabel">Active</span><input class="desktop-switch" name="active" type="checkbox" role="switch" checked /></label>
+                </fieldset>
+                <div class="habit-streak-calendar" id="habitStreakCalendar" aria-label="Habit streak"></div>
+                <div class="habit-inspector-actions">
+                  <button class="danger-button text-destructive" id="inspectorDeleteHabitButton" type="button">Delete</button>
+                  <button class="primary-button" id="inspectorSaveHabitButton" type="submit">Save</button>
+                </div>
+              </form>
+              <span id="inspectorHabitHeading" hidden></span>
         </section>
       </main>
     </div>
@@ -669,6 +896,40 @@
       </div>
     </dialog>
 
+    <dialog id="settingsDialog" class="settings-dialog" aria-labelledby="settingsTitle">
+      <form method="dialog" class="settings-form">
+        <header><h2 id="settingsTitle">设置</h2><button class="icon-button close-settings" type="submit" aria-label="关闭">×</button></header>
+        <section class="settings-group">
+          <h3 id="settingsAppearanceTitle">外观</h3>
+          <div class="settings-row"><span id="settingsThemeLabel">颜色模式</span>
+            <label class="settings-select" id="themeControl" for="themeSelect">
+              <span class="theme-current-icon" id="themeCurrentIcon" hidden aria-hidden="true">◐</span>
+              <select id="themeSelect" aria-label="外观">
+                <option value="system">跟随系统</option>
+                <option value="light">浅色模式</option>
+                <option value="dark">深色模式</option>
+              </select>
+            </label>
+          </div>
+          <div class="settings-row"><span id="settingsFontLabel">字体</span>
+            <label class="settings-select" id="fontControl" for="fontSelect">
+                            <select id="fontSelect" aria-label="字体">
+                <option value="system">苹方 / SF</option>
+                <option value="rounded">圆体</option>
+                <option value="serif">宋体 / New York</option>
+              </select>
+            </label>
+          </div>
+          <p class="settings-font-preview" id="settingsFontPreview">不积跬步，无以至千里。 Aa 123</p>
+        </section>
+        <section class="settings-group">
+          <h3 id="settingsDataTitle">数据</h3>
+          <button type="button" class="settings-action" id="settingsBackup"><span id="settingsBackupLabel">导入与导出</span><small id="settingsBackupHelp">备份到文件，或从备份恢复</small></button>
+          <button type="button" class="settings-action" id="settingsLoadDemo" hidden><span id="settingsLoadDemoLabel">载入示例数据</span><small id="settingsLoadDemoHelp">看看用了三个月后的样子</small></button>
+          <button type="button" class="settings-action danger" id="settingsClearLocal"><span id="settingsClearLabel">清除本机数据，从空白开始</span><small id="settingsClearHelp">删除这台设备上的所有记录、照片和示例数据</small></button>
+        </section>
+      </form>
+    </dialog>
     <dialog id="exportDialog" class="export-dialog">
       <form method="dialog" id="exportForm">
         <header><div><span class="kicker" id="backupKicker">YOUR DATA</span><h2 id="exportDialogTitle">导入与导出</h2></div><button class="icon-button close-export-dialog" type="button" aria-label="关闭">×</button></header>
@@ -778,13 +1039,31 @@
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
     <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
-    <script src="./deployment-mode.js?v=1.3.0"></script>
-    <script src="./_init_tcb-env.js?v=1.3.0"></script>
-    <script src="./cloudbase-sync.js?v=1.3.0"></script>
-    <script src="./focus-timer.js?v=1.3.0"></script>
-    <script src="./voice-checkin.js?v=1.3.0"></script>
-    <script src="./photo-memories.js?v=1.3.0"></script>
-    <script src="./media-backup.js?v=1.3.0"></script>
-    <script src="./app.js?v=1.3.0"></script>
+    <div class="habit-context-menu" id="habitContextMenu" role="menu" hidden>
+      <button type="button" role="menuitem" data-habit-context="toggle" id="habitContextToggle">Mark done</button>
+      <button type="button" role="menuitem" data-habit-context="edit" id="habitContextEdit">Edit</button>
+      <button type="button" role="menuitem" data-habit-context="disable" id="habitContextDisable">Disable</button>
+      <button type="button" role="menuitem" data-habit-context="delete" id="habitContextDelete">Delete</button>
+    </div>
+    <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="./deployment-mode.js?v=2.0.0"></script>
+    <script src="./_init_tcb-env.js?v=2.0.0"></script>
+    <script src="./cloudbase-sync.js?v=2.0.0"></script>
+    <script src="./focus-timer.js?v=2.0.0"></script>
+    <script src="./voice-checkin.js?v=2.0.0"></script>
+    <script src="./photo-memories.js?v=2.0.0"></script>
+    <script src="./media-backup.js?v=2.0.0"></script>
+    <script type="module" src="./demo-workspace.js?v=2.0.0"></script>
+    <script src="./habit-analytics.js?v=2.0.0"></script>
+    <script src="./interaction.js?v=2.0.0"></script>
+    <script src="./long-range.js?v=2.0.0"></script>
+    <script src="./app.js?v=2.0.0"></script>
+    <script src="./vendor/sortable.min.js"></script>
+    <script src="./hairline.js?v=2.0.0"></script>
+    <script src="./vendor/widget-ui.js?v=2.0.0"></script>
+    <script src="./today-widgets.js?v=2.0.0"></script>
+    <script src="./weather-widget.js?v=2.0.0"></script>
+    <script src="./today-cards.js?v=2.0.0"></script>
   </body>
 </html>

@@ -1,17 +1,32 @@
-const CACHE_NAME = "life-ledger-pwa-1.3.0";
+const CACHE_NAME = "life-ledger-pwa-2.0.0";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=1.3.0",
-  "./app.js?v=1.3.0",
-  "./focus-timer.js?v=1.3.0",
-  "./voice-checkin.js?v=1.3.0",
-  "./photo-memories.js?v=1.3.0",
-  "./media-backup.js?v=1.3.0",
-  "./deployment-mode.js?v=1.3.0",
-  "./cloudbase-sync.js?v=1.3.0",
+  "./styles.css?v=2.0.0",
+  "./app.js?v=2.0.0",
+  "./demo-workspace.js?v=2.0.0",
+  "./demo-persona.js",
+  "./demo-life.js",
+  "./today-cards.js?v=2.0.0",
+  "./today-widgets.js?v=2.0.0",
+  "./weather-widget.js?v=2.0.0",
+  "./vendor/widget-ui.js?v=2.0.0",
+  "./vendor/widget-ui.css?v=2.0.0",
+  "./today-cards.css?v=2.0.0",
+  "./hairline.js?v=2.0.0",
+  "./pages-858.css?v=2.0.0",
+  "./long-range.js?v=2.0.0",
+  "./habit-analytics.js?v=2.0.0",
+  "./interaction.js?v=2.0.0",
+  "./vendor/sortable.min.js",
+  "./focus-timer.js?v=2.0.0",
+  "./voice-checkin.js?v=2.0.0",
+  "./photo-memories.js?v=2.0.0",
+  "./media-backup.js?v=2.0.0",
+  "./deployment-mode.js?v=2.0.0",
+  "./cloudbase-sync.js?v=2.0.0",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=1.3.0",
+  "./_init_tcb-env.js?v=2.0.0",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -58,7 +73,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+  const networkFirst = ["/app.js", "/demo-workspace.js", "/demo-persona.js", "/demo-life.js", "/today-cards.js", "/today-cards.css", "/hairline.js", "/today-widgets.js", "/weather-widget.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
     .some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(

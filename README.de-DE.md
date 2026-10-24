@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-04-monthly-review-v2.png" width="100%" alt="Monatsrückblick von Life Ledger" />
+  <img src="docs/images/demo-preview/de-desktop/de-01-today-v6.png" width="100%" alt="Life Ledger 2.0 – Heute als Karten-Arbeitsbereich" />
 </p>
 
 <p align="center">
@@ -112,17 +112,19 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Optionale Tencent-CloudBase-Synchronisierung für Festlandchina
 - Responsive, von Apple inspirierte Oberfläche für Desktop und Mobilgeräte
 
-<details>
-<summary><strong>Was Life Ledger 1.3 gebracht hat</strong></summary>
+<details open>
+<summary><strong>Neu in Life Ledger 2.0</strong></summary>
 
-- Ein ausgewähltes Datum bewegt Fortschritt, Gewohnheiten, Stimmung, Termine und Reflexion gemeinsam.
-- Bis zu zwei schreibgeschützte Google-Kalenderkonten liefern Tageskontext, ohne externe Termine zu verändern.
-- Stimmungsfarben, Erledigungs-Heatmap, komprimierte Fotoerinnerungen und Zeitleiste machen Muster leichter sichtbar.
-- Kalender und Reflexion teilen sich eine ruhigere Heute-Ansicht; Focus liegt im Reflexionskarussell.
-- Schnell aufnehmen erzeugt einen bearbeitbaren KI-Entwurf, ohne Gewohnheiten, Stimmung oder Ziele still zu verändern.
-- Die optionale Apple-Silicon-App für macOS bleibt vollständig lokal oder öffnet eine selbst kontrollierte Life-Ledger-Bereitstellung; im lokalen Modus stehen native JSON-Sicherungsdialoge bereit.
+- **Heute wird zum Karten-Arbeitsbereich.** Wetter mit Stundenkurve, Stimmung, Grundlagen, Gewohnheits-Heatmap, Fokus, letzte Tage, Monat, Fotowand und Tageskalender sind Karten, die du unter **Karten bearbeiten** hinzufügen, entfernen, ziehen und in der Größe ändern kannst. Das Layout bleibt gespeichert.
+- **Alle Seiten neu gestaltet.** Woche (Rückblick, Erledigtes, Ziele), Horizont (Phasen nebeneinander), Zeitleiste (Tag/Woche/Monat, Fotos, Kalender – jeder Tag lässt sich bearbeiten), Monatsrückblick und Gewohnheiten folgen einer Designfamilie mit passender Bewegung.
+- **Eine lokale Version, die sich zeigt.** Die rein lokale Web-App startet mit drei Monaten fiktiver Beispieldaten (Gewohnheiten, Wochen- und Monatsrückblicke, Pläne, Fotos). **Einstellungen → Lokale Daten löschen** startet leer; **Beispieldaten laden** holt sie zurück. Eigene lokale Einträge werden nie ersetzt.
+- **Vollständiger Sprachwechsel.** Oberfläche, Dialoge, Bedienhilfen-Beschriftungen und Beispieldaten wechseln sofort zwischen Englisch, vereinfachtem Chinesisch und Deutsch.
+- **Einstellungen an einem Ort.** Erscheinungsbild (hell/dunkel/System) und Schrift liegen in den Einstellungen; standardmäßig Apple-Systemschriften.
+- **Cloud-Version darunter unverändert.** Cloudflare Access, D1-Synchronisierung, Fotos und schreibgeschützter Google Kalender bleiben gleich; keine Migration nötig.
 
-[Vollständige Versionshinweise lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.3.0)
+Vorherige Version nötig? Der Tag `v1.3.0` bleibt erhalten – siehe [Zurück zu 1.3](.github/releases/v2.0.0.md#roll-back-to-13).
+
+[Vollständige Hinweise zu 2.0 lesen →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v2.0.0)
 
 </details>
 
@@ -130,31 +132,31 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesplanung und Reflexion" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-02-week-v6.png" alt="Woche: Rückblick, Erledigtes und Ziele" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/de-desktop/de-03-horizon-v6.png" alt="Horizont: langfristige Phasen nebeneinander" /></td>
   </tr>
   <tr>
-    <td><strong>Klarheit für den Tag</strong><br />Sieh den echten Tageskalender und halte deine Gedanken direkt daneben fest, ohne Pläne doppelt zu pflegen.</td>
-    <td><strong>Richtung für die Woche</strong><br />Verbinde wichtige Aufgaben und den schriftlichen Wochenrückblick in einem ruhigen Arbeitsbereich.</td>
+    <td><strong>Wochenrichtung</strong><br />Der Wochenrückblick steht neben dem, was wirklich erledigt wurde; Ziele bleiben eine ruhige Liste.</td>
+    <td><strong>Langfristiger Horizont</strong><br />Phasen stehen nebeneinander, jede mit Plänen und Schritten – die Richtung bleibt sichtbar.</td>
   </tr>
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v3.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
+  <img src="docs/images/demo-preview/de-desktop/de-07-timeline-v6.png" width="78%" alt="Private Zeitleiste für Stimmung, Reflexion und Fotos" />
 </p>
-<p align="center"><strong>Eine private Erinnerungslinie.</strong> Stimmung, Kontext und komprimierte Fotoerinnerungen wiedersehen, ohne das Leben in einen öffentlichen Feed zu verwandeln.</p>
+<p align="center"><strong>Eine private Erinnerungslinie.</strong> Tage, Wochen und Monate von oben nach unten lesen; jeder Tag lässt sich öffnen und bearbeiten.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-mobile/de-01-today-planning-v2.png" width="30%" alt="Tagesplanung auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v3.png" width="30%" alt="Private Zeitleiste auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v2.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-01-today-v6.png" width="30%" alt="Heute-Karten auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v6.png" width="30%" alt="Zeitleiste auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v6.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
 </p>
 
-<p align="center"><strong>Für kleine Bildschirme gestaltet.</strong> Als installierte PWA nutzt Life Ledger eine untere Navigation und einen fokussierten Tagesrückblick über die gesamte Höhe.</p>
+<p align="center"><strong>Für jede Bildschirmgröße.</strong> Karten ordnen sich einspaltig, die untere Leiste übernimmt die Navigation, der Bearbeitungsmodus funktioniert mit Touch.</p>
 
-<p align="center"><a href="docs/SHOWCASE.de-DE.md"><strong>Die vollständige Desktop- und Mobilansicht entdecken →</strong></a></p>
+<p align="center"><a href="docs/SHOWCASE.de-DE.md"><strong>Den vollständigen Produktüberblick für Desktop und Smartphone ansehen →</strong></a></p>
 
-<sub>Die Screenshots enthalten ausschließlich fiktive Beispieldaten aus dem Juli 2026.</sub>
+<sub>Die Screenshots zeigen den fiktiven dreimonatigen Beispiel-Arbeitsbereich der lokalen Version – keine echten persönlichen Daten.</sub>
 
 ## Nutzungsarten
 

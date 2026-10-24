@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-04-monthly-review-v2.png" width="100%" alt="Life Ledger monthly review dashboard" />
+  <img src="docs/images/demo-preview/en-desktop/en-01-today-v6.png" width="100%" alt="Life Ledger 2.0 Today card workspace" />
 </p>
 
 <p align="center">
@@ -112,17 +112,19 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
 
-<details>
-<summary><strong>What shipped in Life Ledger 1.3</strong></summary>
+<details open>
+<summary><strong>What's new in Life Ledger 2.0</strong></summary>
 
-- One selected date now moves the hero, habits, mood, schedule, and reflection together.
-- Up to two read-only Google Calendar accounts can provide daily context without editing external events.
-- Mood colors, a completion heatmap, compressed photo memories, and a chronological Timeline make patterns easier to revisit.
-- Calendar and reflection share a calmer Today layout, with Focus tucked into the reflection carousel.
-- Quick record produces an editable AI-organized draft without silently changing habits, mood, or goals.
-- The optional Apple Silicon macOS app can stay entirely local or open a Life Ledger deployment you control, with native JSON backup dialogs in local mode.
+- **Today becomes a card workspace.** Weather with an hourly curve, mood, daily foundations, habit heatmap, focus, recent rhythm, month, photo wall and day calendar are cards you can add, remove, drag and resize in **Edit cards**. The layout is saved.
+- **Every page redesigned.** Week (review, completed work, goals), Horizon (long-term phases side by side), Timeline (daily/weekly/monthly, photos, calendar — any day opens for editing), monthly Review and Habit settings share one design family with matching motion.
+- **A local edition that shows itself.** The local-only web app opens with three months of fictional sample life (habits, weekly and monthly reviews, plans, photos). **Settings → Clear local data** starts blank; **Load sample data** brings it back. Your own local records are never replaced.
+- **Language switching is complete.** Interface, dialogs, accessibility labels and the sample data follow English, Simplified Chinese and German instantly.
+- **Settings in one place.** Appearance (light/dark/system) and font live in Settings; Apple system fonts by default.
+- **Cloud edition unchanged underneath.** Same Cloudflare Access, D1 sync, photos and read-only Google Calendar; no migration needed.
 
-[Read the complete release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.3.0)
+Need the previous version? Tag `v1.3.0` stays available — see [Roll back to 1.3](.github/releases/v2.0.0.md#roll-back-to-13).
+
+[Read the complete 2.0 release notes →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v2.0.0)
 
 </details>
 
@@ -130,31 +132,31 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-01-today-planning-v2.png" alt="Daily planning and reflection" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-weekly-plan-v2.png" alt="Weekly goals and output" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-02-week-v6.png" alt="Week: review, completed work and goals" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/en-desktop/en-03-horizon-v6.png" alt="Horizon: long-term phases side by side" /></td>
   </tr>
   <tr>
-    <td><strong>Daily clarity</strong><br />See the day's real calendar and leave a reflection beside it, without duplicating plans.</td>
-    <td><strong>Weekly direction</strong><br />Keep must-finish work and the week's written output in one calm workspace.</td>
+    <td><strong>Weekly direction</strong><br />Write the week's review beside what actually got done, with goals as a calm checklist.</td>
+    <td><strong>Long-term horizon</strong><br />Phases sit side by side, each with its plans and steps, so the direction stays visible.</td>
   </tr>
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v3.png" width="78%" alt="Private mood, reflection, and photo Timeline" />
+  <img src="docs/images/demo-preview/en-desktop/en-07-timeline-v6.png" width="78%" alt="Private Timeline with mood, reflection and photos" />
 </p>
-<p align="center"><strong>A private memory line.</strong> Revisit mood, context, and compressed photo memories without turning them into a public feed.</p>
+<p align="center"><strong>A private memory line.</strong> Read days, weeks and months downward; any day opens for editing, photos stay footnotes.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-mobile/en-01-today-planning-v2.png" width="30%" alt="Daily planning on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v3.png" width="30%" alt="Private Timeline on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v2.png" width="30%" alt="Monthly review on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-01-today-v6.png" width="30%" alt="Today cards on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v6.png" width="30%" alt="Timeline on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v6.png" width="30%" alt="Monthly review on mobile" />
 </p>
 
-<p align="center"><strong>Responsive by design.</strong> The installed PWA uses a bottom navigation bar and a focused, full-height daily review on smaller screens.</p>
+<p align="center"><strong>Responsive by design.</strong> Cards reflow to one column, the bottom bar carries navigation, and edit mode works with touch.</p>
 
 <p align="center"><a href="docs/SHOWCASE.md"><strong>Explore the complete desktop and mobile product showcase →</strong></a></p>
 
-<sub>The screenshots use fictional July 2026 sample data created only for demonstration.</sub>
+<sub>The screenshots use the fictional three-month sample workspace of the local edition — no real personal data.</sub>
 
 ## Choose how to use it
 

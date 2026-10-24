@@ -1,87 +1,80 @@
-# Life Ledger Produktübersicht
+# Life Ledger Produktüberblick
 
-[English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Zur deutschen README](../README.de-DE.md)
+[English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Zurück zur README](../README.de-DE.md)
 
-Life Ledger verbindet tägliche Gewohnheiten, konkrete Planung und ausführliche Reflexion in einem lokalen, selbstbestimmten Arbeitsbereich. Alle Screenshots enthalten ausschließlich fiktive Beispieldaten aus dem Juli 2026.
+Life Ledger 2.0 macht Heute zu einem Karten-Arbeitsbereich und gestaltet alle Seiten neu. Alle Screenshots stammen aus dem fiktiven dreimonatigen Beispiel-Arbeitsbereich der lokalen Version.
 
 ## Desktop
 
-### Heute: planen und reflektieren
+### Heute: deine Karten
 
-<img src="images/demo-preview/de-desktop/de-01-today-planning-v2.png" alt="Tagesziele, Reflexion und Kalender auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-01-today-v6.png" alt="Heute: deine Karten" />
 
-Konkrete Ziele und eine bearbeitbare Tagesreflexion stehen nebeneinander; der vollständige Monatskalender bleibt darunter sichtbar.
+Wetter, Stimmung, Grundlagen, Heatmap, Fokus und mehr – jeweils als Karte. Zitat und Stimmungsfrage bleiben oben fest.
 
-### Tagesrückblick
+### Karten bearbeiten und Bibliothek
 
-<img src="images/demo-preview/de-desktop/de-02-daily-review-v2.png" alt="Gewohnheiten, Stimmung und Journal im Tagesrückblick" />
+<img src="images/demo-preview/de-desktop/de-06-card-library-v6.png" alt="Karten bearbeiten und Bibliothek" />
 
-Öffne einen vergangenen oder den aktuellen Tag, um Gewohnheiten, Stimmung und Notizen zu ergänzen, ohne den Monat zu verlassen.
+Im Bearbeitungsmodus lassen sich Karten ziehen, skalieren, einstellen oder entfernen; die Bibliothek fügt neue hinzu, auch eine zweite Fotowand.
 
-### Woche: Vorhaben und Rückblick
+### Woche
 
-<img src="images/demo-preview/de-desktop/de-03-weekly-plan-v2.png" alt="Wochenziele und Wochenrückblick auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-02-week-v6.png" alt="Woche" />
 
-Erledigte Wochenziele bleiben als sichtbarer Fortschritt erhalten. Der Rückblick bietet ausreichend Raum für zusammenhängende Gedanken.
+Wochenrückblick, Erledigtes und Ziele auf einer ruhigen Seite, mit Spracheingabe für den Rückblick.
 
-### Monatsrückblick: Zahlen im Zusammenhang
+### Horizont
 
-<img src="images/demo-preview/de-desktop/de-04-monthly-review-v2.png" alt="Monatsrückblick mit Gewohnheitsvergleich und Diagrammen" />
+<img src="images/demo-preview/de-desktop/de-03-horizon-v6.png" alt="Horizont" />
 
-Die Auswertung berücksichtigt alle aktiven Gewohnheiten, auch periodische Ziele wie Krafttraining. Bis zu zwei Gewohnheiten lassen sich als Linien- oder Balkendiagramm vergleichen.
+Langfristige Phasen nebeneinander: eine füllt die Seite, zwei teilen sie, mehr fließen ins Raster.
 
-### Fokus: sehen, wohin die Zeit geflossen ist
+### Monatsrückblick
 
-<img src="images/demo-preview/de-desktop/de-05-focus-month-v2.png" alt="Monatliche Fokuszeit-Auswertung auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-04-monthly-review-v6.png" alt="Monatsrückblick" />
 
-Vergleiche Fokusminuten nach Thema und erkenne deinen Rhythmus in einer Monats-Heatmap – ohne Fortschritt auf Session-Zahlen zu reduzieren.
+Ein Monat auf einmal: Erfüllung je Gewohnheit, Wochenrhythmus, Fokuszeit und schriftliche Reflexion.
 
-### Zeitleiste: gelebte Tage wiedersehen
+### Zeitleiste
 
-<img src="images/demo-preview/de-desktop/de-07-timeline-v3.png" alt="Stimmung, Reflexion und private Fotoerinnerungen in der Life-Ledger-Zeitleiste" />
+<img src="images/demo-preview/de-desktop/de-07-timeline-v6.png" alt="Zeitleiste" />
 
-Durchlaufe eine private Chronik aus Stimmungen, Gründen, Journal-Kontext und komprimierten Fotoerinnerungen. Beispieldaten und Bild sind vollständig fiktiv.
+Tage, Wochen und Monate von oben nach unten; in Foto- und Kalenderansicht lässt sich jeder Tag bearbeiten.
 
-### Gewohnheiten: Regeln dürfen sich entwickeln
+### Gewohnheiten
 
-<img src="images/demo-preview/de-desktop/de-06-habit-settings-v2.png" alt="Gewohnheitseinstellungen auf dem Desktop" />
+<img src="images/demo-preview/de-desktop/de-05-habits-v6.png" alt="Gewohnheiten" />
 
-Gewohnheiten können täglich, wöchentlich oder monatlich gelten, in die Tageswertung einfließen oder davon ausgenommen werden und sich ab einem gewählten Datum ändern, ohne die Historie umzuschreiben.
+Ziele, Farben, Symbole und Häufigkeit (täglich, wöchentlich, monatlich) für jede Gewohnheit.
 
-## Mobil
-
-Die mobile Oberfläche verwendet eine feste Navigation am unteren Rand und macht den Tagesrückblick zu einem fokussierten, nahezu bildschirmfüllenden Bereich.
+## Smartphone
 
 <table>
   <tr>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-01-today-planning-v2.png" alt="Tagesplanung auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-02-daily-review-v2.png" alt="Tagesrückblick auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-03-weekly-plan-v2.png" alt="Wochenplanung auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-01-today-v6.png" alt="Heute: deine Karten" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-06-card-library-v6.png" alt="Karten bearbeiten und Bibliothek" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-02-week-v6.png" alt="Woche" /></td>
   </tr>
   <tr>
-    <td align="center"><strong>Heute</strong></td>
-    <td align="center"><strong>Tagesrückblick</strong></td>
-    <td align="center"><strong>Woche</strong></td>
+    <td><strong>Heute: deine Karten</strong></td>
+    <td><strong>Karten bearbeiten und Bibliothek</strong></td>
+    <td><strong>Woche</strong></td>
   </tr>
   <tr>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-04-monthly-review-v2.png" alt="Monatsrückblick auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-05-focus-month-v2.png" alt="Fokusauswertung auf dem Smartphone" /></td>
-    <td width="33%"><img src="images/demo-preview/de-mobile/de-06-habit-settings-v2.png" alt="Gewohnheitseinstellungen auf dem Smartphone" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-03-horizon-v6.png" alt="Horizont" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-04-monthly-review-v6.png" alt="Monatsrückblick" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-07-timeline-v6.png" alt="Zeitleiste" /></td>
   </tr>
   <tr>
-    <td align="center"><strong>Rückblick</strong></td>
-    <td align="center"><strong>Fokus</strong></td>
-    <td align="center"><strong>Gewohnheiten</strong></td>
+    <td><strong>Horizont</strong></td>
+    <td><strong>Monatsrückblick</strong></td>
+    <td><strong>Zeitleiste</strong></td>
+  </tr>
+  <tr>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-05-habits-v6.png" alt="Gewohnheiten" /></td>
+  </tr>
+  <tr>
+    <td><strong>Gewohnheiten</strong></td>
   </tr>
 </table>
-
-<p align="center">
-  <img src="images/demo-preview/de-mobile/de-07-timeline-v3.png" width="33%" alt="Life-Ledger-Zeitleiste auf dem Smartphone" />
-</p>
-<p align="center"><strong>Zeitleiste</strong> · Stimmung, Kontext und Fotoerinnerungen bleiben auch auf kleinen Bildschirmen gut lesbar.</p>
-
-## Weiter
-
-- [Life Ledger jetzt auf Deutsch verwenden](https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=de)
-- [Auf Cloudflare selbst hosten](self-hosting.md)
-- [Cloudflare Access konfigurieren](cloudflare-access.md)

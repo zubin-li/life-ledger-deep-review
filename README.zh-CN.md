@@ -24,7 +24,7 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-04-monthly-review-v2.png" width="100%" alt="Life Ledger 中文月度复盘界面" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-01-today-v6.png" width="100%" alt="Life Ledger 2.0 今日卡片工作台" />
 </p>
 
 <p align="center">
@@ -116,17 +116,19 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 - 面向中国大陆的腾讯云 CloudBase 私有同步
 - 面向电脑与手机的响应式 Apple 风格界面
 
-<details>
-<summary><strong>Life Ledger 1.3 已经带来了什么</strong></summary>
+<details open>
+<summary><strong>Life Ledger 2.0 带来了什么</strong></summary>
 
-- 选择一个日期，顶部进度、习惯、心情、日程与复盘会一起切换。
-- 最多连接两个只读 Google 日历账号，在不修改外部日程的前提下补充当天背景。
-- 心情颜色、完成度热力图、压缩照片记忆与时间轴，让长期变化更容易被看见。
-- 日历与复盘共享更安静的今日布局，专注计时收进复盘轮播。
-- 快速记录生成可编辑的 AI 整理草稿，不会静默修改习惯、心情或目标。
-- 可选的 Apple Silicon macOS 应用既可以完全本机使用，也可以打开自己部署的 Life Ledger；本机模式提供原生 JSON 备份窗口。
+- **今日变成卡片工作台。** 天气（逐小时曲线）、心情、基础目标、习惯热力图、专注、近期节律、月历、照片墙、日程都是卡片，在「编辑卡片」里可以添加、删除、拖动、调整大小，布局会保存。
+- **所有页面重新设计。** 本周（复盘、已完成、目标）、长期（多个阶段并排）、时间轴（日度/周度/月度、照片、日历，任何一天都能打开编辑）、月度复盘、习惯设置统一成一套设计和动效。
+- **本地版自带完整示例。** 纯本地网页版打开就是三个月的虚构生活记录（习惯、周复盘、月复盘、计划、照片）。「设置 → 清除本机数据」从空白开始，「载入示例数据」随时恢复；你自己的本地记录不会被替换。
+- **语言切换完整。** 界面、弹窗、无障碍标签和示例数据都会即时切换为英文、简体中文或德语。
+- **设置集中。** 外观（浅色/深色/跟随系统）和字体都在设置里，默认使用苹果系统字体。
+- **联网版底层不变。** Cloudflare Access、D1 同步、照片和只读 Google 日历保持原样，无需迁移。
 
-[查看完整版本说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v1.3.0)
+需要旧版本？标签 `v1.3.0` 一直保留，见 [回退到 1.3](.github/releases/v2.0.0.md#roll-back-to-13)。
+
+[查看完整的 2.0 发布说明 →](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/v2.0.0)
 
 </details>
 
@@ -134,31 +136,31 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-01-today-planning-v2.png" alt="每日目标与每日复盘" /></td>
-    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-03-weekly-plan-v2.png" alt="本周目标与本周输出" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-02-week-v6.png" alt="本周：复盘、已完成与目标" /></td>
+    <td width="50%"><img src="docs/images/demo-preview/zh-desktop/zh-03-horizon-v6.png" alt="长期：多个阶段并排" /></td>
   </tr>
   <tr>
-    <td><strong>每日更清楚</strong><br />直接查看当天真实日程，并在旁边留下复盘，不再重复规划。</td>
-    <td><strong>每周有方向</strong><br />把必须完成的工作与本周输出放在同一个安静、清晰的空间里。</td>
+    <td><strong>每周方向</strong><br />本周复盘和实际完成的事放在一起，目标像清单一样安静地排着。</td>
+    <td><strong>长期视野</strong><br />多个阶段并排展示，每个阶段有自己的计划和步骤，方向一直看得见。</td>
   </tr>
 </table>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v3.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-07-timeline-v6.png" width="78%" alt="中文私人心情、复盘与照片时间轴" />
 </p>
-<p align="center"><strong>一条只属于自己的记忆线。</strong> 回看心情、语境和压缩后的照片记忆，而不是把生活变成公开动态。</p>
+<p align="center"><strong>私人的记忆线。</strong> 按日、周、月向下阅读；任何一天都能打开编辑，照片只是偶尔的注脚。</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-planning-v2.png" width="30%" alt="手机版每日规划" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v3.png" width="30%" alt="手机版私人时间轴" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v2.png" width="30%" alt="手机版月度复盘" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-v6.png" width="30%" alt="手机版今日卡片" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v6.png" width="30%" alt="手机版时间轴" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v6.png" width="30%" alt="手机版月度复盘" />
 </p>
 
-<p align="center"><strong>为手机重新排版。</strong> 安装为 PWA 后使用底部导航；单日打卡与日记在小屏幕上变成专注的纵向复盘空间。</p>
+<p align="center"><strong>为各种屏幕设计。</strong> 卡片在手机上自动排成一列，底部导航，编辑模式支持触控。</p>
 
-<p align="center"><a href="docs/SHOWCASE.zh-CN.md"><strong>查看完整桌面与手机产品图集 →</strong></a></p>
+<p align="center"><a href="docs/SHOWCASE.zh-CN.md"><strong>查看完整的桌面与手机产品展示 →</strong></a></p>
 
-<sub>截图采用虚构的 2026 年 7 月演示数据，不包含真实个人记录。</sub>
+<sub>截图使用本地版自带的三个月虚构示例数据，不包含任何真实个人记录。</sub>
 
 ## 选择使用方式
 

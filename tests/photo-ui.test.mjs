@@ -35,7 +35,7 @@ test("deployed photo memories live inside the mood note", () => {
 test("timeline and long-term sidebar reuse existing private records", () => {
   assert.match(html, /data-view="timeline"/);
   assert.match(html, /id="timelineView"/);
-  assert.match(html, /id="sidebarLongTermList"/);
+  assert.match(html, /class="sidebar-note"/);
   assert.match(app, /function renderTimeline\(\)/);
   assert.match(app, /state\.longTermGoals/);
   assert.match(css, /\.main-nav \{ grid-template-columns: repeat\(5, 1fr\); \}/);

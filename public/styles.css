@@ -14,8 +14,8 @@
   --blue: #6e8c98;
   --warm: #e9eef8;
   --accent: #0071e3;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Source Sans 3", "Noto Sans SC", sans-serif;
-  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Source Sans 3", "Noto Sans SC", sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Source Sans 3", "Noto Sans SC", sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Source Sans 3", "Noto Sans SC", sans-serif;
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-move: cubic-bezier(0.25, 1, 0.5, 1);
   --mobile-nav-safe-bottom: env(safe-area-max-inset-bottom, env(safe-area-inset-bottom, 0px));
@@ -68,6 +68,31 @@ button { cursor: pointer; }
 .eyebrow, .kicker { margin: 0; font: 500 10px/1.2 var(--font-body); letter-spacing: .18em; color: var(--sage); }
 .topbar h1 { max-width: 760px; font: 700 clamp(25px, 2.7vw, 38px)/1.24 var(--font-display); margin: 0; letter-spacing: -.035em; overflow-wrap: anywhere; text-wrap: balance; }
 body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
+
+.demo-workspace-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: color-mix(in srgb, var(--sage-light) 46%, var(--card));
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.demo-workspace-notice[hidden] { display: none !important; }
+.demo-workspace-notice p { margin: 0; flex: 1 1 220px; min-width: min(100%, 220px); }
+.demo-workspace-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.demo-workspace-actions .secondary-button { font-size: 11px; padding: 7px 12px; }
+@media (max-width: 760px) {
+  .demo-workspace-notice { align-items: flex-start; }
+  .demo-workspace-actions { width: 100%; }
+  .demo-workspace-actions .secondary-button { flex: 1 1 auto; min-width: 0; }
+}
 .top-actions, .date-jump { display: flex; align-items: center; gap: 9px; }
 .mobile-toolbar-toggle { display: none; }
 .save-mode { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font: 9px var(--font-body); }
@@ -162,6 +187,9 @@ body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
 .habit-icon { width: 37px; height: 37px; border-radius: 50%; display: grid; place-items: center; background: var(--habit-soft); color: var(--habit-color); }
 .habit-check { width: 23px; height: 23px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-size: 12px; color: transparent; transition: transform 160ms var(--ease-enter), color 160ms ease, background-color 160ms ease; }
 .habit-card.completed .habit-check { background: var(--habit-color); color: white; border-color: transparent; transform: scale(1.06); }
+.habit-card.just-checked .habit-check { animation: habitCheckPop 380ms cubic-bezier(.34,1.56,.64,1); }
+@keyframes habitCheckPop { 0% { transform: scale(.6); } 60% { transform: scale(1.22); } 100% { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .habit-card.just-checked .habit-check { animation: none; } }
 .habit-card h3 { font: 600 15px "Noto Serif SC"; margin: 22px 0 6px; }
 .habit-card p { color: var(--muted); font-size: 10px; margin: 0; }
 ::view-transition-group(*) { animation-duration: 330ms; animation-timing-function: cubic-bezier(.22,1,.36,1); }
@@ -2005,3 +2033,18 @@ html[data-theme="dark"] .review-scope-switch button.active, html[data-theme="dar
   .daily-tool-viewport { scroll-behavior: auto; }
   .focus-mini-status.running .focus-mini-pulse { animation: none; }
 }
+
+/* Font modes (user 10/22). Default stays the Apple system stack. */
+html[data-font="rounded"] { --font-body: ui-rounded, "SF Pro Rounded", -apple-system, "PingFang SC", "Noto Sans SC", sans-serif; --font-display: ui-rounded, "SF Pro Rounded", -apple-system, "PingFang SC", "Noto Sans SC", sans-serif; }
+html[data-font="serif"] { --font-body: ui-serif, "New York", "Songti SC", "Noto Serif SC", Georgia, serif; --font-display: ui-serif, "New York", "Songti SC", "Noto Serif SC", Georgia, serif; }
+html[data-font] body, html[data-font] button, html[data-font] input, html[data-font] textarea, html[data-font] select { font-family: var(--font-body); }
+.font-switcher .theme-current-icon { font: 600 12px/1 var(--font-display); letter-spacing: -.02em; }
+
+/* The page canvas: the body gradient was painted once per first screen and restarted further down long pages
+   (visible seam on Long-range / Timeline / Habits, user 10/22). Paint it on a fixed layer behind everything. */
+html:not([data-desktop]) { background: var(--paper); }
+html:not([data-desktop]) body { background: transparent; }
+html:not([data-desktop]) body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(circle at 82% 4%, rgba(125,174,255,.18), transparent 30rem), radial-gradient(circle at 28% 72%, rgba(182,222,199,.18), transparent 34rem), var(--paper); }
+html[data-theme="dark"]:not([data-desktop]) { background: var(--surface-base); }
+html[data-theme="dark"]:not([data-desktop]) body { background: transparent; }
+html[data-theme="dark"]:not([data-desktop]) body::before { background: radial-gradient(circle at 80% -8%, rgba(75,126,205,.18), transparent 34rem), radial-gradient(circle at 15% 75%, rgba(87,139,106,.13), transparent 38rem), var(--surface-base); }

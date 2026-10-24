@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <rect x="34" y="32" width="92" height="64" rx="12"/>
+    <path d="M60 32l6-10h28l6 10"/>
+    <circle cx="80" cy="64" r="18"/>
+  </g>
+  <g data-layer="2" stroke="var(--blue, #6e8c98)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <circle cx="80" cy="64" r="8"/>
+    <circle cx="112" cy="46" r="3"/>
+  </g>
+  <g data-layer="3" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3" vector-effect="non-scaling-stroke">
+    <path d="M48 84l18-16 12 10 16-14 20 20"/>
+  </g>
+</svg>

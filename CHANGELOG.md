@@ -4,6 +4,25 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-24
+
+### Added
+
+- Today card workspace: weather, mood, daily foundations, habit heatmap, focus, recent rhythm, month, photo wall, day calendar and more as cards with **Edit cards** (add, remove, drag, resize, configure) and a card library; layouts are saved.
+- Local edition opens with a deterministic three-month fictional sample (habits, mood, notes, weekly and monthly reviews, long-term plans, bundled illustrative photos); **Settings → Clear local data** and **Load sample data**.
+- `docs/DESIGN.md` design family for cards and pages.
+
+### Changed
+
+- Redesigned Week, Horizon, Timeline, Review and Habit settings in one design family with shared motion; monthly review lives only in Review.
+- Appearance and font moved into Settings; Apple system fonts by default.
+- Language switching updates every page, dialog, menu option, accessibility label and the sample data immediately.
+- One asset version (`?v=2.0.0`) for every script and stylesheet and a matching service-worker cache, so installed PWAs update cleanly.
+
+### Safety
+
+- Existing local records are never replaced automatically; only empty workspaces and older sample data are refreshed. Sample data and clearing controls never run in the cloud edition.
+
 ## [1.3.0] - 2026-09-26
 
 ### Added
