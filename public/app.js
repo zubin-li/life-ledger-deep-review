@@ -9,8 +9,9 @@ const SIDEBAR_KEY = "life-ledger-sidebar-collapsed";
 const CALENDAR_VIEW_KEY = "life-ledger-calendar-view";
 const REMINDER_KEY = "life-ledger-reminder";
 const RESTORE_SAFETY_KEY = "life-ledger-restore-safety-v1";
-const LOCAL_EDITION_KEY = "life-ledger-local-edition", LOCAL_EDITION = "2026-10-sample-v5";
-const KEEP_ON_CLEAR = new Set([THEME_KEY, "life-ledger-font", LANGUAGE_KEY, LANGUAGE_PREFERENCE_KEY, SIDEBAR_KEY, LOCAL_EDITION_KEY]);
+const LOCAL_EDITION_KEY = "life-ledger-local-edition", LOCAL_EDITION = "2026-10-sample-v6";
+const LOCAL_BACKUP_KEY = "life-ledger-earlier-records"; // records found before the sample was shown, restorable in Settings
+const KEEP_ON_CLEAR = new Set([THEME_KEY, "life-ledger-font", LANGUAGE_KEY, LANGUAGE_PREFERENCE_KEY, SIDEBAR_KEY, LOCAL_EDITION_KEY, LOCAL_BACKUP_KEY]);
 // Removes every local record (logs, goals, photos, widget state, sample flags); keeps appearance + language.
 function wipeLocalRecords() {
   Object.keys(localStorage).filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key)).forEach(key => localStorage.removeItem(key));
@@ -2662,13 +2663,17 @@ function maybeApplyDemoWorkspace() {
     localStorage.setItem(LOCAL_EDITION_KEY, LOCAL_EDITION);
     state = loadState();
   } else if (eligible && localStorage.getItem(LOCAL_EDITION_KEY) !== LOCAL_EDITION) {
-    // Public local edition: only old sample data / empty workspaces are replaced. A visitor's own records
-    // live only in this browser and cannot be recovered, so they are kept (sample stays one click away in Settings).
-    if (api.isDemoActive(state) || !api.hasMeaningfulUserData(state)) {
-      wipeLocalRecords();
-      state = loadState();
+    // Every visitor of the local edition sees the three-month sample (user 10/22, 10/24). Earlier records of
+    // their own are not lost: they move into one backup key that Settings can restore.
+    if (!api.isDemoActive(state) && api.hasMeaningfulUserData(state) && !localStorage.getItem(LOCAL_BACKUP_KEY)) {
+      const saved = Object.fromEntries(Object.keys(localStorage)
+        .filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key)).map(key => [key, localStorage.getItem(key)]));
+      try { localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify({ savedAt: new Date().toISOString(), keys: saved })); }
+      catch { return; } // storage full: keep the visitor's records rather than risk losing them
     }
+    wipeLocalRecords();
     localStorage.setItem(LOCAL_EDITION_KEY, LOCAL_EDITION);
+    state = loadState();
   }
   const dismissed = localStorage.getItem(demoDismissedStorageKey()) === "1";
   const storedRaw = localStorage.getItem(STORAGE_KEY);
@@ -7814,6 +7819,8 @@ function initSettingsDialog() {
     setText("#settingsBackupHelp", languageText("备份到文件，或从备份恢复", "Back up to a file or restore one", "In Datei sichern oder wiederherstellen"));
     setText("#settingsLoadDemoLabel", languageText("载入示例数据", "Load sample data", "Beispieldaten laden"));
     setText("#settingsLoadDemoHelp", languageText("看看用了三个月之后的样子", "See what three months of use look like", "So sieht es nach drei Monaten aus"));
+    setText("#settingsRestoreLabel", languageText("恢复之前的本机记录", "Restore earlier records", "Frühere Einträge wiederherstellen"));
+    setText("#settingsRestoreHelp", languageText("换回示例数据出现之前你在这台设备上的记录", "Bring back what you recorded on this device before the sample", "Holt zurück, was du vor den Beispieldaten auf diesem Gerät erfasst hast"));
     setText("#settingsClearLabel", languageText("清除本机数据，从空白开始", "Clear this device and start fresh", "Gerät leeren und neu beginnen"));
     setText("#settingsClearHelp", languageText("删除这台设备上的记录、照片和示例数据；外观设置保留", "Removes records, photos and sample data on this device; appearance stays", "Löscht Einträge, Fotos und Beispieldaten auf diesem Gerät; Darstellung bleibt"));
     setAria("#settingsButton", languageText("设置", "Settings", "Einstellungen"));
@@ -7822,6 +7829,7 @@ function initSettingsDialog() {
   $("#settingsButton").addEventListener("click", () => {
     label();
     $("#settingsClearLocal").hidden = !localOnly;
+    $("#settingsRestoreLocal").hidden = !localOnly || !localStorage.getItem(LOCAL_BACKUP_KEY);
     $("#settingsLoadDemo").hidden = !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
     dialog.showModal();
   });
@@ -7829,6 +7837,17 @@ function initSettingsDialog() {
   $("#settingsLoadDemo").addEventListener("click", () => {
     localStorage.removeItem(demoDismissedStorageKey());
     localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+  $("#settingsRestoreLocal").addEventListener("click", () => {
+    let backup;
+    try { backup = JSON.parse(localStorage.getItem(LOCAL_BACKUP_KEY) || "null"); } catch { backup = null; }
+    if (!backup?.keys) return;
+    if (!window.confirm(languageText("用之前的记录替换当前的示例数据？", "Replace the sample data with your earlier records?", "Beispieldaten durch deine früheren Einträge ersetzen?"))) return;
+    wipeLocalRecords();
+    Object.entries(backup.keys).forEach(([key, value]) => localStorage.setItem(key, value));
+    localStorage.setItem(demoDismissedStorageKey(), "1"); // never re-seed over restored records
+    localStorage.removeItem(LOCAL_BACKUP_KEY);
     location.reload();
   });
   $("#settingsClearLocal").addEventListener("click", async () => {

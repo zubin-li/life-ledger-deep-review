@@ -4,6 +4,13 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-10-24
+
+### Fixed
+
+- Browsers that had used 1.x froze on the first 2.0 visit: the new service worker waited for a page reload that could only start after it finished activating. Pages now reload onto the new release after activation.
+- The local edition shows the three-month sample to every visitor again, as intended for 2.0. Records a visitor made earlier in that browser are kept in a backup and can be brought back with **Settings → Restore earlier records**.
+
 ## [2.0.0] - 2026-10-24
 
 ### Added

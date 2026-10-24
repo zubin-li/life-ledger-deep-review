@@ -1,32 +1,32 @@
-const CACHE_NAME = "life-ledger-pwa-2.0.0";
+const CACHE_NAME = "life-ledger-pwa-2.0.1";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=2.0.0",
-  "./app.js?v=2.0.0",
-  "./demo-workspace.js?v=2.0.0",
+  "./styles.css?v=2.0.1",
+  "./app.js?v=2.0.1",
+  "./demo-workspace.js?v=2.0.1",
   "./demo-persona.js",
   "./demo-life.js",
-  "./today-cards.js?v=2.0.0",
-  "./today-widgets.js?v=2.0.0",
-  "./weather-widget.js?v=2.0.0",
-  "./vendor/widget-ui.js?v=2.0.0",
-  "./vendor/widget-ui.css?v=2.0.0",
-  "./today-cards.css?v=2.0.0",
-  "./hairline.js?v=2.0.0",
-  "./pages-858.css?v=2.0.0",
-  "./long-range.js?v=2.0.0",
-  "./habit-analytics.js?v=2.0.0",
-  "./interaction.js?v=2.0.0",
+  "./today-cards.js?v=2.0.1",
+  "./today-widgets.js?v=2.0.1",
+  "./weather-widget.js?v=2.0.1",
+  "./vendor/widget-ui.js?v=2.0.1",
+  "./vendor/widget-ui.css?v=2.0.1",
+  "./today-cards.css?v=2.0.1",
+  "./hairline.js?v=2.0.1",
+  "./pages-858.css?v=2.0.1",
+  "./long-range.js?v=2.0.1",
+  "./habit-analytics.js?v=2.0.1",
+  "./interaction.js?v=2.0.1",
   "./vendor/sortable.min.js",
-  "./focus-timer.js?v=2.0.0",
-  "./voice-checkin.js?v=2.0.0",
-  "./photo-memories.js?v=2.0.0",
-  "./media-backup.js?v=2.0.0",
-  "./deployment-mode.js?v=2.0.0",
-  "./cloudbase-sync.js?v=2.0.0",
+  "./focus-timer.js?v=2.0.1",
+  "./voice-checkin.js?v=2.0.1",
+  "./photo-memories.js?v=2.0.1",
+  "./media-backup.js?v=2.0.1",
+  "./deployment-mode.js?v=2.0.1",
+  "./cloudbase-sync.js?v=2.0.1",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=2.0.0",
+  "./_init_tcb-env.js?v=2.0.1",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -39,16 +39,17 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(async keys => {
-      const previousCaches = keys.filter(key => key.startsWith("life-ledger-") && key !== CACHE_NAME);
-      await Promise.all(previousCaches.map(key => caches.delete(key)));
-      await self.clients.claim();
-      if (!previousCaches.length) return;
-      const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-      await Promise.all(windows.map(client => client.navigate(client.url).catch(() => undefined)));
-    })
-  );
+  const activated = caches.keys().then(async keys => {
+    const previousCaches = keys.filter(key => key.startsWith("life-ledger-") && key !== CACHE_NAME);
+    await Promise.all(previousCaches.map(key => caches.delete(key)));
+    await self.clients.claim();
+    return previousCaches.length > 0;
+  });
+  event.waitUntil(activated);
+  // Reload open windows onto the new release only AFTER activation: awaiting client.navigate() inside
+  // waitUntil deadlocks (the navigation waits for this worker to finish activating) and froze upgraded pages.
+  activated.then(upgraded => upgraded && self.clients.matchAll({ type: "window", includeUncontrolled: true })
+    .then(windows => windows.forEach(client => client.navigate(client.url).catch(() => undefined))));
 });
 
 self.addEventListener("fetch", event => {
