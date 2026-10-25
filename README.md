@@ -24,6 +24,13 @@
 </div>
 
 <p align="center">
+  <strong>Deploy or update with a coding agent:</strong>
+  <a href="docs/deploy-with-codex.md">English</a> ·
+  <a href="docs/deploy-with-codex.zh-CN.md">简体中文</a> ·
+  <a href="docs/deploy-with-codex.de-DE.md">Deutsch</a>
+</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/en-desktop/en-01-today-v6.png" width="100%" alt="Life Ledger 2.0 Today card workspace" />
 </p>
 

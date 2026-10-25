@@ -24,6 +24,13 @@
 </div>
 
 <p align="center">
+  <strong>交给编码代理部署或升级：</strong>
+  <a href="docs/deploy-with-codex.md">English</a> ·
+  <a href="docs/deploy-with-codex.zh-CN.md">简体中文</a> ·
+  <a href="docs/deploy-with-codex.de-DE.md">Deutsch</a>
+</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/zh-desktop/zh-01-today-v6.png" width="100%" alt="Life Ledger 2.0 今日卡片工作台" />
 </p>
 

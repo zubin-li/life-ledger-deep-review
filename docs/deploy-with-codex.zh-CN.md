@@ -1,6 +1,8 @@
 # 用 Codex 一次完成 Life Ledger 部署或升级
 
-下面的提示词适用于第一次部署，也适用于已经有 Worker、D1、R2 或 Google OAuth 的升级。把整段复制给能够操作你本地终端与浏览器的 Codex。
+[English](deploy-with-codex.md) · **简体中文** · [Deutsch](deploy-with-codex.de-DE.md)
+
+下面的提示词适用于第一次部署，也适用于已经有 Worker、D1、R2 或 Google OAuth 的升级。把整段复制给能够操作你本地终端与浏览器的 Codex。也可以只把仓库网址交给 Codex 并要求部署完整版本；仓库中的 `AGENTS.md` 会把代理引导回本说明。
 
 它不会取消必要的本人确认：Cloudflare/Google 登录、R2 按量计费订阅、Google 未验证应用警告、删除或覆盖数据仍应由账户所有者确认。其他只读盘点、测试、非破坏性迁移、部署和验证应连续完成。
 
@@ -20,21 +22,21 @@ https://github.com/zubin-li/life-ledger-deep-review
 4. 检查远程 D1 已执行和待执行的 migrations，并确认现有数据量。只执行尚未执行的非破坏性迁移。
 5. 检查本地未提交改动。账户 ID、数据库 ID、OAuth Secret 和个人部署配置不得提交到上游仓库。
 
-二、核心部署
+二、准备云端资源
 
-1. 先完成并验证 Worker、静态资源、D1、Workers AI 和 Cloudflare Access。
-2. Access 只允许账户所有者指定的邮箱；正确配置 TEAM_DOMAIN 和 POLICY_AUD。
-3. 部署后验证正式网址、/deployment-mode.js、登录后的 /api/state、刷新后的同步、快速记录入口、PWA 与备份导入导出。
-4. 核心部署未通过前，不要进入 Google Cloud 配置。
-5. 不要为适配账户而修改 public/app.js 等产品源码。
-
-三、R2 照片
-
-1. 完整 Cloudflare 版本需要 wrangler.jsonc 中的 PHOTOS binding。
-2. 先检查 R2 订阅和 life-ledger-deep-review-photos bucket 是否已存在；存在就复用，不得重复创建。
-3. 如果尚未启用 R2，说明：即时费用、每月免费额度、超额自动计费，以及应用内 8 GB/操作次数限制不是 Cloudflare 硬消费上限。等待账户所有者明确接受 R2 按量计费后再继续。
+1. 根据账户情况选择仓库提供的 Cloudflare 部署流程或 CLI；首次完整部署前必须先准备或绑定 D1 与 R2。
+2. 先检查现有 D1、R2 订阅和 `life-ledger-deep-review-photos` bucket；存在就复用，不得重复创建。
+3. 如果尚未启用 R2，说明：即时费用、每月免费额度、超额自动计费，以及应用内 8GB/操作次数限制不是 Cloudflare 硬消费上限。等待账户所有者明确接受 R2 按量计费后再继续。
 4. 使用 Standard storage，bucket 保持私有，不创建公开域名。
-5. 验证 PHOTOS binding、照片上传读取和时间轴；不得用真实私人照片作为测试材料。
+5. 账户 ID、数据库 ID、OAuth Secret 和个人部署配置不得提交到上游仓库。
+
+三、部署并保护
+
+1. 只执行尚未执行的非破坏性 D1 migration，然后在 DB、AI 和 PHOTOS binding 都存在的情况下部署 Worker 与静态资源。
+2. Cloudflare Access 只允许账户所有者指定的邮箱；正确配置 TEAM_DOMAIN 和 POLICY_AUD。
+3. 部署后验证正式网址、`/deployment-mode.js`、登录后的 `/api/state`、刷新后的同步、快速记录入口、私人照片上传/读取/时间轴、PWA 与备份导入导出；照片测试只能使用虚构素材。
+4. 上述验收未通过前，不要进入 Google Cloud 配置。
+5. 不要为了适配账户而修改 `public/app.js` 等产品源码，也不要删除 PHOTOS binding 逃避 R2 前置条件。
 
 四、Google Calendar（仅在用户选择启用时）
 

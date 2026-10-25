@@ -1,6 +1,8 @@
 # Deploy or update Life Ledger with Codex
 
-Copy the prompt below into a Codex session that can use your terminal and browser. It works for both a new installation and an existing deployment.
+**English** · [简体中文](deploy-with-codex.zh-CN.md) · [Deutsch](deploy-with-codex.de-DE.md)
+
+Copy the prompt below into a Codex session that can use your terminal and browser. It works for both a new installation and an existing deployment. You can also give Codex only the repository URL and ask it to deploy the complete edition: the repository's `AGENTS.md` routes the agent back to this runbook.
 
 It does not bypass owner-only decisions: Cloudflare or Google login, the R2 pay-as-you-go subscription, Google's unverified-app warning, and deletion or replacement of data still require the account owner's confirmation. Read-only inventory, tests, non-destructive migrations, deployment, and verification should otherwise continue without repeated prompts.
 
@@ -14,9 +16,9 @@ Work in five gates and do not mix them together.
 
 1. Inventory: read README, self-hosting, privacy, changelog, Wrangler config, package scripts, and migrations. Fetch main, record the commit, run npm ci and npm test. Inspect existing Worker URL/deployment, D1 and migration state, R2 bucket, AI binding, Access, and secret names without printing secret values. Preserve local changes and account-specific configuration outside upstream commits.
 
-2. Core: deploy and verify Worker/static assets, D1, Workers AI, and Access before touching Google Cloud. Apply only pending non-destructive migrations. Verify /deployment-mode.js, authenticated /api/state persistence, Quick record availability, PWA, and backup/restore. Do not modify product source merely to fit the account.
+2. Cloud resources: decide whether the repository's Cloudflare deployment flow or the CLI is appropriate for this account. Provision or bind D1 and R2 before the first complete deployment. Reuse an existing database, R2 subscription, and `life-ledger-deep-review-photos` bucket. If R2 is not enabled, explain the $0 starting checkout, included monthly allowance, automatic overage billing, and that the app's 8 GB/operation safeguards are not a provider hard spending cap. Wait for the owner to accept the subscription. Keep the Standard bucket private. Do not commit account IDs, database IDs, or secrets upstream.
 
-3. R2: the complete edition requires the PHOTOS binding. Reuse an existing R2 subscription and life-ledger-deep-review-photos bucket. If R2 is not enabled, explain the $0 starting checkout, included monthly allowance, automatic overage billing, and that the app's 8 GB/operation safeguards are not a provider hard spending cap. Wait for the owner to accept the subscription, then keep the Standard bucket private and verify photo upload/read/Timeline with fictional test media.
+3. Deploy and protect: apply only pending non-destructive D1 migrations, then deploy Worker/static assets with DB, AI, and PHOTOS bindings present. Configure Cloudflare Access for only the owner's approved email addresses and set TEAM_DOMAIN and POLICY_AUD. Verify the production URL, /deployment-mode.js, authenticated /api/state persistence after refresh, Quick record, private photo upload/read/Timeline with fictional test media, PWA, and backup/restore. Do not modify product source merely to fit the account. Do not start Google configuration until these checks pass.
 
 4. Google Calendar, only when selected: reuse any existing Google project and OAuth web client. Enable Calendar API and request only calendar.calendarlist.readonly and calendar.events.readonly. The Google authorized redirect URI and GOOGLE_CALENDAR_REDIRECT_URI secret must exactly equal https://<production-origin>/api/calendar/callback. Verify the four Calendar secret names without exposing values. Start a fresh connection from the production app after deployment.
 

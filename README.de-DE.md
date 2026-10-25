@@ -24,6 +24,13 @@
 </div>
 
 <p align="center">
+  <strong>Mit einem Coding-Agent bereitstellen oder aktualisieren:</strong>
+  <a href="docs/deploy-with-codex.md">English</a> ·
+  <a href="docs/deploy-with-codex.zh-CN.md">简体中文</a> ·
+  <a href="docs/deploy-with-codex.de-DE.md">Deutsch</a>
+</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/de-desktop/de-01-today-v6.png" width="100%" alt="Life Ledger 2.0 – Heute als Karten-Arbeitsbereich" />
 </p>
 
@@ -223,7 +230,7 @@ Dieselbe Bereitstellung enthält automatisch die Workers-AI-Bindung für **Schne
 
 Die vollständige Cloudflare-Ausgabe speichert komprimierte Fotoerinnerungen in einem privaten R2-Bucket und kann Google Calendar optional schreibgeschützt einbinden. Dafür werden ein eigener Google-OAuth-Webclient und vier Cloudflare-Secrets benötigt; das Repository enthält keine gemeinsamen Google-Zugangsdaten. Schritte, R2-Kostengrenzen und Datenschutzdetails stehen unter [Self-Hosting](docs/self-hosting.md).
 
-Die vollständige Anleitung findest du unter [Self-Hosting](docs/self-hosting.md) und [Cloudflare Access einrichten](docs/cloudflare-access.md). Soll ein Coding-Agent die Bereitstellung oder Aktualisierung übernehmen, kopiere den [einmaligen Codex-Bereitstellungsprompt](docs/deploy-with-codex.md); er inventarisiert und verwendet bestehende Ressourcen, hält bei der R2-Abrechnungsentscheidung an und prüft alle Dienste vor der Erfolgsmeldung.
+Die vollständige Anleitung findest du unter [Self-Hosting](docs/self-hosting.md) und [Cloudflare Access einrichten](docs/cloudflare-access.md). Soll ein Coding-Agent die Bereitstellung oder Aktualisierung übernehmen, kopiere den [deutschen Codex-Bereitstellungsprompt](docs/deploy-with-codex.de-DE.md); er inventarisiert und verwendet bestehende Ressourcen, hält bei der R2-Abrechnungsentscheidung an und prüft alle Dienste vor der Erfolgsmeldung.
 
 ### 5. Mit Tencent CloudBase in Festlandchina bereitstellen
 
