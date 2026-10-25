@@ -2223,7 +2223,7 @@ function applyLanguage() {
   const note = $(".sidebar-note p");
   const sidebarQuote = quoteFor(1);
   if (note) note.innerHTML = `${escapeHtml(sidebarQuote.text)}<small>${escapeHtml(sidebarQuote.source)}</small>`;
-  setText(".profile strong", demoWorkspaceApi()?.isDemoActive(state) ? languageText("林知遥 · AI 数据分析师", "Lin Zhiyao · AI data analyst", "Lin Zhiyao · KI-Datenanalystin") : tr("profileName"));
+  setText(".profile strong", demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName"));
   $("#exportButton")?.setAttribute("title", tr("exportTitle"));
   $("#exportButton")?.setAttribute("aria-label", tr("exportTitle"));
   setAria("#cloudAccountButton", tr("cloudbase.account"));
@@ -3739,20 +3739,20 @@ function calendarPreviewEvents(date) {
   const offset = Math.round((selected - today) / 86400000);
   const routines = [
     { id: "routine-morning", start: "06:30", end: "07:30", routine: true, title: languageText("早起与健身", "Morning routine & gym", "Morgenroutine & Training") },
-    { id: "routine-german", start: "08:00", end: "08:30", routine: true, title: languageText("德语听说", "German listening & speaking", "Deutsch hören & sprechen") },
-    { id: "routine-applications", start: "09:15", end: "09:35", routine: true, title: languageText("坚持投递", "Job applications", "Bewerbungen") },
+    { id: "routine-reading", start: "08:00", end: "08:30", routine: true, title: languageText("晨间阅读", "Morning reading", "Morgenlektüre") },
+    { id: "routine-plan", start: "09:15", end: "09:35", routine: true, title: languageText("整理今日计划", "Review today's plan", "Tagesplan prüfen") },
     { id: "routine-cat", start: "21:30", end: "21:40", routine: true, title: languageText("给猫零食", "Cat treat", "Katzensnack") },
     { id: "routine-tidy", start: "22:00", end: "22:20", routine: true, title: languageText("每日整理", "Daily tidy", "Tägliches Aufräumen") },
   ];
   const oneOffByOffset = {
-    "-1": [{ id: "career-workshop", start: "16:00", end: "17:30", title: languageText("职业方向工作坊", "Career direction workshop", "Workshop zur Karriereplanung") }],
+    "-1": [{ id: "writing-time", start: "16:00", end: "17:30", title: languageText("个人写作时间", "Personal writing time", "Persönliche Schreibzeit") }],
     0: [
-      { id: "analyst-interview", start: "09:00", end: "09:45", title: languageText("数据分析师线上面试", "Data analyst interview", "Online-Interview Data Analyst") },
-      { id: "portfolio-review", start: "14:30", end: "15:15", title: languageText("作品集评审", "Portfolio review", "Portfolio-Review") },
-      { id: "release-prep", start: "18:00", end: "19:00", title: languageText("第一个 Project Release", "First project release", "Erstes Project Release") },
+      { id: "weekly-plan", start: "09:00", end: "09:45", title: languageText("整理本周计划", "Review the week plan", "Wochenplan ordnen") },
+      { id: "reading-notes", start: "14:30", end: "15:15", title: languageText("整理阅读笔记", "Organise reading notes", "Lesenotizen ordnen") },
+      { id: "evening-walk", start: "18:00", end: "19:00", title: languageText("傍晚散步", "Evening walk", "Abendspaziergang") },
     ],
-    2: [{ id: "onsite-interview", start: "08:00", end: "10:00", title: languageText("线下面试", "On-site interview", "Vor-Ort-Interview") }],
-    4: [{ id: "release-deadline", allDay: true, title: languageText("项目 Release 截止日", "Project release deadline", "Deadline für das Project Release") }],
+    2: [{ id: "dentist", start: "08:00", end: "10:00", title: languageText("牙医检查", "Dentist appointment", "Zahnarzttermin") }],
+    4: [{ id: "book-evening", allDay: true, title: languageText("朋友读书会", "Book evening with friends", "Bücherabend mit Freunden") }],
   };
   return [...(oneOffByOffset[offset] || []), ...routines].map(event => ({ ...event, date }));
 }

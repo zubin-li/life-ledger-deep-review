@@ -19,6 +19,7 @@ import {
   resolveStorageKey,
   shouldSeedDemo,
 } from "../public/demo-workspace.js";
+import { demoScheduleFor } from "../public/demo-persona.js";
 
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 const index = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
@@ -38,12 +39,19 @@ function assertDemoRichness(demo, lang) {
   const dg = Object.keys(demo.dailyGoals);
   assert.ok(dg.length >= 97, `${lang}: daily goal days`);
   assert.equal(dg.filter(k => k > today).length, 7, `${lang}: future goal days`);
+  const goalSets = dg.map(date => demo.dailyGoals[date].map(goal => goal.text).join(" | "));
+  assert.ok(new Set(goalSets).size >= 70, `${lang}: varied daily goal combinations`);
   assert.equal(Object.keys(demo.reviews).length, 4, `${lang}: monthly reviews`);
   assert.ok(demo.longTermGoals.length >= 11, `${lang}: long-term goals`);
   assert.ok(Math.min(...demo.longTermGoals.map(g => g.events.length)) >= 3, `${lang}: goal events`);
   assert.ok(new Set(demo.focusSessions.map(s => s.date)).size >= 64, `${lang}: focus days`);
   const weeks = Object.keys(demo.weeklyReviews).length;
   assert.equal(new Set(Object.values(demo.weeklyReviews)).size, weeks, `${lang}: unique week reviews`);
+  const weeklyCopy = [...Object.values(demo.weeklyOutputs), ...Object.values(demo.weeklyReviews)];
+  assert.ok(weeklyCopy.every(text => String(text).length >= 70), `${lang}: weekly writing has substance`);
+  assert.ok(weeklyCopy.every(text => !/^(第\s*\d+\s*周|Week\s+\d+|Woche\s+\d+)/i.test(String(text))), `${lang}: content does not repeat the UI week label`);
+  const monthlyMinimum = lang === "zh" ? 100 : 180;
+  assert.ok(Object.values(demo.reviews).every(text => String(text).length >= monthlyMinimum), `${lang}: monthly reviews are developed reflections`);
 }
 const starterHabits = [
   { id: "exercise", name: "Exercise", versions: [{ frequency: "daily", countsTowardDaily: true }] },
@@ -65,6 +73,21 @@ test("deterministic demo output for fixed now and language", () => {
   const second = build("en");
   assert.deepEqual(first.logs, second.logs);
   assert.deepEqual(first.focusSessions.map(s => s.id), second.focusSessions.map(s => s.id));
+});
+
+test("sample calendar varies by day and keeps locale-specific everyday life", () => {
+  const dates = Array.from({ length: 60 }, (_, offset) => {
+    const date = new Date(FIXED_NOW);
+    date.setDate(date.getDate() - offset);
+    return date.toISOString().slice(0, 10);
+  });
+  for (const lang of ["zh", "en", "de"]) {
+    const signatures = dates.map(date => demoScheduleFor(lang, date, FIXED_NOW).map(event => event.title).join(" | "));
+    assert.ok(new Set(signatures).size >= 45, `${lang}: calendar days are meaningfully varied`);
+  }
+  assert.match(demoScheduleFor("zh", "2026-10-12", FIXED_NOW).map(event => event.title).join(" "), /小区|快递|买菜|地铁|复盘|家里|书/);
+  assert.match(demoScheduleFor("en", "2026-10-12", FIXED_NOW).map(event => event.title).join(" "), /park|train|library|reflection|groceries|family/i);
+  assert.match(demoScheduleFor("de", "2026-10-12", FIXED_NOW).map(event => event.title).join(" "), /Kiez|Rad|Pfand|Bibliothek|Tagesrückblick|Familie/i);
 });
 
 test("demo history respects now, covers ~90 days, and meets content thresholds", () => {
@@ -192,6 +215,19 @@ test("localized notice copy exists for en, zh, and de", () => {
     const copy = demoNoticeCopy(lang);
     assert.ok(copy.message && copy.clear && copy.confirm && copy.cleared);
   }
+});
+
+test("fictional sample stays locale-specific and free of personal career or German-study history", () => {
+  const forbidden = /德语|B1|B2|German|Goethe|AI\b|LLM|analyst|数据分析师|产品分析|Datenanalyse|Produktanalyse|Eval-|评估流水线|漂移报告|SQL|pipeline/i;
+  for (const lang of ["zh", "en", "de"]) {
+    const demo = build(lang);
+    assert.doesNotMatch(JSON.stringify(demo), forbidden, `${lang}: neutral fictional sample`);
+  }
+  assert.match(JSON.stringify(build("zh")), /快递|物业/);
+  assert.match(JSON.stringify(build("en")), /recycling|library/i);
+  assert.match(JSON.stringify(build("de")), /Bürgeramt|Altglas/);
+  assert.match(app, /languageText\("于朦胧", "Alan", "Alan"\)/);
+  assert.doesNotMatch(app, /Lin Zhiyao · AI data analyst|林知遥 · AI 数据分析师|KI-Datenanalystin/);
 });
 
 test("app integration wires demo photos and controls", () => {

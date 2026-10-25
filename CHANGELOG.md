@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced the local sample's personal-looking German-study storyline and occupation label with three culturally distinct fictional everyday calendars for Simplified Chinese, British English, and German.
+
 ### Documentation
 
 - Clarified that the complete Cloudflare edition includes a private R2 photo bucket and that first-time R2 activation creates a pay-as-you-go subscription even when current usage remains inside the included allowances.
