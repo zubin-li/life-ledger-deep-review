@@ -206,7 +206,7 @@ Nutze auf GitHub **Use this template**. Das neue Repository besitzt einen unabh�
 
 ### 4. Mit Cloudflare bereitstellen
 
-Wähle oben **Deploy to Cloudflare**. Cloudflare kopiert das öffentliche Repository, erstellt in deinem Konto einen Worker, eine D1-Datenbank und den privaten R2-Fotobucket der vollständigen Version, führt die Migration aus und stellt die App bereit. Beim ersten R2-Setup wird ein nutzungsabhängiges Abonnement aktiviert: Der Checkout beginnt derzeit bei 0 $, und normale persönliche Nutzung sollte im Freikontingent bleiben; Mehrverbrauch ist jedoch kostenpflichtig. Die Schutzgrenzen der App sind kein hartes Ausgabenlimit des Cloudflare-Kontos.
+Wähle oben **Deploy to Cloudflare**. Cloudflare kopiert das öffentliche Repository und führt dich durch das Erstellen oder Verbinden des Workers, der D1-Datenbank und des privaten R2-Fotobuckets der vollständigen Version, bevor Migration und Bereitstellung erfolgen. Bereits vorhandene Ressourcen sollen wiederverwendet werden. Beim ersten R2-Setup wird ein nutzungsabhängiges Abonnement aktiviert: Der Checkout beginnt derzeit bei 0 $, und normale persönliche Nutzung sollte im Freikontingent bleiben; Mehrverbrauch ist jedoch kostenpflichtig. Die Schutzgrenzen der App sind kein hartes Ausgabenlimit des Cloudflare-Kontos.
 
 Aktiviere nach der Bereitstellung Cloudflare Access:
 

@@ -17,7 +17,13 @@ README 中的一键部署按钮会让 Cloudflare 把本仓库复制到你的 Git
 
 ## 完整 Cloudflare 版本的私人照片记忆
 
-照片记忆使用 Cloudflare R2，当前完整部署配置中的 `PHOTOS` 绑定需要它。第一次使用前，先在 Cloudflare 控制台启用 R2，再创建 `wrangler.jsonc` 已声明的私有存储桶：
+照片记忆使用 Cloudflare R2，当前完整部署配置中的 `PHOTOS` 绑定需要它。第一次使用前，先在 Cloudflare 控制台启用 R2，再检查私有存储桶是否已经存在：
+
+```bash
+npx wrangler r2 bucket list
+```
+
+如果已经存在 `life-ledger-deep-review-photos`，必须直接复用；只有确实不存在时才创建：
 
 ```bash
 npx wrangler r2 bucket create life-ledger-deep-review-photos

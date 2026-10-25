@@ -206,7 +206,7 @@ Use GitHub's **Use this template** button. Your new repository has an independen
 
 ### 4. Deploy with Cloudflare
 
-Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository, create a Worker, D1 database, and the private R2 photo bucket used by the complete edition in your account, apply the migration, and deploy the app. The first R2 setup enables a pay-as-you-go subscription: checkout currently starts at $0 and normal personal use is expected to stay within the included allowances, but overages are billable. The app's storage and operation safeguards are not a Cloudflare account-level spending cap.
+Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository and guide you through provisioning or binding the Worker, D1 database, and private R2 photo bucket used by the complete edition before it applies migrations and deploys the app. Existing resources should be reused. The first R2 setup enables a pay-as-you-go subscription: checkout currently starts at $0 and normal personal use is expected to stay within the included allowances, but overages are billable. The app's storage and operation safeguards are not a Cloudflare account-level spending cap.
 
 After deployment, enable Cloudflare Access:
 

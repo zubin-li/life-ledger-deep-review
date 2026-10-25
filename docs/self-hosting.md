@@ -17,7 +17,13 @@ The checked-in Wrangler configuration provisions the Workers AI binding automati
 
 ## Private photo memories in the complete Cloudflare edition
 
-Photo memories require Cloudflare R2, and the `PHOTOS` binding in the complete deployment expects it. Enable R2 once in the Cloudflare dashboard, then create the private bucket declared in `wrangler.jsonc` before deployment:
+Photo memories require Cloudflare R2, and the `PHOTOS` binding in the complete deployment expects it. Enable R2 once in the Cloudflare dashboard, then check for the private bucket before deployment:
+
+```bash
+npx wrangler r2 bucket list
+```
+
+Reuse `life-ledger-deep-review-photos` when it already exists. Create it only when the exact bucket is absent:
 
 ```bash
 npx wrangler r2 bucket create life-ledger-deep-review-photos
