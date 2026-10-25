@@ -117,7 +117,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 - **Heute wird zum Karten-Arbeitsbereich.** Wetter mit Stundenkurve, Stimmung, Grundlagen, Gewohnheits-Heatmap, Fokus, letzte Tage, Monat, Fotowand und Tageskalender sind Karten, die du unter **Karten bearbeiten** hinzufügen, entfernen, ziehen und in der Größe ändern kannst. Das Layout bleibt gespeichert.
 - **Alle Seiten neu gestaltet.** Woche (Rückblick, Erledigtes, Ziele), Horizont (Phasen nebeneinander), Zeitleiste (Tag/Woche/Monat, Fotos, Kalender – jeder Tag lässt sich bearbeiten), Monatsrückblick und Gewohnheiten folgen einer Designfamilie mit passender Bewegung.
-- **Eine lokale Version, die sich zeigt.** Die rein lokale Web-App startet mit drei Monaten fiktiver Beispieldaten (Gewohnheiten, Wochen- und Monatsrückblicke, Pläne, Fotos). **Einstellungen → Lokale Daten löschen** startet leer; **Beispieldaten laden** holt sie zurück. Eigene lokale Einträge werden nie ersetzt.
+- **Eine lokale Version, die sich zeigt.** Die rein lokale Web-App startet mit drei Monaten fiktiver Beispieldaten (Gewohnheiten, Wochen- und Monatsrückblicke, Pläne, Fotos). **Einstellungen → Lokale Daten löschen** startet leer; **Beispieldaten laden** holt sie zurück. Lokale Version schon früher genutzt? Deine früheren Einträge liegen als Sicherung in diesem Browser – **Einstellungen → Frühere Einträge wiederherstellen** holt sie zurück.
 - **Vollständiger Sprachwechsel.** Oberfläche, Dialoge, Bedienhilfen-Beschriftungen und Beispieldaten wechseln sofort zwischen Englisch, vereinfachtem Chinesisch und Deutsch.
 - **Einstellungen an einem Ort.** Erscheinungsbild (hell/dunkel/System) und Schrift liegen in den Einstellungen; standardmäßig Apple-Systemschriften.
 - **Cloud-Version darunter unverändert.** Cloudflare Access, D1-Synchronisierung, Fotos und schreibgeschützter Google Kalender bleiben gleich; keine Migration nötig.
@@ -170,6 +170,8 @@ Vorherige Version nötig? Der Tag `v1.3.0` bleibt erhalten – siehe [Zurück zu
 ### 1. Jetzt verwenden – ohne Einrichtung
 
 Öffne **[Life Ledger – nur lokal](https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=de)** in einem aktuellen Browser. Du brauchst weder Konto noch Download, Terminal, Node.js oder Cloud-Konfiguration.
+
+Sie startet mit drei Monaten fiktiver Beispieldaten, damit du Life Ledger im Einsatz siehst; **Einstellungen → Lokale Daten löschen** startet leer. Hast du die lokale Version vor 2.0 genutzt, wurden deine früheren Einträge nicht gelöscht: Sie liegen als Sicherung in diesem Browser, und **Einstellungen → Frühere Einträge wiederherstellen** setzt sie anstelle der Beispieldaten wieder ein.
 
 Deine Einträge werden automatisch in diesem Browser auf diesem Gerät gespeichert. Auf dem Smartphone kannst du im Browsermenü **Zum Home-Bildschirm** oder **App installieren** wählen. Dadurch erhältst du eine bildschirmfüllende PWA, deren App-Grundgerüst auch offline verfügbar bleibt.
 

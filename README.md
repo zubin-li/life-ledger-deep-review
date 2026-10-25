@@ -117,7 +117,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 - **Today becomes a card workspace.** Weather with an hourly curve, mood, daily foundations, habit heatmap, focus, recent rhythm, month, photo wall and day calendar are cards you can add, remove, drag and resize in **Edit cards**. The layout is saved.
 - **Every page redesigned.** Week (review, completed work, goals), Horizon (long-term phases side by side), Timeline (daily/weekly/monthly, photos, calendar — any day opens for editing), monthly Review and Habit settings share one design family with matching motion.
-- **A local edition that shows itself.** The local-only web app opens with three months of fictional sample life (habits, weekly and monthly reviews, plans, photos). **Settings → Clear local data** starts blank; **Load sample data** brings it back. Your own local records are never replaced.
+- **A local edition that shows itself.** The local-only web app opens with three months of fictional sample life (habits, weekly and monthly reviews, plans, photos). **Settings → Clear local data** starts blank; **Load sample data** brings it back. Used the local edition before? Your earlier records are kept in a backup in that browser — **Settings → Restore earlier records** brings them back.
 - **Language switching is complete.** Interface, dialogs, accessibility labels and the sample data follow English, Simplified Chinese and German instantly.
 - **Settings in one place.** Appearance (light/dark/system) and font live in Settings; Apple system fonts by default.
 - **Cloud edition unchanged underneath.** Same Cloudflare Access, D1 sync, photos and read-only Google Calendar; no migration needed.
@@ -170,6 +170,8 @@ Need the previous version? Tag `v1.3.0` stays available — see [Roll back to 1.
 ### 1. Use now — no setup
 
 Open **[Life Ledger — Local only](https://zubin-li.github.io/life-ledger-deep-review/?mode=local&lang=en)** in a current browser. No account, download, terminal, Node.js, or cloud setup is required.
+
+It opens with a three-month fictional sample so you can see Life Ledger in use. **Settings → Clear local data** starts blank. If you used the local edition before 2.0, your earlier records were not deleted: they are kept in a backup in that browser, and **Settings → Restore earlier records** puts them back in place of the sample.
 
 Your records save automatically in that browser on that device. On a phone, use the browser menu to choose **Add to Home Screen** or **Install app** for a full-screen PWA that also keeps its app shell available offline.
 
