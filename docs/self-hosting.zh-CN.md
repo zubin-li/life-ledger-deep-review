@@ -7,21 +7,23 @@ Life Ledger 支持两条互相独立的私有云路线：
 
 ## 推荐方式：Deploy to Cloudflare
 
-README 中的一键部署按钮会让 Cloudflare 把本仓库复制到你的 GitHub 账户，在你的 Cloudflare 账户中创建 Worker 与 D1 数据库，执行迁移并发布应用。部署配置中保留自动识别的 `npm run deploy` 命令即可。
+README 中的一键部署按钮会让 Cloudflare 把本仓库复制到你的 GitHub 账户，在你的 Cloudflare 账户中创建 Worker、D1 数据库和完整版本使用的私有 R2 照片桶，执行迁移并发布应用。部署配置中保留自动识别的 `npm run deploy` 命令即可。
+
+当前一键部署面向**完整 Cloudflare 版本**。首次使用 R2 时，Cloudflare 会要求启用 R2 按量计费订阅；确认页当前显示即时费用为 $0，但超过每月免费额度后会向账户付款方式计费。不要把应用内限制理解为 Cloudflare 的硬消费上限。若尚未接受这项计费关系，应先停止部署，而不是临时删除绑定后继续并声称已完成完整版本。
 
 第一次部署之后，应先使用 Cloudflare Access 保护 Worker，再正式依赖云同步。在 Access 尚未启用时，网页仍然可以本地使用，云端 API 会有意返回 `401`。
 
 仓库中的 Wrangler 配置会自动创建 Workers AI 绑定，不需要 OpenAI 账号或另外填写 API Key。只有应用识别到 Cloudflare 部署模式时，每日复盘中才会出现**快速记录**；录音经 Access 保护的 Worker 转写并整理成可编辑草稿，原始音频随即释放。`0002_voice_usage.sql` 只新增每日计数：每位用户每天最多 3 次、累计 20 分钟。
 
-## 可选的私人照片记忆
+## 完整 Cloudflare 版本的私人照片记忆
 
-照片记忆使用 Cloudflare R2。第一次使用前，先在 Cloudflare 控制台启用 R2，再创建 `wrangler.jsonc` 已声明的私有存储桶：
+照片记忆使用 Cloudflare R2，当前完整部署配置中的 `PHOTOS` 绑定需要它。第一次使用前，先在 Cloudflare 控制台启用 R2，再创建 `wrangler.jsonc` 已声明的私有存储桶：
 
 ```bash
 npx wrangler r2 bucket create life-ledger-deep-review-photos
 ```
 
-照片会先在浏览器中压缩，每天最多三张，压缩后单张最大 1.2 MB，整个部署的照片库上限为 8 GB。每个 UTC 自然月达到 1 万次写入或 100 万次读取后会自动暂停，分别只使用 R2 官方 Standard 免费额度的 1% 和 10%。R2 不开放公共链接；所有查看、上传和删除都必须经过 Worker 的身份验证。时间轴会把照片与当天心情、原因放在一起；按月 `.llmedia` 导入导出保证照片仍然可以迁移。
+照片会先在浏览器中压缩，每天最多三张，压缩后单张最大 1.2 MB，整个部署的照片库上限为 8 GB。每个 UTC 自然月达到 1 万次写入或 100 万次读取后会自动暂停，分别只使用 R2 官方 Standard 免费额度的 1% 和 10%。这些是应用级保护，不是 Cloudflare 账户级硬限额；同一账户的其他 R2 使用、控制台操作或未来价格变化仍可能产生费用。R2 不开放公共链接；所有查看、上传和删除都必须经过 Worker 的身份验证。时间轴会把照片与当天心情、原因放在一起；按月 `.llmedia` 导入导出保证照片仍然可以迁移。
 
 ## 可选的只读 Google 日历
 
@@ -47,7 +49,8 @@ Google 日历是可选功能，并且只在具备安全后端的 Cloudflare 部�
 
    `CALENDAR_TOKEN_KEY` 必须是包含 32 个随机字节的 URL-safe Base64 字符串；`GOOGLE_CALENDAR_REDIRECT_URI` 必须与 Google 中登记的地址完全一致。如果部署的是 Pages 项目，请改用 `wrangler pages secret put <NAME> --project-name <PROJECT>`。
 
-6. 重新部署，打开**今日 → 每日安排 → 连接 Google 日历**，确认只读权限并选择要显示的日历。需要工作账号时，点击**添加另一个 Google 账号**再连接一个账号。重复日程默认折叠，可在同一设置面板中展开。
+6. 重新部署，打开**今日 → 每日安排 → 连接 Google 日历**。授权会在当前 Life Ledger 标签页继续；不要手动切回旧标签页。若 Google 显示“尚未验证此应用”，个人自托管用户需要在当前标签页中亲自选择**高级 → 前往 Life Ledger → 继续**，然后等待同一标签页自动返回 `/?calendar=connected&view=today`。只有 `/api/calendar/status` 返回 `connected: true`，并且 D1 的 `calendar_connections` 出现记录，才算连接完成。OAuth state 十分钟后过期；超时后应从 Life Ledger 重新点击连接，不要复用旧链接。
+7. 返回后选择要显示的日历。需要工作账号时，点击**添加另一个 Google 账号**再连接一个账号。重复日程默认折叠，可在同一设置面板中展开。
 
 `0003_google_calendar.sql` 会把加密授权信息和可重建的日程缓存放在主 Life Ledger 状态之外。缓存不包含描述、地点、附件和参与者。断开连接会撤销 Google 授权，并删除凭据和缓存。完整边界见[隐私说明](../PRIVACY.md)。
 
@@ -78,6 +81,8 @@ npm run deploy
 2. 查看 `CHANGELOG.md` 和数据库迁移；
 3. 执行部署；
 4. 在重要设备上检查一个最近日期和一个历史复盘。
+
+如果希望让 Codex 或其他编码代理代为完成新部署或升级，请直接复制[一次性部署与升级提示词](deploy-with-codex.zh-CN.md)。它要求代理先盘点现有资源，再依次完成核心部署、R2、Google OAuth 和最终验收，避免重复创建资源或把“回到旧标签页”误判为 OAuth 成功。
 
 ## 免费额度行为
 

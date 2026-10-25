@@ -163,7 +163,7 @@ Vorherige Version nötig? Der Tag `v1.3.0` bleibt erhalten – siehe [Zurück zu
 | Variante | Geeignet für | Eigene Domain nötig | Einstiegskosten |
 |---|---|---:|---:|
 | Nur lokale PWA | Ein Gerät, keine Einrichtung | Nein | Kostenlos |
-| Cloudflare + D1 | Internationales Self-Hosting | Nein | Kostenloses Kontingent |
+| Vollständige Cloudflare-Version | Internationales Self-Hosting mit Sync, KI-Spracheingabe, Fotos und optionalem Kalender | Nein | 0 $ innerhalb der Freikontingente; Zahlungsmittel für R2 erforderlich |
 | Tencent CloudBase | Zugriff und private Synchronisierung in Festlandchina | Für persönliche Tests nicht nötig | Kostenlose Umgebung |
 | macOS-Desktop-MVP (Tauri) | Native Mac-Hülle mit Lokal/Cloud-Auswahl | Nein | Lokaler Build |
 
@@ -206,7 +206,7 @@ Nutze auf GitHub **Use this template**. Das neue Repository besitzt einen unabh�
 
 ### 4. Mit Cloudflare bereitstellen
 
-Wähle oben **Deploy to Cloudflare**. Cloudflare kopiert das öffentliche Repository, erstellt in deinem Konto einen Worker und eine D1-Datenbank, führt die Migration aus und stellt die App bereit.
+Wähle oben **Deploy to Cloudflare**. Cloudflare kopiert das öffentliche Repository, erstellt in deinem Konto einen Worker, eine D1-Datenbank und den privaten R2-Fotobucket der vollständigen Version, führt die Migration aus und stellt die App bereit. Beim ersten R2-Setup wird ein nutzungsabhängiges Abonnement aktiviert: Der Checkout beginnt derzeit bei 0 $, und normale persönliche Nutzung sollte im Freikontingent bleiben; Mehrverbrauch ist jedoch kostenpflichtig. Die Schutzgrenzen der App sind kein hartes Ausgabenlimit des Cloudflare-Kontos.
 
 Aktiviere nach der Bereitstellung Cloudflare Access:
 
@@ -221,9 +221,9 @@ Aktiviere nach der Bereitstellung Cloudflare Access:
 
 Dieselbe Bereitstellung enthält automatisch die Workers-AI-Bindung für **Schnell aufnehmen**. Pro Konto gelten drei Aufnahmen und insgesamt 20 Aufnahmeminuten pro UTC-Tag, bei höchstens 10 Minuten pro Aufnahme. Dadurch bleibt die persönliche Nutzung vorhersehbar. Cloudflare kann Freikontingente und Preise ändern; prüfe vor einer Nutzung mit vielen Personen das eigene Dashboard.
 
-Die Cloudflare-Ausgabe kann Google Calendar außerdem schreibgeschützt einbinden. Dafür werden ein eigener Google-OAuth-Webclient und vier Cloudflare-Secrets benötigt; das Repository enthält keine gemeinsamen Google-Zugangsdaten. Die vollständigen Schritte stehen unter [Self-Hosting](docs/self-hosting.md#optional-read-only-google-calendar).
+Die vollständige Cloudflare-Ausgabe speichert komprimierte Fotoerinnerungen in einem privaten R2-Bucket und kann Google Calendar optional schreibgeschützt einbinden. Dafür werden ein eigener Google-OAuth-Webclient und vier Cloudflare-Secrets benötigt; das Repository enthält keine gemeinsamen Google-Zugangsdaten. Schritte, R2-Kostengrenzen und Datenschutzdetails stehen unter [Self-Hosting](docs/self-hosting.md).
 
-Die vollständige Anleitung findest du unter [Self-Hosting](docs/self-hosting.md) und [Cloudflare Access einrichten](docs/cloudflare-access.md).
+Die vollständige Anleitung findest du unter [Self-Hosting](docs/self-hosting.md) und [Cloudflare Access einrichten](docs/cloudflare-access.md). Soll ein Coding-Agent die Bereitstellung oder Aktualisierung übernehmen, kopiere den [einmaligen Codex-Bereitstellungsprompt](docs/deploy-with-codex.md); er inventarisiert und verwendet bestehende Ressourcen, hält bei der R2-Abrechnungsentscheidung an und prüft alle Dienste vor der Erfolgsmeldung.
 
 ### 5. Mit Tencent CloudBase in Festlandchina bereitstellen
 

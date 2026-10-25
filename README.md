@@ -163,7 +163,7 @@ Need the previous version? Tag `v1.3.0` stays available — see [Roll back to 1.
 | Path | Best for | Domain required | Starting cost |
 |---|---|---:|---:|
 | Local-only PWA | One device, no setup | No | Free |
-| Cloudflare + D1 | International self-hosting | No | Free tier |
+| Complete Cloudflare edition | International self-hosting with sync, AI voice, photos, and optional Calendar | No | $0 within included allowances; payment method required for R2 |
 | Tencent CloudBase | Mainland China access and private sync | No for personal evaluation | Free environment |
 | macOS desktop MVP (Tauri) | Native Mac app shell with local/cloud choice | No | Local build |
 
@@ -206,7 +206,7 @@ Use GitHub's **Use this template** button. Your new repository has an independen
 
 ### 4. Deploy with Cloudflare
 
-Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository, create a Worker and D1 database in your account, apply the migration, and deploy the app.
+Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository, create a Worker, D1 database, and the private R2 photo bucket used by the complete edition in your account, apply the migration, and deploy the app. The first R2 setup enables a pay-as-you-go subscription: checkout currently starts at $0 and normal personal use is expected to stay within the included allowances, but overages are billable. The app's storage and operation safeguards are not a Cloudflare account-level spending cap.
 
 After deployment, enable Cloudflare Access:
 
@@ -221,9 +221,9 @@ After deployment, enable Cloudflare Access:
 
 The same deployment automatically includes the Workers AI binding used by **Quick record**. The app limits one account to three recordings and 20 recorded minutes per UTC day, with a maximum of 10 minutes per recording, to keep personal use predictable. Cloudflare allowances and pricing can change; review the provider dashboard before broad multi-user use.
 
-The Cloudflare edition can also connect to Google Calendar in read-only mode and keep compressed photo memories in a private R2 bucket. Google Calendar requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md).
+The complete Cloudflare edition keeps compressed photo memories in a private R2 bucket and can optionally connect to Google Calendar in read-only mode. Google Calendar requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps, the R2 billing boundary, and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md).
 
-See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough.
+See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough. If a coding agent will perform the setup or upgrade, copy the [one-pass Codex deployment prompt](docs/deploy-with-codex.md); it inventories and reuses existing resources, pauses at the R2 billing decision, and verifies every service before reporting success.
 
 ### 5. Deploy with Tencent CloudBase in mainland China
 

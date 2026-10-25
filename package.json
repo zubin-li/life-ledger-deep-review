@@ -34,7 +34,7 @@
         "description": "Your private Life Ledger D1 database. Cloudflare creates and binds it during deployment."
       },
       "PHOTOS": {
-        "description": "A private R2 bucket for compressed daily photo memories."
+        "description": "Required by the complete Cloudflare edition for private compressed photo memories. Enabling R2 creates a pay-as-you-go subscription; included allowances may keep personal use at $0, but overages are billable."
       }
     }
   },

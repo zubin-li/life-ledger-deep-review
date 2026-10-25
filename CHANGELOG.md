@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Documentation
+
+- Clarified that the complete Cloudflare edition includes a private R2 photo bucket and that first-time R2 activation creates a pay-as-you-go subscription even when current usage remains inside the included allowances.
+- Added copy-ready English and Chinese Codex deployment prompts that inventory and reuse existing resources, separate core/R2/Google setup into evidence gates, and require same-tab OAuth plus API and D1 verification before reporting success.
+
 ## [2.0.1] - 2026-10-24
 
 ### Fixed
