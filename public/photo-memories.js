@@ -313,7 +313,7 @@
     }
 
     async function removePhoto(id) {
-      if (busy || !root.confirm(t("confirmDelete"))) return;
+      if (busy || !(await (root.appConfirm || (m => Promise.resolve(root.confirm(m))))(t("confirmDelete")))) return;
       busy = true;
       setStatus(t("deleting"));
       render();

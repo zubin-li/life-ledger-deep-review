@@ -1,87 +1,51 @@
+/* Launcher: same frame and card language as the Mac app (mac-app.css / docs/DESIGN.md). */
 :root {
   color-scheme: light dark;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --frame: #e6ebf0; --ink: #1d1d1f; --muted: #6e7681; --card: rgba(255, 255, 255, .86); --line: rgba(29, 29, 31, .09);
+  --accent: #0071e3; --primary: #1d1d1f; --primary-ink: #fff; --error: #b3261e;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+@media (prefers-color-scheme: dark) {
+  :root { --frame: #111317; --ink: #f5f5f7; --muted: #aeb6bf; --card: rgba(255, 255, 255, .055); --line: rgba(255, 255, 255, .1);
+    --accent: #7db7ff; --primary: #f5f5f7; --primary-ink: #111317; --error: #ff8a80; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; overscroll-behavior: none; }
+body { margin: 0; background: radial-gradient(circle at 80% 0, rgba(125, 174, 255, .16), transparent 26rem), var(--frame); color: var(--ink); -webkit-user-select: none; user-select: none; cursor: default; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+h1, h2, p { margin: 0; }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: Canvas;
-  color: CanvasText;
-}
+.launcher-bar { position: fixed; inset: 0 0 auto; height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 92px; z-index: 2; }
+.launcher-bar-title { font-size: 13px; font-weight: 600; color: var(--muted); }
+.launcher-language select { height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--card); color: var(--ink); font: inherit; font-size: 12px; }
 
-.launcher {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  gap: 16px;
-}
+.launcher { max-width: 560px; min-height: 100%; margin: 0 auto; padding: 72px 28px 40px; align-content: center; display: grid; gap: 14px; }
+.launcher-header { display: grid; justify-items: center; gap: 8px; text-align: center; margin-bottom: 14px; }
+.launcher-header img { width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 10px 30px rgba(20, 40, 60, .16); }
+.launcher-header h1 { margin-top: 6px; font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+.launcher-header p { color: var(--muted); font-size: 13px; line-height: 1.5; }
 
-.launcher-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
+.card { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: start; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 10px 30px rgba(20, 40, 60, .06); transition: transform 180ms ease, box-shadow 180ms ease; }
+.card:hover { transform: translateY(-1px); box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 16px 40px rgba(20, 40, 60, .1); }
+.card-cloud { grid-template-columns: 40px minmax(0, 1fr); }
+.card-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+.card-cloud .card-icon { background: color-mix(in srgb, #4fa38a 14%, transparent); color: #3f8f77; }
+.card-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.card-copy { display: grid; gap: 6px; min-width: 0; }
+.card h2 { font-size: 15px; font-weight: 650; }
+.card p { color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+.card-local button { align-self: center; }
 
-h1, h2, p {
-  margin: 0;
-}
-
-.card {
-  border: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
-  border-radius: 16px;
-  padding: 16px;
-  display: grid;
-  gap: 10px;
-  background: color-mix(in srgb, Canvas 92%, CanvasText 8%);
-}
-
-.launcher-language {
-  display: grid;
-  gap: 4px;
-  font-size: 0.9rem;
-}
-
-input {
-  width: 100%;
-  font: inherit;
-  border-radius: 10px;
-  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
-  padding: 10px 12px;
-  background: Canvas;
-  color: CanvasText;
-  box-sizing: border-box;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-button {
-  font: inherit;
-  border-radius: 10px;
-  padding: 10px 14px;
-  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
-  cursor: pointer;
-}
-
-button.primary {
-  background: #255f4a;
-  color: #fff;
-  border-color: #255f4a;
-}
-
-button.secondary {
-  background: transparent;
-  color: inherit;
-}
-
-#cloudError {
-  color: #b00020;
-  font-size: 0.9rem;
-}
+input { width: 100%; height: 32px; margin-top: 6px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: color-mix(in srgb, var(--card) 60%, transparent); color: var(--ink); font: inherit; font-size: 13px; -webkit-user-select: text; user-select: text; }
+input::placeholder { color: color-mix(in srgb, var(--muted) 82%, transparent); }
+input:focus { outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent); border-color: var(--accent); }
+.actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+button { height: 30px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line); font: inherit; font-size: 13px; font-weight: 550; cursor: default; white-space: nowrap; }
+button.primary { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+button.primary:hover { opacity: .88; }
+button.secondary { background: transparent; color: var(--ink); }
+button.secondary:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#cloudError { color: var(--error); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }

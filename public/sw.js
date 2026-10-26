@@ -1,12 +1,12 @@
-const CACHE_NAME = "life-ledger-pwa-2.0.1";
+const CACHE_NAME = "life-ledger-pwa-2.0.1-demo10";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css?v=2.0.1",
   "./app.js?v=2.0.1",
-  "./demo-workspace.js?v=2.0.1",
-  "./demo-persona.js",
-  "./demo-life.js",
+  "./demo-workspace.js?v=demo10",
+  "./demo-persona.js?v=10",
+  "./demo-life.js?v=10",
   "./today-cards.js?v=2.0.1",
   "./today-widgets.js?v=2.0.1",
   "./weather-widget.js?v=2.0.1",

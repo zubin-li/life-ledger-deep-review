@@ -1,6 +1,6 @@
 /* Weather presentation: shared by the summary and optional card; data stays owned by TodayExtras. */
 (function(root){
-  if(!document.getElementById('weatherPlot'))return; // web Today cards only (absent on ?desktop=tauri-local)
+  if(!document.getElementById('weatherPlot'))return; // Today cards (web and Mac app)
   const $=s=>document.querySelector(s);
   let plot, model, signature='', resizePending, pointerActive=false;
   const symbols={clear:'☀',cloud:'☁',rain:'☂',snow:'❄',storm:'ϟ'};

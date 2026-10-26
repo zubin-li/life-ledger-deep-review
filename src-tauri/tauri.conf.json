@@ -1,6 +1,6 @@
 {
   "$schema": "./gen/schemas/desktop-schema.json",
-  "productName": "Life Ledger Deep Review",
+  "productName": "Life Ledger",
   "version": "2.0.1",
   "identifier": "app.zubinli.lifeledger",
   "build": {
@@ -12,12 +12,18 @@
     "withGlobalTauri": true,
     "windows": [],
     "security": {
-      "capabilities": ["default", "local-only"]
+      "capabilities": [
+        "default",
+        "local-only"
+      ]
     }
   },
   "bundle": {
     "active": true,
-    "targets": ["app", "dmg"],
+    "targets": [
+      "app",
+      "dmg"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

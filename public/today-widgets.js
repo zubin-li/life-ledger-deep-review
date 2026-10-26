@@ -2,7 +2,6 @@
 // Plain DOM fed from app.js state (same globals the original Today uses); today-cards.js lays them out.
 // Ported from 858ede8 (today-extras.js / weather-widget.js) onto the 780b6a1 base.
 (() => {
-  if (new URLSearchParams(location.search).get("desktop") === "tauri-local") return;
   const view = document.getElementById("todayView");
   if (!view) return;
   const $ = (s, r = document) => r.querySelector(s);
@@ -365,7 +364,7 @@
       $(".tw-wall-auto", box).addEventListener("change", e => { save("life-ledger-wall-prefs" + suffix, { ...wallPrefs(), auto: e.target.checked }); renderWall(); });
       $(".tw-seg", box).addEventListener("click", e => { const b = e.target.closest("[data-fit]"); if (!b) return; save("life-ledger-wall-prefs" + suffix, { ...wallPrefs(), fit: b.dataset.fit }); box.querySelectorAll("[data-fit]").forEach(x => x.setAttribute("aria-checked", String(x === b))); renderWall(); paint(); });
       $(".tw-wall-remove", box).addEventListener("click", async () => {
-        const row = wall[wallAt]; if (!row || !confirm(t("removeConfirm"))) return;
+        const row = wall[wallAt]; if (!row || !(await window.appConfirm(t("removeConfirm")))) return;
         await store.delete(row.id).catch(() => {}); wall.splice(wallAt, 1); wallAt = Math.max(0, Math.min(wallAt, wall.length - 1)); renderWall(); paint();
       });
       paint();

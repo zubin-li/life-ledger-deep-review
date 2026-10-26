@@ -4,6 +4,17 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced the local sample's personal-looking German-study storyline and occupation label with three culturally distinct fictional everyday calendars for Simplified Chinese, British English, and German.
+
+### Documentation
+
+- Clarified that the complete Cloudflare edition includes a private R2 photo bucket and that first-time R2 activation creates a pay-as-you-go subscription even when current usage remains inside the included allowances.
+- Added copy-ready English and Chinese Codex deployment prompts that inventory and reuse existing resources, separate core/R2/Google setup into evidence gates, and require same-tab OAuth plus API and D1 verification before reporting success.
+- Distinguished first-time R2 activation from an existing deployment and required agents to list and reuse an existing photo bucket instead of attempting to create a duplicate.
+- Added a German deployment-agent runbook, linked all three languages from every README, and routed repository-aware agents to the correct guide. The runbooks now provision D1 and R2 before the first complete deployment instead of attempting an impossible binding order.
+
 ## [2.0.1] - 2026-10-24
 
 ### Fixed

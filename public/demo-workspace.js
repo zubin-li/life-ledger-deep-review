@@ -1,9 +1,9 @@
 // Deterministic local-only demo workspace builders. DOM-free so node:test can execute the real logic.
 
 export const DEMO_META_VERSION = 1;
-export const DEMO_PERSONA_VERSION = 5; // bump to re-seed an untouched older demo
-import { personaPack, demoScheduleFor } from "./demo-persona.js";
-import { demoDayContent, DEMO_EVENTS } from "./demo-life.js";
+export const DEMO_PERSONA_VERSION = 10; // bump to refresh an active older demo
+import { personaPack, demoScheduleFor } from "./demo-persona.js?v=10";
+import { demoDayContent, DEMO_EVENTS } from "./demo-life.js?v=10";
 export const DEMO_CONTENT_SEED = 0x6d656d6f; // "memo"
 export const DEMO_DISMISSED_KEY = "life-ledger-demo-dismissed-v1";
 export const DEFAULT_STORAGE_KEY = "life-ledger-v1";
@@ -14,12 +14,11 @@ const STARTER_HABIT_IDS = [
 ];
 
 export const DEMO_MEMORY_ASSETS = [
-  // AI-generated photos for the demo persona (AI data analyst in Berlin).
+  // AI-generated photos for the fictional sample workspace.
   { id: "analyst-desk", file: "analyst-desk.jpg", width: 960, height: 720 },
   { id: "run-park", file: "run-park.jpg", width: 720, height: 960 },
   { id: "team-whiteboard", file: "team-whiteboard.jpg", width: 960, height: 720 },
   { id: "dashboard-screen", file: "dashboard-screen.jpg", width: 960, height: 720 },
-  { id: "german-books", file: "german-books.jpg", width: 960, height: 877 },
   { id: "spree-sunset", file: "spree-sunset.jpg", width: 960, height: 720 },
   { id: "meetup-talk", file: "meetup-talk.jpg", width: 960, height: 720 },
   { id: "gym-weights", file: "gym-weights.jpg", width: 960, height: 887 },
@@ -34,7 +33,6 @@ export const DEMO_MEMORY_ASSETS = [
   { id: "team-offsite-lake", file: "team-offsite-lake.jpg", width: 960, height: 720 },
   { id: "museum-sunday", file: "museum-sunday.jpg", width: 960, height: 720 },
   { id: "market-haul", file: "market-haul.jpg", width: 720, height: 960 },
-  { id: "goethe-b1", file: "goethe-b1.jpg", width: 960, height: 720 },
   { id: "birthday-dinner", file: "birthday-dinner.jpg", width: 720, height: 960 },
 ];
 const assetById = id => DEMO_MEMORY_ASSETS.find(asset => asset.id === id);
@@ -248,7 +246,7 @@ function localizedPools(lang) {
       ],
       longTerm: [
         { name: "Build a calm creative practice", next: "Draft a two-hour weekly studio block", status: "active" },
-        { name: "Reach conversational German", next: "Book two tutoring sessions", status: "active" },
+        { name: "Build a calm writing practice", next: "Draft one short piece this week", status: "active" },
         { name: "Sustainable strength & mobility", next: "Track weekly sessions without daily pressure", status: "paused" },
       ],
     },
@@ -340,7 +338,7 @@ function localizedPools(lang) {
       ],
       longTerm: [
         { name: "建立从容的创作练习", next: "每周固定两小时创作时段", status: "active" },
-        { name: "德语达到可交流", next: "预约两次辅导课", status: "active" },
+        { name: "建立稳定的写作练习", next: "本周完成一篇短文", status: "active" },
         { name: "可持续的力量与灵活度", next: "按周记录训练，不追求每日完美", status: "paused" },
       ],
     },
@@ -432,7 +430,7 @@ function localizedPools(lang) {
       ],
       longTerm: [
         { name: "Eine ruhige Kreativpraxis aufbauen", next: "Zwei Stunden Studio pro Woche blocken", status: "active" },
-        { name: "Konversationsfähiges Deutsch", next: "Zwei Tutorings buchen", status: "active" },
+        { name: "Eine ruhige Schreibpraxis aufbauen", next: "Diese Woche einen kurzen Text schreiben", status: "active" },
         { name: "Nachhaltige Kraft & Mobilität", next: "Wöchentlich trainieren ohne Tagesdruck", status: "paused" },
       ],
     },
@@ -558,7 +556,7 @@ export function buildDemoWorkspace({
   const goalPool = pack.dailyGoals;
   const pickGoals = (date, dayIndex, future) => {
     const count = future ? 2 + (dayIndex % 2) : 2 + (dayIndex % 3);
-    const start = (dayIndex * 3) % goalPool.length;
+    const start = (dayIndex * 7 + Math.floor(dayIndex / 5) * 3) % goalPool.length;
     return Array.from({ length: count }, (_, goalIndex) => {
       const text = goalPool[(start + goalIndex) % goalPool.length];
       const done = future ? false : goalIndex < count - 1 || dayIndex % 5 !== 0;

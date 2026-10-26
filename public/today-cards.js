@@ -2,9 +2,8 @@
 // become cards that can be reordered, resized (only cards with a real second size), hidden,
 // configured (edit mode → click a card) and added from the card library.
 // It only moves existing nodes; app.js keeps rendering their content, so every original
-// interaction and animation stays as it was. Desktop (Tauri) is untouched.
+// interaction and animation stays as it was. The Mac app uses the same cards (mac-app.css adapts the chrome).
 (() => {
-  if (new URLSearchParams(location.search).get("desktop") === "tauri-local") return;
   const view = document.getElementById("todayView");
   if (!view) return;
   const $ = (s, r = document) => r.querySelector(s);
