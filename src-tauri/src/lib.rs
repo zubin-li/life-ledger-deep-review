@@ -241,6 +241,8 @@ fn menu_action_for_id(id: &str) -> Option<&'static str> {
         "view_review" => Some("view:review"),
         "view_habits" => Some("view:habits"),
         "sidebar_toggle" => Some("sidebar:toggle"),
+        "inspector_toggle" => Some("inspector:toggle"),
+        "command_palette" => Some("palette"),
         "date_today" => Some("date:today"),
         "date_prev" => Some("date:prev"),
         "date_next" => Some("date:next"),
@@ -279,6 +281,8 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "view_review" => ["复盘", "Review", "Rückblick"],
         "view_habits" => ["习惯设置", "Habits", "Gewohnheiten"],
         "sidebar_toggle" => ["显示或隐藏边栏", "Show or Hide Sidebar", "Seitenleiste ein-/ausblenden"],
+        "inspector_toggle" => ["显示或隐藏当日详情", "Show or Hide Day Details", "Tagesdetails ein-/ausblenden"],
+        "command_palette" => ["命令…", "Commands…", "Befehle …"],
         "date_today" => ["回到今天", "Go to Today", "Zu heute"],
         "date_prev" => ["上一天 / 上一页", "Previous", "Zurück"],
         "date_next" => ["下一天 / 下一页", "Next", "Weiter"],
@@ -360,7 +364,10 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
         .item(&item("date_prev", Some("CmdOrCtrl+["))?)
         .item(&item("date_next", Some("CmdOrCtrl+]"))?)
         .separator()
+        .item(&item("command_palette", Some("CmdOrCtrl+K"))?)
+        .separator()
         .item(&item("sidebar_toggle", Some("Ctrl+CmdOrCtrl+S"))?)
+        .item(&item("inspector_toggle", Some("Alt+CmdOrCtrl+I"))?)
         .item(&PredefinedMenuItem::fullscreen(app, Some(t("fullscreen")))?)
         .build()?;
 
@@ -720,7 +727,7 @@ mod tests {
     #[test]
     fn menu_labels_cover_every_language() {
         use super::menu_label;
-        for key in ["settings", "file", "new_habit", "view_longrange", "sidebar_toggle", "window", "zoom"] {
+        for key in ["settings", "file", "new_habit", "view_longrange", "sidebar_toggle", "inspector_toggle", "command_palette", "window", "zoom"] {
             for lang in ["zh", "en", "de"] {
                 assert!(!menu_label(lang, key).is_empty(), "{key} {lang}");
             }
@@ -832,7 +839,8 @@ mod tests {
         assert_eq!(menu_action_for_id("view_today"), Some("view:today"));
         assert_eq!(menu_action_for_id("sidebar_toggle"), Some("sidebar:toggle"));
         assert_eq!(menu_action_for_id("view_longrange"), Some("view:longrange"));
-        assert_eq!(menu_action_for_id("inspector_toggle"), None);
+        assert_eq!(menu_action_for_id("inspector_toggle"), Some("inspector:toggle"));
+        assert_eq!(menu_action_for_id("command_palette"), Some("palette"));
         assert_eq!(menu_action_for_id("export_backup"), Some("export"));
         assert_eq!(menu_action_for_id("unknown_item"), None);
     }

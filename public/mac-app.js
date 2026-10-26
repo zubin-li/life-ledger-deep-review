@@ -178,6 +178,7 @@
   };
   const closeOpenDialogs = () => document.querySelectorAll("dialog[open]").forEach(d => d.close());
   function handle(action) {
+    window.dispatchEvent(new CustomEvent("ll-mac-action", { detail: action }));
     if (action.startsWith("view:")) { closeOpenDialogs(); click(`.nav-item[data-view="${action.slice(5)}"]`); return; }
     switch (action) {
       case "settings": closeOpenDialogs(); click("#settingsButton"); break;
