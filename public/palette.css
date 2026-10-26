@@ -25,7 +25,7 @@ html[data-mac][data-theme="dark"] .palette-backdrop {
 html[data-mac] .palette-dialog {
   width: min(620px, 90vw);
   max-width: 620px;
-  background: color-mix(in srgb, var(--card) 92%, white);
+  background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 14px;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -40,7 +40,7 @@ html[data-mac] .palette-dialog {
 }
 
 html[data-mac][data-theme="dark"] .palette-dialog {
-  background: color-mix(in srgb, var(--surface-1) 94%, black);
+  background: #1f2227;
   border-color: var(--edge-strong);
   box-shadow: 0 28px 72px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
@@ -205,3 +205,8 @@ html[data-mac] .palette-empty {
   font-size: 13px;
   user-select: none;
 }
+
+/* opaque surface: no backdrop bleed-through; quiet group labels; roomier shortcut hints */
+html[data-mac] .palette-dialog { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-mac] .palette-section-label { padding: 12px 12px 4px; font-size: 11px; letter-spacing: .02em; text-transform: none; }
+html[data-mac] .palette-item-shortcut { padding: 1px 6px; min-width: 28px; text-align: center; white-space: nowrap; }
