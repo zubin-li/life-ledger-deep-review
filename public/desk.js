@@ -45,6 +45,19 @@
     });
   }
 
+  // toolbar search pill (checklist A2): opens the ⌘K palette
+  const actions = $("#mobileTopActions");
+  if (actions && !$("#deskSearch")) {
+    const pill = document.createElement("button");
+    pill.type = "button"; pill.id = "deskSearch"; pill.className = "desk-search";
+    pill.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><span></span><kbd>⌘K</kbd>';
+    pill.addEventListener("click", () => window.LifeLedgerPalette?.open());
+    actions.prepend(pill);
+  }
+  const labelSearch = () => { const s = $("#deskSearch span"); if (s) s.textContent = languageText("搜索或跳转", "Search or jump to", "Suchen oder springen"); };
+  labelSearch();
+  new MutationObserver(labelSearch).observe(root, { attributes: true, attributeFilter: ["lang"] });
+
   const locale = () => (currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-US");
   const shortDate = (date) => {
     const d = parseDate(date);

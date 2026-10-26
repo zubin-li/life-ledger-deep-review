@@ -1,1 +1,207 @@
 /* Life Ledger for Mac — ⌘K command palette. Every rule is scoped to html[data-mac]. */
+
+html[data-mac] .palette-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: clamp(48px, 12vh, 120px);
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-sizing: border-box;
+}
+
+html[data-mac] .palette-backdrop[hidden] {
+  display: none !important;
+}
+
+html[data-mac][data-theme="dark"] .palette-backdrop {
+  background: rgba(5, 7, 10, 0.65);
+}
+
+html[data-mac] .palette-dialog {
+  width: min(620px, 90vw);
+  max-width: 620px;
+  background: color-mix(in srgb, var(--card) 92%, white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: var(--font-body);
+  color: var(--ink);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+}
+
+html[data-mac][data-theme="dark"] .palette-dialog {
+  background: color-mix(in srgb, var(--surface-1) 94%, black);
+  border-color: var(--edge-strong);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+html[data-mac] .palette-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  box-sizing: border-box;
+}
+
+html[data-mac] .palette-search-icon {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  color: var(--muted);
+  stroke-width: 2;
+}
+
+html[data-mac] .palette-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.4;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html[data-mac] .palette-input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+html[data-mac] .palette-esc-hint {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper-deep) 60%, transparent);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+html[data-mac] .palette-listbox {
+  max-height: 360px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+}
+
+html[data-mac] .palette-section-label {
+  padding: 8px 10px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+html[data-mac] .palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ink);
+  box-sizing: border-box;
+  transition: background-color 70ms ease, color 70ms ease;
+}
+
+html[data-mac] .palette-item-main {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+html[data-mac] .palette-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+html[data-mac] .palette-item-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+html[data-mac] .palette-item-shortcut {
+  flex: 0 0 auto;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper-deep) 60%, transparent);
+  color: var(--muted);
+  letter-spacing: -0.02em;
+}
+
+html[data-mac] .palette-item[aria-selected="true"] {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+html[data-mac][data-theme="dark"] .palette-item[aria-selected="true"] {
+  background: var(--accent);
+  color: #0b1725;
+}
+
+html[data-mac] .palette-item[aria-selected="true"] .palette-item-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-mac][data-theme="dark"] .palette-item[aria-selected="true"] .palette-item-subtitle {
+  color: rgba(11, 23, 37, 0.85);
+}
+
+html[data-mac] .palette-item[aria-selected="true"] .palette-item-shortcut {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+html[data-mac][data-theme="dark"] .palette-item[aria-selected="true"] .palette-item-shortcut {
+  border-color: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.12);
+  color: #0b1725;
+}
+
+html[data-mac] .palette-empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  user-select: none;
+}

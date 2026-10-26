@@ -236,3 +236,16 @@ html[data-mac] body.sidebar-collapsed .desk-recent-days {
 
 /* inspector content clears its own footer */
 html[data-mac] #dayDrawer .drawer-content { padding-bottom: 20px; }
+
+/* toolbar search pill → ⌘K palette */
+html[data-mac] .desk-search {
+  height: 28px; min-width: 200px; padding: 0 8px 0 10px; display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line); border-radius: 8px; background: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: var(--muted); font: inherit; font-size: 12px; cursor: default;
+}
+html[data-mac] .desk-search:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 18%, transparent); }
+html[data-mac] .desk-search:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+html[data-mac] .desk-search svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; flex: none; }
+html[data-mac] .desk-search span { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html[data-mac] .desk-search kbd { font: inherit; font-size: 11px; padding: 1px 5px; border-radius: 5px; background: color-mix(in srgb, var(--ink) 7%, transparent); }
+@media (max-width: 1180px) { html[data-mac] .desk-search { min-width: 0; } html[data-mac] .desk-search span { display: none; } }
