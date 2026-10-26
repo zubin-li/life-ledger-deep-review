@@ -472,9 +472,31 @@ fn with_desktop_cloud_flag(mut url: Url) -> Url {
     url
 }
 
+/// URL pattern for the remote capability: exactly the deployment's origin, every path on it.
+fn cloud_capability_pattern(url: &Url) -> Option<String> {
+    let host = url.host_str()?;
+    let port = url.port().map(|p| format!(":{p}")).unwrap_or_default();
+    Some(format!("{}://{}{}/*", url.scheme(), host, port))
+}
+
+/// The cloud window shows the user's own deployment; give that origin (only) the shell permissions the local window has.
+fn grant_cloud_shell(app: &AppHandle, url: &Url) -> Result<(), String> {
+    let pattern = cloud_capability_pattern(url).ok_or("URL has no host")?;
+    let capability = tauri::ipc::CapabilityBuilder::new(format!("cloud-shell-{pattern}"))
+        .remote(pattern)
+        .local(false)
+        .window("cloud")
+        .permission("core:event:default")
+        .permission("core:window:allow-start-dragging")
+        .permission("core:window:allow-internal-toggle-maximize")
+        .permission("core:window:allow-is-fullscreen");
+    app.add_capability(capability).map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 fn open_cloud_window(app: AppHandle, raw_url: String) -> Result<(), String> {
     let normalized = with_desktop_cloud_flag(validate_cloud_url(&raw_url)?);
+    grant_cloud_shell(&app, &normalized)?;
     if let Some(window) = app.get_webview_window("cloud") {
         window.navigate(normalized).map_err(|e| e.to_string())?;
         window.show().map_err(|e| e.to_string())?;
@@ -722,6 +744,15 @@ mod tests {
             assert!(line.contains("CmdOrCtrl+"), "accelerator without CmdOrCtrl: {line}");
             assert!(!line.contains("\"Cmd+") && !line.contains("+Cmd+"), "bare Cmd is not ⌘ on macOS: {line}");
         }
+    }
+
+    #[test]
+    fn cloud_capability_covers_only_the_deployment_origin() {
+        use super::cloud_capability_pattern;
+        let u = url::Url::parse("https://life.example.com/app?desktop=tauri-cloud").unwrap();
+        assert_eq!(cloud_capability_pattern(&u).as_deref(), Some("https://life.example.com/*"));
+        let p = url::Url::parse("http://127.0.0.1:8787/").unwrap();
+        assert_eq!(cloud_capability_pattern(&p).as_deref(), Some("http://127.0.0.1:8787/*"));
     }
 
     #[test]
