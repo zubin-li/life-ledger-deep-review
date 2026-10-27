@@ -1,32 +1,33 @@
-const CACHE_NAME = "life-ledger-pwa-2.0.1-demo10";
+const CACHE_NAME = "life-ledger-pwa-2.0.2";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=2.0.1",
-  "./app.js?v=2.0.1",
+  "./styles.css?v=2.0.2",
+  "./app.js?v=2.0.2",
   "./demo-workspace.js?v=demo10",
   "./demo-persona.js?v=10",
   "./demo-life.js?v=10",
-  "./today-cards.js?v=2.0.1",
-  "./today-widgets.js?v=2.0.1",
-  "./weather-widget.js?v=2.0.1",
-  "./vendor/widget-ui.js?v=2.0.1",
-  "./vendor/widget-ui.css?v=2.0.1",
-  "./today-cards.css?v=2.0.1",
-  "./hairline.js?v=2.0.1",
-  "./pages-858.css?v=2.0.1",
-  "./long-range.js?v=2.0.1",
-  "./habit-analytics.js?v=2.0.1",
-  "./interaction.js?v=2.0.1",
+  "./today-cards.js?v=2.0.2",
+  "./today-widgets.js?v=2.0.2",
+  "./weather-widget.js?v=2.0.2",
+  "./vendor/widget-ui.js?v=2.0.2",
+  "./vendor/widget-ui.css?v=2.0.2",
+  "./today-cards.css?v=2.0.2",
+  "./v202.css?v=2.0.2",
+  "./hairline.js?v=2.0.2",
+  "./pages-858.css?v=2.0.2",
+  "./long-range.js?v=2.0.2",
+  "./habit-analytics.js?v=2.0.2",
+  "./interaction.js?v=2.0.2",
   "./vendor/sortable.min.js",
-  "./focus-timer.js?v=2.0.1",
-  "./voice-checkin.js?v=2.0.1",
-  "./photo-memories.js?v=2.0.1",
-  "./media-backup.js?v=2.0.1",
-  "./deployment-mode.js?v=2.0.1",
-  "./cloudbase-sync.js?v=2.0.1",
+  "./focus-timer.js?v=2.0.2",
+  "./voice-checkin.js?v=2.0.2",
+  "./photo-memories.js?v=2.0.2",
+  "./media-backup.js?v=2.0.2",
+  "./deployment-mode.js?v=2.0.2",
+  "./cloudbase-sync.js?v=2.0.2",
   "./vendor/cloudbase-sdk.js",
-  "./_init_tcb-env.js?v=2.0.1",
+  "./_init_tcb-env.js?v=2.0.2",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
   "./assets/app-icon-192.png",
@@ -74,7 +75,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/demo-workspace.js", "/demo-persona.js", "/demo-life.js", "/today-cards.js", "/today-cards.css", "/hairline.js", "/today-widgets.js", "/weather-widget.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+  const networkFirst = ["/app.js", "/demo-workspace.js", "/demo-persona.js", "/demo-life.js", "/today-cards.js", "/today-cards.css", "/v202.css", "/hairline.js", "/today-widgets.js", "/weather-widget.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
     .some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(

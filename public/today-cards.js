@@ -2,9 +2,8 @@
 // become cards that can be reordered, resized (only cards with a real second size), hidden,
 // configured (edit mode → click a card) and added from the card library.
 // It only moves existing nodes; app.js keeps rendering their content, so every original
-// interaction and animation stays as it was. Desktop (Tauri) is untouched.
+// interaction and animation stays as it was. The Mac app uses the same cards (mac-app.css adapts the chrome).
 (() => {
-  if (new URLSearchParams(location.search).get("desktop") === "tauri-local") return;
   const view = document.getElementById("todayView");
   if (!view) return;
   const $ = (s, r = document) => r.querySelector(s);
@@ -13,20 +12,20 @@
     zh: { edit: "编辑卡片", done: "完成", add: "添加卡片", reset: "恢复默认", size: "卡片尺寸", hide: "移除卡片", left: "前移", right: "后移", settings: "卡片设置", hint: "拖动排序 · 点卡片设置",
       libTitle: "让日常，按你的方式展开", libKicker: "组件库", libHint: "只添加你需要的。添加后，可以在编辑卡片中调整位置。", libAdd: "添加", libAdded: "已添加", libClose: "完成",
       setHint: "设置自动保存。只有在编辑卡片时才能移动和设置。", fixed: "这张卡片只有一种尺寸。", sS: "小", sM: "中", sL: "大", sW: "长条", sX: "整行",
-      hero: "今日进度", mood: "心情", habits: "今日基础目标", dayplan: "每日日程", tools: "复盘与专注", calendar: "月历", weather: "天气", rhythm: "近期节律", heatmap: "习惯热力图", wall: "照片墙", photos: "照片记忆", focus: "专注", freq: "频率记录",
-      d_hero: "名言、日期和今日完成度。", d_mood: "记录今天整体的心情。", d_habits: "点完成后自动移到最后；大卡一页 6 个，长条一行 4 个，整行一页 8 个。", d_dayplan: "Google 日历当天日程（只读）。", d_tools: "每日复盘、快速记录，可切换到专注。", d_calendar: "这个月每天的心情，点某天可补打卡。",
+      hero: "今日进度", mood: "心情", habits: "今日基础目标", dayplan: "每日日程", tools: "每日复盘", calendar: "月历", weather: "天气", rhythm: "近期节律", heatmap: "习惯热力图", wall: "照片墙", photos: "照片记忆", focus: "专注", freq: "频率记录",
+      d_hero: "名言、日期和今日完成度。", d_mood: "记录今天整体的心情。", d_habits: "点完成后自动移到最后；大卡一页 6 个，长条一行 4 个，整行一页 8 个。", d_dayplan: "Google 日历当天日程（只读）。", d_tools: "写下今天发生了什么；可语音记录，也可展开大窗口。", d_calendar: "这个月每天的心情，点某天可补打卡。",
       d_weather: "当前天气，横轴看各时段，雨雪提醒。", d_rhythm: "最近 7 天的完成情况。", d_heatmap: "本月习惯完成的深浅。", d_wall: "照片铺满卡片；在卡片设置里添加、取景和轮播。", d_photos: "这一天的照片（部署版）。", d_focus: "一键开始专注计时。", d_freq: "每周 / 每月计次的目标：看这个月的记录分布。" },
     en: { edit: "Edit cards", done: "Done", add: "Add card", reset: "Reset", size: "Card size", hide: "Remove card", left: "Move earlier", right: "Move later", settings: "Card settings", hint: "Drag to reorder · click a card for settings",
       libTitle: "Make room for your day", libKicker: "WIDGET LIBRARY", libHint: "Choose what belongs on your desk. Added cards can be moved in Edit cards.", libAdd: "Add", libAdded: "Added", libClose: "Done",
       setHint: "Changes save automatically. Cards only move and change in edit mode.", fixed: "This card has one size.", sS: "Small", sM: "Medium", sL: "Large", sW: "Wide", sX: "Extra large",
-      hero: "Today's progress", mood: "Mood", habits: "Foundations", dayplan: "Daily calendar", tools: "Reflection & focus", calendar: "Month", weather: "Weather", rhythm: "Recent rhythm", heatmap: "Habit heatmap", wall: "Photo wall", photos: "Photo memories", focus: "Focus", freq: "By frequency",
-      d_hero: "Quote, date and today's progress.", d_mood: "How the whole day felt.", d_habits: "Done habits move to the end; large shows 6, wide 4 in a row, extra large 8.", d_dayplan: "Today's Google Calendar (read-only).", d_tools: "Daily reflection and quick record, with a Focus tab.", d_calendar: "This month's moods; open a day to catch up.",
+      hero: "Today's progress", mood: "Mood", habits: "Foundations", dayplan: "Daily calendar", tools: "Daily reflection", calendar: "Month", weather: "Weather", rhythm: "Recent rhythm", heatmap: "Habit heatmap", wall: "Photo wall", photos: "Photo memories", focus: "Focus", freq: "By frequency",
+      d_hero: "Quote, date and today's progress.", d_mood: "How the whole day felt.", d_habits: "Done habits move to the end; large shows 6, wide 4 in a row, extra large 8.", d_dayplan: "Today's Google Calendar (read-only).", d_tools: "What happened today; dictate or open it larger.", d_calendar: "This month's moods; open a day to catch up.",
       d_weather: "Weather now, hourly curve, rain and snow alerts.", d_rhythm: "The last 7 days at a glance.", d_heatmap: "How full each day of the month was.", d_wall: "Your photo fills the card; add, frame and loop in card settings.", d_photos: "This day's photos (deployed version).", d_focus: "Start a focus session in one tap.", d_freq: "Weekly or monthly habits: how this month is spread." },
     de: { edit: "Karten bearbeiten", done: "Fertig", add: "Karte hinzufügen", reset: "Zurücksetzen", size: "Kartengröße", hide: "Karte entfernen", left: "Nach vorn", right: "Nach hinten", settings: "Karteneinstellungen", hint: "Ziehen zum Sortieren · Karte anklicken zum Einstellen",
       libTitle: "Dein Tag. Dein Platz.", libKicker: "WIDGET-BIBLIOTHEK", libHint: "Wähle, was auf deinen Schreibtisch gehört. Karten lassen sich im Bearbeitungsmodus bewegen.", libAdd: "Hinzufügen", libAdded: "Hinzugefügt", libClose: "Fertig",
       setHint: "Wird automatisch gespeichert. Karten lassen sich nur im Bearbeitungsmodus ändern.", fixed: "Diese Karte hat eine Größe.", sS: "Klein", sM: "Mittel", sL: "Groß", sW: "Breit", sX: "Extragroß",
-      hero: "Heutiger Fortschritt", mood: "Stimmung", habits: "Grundlagen", dayplan: "Tageskalender", tools: "Reflexion & Fokus", calendar: "Monat", weather: "Wetter", rhythm: "Letzte Tage", heatmap: "Gewohnheits-Heatmap", wall: "Fotowand", photos: "Fotoerinnerungen", focus: "Fokus", freq: "Nach Häufigkeit",
-      d_hero: "Zitat, Datum und heutiger Fortschritt.", d_mood: "Wie sich der ganze Tag angefühlt hat.", d_habits: "Erledigte rücken ans Ende; groß zeigt 6, breit 4 in einer Reihe, extragroß 8.", d_dayplan: "Google-Kalender des Tages (nur lesen).", d_tools: "Tagesreflexion und Schnellnotiz, mit Fokus-Tab.", d_calendar: "Stimmungen des Monats; Tag öffnen zum Nachtragen.",
+      hero: "Heutiger Fortschritt", mood: "Stimmung", habits: "Grundlagen", dayplan: "Tageskalender", tools: "Tagesreflexion", calendar: "Monat", weather: "Wetter", rhythm: "Letzte Tage", heatmap: "Gewohnheits-Heatmap", wall: "Fotowand", photos: "Fotoerinnerungen", focus: "Fokus", freq: "Nach Häufigkeit",
+      d_hero: "Zitat, Datum und heutiger Fortschritt.", d_mood: "Wie sich der ganze Tag angefühlt hat.", d_habits: "Erledigte rücken ans Ende; groß zeigt 6, breit 4 in einer Reihe, extragroß 8.", d_dayplan: "Google-Kalender des Tages (nur lesen).", d_tools: "Was heute geschah; diktieren oder groß öffnen.", d_calendar: "Stimmungen des Monats; Tag öffnen zum Nachtragen.",
       d_weather: "Wetter jetzt, Stundenkurve, Regen- und Schneehinweis.", d_rhythm: "Die letzten 7 Tage auf einen Blick.", d_heatmap: "Wie voll jeder Tag im Monat war.", d_wall: "Dein Foto füllt die Karte; Hinzufügen, Ausschnitt und Wechsel in den Einstellungen.", d_photos: "Fotos dieses Tages (Server-Version).", d_focus: "Fokus mit einem Tipp starten.", d_freq: "Wöchentliche oder monatliche Ziele: Verteilung im Monat." },
   };
   const tr0 = k => (T[document.documentElement.lang?.slice(0, 2)] || T.zh)[k] ?? T.zh[k] ?? k;
@@ -48,7 +47,7 @@
     { id: "habits", el: box("habits", $(".habits-heading", view), $("#todayHabitCarousel")), sizes: ["L", "W", "X"] },
     { id: "calendar", el: wrap($(".calendar-embedded", view), "calendar"), sizes: ["L", "X"] },
     { id: "dayplan", el: wrap(planGrid, "dayplan"), sizes: ["L"] },
-    { id: "tools", el: box("tools", tools), sizes: ["L"] },
+    { id: "tools", el: box("tools", tools), sizes: ["L", "M", "X"] },
     ...(window.LifeLedgerExtraCards || []).map(c => ({ ...c, el: wrap(c.el, c.id) })),
   ];
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));

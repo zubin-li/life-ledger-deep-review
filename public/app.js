@@ -11,13 +11,31 @@ const REMINDER_KEY = "life-ledger-reminder";
 const RESTORE_SAFETY_KEY = "life-ledger-restore-safety-v1";
 const LOCAL_EDITION_KEY = "life-ledger-local-edition", LOCAL_EDITION = "2026-10-sample-v6";
 const LOCAL_BACKUP_KEY = "life-ledger-earlier-records"; // records found before the sample was shown, restorable in Settings
-const KEEP_ON_CLEAR = new Set([THEME_KEY, "life-ledger-font", LANGUAGE_KEY, LANGUAGE_PREFERENCE_KEY, SIDEBAR_KEY, LOCAL_EDITION_KEY, LOCAL_BACKUP_KEY]);
+const KEEP_ON_CLEAR = new Set(["life-ledger-device-profile", THEME_KEY, "life-ledger-font", LANGUAGE_KEY, LANGUAGE_PREFERENCE_KEY, SIDEBAR_KEY, LOCAL_EDITION_KEY, LOCAL_BACKUP_KEY]);
 // Removes every local record (logs, goals, photos, widget state, sample flags); keeps appearance + language.
 function wipeLocalRecords() {
   Object.keys(localStorage).filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key)).forEach(key => localStorage.removeItem(key));
   // The photo walls are the only IndexedDB stores. Runs at boot, before the walls open them, so the
   // delete is never blocked by an open connection (a blocked delete would stall every later one).
   ["", "-2", "-3"].forEach(suffix => indexedDB.deleteDatabase(`life-ledger-wall${suffix}`));
+}
+// Mac app: the sample only ever replaces localStorage records; the user's own photo walls (IndexedDB) stay.
+function removeLocalKeys() {
+  Object.keys(localStorage).filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key)).forEach(key => localStorage.removeItem(key));
+}
+function removeDemoWallPhotos() {
+  const ns = window.LifeLedgerStorageSuffix || "";
+  return Promise.all(["", "-2", "-3"].map(suffix => new Promise(done => {
+    const request = indexedDB.open(`life-ledger-wall${suffix}${ns}`, 1);
+    request.onupgradeneeded = () => request.result.createObjectStore("photos", { keyPath: "id" });
+    request.onerror = () => done();
+    request.onsuccess = () => {
+      const db = request.result, tx = db.transaction("photos", "readwrite"), store = tx.objectStore("photos");
+      const keys = store.getAllKeys();
+      keys.onsuccess = () => keys.result.filter(key => String(key).startsWith("demo-")).forEach(key => store.delete(key));
+      tx.oncomplete = tx.onerror = tx.onabort = () => { db.close(); done(); };
+    };
+  })));
 }
 const FOCUS_ACTIVE_KEY = "life-ledger-focus-active";
 const BACKUP_FORMAT = "life-ledger-backup";
@@ -2092,6 +2110,10 @@ const searchParams = new URLSearchParams(location.search);
 const requestedMode = searchParams.get("mode");
 const desktopMode = searchParams.get("desktop");
 const desktopBridge = desktopMode === "tauri-local" ? window.LifeLedgerDesktopBridge : null;
+// Confirmation / notice: the Mac app injects native sheets (window.appConfirm/appAlert) before this script runs;
+// the browser keeps its own dialogs.
+window.appConfirm ||= message => Promise.resolve(window.confirm(message));
+window.appAlert ||= message => Promise.resolve(window.alert(message));
 const desktopNativeBackup = Boolean(desktopBridge?.saveBackupJson && desktopBridge?.openBackupJson);
 const deploymentMode = requestedMode === "local" || requestedMode === "cloudflare"
   ? requestedMode
@@ -2180,8 +2202,20 @@ function setText(selector, value) { const el = $(selector); if (el) el.textConte
 function setPlaceholder(selector, value) { const el = $(selector); if (el) el.placeholder = value; }
 function setAria(selector, value) { const el = $(selector); if (el) el.setAttribute("aria-label", value); }
 function languageText(zh, en, de) { return currentLang === "zh" ? zh : currentLang === "de" ? de : en; }
+// "慎终如始，则无败事。——《道德经》" → { text, source }; the source part is optional.
+function parseCustomQuotes(raw) {
+  return String(raw || "").split(/\n+/).map(line => line.trim()).filter(Boolean).slice(0, 100).map(line => {
+    const m = /^(.*?)\s*(?:——|—|--)\s*(.+)$/.exec(line);
+    return m && m[1] ? { text: m[1].trim().slice(0, 300), source: m[2].trim().slice(0, 120) } : { text: line.slice(0, 300), source: "" };
+  });
+}
+function customQuotes() {
+  const q = state?.quoteSettings;
+  return q?.mode === "custom" && Array.isArray(q.items) ? q.items.filter(item => item && String(item.text || "").trim()) : [];
+}
 function quoteFor(slot = 0) {
-  const library = dailyQuoteLibrary[currentLang] || dailyQuoteLibrary.en;
+  const custom = customQuotes();
+  const library = custom.length ? custom : dailyQuoteLibrary[currentLang] || dailyQuoteLibrary.en;
   const now = new Date();
   const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
   return library[(dayNumber + slot) % library.length];
@@ -2222,8 +2256,9 @@ function applyLanguage() {
   setText(".sidebar-note p", "");
   const note = $(".sidebar-note p");
   const sidebarQuote = quoteFor(1);
-  if (note) note.innerHTML = `${escapeHtml(sidebarQuote.text)}<small>${escapeHtml(sidebarQuote.source)}</small>`;
-  setText(".profile strong", demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName"));
+  if (note) note.innerHTML = `${escapeHtml(sidebarQuote.text)}${sidebarQuote.source ? `<small>${escapeHtml(sidebarQuote.source)}</small>` : ""}`;
+  setText(".profile strong", getDeviceProfile().name || (demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName")));
+  renderDeviceProfile();
   $("#exportButton")?.setAttribute("title", tr("exportTitle"));
   $("#exportButton")?.setAttribute("aria-label", tr("exportTitle"));
   setAria("#cloudAccountButton", tr("cloudbase.account"));
@@ -2653,8 +2688,10 @@ function maybeApplyDemoWorkspace() {
     history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
     state = loadState();
   }
-  // The Mac app (?desktop=tauri-local) is the user's real local ledger: never seed demo data there.
-  const eligible = desktopMode !== "tauri-local" && api.isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured });
+  // The Mac app (?desktop=tauri-local) opens exactly like the local web edition (user 10/27): the three-month
+  // sample is there on first launch; anything recorded before moves into the restorable backup, never deleted.
+  const macLocal = desktopMode === "tauri-local";
+  const eligible = macLocal || api.isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured });
   // One-time reset of the local web edition (user 10/22): drop every older local record so the
   // three-month sample shows; afterwards "清除本机数据" in Settings lets anyone start blank.
   if (eligible && localStorage.getItem(LOCAL_EDITION_KEY) === "wipe") {
@@ -2710,11 +2747,11 @@ function renderDemoNotice() {
   }
 }
 
-function clearDemoWorkspace() {
+async function clearDemoWorkspace() {
   const api = demoWorkspaceApi();
   if (!api?.isDemoActive(state)) return;
   const copy = api.demoNoticeCopy(currentLang);
-  if (!window.confirm(copy.confirm)) return;
+  if (!(await appConfirm(copy.confirm))) return;
   state = api.buildClearedWorkspace({
     seedHabits: cloneData(seed.habits),
     starterPackVersion: STARTER_PACK_VERSION,
@@ -2727,11 +2764,11 @@ function clearDemoWorkspace() {
   showToast(copy.cleared);
 }
 
-function resetPreviewDemoWorkspace() {
+async function resetPreviewDemoWorkspace() {
   const api = demoWorkspaceApi();
   if (!api || previewName !== api.DEMO_PREVIEW_ID) return;
   const copy = api.demoNoticeCopy(currentLang);
-  if (!window.confirm(copy.confirm)) return;
+  if (!(await appConfirm(copy.confirm))) return;
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(demoDismissedStorageKey());
   state = loadState();
@@ -3218,7 +3255,7 @@ async function refreshGoogleCalendar() {
 }
 
 async function disconnectGoogleCalendar(connectionId) {
-  if (!window.confirm(tr("calendarSync.disconnectConfirm"))) return;
+  if (!(await appConfirm(tr("calendarSync.disconnectConfirm")))) return;
   try {
     const payload = await calendarApi(`disconnect?connectionId=${encodeURIComponent(connectionId)}`, { method: "DELETE" });
     resetCalendarEventCache();
@@ -3323,6 +3360,7 @@ function renderAll() {
   if (document.body.dataset.activeView === "longrange") renderLongRange();
   if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
   decorateMotionSurfaces();
+  window.dispatchEvent(new Event("life-ledger-rendered"));
 }
 
 // Today's card motion (pointer glow, hover lift / tilt) on every page (user 10/21).
@@ -3693,7 +3731,6 @@ function renderToday() {
   const scoredHabits = dailyHabits(date);
   const complete = log.completed.filter(id => scoredHabits.some(h => h.id === id)).length;
   const progress = scoredHabits.length ? Math.round(complete / scoredHabits.length * 100) : 0;
-  renderMoodWeek(date);
   $("#todayDateChip").textContent = formatDateChip(selected);
   // Future day (user 10/22: "什么都点不了"): say why, and point to what can be done — goals and schedule.
   $("#heroProgressText").textContent = future
@@ -3849,8 +3886,8 @@ function isFutureDate(date) {
   return date > isoDate(new Date());
 }
 
-function updateDailyToolControls(page) {
-  dailyToolPage = page === "focus" ? "focus" : "journal";
+function updateDailyToolControls() {
+  dailyToolPage = "journal";
   const card = $(".daily-tool-card");
   if (card) card.dataset.toolPage = dailyToolPage;
   $$('[data-daily-tool]').forEach(button => {
@@ -3872,7 +3909,7 @@ function updateDailyToolControls(page) {
 }
 
 function setDailyToolPage(page, options = {}) {
-  const nextPage = page === "focus" ? "focus" : "journal";
+  const nextPage = "journal";
   updateDailyToolControls(nextPage);
   const viewport = $("#dailyToolViewport");
   if (!viewport) return;
@@ -4920,9 +4957,9 @@ function saveHabitFromForm(event) {
   }
   saveState(); closeHabitDialog(); renderAll(); showToast(isEditing ? tr("habits.updated") : tr("habits.added"));
 }
-function deleteHabit() {
+async function deleteHabit() {
   const habit = state.habits.find(h => h.id === editingHabitId);
-  if (!habit || !window.confirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) }))) return;
+  if (!habit || !(await appConfirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) })))) return;
   state.habits = state.habits.filter(h => h.id !== habit.id);
   Object.values(state.logs).forEach(log => {
     if (Array.isArray(log.completed)) log.completed = log.completed.filter(id => id !== habit.id);
@@ -5078,9 +5115,9 @@ function openReviewCanvas(scope = "week") {
   $("#reviewCanvasDialog").showModal();
 }
 
-function regenerateReviewCanvas() {
+async function regenerateReviewCanvas() {
   const current = $("#reviewCanvasText").value.trim();
-  if (current && !window.confirm(tr("reviewCanvas.replaceConfirm"))) return;
+  if (current && !(await appConfirm(tr("reviewCanvas.replaceConfirm")))) return;
   const text = buildLocalReviewDraft(reviewEvidence(reviewCanvasScope, reviewCanvasKey));
   reviewCanvasStore()[reviewCanvasKey] = text;
   $("#reviewCanvasText").value = text;
@@ -5107,7 +5144,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), quoteSettings: cloneData(state.quoteSettings || { mode: "auto", items: [] }), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -5234,7 +5271,7 @@ async function downloadExport(event) {
     }
   } catch (error) {
     console.warn("Backup export failed", error);
-    window.alert(error?.message === "photo-backup-month-only" ? tr("backup.mediaOnlyMonth") : tr("backup.mediaInvalid"));
+    void appAlert(error?.message === "photo-backup-month-only" ? tr("backup.mediaOnlyMonth") : tr("backup.mediaInvalid"));
   } finally {
     confirmButton.disabled = false;
     confirmButton.textContent = originalLabel;
@@ -5359,7 +5396,7 @@ async function restorePendingImport() {
   if (!pendingImport) return;
   const isComplete = pendingImport.scope === "all";
   const warning = `${tr(isComplete ? "backup.confirmFull" : "backup.confirmPartial")}${cloudMode ? `\n\n${tr("backup.cloudWarning")}` : ""}`;
-  if (!window.confirm(warning)) return;
+  if (!(await appConfirm(warning))) return;
   const media = pendingMediaImport;
   const restoreButton = $("#restoreImport");
   const originalLabel = restoreButton.textContent;
@@ -5380,7 +5417,7 @@ async function restorePendingImport() {
       for (const entry of media.entries) await photoMemories.restorePhoto(entry.photo, entry.blob);
     } catch (error) {
       console.warn("Photo restore failed", error);
-      window.alert(tr("backup.mediaInvalid"));
+      void appAlert(tr("backup.mediaInvalid"));
     }
   }
   selectedAnalyticsHabitIds = [];
@@ -6036,8 +6073,8 @@ function bindEvents() {
     focusTimer?.endFocus("finishedEarly");
     $("#focusDialog").close();
   });
-  $("#focusInterrupt").addEventListener("click", () => {
-    if (!window.confirm(tr("focus.confirmEnd"))) return;
+  $("#focusInterrupt").addEventListener("click", async () => {
+    if (!(await appConfirm(tr("focus.confirmEnd")))) return;
     focusTimer?.endFocus("interrupted");
     $("#focusDialog").close();
   });
@@ -7517,9 +7554,9 @@ function announceSubmit(message) {
   });
 }
 
-function deleteHabitFromInspector() {
+async function deleteHabitFromInspector() {
   const habit = state.habits.find(item => item.id === selectedHabitSettingsId);
-  if (!habit || !window.confirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) }))) return;
+  if (!habit || !(await appConfirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) })))) return;
   const removed = cloneData(habit);
   const index = state.habits.findIndex(item => item.id === habit.id);
   state.habits = state.habits.filter(item => item.id !== habit.id);
@@ -7751,6 +7788,10 @@ function bootApplication() {
   initFocusTimer();
   bindEvents();
   initVoiceReflection();
+  initJournalTools();
+  initDeviceProfile();
+  initQuoteSettings();
+  initNavOrderSettings();
   initPhotoMemories();
   bindPointerMotion();
   renderAll();
@@ -7796,7 +7837,7 @@ async function initializeCloudSync() {
     }
   }
 }
-if ("serviceWorker" in navigator && location.protocol !== "file:") {
+if ("serviceWorker" in navigator && location.protocol !== "file:" && !window.__TAURI__) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
       .then(registration => registration.update())
@@ -7804,17 +7845,219 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
   });
 }
 
+// Sidebar profile (restored 10/27; first shipped in 858ede8, lost in the 10/18 revert): a display name and photo for
+// this device only — never the sign-in account and never synced records. Photo is cropped to a 192px square JPEG.
+// (function declarations + var: this block sits below the boot call, and applyLanguage reads the profile at boot)
+var PROFILE_KEY = "life-ledger-device-profile", deviceProfileCache = null, profileUpload = 0;
+function validAvatar(value) { return typeof value === "string" && value.length <= 150000 && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(value); }
+function readDeviceProfile(raw) { try { const p = JSON.parse(raw) || {}; return { name: String(p.name || "").trim().slice(0, 60), avatar: validAvatar(p.avatar) ? p.avatar : "" }; } catch { return { name: "", avatar: "" }; } }
+function getDeviceProfile() { if (!deviceProfileCache) deviceProfileCache = readDeviceProfile(localStorage.getItem("life-ledger-device-profile")); return deviceProfileCache; }
+function renderDeviceProfile() {
+  const deviceProfile = getDeviceProfile();
+  const fallback = demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName");
+  const name = deviceProfile.name || fallback;
+  const fill = node => {
+    if (!node) return;
+    node.replaceChildren();
+    if (deviceProfile.avatar) { const img = new Image(); img.src = deviceProfile.avatar; img.alt = ""; node.append(img); node.classList.add("has-photo"); }
+    else if (deviceProfile.name) { node.textContent = Array.from(deviceProfile.name)[0].toLocaleUpperCase(); node.classList.remove("has-photo"); }
+    else { node.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 4.5h11a2 2 0 0 1 2 2v13H8a2 2 0 0 1-2-2v-13Z"/><path d="M8 4.5v15M11 9h5m-5 4h5"/></svg>'; node.classList.remove("has-photo"); }
+  };
+  fill($("#sidebarAvatar")); fill($("#profileDialogAvatar"));
+  const edit = languageText("编辑名称和头像", "Edit name and photo", "Name und Bild bearbeiten");
+  $("#profileEditButton")?.setAttribute("aria-label", `${name} · ${edit}`);
+  $("#profileEditButton")?.setAttribute("title", edit);
+  setText("#profileDialogTitle", languageText("你的空间", "Your space", "Dein Bereich"));
+  setText("#profileChoosePhoto", languageText(deviceProfile.avatar ? "更换头像" : "选择头像", deviceProfile.avatar ? "Change photo" : "Choose photo", deviceProfile.avatar ? "Bild ändern" : "Bild auswählen"));
+  setText("#profileRemovePhoto", languageText("移除", "Remove", "Entfernen"));
+  setText("#profileNameLabel", languageText("显示名称", "Display name", "Anzeigename"));
+  setText("#profileDeviceNote", languageText("名称和头像只保存在这台设备上，不会改动登录账户或同步的记录。PNG、JPEG 或 WebP，最大 5 MB。", "Name and photo stay on this device; they do not change your sign-in or synced records. PNG, JPEG or WebP, up to 5 MB.", "Name und Bild bleiben auf diesem Gerät; Anmeldung und synchronisierte Einträge bleiben unverändert. PNG, JPEG oder WebP, bis 5 MB."));
+  const input = $("#profileDisplayName");
+  if (input) { input.placeholder = fallback; if (document.activeElement !== input) input.value = deviceProfile.name; }
+  if ($("#profileRemovePhoto")) $("#profileRemovePhoto").hidden = !deviceProfile.avatar;
+}
+function saveDeviceProfile(next) {
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(next)); }
+  catch { setText("#profileFeedback", languageText("无法保存，请检查设备存储空间。", "Could not save. Check device storage.", "Speichern fehlgeschlagen. Gerätespeicher prüfen.")); return; }
+  deviceProfileCache = next;
+  setText(".profile strong", next.name || (demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName")));
+  renderDeviceProfile();
+}
+async function chooseProfilePhoto(file) {
+  const current = ++profileUpload;
+  setText("#profileFeedback", "");
+  if (!file) return;
+  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024) {
+    setText("#profileFeedback", languageText("请选择不超过 5 MB 的 PNG、JPEG 或 WebP 图片。", "Choose a PNG, JPEG or WebP image up to 5 MB.", "Bitte PNG, JPEG oder WebP bis 5 MB auswählen.")); return;
+  }
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image(); img.src = url; await img.decode();
+    if (current !== profileUpload) return;
+    if (img.naturalWidth * img.naturalHeight > 25000000) throw new Error("image too large");
+    const canvas = document.createElement("canvas"); canvas.width = canvas.height = 192;
+    const ctx = canvas.getContext("2d"), side = Math.min(img.naturalWidth, img.naturalHeight);
+    ctx.fillStyle = "#e4edf4"; ctx.fillRect(0, 0, 192, 192);
+    ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 192, 192);
+    const avatar = canvas.toDataURL("image/jpeg", 0.85);
+    if (!validAvatar(avatar)) throw new Error("invalid image");
+    saveDeviceProfile({ ...getDeviceProfile(), avatar });
+  } catch {
+    if (current === profileUpload) setText("#profileFeedback", languageText("图片无法读取，原头像已保留。请换一张较小的图片。", "Could not read this image. Your previous photo is unchanged. Try a smaller image.", "Bild nicht lesbar. Das bisherige Bild bleibt. Bitte ein kleineres Bild wählen."));
+  } finally { URL.revokeObjectURL(url); $("#profilePhotoFile").value = ""; }
+}
+function initDeviceProfile() {
+  const dialog = $("#profileDialog");
+  if (!dialog) return;
+  $("#profileEditButton").addEventListener("click", () => { renderDeviceProfile(); setText("#profileFeedback", ""); dialog.showModal(); });
+  $("#profileDisplayName").addEventListener("input", event => saveDeviceProfile({ ...getDeviceProfile(), name: event.target.value.trim().slice(0, 60) }));
+  $("#profileChoosePhoto").addEventListener("click", () => $("#profilePhotoFile").click());
+  $("#profilePhotoFile").addEventListener("change", event => void chooseProfilePhoto(event.target.files[0]));
+  $("#profileRemovePhoto").addEventListener("click", () => { ++profileUpload; saveDeviceProfile({ ...getDeviceProfile(), avatar: "" }); $("#profileChoosePhoto").focus(); });
+  dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+  window.addEventListener("storage", event => { if (event.key === PROFILE_KEY) { deviceProfileCache = readDeviceProfile(event.newValue); renderDeviceProfile(); } });
+  renderDeviceProfile();
+}
+
+// Settings → quotes (user 10/27): automatic library, or your own list (one = always, several = daily rotation).
+function initQuoteSettings() {
+  const mode = $("#quoteModeSelect"), box = $("#settingsQuotes"), text = $("#customQuotesText");
+  if (!mode || !text) return;
+  const sync = () => {
+    const q = state.quoteSettings || { mode: "auto", items: [] };
+    mode.value = q.mode === "custom" ? "custom" : "auto";
+    box.hidden = mode.value !== "custom";
+    if (document.activeElement !== text) text.value = (q.items || []).map(item => item.source ? `${item.text}——${item.source}` : item.text).join("\n");
+  };
+  const store = () => {
+    state.quoteSettings = { mode: mode.value === "custom" ? "custom" : "auto", items: parseCustomQuotes(text.value) };
+    box.hidden = mode.value !== "custom";
+    saveState();
+    applyLanguage();
+  };
+  mode.addEventListener("change", () => { store(); if (mode.value === "custom") text.focus(); });
+  let timer = 0;
+  text.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(store, 250); });
+  text.addEventListener("blur", () => { clearTimeout(timer); store(); });
+  $("#settingsButton").addEventListener("click", sync);
+}
+
+// Settings → page order (user 10/27): Today, Week, Horizon, Timeline, Review in any order; Habits stays last.
+const NAV_ORDER_KEY = "life-ledger-nav-order";
+const NAV_PAGES = ["today", "week", "longrange", "timeline", "review"];
+function navOrder() {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY) || "[]"); } catch {}
+  const order = (Array.isArray(saved) ? saved : []).filter(id => NAV_PAGES.includes(id));
+  return [...new Set([...order, ...NAV_PAGES])];
+}
+function applyNavOrder() {
+  const nav = $(".main-nav");
+  if (!nav) return;
+  const habits = nav.querySelector('[data-view="habits"]');
+  navOrder().forEach(id => { const item = nav.querySelector(`.nav-item[data-view="${id}"]`); if (item) nav.insertBefore(item, habits); });
+}
+function renderNavOrderSettings() {
+  const list = $("#navOrderList");
+  if (!list) return;
+  const order = navOrder(), up = languageText("上移", "Move up", "Nach oben"), down = languageText("下移", "Move down", "Nach unten");
+  list.innerHTML = order.map((id, i) => `<li data-id="${id}"><span>${escapeHtml(tr(`nav.${id}`))}</span>
+    <button type="button" class="icon-button" data-move="-1" aria-label="${escapeHtml(up)} · ${escapeHtml(tr(`nav.${id}`))}" ${i === 0 ? "disabled" : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+    <button type="button" class="icon-button" data-move="1" aria-label="${escapeHtml(down)} · ${escapeHtml(tr(`nav.${id}`))}" ${i === order.length - 1 ? "disabled" : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></li>`).join("");
+}
+function initNavOrderSettings() {
+  applyNavOrder();
+  const list = $("#navOrderList");
+  if (!list) return;
+  list.addEventListener("click", event => {
+    const button = event.target.closest("[data-move]");
+    if (!button) return;
+    const order = navOrder(), id = button.closest("li").dataset.id, from = order.indexOf(id), to = from + Number(button.dataset.move);
+    if (to < 0 || to >= order.length) return;
+    order.splice(to, 0, order.splice(from, 1)[0]);
+    try { localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order)); } catch {}
+    applyNavOrder();
+    renderNavOrderSettings();
+    list.querySelector(`li[data-id="${id}"] [data-move="${button.dataset.move}"]:not(:disabled)`)?.focus();
+  });
+  $("#settingsButton").addEventListener("click", renderNavOrderSettings);
+}
+
+// Daily review (user 10/27): dictation in every edition, and a larger pop-out to read and write the whole entry.
+function dictateInto(field, button) {
+  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!field || field.disabled) return;
+  if (voiceReflection) { voiceReflection.setContext({ date: isoDate(new Date()), isToday: true, disabled: false }); voiceReflection.open(); voiceTarget = text => appendToField(field, text); return; }
+  if (!Speech) { showToast(languageText("这个浏览器不支持语音输入，可用 Safari 或 Chrome", "This browser has no dictation — try Safari or Chrome", "Dieser Browser kann nicht diktieren — Safari oder Chrome versuchen")); return; }
+  if (button.recognition) { button.recognition.stop(); return; }
+  const recognition = new Speech();
+  recognition.lang = { zh: "zh-CN", de: "de-DE" }[currentLang] || "en-US";
+  recognition.interimResults = false;
+  recognition.continuous = true;
+  recognition.onresult = event => { const text = [...event.results].slice(event.resultIndex).filter(r => r.isFinal).map(r => r[0].transcript).join(""); if (text.trim()) appendToField(field, text); };
+  recognition.onerror = event => { if (event.error !== "aborted") showToast(languageText("没有听清，请再试一次", "Didn't catch that — try again", "Nicht verstanden — bitte noch einmal")); };
+  recognition.onend = () => { button.recognition = null; button.classList.remove("is-listening"); };
+  button.recognition = recognition;
+  recognition.start();
+  button.classList.add("is-listening");
+}
+function initJournalTools() {
+  const note = $("#homeDayNote"), dialog = $("#journalPopout"), big = $("#journalPopoutText");
+  const dictate = $("#journalDictate");
+  if (!note || !dialog) return;
+  const label = () => {
+    const d = languageText("语音记录", "Dictate", "Diktieren"), o = languageText("展开查看全文", "Open larger", "Größer öffnen");
+    [dictate, $("#journalPopoutDictate")].forEach(b => { b?.setAttribute("aria-label", d); b?.setAttribute("title", d); });
+    $("#journalPopoutButton")?.setAttribute("aria-label", o); $("#journalPopoutButton")?.setAttribute("title", o);
+    setText("#journalPopoutTitle", tr("journal.title"));
+    setText("#journalPopoutKicker", languageText("每日复盘", "JOURNAL", "TAGEBUCH"));
+    setText("#journalPopoutDone", languageText("完成", "Done", "Fertig"));
+  };
+  label();
+  // the hosted voice button (transcribe + refine) stays; the plain mic covers local and offline use
+  if (!$("#voiceReflectionButton")?.hidden) dictate.hidden = true;
+  dictate.addEventListener("click", () => dictateInto(note, dictate));
+  $("#journalPopoutDictate").addEventListener("click", event => dictateInto(big, event.currentTarget));
+  $("#journalPopoutButton").addEventListener("click", () => {
+    label();
+    big.value = note.value; big.disabled = note.disabled; big.placeholder = note.placeholder;
+    setText("#journalPopoutDate", formatDateChip(parseDate(selectedPlanningDate)));
+    dialog.showModal();
+    if (!big.disabled) { big.focus(); big.setSelectionRange(big.value.length, big.value.length); }
+  });
+  const overflow = () => {
+    const over = note.scrollHeight > note.clientHeight + 2;
+    note.classList.toggle("is-overflowing", over);
+    $("#journalPopoutButton").classList.toggle("is-hinting", over);
+  };
+  note.addEventListener("input", overflow);
+  note.addEventListener("blur", () => { note.scrollTop = 0; overflow(); });
+  new ResizeObserver(overflow).observe(note);
+  window.addEventListener("life-ledger-rendered", overflow);
+  big.addEventListener("input", () => { note.value = big.value; note.dispatchEvent(new Event("input", { bubbles: true })); });
+  dialog.addEventListener("close", () => { $("#journalPopoutDictate").recognition?.stop(); renderHomeJournal(); });
+  dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+}
+
 // Settings (user 10/22): appearance + font live here instead of the top bar; local data can be wiped to start fresh.
 function initSettingsDialog() {
   const dialog = $("#settingsDialog");
   if (!dialog) return;
   const localOnly = !hostedCloudMode && desktopMode !== "tauri-local";
+  const macLocal = desktopMode === "tauri-local";
   const label = () => {
     setText("#settingsTitle", languageText("设置", "Settings", "Einstellungen"));
     setText("#settingsAppearanceTitle", languageText("外观", "Appearance", "Darstellung"));
     setText("#settingsThemeLabel", languageText("颜色模式", "Colour mode", "Farbmodus"));
     setText("#settingsFontLabel", languageText("字体", "Font", "Schrift"));
     setText("#settingsDataTitle", languageText("数据", "Data", "Daten"));
+    setText("#settingsQuotesTitle", languageText("名言", "Quotes", "Zitate"));
+    setText("#settingsQuoteModeLabel", languageText("名言来源", "Quote source", "Zitatquelle"));
+    const qm = $("#quoteModeSelect");
+    if (qm) { qm.options[0].text = languageText("自动", "Automatic", "Automatisch"); qm.options[1].text = languageText("自定义", "My own", "Eigene"); }
+    $("#customQuotesText")?.setAttribute("placeholder", languageText("每行一条。出处写在 —— 后面，例如：\n慎终如始，则无败事。——《道德经》", "One per line. Put the source after —, e.g.\nWell begun is half done. — Aristotle", "Eins pro Zeile. Quelle nach —, z. B.\nAller Anfang ist schwer. — Sprichwort"));
+    setText("#customQuotesHelp", languageText("写一条就一直显示它；写几条就每天轮换。", "One quote stays put; several rotate day by day.", "Ein Zitat bleibt stehen; mehrere wechseln täglich."));
+    setText("#settingsNavTitle", languageText("页面顺序", "Page order", "Seitenreihenfolge"));
     setText("#settingsBackupLabel", languageText("导入与导出", "Import & export", "Import & Export"));
     setText("#settingsBackupHelp", languageText("备份到文件，或从备份恢复", "Back up to a file or restore one", "In Datei sichern oder wiederherstellen"));
     setText("#settingsLoadDemoLabel", languageText("载入示例数据", "Load sample data", "Beispieldaten laden"));
@@ -7830,31 +8073,36 @@ function initSettingsDialog() {
     label();
     $("#settingsClearLocal").hidden = !localOnly;
     $("#settingsRestoreLocal").hidden = !localOnly || !localStorage.getItem(LOCAL_BACKUP_KEY);
-    $("#settingsLoadDemo").hidden = !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
+    $("#settingsLoadDemo").hidden = macLocal
+      ? Boolean(demoWorkspaceApi()?.isDemoActive(state)) || Boolean(demoWorkspaceApi()?.hasMeaningfulUserData(state))
+      : !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
+    $("#settingsRestoreLocal").hidden = !(localOnly || macLocal) || !localStorage.getItem(LOCAL_BACKUP_KEY);
+    $("#settingsClearLocal").hidden = !(localOnly || macLocal);
     dialog.showModal();
   });
   $("#settingsBackup").addEventListener("click", () => { dialog.close(); openBackupDialog(); });
   $("#settingsLoadDemo").addEventListener("click", () => {
+    if (macLocal) { loadMacSample(); return; }
     localStorage.removeItem(demoDismissedStorageKey());
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   });
-  $("#settingsRestoreLocal").addEventListener("click", () => {
+  $("#settingsRestoreLocal").addEventListener("click", async () => {
     let backup;
     try { backup = JSON.parse(localStorage.getItem(LOCAL_BACKUP_KEY) || "null"); } catch { backup = null; }
     if (!backup?.keys) return;
-    if (!window.confirm(languageText("用之前的记录替换当前的示例数据？", "Replace the sample data with your earlier records?", "Beispieldaten durch deine früheren Einträge ersetzen?"))) return;
-    wipeLocalRecords();
+    if (!(await appConfirm(languageText("用之前的记录替换当前的示例数据？", "Replace the sample data with your earlier records?", "Beispieldaten durch deine früheren Einträge ersetzen?")))) return;
+    if (macLocal) { removeLocalKeys(); await removeDemoWallPhotos(); } else wipeLocalRecords();
     Object.entries(backup.keys).forEach(([key, value]) => localStorage.setItem(key, value));
     localStorage.setItem(demoDismissedStorageKey(), "1"); // never re-seed over restored records
     localStorage.removeItem(LOCAL_BACKUP_KEY);
     location.reload();
   });
   $("#settingsClearLocal").addEventListener("click", async () => {
-    if (!window.confirm(languageText(
+    if (!(await appConfirm(languageText(
       "确定清除这台设备上的全部记录？此操作不能撤销。需要的话先用「导入与导出」备份。",
       "Clear every record on this device? This cannot be undone. Export a backup first if you need one.",
-      "Alle Einträge auf diesem Gerät löschen? Das lässt sich nicht rückgängig machen. Bei Bedarf vorher sichern."))) return;
+      "Alle Einträge auf diesem Gerät löschen? Das lässt sich nicht rückgängig machen. Bei Bedarf vorher sichern.")))) return;
     Object.keys(localStorage).filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key)).forEach(key => localStorage.removeItem(key));
     localStorage.setItem(demoDismissedStorageKey(), "1"); // start blank: never re-seed the sample
     localStorage.setItem(LOCAL_EDITION_KEY, "wipe");      // photos are removed on the next boot, see maybeApplyDemoWorkspace
@@ -7862,17 +8110,22 @@ function initSettingsDialog() {
   });
 }
 
-// Mood card: the last seven days of mood under today's choice (user 10/22: the card had no design, quote removed).
-function renderMoodWeek(date) {
-  const host = $("#moodWeek");
-  if (!host) return;
-  const end = parseDate(date), days = [];
-  for (let off = 6; off >= 0; off--) { const d = new Date(end); d.setDate(end.getDate() - off); days.push(d); }
-  host.setAttribute("aria-label", languageText("最近 7 天心情", "Mood, last 7 days", "Stimmung, letzte 7 Tage"));
-  host.innerHTML = days.map(d => {
-    const key = isoDate(d), mood = isFutureDate(key) ? "" : getLog(key).mood || "";
-    const cls = { "很好": "mood-good", "平静": "mood-calm", "低落": "mood-low" }[mood] || "";
-    return `<li class="${key === date ? "is-today" : ""}"><button type="button" data-date="${key}" title="${escapeHtml(formatLocalizedDate(d, { month: "numeric", day: "numeric" }) + (mood ? " · " + moodLabel(mood) : ""))}"><i class="${cls}">${mood ? moodCalendarIcon(mood) : ""}</i><span>${escapeHtml(weekdayShortName(d.getDay()).replace(/^周/, ""))}</span></button></li>`;
-  }).join("");
-  host.querySelectorAll("button").forEach(button => button.addEventListener("click", () => openDrawer(button.dataset.date)));
+// Mac app: the sample is only ever loaded on request, never over real records (hasMeaningfulUserData guards the offer).
+// Whatever this window held goes into the same restorable backup key the web edition uses.
+async function loadMacSample() {
+  const api = demoWorkspaceApi();
+  if (!api || api.hasMeaningfulUserData(state)) return;
+  if (!(await appConfirm(languageText("载入三个月的虚构示例？之后可以在「设置」里换回现在的内容。",
+    "Load the fictional three-month sample? You can switch back in Settings.",
+    "Das erfundene Drei-Monats-Beispiel laden? In den Einstellungen kannst du zurückwechseln.")))) return;
+  const saved = Object.fromEntries(Object.keys(localStorage)
+    .filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key)).map(key => [key, localStorage.getItem(key)]));
+  try { localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify({ savedAt: new Date().toISOString(), keys: saved })); }
+  catch { return; }
+  removeLocalKeys();
+  state = { ...cloneData(seed), ...api.buildDemoWorkspace({ now: new Date(), lang: currentLang, seedHabits: cloneData(seed.habits) }) };
+  saveState();
+  location.reload();
 }
+window.LifeLedgerLoadMacSample = () => { if (desktopMode === "tauri-local") loadMacSample(); };
+

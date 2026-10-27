@@ -2030,7 +2030,7 @@ dependencies = [
 
 [[package]]
 name = "life-ledger-deep-review-desktop"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
  "rfd",
  "serde",

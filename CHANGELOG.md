@@ -4,6 +4,27 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-10-27
+
+### Changed
+
+- Today's mood card drops the seven-day strip; the title stays where it was, the three choices sit in the freed space and still ask for a reason.
+- The daily review card is review only (Focus keeps its own card); it no longer pages sideways, comes in medium, large and full-row sizes, has dictation, and opens in a larger window.
+- The sidebar quote is light text on the dark sidebar in both themes.
+- Week page: weekly review and weekly goals sit side by side at the top.
+- Year, month and language pickers look the same in Safari and Chrome.
+- Every card now responds to the pointer: the Today calendar, the Today header card and the three Habits summary cards lift like the others; habit filters, Timeline view switches and Review's detailed metrics show a hover state.
+
+### Added
+
+- Settings → Quotes: automatic, or your own list (one stays, several rotate daily).
+- Settings → Page order for Today, Week, Horizon, Timeline and Review.
+- Weather shows a default city until one is chosen: Berlin for Germany, London for the UK, Beijing for Chinese.
+
+### Fixed
+
+- The sidebar name and photo can be edited again (click your name). The editor was lost in a rollback on 2026-10-18; name and photo stay on this device only.
+
 ### Changed
 
 - Replaced the local sample's personal-looking German-study storyline and occupation label with three culturally distinct fictional everyday calendars for Simplified Chinese, British English, and German.

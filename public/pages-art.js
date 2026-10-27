@@ -1,6 +1,5 @@
-/* Week / Timeline / Insights / Habits: hairline art for empty and done states. Web only (not ?desktop=tauri-local). */
+/* Week / Timeline / Insights / Habits: hairline art for empty and done states (web and Mac app). */
 (function () {
-  if (new URLSearchParams(location.search).get("desktop") === "tauri-local") return;
 
   const VIEW_IDS = ["weekView", "timelineView", "reviewView", "habitsView"];
   const PALETTE = {

@@ -1,0 +1,146 @@
+/* 2.0.2 (user feedback 10/27) — loaded after every other sheet. */
+
+/* C72 mood (user 10/27): the original card unchanged — kicker + title top-left, the three choices, the reason line
+   and the reason pop-up — only the seven-day strip is gone. The card keeps its original height so the hero beside it
+   does not shrink, and the three choices sit centred in the space the strip leaves. */
+#todayView .mood-card .mood-week { display: none !important; }
+#todayView .mood-card { justify-content: flex-start; }
+/* choices + their reason line move as one group (same 13px gap as before), centred in the free space */
+#todayView .mood-card .mood-options { margin: auto 0 0; }
+#todayView .mood-card .mood-reason-summary { margin: 13px 0 auto; }
+#todayView .mood-card .mood-options:has(+ .mood-reason-summary[hidden]) { margin: auto 0; }
+@media (min-width: 761px) {
+  /* free space above the group (below the title) equals the space below it to the card edge */
+  #todayView .tc-top .mood-card { min-height: 341px; padding-bottom: 0; }
+}
+@media (max-width: 760px) {
+  #todayView .mood-card .mood-options { margin: 22px 0 0; }
+  #todayView .mood-card .mood-reason-summary { margin: 13px 0 0; }
+  #todayView .mood-card .mood-options:has(+ .mood-reason-summary[hidden]) { margin: 22px 0 6px; }
+}
+
+/* C74 sidebar quote: it sits on the dark green sidebar, so it is light text in both themes. */
+.sidebar .sidebar-note { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+.sidebar .sidebar-note p,
+html[data-theme="dark"] .sidebar .sidebar-note p { color: rgba(255,255,255,.88); }
+.sidebar .sidebar-note small,
+html[data-theme="dark"] .sidebar .sidebar-note small { color: rgba(255,255,255,.56); }
+
+/* C75 daily review: one page (no Focus tab, no dots, no sideways track); the text area grows with the card
+   instead of scrolling inside it. Bigger entries open in the pop-out. */
+.daily-tool-card .daily-tool-header,
+.daily-tool-card .daily-tool-pagination,
+.daily-tool-card #focusToolPanel { display: none !important; }
+.daily-tool-card .daily-tool-viewport { overflow: hidden; scroll-snap-type: none; height: 100%; }
+.daily-tool-card .daily-tool-track { height: 100%; }
+.tc-grid > [data-card="tools"] .daily-tool-card { display: flex; flex-direction: column; height: 100%; }
+.tc-grid > [data-card="tools"] .daily-tool-viewport { flex: 1 1 auto; min-height: 0; }
+.tc-grid > [data-card="tools"] .daily-tool-card .daily-journal-card { min-height: 0; height: 100%; }
+.tc-grid > [data-card="tools"] .daily-journal-card textarea { min-height: 0; resize: none; overflow-y: auto; scrollbar-width: none; }
+.tc-grid > [data-card="tools"] .daily-journal-card textarea::-webkit-scrollbar { display: none; }
+/* longer than the card: fade the last line and point to the pop-out instead of showing a scrollbar */
+.tc-grid > [data-card="tools"] .daily-journal-card textarea.is-overflowing:not(:focus) { mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent); }
+.tc-grid > [data-card="tools"] .daily-tool-page { padding-top: 22px; }
+.tc-grid > [data-card="tools"][data-size="M"] .daily-goals-heading p { display: none; }
+.journal-icon-button { width: 34px; height: 34px; padding: 0; display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 11px; background: transparent; color: var(--muted); cursor: pointer; transition: color 160ms ease, background-color 160ms ease, transform 140ms var(--ease-enter); }
+.journal-icon-button[hidden] { display: none; }
+.journal-icon-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.journal-icon-button:hover { color: var(--ink); background: color-mix(in srgb, var(--sage) 9%, transparent); }
+.journal-icon-button:active { transform: scale(.95); }
+.journal-icon-button.is-listening { color: #fff; background: #d6463c; border-color: #d6463c; animation: journalListen 1.4s ease-in-out infinite; }
+@keyframes journalListen { 50% { box-shadow: 0 0 0 6px rgba(214,70,60,.16); } }
+@media (prefers-reduced-motion: reduce) { .journal-icon-button.is-listening { animation: none; } }
+
+.journal-popout { width: min(720px, calc(100vw - 32px)); height: min(620px, calc(100dvh - 48px)); padding: 0; border: 1px solid var(--edge-soft, var(--line)); border-radius: 24px; background: var(--card-solid, var(--paper, #fff)); color: var(--ink); box-shadow: 0 40px 120px rgba(0,0,0,.28); }
+html[data-theme="dark"] .journal-popout { background: #1c2129; border-color: rgba(255,255,255,.08); }
+.journal-popout .journal-icon-button { width: 40px; height: 40px; border-radius: 12px; color: var(--ink); }
+.journal-popout .primary-button { min-height: 40px; }
+.journal-popout::backdrop { background: rgba(20,24,22,.36); backdrop-filter: blur(6px); }
+.journal-popout-shell { height: 100%; display: flex; flex-direction: column; padding: 24px 28px 28px; box-sizing: border-box; }
+.journal-popout header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.journal-popout h2 { margin: 4px 0 2px; font: 600 24px/1.25 var(--font-display); }
+.journal-popout header small { color: var(--muted); font-size: 12px; }
+.journal-popout-actions { display: flex; align-items: center; gap: 10px; }
+.journal-popout textarea { flex: 1; width: 100%; margin-top: 18px; padding: 0; border: 0; outline: none; resize: none; background: transparent; color: var(--ink); font: 16px/1.9 var(--font-display); }
+
+/* C73 / C80 settings */
+.settings-quotes { display: grid; gap: 6px; }
+.settings-quotes[hidden] { display: none; }
+.settings-quotes textarea { width: 100%; box-sizing: border-box; min-height: 104px; padding: 10px 12px; border: 1px solid var(--edge-soft, var(--line)); border-radius: 12px; background: var(--card); color: var(--ink); font: 13px/1.7 var(--font-body); resize: vertical; outline: none; }
+.settings-quotes textarea:focus { border-color: color-mix(in srgb, var(--sage) 60%, var(--line)); }
+.settings-quotes small { padding: 0 4px; color: var(--muted); font-size: 12px; }
+.settings-nav-order { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.settings-nav-order li { min-height: 40px; display: flex; align-items: center; gap: 4px; padding: 0 4px 0 14px; border-radius: 12px; background: var(--paper-deep, rgba(120,130,140,.08)); font-size: 14px; }
+.settings-nav-order li span { flex: 1; }
+.settings-nav-order .icon-button { width: 32px; height: 32px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; }
+.settings-nav-order .icon-button:hover:not(:disabled) { color: var(--ink); background: var(--card); }
+.settings-nav-order .icon-button:disabled { opacity: .25; cursor: default; }
+.settings-nav-order svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* C79 week: weekly review and weekly goals side by side at the top, compact. The header (date range) stays on
+   its own row above them. IDs here because the 858 sheet places these modules by #weekView. */
+@media (min-width: 1100px) {
+  #weekView.active:not(.is-editing-layout) { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
+  #weekView.active:not(.is-editing-layout) > * { grid-column: 1 / -1; }
+  #weekView.active:not(.is-editing-layout) > .week-page-header { grid-row: 1; }
+  #weekView.active:not(.is-editing-layout) > [data-module="review"] { grid-column: 1; grid-row: 2; }
+  #weekView.active:not(.is-editing-layout) > [data-module="goals"] { grid-column: 2; grid-row: 2; }
+  #weekView.active:not(.is-editing-layout) > :is([data-module="review"], [data-module="goals"]) { align-self: stretch !important; height: auto !important; margin: 0 !important; }
+  #weekView.active:not(.is-editing-layout) #weeklyOutputText { min-height: 132px; }
+}
+.journal-icon-button.is-hinting { color: var(--ink); border-color: color-mix(in srgb, var(--sage) 60%, var(--line)); background: color-mix(in srgb, var(--sage) 10%, transparent); }
+
+/* C78 date + language pickers: WebKit (Safari, the Mac app) drew them as native macOS pop-up buttons with stacked
+   arrows, which looked out of place in the toolbar. Same quiet text + small chevron in every engine. */
+.date-jump select, .language-switcher select { -webkit-appearance: none; appearance: none; padding: 2px 16px 2px 4px; border-radius: 6px; background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a8f98' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 3px center / 8px 5px; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.4; cursor: pointer; }
+.date-jump select:hover, .language-switcher select:hover { background-color: color-mix(in srgb, var(--ink) 6%, transparent); }
+.date-jump select:focus-visible, .language-switcher select:focus-visible { outline: 2px solid color-mix(in srgb, var(--sage) 50%, transparent); outline-offset: 1px; }
+.date-jump { display: inline-flex; align-items: center; gap: 2px; }
+.date-jump span { color: var(--muted); }
+
+/* Hover feedback everywhere it was missing (user 10/27, full audit): every card lifts with a deeper shadow, every
+   button-like control gets a hover state. Large cards and cards full of small click targets lift without 3D tilt so the
+   pointer stays on the date/control it is aimed at. */
+.tc-grid > [data-card="calendar"] .calendar-card,
+#todayView .tc-top .hero-card,
+#habitLibraryOverview article { transition: transform 180ms var(--ease-enter, ease), box-shadow 180ms ease, border-color 180ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .tc-grid:not(.tc-editing) > [data-card="calendar"] .calendar-card:hover,
+  .tc-grid:not(.tc-editing) > .tc-top .hero-card:hover,
+  #habitLibraryOverview article:hover { transform: translateY(-2px); box-shadow: 0 18px 46px rgba(29, 29, 31, .08), inset 0 1px 0 rgba(255, 255, 255, .85); }
+  html[data-theme="dark"] .tc-grid:not(.tc-editing) > [data-card="calendar"] .calendar-card:hover,
+  html[data-theme="dark"] .tc-grid:not(.tc-editing) > .tc-top .hero-card:hover,
+  html[data-theme="dark"] #habitLibraryOverview article:hover { box-shadow: 0 22px 54px rgba(0, 0, 0, .32), inset 0 1px 0 rgba(255, 255, 255, .06); }
+  /* segmented / filter buttons that only changed on click */
+  :is(#habitLibraryFilters, #timelineView .journal-mode-switch) button { transition: color 160ms ease, background-color 160ms ease; }
+  :is(#habitLibraryFilters, #timelineView .journal-mode-switch) button:not(.active):hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+  #reviewDetailedMetrics > summary { transition: color 160ms ease; }
+  #reviewDetailedMetrics > summary:hover { color: var(--ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tc-grid > [data-card="calendar"] .calendar-card, #todayView .tc-top .hero-card, #habitLibraryOverview article { transition: none !important; transform: none !important; }
+}
+
+/* Sidebar profile (restored): name + photo are a button that opens "Your space". */
+.profile .profile-identity { width: 100%; padding: 4px; margin: -4px; border: 0; border-radius: 14px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background-color 160ms ease; }
+.profile .profile-identity:hover { background: rgba(255, 255, 255, .07); }
+.profile .profile-identity:focus-visible { outline: 2px solid rgba(255, 255, 255, .5); outline-offset: 1px; }
+.profile .profile-identity:active { transform: scale(.98); }
+.avatar { overflow: hidden; font: 650 15px/1 var(--font-body); }
+.avatar.has-photo { background: #e4edf4; }
+.avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.profile-dialog { width: min(400px, calc(100vw - 24px)); }
+.profile-editor-row { display: flex; align-items: center; gap: 16px; padding: 16px 4px 10px; }
+.profile-dialog-avatar { width: 64px; height: 64px; flex: 0 0 64px; border-radius: 20px; font-size: 24px; }
+.profile-dialog-avatar svg { width: 30px; height: 30px; }
+.profile-editor-actions { display: flex; align-items: center; align-self: center; gap: 8px; flex-wrap: wrap; }
+.profile-editor-actions .text-button { min-height: 36px; padding: 0 12px; border-radius: 10px; color: #b4532a; font-weight: 600; cursor: pointer; transition: background-color 160ms ease; }
+.profile-editor-actions .text-button:hover { background: rgba(180, 83, 42, .08); }
+html[data-theme="dark"] .profile-editor-actions .text-button { color: #f0a27e; }
+.profile-editor-actions .text-button[hidden] { display: none; }
+.profile-name-field { display: grid; gap: 6px; padding: 10px 4px 0; font-size: 13px; color: var(--muted); }
+.profile-name-field input { min-height: 42px; padding: 0 12px; border: 1px solid var(--edge-soft, var(--line)); border-radius: 12px; background: var(--card); color: var(--ink); font: 14px var(--font-body); outline: none; }
+.profile-name-field input:focus { border-color: color-mix(in srgb, var(--sage) 60%, var(--line)); }
+.profile-note { margin: 12px 4px 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.profile-feedback { margin: 4px; color: #c2410c; font-size: 12px; }
+.profile-feedback:empty { display: none; }

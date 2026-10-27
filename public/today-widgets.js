@@ -2,7 +2,6 @@
 // Plain DOM fed from app.js state (same globals the original Today uses); today-cards.js lays them out.
 // Ported from 858ede8 (today-extras.js / weather-widget.js) onto the 780b6a1 base.
 (() => {
-  if (new URLSearchParams(location.search).get("desktop") === "tauri-local") return;
   const view = document.getElementById("todayView");
   if (!view) return;
   const $ = (s, r = document) => r.querySelector(s);
@@ -173,7 +172,18 @@
   if (city && !(Number.isFinite(city.latitude) && Number.isFinite(city.longitude))) city = null;
   // The sample persona lives in Berlin: the demo shows real Berlin weather until a city is chosen.
   // (checked lazily: the demo is seeded after this script runs)
-  const demoCity = () => { if (!city && typeof state !== "undefined" && window.LifeLedgerDemoWorkspace?.isDemoActive?.(state)) city = { name: "Berlin", latitude: 52.52, longitude: 13.405 }; };
+  // Until a city is chosen (user 10/27): Germany → Berlin, UK → London, Chinese → Beijing, from the system
+  // region first, then the app language. Not saved, so choosing a city always wins.
+  const regionCity = () => {
+    const tag = (navigator.languages?.[0] || navigator.language || "").toLowerCase(), region = tag.split("-").slice(1).find(p => p.length === 2) || "";
+    const by = { de: ["Berlin", 52.52, 13.405], at: ["Berlin", 52.52, 13.405], ch: ["Berlin", 52.52, 13.405], gb: ["London", 51.5072, -0.1276], uk: ["London", 51.5072, -0.1276], cn: ["北京", 39.9042, 116.4074] };
+    const hit = by[region] || (tag.startsWith("zh") ? by.cn : null) || { de: by.de, zh: by.cn, en: by.gb }[lang()] || by.gb;
+    return { name: hit[0] === "北京" && lang() !== "zh" ? "Beijing" : hit[0], latitude: hit[1], longitude: hit[2] };
+  };
+  const demoCity = () => {
+    if (city) return;
+    city = typeof state !== "undefined" && window.LifeLedgerDemoWorkspace?.isDemoActive?.(state) ? { name: "Berlin", latitude: 52.52, longitude: 13.405 } : regionCity();
+  };
   const kind = code => ((code >= 71 && code <= 77) || code === 85 || code === 86) ? "snow" : code >= 95 ? "storm" : ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) ? "rain" : code > 1 ? "cloud" : "clear";
   async function json(url, signal) {
     const ctl = new AbortController(), abort = () => ctl.abort(), timer = setTimeout(abort, 12000);
@@ -365,7 +375,7 @@
       $(".tw-wall-auto", box).addEventListener("change", e => { save("life-ledger-wall-prefs" + suffix, { ...wallPrefs(), auto: e.target.checked }); renderWall(); });
       $(".tw-seg", box).addEventListener("click", e => { const b = e.target.closest("[data-fit]"); if (!b) return; save("life-ledger-wall-prefs" + suffix, { ...wallPrefs(), fit: b.dataset.fit }); box.querySelectorAll("[data-fit]").forEach(x => x.setAttribute("aria-checked", String(x === b))); renderWall(); paint(); });
       $(".tw-wall-remove", box).addEventListener("click", async () => {
-        const row = wall[wallAt]; if (!row || !confirm(t("removeConfirm"))) return;
+        const row = wall[wallAt]; if (!row || !(await window.appConfirm(t("removeConfirm")))) return;
         await store.delete(row.id).catch(() => {}); wall.splice(wallAt, 1); wallAt = Math.max(0, Math.min(wallAt, wall.length - 1)); renderWall(); paint();
       });
       paint();

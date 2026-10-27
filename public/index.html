@@ -26,10 +26,11 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=2.0.1" />
-    <link rel="stylesheet" href="./pages-858.css?v=2.0.1" />
-    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.1" />
-    <link rel="stylesheet" href="./today-cards.css?v=2.0.1" />
+    <link rel="stylesheet" href="./styles.css?v=2.0.2" />
+    <link rel="stylesheet" href="./pages-858.css?v=2.0.2" />
+    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.2" />
+    <link rel="stylesheet" href="./today-cards.css?v=2.0.2" />
+    <link rel="stylesheet" href="./v202.css?v=2.0.2" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -61,10 +62,10 @@
         </div>
 
         <div class="profile">
-          <div class="profile-identity">
-            <div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4.5h11a2 2 0 0 1 2 2v13H8a2 2 0 0 1-2-2v-13Z"/><path d="M8 4.5v15M11 9h5m-5 4h5"/></svg></div>
-            <div class="profile-copy"><strong>Personal Ledger</strong><small id="profileSaveMode">Connecting to cloud</small></div>
-          </div>
+          <button class="profile-identity" id="profileEditButton" type="button" aria-haspopup="dialog">
+            <span class="avatar" id="sidebarAvatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4.5h11a2 2 0 0 1 2 2v13H8a2 2 0 0 1-2-2v-13Z"/><path d="M8 4.5v15M11 9h5m-5 4h5"/></svg></span>
+            <span class="profile-copy"><strong>Personal Ledger</strong><small id="profileSaveMode">Connecting to cloud</small></span>
+          </button>
           <div class="profile-actions">
             <button class="icon-button cloud-account-button" id="cloudAccountButton" type="button" title="云同步账户" aria-label="云同步账户">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.2 4.5 4.5 0 0 0 7 18Z"/><path d="m9.5 13 2 2 3.5-4"/></svg>
@@ -141,7 +142,7 @@
 
             <article class="mood-card">
               <div class="section-heading">
-                <div><span class="kicker">MOOD</span><h3>此刻感觉如何？</h3></div>
+                <div><span class="kicker">MOOD</span><h3>今天整体感觉如何？</h3></div>
               </div>
               <div class="mood-options" id="quickMood">
                 <button data-mood="很好"><span>☀</span>很好</button>
@@ -149,7 +150,6 @@
                 <button data-mood="低落"><span>☂</span>低落</button>
               </div>
               <button class="mood-reason-summary" id="quickMoodReason" type="button" hidden></button>
-              <ol class="mood-week" id="moodWeek"></ol>
             </article>
           </div>
 
@@ -221,6 +221,12 @@
                         <button class="voice-reflection-button" id="voiceReflectionButton" type="button" hidden>
                           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg>
                           <span>Quick record</span>
+                        </button>
+                        <button class="journal-icon-button" id="journalDictate" type="button" aria-label="Dictate">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+                        </button>
+                        <button class="journal-icon-button" id="journalPopoutButton" type="button" aria-label="Open in a larger window">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg>
                         </button>
                         <span class="autosave" id="homeJournalSave">● autosaved</span>
                       </div>
@@ -345,6 +351,41 @@
             </div>
           </article>
 
+          <article class="module-card" data-module="goals">
+            <header class="module-header">
+              <div>
+                <span class="kicker" id="weekGoalsKicker">FOCUS & TARGETS</span>
+                <h3 class="module-title" id="weeklyGoalsTitle">Weekly goals · 0 of 0</h3>
+              </div>
+              <div class="goal-horizon-switch" id="goalHorizonSwitch" data-segment role="tablist" aria-label="Goal horizon">
+                <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
+                <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
+              </div>
+              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-goals" aria-label="Collapse goals module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+            </header>
+            <div class="module-body" id="module-body-goals">
+              <div id="weeklyGoalsPane">
+                <div class="weekly-goal-list" id="weeklyGoalList"></div>
+                <form class="weekly-goal-inline-add" id="weeklyGoalForm">
+                  <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" aria-label="Add weekly goal" />
+                </form>
+              </div>
+              <div id="longTermGoalsPane" hidden>
+                <header class="long-term-header">
+                  <h3 id="longTermTitle">Long-term goals</h3>
+                  <span id="longTermGoalCount">0 active</span>
+                </header>
+                <p class="long-term-description" id="longTermDescription">Keep the direction visible without forcing it into this week.</p>
+                <div class="long-term-goal-list" id="longTermGoalList"></div>
+                <button class="long-term-add-button" id="addLongTermGoal" type="button"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><b>Add a long-term goal</b></button>
+              </div>
+              <span id="currentWeekNumber" hidden></span>
+              <span id="basketYear" hidden></span>
+              <span id="weeklyGoalProgress" hidden></span>
+              <span id="longTermKicker" hidden></span>
+            </div>
+          </article>
+
           <article class="module-card" data-module="completed">
             <header class="module-header">
               <div>
@@ -397,40 +438,6 @@
             </div>
           </article>
 
-          <article class="module-card" data-module="goals">
-            <header class="module-header">
-              <div>
-                <span class="kicker" id="weekGoalsKicker">FOCUS & TARGETS</span>
-                <h3 class="module-title" id="weeklyGoalsTitle">Weekly goals · 0 of 0</h3>
-              </div>
-              <div class="goal-horizon-switch" id="goalHorizonSwitch" data-segment role="tablist" aria-label="Goal horizon">
-                <button class="active" type="button" role="tab" data-goal-horizon="week" aria-selected="true">This week</button>
-                <button type="button" role="tab" data-goal-horizon="long" aria-selected="false">Longer term</button>
-              </div>
-              <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-goals" aria-label="Collapse goals module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
-            </header>
-            <div class="module-body" id="module-body-goals">
-              <div id="weeklyGoalsPane">
-                <div class="weekly-goal-list" id="weeklyGoalList"></div>
-                <form class="weekly-goal-inline-add" id="weeklyGoalForm">
-                  <input id="weeklyGoalInput" maxlength="100" placeholder="添加本周必须完成的事情…" aria-label="Add weekly goal" />
-                </form>
-              </div>
-              <div id="longTermGoalsPane" hidden>
-                <header class="long-term-header">
-                  <h3 id="longTermTitle">Long-term goals</h3>
-                  <span id="longTermGoalCount">0 active</span>
-                </header>
-                <p class="long-term-description" id="longTermDescription">Keep the direction visible without forcing it into this week.</p>
-                <div class="long-term-goal-list" id="longTermGoalList"></div>
-                <button class="long-term-add-button" id="addLongTermGoal" type="button"><span><svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><b>Add a long-term goal</b></button>
-              </div>
-              <span id="currentWeekNumber" hidden></span>
-              <span id="basketYear" hidden></span>
-              <span id="weeklyGoalProgress" hidden></span>
-              <span id="longTermKicker" hidden></span>
-            </div>
-          </article>
         </section>
 
         <section class="view longrange-workspace" id="longrangeView"><div id="longRangeWorkspace"></div></section>
@@ -896,6 +903,36 @@
       </div>
     </dialog>
 
+    <dialog id="profileDialog" class="settings-dialog profile-dialog" aria-labelledby="profileDialogTitle">
+      <form method="dialog" class="settings-form">
+        <header><h2 id="profileDialogTitle">你的空间</h2><button class="icon-button close-settings" type="submit" aria-label="关闭">×</button></header>
+        <div class="profile-editor-row">
+          <span class="avatar profile-dialog-avatar" id="profileDialogAvatar" aria-hidden="true"></span>
+          <div class="profile-editor-actions">
+            <button type="button" class="secondary-button" id="profileChoosePhoto">选择头像</button>
+            <button type="button" class="text-button" id="profileRemovePhoto">移除</button>
+          </div>
+        </div>
+        <input id="profilePhotoFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <label class="profile-name-field"><span id="profileNameLabel">显示名称</span><input id="profileDisplayName" type="text" maxlength="60" autocomplete="nickname"></label>
+        <p class="profile-note" id="profileDeviceNote"></p>
+        <p class="profile-feedback" id="profileFeedback" role="status"></p>
+      </form>
+    </dialog>
+    <dialog id="journalPopout" class="journal-popout" aria-labelledby="journalPopoutTitle">
+      <form method="dialog" class="journal-popout-shell">
+        <header>
+          <div><span class="kicker" id="journalPopoutKicker">JOURNAL</span><h2 id="journalPopoutTitle">每日复盘</h2><small id="journalPopoutDate"></small></div>
+          <div class="journal-popout-actions">
+            <button class="journal-icon-button" id="journalPopoutDictate" type="button" aria-label="Dictate">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+            </button>
+            <button class="primary-button" id="journalPopoutDone" type="submit">完成</button>
+          </div>
+        </header>
+        <textarea id="journalPopoutText"></textarea>
+      </form>
+    </dialog>
     <dialog id="settingsDialog" class="settings-dialog" aria-labelledby="settingsTitle">
       <form method="dialog" class="settings-form">
         <header><h2 id="settingsTitle">设置</h2><button class="icon-button close-settings" type="submit" aria-label="关闭">×</button></header>
@@ -921,6 +958,25 @@
             </label>
           </div>
           <p class="settings-font-preview" id="settingsFontPreview">不积跬步，无以至千里。 Aa 123</p>
+        </section>
+        <section class="settings-group">
+          <h3 id="settingsQuotesTitle">名言</h3>
+          <div class="settings-row"><span id="settingsQuoteModeLabel">名言来源</span>
+            <label class="settings-select" for="quoteModeSelect">
+              <select id="quoteModeSelect">
+                <option value="auto">自动</option>
+                <option value="custom">自定义</option>
+              </select>
+            </label>
+          </div>
+          <div class="settings-quotes" id="settingsQuotes" hidden>
+            <textarea id="customQuotesText" rows="4" placeholder="每行一条。出处写在 —— 后面，例如：&#10;慎终如始，则无败事。——《道德经》"></textarea>
+            <small id="customQuotesHelp">写一条就一直显示它；写几条就每天轮换。</small>
+          </div>
+        </section>
+        <section class="settings-group">
+          <h3 id="settingsNavTitle">页面顺序</h3>
+          <ol class="settings-nav-order" id="navOrderList"></ol>
         </section>
         <section class="settings-group">
           <h3 id="settingsDataTitle">数据</h3>
@@ -1048,23 +1104,23 @@
     </div>
     <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="./deployment-mode.js?v=2.0.1"></script>
-    <script src="./_init_tcb-env.js?v=2.0.1"></script>
-    <script src="./cloudbase-sync.js?v=2.0.1"></script>
-    <script src="./focus-timer.js?v=2.0.1"></script>
-    <script src="./voice-checkin.js?v=2.0.1"></script>
-    <script src="./photo-memories.js?v=2.0.1"></script>
-    <script src="./media-backup.js?v=2.0.1"></script>
+    <script src="./deployment-mode.js?v=2.0.2"></script>
+    <script src="./_init_tcb-env.js?v=2.0.2"></script>
+    <script src="./cloudbase-sync.js?v=2.0.2"></script>
+    <script src="./focus-timer.js?v=2.0.2"></script>
+    <script src="./voice-checkin.js?v=2.0.2"></script>
+    <script src="./photo-memories.js?v=2.0.2"></script>
+    <script src="./media-backup.js?v=2.0.2"></script>
     <script type="module" src="./demo-workspace.js?v=demo10"></script>
-    <script src="./habit-analytics.js?v=2.0.1"></script>
-    <script src="./interaction.js?v=2.0.1"></script>
-    <script src="./long-range.js?v=2.0.1"></script>
-    <script src="./app.js?v=2.0.1"></script>
+    <script src="./habit-analytics.js?v=2.0.2"></script>
+    <script src="./interaction.js?v=2.0.2"></script>
+    <script src="./long-range.js?v=2.0.2"></script>
+    <script src="./app.js?v=2.0.2"></script>
     <script src="./vendor/sortable.min.js"></script>
-    <script src="./hairline.js?v=2.0.1"></script>
-    <script src="./vendor/widget-ui.js?v=2.0.1"></script>
-    <script src="./today-widgets.js?v=2.0.1"></script>
-    <script src="./weather-widget.js?v=2.0.1"></script>
-    <script src="./today-cards.js?v=2.0.1"></script>
+    <script src="./hairline.js?v=2.0.2"></script>
+    <script src="./vendor/widget-ui.js?v=2.0.2"></script>
+    <script src="./today-widgets.js?v=2.0.2"></script>
+    <script src="./weather-widget.js?v=2.0.2"></script>
+    <script src="./today-cards.js?v=2.0.2"></script>
   </body>
 </html>
