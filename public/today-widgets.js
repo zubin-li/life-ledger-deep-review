@@ -11,7 +11,7 @@
       clear: "晴", cloud: "多云", rain: "下雨", snow: "下雪", storm: "雷雨", rainSoon: "预计降雨", snowSoon: "预计降雪", noRain: "未来 24 小时暂未预报降水", hour: "预报时间",
       rhythmAvg: "7 天完成率", tomorrow: "明天", tomorrowCount: "{n} 个基础目标", less: "少", more: "多", palette: "配色", green: "翡翠绿", blue: "海洋蓝", spectrum: "红到蓝",
       wallEmpty: "留一扇自己的小窗：放入照片、GIF 或视频。", addMedia: "添加媒体", play: "循环播放", pause: "暂停", remove: "移除", prev: "上一项", next: "下一项", wallLocal: "保存在本机浏览器。", invalidMedia: "支持 JPEG、PNG、WebP、GIF 和可播放视频；每个不超过 50 MB，最多 20 项。", storageError: "保存失败，存储空间可能已满。", removeConfirm: "从照片墙移除这一项？",
-      photosLocal: "每日照片保存在你自己部署的版本里（私人存储）。本地版只做展示，部署后即可在这里添加。", photosEmpty: "这一天还没有照片。", openDay: "打开这一天",
+      photosLocal: "照片暂时无法读取，请刷新后重试。", photosEmpty: "这一天还没有照片。", openDay: "打开这一天",
       focusToday: "今日专注", min: "分钟",
       heat26: "近 26 周", heatRate: "完成率", heatFull: "满分天", heatBest: "最长连续", days: "天", focusArt: "专注", wallAddHint: "放一张你喜欢的照片", photosLocalTitle: "这一天的照片", freqEmptyTitle: "还没有频率目标", weatherEmptyTitle: "今天的天气",
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
@@ -21,7 +21,7 @@
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
       rhythmAvg: "7-day completion", tomorrow: "Tomorrow", tomorrowCount: "{n} foundations", less: "Less", more: "More", palette: "Palette", green: "Emerald", blue: "Ocean blue", spectrum: "Red to blue",
       wallEmpty: "Your own little window. Add photos, GIFs or a video.", addMedia: "Add media", play: "Play", pause: "Pause", remove: "Remove", prev: "Previous", next: "Next", wallLocal: "Stored in this browser.", invalidMedia: "JPEG, PNG, WebP, GIF or a playable video, up to 50 MB each, 20 items.", storageError: "Could not save. Storage may be full.", removeConfirm: "Remove this item from the photo wall?",
-      photosLocal: "Daily photos live in your own deployment (private storage). This local version only previews them.", photosEmpty: "No photo for this day yet.", openDay: "Open this day",
+      photosLocal: "Photos could not be read. Refresh and try again.", photosEmpty: "No photo for this day yet.", openDay: "Open this day",
       focusToday: "Focused today", min: "min",
       heat26: "Last 26 weeks", heatRate: "Done", heatFull: "Full days", heatBest: "Best streak", days: "d", focusArt: "Focus", wallAddHint: "Put a photo you love here", photosLocalTitle: "Photos of this day", freqEmptyTitle: "No frequency goals yet", weatherEmptyTitle: "Today's weather",
       freqEmpty: "No weekly or monthly habits yet. Set a habit's frequency to weekly or monthly in Adjust goals.", freqWeek: "This week {done}/{target}", freqMonth: "This month {done}/{target}", freqPick: "Habit shown",
@@ -31,7 +31,7 @@
       clear: "Klar", cloud: "Bewölkt", rain: "Regen", snow: "Schnee", storm: "Gewitter", rainSoon: "Regen erwartet", snowSoon: "Schnee erwartet", noRain: "Kein Niederschlag in den nächsten 24 Stunden", hour: "Vorhersagezeit",
       rhythmAvg: "7-Tage-Quote", tomorrow: "Morgen", tomorrowCount: "{n} Grundlagen", less: "Weniger", more: "Mehr", palette: "Farben", green: "Smaragd", blue: "Ozeanblau", spectrum: "Rot bis Blau",
       wallEmpty: "Dein eigenes Fenster: Fotos, GIFs oder ein Video.", addMedia: "Medien hinzufügen", play: "Abspielen", pause: "Pause", remove: "Entfernen", prev: "Zurück", next: "Weiter", wallLocal: "In diesem Browser gespeichert.", invalidMedia: "JPEG, PNG, WebP, GIF oder abspielbares Video, bis 50 MB, 20 Dateien.", storageError: "Speichern fehlgeschlagen. Speicher voll?", removeConfirm: "Dieses Medium von der Fotowand entfernen?",
-      photosLocal: "Tagesfotos liegen in deiner eigenen Installation (privater Speicher). Diese lokale Version zeigt sie nur als Vorschau.", photosEmpty: "Noch kein Foto für diesen Tag.", openDay: "Diesen Tag öffnen",
+      photosLocal: "Fotos konnten nicht gelesen werden. Bitte neu laden und erneut versuchen.", photosEmpty: "Noch kein Foto für diesen Tag.", openDay: "Diesen Tag öffnen",
       focusToday: "Heute fokussiert", min: "Min.",
       heat26: "Letzte 26 Wochen", heatRate: "Erledigt", heatFull: "Volle Tage", heatBest: "Beste Serie", days: "T.", focusArt: "Fokus", wallAddHint: "Lege ein Lieblingsfoto hierher", photosLocalTitle: "Fotos dieses Tages", freqEmptyTitle: "Noch keine Häufigkeitsziele", weatherEmptyTitle: "Wetter heute",
       freqEmpty: "Noch keine wöchentlichen oder monatlichen Ziele. Stelle die Häufigkeit in „Ziele anpassen“ auf wöchentlich / monatlich.", freqWeek: "Diese Woche {done}/{target}", freqMonth: "Diesen Monat {done}/{target}", freqPick: "Angezeigtes Ziel",
@@ -439,13 +439,13 @@
     if (d) openDrawer(d);
   });
 
-  // ---- day photos: deployed version only (O19); local version explains ----
+  // ---- day photos: cloud edition from private storage, local editions from this device (user 10/27) ----
   let photoAsk = 0;
   async function photos() {
     const c = cards.photos, list = $(".tw-photo-list", c), note = $(".tw-photo-note", c), date = selectedPlanningDate;
     const emptyArt = text => { list.innerHTML = `<div class="tw-empty"><div class="tw-art" data-art="photos-day-empty"></div><strong>${escapeHtml(t("photosLocalTitle"))}</strong><p>${escapeHtml(text)}</p></div>`; note.textContent = ""; arts(c); };
     const demo = window.LifeLedgerDemoWorkspace?.isDemoActive?.(state);
-    if (!demo && (!hostedCloudMode || !photoMemories)) { emptyArt(t("photosLocal")); return; }
+    if (!demo && (!photosEnabled || !photoMemories)) { emptyArt(t("photosLocal")); return; }
     const ask = ++photoAsk;
     let rows = [];
     try { rows = await photoMemories?.listRange(date, date) || []; } catch {}

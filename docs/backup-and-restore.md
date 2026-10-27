@@ -15,7 +15,7 @@ Day, week, and month exports remain available for analysis or selective transfer
 
 ### Back up photo memories
 
-Photo memories exist only in the self-hosted Cloudflare edition. Choose **One month**, enable **Include photos**, and export a `.llmedia` file. It contains that month's normal records plus the already-compressed private photos. Repeat for each month that contains photos; the ordinary **All history** JSON remains the complete backup for non-media records.
+Photo memories are kept in your private R2 bucket in the Cloudflare edition, and on the device itself in the local web edition and the Mac app (they never leave it). Choose **One month**, enable **Include photos**, and export a `.llmedia` file. It contains that month's normal records plus the already-compressed private photos. Repeat for each month that contains photos; the ordinary **All history** JSON remains the complete backup for non-media records.
 
 Keep `.llmedia` files private. They are portable and intentionally readable by Life Ledger without a cloud-account dependency.
 
@@ -31,7 +31,7 @@ A complete backup replaces the records in the current browser. A day, week, or m
 
 The importer validates the structure before changing anything and accepts both the current versioned backup format and JSON files exported by earlier beta releases. Files larger than 10 MB are rejected in the browser as a safety limit.
 
-For a `.llmedia` restore, use the same Import tab in a Cloudflare deployment. Life Ledger restores the month's records and then uploads the compressed photos into your own private R2 bucket. Re-importing the same media backup is idempotent and does not duplicate photos. Media bundles larger than 160 MB are rejected.
+For a `.llmedia` restore, use the same Import tab. Life Ledger restores the month's records and then puts the compressed photos back: into your own private R2 bucket in a Cloudflare deployment, or onto the device in the local editions. Re-importing the same media backup is idempotent and does not duplicate photos. Media bundles larger than 160 MB are rejected.
 
 ## What local-only means
 

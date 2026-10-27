@@ -4,6 +4,23 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.3] - 2026-10-27
+
+### Added
+
+- Photo memories in the local web edition and the Mac app: up to three photos a day, kept on the device only (never uploaded), shown in the calendar, timeline and photo card, and included in monthly `.llmedia` backups. **Clear local data** removes them.
+
+### Changed
+
+- Import & export moved into **Settings → Data**; the sidebar icon is gone.
+- Review: the week picker names the whole Monday–Sunday week the numbers cover, sits on one line with the Week/Month switch, and every remaining dropdown has the same flat style as Settings.
+- The monthly reflection uses the full card width and grows with its text instead of scrolling inside a small box.
+- The mood reason field is taller.
+
+### Fixed
+
+- The sidebar stays in the window while you scroll on Week, Horizon, Timeline, Review and Habits; it used to scroll away and leave an empty column. Switching pages opens the new page at its top.
+
 ## [2.0.2] - 2026-10-27
 
 ### Changed

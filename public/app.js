@@ -18,6 +18,7 @@ function wipeLocalRecords() {
   // The photo walls are the only IndexedDB stores. Runs at boot, before the walls open them, so the
   // delete is never blocked by an open connection (a blocked delete would stall every later one).
   ["", "-2", "-3"].forEach(suffix => indexedDB.deleteDatabase(`life-ledger-wall${suffix}`));
+  indexedDB.deleteDatabase(`life-ledger-photos${window.LifeLedgerStorageSuffix || ""}`); // day photos of the local edition
 }
 // Mac app: the sample only ever replaces localStorage records; the user's own photo walls (IndexedDB) stay.
 function removeLocalKeys() {
@@ -2120,6 +2121,8 @@ const deploymentMode = requestedMode === "local" || requestedMode === "cloudflar
   : window.LIFE_LEDGER_DEPLOYMENT_MODE || "local";
 const hostedCloudMode = deploymentMode === "cloudflare";
 const cloudProvider = cloudBaseConfigured ? "cloudbase" : hostedCloudMode ? "cloudflare" : "local";
+// Photos: cloud edition → private R2 storage; local web edition + Mac app → this device's IndexedDB (user 10/27).
+const photosEnabled = hostedCloudMode || cloudProvider === "local";
 let cloudMode = cloudProvider !== "local";
 let cloudBaseAdapter = cloudBaseConfigured ? window.LifeLedgerCloudBase.createAdapter() : null;
 let cloudTimer = null;
@@ -4047,7 +4050,8 @@ function initPhotoMemories() {
   if (!window.LifeLedgerPhotoMemories) return;
   photoMemories = window.LifeLedgerPhotoMemories.create({
     section: $("#moodPhotoSection"),
-    enabled: hostedCloudMode,
+    enabled: photosEnabled,
+    storage: hostedCloudMode ? "cloud" : "local",
     language: currentLang,
     onToast: showToast,
     onChange: ({ date, photos }) => {
@@ -4061,7 +4065,7 @@ function initPhotoMemories() {
 }
 
 async function loadCalendarPhotoMonth(date) {
-  if (!photoMemories || !hostedCloudMode) return;
+  if (!photoMemories || !photosEnabled) return;
   const key = monthKey(date);
   if (calendarPhotoLoadedMonths.has(key) || calendarPhotoLoadingMonths.has(key)) return;
   calendarPhotoLoadingMonths.add(key);
@@ -4321,6 +4325,7 @@ function renderReview() {
   }).join("");
   renderPeriodicGoals(monthDates);
   $("#reviewText").value = state.reviews[key] || "";
+  fitReviewText();
   renderFocusReview(year, month);
   window.LifeLedgerInteraction?.syncSegments(document);
 }
@@ -4349,7 +4354,7 @@ function renderFocusReview(year, month) {
   for (let day = 1; day <= new Date(year, month + 1, 0).getDate(); day++) weeks.add(isoWeekKey(new Date(year, month, day, 12)));
   const keys = [...weeks];
   if (!keys.includes(selectedReviewWeek)) selectedReviewWeek = keys.includes(isoWeekKey(new Date())) ? isoWeekKey(new Date()) : keys[0];
-  $("#focusReviewWeekSelect").innerHTML = keys.map(key => `<option value="${key}" ${key === selectedReviewWeek ? "selected" : ""}>${formatWeekRangeInMonth(key, year, month)}</option>`).join("");
+  $("#focusReviewWeekSelect").innerHTML = keys.map(key => `<option value="${key}" ${key === selectedReviewWeek ? "selected" : ""}>${formatWeekRangeFull(key)}</option>`).join("");
   $("#focusReviewMonthSelect").innerHTML = Array.from({ length: 120 }, (_, index) => {
     const optionYear = 2026 + Math.floor(index / 12);
     const optionMonth = index % 12 + 1;
@@ -4582,11 +4587,11 @@ function formatCompactDateSpan(startValue, endValue) {
   return start.getTime() === end.getTime() ? formatter.format(start) : `${formatter.format(start)} — ${formatter.format(end)}`;
 }
 
-function formatWeekRangeInMonth(key, year, month) {
+// The week picker names the whole Monday–Sunday week, the same span the numbers under it cover (user 10/27:
+// "26 Oct — 31 Oct" above "26 Oct — 1 Nov" was a mismatch).
+function formatWeekRangeFull(key) {
   const { monday, sunday } = weekDatesFromKey(key);
-  const monthStart = new Date(year, month, 1, 12);
-  const monthEnd = new Date(year, month + 1, 0, 12);
-  return formatCompactDateSpan(monday < monthStart ? monthStart : monday, sunday > monthEnd ? monthEnd : sunday);
+  return formatCompactDateSpan(monday, sunday);
 }
 
 function renderHabitSettings() {
@@ -5192,7 +5197,7 @@ function openBackupDialog() {
   updateExportFields();
   clearImportSelection();
   $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
-  $("#mediaBackupOption").hidden = !hostedCloudMode;
+  $("#mediaBackupOption").hidden = !photosEnabled;
   setBackupTab("export");
   $("#exportDialog").showModal();
 }
@@ -5253,7 +5258,7 @@ async function downloadExport(event) {
   event.preventDefault();
   const scope = $('#exportForm input[name="exportScope"]:checked').value;
   const backup = createBackup(scope);
-  const includePhotos = hostedCloudMode && $("#includePhotos")?.checked;
+  const includePhotos = photosEnabled && $("#includePhotos")?.checked;
   const confirmButton = $("#exportConfirm");
   const originalLabel = confirmButton.textContent;
   confirmButton.disabled = true;
@@ -5349,7 +5354,7 @@ async function previewImportFile(file) {
   }
   try {
     const media = mediaBundle ? await window.LifeLedgerMediaBackup.parseBundle(file) : null;
-    if (media && !hostedCloudMode) throw new Error("media-cloud-only");
+    if (media && !photosEnabled) throw new Error("media-cloud-only");
     const candidate = importedPayload(media ? media.manifest.backup : JSON.parse(await file.text()));
     pendingImport = candidate;
     pendingMediaImport = media;
@@ -6224,7 +6229,7 @@ function bindEvents() {
   });
   $$(".close-review-canvas").forEach(button => button.addEventListener("click", () => $("#reviewCanvasDialog").close()));
   $("#reviewCanvasDialog").addEventListener("cancel", event => { event.preventDefault(); $("#reviewCanvasDialog").close(); });
-  $("#reviewText").addEventListener("input", e => { state.reviews[monthKey(cursor)] = e.target.value; saveState(); });
+  $("#reviewText").addEventListener("input", e => { state.reviews[monthKey(cursor)] = e.target.value; saveState(); fitReviewText(); });
   $("#weeklyGoalForm").addEventListener("submit", event => {
     event.preventDefault();
     const input = $("#weeklyGoalInput"), text = input.value.trim();
@@ -7684,6 +7689,7 @@ function renderJournalCalendarLegend() {
     : `<span><i class="legend-heat heat-0"></i>${tr("calendar.heatNone")}</span><span><i class="legend-heat heat-1"></i>${tr("calendar.heatLow")}</span><span><i class="legend-heat heat-2"></i>${tr("calendar.heatMedium")}</span><span><i class="legend-heat heat-4"></i>${tr("calendar.heatHigh")}</span>`;
 }
 
+var lastShownView = "";
 function switchToView(view) {
   const button = $(`.nav-item[data-view="${view}"]`);
   if (!button) return;
@@ -7698,11 +7704,14 @@ function switchToView(view) {
   const entering = $(`#${view}View`);
   if (entering && !entering.classList.contains("is-entering")) { entering.classList.add("is-entering"); setTimeout(() => entering.classList.remove("is-entering"), 900); }
   document.body.dataset.activeView = view;
+  // Pages scroll with the window (the sidebar stays put), so a newly opened page starts at its top.
+  if (view !== lastShownView) window.scrollTo({ top: 0, behavior: "instant" });
+  lastShownView = view;
   $("#viewTitle").textContent = tr(`viewTitles.${view}`);
   if (view === "week") renderWeeklyWorkspace();
   if (view === "longrange") renderLongRange();
   if (view === "timeline") void renderTimeline();
-  if (view === "review") renderReview();
+  if (view === "review") { renderReview(); requestAnimationFrame(fitReviewText); }
   if (view === "habits") renderHabitSettings();
 }
 
@@ -7843,6 +7852,14 @@ if ("serviceWorker" in navigator && location.protocol !== "file:" && !window.__T
       .then(registration => registration.update())
       .catch(error => console.warn("Service worker registration failed", error));
   });
+}
+
+// Monthly reflection grows with its text instead of scrolling inside a small box (user 10/27).
+function fitReviewText() {
+  const field = $("#reviewText");
+  if (!field || !field.offsetParent) return;
+  field.style.height = "auto";
+  field.style.height = `${field.scrollHeight + 2}px`;
 }
 
 // Sidebar profile (restored 10/27; first shipped in 858ede8, lost in the 10/18 revert): a display name and photo for

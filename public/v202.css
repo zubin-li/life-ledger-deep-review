@@ -144,3 +144,48 @@ html[data-theme="dark"] .profile-editor-actions .text-button { color: #f0a27e; }
 .profile-note { margin: 12px 4px 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .profile-feedback { margin: 4px; color: #c2410c; font-size: 12px; }
 .profile-feedback:empty { display: none; }
+
+/* ---- 2.0.3 (user 10/27) ---- */
+
+/* Sidebar stays in the window on every page. Week/Horizon/Timeline/Review/Habits sized their section to 100% of
+   an auto-height parent and added a fixed padding on top, so the page ran ~107px past the app shell; on Review the
+   shell also clipped (overflow hidden). Either way the sticky sidebar reached the end of its track and scrolled away,
+   leaving an empty column. Let these sections size to their content and stop clipping the shell. */
+html[data-workspace] :is(#weekView, #longrangeView, #timelineView, #reviewView, #habitsView).active { height: auto; overflow: visible; }
+:is(#weekView, #longrangeView, #timelineView, #reviewView, #habitsView).active { height: auto; overflow: visible; }
+.app-shell:has(#reviewView.active) { overflow: visible; }
+html[data-workspace] #timelineView.active:is([data-journal-layout], [data-journal-layout="weeks"], [data-journal-layout="months"], [data-journal-layout="timeline"]) { height: auto; overflow: visible; }
+
+/* Every remaining dropdown gets the same quiet field as Settings: no macOS pop-up gradient and stacked arrows. */
+:is(#focusReviewWeekSelect, #focusReviewMonthSelect, #journalMonthFilter, #horizonPhaseSelect) {
+  -webkit-appearance: none; appearance: none; box-sizing: border-box; min-height: 36px; padding: 0 32px 0 12px;
+  border: 1px solid var(--line); border-radius: 11px; color: var(--ink); font: 600 13px/1.2 var(--font-body);
+  font-variant-numeric: tabular-nums; cursor: pointer; transition: border-color 160ms ease, background-color 160ms ease;
+  background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a8f98' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center / 10px 6px;
+}
+:is(#focusReviewWeekSelect, #focusReviewMonthSelect, #journalMonthFilter, #horizonPhaseSelect):hover { border-color: color-mix(in srgb, var(--ink) 22%, var(--line)); }
+:is(#focusReviewWeekSelect, #focusReviewMonthSelect, #journalMonthFilter, #horizonPhaseSelect):focus-visible { outline: 2px solid color-mix(in srgb, var(--sage) 50%, transparent); outline-offset: 1px; }
+html[data-theme="dark"] :is(#focusReviewWeekSelect, #focusReviewMonthSelect, #journalMonthFilter, #horizonPhaseSelect) { background-color: var(--surface-2); border-color: var(--edge-soft); }
+#horizonPhaseSelect { min-height: 34px; }
+
+/* Focus review header: period switch and picker on one line, same height, picker labelled by the switch itself. */
+html[data-workspace] #reviewDetailedMetrics .focus-review-controls,
+.focus-review-controls { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-width: 0; }
+.focus-review-controls .review-week-select { display: block; min-width: 0; width: auto; }
+.focus-review-controls .review-week-select > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.focus-review-controls .review-week-select select { width: auto; min-width: 176px; }
+html[data-workspace] #reviewDetailedMetrics .focus-review-scope,
+.focus-review-scope { box-sizing: border-box; height: 36px; padding: 3px; align-items: stretch; border-radius: 11px; }
+html[data-workspace] #reviewDetailedMetrics .focus-review-scope button,
+.focus-review-scope button { min-height: 0; height: 100%; padding: 0 14px; border-radius: 8px; font: 600 12px/1 var(--font-body); }
+@media (max-width: 760px) { .focus-review-controls { justify-content: flex-start; flex-wrap: wrap; } .focus-review-controls .review-week-select select { min-width: 0; width: 100%; } .focus-review-controls .review-week-select { flex: 1 1 160px; } }
+
+/* Monthly reflection: full card width and grows with the text (no inner scrollbar). */
+html[data-workspace] .review-narrative textarea, .review-narrative textarea { max-width: none; min-height: 200px; overflow: hidden; resize: none; }
+
+/* Mood reason: a larger writing field in the reason window. */
+.mood-reason-body textarea { min-height: 200px; }
+
+
+/* Import & export lives in Settings → Data (user 10/27); the sidebar/toolbar icon is gone in every layout. */
+#exportButton { display: none !important; }

@@ -8,12 +8,17 @@ const css = readFileSync(new URL("../public/styles.css", import.meta.url), "utf8
 const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 const photos = readFileSync(new URL("../public/photo-memories.js", import.meta.url), "utf8");
 
-test("deployed photo memories live inside the mood note", () => {
+test("photo memories live inside the mood note in every edition", () => {
   const moodDialog = html.match(/id="moodReasonDialog"([\s\S]*?)<\/dialog>/);
   assert.ok(moodDialog);
   assert.match(moodDialog[1], /id="moodPhotoSection"/);
   assert.match(moodDialog[1], /id="moodPhotoInput"/);
-  assert.match(app, /enabled: hostedCloudMode/);
+  // cloud edition → private R2; local web edition + Mac app → this device (user 10/27)
+  assert.match(app, /const photosEnabled = hostedCloudMode \|\| cloudProvider === "local"/);
+  assert.match(app, /enabled: photosEnabled,\s*storage: hostedCloudMode \? "cloud" : "local"/);
+  assert.match(photos, /function localStore\(\)/);
+  assert.match(photos, /bytes: await blob\.arrayBuffer\(\)/);
+  assert.match(app, /indexedDB\.deleteDatabase\(`life-ledger-photos/);
   assert.match(photos, /MAX_PER_DAY = 3/);
   assert.match(photos, /MAX_OUTPUT_BYTES = 1_200_000/);
   assert.match(moodDialog[1], /accept="image\/\*"/);
