@@ -189,3 +189,44 @@ html[data-workspace] .review-narrative textarea, .review-narrative textarea { ma
 
 /* Import & export lives in Settings → Data (user 10/27); the sidebar/toolbar icon is gone in every layout. */
 #exportButton { display: none !important; }
+
+/* 10/27 evening (C93): every dropdown wears the Today toolbar's glass pill (language / year-month),
+   instead of a boxed field that looked out of place. */
+:is(#focusReviewWeekSelect, #focusReviewMonthSelect, #journalMonthFilter, #horizonPhaseSelect) {
+  min-height: 40px; padding: 0 34px 0 14px; border: 1px solid rgba(255,255,255,.62); border-radius: 15px;
+  font: 600 14px/1.2 var(--font-body); -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5);
+  background: rgba(255,255,255,.64) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a8f98' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center / 8px 5px;
+  box-shadow: 0 8px 24px rgba(29,29,31,.06), inset 0 1px 0 rgba(255,255,255,.92);
+}
+html[data-theme="dark"] :is(#focusReviewWeekSelect, #focusReviewMonthSelect, #journalMonthFilter, #horizonPhaseSelect) {
+  background-color: rgba(45,49,55,.88); border-color: rgba(255,255,255,.1);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.067), 0 9px 24px rgba(0,0,0,.18);
+}
+#horizonPhaseSelect { min-height: 38px; }
+
+/* C92: the monthly reflection is a page to write on: taller, grows with the text, no inner scroll or resize grip. */
+#reviewView .monthly-reflection-panel textarea#reviewText { min-height: 360px !important; overflow: hidden; resize: none; }
+
+/* C94: the install action lives in Settings → Data; hidden where the app is already installed. */
+@media (display-mode: standalone) { #settingsInstallApp { display: none !important; } }
+html.ll-mac #settingsInstallApp { display: none !important; }
+
+/* C96: frame the profile photo (drag to move, slider to zoom). */
+.profile-dialog-avatar { width: 96px; height: 96px; flex: 0 0 96px; border-radius: 28px; }
+.profile-dialog-avatar.has-photo { cursor: grab; touch-action: none; }
+.profile-dialog-avatar.has-photo:active { cursor: grabbing; }
+.profile-dialog-avatar:focus-visible { outline: 2px solid color-mix(in srgb, var(--sage) 50%, transparent); outline-offset: 2px; }
+.avatar img { -webkit-user-drag: none; user-select: none; }
+.profile-zoom-field { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 12px; padding: 0 4px 10px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.profile-zoom-field[hidden] { display: none; }
+.profile-zoom-field input { width: 100%; accent-color: var(--sage, #6aa287); }
+/* WebKit does not clip a scaled photo to the rounded corners without a mask. */
+.avatar.has-photo { -webkit-mask-image: linear-gradient(#000, #000); mask-image: linear-gradient(#000, #000); }
+.settings-version { margin: 18px 0 4px; text-align: center; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+/* Settings → switch local / sync mode (10/28) */
+.mode-dialog { width: min(460px, calc(100vw - 24px)); }
+.mode-intro { margin: 14px 4px 12px; line-height: 1.6; }
+.mode-note { margin: 4px 4px 0; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+.mode-note a { color: var(--accent, #167dce); text-decoration: none; }
+.mode-dialog [hidden] { display: none !important; }
+.mode-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }

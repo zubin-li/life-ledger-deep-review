@@ -1,87 +1,67 @@
+/* Launcher: the first window (local or your own cloud). Same material as the web app (public/styles.css):
+   paper background with the two soft glows, the dark green sidebar card, the orange brand mark, SF type. */
 :root {
   color-scheme: light dark;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --paper: #f5f5f7; --ink: #1d1d1f; --muted: #6e6e73; --line: rgba(29, 29, 31, .09); --card: rgba(255, 255, 255, .76);
+  --dark: linear-gradient(155deg, rgba(41, 49, 44, .96), rgba(25, 29, 27, .97)); --dark-ink: #f7f7f7; --dark-muted: rgba(255, 255, 255, .72);
+  --accent: #0071e3; --error: #b3261e;
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #111312; --ink: #f5f5f7; --muted: #a1a1a6; --line: rgba(255, 255, 255, .1); --card: rgba(255, 255, 255, .055); --error: #ffb4a8; --accent: #5ea8ff; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; overscroll-behavior: none; }
+body { margin: 0; background: radial-gradient(circle at 82% 4%, rgba(125, 174, 255, .18), transparent 30rem), radial-gradient(circle at 28% 72%, rgba(182, 222, 199, .18), transparent 34rem), var(--paper); color: var(--ink); -webkit-user-select: none; user-select: none; cursor: default; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+h1, h2, p { margin: 0; }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: Canvas;
-  color: CanvasText;
-}
+/* top strip: drag region; traffic lights at the left, language at the right */
+.launcher-bar { position: fixed; inset: 0 0 auto; height: 52px; display: flex; align-items: center; justify-content: flex-end; padding: 0 16px 0 92px; z-index: 2; }
+.launcher-bar-title { display: none; }
+/* Same glass pill as the app's language / date controls (user 10/27: no native macOS pop-up button). */
+.launcher-language select { -webkit-appearance: none; appearance: none; height: 34px; padding: 0 30px 0 13px; border: 1px solid rgba(255, 255, 255, .62); border-radius: 13px; color: var(--ink); font: inherit; font-size: 12.5px; font-weight: 600; cursor: default;
+  background: rgba(255, 255, 255, .64) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a8f98' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center / 8px 5px;
+  -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5); box-shadow: 0 8px 24px rgba(29, 29, 31, .06), inset 0 1px 0 rgba(255, 255, 255, .92); }
+@media (prefers-color-scheme: dark) { .launcher-language select { background-color: rgba(45, 49, 55, .88); border-color: rgba(255, 255, 255, .1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .067), 0 9px 24px rgba(0, 0, 0, .18); } }
 
-.launcher {
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 24px;
-  display: grid;
-  gap: 16px;
-}
+.launcher { max-width: 600px; min-height: 100%; margin: 0 auto; padding: 72px 28px 40px; align-content: center; display: grid; gap: 14px; }
+.launcher-header { display: grid; justify-items: center; gap: 8px; text-align: center; margin-bottom: 18px; }
+.launcher-header img { width: 64px; height: 64px; border-radius: 18px; box-shadow: 0 12px 30px rgba(184, 107, 61, .26); }
+.launcher-header h1 { margin-top: 8px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -.025em; }
+.launcher-header p { color: var(--muted); font-size: 13.5px; line-height: 1.55; }
 
-.launcher-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
+/* the two choices: local = the dark sidebar card (the main path), cloud = the light glass card */
+.card { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: start; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 26px; background: var(--card); box-shadow: 0 18px 50px rgba(21, 25, 23, .08); backdrop-filter: blur(28px) saturate(145%); transition: transform 260ms var(--ease-enter), box-shadow 260ms var(--ease-enter); }
+.card:hover { transform: translateY(-2px); box-shadow: 0 24px 60px rgba(21, 25, 23, .12); }
+.card-local { background: var(--dark); color: var(--dark-ink); border-color: rgba(255, 255, 255, .12); box-shadow: 0 24px 70px rgba(21, 25, 23, .2); }
+.card-local p { color: var(--dark-muted); }
+.card-cloud { grid-template-columns: 44px minmax(0, 1fr); }
+.card-icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(145deg, #ffb34f, #df7e2f); color: #fff; box-shadow: 0 8px 22px rgba(184, 107, 61, .28), inset 0 1px 0 rgba(255, 255, 255, .34); }
+.card-cloud .card-icon { background: linear-gradient(145deg, #8fa585, #68725c); box-shadow: 0 8px 22px rgba(104, 114, 92, .26), inset 0 1px 0 rgba(255, 255, 255, .3); }
+.card-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.card-copy { display: grid; gap: 6px; min-width: 0; }
+.card h2 { font-size: 16px; font-weight: 650; letter-spacing: -.01em; }
+.card p { color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+.card-local button { align-self: center; }
 
-h1, h2, p {
-  margin: 0;
-}
-
-.card {
-  border: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
-  border-radius: 16px;
-  padding: 16px;
-  display: grid;
-  gap: 10px;
-  background: color-mix(in srgb, Canvas 92%, CanvasText 8%);
-}
-
-.launcher-language {
-  display: grid;
-  gap: 4px;
-  font-size: 0.9rem;
-}
-
-input {
-  width: 100%;
-  font: inherit;
-  border-radius: 10px;
-  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
-  padding: 10px 12px;
-  background: Canvas;
-  color: CanvasText;
-  box-sizing: border-box;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-button {
-  font: inherit;
-  border-radius: 10px;
-  padding: 10px 14px;
-  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
-  cursor: pointer;
-}
-
-button.primary {
-  background: #255f4a;
-  color: #fff;
-  border-color: #255f4a;
-}
-
-button.secondary {
-  background: transparent;
-  color: inherit;
-}
-
-#cloudError {
-  color: #b00020;
-  font-size: 0.9rem;
-}
+input { width: 100%; height: 36px; margin-top: 8px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--paper) 70%, transparent); color: var(--ink); font: inherit; font-size: 13px; -webkit-user-select: text; user-select: text; transition: border-color 160ms ease, box-shadow 160ms ease; }
+input::placeholder { color: color-mix(in srgb, var(--muted) 82%, transparent); }
+input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
+.actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+button { height: 34px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); font: inherit; font-size: 13px; font-weight: 600; cursor: default; white-space: nowrap; transition: transform 160ms var(--ease-enter), opacity 160ms ease, background-color 160ms ease; }
+button:active { transform: scale(.97); }
+button.primary { background: var(--ink); color: var(--paper); border-color: transparent; }
+.card-local button.primary { background: #f7f7f7; color: #1d211f; }
+button.primary:hover { opacity: .9; }
+button.secondary { background: transparent; color: var(--ink); }
+button.secondary:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#cloudError { color: var(--error); font-size: 12px; }
+.guide-link { margin-right: auto; align-self: center; color: var(--accent); font-size: 12.5px; text-decoration: none; border-radius: 6px; }
+.guide-link:hover { text-decoration: underline; }
+.guide-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .card, button { transition: none; } }
+.launcher-header .launcher-version { margin-top: -2px; font-size: 11.5px; color: var(--muted); opacity: .8; font-variant-numeric: tabular-nums; }

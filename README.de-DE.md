@@ -256,9 +256,9 @@ Das Repository enthält jetzt eine erste Tauri-v2-macOS-Hülle mit zwei klaren O
 - **Lokal auf diesem Mac**: gebündeltes Frontend, kein Konto, lokale Speicherung.
 - **Mit Cloud verbinden**: öffnet nur deine eigene validierte Life-Ledger-Deployment-URL.
 
-Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern. Das ist Datei-Backup, keine Live-Synchronisierung, Konfliktauflösung oder automatische Zwei-Wege-Synchronisierung.
+Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern.
 
-Build-Schritte und Gatekeeper-Hinweise für unsignierte Apps stehen in [docs/macos-desktop.md](docs/macos-desktop.md).
+**Life Ledger für Mac 3.0:** `Life-Ledger-3.0.0-mac-arm64.zip` aus dem **[Mac-3.0.0-Release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** laden (Apple Silicon), entpacken und **Life Ledger** in „Programme“ ziehen. Die App ist nicht notarisiert: beim ersten Start **Systemeinstellungen → Datenschutz & Sicherheit → Trotzdem öffnen**. Lokal auf diesem Mac ohne Konto, oder mit deiner eigenen Cloud verbunden (Anmeldung per E-Mail-Code): Einträge, Fotos, Name und Profilbild sind dann auf Mac, Browser und Handy gleich. Moduswechsel jederzeit unter **Einstellungen → Daten → Zum Sync-Modus / Zum lokalen Modus wechseln**. Anleitung: [docs/macos-cloud.md](docs/macos-cloud.md). Build-Hinweise: [docs/macos-desktop.md](docs/macos-desktop.md).
 
 ## Datenhoheit
 

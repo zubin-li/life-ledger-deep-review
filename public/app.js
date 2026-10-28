@@ -111,7 +111,7 @@ const i18n = {
       cloudSaved: "云端已保存",
       networkRetry: "网络异常 · 自动重试",
       authExpired: "云同步需要登录 · 点击继续",
-      profileCloud: "D1 云端同步",
+      profileCloud: "云端同步",
       profileCloudBase: "CloudBase 云同步",
       profileSyncing: "正在连接云端",
       profileAuth: "云同步尚未连接",
@@ -426,9 +426,6 @@ const i18n = {
 ,
 "detailedSummary": "详细指标"
 },
-    reviewCanvas: {
-      kicker: "深度复盘", title: "复盘画布", openWeekly: "生成本周复盘", openMonthly: "生成月度复盘", periodAria: "选择复盘周期", weekly: "周度", monthly: "月度", week: "周", month: "月", generate: "重新生成草稿", evidenceKicker: "记录", evidenceTitle: "记录告诉我的事实", draftKicker: "复盘", draftTitle: "可编辑复盘", placeholder: "基于现有记录生成事实草稿，再写下你的理解。", autosaved: "● 已自动保存", copy: "复制 Markdown", done: "完成", close: "关闭复盘画布", copied: "复盘已复制", generated: "复盘草稿已生成", replaceConfirm: "重新生成会替换当前草稿，继续吗？", statDays: "有记录的天数", statHabits: "习惯完成", statFocus: "专注分钟", statGoals: "目标完成", noEvidence: "这个周期还没有文字记录。",
-    },
     habits: {
       kicker: "HABIT SYSTEM",
       title: "苟日新，日日新，又日新。",
@@ -749,7 +746,7 @@ const i18n = {
       cloudSaved: "Saved to cloud",
       networkRetry: "Network issue · retrying",
       authExpired: "Cloud sync needs sign-in · click to continue",
-      profileCloud: "D1 cloud sync",
+      profileCloud: "Cloud sync",
       profileCloudBase: "CloudBase sync",
       profileSyncing: "Connecting to cloud",
       profileAuth: "Cloud sync is not connected",
@@ -1064,9 +1061,6 @@ const i18n = {
 ,
 "detailedSummary": "Detailed metrics"
 },
-    reviewCanvas: {
-      kicker: "DEEP REVIEW", title: "Review Canvas", openWeekly: "Generate weekly review", openMonthly: "Generate monthly review", periodAria: "Choose review period", weekly: "Weekly", monthly: "Monthly", week: "Week", month: "Month", generate: "Regenerate draft", evidenceKicker: "RECORD", evidenceTitle: "What the record says", draftKicker: "REFLECTION", draftTitle: "Editable review", placeholder: "Generate a factual draft from your records, then add your perspective.", autosaved: "● autosaved", copy: "Copy Markdown", done: "Done", close: "Close review canvas", copied: "Review copied", generated: "Review draft generated", replaceConfirm: "Regenerating will replace the current draft. Continue?", statDays: "Recorded days", statHabits: "Habit check-ins", statFocus: "Focus minutes", statGoals: "Goals completed", noEvidence: "There are no written records for this period yet.",
-    },
     habits: {
       kicker: "HABIT SYSTEM",
       title: "Excellence is an art won by training and habituation.",
@@ -1387,7 +1381,7 @@ const i18n = {
       cloudSaved: "In der Cloud gespeichert",
       networkRetry: "Netzwerkproblem · neuer Versuch",
       authExpired: "Cloud-Sync benötigt Anmeldung · klicken",
-      profileCloud: "D1-Cloud-Sync",
+      profileCloud: "Cloud-Sync",
       profileCloudBase: "CloudBase-Sync",
       profileSyncing: "Cloud wird verbunden",
       profileAuth: "Cloud-Sync ist nicht verbunden",
@@ -1702,9 +1696,6 @@ const i18n = {
 ,
 "detailedSummary": "Detaillierte Kennzahlen"
 },
-    reviewCanvas: {
-      kicker: "TIEFER RÜCKBLICK", title: "Rückblick-Leinwand", openWeekly: "Wochenrückblick erstellen", openMonthly: "Monatsrückblick erstellen", periodAria: "Rückblickszeitraum wählen", weekly: "Wöchentlich", monthly: "Monatlich", week: "Woche", month: "Monat", generate: "Entwurf neu erstellen", evidenceKicker: "AUFZEICHNUNG", evidenceTitle: "Was die Aufzeichnungen zeigen", draftKicker: "REFLEXION", draftTitle: "Bearbeitbarer Rückblick", placeholder: "Erstelle einen sachlichen Entwurf aus deinen Einträgen und ergänze deine Sicht.", autosaved: "● automatisch gespeichert", copy: "Markdown kopieren", done: "Fertig", close: "Review Canvas schließen", copied: "Rückblick kopiert", generated: "Rückblicksentwurf erstellt", replaceConfirm: "Ein neuer Entwurf ersetzt den aktuellen Text. Fortfahren?", statDays: "Erfasste Tage", statHabits: "Gewohnheiten", statFocus: "Fokusminuten", statGoals: "Erledigte Ziele", noEvidence: "Für diesen Zeitraum gibt es noch keine Textaufzeichnungen.",
-    },
     habits: {
       kicker: "GEWOHNHEITSSYSTEM",
       title: "Es ist nicht genug zu wollen, man muss auch tun.",
@@ -2161,8 +2152,6 @@ let pendingImport = null;
 let pendingMediaImport = null;
 let pendingMoodDate = null;
 let pendingMood = "";
-let reviewCanvasScope = "week";
-let reviewCanvasKey = "";
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
 let demoLanguageSynced = null; // reconcile once on boot too (a stale stored tag stranded old-language text)
@@ -2270,7 +2259,8 @@ function applyLanguage() {
     button.setAttribute("title", deferredInstallPrompt ? tr("pwa.ready") : tr("pwa.install"));
     button.setAttribute("aria-label", tr("pwa.install"));
   });
-  setText("#mobileInstallLabel", tr("pwa.install"));
+  setText("#settingsInstallLabel", tr("pwa.install"));
+  setText("#settingsInstallHelp", languageText("放到桌面或主屏幕，像应用一样打开", "Add it to your desktop or home screen and open it like an app", "Auf Desktop oder Home-Bildschirm legen und wie eine App öffnen"));
   const languageSelect = $("#languageSelect");
   const languageFlag = $("#languageFlag");
   if (languageSelect) languageSelect.value = currentLang;
@@ -2376,7 +2366,6 @@ function applyLanguage() {
   setPlaceholder("#weeklyOutputText", tr("week.outputPlaceholder"));
   const weeklyFooter = $(".weekly-writing-panel footer span:last-child");
   if (weeklyFooter) weeklyFooter.textContent = tr("week.savedToWeek");
-  setText("#generateReview", tr("review.generate"));
   setText(".chart-panel .kicker", languageText("节奏", "RHYTHM", "RHYTHMUS"));
   setText(".chart-panel h3", tr("review.rhythm"));
   setText(".chart-panel .panel-meta", tr("review.byDate"));
@@ -2454,7 +2443,6 @@ function applyLanguage() {
   setText("#celebrationText", tr("celebration"));
   applyCloudBaseLanguage();
   applyReminderLanguage();
-  applyReviewCanvasLanguage();
   applyTheme();
   applySidebarState();
   renderIconPicker();
@@ -2505,27 +2493,6 @@ function applyStaticLanguage() {
   if (selectedHabitSettingsId && $("#habitInspectorForm") && !$("#habitInspectorForm").dataset.dirty) populateHabitInspectorForm(selectedHabitSettingsId);
   // focus label falls back to the sample's default topic, which is localized with the sample
   setText("#focusInlineLabel", focusTimer?.snapshot?.()?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));
-}
-function applyReviewCanvasLanguage() {
-  setText("#openWeeklyReviewCanvas", tr("reviewCanvas.openWeekly"));
-  setText("#generateReview", tr("reviewCanvas.openMonthly"));
-  setText("#reviewCanvasKicker", tr("reviewCanvas.kicker"));
-  setText("#reviewCanvasTitle", tr("reviewCanvas.title"));
-  setAria("#reviewScopeSwitch", tr("reviewCanvas.periodAria"));
-  $$('[data-review-scope]').forEach(button => { button.textContent = tr(`reviewCanvas.${button.dataset.reviewScope === "week" ? "weekly" : "monthly"}`); });
-  setText("#reviewCanvasWeekLabel", tr("reviewCanvas.week"));
-  setText("#reviewCanvasMonthLabel", tr("reviewCanvas.month"));
-  setText("#regenerateReviewCanvas", tr("reviewCanvas.generate"));
-  setText("#reviewEvidenceKicker", tr("reviewCanvas.evidenceKicker"));
-  setText("#reviewEvidenceTitle", tr("reviewCanvas.evidenceTitle"));
-  setText("#reviewDraftKicker", tr("reviewCanvas.draftKicker"));
-  setText("#reviewDraftTitle", tr("reviewCanvas.draftTitle"));
-  setText("#reviewCanvasAutosave", tr("reviewCanvas.autosaved"));
-  setPlaceholder("#reviewCanvasText", tr("reviewCanvas.placeholder"));
-  setText("#copyReviewCanvas", tr("reviewCanvas.copy"));
-  setText("#saveReviewCanvas", tr("reviewCanvas.done"));
-  setAria(".close-review-canvas", tr("reviewCanvas.close"));
-  populateReviewCanvasPeriods();
 }
 function applyFocusLanguage() {
   setText("#focusOverviewKicker", tr("focus.kicker"));
@@ -2947,19 +2914,20 @@ async function pullCloudState() {
   try {
     if (cloudProvider === "cloudbase") {
       const remote = await cloudBaseAdapter.getState();
-      if (!remote) { await pushCloudState(); return; }
+      if (!remote) { adoptCloudProfile(null); await pushCloudState(); return; }
       if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
         state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, longTermGoals: remote.payload.longTermGoals || [], weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         renderAll();
       }
+      adoptCloudProfile(remote?.payload); renderDeviceProfile();
       authExpired = false;
       setSaveMode("cloud", tr("save.cloudSaved"));
       return;
     }
     const response = await fetch(CLOUD_API, { headers: { accept: "application/json" } });
     if (isAuthFailure(response)) { markAuthExpired(); return; }
-    if (response.status === 404) { await pushCloudState(); return; }
+    if (response.status === 404) { adoptCloudProfile(null); await pushCloudState(); return; }
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const remote = await response.json();
     if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
@@ -2967,6 +2935,7 @@ async function pullCloudState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
     }
+    adoptCloudProfile(remote?.payload); renderDeviceProfile();
     setSaveMode("cloud", tr("save.cloudSaved"));
   } catch (error) {
     if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) {
@@ -4016,7 +3985,7 @@ function initVoiceReflection() {
   if (!button) return;
   button.hidden = !hostedCloudMode;
   button.addEventListener("click", () => { voiceTarget = null; }, true); // Today's own voice button always writes the day note
-  ["#weeklyOutputText", "#reviewCanvasText"].forEach(id => attachVoiceInput($(id)));
+  attachVoiceInput($("#weeklyOutputText"));
   if (!hostedCloudMode) return;
   if (!window.LifeLedgerVoiceCheckin || !dialog) {
     button.disabled = true;
@@ -5005,131 +4974,6 @@ function reviewPeriodLabel(scope, key) {
   return currentLang === "zh" ? `${year}年${month}月` : `${monthName(month - 1)} ${year}`;
 }
 
-function populateReviewCanvasPeriods() {
-  const weekSelect = $("#reviewCanvasWeek");
-  const monthSelect = $("#reviewCanvasMonth");
-  if (!weekSelect || !monthSelect) return;
-  const currentWeek = weekSelect.value || selectedWorkspaceWeek;
-  const currentMonth = monthSelect.value || monthKey(cursor);
-  const weekKeys = [];
-  const seen = new Set();
-  for (let date = new Date(2026, 0, 1, 12); date <= new Date(2035, 11, 31, 12); date.setDate(date.getDate() + 1)) {
-    const key = isoWeekKey(date);
-    if (seen.has(key) || Number(key.slice(0, 4)) < 2026 || Number(key.slice(0, 4)) > 2035) continue;
-    seen.add(key);
-    weekKeys.push(key);
-  }
-  weekSelect.innerHTML = weekKeys.map(key => `<option value="${key}">${escapeHtml(reviewPeriodLabel("week", key))}</option>`).join("");
-  monthSelect.innerHTML = Array.from({ length: 120 }, (_, index) => {
-    const year = 2026 + Math.floor(index / 12);
-    const month = index % 12 + 1;
-    const key = `${year}-${String(month).padStart(2, "0")}`;
-    return `<option value="${key}">${escapeHtml(reviewPeriodLabel("month", key))}</option>`;
-  }).join("");
-  weekSelect.value = weekKeys.includes(currentWeek) ? currentWeek : selectedWorkspaceWeek;
-  monthSelect.value = currentMonth;
-}
-
-function reviewEvidence(scope, key) {
-  const dates = datesForReview(scope, key);
-  const dateSet = new Set(dates);
-  const logs = dates.map(date => ({ date, log: getLog(date) }));
-  const recordedDays = logs.filter(({ log }) => log.completed?.length || log.mood || log.moodReason || log.note?.trim()).length;
-  const habitStats = state.habits.map(habit => {
-    const eligible = dates.filter(date => activeHabits(date).some(item => item.id === habit.id));
-    const count = eligible.filter(date => getLog(date).completed?.includes(habit.id)).length;
-    return { name: displayHabitName(habit), count, possible: eligible.length };
-  }).filter(item => item.possible || item.count);
-  const habitCheckins = habitStats.reduce((sum, item) => sum + item.count, 0);
-  const sessions = dates.length ? focusSessionsBetween(dates[0], dates.at(-1)) : [];
-  const focusMinutes = Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0));
-  const weekKeys = [...new Set(dates.map(date => isoWeekKey(parseDate(date))))];
-  const weeklyGoals = weekKeys.flatMap(week => state.weeklyGoals[week] || []);
-  const goals = weeklyGoals;
-  const goalsDone = goals.filter(goal => goal.done).length;
-  const unfinishedGoals = goals.filter(goal => !goal.done).map(goal => goal.text).filter(Boolean);
-  const moodCounts = logs.reduce((counts, { log }) => {
-    if (log.mood) counts[log.mood] = (counts[log.mood] || 0) + 1;
-    return counts;
-  }, {});
-  const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0];
-  const notes = logs.flatMap(({ date, log }) => [log.moodReason, log.note].filter(value => value?.trim()).map(value => ({ date, text: value.trim() })));
-  const outputs = weekKeys.map(week => state.weeklyOutputs[week]?.trim()).filter(Boolean);
-  const strongestDay = dates.map(date => ({ date, score: completionFor(date) })).sort((a, b) => b.score - a.score)[0];
-  return { scope, key, dates, dateSet, label: reviewPeriodLabel(scope, key), recordedDays, habitStats, habitCheckins, focusMinutes, goalsDone, goalsTotal: goals.length, unfinishedGoals, topMood, notes, outputs, strongestDay };
-}
-
-function buildLocalReviewDraft(evidence) {
-  const habitLines = evidence.habitStats.length
-    ? evidence.habitStats.map(item => `- ${item.name}: ${item.count}/${item.possible}`).join("\n")
-    : languageText("- 暂无习惯完成记录", "- No habit check-ins yet", "- Noch keine Gewohnheitseinträge");
-  const moodLine = evidence.topMood
-    ? languageText(`最常记录的感受：${moodLabel(evidence.topMood[0])}（${evidence.topMood[1]}天）`, `Most recorded mood: ${moodLabel(evidence.topMood[0])} (${evidence.topMood[1]} days)`, `Häufigste Stimmung: ${moodLabel(evidence.topMood[0])} (${evidence.topMood[1]} Tage)`)
-    : languageText("尚未记录心情。", "No mood was recorded.", "Es wurde noch keine Stimmung erfasst.");
-  const strongest = evidence.strongestDay && evidence.strongestDay.score > 0
-    ? `${formatDateChip(parseDate(evidence.strongestDay.date))} · ${evidence.strongestDay.score}%`
-    : languageText("暂无", "Not enough data", "Noch nicht genügend Daten");
-  const unfinished = evidence.unfinishedGoals.length ? evidence.unfinishedGoals.slice(0, 6).map(text => `- ${text}`).join("\n") : languageText("- 暂无未完成目标", "- No unfinished goals", "- Keine offenen Ziele");
-  const records = [...evidence.outputs, ...evidence.notes.map(item => `${formatDateChip(parseDate(item.date))}: ${item.text}`)].slice(0, 6);
-  const recordLines = records.length ? records.map(text => `- ${text}`).join("\n") : languageText("- 这个周期还没有留下文字。", "- No written record was left in this period.", "- Für diesen Zeitraum gibt es noch keinen Text.");
-  if (currentLang === "zh") return `# ${evidence.label}${evidence.scope === "week" ? "周度" : "月度"}复盘\n\n## 事实摘要\n- 有记录的天数：${evidence.recordedDays}/${evidence.dates.length}\n- 习惯完成：${evidence.habitCheckins} 次\n- 专注：${evidence.focusMinutes} 分钟\n- 目标：完成 ${evidence.goalsDone}/${evidence.goalsTotal}\n\n## 习惯轨迹\n${habitLines}\n\n## 值得看见\n- 完成度最高的一天：${strongest}\n- ${moodLine}\n\n## 尚未完成\n${unfinished}\n\n## 留下的内容\n${recordLines}\n\n## 我的理解\n- 什么值得继续？\n- 什么正在消耗我？\n- 下一周期最重要的一步是什么？\n`;
-  if (currentLang === "de") return `# ${evidence.label} · ${evidence.scope === "week" ? "Wochenrückblick" : "Monatsrückblick"}\n\n## Fakten\n- Erfasste Tage: ${evidence.recordedDays}/${evidence.dates.length}\n- Gewohnheiten: ${evidence.habitCheckins} Check-ins\n- Fokus: ${evidence.focusMinutes} Minuten\n- Ziele: ${evidence.goalsDone}/${evidence.goalsTotal} erledigt\n\n## Gewohnheiten\n${habitLines}\n\n## Was sichtbar wird\n- Stärkster Tag: ${strongest}\n- ${moodLine}\n\n## Offen\n${unfinished}\n\n## Hinterlassene Notizen\n${recordLines}\n\n## Meine Einordnung\n- Was sollte bleiben?\n- Was kostet unnötig Kraft?\n- Was ist der wichtigste nächste Schritt?\n`;
-  return `# ${evidence.label} · ${evidence.scope === "week" ? "Weekly Review" : "Monthly Review"}\n\n## Facts\n- Recorded days: ${evidence.recordedDays}/${evidence.dates.length}\n- Habits: ${evidence.habitCheckins} check-ins\n- Focus: ${evidence.focusMinutes} minutes\n- Goals: ${evidence.goalsDone}/${evidence.goalsTotal} completed\n\n## Habit trail\n${habitLines}\n\n## What stands out\n- Strongest day: ${strongest}\n- ${moodLine}\n\n## Still open\n${unfinished}\n\n## Notes from the period\n${recordLines}\n\n## My perspective\n- What deserves to continue?\n- What is draining energy?\n- What is the most important next step?\n`;
-}
-
-function reviewCanvasStore() {
-  return reviewCanvasScope === "week" ? state.weeklyReviews : state.reviews;
-}
-
-function renderReviewCanvas(generateIfEmpty = true) {
-  if (!reviewCanvasKey) return;
-  const evidence = reviewEvidence(reviewCanvasScope, reviewCanvasKey);
-  const stats = [
-    [tr("reviewCanvas.statDays"), `${evidence.recordedDays}/${evidence.dates.length}`],
-    [tr("reviewCanvas.statHabits"), evidence.habitCheckins],
-    [tr("reviewCanvas.statFocus"), evidence.focusMinutes],
-    [tr("reviewCanvas.statGoals"), `${evidence.goalsDone}/${evidence.goalsTotal}`],
-  ];
-  $("#reviewEvidenceStats").innerHTML = stats.map(([label, value]) => `<div><strong>${value}</strong><span>${escapeHtml(label)}</span></div>`).join("");
-  const notes = [...evidence.outputs, ...evidence.notes.map(note => note.text)].slice(0, 3);
-  $("#reviewEvidenceNotes").innerHTML = notes.length ? notes.map(note => `<p>${escapeHtml(note)}</p>`).join("") : `<p>${escapeHtml(tr("reviewCanvas.noEvidence"))}</p>`;
-  const store = reviewCanvasStore();
-  let text = store[reviewCanvasKey] || "";
-  if (!text && generateIfEmpty) {
-    text = buildLocalReviewDraft(evidence);
-    store[reviewCanvasKey] = text;
-    saveState();
-  }
-  $("#reviewCanvasText").value = text;
-}
-
-function setReviewCanvasScope(scope) {
-  reviewCanvasScope = scope === "month" ? "month" : "week";
-  $$('[data-review-scope]').forEach(button => button.classList.toggle("active", button.dataset.reviewScope === reviewCanvasScope));
-  $("#reviewCanvasWeekField").hidden = reviewCanvasScope !== "week";
-  $("#reviewCanvasMonthField").hidden = reviewCanvasScope !== "month";
-  reviewCanvasKey = reviewCanvasScope === "week" ? ($("#reviewCanvasWeek").value || selectedWorkspaceWeek) : ($("#reviewCanvasMonth").value || monthKey(cursor));
-  renderReviewCanvas();
-}
-
-function openReviewCanvas(scope = "week") {
-  populateReviewCanvasPeriods();
-  $("#reviewCanvasWeek").value = selectedWorkspaceWeek;
-  $("#reviewCanvasMonth").value = monthKey(cursor);
-  setReviewCanvasScope(scope);
-  $("#reviewCanvasDialog").showModal();
-}
-
-async function regenerateReviewCanvas() {
-  const current = $("#reviewCanvasText").value.trim();
-  if (current && !(await appConfirm(tr("reviewCanvas.replaceConfirm")))) return;
-  const text = buildLocalReviewDraft(reviewEvidence(reviewCanvasScope, reviewCanvasKey));
-  reviewCanvasStore()[reviewCanvasKey] = text;
-  $("#reviewCanvasText").value = text;
-  saveState();
-  showToast(tr("reviewCanvas.generated"));
-}
-
 function exportRange(scope) {
   const selected = $("#exportDate").value || isoDate(new Date());
   let start = null, end = null;
@@ -5947,7 +5791,6 @@ function bindEvents() {
   });
   $('#weekCalendarConnect').addEventListener('click',openGoogleCalendarSettings);
   $('#weekArchiveLink').addEventListener('click',()=>{selectedArchiveWeek=selectedWorkspaceWeek;syncJournalMonthOptions();$('#journalMonthFilter').value=isoDate(weekDatesFromKey(selectedWorkspaceWeek).monday).slice(0,7);setJournalMode('weeks');switchToView('timeline');});
-  $("#inspectorOpenWeeklyReviewCanvas")?.addEventListener("click", () => runSubmitButton($("#inspectorOpenWeeklyReviewCanvas"), () => openReviewCanvas("week")));
   $("#habitInspectorForm")?.addEventListener("submit", saveHabitFromInspector);
   $("#habitInspectorForm")?.elements.frequency?.addEventListener("change", updateHabitInspectorRules);
   $$('#habitInspectorForm input[name="trackingMode"]').forEach(input => input.addEventListener("change", updateHabitInspectorRules));
@@ -6211,24 +6054,6 @@ function bindEvents() {
     renderReview();
   }));
   $("#addPeriodTarget").addEventListener("click", () => openHabitDialog());
-  $("#openWeeklyReviewCanvas").addEventListener("click", () => openReviewCanvas("week"));
-  $("#generateReview").addEventListener("click", () => openReviewCanvas("month"));
-  $$('[data-review-scope]').forEach(button => button.addEventListener("click", () => setReviewCanvasScope(button.dataset.reviewScope)));
-  $("#reviewCanvasWeek").addEventListener("change", event => { reviewCanvasKey = event.target.value || selectedWorkspaceWeek; renderReviewCanvas(); });
-  $("#reviewCanvasMonth").addEventListener("change", event => { reviewCanvasKey = event.target.value || monthKey(cursor); renderReviewCanvas(); });
-  $("#regenerateReviewCanvas").addEventListener("click", regenerateReviewCanvas);
-  $("#reviewCanvasText").addEventListener("input", event => { reviewCanvasStore()[reviewCanvasKey] = event.target.value; saveState(); });
-  $("#copyReviewCanvas").addEventListener("click", async () => {
-    const text = $("#reviewCanvasText").value;
-    try { await navigator.clipboard.writeText(text); }
-    catch {
-      $("#reviewCanvasText").select();
-      document.execCommand("copy");
-    }
-    showToast(tr("reviewCanvas.copied"));
-  });
-  $$(".close-review-canvas").forEach(button => button.addEventListener("click", () => $("#reviewCanvasDialog").close()));
-  $("#reviewCanvasDialog").addEventListener("cancel", event => { event.preventDefault(); $("#reviewCanvasDialog").close(); });
   $("#reviewText").addEventListener("input", e => { state.reviews[monthKey(cursor)] = e.target.value; saveState(); fitReviewText(); });
   $("#weeklyGoalForm").addEventListener("submit", event => {
     event.preventDefault();
@@ -6610,9 +6435,9 @@ async function renderJournalFeed(version) {
   $('#journalAllMonths').disabled = !month;
   let entries = [], photos = [], photoError = false;
   if (mode === 'weeks') {
-    entries = [...new Set([...Object.keys(state.weeklyOutputs || {}), ...Object.keys(state.weeklyReviews || {})])]
+    entries = Object.keys(state.weeklyOutputs || {})
       .filter(key => /^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$/.test(key))
-      .map(key => { const {monday,sunday} = weekDatesFromKey(key); return {key,from:isoDate(monday),to:isoDate(sunday),text:state.weeklyReviews?.[key] || '',extra:state.weeklyOutputs?.[key] || '',label:formatWeekRange(key)}; });
+      .map(key => { const {monday,sunday} = weekDatesFromKey(key); return {key,from:isoDate(monday),to:isoDate(sunday),text:state.weeklyOutputs?.[key] || '',label:formatWeekRange(key)}; });
   } else if (mode === 'months') {
     entries = Object.entries(state.reviews || {}).filter(([key]) => /^\d{4}-(0[1-9]|1[0-2])$/.test(key))
       .map(([key,text]) => ({key,from:`${key}-01`,to:isoDate(new Date(Number(key.slice(0,4)),Number(key.slice(5,7)),0,12)),text,label:formatLocalizedDate(parseDate(`${key}-01`),{year:'numeric',month:'long'})}));
@@ -7765,14 +7590,11 @@ setText("#addLongTermGoal b", tr("longTerm.add"));
 setText("#inspectorWeekHeading", languageText("周复盘", "Weekly reflection", "Wochenreflexion"));
 setText("#inspectorWeekAutosave", tr("review.autosaved"));
 setPlaceholder("#weeklyOutputText", tr("week.outputPlaceholder"));
-setText("#inspectorOpenWeeklyReviewCanvas", tr("reviewCanvas.openWeekly"));
-setText("#generateReview", tr("review.generate"));
 setText("#analyticsMetricLabel", tr("review.selectMetrics"));
 setText("#addPeriodTarget", tr("review.addMetric"));
 setAria("#analyticsChartMode", tr("review.chartType"));
 setPlaceholder("#reviewText", tr("review.placeholder"));
 setText("#addHabitButton", tr("habits.add"));
-setText("#openWeeklyReviewCanvas", tr("modules.writeReview"));
 setText("#weekCompletedKicker", languageText("本周进展", "THIS WEEK", "DIESE WOCHE"));
 setText("#weekCompletedTitle", languageText('周日历', 'Week calendar', 'Wochenkalender'));
 setText("#weekInsightsKicker", languageText("数据洞察", "PROGRESS", "FORTSCHRITT"));
@@ -7862,13 +7684,27 @@ function fitReviewText() {
   field.style.height = `${field.scrollHeight + 2}px`;
 }
 
-// Sidebar profile (restored 10/27; first shipped in 858ede8, lost in the 10/18 revert): a display name and photo for
-// this device only — never the sign-in account and never synced records. Photo is cropped to a 192px square JPEG.
+// Sidebar profile (restored 10/27; first shipped in 858ede8, lost in the 10/18 revert): a display name and photo.
+// Local edition: this device only. Sync edition (10/27): stored in the synced records, the same on every device.
 // (function declarations + var: this block sits below the boot call, and applyLanguage reads the profile at boot)
 var PROFILE_KEY = "life-ledger-device-profile", deviceProfileCache = null, profileUpload = 0;
-function validAvatar(value) { return typeof value === "string" && value.length <= 150000 && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(value); }
+function validAvatar(value) { return typeof value === "string" && value.length <= 400000 && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(value); }
 function readDeviceProfile(raw) { try { const p = JSON.parse(raw) || {}; return { name: String(p.name || "").trim().slice(0, 60), avatar: validAvatar(p.avatar) ? p.avatar : "" }; } catch { return { name: "", avatar: "" }; } }
-function getDeviceProfile() { if (!deviceProfileCache) deviceProfileCache = readDeviceProfile(localStorage.getItem("life-ledger-device-profile")); return deviceProfileCache; }
+function profileFrame(f) { const n = (v, lo, hi, d) => Number.isFinite(Number(v)) ? Math.min(hi, Math.max(lo, Number(v))) : d; return { x: n(f?.x, 0, 100, 50), y: n(f?.y, 0, 100, 50), zoom: n(f?.zoom, 1, 3, 1) }; }
+// Online edition (user 10/27): name and photo travel with the synced records, so every device shows the same.
+// Local edition: they stay on this device as before.
+function getDeviceProfile() {
+  if (!deviceProfileCache) { deviceProfileCache = readDeviceProfile(localStorage.getItem("life-ledger-device-profile")); try { deviceProfileCache.frame = profileFrame(JSON.parse(localStorage.getItem("life-ledger-device-profile") || "{}").frame); } catch { deviceProfileCache.frame = profileFrame(); } }
+  if (cloudMode && state?.profile) { const p = readDeviceProfile(JSON.stringify(state.profile)); return { ...p, frame: profileFrame(state.profile.frame) }; }
+  return deviceProfileCache;
+}
+function adoptCloudProfile(remote) {
+  if (!cloudMode) return;
+  if (!state.profile && remote?.profile) state.profile = cloneData(remote.profile);
+  const local = deviceProfileCache || getDeviceProfile();
+  if (!state.profile && (local.name || local.avatar)) { state.profile = cloneData(local); saveState(); }
+}
+function placeAvatar(img, frame) { const f = profileFrame(frame); img.style.objectPosition = `${f.x}% ${f.y}%`; img.style.transformOrigin = `${f.x}% ${f.y}%`; img.style.transform = f.zoom > 1 ? `scale(${f.zoom})` : ""; }
 function renderDeviceProfile() {
   const deviceProfile = getDeviceProfile();
   const fallback = demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName");
@@ -7876,7 +7712,7 @@ function renderDeviceProfile() {
   const fill = node => {
     if (!node) return;
     node.replaceChildren();
-    if (deviceProfile.avatar) { const img = new Image(); img.src = deviceProfile.avatar; img.alt = ""; node.append(img); node.classList.add("has-photo"); }
+    if (deviceProfile.avatar) { const img = new Image(); img.src = deviceProfile.avatar; img.alt = ""; img.draggable = false; placeAvatar(img, deviceProfile.frame); node.append(img); node.classList.add("has-photo"); }
     else if (deviceProfile.name) { node.textContent = Array.from(deviceProfile.name)[0].toLocaleUpperCase(); node.classList.remove("has-photo"); }
     else { node.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 4.5h11a2 2 0 0 1 2 2v13H8a2 2 0 0 1-2-2v-13Z"/><path d="M8 4.5v15M11 9h5m-5 4h5"/></svg>'; node.classList.remove("has-photo"); }
   };
@@ -7888,15 +7724,21 @@ function renderDeviceProfile() {
   setText("#profileChoosePhoto", languageText(deviceProfile.avatar ? "更换头像" : "选择头像", deviceProfile.avatar ? "Change photo" : "Choose photo", deviceProfile.avatar ? "Bild ändern" : "Bild auswählen"));
   setText("#profileRemovePhoto", languageText("移除", "Remove", "Entfernen"));
   setText("#profileNameLabel", languageText("显示名称", "Display name", "Anzeigename"));
-  setText("#profileDeviceNote", languageText("名称和头像只保存在这台设备上，不会改动登录账户或同步的记录。PNG、JPEG 或 WebP，最大 5 MB。", "Name and photo stay on this device; they do not change your sign-in or synced records. PNG, JPEG or WebP, up to 5 MB.", "Name und Bild bleiben auf diesem Gerät; Anmeldung und synchronisierte Einträge bleiben unverändert. PNG, JPEG oder WebP, bis 5 MB."));
+  if (cloudMode) setText("#profileDeviceNote", languageText("名称和头像随云端同步，所有设备显示一样。拖动照片调整位置，滑块放大缩小。", "Name and photo sync through your cloud, so every device shows the same. Drag the photo to move it; use the slider to zoom.", "Name und Bild werden über deine Cloud synchronisiert. Ziehe das Bild zum Verschieben, der Regler zoomt."));
+  else setText("#profileDeviceNote", languageText("名称和头像只保存在这台设备上，不会改动登录账户或同步的记录。拖动照片调整位置，滑块放大缩小。PNG、JPEG 或 WebP，最大 5 MB。", "Name and photo stay on this device; they do not change your sign-in or synced records. Drag the photo to move it; use the slider to zoom. PNG, JPEG or WebP, up to 5 MB.", "Name und Bild bleiben auf diesem Gerät; Anmeldung und synchronisierte Einträge bleiben unverändert. PNG, JPEG oder WebP, bis 5 MB."));
   const input = $("#profileDisplayName");
   if (input) { input.placeholder = fallback; if (document.activeElement !== input) input.value = deviceProfile.name; }
   if ($("#profileRemovePhoto")) $("#profileRemovePhoto").hidden = !deviceProfile.avatar;
+  const zoom = $("#profilePhotoZoom");
+  if (zoom) { zoom.closest("label").hidden = !deviceProfile.avatar; zoom.value = String(deviceProfile.frame.zoom); zoom.setAttribute("aria-label", languageText("缩放头像", "Zoom photo", "Bild zoomen")); }
+  setText("#profileZoomLabel", languageText("缩放", "Zoom", "Zoom"));
 }
 function saveDeviceProfile(next) {
+  next = { name: next.name || "", avatar: next.avatar || "", frame: profileFrame(next.frame) };
   try { localStorage.setItem(PROFILE_KEY, JSON.stringify(next)); }
   catch { setText("#profileFeedback", languageText("无法保存，请检查设备存储空间。", "Could not save. Check device storage.", "Speichern fehlgeschlagen. Gerätespeicher prüfen.")); return; }
   deviceProfileCache = next;
+  if (cloudMode) { state.profile = cloneData(next); saveState(); }
   setText(".profile strong", next.name || (demoWorkspaceApi()?.isDemoActive(state) ? languageText("于朦胧", "Alan", "Alan") : tr("profileName")));
   renderDeviceProfile();
 }
@@ -7912,13 +7754,14 @@ async function chooseProfilePhoto(file) {
     const img = new Image(); img.src = url; await img.decode();
     if (current !== profileUpload) return;
     if (img.naturalWidth * img.naturalHeight > 25000000) throw new Error("image too large");
-    const canvas = document.createElement("canvas"); canvas.width = canvas.height = 192;
-    const ctx = canvas.getContext("2d"), side = Math.min(img.naturalWidth, img.naturalHeight);
-    ctx.fillStyle = "#e4edf4"; ctx.fillRect(0, 0, 192, 192);
-    ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 192, 192);
-    const avatar = canvas.toDataURL("image/jpeg", 0.85);
+    const scale = Math.min(1, 640 / Math.max(img.naturalWidth, img.naturalHeight));
+    const canvas = document.createElement("canvas"); canvas.width = Math.round(img.naturalWidth * scale); canvas.height = Math.round(img.naturalHeight * scale);
+    const ctx = canvas.getContext("2d"); ctx.fillStyle = "#e4edf4"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    let avatar = canvas.toDataURL("image/jpeg", 0.82);
+    if (!validAvatar(avatar)) avatar = canvas.toDataURL("image/jpeg", 0.6);
     if (!validAvatar(avatar)) throw new Error("invalid image");
-    saveDeviceProfile({ ...getDeviceProfile(), avatar });
+    saveDeviceProfile({ ...getDeviceProfile(), avatar, frame: profileFrame() });
   } catch {
     if (current === profileUpload) setText("#profileFeedback", languageText("图片无法读取，原头像已保留。请换一张较小的图片。", "Could not read this image. Your previous photo is unchanged. Try a smaller image.", "Bild nicht lesbar. Das bisherige Bild bleibt. Bitte ein kleineres Bild wählen."));
   } finally { URL.revokeObjectURL(url); $("#profilePhotoFile").value = ""; }
@@ -7930,7 +7773,27 @@ function initDeviceProfile() {
   $("#profileDisplayName").addEventListener("input", event => saveDeviceProfile({ ...getDeviceProfile(), name: event.target.value.trim().slice(0, 60) }));
   $("#profileChoosePhoto").addEventListener("click", () => $("#profilePhotoFile").click());
   $("#profilePhotoFile").addEventListener("change", event => void chooseProfilePhoto(event.target.files[0]));
-  $("#profileRemovePhoto").addEventListener("click", () => { ++profileUpload; saveDeviceProfile({ ...getDeviceProfile(), avatar: "" }); $("#profileChoosePhoto").focus(); });
+  $("#profileRemovePhoto").addEventListener("click", () => { ++profileUpload; saveDeviceProfile({ ...getDeviceProfile(), avatar: "", frame: profileFrame() }); $("#profileChoosePhoto").focus(); });
+  // Framing like the photo wall: drag the large preview to move, slider (or wheel / arrow keys) to zoom.
+  const stage = $("#profileDialogAvatar"), live = frame => { const img = stage.querySelector("img"); if (img) placeAvatar(img, frame); const side = $("#sidebarAvatar img"); if (side) placeAvatar(side, frame); };
+  let drag = null;
+  stage.addEventListener("pointerdown", event => { const p = getDeviceProfile(); if (!p.avatar) return; stage.setPointerCapture(event.pointerId); drag = { x: event.clientX, y: event.clientY, frame: { ...p.frame } }; });
+  stage.addEventListener("pointermove", event => {
+    if (!drag || !stage.hasPointerCapture(event.pointerId)) return;
+    const r = stage.getBoundingClientRect(), k = 100 / (r.width * drag.frame.zoom);
+    drag.next = profileFrame({ ...drag.frame, x: drag.frame.x - (event.clientX - drag.x) * k, y: drag.frame.y - (event.clientY - drag.y) * k });
+    live(drag.next);
+  });
+  const endDrag = () => { if (drag?.next) saveDeviceProfile({ ...getDeviceProfile(), frame: drag.next }); drag = null; };
+  stage.addEventListener("pointerup", endDrag); stage.addEventListener("pointercancel", endDrag);
+  stage.addEventListener("wheel", event => { const p = getDeviceProfile(); if (!p.avatar) return; event.preventDefault(); saveDeviceProfile({ ...p, frame: { ...p.frame, zoom: p.frame.zoom - event.deltaY * 0.004 } }); }, { passive: false });
+  stage.addEventListener("keydown", event => {
+    const p = getDeviceProfile(), d = { ArrowLeft: [-4, 0], ArrowRight: [4, 0], ArrowUp: [0, -4], ArrowDown: [0, 4] }[event.key];
+    if (!p.avatar || !d) return; event.preventDefault();
+    saveDeviceProfile({ ...p, frame: { ...p.frame, x: p.frame.x + d[0], y: p.frame.y + d[1] } });
+  });
+  $("#profilePhotoZoom").addEventListener("input", event => { const p = getDeviceProfile(); live({ ...p.frame, zoom: Number(event.target.value) }); });
+  $("#profilePhotoZoom").addEventListener("change", event => { const p = getDeviceProfile(); saveDeviceProfile({ ...p, frame: { ...p.frame, zoom: Number(event.target.value) } }); });
   dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
   window.addEventListener("storage", event => { if (event.key === PROFILE_KEY) { deviceProfileCache = readDeviceProfile(event.newValue); renderDeviceProfile(); } });
   renderDeviceProfile();
@@ -8098,6 +7961,12 @@ function initSettingsDialog() {
     dialog.showModal();
   });
   $("#settingsBackup").addEventListener("click", () => { dialog.close(); openBackupDialog(); });
+  const version = document.querySelector('script[src*="app.js?v="]')?.getAttribute("src").split("v=")[1];
+  if (version) setText("#settingsVersion", `Life Ledger ${version}`);
+  // In the Mac app the line names the app's own version too (3.0 = the Mac app with the sync edition).
+  void window.__TAURI__?.app?.getVersion?.().then(mac => setText("#settingsVersion", `Life Ledger for Mac ${mac} · ${languageText("页面", "page", "Seite")} ${version}`)).catch(() => {});
+  initModeSwitch(dialog);
+  $("#settingsInstallApp").addEventListener("click", () => dialog.close(), true);
   $("#settingsLoadDemo").addEventListener("click", () => {
     if (macLocal) { loadMacSample(); return; }
     localStorage.removeItem(demoDismissedStorageKey());
@@ -8146,3 +8015,55 @@ async function loadMacSample() {
 }
 window.LifeLedgerLoadMacSample = () => { if (desktopMode === "tauri-local") loadMacSample(); };
 
+// Settings → switch between the local edition and the sync edition (user 10/28: easy for people upgrading).
+// Mac app: back to its launcher (local or your own cloud). Browser: open the other edition; records do not move
+// by themselves, so the dialog offers a backup first and says how to bring them over.
+var CLOUD_URL_KEY = "life-ledger-cloud-url";
+function initModeSwitch(settings) {
+  const dialog = $("#modeDialog"), button = $("#settingsSwitchMode");
+  if (!dialog || !button) return;
+  const mac = Boolean(window.__TAURI__?.core?.invoke) && document.documentElement.classList.contains("ll-mac");
+  const toCloud = () => !cloudMode;
+  const label = () => {
+    setText("#settingsSwitchLabel", toCloud() ? languageText("切换到同步模式", "Switch to sync mode", "Zum Sync-Modus wechseln") : languageText("切换到本机模式", "Switch to local mode", "Zum lokalen Modus wechseln"));
+    setText("#settingsSwitchHelp", mac ? languageText("回到启动窗口，选择本机或你自己的云端", "Back to the start window: this Mac or your own cloud", "Zurück zum Startfenster: dieser Mac oder deine eigene Cloud")
+      : toCloud() ? languageText("连接你自己部署的云端，所有设备同步", "Connect your own deployment and sync every device", "Mit deiner eigenen Bereitstellung verbinden, alle Geräte synchron")
+      : languageText("只在这台设备上使用，不连接云端", "Use it on this device only, without the cloud", "Nur auf diesem Gerät nutzen, ohne Cloud"));
+  };
+  label();
+  settings.addEventListener("close", label);
+  settings.addEventListener("toggle", label);
+  button.addEventListener("click", () => {
+    settings.close();
+    if (mac) { void window.__TAURI__.core.invoke("switch_workspace").catch(() => {}); return; }
+    const cloud = toCloud(), guide = currentLang === "zh" ? "self-hosting.zh-CN.md" : "self-hosting.md";
+    setText("#modeDialogTitle", cloud ? languageText("切换到同步模式", "Switch to sync mode", "Zum Sync-Modus wechseln") : languageText("切换到本机模式", "Switch to local mode", "Zum lokalen Modus wechseln"));
+    setText("#modeIntro", cloud
+      ? languageText("同步模式打开你自己部署的 Life Ledger：用邮箱验证码登录，手机、电脑和 Mac 应用看到同一份记录。", "Sync mode opens your own Life Ledger deployment: sign in with an email code and your phone, computer and Mac app share the same records.", "Der Sync-Modus öffnet deine eigene Life-Ledger-Bereitstellung: mit E-Mail-Code anmelden, Handy, Computer und Mac-App teilen dieselben Einträge.")
+      : languageText("本机模式不连接云端，记录只保存在这台设备的浏览器里。", "Local mode does not use the cloud; records stay in this device's browser.", "Der lokale Modus nutzt keine Cloud; Einträge bleiben im Browser dieses Geräts."));
+    setText("#modeNote", cloud
+      ? languageText("记录不会自动带过去：先导出备份，打开同步版后在 设置 → 导入与导出 里导入。", "Records do not move by themselves: export a backup first, then import it in the sync edition under Settings → Import & export.", "Einträge wandern nicht von selbst: zuerst ein Backup exportieren, dann in der Sync-Version unter Einstellungen → Import & Export importieren.")
+      : languageText("云端记录不会被删除。想在本机版继续用：先导出备份，打开本机版后导入。", "Your cloud records are not deleted. To continue locally: export a backup first, then import it in the local edition.", "Deine Cloud-Einträge bleiben erhalten. Lokal weitermachen: zuerst ein Backup exportieren, dann in der lokalen Version importieren."));
+    const note = $("#modeNote");
+    if (cloud) { const a = document.createElement("a"); a.href = `https://github.com/zubin-li/life-ledger-deep-review/blob/main/docs/${guide}`; a.target = "_blank"; a.rel = "noopener"; a.textContent = languageText(" 还没有云端？看部署教程", " No cloud yet? Read the setup guide", " Noch keine Cloud? Zur Anleitung"); note.append(a); }
+    $("#modeUrlField").hidden = !cloud;
+    setText("#modeUrlLabel", languageText("你的云端地址", "Your cloud address", "Deine Cloud-Adresse"));
+    $("#modeUrl").value = localStorage.getItem(CLOUD_URL_KEY) || "";
+    setText("#modeFeedback", "");
+    setText("#modeBackup", languageText("先导出备份", "Export a backup first", "Zuerst Backup exportieren"));
+    setText("#modeGo", cloud ? languageText("打开同步版", "Open sync edition", "Sync-Version öffnen") : languageText("打开本机版", "Open local edition", "Lokale Version öffnen"));
+    dialog.showModal();
+  });
+  $("#modeBackup").addEventListener("click", () => { dialog.close(); openBackupDialog(); });
+  $("#modeGo").addEventListener("click", () => {
+    if (!toCloud()) { location.assign("https://zubin-li.github.io/life-ledger-deep-review/?mode=local"); return; }
+    let url;
+    try { url = new URL($("#modeUrl").value.trim()); } catch { url = null; }
+    const local = url && url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname);
+    if (!url || !(url.protocol === "https:" || local) || url.username || url.password) {
+      setText("#modeFeedback", languageText("请输入以 https:// 开头的完整地址。", "Enter a full address starting with https://.", "Bitte eine vollständige Adresse mit https:// eingeben.")); return;
+    }
+    localStorage.setItem(CLOUD_URL_KEY, url.origin + url.pathname);
+    location.assign(url.href);
+  });
+}

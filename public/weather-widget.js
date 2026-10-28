@@ -6,8 +6,13 @@
   const symbols={clear:'☀',cloud:'☁',rain:'☂',snow:'❄',storm:'ϟ'};
   const icons={clear:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',cloud:'<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',rain:'<path d="M16 13V8.5A4.5 4.5 0 0 0 7.2 7 4 4 0 0 0 7 15h10a3 3 0 0 0 0-6"/><path d="M8 19v2M12 18v2M16 19v2"/>',snow:'<path d="M17.5 13A4.5 4.5 0 0 0 16 4.3 6 6 0 0 0 4 9a4 4 0 0 0 3 4"/><path d="M8 16h.01M8 20h.01M12 18h.01M12 22h.01M16 16h.01M16 20h.01"/>',storm:'<path d="M6 16.3A4.5 4.5 0 0 1 7.5 7.6 6 6 0 0 1 19 9a4 4 0 0 1-1 7.6"/><path d="m13 12-3 5h4l-3 5"/>'};
   const locale=lang=>({en:'en-GB',zh:'zh-CN',de:'de-DE'}[lang]||'en-GB');
+  // The city's own wall clock right now, "YYYY-MM-DDTHH:MM" (user 10/27): Open-Meteo gives the city's UTC offset.
+  const cityNow=data=>Number.isFinite(data.utc_offset_seconds)?new Date(Date.now()+data.utc_offset_seconds*1000).toISOString().slice(0,16):data.current.time.slice(0,16);
+  let last=null;
   function dataWindow(data,day){
-    const times=data.hourly.time,today=data.current.time.slice(0,10);
+    const times=data.hourly.time,today=cityNow(data).slice(0,10);
+    const here=new Date(),deviceToday=`${here.getFullYear()}-${String(here.getMonth()+1).padStart(2,'0')}-${String(here.getDate()).padStart(2,'0')}`;
+    if(day===deviceToday)day=today; // "today" means the city's today, even across the date line
     if(!day||!times.some(time=>time===`${day}T00:00`))day=today; // outside the forecast range: show today
     const start=times.findIndex(time=>time===`${day}T00:00`);
     const hours=times.slice(start,start+25).map((time,i)=>({time,temperature:data.hourly.temperature_2m[start+i],probability:data.hourly.precipitation_probability?.[start+i]??0,code:data.hourly.weather_code?.[start+i]??0})).filter(h=>Number.isFinite(h.temperature));
@@ -23,7 +28,7 @@
     const hour=model.hours[index];if(!hour)return;
     const kind=model.kind(hour.code),host=$('#weatherDetail');host.dataset.kind=kind;
     host.replaceChildren();
-    for(const [cls,text] of [['weather-symbol',symbols[kind]],['weather-temp',`${Math.round(hour.temperature)}°`],['weather-time',`${timeLabel(hour.time)} · ${model.t(kind)} · ${hour.probability}%`]]){const n=document.createElement('span');n.className=cls;n.textContent=text;host.append(n);}
+    for(const [cls,text] of [['weather-symbol',symbols[kind]],['weather-temp',`${Math.round(hour.temperature)}°`],['weather-time',`${model.isToday&&index===model.currentIndex?cityNow(model.data).slice(11,16):timeLabel(hour.time)} · ${model.t(kind)} · ${hour.probability}%`]]){const n=document.createElement('span');n.className=cls;n.textContent=text;host.append(n);}
     const sym=host.querySelector('.weather-symbol');if(sym)sym.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[kind]}</svg>`;
     const input=$('#weatherHour');input.value=String(index);input.setAttribute('aria-valuetext',`${timeLabel(hour.time)} · ${Math.round(hour.temperature)}° · ${hour.probability}%`);
     $('#weatherPlot').setAttribute('aria-label',`${model.city.name} · ${input.getAttribute('aria-valuetext')}`);
@@ -37,13 +42,14 @@
     if(width<100||height<44)return;
     const mini=width<260; // small card: no y axis, the curve gets the width
     const dark=document.documentElement.dataset.theme==='dark';
-    const key=JSON.stringify([width,height,dark,model.language,model.hours]);
+    const clock=model.isToday?cityNow(model.data):'';
+    const key=JSON.stringify([width,height,dark,model.language,model.hours,clock]);
     if(key===signature)return;signature=key;
     plot?.destroy();host.replaceChildren();pointerActive=false;
     const ink=dark?'#9eafbe':'#738495',grid=dark?'rgba(200,220,235,.09)':'rgba(60,90,120,.09)';
     // x axis: the whole day in four quarters, 0 / 6 / 12 / 18 / 24 (user 10/22); a dashed line marks "now".
     const ticks=[0,6,12,18,24].filter(i=>i<model.hours.length);
-    const nowAt=model.isToday?(()=>{const [h,m]=[Number(model.data.current.time.slice(11,13)),new Date().getMinutes()];return Math.min(model.hours.length-1,h+m/60);})():null;
+    const nowAt=model.isToday?Math.min(model.hours.length-1,Number(clock.slice(11,13))+Number(clock.slice(14,16))/60):null;
     const accent=dark?'#72c7ff':'#339de1';
     plot=new root.LifeLedgerWidgetUI.uPlot({width,height,pxAlign:1,padding:[10,mini?12:14,0,mini?12:0],legend:{show:false},select:{show:false},
       cursor:{drag:{x:false,y:false},y:false,points:{size:7,fill:'#fff',stroke:'#249de8',width:2}},
@@ -63,9 +69,11 @@
     clear(){plot?.destroy();plot=null;model=null;signature='';$('#weatherPlot').replaceChildren();$('#weatherDetail').replaceChildren();$('#weatherDailyRange').textContent='';$('#heroWeather').hidden=true;},
     select(index){pointerActive=false;showHour(index);if(plot)plot.setCursor({left:plot.valToPos(model.index,'x'),top:0},false);},
     update(data,city,language,t,kind,day){
+      last=[data,city,language,t,kind,day];
       const window=dataWindow(data,day),hours=window.hours;if(hours.length<2)return;
-      const same=model?.data===data&&model?.day===window.day,now=hours.findIndex(h=>h.time.slice(0,13)===data.current.time.slice(0,13)),index=now>=0?now:12;
-      model={data,city,language,t,kind,...window,currentIndex:Math.max(0,index),index:same?model.index:Math.max(0,index)};
+      const nowHour=cityNow(data).slice(0,13),same=model?.data===data&&model?.day===window.day,now=hours.findIndex(h=>h.time.slice(0,13)===nowHour),index=now>=0?now:12;
+      const pinned=same&&model.index!==model.currentIndex; // the user picked another hour: keep it
+      model={data,city,language,t,kind,...window,currentIndex:Math.max(0,index),index:pinned?model.index:Math.max(0,index)};
       const currentAt=data.hourly.time.findIndex(time=>time.slice(0,13)===data.current.time.slice(0,13));
       const temp=Number.isFinite(data.current.temperature_2m)?data.current.temperature_2m:data.hourly.temperature_2m[currentAt];
       const hero=$('#heroWeather');hero.hidden=!Number.isFinite(temp);
@@ -74,7 +82,7 @@
       const range=window.isToday?({zh:'今日',en:'Today',de:'Heute'}[language]||'Today'):new Intl.DateTimeFormat(locale(language),{month:'numeric',day:'numeric'}).format(new Date(`${window.day}T12:00`));
       $('#weatherCityName').textContent=city.name;
       $('#weatherDailyRange').textContent=window.high==null?'':`${range} ↑${Math.round(window.high)}° ↓${Math.round(window.low)}°`;
-      const precip=hours.find(h=>(!window.isToday||h.time>=data.current.time)&&(h.probability>=60||['rain','snow','storm'].includes(kind(h.code))));
+      const precip=hours.find(h=>(!window.isToday||h.time.slice(0,13)>=nowHour)&&(h.probability>=60||['rain','snow','storm'].includes(kind(h.code))));
       $('#weatherPrecipHint').textContent=precip?`${t(kind(precip.code)==='snow'?'snowSoon':'rainSoon')} · ${timeLabel(precip.time)}`:t('noRain');
       $('#weatherHour').max=String(hours.length-1);
       paint();showHour(model.index);
@@ -85,6 +93,8 @@
     event.preventDefault();event.stopPropagation();
     root.LifeLedgerWeather.select(event.key==='Home'?0:event.key==='End'?model.hours.length-1:model.index+(event.key==='ArrowLeft'?-1:1));
   });
+  // Keep the clock, the dashed "now" line and the current hour live between forecast refreshes.
+  setInterval(()=>{if(last&&!document.hidden&&!pointerActive)root.LifeLedgerWeather.update(...last);},30000);
   new ResizeObserver(()=>{cancelAnimationFrame(resizePending);resizePending=requestAnimationFrame(paint);}).observe($('#weatherPlot'));
   new MutationObserver(()=>{signature='';requestAnimationFrame(paint);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 })(window);

@@ -26,11 +26,11 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=2.0.3" />
-    <link rel="stylesheet" href="./pages-858.css?v=2.0.3" />
-    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.3" />
-    <link rel="stylesheet" href="./today-cards.css?v=2.0.3" />
-    <link rel="stylesheet" href="./v202.css?v=2.0.3" />
+    <link rel="stylesheet" href="./styles.css?v=2.0.4" />
+    <link rel="stylesheet" href="./pages-858.css?v=2.0.4" />
+    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.4" />
+    <link rel="stylesheet" href="./today-cards.css?v=2.0.4" />
+    <link rel="stylesheet" href="./v202.css?v=2.0.4" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -70,9 +70,6 @@
             <button class="icon-button cloud-account-button" id="cloudAccountButton" type="button" title="云同步账户" aria-label="云同步账户">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.2 4.5 4.5 0 0 0 7 18Z"/><path d="m9.5 13 2 2 3.5-4"/></svg>
             </button>
-            <button class="icon-button pwa-install-button" id="installAppButton" type="button" data-install-app title="安装应用" aria-label="安装应用">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
-            </button>
             <span id="exportButtonAnchor" hidden></span>
             <button class="icon-button" id="exportButton" type="button" title="导入与导出" aria-label="导入与导出" hidden>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v12m0-12L5 6m3-3 3 3M16 21V9m0 12 3-3m-3 3-3-3"/><path d="M4 18v1a2 2 0 0 0 2 2h3m11-15V5a2 2 0 0 0-2-2h-3"/></svg>
@@ -92,10 +89,6 @@
           </button>
           <div class="top-actions" id="mobileTopActions">
             <span class="save-mode" id="saveMode"><i></i><span>本地预览</span></span>
-            <button class="secondary-button mobile-install-button" type="button" data-install-app>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 7h6M12 10v6m0 0-2-2m2 2 2-2"/></svg>
-              <span id="mobileInstallLabel">安装应用</span>
-            </button>
             <button class="icon-button settings-button" id="settingsButton" type="button" title="设置" aria-label="设置">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
             </button>
@@ -326,10 +319,6 @@
                 <span class="kicker" id="weekReviewKicker">DEEP REVIEW</span>
                 <h3 class="module-title" id="inspectorWeekHeading">Weekly Review</h3>
               </div>
-              <div class="week-review-actions">
-                <button class="primary-button review-canvas-trigger" id="openWeeklyReviewCanvas" type="button">Write review</button>
-                <button class="secondary-button review-canvas-trigger" id="inspectorOpenWeeklyReviewCanvas" type="button" hidden>Generate review</button>
-              </div>
               <button class="module-collapse-toggle icon-button" type="button" aria-expanded="true" aria-controls="module-body-review" aria-label="Collapse review module"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
             </header>
             <div class="module-body" id="module-body-review">
@@ -544,7 +533,7 @@
           <section class="review-narrative monthly-reflection-panel">
             <header class="review-narrative-header">
               <h3 id="reviewNarrativeTitle">Monthly reflection</h3>
-              <div class="reflection-actions"><span class="review-narrative-autosave" id="reviewNarrativeAutosave">Autosaved</span><button class="secondary-button review-generate-button" id="generateReview" type="button">Start guided review</button></div>
+              <div class="reflection-actions"><span class="review-narrative-autosave" id="reviewNarrativeAutosave">Autosaved</span></div>
             </header>
             <textarea id="reviewText" placeholder="What changed this month? What deserves to continue, and what should change next month?"></textarea>
           </section>
@@ -903,17 +892,31 @@
       </div>
     </dialog>
 
+    <dialog id="modeDialog" class="settings-dialog profile-dialog mode-dialog" aria-labelledby="modeDialogTitle">
+      <form method="dialog" class="settings-form" id="modeForm">
+        <header><h2 id="modeDialogTitle">切换到同步模式</h2><button class="icon-button close-settings" type="submit" value="cancel" aria-label="关闭">×</button></header>
+        <p class="mode-intro" id="modeIntro"></p>
+        <label class="profile-name-field" id="modeUrlField"><span id="modeUrlLabel">你的云端地址</span><input id="modeUrl" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://your-life-ledger.pages.dev"></label>
+        <p class="profile-feedback" id="modeFeedback" role="status"></p>
+        <p class="mode-note" id="modeNote"></p>
+        <footer class="mode-actions">
+          <button type="button" class="secondary-button" id="modeBackup">先导出备份</button>
+          <button type="button" class="primary-button" id="modeGo">打开同步版</button>
+        </footer>
+      </form>
+    </dialog>
     <dialog id="profileDialog" class="settings-dialog profile-dialog" aria-labelledby="profileDialogTitle">
       <form method="dialog" class="settings-form">
         <header><h2 id="profileDialogTitle">你的空间</h2><button class="icon-button close-settings" type="submit" aria-label="关闭">×</button></header>
         <div class="profile-editor-row">
-          <span class="avatar profile-dialog-avatar" id="profileDialogAvatar" aria-hidden="true"></span>
+          <span class="avatar profile-dialog-avatar" id="profileDialogAvatar" tabindex="0"></span>
           <div class="profile-editor-actions">
             <button type="button" class="secondary-button" id="profileChoosePhoto">选择头像</button>
             <button type="button" class="text-button" id="profileRemovePhoto">移除</button>
           </div>
         </div>
         <input id="profilePhotoFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <label class="profile-zoom-field" hidden><span id="profileZoomLabel">缩放</span><input id="profilePhotoZoom" type="range" min="1" max="3" step="0.01" value="1"></label>
         <label class="profile-name-field"><span id="profileNameLabel">显示名称</span><input id="profileDisplayName" type="text" maxlength="60" autocomplete="nickname"></label>
         <p class="profile-note" id="profileDeviceNote"></p>
         <p class="profile-feedback" id="profileFeedback" role="status"></p>
@@ -981,10 +984,13 @@
         <section class="settings-group">
           <h3 id="settingsDataTitle">数据</h3>
           <button type="button" class="settings-action" id="settingsBackup"><span id="settingsBackupLabel">导入与导出</span><small id="settingsBackupHelp">备份到文件，或从备份恢复</small></button>
+          <button type="button" class="settings-action" id="settingsSwitchMode"><span id="settingsSwitchLabel">切换到同步模式</span><small id="settingsSwitchHelp">连接你自己部署的云端，所有设备同步</small></button>
+          <button type="button" class="settings-action" id="settingsInstallApp" data-install-app><span id="settingsInstallLabel">安装为应用</span><small id="settingsInstallHelp">放到桌面或主屏幕，像应用一样打开</small></button>
           <button type="button" class="settings-action" id="settingsLoadDemo" hidden><span id="settingsLoadDemoLabel">载入示例数据</span><small id="settingsLoadDemoHelp">看看用了三个月后的样子</small></button>
           <button type="button" class="settings-action" id="settingsRestoreLocal" hidden><span id="settingsRestoreLabel">恢复之前的本机记录</span><small id="settingsRestoreHelp">换回示例数据出现之前你在这台设备上的记录</small></button>
           <button type="button" class="settings-action danger" id="settingsClearLocal"><span id="settingsClearLabel">清除本机数据，从空白开始</span><small id="settingsClearHelp">删除这台设备上的所有记录、照片和示例数据</small></button>
         </section>
+        <p class="settings-version" id="settingsVersion"></p>
       </form>
     </dialog>
     <dialog id="exportDialog" class="export-dialog">
@@ -1044,32 +1050,6 @@
       </div>
     </dialog>
 
-    <dialog id="reviewCanvasDialog" class="review-canvas-dialog">
-      <div class="review-canvas-shell">
-        <header><div><span class="kicker" id="reviewCanvasKicker">DEEP REVIEW</span><h2 id="reviewCanvasTitle">Review Canvas</h2></div><button class="icon-button close-review-canvas" type="button" aria-label="Close">×</button></header>
-        <div class="review-canvas-toolbar">
-          <div class="review-scope-switch" id="reviewScopeSwitch" role="group" aria-label="Review period">
-            <button type="button" data-review-scope="week">Weekly</button>
-            <button type="button" data-review-scope="month">Monthly</button>
-          </div>
-          <label id="reviewCanvasWeekField"><span id="reviewCanvasWeekLabel">Week</span><select id="reviewCanvasWeek"></select></label>
-          <label id="reviewCanvasMonthField"><span id="reviewCanvasMonthLabel">Month</span><select id="reviewCanvasMonth"></select></label>
-          <button class="secondary-button" id="regenerateReviewCanvas" type="button">Generate draft</button>
-        </div>
-        <div class="review-canvas-grid">
-          <aside class="review-evidence-panel">
-            <div><span class="kicker" id="reviewEvidenceKicker">EVIDENCE</span><h3 id="reviewEvidenceTitle">What the record says</h3></div>
-            <div class="review-evidence-stats" id="reviewEvidenceStats"></div>
-            <div class="review-evidence-notes" id="reviewEvidenceNotes"></div>
-          </aside>
-          <section class="review-draft-panel">
-            <div class="review-draft-heading"><div><span class="kicker" id="reviewDraftKicker">DRAFT</span><h3 id="reviewDraftTitle">Editable reflection</h3></div><span class="autosave" id="reviewCanvasAutosave">● autosaved</span></div>
-            <textarea id="reviewCanvasText" placeholder="Generate a factual draft, then make it yours."></textarea>
-          </section>
-        </div>
-        <footer><button class="secondary-button" id="copyReviewCanvas" type="button">Copy Markdown</button><span class="dialog-footer-spacer"></span><button class="primary-button close-review-canvas" id="saveReviewCanvas" type="button">Done</button></footer>
-      </div>
-    </dialog>
 
     <dialog id="cloudbaseAuthDialog" class="cloudbase-auth-dialog">
       <form method="dialog" id="cloudbaseAuthForm">
@@ -1104,23 +1084,23 @@
     </div>
     <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="./deployment-mode.js?v=2.0.3"></script>
-    <script src="./_init_tcb-env.js?v=2.0.3"></script>
-    <script src="./cloudbase-sync.js?v=2.0.3"></script>
-    <script src="./focus-timer.js?v=2.0.3"></script>
-    <script src="./voice-checkin.js?v=2.0.3"></script>
-    <script src="./photo-memories.js?v=2.0.3"></script>
-    <script src="./media-backup.js?v=2.0.3"></script>
+    <script src="./deployment-mode.js?v=2.0.4"></script>
+    <script src="./_init_tcb-env.js?v=2.0.4"></script>
+    <script src="./cloudbase-sync.js?v=2.0.4"></script>
+    <script src="./focus-timer.js?v=2.0.4"></script>
+    <script src="./voice-checkin.js?v=2.0.4"></script>
+    <script src="./photo-memories.js?v=2.0.4"></script>
+    <script src="./media-backup.js?v=2.0.4"></script>
     <script type="module" src="./demo-workspace.js?v=demo10"></script>
-    <script src="./habit-analytics.js?v=2.0.3"></script>
-    <script src="./interaction.js?v=2.0.3"></script>
-    <script src="./long-range.js?v=2.0.3"></script>
-    <script src="./app.js?v=2.0.3"></script>
+    <script src="./habit-analytics.js?v=2.0.4"></script>
+    <script src="./interaction.js?v=2.0.4"></script>
+    <script src="./long-range.js?v=2.0.4"></script>
+    <script src="./app.js?v=2.0.4"></script>
     <script src="./vendor/sortable.min.js"></script>
-    <script src="./hairline.js?v=2.0.3"></script>
-    <script src="./vendor/widget-ui.js?v=2.0.3"></script>
-    <script src="./today-widgets.js?v=2.0.3"></script>
-    <script src="./weather-widget.js?v=2.0.3"></script>
-    <script src="./today-cards.js?v=2.0.3"></script>
+    <script src="./hairline.js?v=2.0.4"></script>
+    <script src="./vendor/widget-ui.js?v=2.0.4"></script>
+    <script src="./today-widgets.js?v=2.0.4"></script>
+    <script src="./weather-widget.js?v=2.0.4"></script>
+    <script src="./today-cards.js?v=2.0.4"></script>
   </body>
 </html>

@@ -253,16 +253,14 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 
 请按[中国大陆 CloudBase 完整部署指南](docs/cloudbase-china.zh-CN.md)操作；英文说明见 [Mainland China deployment guide](docs/cloudbase-china.md)。
 
-### 6. macOS 桌面 MVP（可选外壳）
+### 6. Life Ledger Mac 版 3.0
 
-仓库已包含首个 Tauri v2 的 macOS 外壳，提供两个明确入口：
+从 **[Mac 3.0.0 发布页](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** 下载 `Life-Ledger-3.0.0-mac-arm64.zip`（Apple 芯片），解压后把 **Life Ledger** 拖进"应用程序"。应用没有经过苹果公证，第一次打开时到 **系统设置 → 隐私与安全性 → 仍要打开**。
 
-- **本机模式**：打开内置前端，不需要账号，保持本地优先存储。
-- **连接云端**：只打开你自己填写并通过校验的 Life Ledger 部署地址。
+- **本机模式**：不用账号、不用配置，记录只在这台 Mac 上。
+- **连接云端**：连接你自己的部署（上面第 4 种方式），用邮箱验证码登录。记录、照片、名称和头像在 Mac、浏览器和手机上都一样。
 
-在桌面本机窗口中，JSON 备份导入/导出使用 macOS 原生文件对话框，可直接选择 iCloud Drive 文件夹。这里的能力是“文件备份转移”，不是实时同步、冲突合并或自动双向同步。
-
-构建命令与未签名应用的 Gatekeeper 处理见 [docs/macos-desktop.md](docs/macos-desktop.md)。
+随时可以在 **设置 → 数据 → 切换到同步模式 / 切换到本机模式** 里换模式（网页版也有）。五分钟教程：[Mac 联网版配置](docs/macos-cloud.zh-CN.md)。构建说明：[docs/macos-desktop.md](docs/macos-desktop.md)。
 
 ## 数据归属
 

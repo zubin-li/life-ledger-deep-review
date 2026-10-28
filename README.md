@@ -236,16 +236,14 @@ See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/clou
 
 CloudBase is the recommended mainland-China path. It uses Tencent-hosted static files, email OTP authentication, and a creator-only document collection in **your own** CloudBase environment.
 
-### 6. macOS desktop MVP (optional shell)
+### 6. Life Ledger for Mac 3.0
 
-The repository now includes a first Tauri v2 macOS shell with two explicit choices:
+Download `Life-Ledger-3.0.0-mac-arm64.zip` from the **[Mac 3.0.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** (Apple Silicon), unzip it and move **Life Ledger** to Applications. The app is not notarised: the first time, open **System Settings → Privacy & Security → Open Anyway**.
 
-- **Local on this Mac**: bundled frontend, no account, local-first storage.
-- **Connected cloud**: open only your own validated Life Ledger deployment URL.
+- **Local on this Mac**: no account, no setup; records stay on this Mac.
+- **Connected cloud**: your own deployment (option 4 above), signed in with an email code. Records, photos, your name and profile photo are the same on the Mac, in the browser and on your phone.
 
-JSON backup in the local desktop window uses native macOS file dialogs, including iCloud Drive folder selection as file backup. This is backup transfer, not live sync or conflict resolution.
-
-Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
+Change mode any time in **Settings → Data → Switch to sync mode / Switch to local mode** (also in the browser editions). Five-minute guide: [Mac online edition](docs/macos-cloud.md). Build notes: [docs/macos-desktop.md](docs/macos-desktop.md).
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 

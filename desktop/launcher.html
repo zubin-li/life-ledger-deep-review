@@ -4,42 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <title>Life Ledger · Deep Review</title>
+    <title>Life Ledger</title>
     <link rel="stylesheet" href="./launcher.css" />
   </head>
   <body>
+    <header class="launcher-bar" data-tauri-drag-region>
+      <span class="launcher-bar-title" data-tauri-drag-region>Life Ledger</span>
+      <label for="languageSelect" class="launcher-language">
+        <span id="languageLabel" class="sr-only">Language</span>
+        <select id="languageSelect" aria-label="Launcher language">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </label>
+    </header>
     <main class="launcher">
-      <header class="launcher-header">
-        <img src="./assets/app-icon.svg" alt="" width="48" height="48" />
-        <div>
-          <h1 id="title">Life Ledger · Deep Review</h1>
-          <p id="subtitle"></p>
-        </div>
-        <label for="languageSelect" class="launcher-language">
-          <span id="languageLabel">Language</span>
-          <select id="languageSelect" aria-label="Launcher language">
-            <option value="en">English</option>
-            <option value="zh">简体中文</option>
-            <option value="de">Deutsch</option>
-          </select>
-        </label>
+      <header class="launcher-header" data-tauri-drag-region>
+        <img src="./assets/app-icon.svg" alt="" width="64" height="64" />
+        <h1 id="title">Life Ledger</h1>
+        <p id="subtitle"></p>
+        <p id="appVersion" class="launcher-version"></p>
       </header>
 
-      <section class="card">
-        <h2 id="localTitle"></h2>
-        <p id="localDesc"></p>
+      <section class="card card-local">
+        <span class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+        </span>
+        <div class="card-copy">
+          <h2 id="localTitle"></h2>
+          <p id="localDesc"></p>
+        </div>
         <button id="openLocal" class="primary" type="button"></button>
       </section>
 
-      <section class="card">
-        <h2 id="cloudTitle"></h2>
-        <p id="cloudDesc"></p>
-        <label for="cloudUrl" id="cloudLabel"></label>
-        <input id="cloudUrl" type="url" placeholder="https://your-life-ledger.example.com" />
-        <p id="cloudError" role="alert" hidden></p>
-        <div class="actions">
-          <button id="openCloud" class="primary" type="button"></button>
-          <button id="forgetCloud" class="secondary" type="button"></button>
+      <section class="card card-cloud">
+        <span class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.2 4.5 4.5 0 0 0 7 18Z"/></svg>
+        </span>
+        <div class="card-copy">
+          <h2 id="cloudTitle"></h2>
+          <p id="cloudDesc"></p>
+          <label for="cloudUrl" id="cloudLabel" class="sr-only"></label>
+          <input id="cloudUrl" type="url" placeholder="https://your-life-ledger.example.com" autocomplete="off" spellcheck="false" />
+          <p id="cloudError" role="alert" hidden></p>
+          <div class="actions">
+            <a id="setupGuide" class="guide-link" href="#"></a>
+            <button id="forgetCloud" class="secondary" type="button"></button>
+            <button id="openCloud" class="primary" type="button"></button>
+          </div>
         </div>
       </section>
     </main>

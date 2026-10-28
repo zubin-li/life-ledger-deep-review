@@ -1,0 +1,43 @@
+/* Life Ledger for Mac — the web desktop design, as a Mac window.
+   Injected by the app (Tauri) into its own window only; the web page never loads this file.
+   Rule: the 2.0 desktop design stays exactly as it is. This file only removes browser/phone tells and makes
+   room for the real macOS traffic lights (the system title bar is hidden; the page fills the window). */
+
+html.ll-mac { overscroll-behavior: none; }
+html.ll-mac body { overscroll-behavior: none; }
+
+/* The OS paints the traffic lights at the top-left. The web sidebar is a floating dark card; the lights sit
+   inside its top-left corner, so the brand row moves down below them. */
+html.ll-mac .sidebar { padding-top: 54px; }
+html.ll-mac .sidebar-toggle { top: 56px; }
+@media (min-width: 761px) {
+  html.ll-mac body.sidebar-collapsed .sidebar-toggle { top: 104px; }
+  html.ll-mac body.sidebar-collapsed .brand { padding-bottom: 72px; }
+}
+/* short windows: give back the height the lights took, so the sidebar's last item is never cut off */
+@media (max-height: 780px) { html.ll-mac .brand { padding-bottom: 16px; } }
+
+/* page titles never break inside a word ("Toda|y"): the title keeps its width, the toolbar wraps instead.
+   (The web shows the same break at these widths; the Mac window's minimum width sits right in that range.) */
+@media (min-width: 761px) {
+  html.ll-mac .topbar { flex-wrap: wrap; row-gap: 14px; }
+  html.ll-mac .topbar-copy { flex: 0 0 auto; }
+  html.ll-mac .topbar h1 { overflow-wrap: normal; white-space: nowrap; }
+  html.ll-mac .topbar .top-actions { flex-wrap: nowrap; margin-left: auto; }
+}
+html.ll-mac.ll-fullscreen .sidebar { padding-top: 28px; }
+html.ll-mac.ll-fullscreen .sidebar-toggle { top: 29px; }
+@media (min-width: 761px) { html.ll-mac.ll-fullscreen body.sidebar-collapsed .sidebar-toggle { top: 78px; } }
+
+/* Invisible strip along the top edge: drag the window from anywhere up there (double-click zooms). */
+html.ll-mac .ll-drag { position: fixed; z-index: 2147483000; inset: 0 0 auto 0; height: 28px; }
+html.ll-mac.ll-fullscreen .ll-drag { display: none; }
+
+/* No phone/PWA furniture in an installed app. */
+html.ll-mac :is(.pwa-install-button, .mobile-install-button) { display: none !important; }
+
+/* Mac conventions: chrome text (sidebar, toolbar, buttons, tabs) is not selectable — written notes still are;
+   controls use the arrow cursor; images do not drag out of the window. */
+html.ll-mac :is(.sidebar, .topbar, button, [role="button"], [role="tab"], .nav-item, label, summary) { -webkit-user-select: none; user-select: none; }
+html.ll-mac :is(button, [role="button"], select, summary, label, .nav-item, a) { cursor: default; }
+html.ll-mac img { -webkit-user-drag: none; }

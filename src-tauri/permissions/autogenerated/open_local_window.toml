@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-open-local-window"
+description = "Enables the open_local_window command without any pre-configured scope."
+commands.allow = ["open_local_window"]
+
+[[permission]]
+identifier = "deny-open-local-window"
+description = "Denies the open_local_window command without any pre-configured scope."
+commands.deny = ["open_local_window"]
