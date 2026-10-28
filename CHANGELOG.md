@@ -4,6 +4,21 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.6] - 2026-10-28
+
+### Fixed
+
+- **Cloud edition: photo wall photos and videos now sync across devices.** They are stored privately in your own Cloudflare R2 (the same bucket and limits as day photos); the order and the chosen focus point travel with your records. The first browser that opens 2.0.6 with photos on its wall brings them to the cloud. Wall settings (auto-play, fill or fit) sync too.
+- **Weather city:** the forecast for the synced city is loaded even when the weather card is hidden, so the header chip shows the same city on every device.
+- Coming back to the app window (not only the browser tab) picks up changes from other devices.
+
+## [2.0.5] - 2026-10-28
+
+### Fixed
+
+- **Cloud edition: the Today layout and the weather city now sync across devices.** Card order, sizes and hidden cards, the weather city, the heatmap colours, the habit shown in the frequency card, the page order and the calendar view travel with your records, so the browser, the phone and the Mac app look the same. Coming back to the window picks up changes made on another device. The first browser to open after the update shares the choices you already made; theme, font and language stay per device. The local edition is unchanged.
+- The weather chart no longer throws an error while it switches to another city.
+
 ## [2.0.4] - 2026-10-28
 
 ### Added

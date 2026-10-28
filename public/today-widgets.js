@@ -43,7 +43,8 @@
   const NS = new URLSearchParams(location.search).get("local-preview") ? `-preview-${new URLSearchParams(location.search).get("local-preview")}` : "";
   window.LifeLedgerStorageSuffix = NS;
   const read = k => { try { return JSON.parse(localStorage.getItem(k + NS)); } catch { return null; } };
-  const save = (k, v) => { try { localStorage.setItem(k + NS, JSON.stringify(v)); } catch {} };
+  // Choices listed in LifeLedgerPrefs sync in the cloud edition (layout, city, palette, habit shown).
+  const save = (k, v) => { try { localStorage.setItem(k + NS, JSON.stringify(v)); } catch {} if (!NS && window.LifeLedgerPrefs?.keys().includes(k)) window.LifeLedgerPrefs.changed(); };
   const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Line icons (24px, 1.8 stroke) for card chips — same drawing style as the habit icons.
@@ -205,7 +206,6 @@
     const key = `${city.latitude},${city.longitude},31-16`, cache = read("life-ledger-weather-cache");
     if (!forecast && cache?.city === key && valid(cache.data)) { forecast = cache.data; stamp = cache.stamp; drawWeather(); }
     if (!force && forecast && Date.now() - stamp < 30 * 60 * 1000) { status(`${t("updated")} ${forecast.current.time.slice(11, 16)}`); return; }
-    if (!shown("weather")) return;
     const asked = city; busy = true; status(t("loading"), !forecast);
     try {
       const url = new URL("https://api.open-meteo.com/v1/forecast");
@@ -246,12 +246,63 @@
   // ---- photo wall (from 858ede8 today-extras wall; tiny IndexedDB store) ----
   // Any number of walls (user 10/21): each instance has its own store and prefs (suffix "", "-2", "-3"…).
   function makeWall(W, id, suffix) {
-    const store = (() => {
+    const local = (() => {
       let db;
       const open = () => db ||= new Promise((ok, no) => { const r = indexedDB.open("life-ledger-wall" + suffix + NS, 1); r.onupgradeneeded = () => r.result.createObjectStore("photos", { keyPath: "id" }); r.onsuccess = () => { r.result.onversionchange = () => { r.result.close(); db = null; }; ok(r.result); }; r.onerror = () => no(r.error); });
       const run = (mode, fn) => open().then(d => new Promise((ok, no) => { const tx = d.transaction("photos", mode), q = fn(tx.objectStore("photos")); tx.oncomplete = () => ok(q.result); tx.onerror = tx.onabort = () => no(tx.error || q.error); }));
       return { all: () => run("readonly", s => s.getAll()), put: row => run("readwrite", s => s.put(row)), delete: id => run("readwrite", s => s.delete(id)) };
     })();
+    // Cloud edition (user 10/28): files in your own R2 (/api/wall/<id>), the list in the synced record (state.wallMedia),
+    // so every device shows the same wall. The first device that opens with photos in its browser brings them up.
+    const cloudOn = () => !NS && typeof cloudMode !== "undefined" && cloudMode && typeof cloudProvider !== "undefined" && cloudProvider === "cloudflare";
+    const MEDIA_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const cloud = (() => {
+      const blobs = new Map();
+      const list = () => (Array.isArray(state.wallMedia?.[id]) ? state.wallMedia[id] : null);
+      const writeList = rows => { state.wallMedia = { ...(state.wallMedia || {}), [id]: rows.map(({ blob, ...row }) => row) }; saveState(); };
+      async function upload(row) {
+        const r = await fetch(`/api/wall/${row.id}`, { method: "PUT", headers: { "content-type": row.type }, body: row.blob, credentials: "same-origin" });
+        if (!r.ok) throw new Error(`upload ${r.status}`);
+        blobs.set(row.id, row.blob);
+      }
+      async function blob(row) {
+        if (blobs.has(row.id)) return blobs.get(row.id);
+        const r = await fetch(`/api/wall/${row.id}`, { credentials: "same-origin" });
+        if (!r.ok) throw new Error(`read ${r.status}`);
+        const b = await r.blob(); blobs.set(row.id, b); return b;
+      }
+      return {
+        list,
+        async all() {
+          let rows = list();
+          if (!rows) {
+            // Seed only after the cloud record has been read, so another device's wall is never overwritten.
+            if (!window.LifeLedgerCloudPulled) { waiting = true; return []; }
+            waiting = false;
+            const mine = (await local.all().catch(() => [])).filter(r => MEDIA_ID.test(r.id) && r.blob).sort((a, b) => a.created - b.created);
+            if (!mine.length) return [];
+            for (const row of mine) await upload(row);
+            if (!list()) writeList(mine);
+            rows = list() || [];
+          }
+          const out = [];
+          for (const row of rows) { try { out.push({ ...row, blob: await blob(row) }); } catch {} }
+          return out;
+        },
+        async put(row) {
+          const rows = list() || [], known = rows.some(r => r.id === row.id);
+          if (!known) await upload(row);
+          writeList(known ? rows.map(r => (r.id === row.id ? row : r)) : rows.concat(row));
+        },
+        async delete(mediaId) {
+          const r = await fetch(`/api/wall/${mediaId}`, { method: "DELETE", credentials: "same-origin" });
+          if (!r.ok) throw new Error(`delete ${r.status}`);
+          blobs.delete(mediaId); writeList((list() || []).filter(row => row.id !== mediaId));
+        },
+      };
+    })();
+    const store = { all: () => (cloudOn() ? cloud : local).all(), put: row => (cloudOn() ? cloud : local).put(row), delete: mediaId => (cloudOn() ? cloud : local).delete(mediaId) };
+    let wallSig = "", waiting = false;
     let wall = [], wallAt = 0, wallTimer, wallUrl, wallLoaded = false, wallHold = false;
     const wallPrefs = () => ({ auto: true, fit: "cover", ...(read("life-ledger-wall-prefs" + suffix) || {}) });
     const pos = row => `${row.x ?? 50}% ${row.y ?? 50}%`;
@@ -305,9 +356,9 @@
     }
     function loadWall() {
       if (wallLoaded || !shown(id)) return;
-      wallLoaded = true;
+      wallLoaded = true; wallSig = cloudOn() ? JSON.stringify(cloud.list()) : "";
       store.all().then(rows => {
-        wall = rows.sort((a, b) => a.created - b.created); renderWall();
+        wall = rows.sort((a, b) => a.created - b.created); wallAt = Math.min(wallAt, Math.max(0, wall.length - 1)); renderWall();
       }).catch(() => {});
     }
     // On the card: tap the sides, swipe, or arrow keys switch; tapping an empty wall opens its settings.
@@ -388,7 +439,9 @@
       }
       wallLoaded = false; window.LifeLedgerTodayCards?.show(id); loadWall();
     }
-    return { renderWall, loadWall, wallSettings, seedDemo, W };
+    // Another device changed this wall (cloud edition): load it again.
+    function sync() { if (cloudOn() && wallLoaded && (waiting || JSON.stringify(cloud.list()) !== wallSig)) { wallLoaded = false; loadWall(); } }
+    return { renderWall, loadWall, wallSettings, seedDemo, sync, W };
   }
 
   const walls = { wall: makeWall(cards.wall, "wall", ""), wall2: makeWall(cards.wall2, "wall2", "-2"), wall3: makeWall(cards.wall3, "wall3", "-3") };
@@ -515,6 +568,16 @@
     { id: "photos", el: cards.photos, sizes: ["M", "L"], hidden: true, onShow: photos },
     { id: "focus", el: cards.focus, sizes: ["S", "M"], hidden: false, onShow: focus },
   ];
-  window.LifeLedgerTodayWidgets = { render, text: t };
+  // Another device changed the city or a card choice (cloud edition): read them again and redraw.
+  function reload() {
+    const next = read("life-ledger-weather-city");
+    if (JSON.stringify(next) !== JSON.stringify(city)) {
+      city = next && Number.isFinite(next.latitude) && Number.isFinite(next.longitude) ? next : null;
+      forecast = null; window.LifeLedgerWeather?.clear(); drawWeather(); void loadWeather(true);
+    }
+    freqPick = read("life-ledger-freq-habit");
+    render();
+  }
+  window.LifeLedgerTodayWidgets = { render, reload, syncWalls: () => Object.values(walls).forEach(w => w.sync()), text: t };
   setTimeout(render);
 })();

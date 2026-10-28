@@ -2920,7 +2920,7 @@ async function pullCloudState() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         renderAll();
       }
-      adoptCloudProfile(remote?.payload); renderDeviceProfile();
+      adoptCloudProfile(remote?.payload); renderDeviceProfile(); applyCloudPrefs();
       authExpired = false;
       setSaveMode("cloud", tr("save.cloudSaved"));
       return;
@@ -2935,7 +2935,7 @@ async function pullCloudState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
     }
-    adoptCloudProfile(remote?.payload); renderDeviceProfile();
+    adoptCloudProfile(remote?.payload); renderDeviceProfile(); applyCloudPrefs();
     setSaveMode("cloud", tr("save.cloudSaved"));
   } catch (error) {
     if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) {
@@ -4207,6 +4207,7 @@ function renderCalendarLegend() {
 function setCalendarViewMode(mode) {
   calendarViewMode = mode === "heatmap" ? "heatmap" : "mood";
   localStorage.setItem(CALENDAR_VIEW_KEY, calendarViewMode);
+  notePrefChange();
   renderCalendar();
 }
 
@@ -6208,9 +6209,17 @@ function bindEvents() {
   window.addEventListener("online", () => {
     if (cloudMode && !authExpired) pushCloudState();
   });
+  // Cloud edition: coming back to the window (tab switch or app switch on the Mac) picks up other devices' changes.
+  let lastReturnPull = 0;
+  const pullOnReturn = () => {
+    if (!cloudMode || authExpired || Date.now() - lastReturnPull < 10000) return;
+    lastReturnPull = Date.now(); void pullCloudState();
+  };
+  window.addEventListener("focus", pullOnReturn);
   document.addEventListener("visibilitychange", () => {
     focusTimer?.reconcile();
     if (!document.hidden) {
+      pullOnReturn();
       maybeSendDailyReminder();
       if (focusTimer?.snapshot()?.status === "running") acquireFocusWakeLock();
     }
@@ -7856,6 +7865,7 @@ function initNavOrderSettings() {
     if (to < 0 || to >= order.length) return;
     order.splice(to, 0, order.splice(from, 1)[0]);
     try { localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order)); } catch {}
+    notePrefChange();
     applyNavOrder();
     renderNavOrderSettings();
     list.querySelector(`li[data-id="${id}"] [data-move="${button.dataset.move}"]:not(:disabled)`)?.focus();
@@ -8067,3 +8077,54 @@ function initModeSwitch(settings) {
     location.assign(url.href);
   });
 }
+
+// Cloud edition (user 10/28): the Today layout, weather city and similar view choices travel with the records,
+// so the browser, the phone and the Mac app look the same. Local edition: they stay on the device as before.
+// Stored as the raw localStorage strings under state.prefs; theme, font and language stay per device.
+function syncedPrefKeys() {
+  return ["life-ledger-web-today-cards-v4", "life-ledger-weather-city", "life-ledger-heatmap-palette", "life-ledger-freq-habit", "life-ledger-nav-order", "life-ledger-calendar-view",
+    "life-ledger-wall-prefs", "life-ledger-wall-prefs-2", "life-ledger-wall-prefs-3"];
+}
+function localPrefs({ seed = false } = {}) {
+  const prefs = {};
+  for (const key of syncedPrefKeys()) {
+    const value = localStorage.getItem(key);
+    if (value == null) continue;
+    // Never share an untouched default layout as if it were a choice.
+    if (seed && key === "life-ledger-web-today-cards-v4" && window.LifeLedgerTodayCards?.isDefault?.() !== false) continue;
+    prefs[key] = value;
+  }
+  return prefs;
+}
+function notePrefChange() {
+  if (!cloudMode || typeof state === "undefined") return;
+  state.prefs = localPrefs();
+  saveState();
+}
+function applyCloudPrefs() {
+  if (!cloudMode) return;
+  window.LifeLedgerCloudPulled = true;
+  window.LifeLedgerTodayWidgets?.syncWalls?.();
+  const remote = state.prefs;
+  if (!remote || typeof remote !== "object") {
+    // First device after the update: share only what the user actually chose here. The browser is the reference
+    // (user 10/28), so the Mac app never seeds: it waits for the browser's choices.
+    if (window.__TAURI__) return;
+    const seed = localPrefs({ seed: true });
+    if (Object.keys(seed).length) { state.prefs = seed; saveState(); }
+    return;
+  }
+  let changed = false;
+  for (const key of syncedPrefKeys()) {
+    if (typeof remote[key] === "string" && localStorage.getItem(key) !== remote[key]) {
+      try { localStorage.setItem(key, remote[key]); changed = true; } catch {}
+    }
+  }
+  if (!changed) return;
+  calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
+  applyNavOrder();
+  window.LifeLedgerTodayCards?.reload?.();
+  window.LifeLedgerTodayWidgets?.reload?.();
+  renderAll();
+}
+window.LifeLedgerPrefs = { keys: syncedPrefKeys, changed: () => notePrefChange() };

@@ -2,6 +2,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { VoiceRequestError, handleVoiceReview } from "./voice.js";
 import { CalendarRequestError, handleCalendarRequest } from "./calendar.js";
 import { PhotoRequestError, handlePhotoRequest } from "./photos.js";
+import { handleWallRequest } from "./wall.js";
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status,
@@ -176,11 +177,11 @@ async function handleCalendarApi(request, env) {
   }
 }
 
-async function handlePhotoApi(request, env) {
+async function handlePhotoApi(request, env, handler = handlePhotoRequest) {
   const identity = await identityOrResponse(request, env);
   if (identity.response) return identity.response;
   try {
-    return await handlePhotoRequest(request, env, identity.keyHash);
+    return await handler(request, env, identity.keyHash);
   } catch (error) {
     if (error instanceof PhotoRequestError) {
       return json({ error: error.message, code: error.code }, error.status);
@@ -201,6 +202,7 @@ export default {
     if (url.pathname === "/api/voice-review") return handleVoiceApi(request, env);
     if (url.pathname.startsWith("/api/calendar/")) return handleCalendarApi(request, env);
     if (url.pathname.startsWith("/api/photos")) return handlePhotoApi(request, env);
+    if (url.pathname.startsWith("/api/wall/")) return handlePhotoApi(request, env, handleWallRequest);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);
   },

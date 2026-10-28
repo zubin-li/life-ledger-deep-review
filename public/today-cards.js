@@ -75,7 +75,7 @@
     } catch { return defaults(); }
   };
   let layout = load();
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(layout)); } catch {} };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(layout)); } catch {} window.LifeLedgerPrefs?.changed(); };
 
   // Columns and row height follow the canvas width: 4 columns from 860px, else 2 (W shows as M, X as L).
   let geo = { cols: 0, row: 0 };
@@ -274,5 +274,5 @@
   new ResizeObserver(() => { const before = geo.row; geometry(); if (geo.cols !== lastCols || geo.row !== before) { lastCols = geo.cols; apply(); } }).observe(view);
 
   apply();
-  window.LifeLedgerTodayCards = { get: () => layout.map(r => ({ ...r })), sizes: () => Object.fromEntries(CARDS.map(c => [c.id, [...c.sizes]])), setEditing, openSettings, openLibrary, show: id => { const r = layout.find(x => x.id === id); if (r?.hidden) { r.hidden = false; save(); apply(); } }, reset: () => { layout = defaults(); save(); apply(); } };
+  window.LifeLedgerTodayCards = { reload: () => { layout = load(); apply(); window.renderToday?.(); }, isDefault: () => JSON.stringify(layout) === JSON.stringify(defaults()), get: () => layout.map(r => ({ ...r })), sizes: () => Object.fromEntries(CARDS.map(c => [c.id, [...c.sizes]])), setEditing, openSettings, openLibrary, show: id => { const r = layout.find(x => x.id === id); if (r?.hidden) { r.hidden = false; save(); apply(); } }, reset: () => { layout = defaults(); save(); apply(); } };
 })();

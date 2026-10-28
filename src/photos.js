@@ -244,6 +244,9 @@ async function handlePhotoRequest(request, env, keyHash) {
 }
 
 export {
+  releaseStorage,
+  reserveOperation,
+  reserveStorage,
   ALLOWED_PHOTO_TYPES,
   MAX_LIBRARY_BYTES,
   MAX_MONTHLY_R2_READS,
