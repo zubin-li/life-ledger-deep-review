@@ -22,6 +22,7 @@ test("cloud url validation exists in rust and cloud window is separate", () => {
   assert.match(libRs, /fn validate_cloud_url\(raw_url: &str\)/);
   assert.match(libRs, /WebviewWindowBuilder::new\(\s*&app,\s*"cloud"/);
   assert.match(libRs, /const MAX_JSON_IMPORT_BYTES: u64 = 10 \* 1024 \* 1024;/);
+  assert.match(libRs, /const MAX_BINARY_IMPORT_BYTES: u64 = 160 \* 1024 \* 1024;/);
 });
 
 // The Mac app has its own version line (3.0 = first Mac app with the sync edition); the web page keeps the web version.

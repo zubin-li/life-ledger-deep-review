@@ -7,6 +7,22 @@ const CALENDAR_SCOPES = [
   "https://www.googleapis.com/auth/calendar.events.readonly",
 ];
 const OAUTH_STATE_LIFETIME_MS = 10 * 60 * 1000;
+const CALENDAR_DESKTOP_HEADER = "X-Life-Ledger-Desktop";
+const CALENDAR_DESKTOP_MARKER = "tauri-cloud";
+const CALENDAR_RETURN_WEB = "/?calendar=connected&view=today";
+const CALENDAR_RETURN_DESKTOP = "/?calendar=connected&view=today&desktop=tauri-cloud";
+
+function calendarConnectReturnPath(request) {
+  const marker = request.headers.get(CALENDAR_DESKTOP_HEADER);
+  if (marker === CALENDAR_DESKTOP_MARKER) return CALENDAR_RETURN_DESKTOP;
+  return CALENDAR_RETURN_WEB;
+}
+
+function safeCalendarRedirectPath(stored) {
+  const path = String(stored || CALENDAR_RETURN_WEB);
+  if (path === CALENDAR_RETURN_WEB || path === CALENDAR_RETURN_DESKTOP) return path;
+  return CALENDAR_RETURN_WEB;
+}
 const MAX_CALENDARS = 50;
 const MAX_EVENT_RANGE_DAYS = 93;
 
@@ -399,7 +415,7 @@ async function connect(request, env, keyHash) {
   await env.DB.prepare(`
     INSERT INTO calendar_oauth_states (state_hash, key_hash, code_verifier, return_to, expires_at, created_at)
     VALUES (?, ?, ?, ?, ?, ?)
-  `).bind(stateHash, keyHash, verifier, "/?calendar=connected&view=today", now + OAUTH_STATE_LIFETIME_MS, now).run();
+  `).bind(stateHash, keyHash, verifier, calendarConnectReturnPath(request), now + OAUTH_STATE_LIFETIME_MS, now).run();
 
   const authorizationUrl = new URL(GOOGLE_AUTH_URL);
   authorizationUrl.searchParams.set("client_id", String(env.GOOGLE_CALENDAR_CLIENT_ID));
@@ -475,7 +491,7 @@ async function callback(request, env, keyHash) {
     JSON.stringify(selectedCalendarIds), existing?.hide_recurring === 0 ? 0 : 1,
     Number(existing?.connected_at || now), now,
   ).run();
-  return Response.redirect(`${url.origin}${record.return_to || "/?calendar=connected&view=today"}`, 302);
+  return Response.redirect(`${url.origin}${safeCalendarRedirectPath(record.return_to)}`, 302);
 }
 
 async function status(env, keyHash) {
@@ -620,12 +636,18 @@ async function handleCalendarRequest(request, env, keyHash) {
 }
 
 export {
+  CALENDAR_DESKTOP_HEADER,
+  CALENDAR_DESKTOP_MARKER,
+  CALENDAR_RETURN_DESKTOP,
+  CALENDAR_RETURN_WEB,
   CALENDAR_SCOPES,
   CalendarRequestError,
+  calendarConnectReturnPath,
   decryptToken,
   encryptToken,
   handleCalendarRequest,
   normalizeCalendarEvent,
   parsedCalendarIds,
+  safeCalendarRedirectPath,
   validatedRange,
 };

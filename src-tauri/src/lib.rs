@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex, OnceLock};
 use std::thread;
 use std::time::Duration;
 use tauri::{
+    ipc::{InvokeBody, Request, Response},
     menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, PredefinedMenuItem, SubmenuBuilder},
     AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, WebviewUrl, WebviewWindow,
     WebviewWindowBuilder, WindowEvent,
@@ -11,6 +12,12 @@ use tauri::{
 use url::Url;
 
 const MAX_JSON_IMPORT_BYTES: u64 = 10 * 1024 * 1024;
+const MAX_BINARY_IMPORT_BYTES: u64 = 160 * 1024 * 1024;
+const BACKUP_FILENAME_HEADER: &str = "x-life-ledger-filename";
+const BACKUP_CANCELLED_ERROR: &str = "backup-cancelled";
+const UNSUPPORTED_FILE_TYPE_ERROR: &str = "unsupported-file-type";
+const OPEN_FILE_FRAME_VERSION: u8 = 1;
+const DEFAULT_LLMEDIA_FILENAME: &str = "life-ledger-media-backup.llmedia";
 const LAST_WORKSPACE_FILE: &str = "last-workspace.txt";
 const MENU_EVENT: &str = "menu://action";
 /// The cloud window says it is Safari: Google refuses OAuth sign-in in embedded web views it does not recognise,
@@ -547,7 +554,13 @@ fn open_local_window(app: AppHandle) -> Result<(), String> {
         r#"
 window.LifeLedgerDesktopBridge = {
   saveBackupJson: (payload) => window.__TAURI__.core.invoke("save_backup_json", payload),
-  openBackupJson: () => window.__TAURI__.core.invoke("open_backup_json")
+  openBackupJson: () => window.__TAURI__.core.invoke("open_backup_json"),
+  saveBackupBinary: (bytes, filename) => window.__TAURI__.core.invoke(
+    "save_backup_binary",
+    bytes,
+    { headers: { "X-Life-Ledger-Filename": filename } },
+  ),
+  openBackupFile: () => window.__TAURI__.core.invoke("open_backup_file"),
 };
 "#,
     );
@@ -586,7 +599,15 @@ fn validate_cloud_url(raw_url: &str) -> Result<Url, String> {
 /// Appends `desktop=tauri-cloud` to the URL's query string while preserving any existing
 /// query parameters and the fragment (hash), so the shared frontend can detect desktop mode.
 fn with_desktop_cloud_flag(mut url: Url) -> Url {
-    url.query_pairs_mut().append_pair("desktop", "tauri-cloud");
+    let retained = url
+        .query_pairs()
+        .filter(|(key, _)| key != "desktop")
+        .map(|(key, value)| (key.into_owned(), value.into_owned()))
+        .collect::<Vec<_>>();
+    url.query_pairs_mut()
+        .clear()
+        .extend_pairs(retained)
+        .append_pair("desktop", "tauri-cloud");
     url
 }
 
@@ -676,8 +697,16 @@ struct SaveBackupResponse {
     path: Option<String>,
 }
 
+fn validate_json_export_length(length: usize) -> Result<(), String> {
+    if length as u64 > MAX_JSON_IMPORT_BYTES {
+        return Err("file-too-large".to_string());
+    }
+    Ok(())
+}
+
 #[tauri::command]
 fn save_backup_json(payload: SaveBackupRequest) -> Result<SaveBackupResponse, String> {
+    validate_json_export_length(payload.contents.len())?;
     let maybe_path = rfd::FileDialog::new()
         .set_file_name(&payload.filename)
         .add_filter("JSON", &["json"])
@@ -690,6 +719,105 @@ fn save_backup_json(payload: SaveBackupRequest) -> Result<SaveBackupResponse, St
         }),
         Some(path) => {
             fs::write(&path, payload.contents).map_err(|e| e.to_string())?;
+            Ok(SaveBackupResponse {
+                cancelled: false,
+                path: Some(path.to_string_lossy().to_string()),
+            })
+        }
+    }
+}
+
+fn sanitize_llmedia_filename(raw: &str) -> String {
+    let trimmed = raw.trim();
+    if trimmed.is_empty() || trimmed.contains('/') || trimmed.contains('\\') {
+        return DEFAULT_LLMEDIA_FILENAME.to_string();
+    }
+    let lower = trimmed.to_ascii_lowercase();
+    if !lower.ends_with(".llmedia") {
+        return DEFAULT_LLMEDIA_FILENAME.to_string();
+    }
+    let stem = &trimmed[..trimmed.len() - ".llmedia".len()];
+    let candidate = format!("{stem}.llmedia");
+    let valid = !stem.is_empty()
+        && candidate.len() <= 120
+        && candidate
+            .chars()
+            .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '-' | '_'));
+    if valid { candidate } else { DEFAULT_LLMEDIA_FILENAME.to_string() }
+}
+
+fn validate_binary_export_length(length: usize) -> Result<(), String> {
+    if length == 0 {
+        return Err("invalid-body".to_string());
+    }
+    if length as u64 > MAX_BINARY_IMPORT_BYTES {
+        return Err("file-too-large".to_string());
+    }
+    Ok(())
+}
+
+fn validate_binary_export_body(bytes: &[u8]) -> Result<(), String> {
+    validate_binary_export_length(bytes.len())
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum BackupImportKind {
+    Json,
+    Llmedia,
+}
+
+fn backup_import_kind(extension: Option<&str>) -> Result<BackupImportKind, String> {
+    match extension.map(|value| value.to_ascii_lowercase()) {
+        Some(ext) if ext == "json" => Ok(BackupImportKind::Json),
+        Some(ext) if ext == "llmedia" => Ok(BackupImportKind::Llmedia),
+        _ => Err(UNSUPPORTED_FILE_TYPE_ERROR.to_string()),
+    }
+}
+
+fn import_limit_for_kind(kind: BackupImportKind) -> u64 {
+    match kind {
+        BackupImportKind::Json => MAX_JSON_IMPORT_BYTES,
+        BackupImportKind::Llmedia => MAX_BINARY_IMPORT_BYTES,
+    }
+}
+
+fn encode_open_file_payload(name: &str, data: &[u8]) -> Result<Vec<u8>, String> {
+    let name_bytes = name.as_bytes();
+    if name_bytes.is_empty() || name_bytes.len() > u16::MAX as usize {
+        return Err("invalid-filename".to_string());
+    }
+    let mut framed = Vec::with_capacity(3 + name_bytes.len() + data.len());
+    framed.push(OPEN_FILE_FRAME_VERSION);
+    framed.extend_from_slice(&(name_bytes.len() as u16).to_le_bytes());
+    framed.extend_from_slice(name_bytes);
+    framed.extend_from_slice(data);
+    Ok(framed)
+}
+
+#[tauri::command]
+fn save_backup_binary(request: Request<'_>) -> Result<SaveBackupResponse, String> {
+    let bytes = match request.body() {
+        InvokeBody::Raw(bytes) => bytes.clone(),
+        InvokeBody::Json(_) => return Err("invalid-body".to_string()),
+    };
+    validate_binary_export_body(&bytes)?;
+    let filename = request
+        .headers()
+        .get(BACKUP_FILENAME_HEADER)
+        .and_then(|value| value.to_str().ok())
+        .map(sanitize_llmedia_filename)
+        .unwrap_or_else(|| DEFAULT_LLMEDIA_FILENAME.to_string());
+    let maybe_path = rfd::FileDialog::new()
+        .set_file_name(&filename)
+        .add_filter("Life Ledger media backup", &["llmedia"])
+        .save_file();
+    match maybe_path {
+        None => Ok(SaveBackupResponse {
+            cancelled: true,
+            path: None,
+        }),
+        Some(path) => {
+            fs::write(&path, bytes).map_err(|e| e.to_string())?;
             Ok(SaveBackupResponse {
                 cancelled: false,
                 path: Some(path.to_string_lossy().to_string()),
@@ -789,6 +917,31 @@ fn open_backup_json() -> Result<OpenBackupResponse, String> {
     }
 }
 
+#[tauri::command]
+fn open_backup_file() -> Result<Response, String> {
+    let maybe_path = rfd::FileDialog::new()
+        .add_filter("Life Ledger backup", &["json", "llmedia"])
+        .pick_file();
+    let path = match maybe_path {
+        None => return Err(BACKUP_CANCELLED_ERROR.to_string()),
+        Some(path) => path,
+    };
+    let metadata = fs::metadata(&path).map_err(|e| e.to_string())?;
+    let extension = path.extension().and_then(|value| value.to_str());
+    let kind = backup_import_kind(extension)?;
+    let limit = import_limit_for_kind(kind);
+    if metadata.len() > limit {
+        return Err("file-too-large".to_string());
+    }
+    let bytes = fs::read(&path).map_err(|e| e.to_string())?;
+    let name = path
+        .file_name()
+        .map(|value| value.to_string_lossy().to_string())
+        .unwrap_or_else(|| "life-ledger-backup.json".to_string());
+    let framed = encode_open_file_payload(&name, &bytes)?;
+    Ok(Response::new(framed))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default();
@@ -800,6 +953,8 @@ pub fn run() {
             switch_workspace,
         save_backup_json,
         open_backup_json,
+        save_backup_binary,
+        open_backup_file,
         ask_confirm,
         show_alert,
         set_menu_language,
@@ -816,6 +971,8 @@ pub fn run() {
             switch_workspace,
             save_backup_json,
             open_backup_json,
+            save_backup_binary,
+            open_backup_file,
             ask_confirm,
             show_alert,
             set_menu_language,
@@ -880,9 +1037,13 @@ pub fn run() {
 #[cfg(test)]
 mod tests {
     use super::{
-        classify_workspace, commit_if_current, menu_action_for_id, parse_window_state, physical_to_logical,
-        take_pending_geometry, validate_cloud_url, with_desktop_cloud_flag, PendingWindowState, PhysicalPosition,
-        PhysicalSize, Workspace,
+        classify_workspace, commit_if_current, encode_open_file_payload, backup_import_kind,
+        import_limit_for_kind, menu_action_for_id, parse_window_state, physical_to_logical,
+        sanitize_llmedia_filename, take_pending_geometry, validate_binary_export_body,
+        validate_binary_export_length, validate_cloud_url, validate_json_export_length,
+        with_desktop_cloud_flag, BackupImportKind, PendingWindowState, PhysicalPosition, PhysicalSize,
+        Workspace, BACKUP_CANCELLED_ERROR, DEFAULT_LLMEDIA_FILENAME, MAX_BINARY_IMPORT_BYTES,
+        MAX_JSON_IMPORT_BYTES, OPEN_FILE_FRAME_VERSION, UNSUPPORTED_FILE_TYPE_ERROR,
     };
     use std::sync::Mutex;
     use url::Url;
@@ -978,6 +1139,15 @@ mod tests {
     }
 
     #[test]
+    fn desktop_cloud_flag_replaces_an_existing_marker() {
+        let url = Url::parse("https://example.com/app?desktop=browser&tenant=acme").unwrap();
+        let flagged = with_desktop_cloud_flag(url);
+        assert_eq!(flagged.query_pairs().filter(|(key, _)| key == "desktop").count(), 1);
+        assert_eq!(flagged.query_pairs().find(|(key, _)| key == "desktop").unwrap().1, "tauri-cloud");
+        assert_eq!(flagged.query_pairs().find(|(key, _)| key == "tenant").unwrap().1, "acme");
+    }
+
+    #[test]
     fn window_state_round_trips_valid_values() {
         assert_eq!(parse_window_state("10:20:1280:860"), Some((10.0, 20.0, 1280.0, 860.0)));
         assert_eq!(parse_window_state("-40:-5:900.5:760"), Some((-40.0, -5.0, 900.5, 760.0)));
@@ -1068,5 +1238,78 @@ mod tests {
         assert_eq!(commit_if_current(&pending, queued_generation), None);
         // A duplicate close flush finds nothing left to write.
         assert_eq!(take_pending_geometry(&pending), None);
+    }
+
+    #[test]
+    fn sanitize_llmedia_filename_accepts_safe_names_and_rejects_paths() {
+        assert_eq!(
+            sanitize_llmedia_filename("life-ledger-media-2026-10.llmedia"),
+            "life-ledger-media-2026-10.llmedia"
+        );
+        assert_eq!(
+            sanitize_llmedia_filename("life-ledger-media-2026-10.LLMEDIA"),
+            "life-ledger-media-2026-10.llmedia"
+        );
+        assert_eq!(
+            sanitize_llmedia_filename("/tmp/evil/secret.llmedia"),
+            DEFAULT_LLMEDIA_FILENAME
+        );
+        assert_eq!(
+            sanitize_llmedia_filename("subdir\\secret.llmedia"),
+            DEFAULT_LLMEDIA_FILENAME
+        );
+        assert_eq!(sanitize_llmedia_filename("notes.json"), DEFAULT_LLMEDIA_FILENAME);
+    }
+
+    #[test]
+    fn open_file_frame_round_trips_name_and_bytes() {
+        let payload = b"{\"ok\":true}";
+        let name = "backup.json";
+        let framed = encode_open_file_payload(name, payload).unwrap();
+        assert_eq!(framed[0], OPEN_FILE_FRAME_VERSION);
+        let name_len = u16::from_le_bytes([framed[1], framed[2]]) as usize;
+        let name_end = 3 + name_len;
+        assert_eq!(&framed[3..name_end], name.as_bytes());
+        assert_eq!(&framed[name_end..], payload);
+    }
+
+    #[test]
+    fn import_limits_follow_backup_kind() {
+        assert_eq!(import_limit_for_kind(BackupImportKind::Json), MAX_JSON_IMPORT_BYTES);
+        assert_eq!(import_limit_for_kind(BackupImportKind::Llmedia), MAX_BINARY_IMPORT_BYTES);
+    }
+
+    #[test]
+    fn binary_export_rejects_empty_and_oversized_bodies_before_dialog() {
+        assert_eq!(validate_binary_export_body(b""), Err("invalid-body".to_string()));
+        assert_eq!(
+            validate_binary_export_length(MAX_BINARY_IMPORT_BYTES as usize + 1),
+            Err("file-too-large".to_string())
+        );
+        assert!(validate_binary_export_body(&[1]).is_ok());
+    }
+
+    #[test]
+    fn json_export_uses_the_same_limit_as_json_import() {
+        assert!(validate_json_export_length(MAX_JSON_IMPORT_BYTES as usize).is_ok());
+        assert_eq!(
+            validate_json_export_length(MAX_JSON_IMPORT_BYTES as usize + 1),
+            Err("file-too-large".to_string())
+        );
+    }
+
+    #[test]
+    fn backup_import_kind_accepts_json_and_llmedia_only() {
+        assert_eq!(backup_import_kind(Some("json")), Ok(BackupImportKind::Json));
+        assert_eq!(backup_import_kind(Some("JSON")), Ok(BackupImportKind::Json));
+        assert_eq!(backup_import_kind(Some("llmedia")), Ok(BackupImportKind::Llmedia));
+        assert_eq!(backup_import_kind(Some("LLMedia")), Ok(BackupImportKind::Llmedia));
+        assert_eq!(backup_import_kind(None), Err(UNSUPPORTED_FILE_TYPE_ERROR.to_string()));
+        assert_eq!(backup_import_kind(Some("txt")), Err(UNSUPPORTED_FILE_TYPE_ERROR.to_string()));
+    }
+
+    #[test]
+    fn backup_cancelled_error_is_stable() {
+        assert_eq!(BACKUP_CANCELLED_ERROR, "backup-cancelled");
     }
 }

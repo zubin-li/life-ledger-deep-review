@@ -1,4 +1,67 @@
 const CACHE_NAME = "life-ledger-pwa-2.0.6";
+
+const HAIRLINE_ASSETS = [
+  "./assets/hairline/backup-restore.svg",
+  "./assets/hairline/backup-success.svg",
+  "./assets/hairline/calendar-empty-month.svg",
+  "./assets/hairline/calendar-perfect-day.svg",
+  "./assets/hairline/empty-first-run.svg",
+  "./assets/hairline/empty-habits.svg",
+  "./assets/hairline/empty-insights.svg",
+  "./assets/hairline/empty-journal.svg",
+  "./assets/hairline/empty-photos.svg",
+  "./assets/hairline/empty-today-done.svg",
+  "./assets/hairline/empty-week-goals.svg",
+  "./assets/hairline/empty-week.svg",
+  "./assets/hairline/focus-break.svg",
+  "./assets/hairline/focus-cancelled.svg",
+  "./assets/hairline/focus-complete.svg",
+  "./assets/hairline/focus-idle.svg",
+  "./assets/hairline/focus-paused.svg",
+  "./assets/hairline/focus-streak.svg",
+  "./assets/hairline/insights-first-week.svg",
+  "./assets/hairline/journal-calendar-empty.svg",
+  "./assets/hairline/journal-no-reflection.svg",
+  "./assets/hairline/launcher-cloud.svg",
+  "./assets/hairline/launcher-local.svg",
+  "./assets/hairline/layout-edit-hint.svg",
+  "./assets/hairline/offline-local.svg",
+  "./assets/hairline/photos-day-empty.svg",
+  "./assets/hairline/search-empty.svg",
+  "./assets/hairline/sync-offline.svg",
+  "./assets/hairline/today-all-scheduled-later.svg",
+  "./assets/hairline/today-evening.svg",
+  "./assets/hairline/today-morning.svg",
+  "./assets/hairline/today-not-today.svg",
+  "./assets/hairline/today-open.svg",
+  "./assets/hairline/week-all-done.svg",
+  "./assets/hairline/week-insights-empty.svg",
+  "./assets/hairline/week-review-done.svg",
+  "./assets/hairline/week-review-empty.svg",
+];
+
+const DEMO_MEMORY_ASSETS = [
+  "./assets/demo-memories/analyst-desk.jpg",
+  "./assets/demo-memories/run-park.jpg",
+  "./assets/demo-memories/team-whiteboard.jpg",
+  "./assets/demo-memories/dashboard-screen.jpg",
+  "./assets/demo-memories/spree-sunset.jpg",
+  "./assets/demo-memories/meetup-talk.jpg",
+  "./assets/demo-memories/gym-weights.jpg",
+  "./assets/demo-memories/cafe-reading.jpg",
+  "./assets/demo-memories/weekend-hike.jpg",
+  "./assets/demo-memories/dinner-friends.jpg",
+  "./assets/demo-memories/meditation-corner.jpg",
+  "./assets/demo-memories/notebook-plan.jpg",
+  "./assets/demo-memories/ai-conference.jpg",
+  "./assets/demo-memories/hackathon-night.jpg",
+  "./assets/demo-memories/halfmarathon-medal.jpg",
+  "./assets/demo-memories/team-offsite-lake.jpg",
+  "./assets/demo-memories/museum-sunday.jpg",
+  "./assets/demo-memories/market-haul.jpg",
+  "./assets/demo-memories/birthday-dinner.jpg",
+];
+
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -28,36 +91,84 @@ const APP_SHELL = [
   "./cloudbase-sync.js?v=2.0.6",
   "./vendor/cloudbase-sdk.js",
   "./_init_tcb-env.js?v=2.0.6",
+  "./vendor/heic2any.min.js?v=0.0.4",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
+  "./assets/app-icon.svg",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",
   "./assets/apple-touch-icon.png",
+  ...HAIRLINE_ASSETS,
+  ...DEMO_MEMORY_ASSETS,
 ];
+
+const NETWORK_FIRST_SUFFIXES = [
+  "/app.js",
+  "/demo-workspace.js",
+  "/demo-persona.js",
+  "/demo-life.js",
+  "/today-cards.js",
+  "/today-cards.css",
+  "/v202.css",
+  "/pages-858.css",
+  "/hairline.js",
+  "/today-widgets.js",
+  "/weather-widget.js",
+  "/focus-timer.js",
+  "/voice-checkin.js",
+  "/photo-memories.js",
+  "/media-backup.js",
+  "/styles.css",
+  "/deployment-mode.js",
+  "/cloudbase-sync.js",
+  "/_init_tcb-env.js",
+  "/interaction.js",
+  "/long-range.js",
+  "/habit-analytics.js",
+];
+
+function shouldBypassFetch(url, request) {
+  if (request.method !== "GET") return true;
+  if (url.origin !== self.location.origin) return true;
+  if (url.pathname.includes("/api/")) return true;
+  if (url.pathname.startsWith("/cdn-cgi/")) return true;
+  return false;
+}
+
+function isManagedStaticAsset(pathname) {
+  if (NETWORK_FIRST_SUFFIXES.some(suffix => pathname.endsWith(suffix))) return true;
+  if (pathname.includes("/vendor/")) return true;
+  if (pathname.includes("/assets/hairline/")) return true;
+  if (pathname.includes("/assets/demo-memories/")) return true;
+  return [
+    "/manifest.webmanifest",
+    "/assets/weekly-minimal-still-life-v2.jpg",
+    "/assets/app-icon.svg",
+    "/assets/app-icon-192.png",
+    "/assets/app-icon-512.png",
+    "/assets/apple-touch-icon.png",
+  ].some(path => pathname.endsWith(path));
+}
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", event => {
-  const activated = caches.keys().then(async keys => {
-    const previousCaches = keys.filter(key => key.startsWith("life-ledger-") && key !== CACHE_NAME);
-    await Promise.all(previousCaches.map(key => caches.delete(key)));
-    await self.clients.claim();
-    return previousCaches.length > 0;
-  });
-  event.waitUntil(activated);
-  // Reload open windows onto the new release only AFTER activation: awaiting client.navigate() inside
-  // waitUntil deadlocks (the navigation waits for this worker to finish activating) and froze upgraded pages.
-  activated.then(upgraded => upgraded && self.clients.matchAll({ type: "window", includeUncontrolled: true })
-    .then(windows => windows.forEach(client => client.navigate(client.url).catch(() => undefined))));
+  event.waitUntil(
+    caches
+      .keys()
+      .then(keys =>
+        Promise.all(keys.filter(key => key.startsWith("life-ledger-") && key !== CACHE_NAME).map(key => caches.delete(key)))
+      )
+      .then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener("fetch", event => {
   const request = event.request;
-  if (request.method !== "GET") return;
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin || url.pathname.includes("/api/")) return;
+  if (shouldBypassFetch(url, request)) return;
 
   if (request.mode === "navigate") {
     event.respondWith(
@@ -75,8 +186,9 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/demo-workspace.js", "/demo-persona.js", "/demo-life.js", "/today-cards.js", "/today-cards.css", "/v202.css", "/hairline.js", "/today-widgets.js", "/weather-widget.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
-    .some(path => url.pathname.endsWith(path));
+  if (!isManagedStaticAsset(url.pathname)) return;
+
+  const networkFirst = NETWORK_FIRST_SUFFIXES.some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(
       fetch(request)

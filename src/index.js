@@ -3,13 +3,15 @@ import { VoiceRequestError, handleVoiceReview } from "./voice.js";
 import { CalendarRequestError, handleCalendarRequest } from "./calendar.js";
 import { PhotoRequestError, handlePhotoRequest } from "./photos.js";
 import { handleWallRequest } from "./wall.js";
+import { handleVersionRequest, isVersionPath } from "./version-endpoint.js";
 
-const json = (data, status = 200) => new Response(JSON.stringify(data), {
+const json = (data, status = 200, extraHeaders = {}) => new Response(JSON.stringify(data), {
   status,
   headers: {
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
     "x-content-type-options": "nosniff",
+    ...extraHeaders,
   },
 });
 
@@ -94,23 +96,144 @@ function validPayload(payload) {
     && !Array.isArray(payload.logs);
 }
 
+function stateRevision(value) {
+  const revision = Number(value);
+  return Number.isSafeInteger(revision) && revision >= 0 ? revision : 0;
+}
+
+function validBaseRevision(value) {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+
+// Reads the stored state row. Returns an `{ status, body }` result (no JWT involved).
+async function readStateRow(db, keyHash) {
+  const row = await db.prepare(
+    "SELECT payload, updated_at, revision FROM states WHERE key_hash = ?",
+  ).bind(keyHash).first();
+
+  if (!row) return { status: 404, body: { error: "No cloud state yet" } };
+  return {
+    status: 200,
+    body: {
+      payload: JSON.parse(row.payload),
+      updatedAt: row.updated_at,
+      revision: stateRevision(row.revision),
+    },
+  };
+}
+
+// Current remote copy for a rejected compare-and-swap. A missing row yields a
+// deterministic empty copy (payload/updatedAt null, revision 0).
+async function stateConflict(db, keyHash) {
+  const current = await readStateRow(db, keyHash);
+  const remote = current.status === 200
+    ? current.body
+    : { payload: null, updatedAt: null, revision: 0 };
+  return {
+    status: 409,
+    body: {
+      error: "Cloud state changed since your last sync",
+      code: "STATE_CONFLICT",
+      payload: remote.payload,
+      updatedAt: remote.updatedAt,
+      revision: remote.revision,
+    },
+  };
+}
+
+// New-client write. The conditional INSERT/UPDATE itself decides the winner;
+// the statement only affects a row when its revision equals `baseRevision`.
+async function compareAndSwapState(db, keyHash, serialized, updatedAt, baseRevision) {
+  const row = baseRevision === 0
+    // Creates the row, or adopts a legacy-migrated row that is still at revision 0.
+    ? await db.prepare(`
+      INSERT INTO states (key_hash, payload, updated_at, revision)
+      VALUES (?, ?, ?, 1)
+      ON CONFLICT(key_hash) DO UPDATE SET
+        payload = excluded.payload,
+        updated_at = excluded.updated_at,
+        revision = states.revision + 1
+      WHERE states.revision = ?
+      RETURNING updated_at, revision
+    `).bind(keyHash, serialized, updatedAt, baseRevision).first()
+    // Never inserts: a missing row cannot match a nonzero base revision.
+    : await db.prepare(`
+      UPDATE states
+      SET payload = ?, updated_at = ?, revision = revision + 1
+      WHERE key_hash = ? AND revision = ?
+      RETURNING updated_at, revision
+    `).bind(serialized, updatedAt, keyHash, baseRevision).first();
+
+  if (!row) return stateConflict(db, keyHash);
+  return {
+    status: 200,
+    body: { ok: true, updatedAt: row.updated_at, revision: stateRevision(row.revision), applied: true },
+  };
+}
+
+// LEGACY: cached old clients send no `baseRevision`. Keep timestamp ordering and
+// remove this whole branch once those clients have expired.
+async function legacyTimestampWriteState(db, keyHash, serialized, updatedAt) {
+  const row = await db.prepare(`
+    INSERT INTO states (key_hash, payload, updated_at, revision)
+    VALUES (?, ?, ?, 1)
+    ON CONFLICT(key_hash) DO UPDATE SET
+      payload = excluded.payload,
+      updated_at = excluded.updated_at,
+      revision = states.revision + 1
+    WHERE excluded.updated_at >= states.updated_at
+    RETURNING updated_at, revision
+  `).bind(keyHash, serialized, updatedAt).first();
+
+  if (row) {
+    return {
+      status: 200,
+      body: { ok: true, legacy: true, applied: true, updatedAt: row.updated_at, revision: stateRevision(row.revision) },
+    };
+  }
+
+  // Stale write: nothing was stored. Report the actual current copy's metadata.
+  const current = await readStateRow(db, keyHash);
+  return {
+    status: 200,
+    body: {
+      ok: true,
+      legacy: true,
+      applied: false,
+      updatedAt: current.status === 200 ? current.body.updatedAt : null,
+      revision: current.status === 200 ? current.body.revision : 0,
+    },
+  };
+}
+
+// Validates a PUT body and writes it. Authentication is the caller's concern.
+async function writeStateRow(db, keyHash, body) {
+  if (!validPayload(body?.payload)) return { status: 400, body: { error: "Invalid state payload" } };
+
+  const legacy = !("baseRevision" in body);
+  if (!legacy && !validBaseRevision(body.baseRevision)) {
+    return { status: 400, body: { error: "Invalid baseRevision" } };
+  }
+
+  const serialized = JSON.stringify(body.payload);
+  if (serialized.length > 2_000_000) return { status: 413, body: { error: "State is too large" } };
+
+  const updatedAt = Number(body.payload.meta?.updatedAt) || Date.now();
+  if (legacy) return legacyTimestampWriteState(db, keyHash, serialized, updatedAt);
+  return compareAndSwapState(db, keyHash, serialized, updatedAt, body.baseRevision);
+}
+
 async function getState(request, env) {
   const identity = await identityOrResponse(request, env);
   if (identity.response) return identity.response;
-  const { keyHash } = identity;
 
-  const row = await env.DB.prepare(
-    "SELECT payload, updated_at FROM states WHERE key_hash = ?",
-  ).bind(keyHash).first();
-
-  if (!row) return json({ error: "No cloud state yet" }, 404);
-  return json({ payload: JSON.parse(row.payload), updatedAt: row.updated_at });
+  const result = await readStateRow(env.DB, identity.keyHash);
+  return json(result.body, result.status);
 }
 
 async function putState(request, env) {
   const identity = await identityOrResponse(request, env);
   if (identity.response) return identity.response;
-  const { keyHash } = identity;
 
   let body;
   try {
@@ -119,23 +242,8 @@ async function putState(request, env) {
     return json({ error: "Invalid JSON" }, 400);
   }
 
-  if (!validPayload(body?.payload)) return json({ error: "Invalid state payload" }, 400);
-
-  const serialized = JSON.stringify(body.payload);
-  if (serialized.length > 2_000_000) return json({ error: "State is too large" }, 413);
-
-  const updatedAt = Number(body.payload.meta?.updatedAt) || Date.now();
-  const result = await env.DB.prepare(`
-    INSERT INTO states (key_hash, payload, updated_at)
-    VALUES (?, ?, ?)
-    ON CONFLICT(key_hash) DO UPDATE SET
-      payload = excluded.payload,
-      updated_at = excluded.updated_at
-    WHERE excluded.updated_at >= states.updated_at
-  `).bind(keyHash, serialized, updatedAt).run();
-
-  if (!result.success) return json({ error: "Unable to save state" }, 500);
-  return json({ ok: true, updatedAt });
+  const result = await writeStateRow(env.DB, identity.keyHash, body);
+  return json(result.body, result.status);
 }
 
 async function handleApi(request, env) {
@@ -198,6 +306,9 @@ export default {
     if (url.pathname === "/deployment-mode.js") {
       return javascript('window.LIFE_LEDGER_DEPLOYMENT_MODE = "cloudflare";\n');
     }
+    if (isVersionPath(url.pathname)) {
+      return handleVersionRequest(request, env, { identityOrResponse, json });
+    }
     if (url.pathname === "/api/state") return handleApi(request, env);
     if (url.pathname === "/api/voice-review") return handleVoiceApi(request, env);
     if (url.pathname.startsWith("/api/calendar/")) return handleCalendarApi(request, env);
@@ -208,4 +319,4 @@ export default {
   },
 };
 
-export { hashIdentity, identify, normalizedTeamDomain, validPayload };
+export { hashIdentity, identify, normalizedTeamDomain, readStateRow, validPayload, writeStateRow };

@@ -12,6 +12,8 @@
     "core:window:allow-show",
     "allow-save-backup-json",
     "allow-open-backup-json",
+    "allow-save-backup-binary",
+    "allow-open-backup-file",
     "allow-ask-confirm",
     "allow-show-alert",
     "allow-set-menu-language",

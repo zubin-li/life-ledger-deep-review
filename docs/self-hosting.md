@@ -69,11 +69,15 @@ npx wrangler d1 create life-ledger-deep-review-db
 npx wrangler r2 bucket create life-ledger-deep-review-photos
 ```
 
-Copy the returned database ID into `wrangler.jsonc`, replacing the placeholder `database_id`, then run:
+Copy the returned database ID into `wrangler.jsonc`, replacing the placeholder `database_id`, then follow the [Cloudflare release runbook](cloudflare-release-runbook.md):
 
 ```bash
-npm run deploy
+npm run deploy:preflight
+npm run deploy:cloudflare -- --confirm
+npm run deploy:verify -- --url https://<your-worker-origin>
 ```
+
+Apply migration **0006** as part of the guarded deploy, then confirm `GET /api/version` returns readiness after Cloudflare Access authentication.
 
 Do not commit the personalized database ID back to an upstream pull request.
 

@@ -40,7 +40,7 @@ function removeDemoWallPhotos() {
 }
 const FOCUS_ACTIVE_KEY = "life-ledger-focus-active";
 const BACKUP_FORMAT = "life-ledger-backup";
-const BACKUP_SCHEMA_VERSION = 2;
+const BACKUP_SCHEMA_VERSION = 3;
 const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
 const MAX_MEDIA_IMPORT_BYTES = 160 * 1024 * 1024;
 const CLOUD_API = "./api/state";
@@ -110,6 +110,8 @@ const i18n = {
       syncing: "正在同步",
       cloudSaved: "云端已保存",
       networkRetry: "网络异常 · 自动重试",
+      conflictStorageFailed: "无法保存冲突副本 · 同步已暂停",
+      conflictPendingResolution: "冲突副本已保存 · 等待拉取较新的云端副本",
       authExpired: "云同步需要登录 · 点击继续",
       profileCloud: "云端同步",
       profileCloudBase: "CloudBase 云同步",
@@ -527,6 +529,7 @@ const i18n = {
     },
     toast: {
       saved: "已保存",
+      conflictPreserved: "云端保留了较新的副本；这台设备的副本已保存，可在导入与导出中下载。",
       habitOn: "完成一项约定",
       habitOff: "已取消打卡",
       mood: "心情已记录",
@@ -546,6 +549,8 @@ const i18n = {
       cloudWarning: "恢复后的内容也会同步到你的云端空间。",
       mediaTitle: "包含照片", mediaHelp: "按月份生成一个可迁移的照片备份文件。", mediaOnlyMonth: "照片备份仅支持指定月份。", mediaExporting: "正在整理照片备份……", mediaRestoring: "正在恢复照片……", mediaInvalid: "无法读取这个照片备份。请选择 Life Ledger 导出的 .llmedia 文件。",
       summary: "{scope} · {habits} 个习惯 · {days} 天记录 · 导出于 {date}", scopeAll: "完整备份", scopePartial: "部分备份", legacy: "早期版本备份",
+      conflictTitle: "同步冲突后已保留本机副本", conflictHelp: "同步冲突后保留了这台设备的副本；决定是否恢复前请先下载。", conflictDownload: "下载保留副本", conflictDismiss: "移除保留副本",
+      conflictDismissConfirm: "移除后无法再从这里下载这份副本，当前记录不会改动。是否继续？", conflictDownloaded: "冲突副本已下载，记录仍保留在导入与导出里，直到你主动移除。",
     },
     defaultHabits: {
       wake: "早起",
@@ -745,6 +750,8 @@ const i18n = {
       syncing: "Syncing",
       cloudSaved: "Saved to cloud",
       networkRetry: "Network issue · retrying",
+      conflictStorageFailed: "Could not save conflict copy · sync paused",
+      conflictPendingResolution: "Conflict copy saved · waiting to pull the newer cloud copy",
       authExpired: "Cloud sync needs sign-in · click to continue",
       profileCloud: "Cloud sync",
       profileCloudBase: "CloudBase sync",
@@ -1168,6 +1175,7 @@ const i18n = {
       moodReason: "Mood reason saved",
       exported: "Backup exported",
       restored: "Backup restored",
+      conflictPreserved: "The newer cloud copy was kept. This device copy was preserved — download it from Import & export.",
       restoreUndone: "Last restore undone",
     },
     celebration: "Every goal counted for today is complete.",
@@ -1181,6 +1189,8 @@ const i18n = {
       cloudWarning: "The restored records will also sync to your cloud space.",
       mediaTitle: "Include photos", mediaHelp: "Create one portable photo backup for the selected month.", mediaOnlyMonth: "Photo backups are available for one selected month at a time.", mediaExporting: "Preparing photo backup…", mediaRestoring: "Restoring photos…", mediaInvalid: "This photo backup could not be read. Choose a .llmedia file exported by Life Ledger.",
       summary: "{scope} · {habits} habits · {days} recorded days · exported {date}", scopeAll: "Complete backup", scopePartial: "Partial backup", legacy: "Earlier backup format",
+      conflictTitle: "Device copy preserved after a sync conflict", conflictHelp: "A copy from this device was kept after a sync conflict. Download it before you decide whether to restore it.", conflictDownload: "Download preserved copy", conflictDismiss: "Dismiss saved copy",
+      conflictDismissConfirm: "You will no longer be able to download this copy from here. Your current records will not change. Continue?", conflictDownloaded: "Conflict copy downloaded. It stays in Import & export until you dismiss it.",
     },
     defaultHabits: {
       wake: "Wake early",
@@ -1380,6 +1390,8 @@ const i18n = {
       syncing: "Synchronisieren",
       cloudSaved: "In der Cloud gespeichert",
       networkRetry: "Netzwerkproblem · neuer Versuch",
+      conflictStorageFailed: "Konfliktkopie konnte nicht gespeichert werden · Sync pausiert",
+      conflictPendingResolution: "Konfliktkopie gespeichert · neuere Cloud-Kopie wird abgerufen",
       authExpired: "Cloud-Sync benötigt Anmeldung · klicken",
       profileCloud: "Cloud-Sync",
       profileCloudBase: "CloudBase-Sync",
@@ -1803,6 +1815,7 @@ const i18n = {
       moodReason: "Stimmungsgrund gespeichert",
       exported: "Sicherung exportiert",
       restored: "Sicherung wiederhergestellt",
+      conflictPreserved: "Die neuere Cloud-Kopie wurde behalten. Die Kopie von diesem Gerät ist aufbewahrt — unter Import & Export herunterladen.",
       restoreUndone: "Letzte Wiederherstellung rückgängig gemacht",
     },
     celebration: "Alle Ziele, die heute zählen, sind erledigt.",
@@ -1816,6 +1829,8 @@ const i18n = {
       cloudWarning: "Die wiederhergestellten Einträge werden auch mit deinem Cloud-Speicher synchronisiert.",
       mediaTitle: "Fotos einschließen", mediaHelp: "Erstellt eine übertragbare Fotosicherung für den gewählten Monat.", mediaOnlyMonth: "Fotosicherungen sind jeweils für einen ausgewählten Monat verfügbar.", mediaExporting: "Fotosicherung wird vorbereitet …", mediaRestoring: "Fotos werden wiederhergestellt …", mediaInvalid: "Diese Fotosicherung konnte nicht gelesen werden. Wähle eine von Life Ledger exportierte .llmedia-Datei.",
       summary: "{scope} · {habits} Gewohnheiten · {days} Tage mit Einträgen · exportiert {date}", scopeAll: "Vollständige Sicherung", scopePartial: "Teilsicherung", legacy: "Früheres Sicherungsformat",
+      conflictTitle: "Gerätekopie nach Sync-Konflikt aufbewahrt", conflictHelp: "Nach einem Sync-Konflikt wurde eine Kopie von diesem Gerät aufbewahrt. Lade sie herunter, bevor du entscheidest, ob du sie wiederherstellen willst.", conflictDownload: "Aufbewahrte Kopie herunterladen", conflictDismiss: "Aufbewahrte Kopie entfernen",
+      conflictDismissConfirm: "Danach kannst du diese Kopie hier nicht mehr herunterladen. Deine aktuellen Einträge bleiben unverändert. Fortfahren?", conflictDownloaded: "Konfliktkopie heruntergeladen. Sie bleibt unter Import & Export, bis du sie entfernst.",
     },
     defaultHabits: {
       wake: "Früh aufstehen",
@@ -2106,7 +2121,12 @@ const desktopBridge = desktopMode === "tauri-local" ? window.LifeLedgerDesktopBr
 // the browser keeps its own dialogs.
 window.appConfirm ||= message => Promise.resolve(window.confirm(message));
 window.appAlert ||= message => Promise.resolve(window.alert(message));
-const desktopNativeBackup = Boolean(desktopBridge?.saveBackupJson && desktopBridge?.openBackupJson);
+const desktopNativeBackup = Boolean(
+  desktopBridge?.saveBackupJson
+  && desktopBridge?.openBackupJson
+  && desktopBridge?.saveBackupBinary
+  && desktopBridge?.openBackupFile,
+);
 const deploymentMode = requestedMode === "local" || requestedMode === "cloudflare"
   ? requestedMode
   : window.LIFE_LEDGER_DEPLOYMENT_MODE || "local";
@@ -2116,8 +2136,9 @@ const cloudProvider = cloudBaseConfigured ? "cloudbase" : hostedCloudMode ? "clo
 const photosEnabled = hostedCloudMode || cloudProvider === "local";
 let cloudMode = cloudProvider !== "local";
 let cloudBaseAdapter = cloudBaseConfigured ? window.LifeLedgerCloudBase.createAdapter() : null;
-let cloudTimer = null;
 let cloudRetryTimer = null;
+let cloudPullPromise = null;
+let cloudReconnectPromise = null;
 let authExpired = false;
 let cloudBaseLoginState = null;
 let deferredInstallPrompt = null;
@@ -2218,6 +2239,15 @@ function applyTheme() {
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", resolved === "dark" ? "#17191d" : "#f5f5f7");
   if ($("#themeSelect")) $("#themeSelect").value = themeChoice;
   setText("#themeCurrentIcon", { system: "◐", light: "☀", dark: "☾" }[themeChoice]);
+}
+function applyFont() {
+  const storedFont = localStorage.getItem("life-ledger-font");
+  const font = ["rounded", "serif"].includes(storedFont) ? storedFont : "system";
+  if (document.documentElement?.dataset) {
+    if (font === "system") delete document.documentElement.dataset.font;
+    else document.documentElement.dataset.font = font;
+  }
+  if ($("#fontSelect")) $("#fontSelect").value = font;
 }
 function applySidebarState() {
   document.body.classList.toggle("sidebar-collapsed", sidebarCollapsed);
@@ -2428,6 +2458,10 @@ function applyLanguage() {
   setText("#restoreImport", tr("backup.restore"));
   setText("#importSafetyNote", tr("backup.safety"));
   setText("#undoRestore", tr("backup.undo"));
+  setText("#conflictRecoveryTitle", tr("backup.conflictTitle"));
+  setText("#conflictRecoveryHelp", tr("backup.conflictHelp"));
+  setText("#downloadConflictRecovery", tr("backup.conflictDownload"));
+  setText("#dismissConflictRecovery", tr("backup.conflictDismiss"));
   setText("#mediaBackupTitle", tr("backup.mediaTitle"));
   setText("#mediaBackupHelp", tr("backup.mediaHelp"));
   setText("#exportAllTitle", tr("export.all"));
@@ -2794,14 +2828,435 @@ function migrateLocalStarterPack(stored) {
     meta: { ...meta, updatedAt: Date.now() },
   };
 }
+/* life-ledger-cloud-sync-gate-start */
+function createCloudSyncRuntime(deps) {
+  const state = {
+    syncReady: deps.initialSyncReady ?? false,
+    dirty: false,
+    pullInFlight: 0,
+    hadSuccessfulPull: false,
+  };
+  let pendingPushTimer = null;
+
+  function clearPendingPushTimer() {
+    if (pendingPushTimer != null) {
+      clearTimeout(pendingPushTimer);
+      pendingPushTimer = null;
+    }
+  }
+
+  function beginPull() {
+    clearPendingPushTimer();
+    state.pullInFlight++;
+  }
+
+  function endPull() {
+    state.pullInFlight = Math.max(0, state.pullInFlight - 1);
+  }
+
+  function shouldTouchUpdatedAt(options = {}) {
+    if (options.preserveUpdatedAt) return false;
+    if (options.bumpUpdatedAt) return true;
+    if (!deps.getCloudMode()) return true;
+    if (!state.syncReady) return false;
+    return true;
+  }
+
+  function noteDirtyAfterSave(options = {}) {
+    if (!deps.getCloudMode() || !state.syncReady) return;
+    const touch = shouldTouchUpdatedAt(options);
+    if (touch && (!options.skipCloud || options.bumpUpdatedAt)) state.dirty = true;
+  }
+
+  function scheduleDeferredPush() {
+    if (!deps.getCloudMode() || !state.syncReady || state.pullInFlight > 0 || !state.dirty) return false;
+    if (deps.getAuthExpired()) return false;
+    clearPendingPushTimer();
+    pendingPushTimer = setTimeout(() => {
+      pendingPushTimer = null;
+      deps.onDeferredPush?.();
+    }, deps.pushDelayMs ?? 500);
+    return true;
+  }
+
+  function afterLocalSave(options = {}) {
+    noteDirtyAfterSave(options);
+    if (!options.skipCloud) scheduleDeferredPush();
+  }
+
+  function canPush(options = {}) {
+    if (!deps.getCloudMode() || deps.getAuthExpired()) return false;
+    if (state.pullInFlight > 0 && !options.allowDuringPull) return false;
+    if (options.force && options.allowDuringPull) return true;
+    if (!state.syncReady) return false;
+    if (options.force) return true;
+    return state.dirty;
+  }
+
+  function onAuthFailure() {
+    state.syncReady = false;
+    state.dirty = false;
+    clearPendingPushTimer();
+  }
+
+  function afterPushSuccess() {
+    state.dirty = false;
+  }
+
+  function afterPushFailure() {
+    state.dirty = true;
+    state.syncReady = false;
+    clearPendingPushTimer();
+  }
+
+  function shouldReconnectPush(pullOutcome) {
+    if (pullOutcome === "auth" || pullOutcome === "failure") return false;
+    if (pullOutcome === "missing") return false;
+    return state.dirty;
+  }
+
+  async function pullLifecycle({ performGet, performMissingInit }) {
+    beginPull();
+    try {
+      const outcome = await performGet();
+      if (outcome === "auth") {
+        onAuthFailure();
+        return { outcome: "auth" };
+      }
+      if (outcome === "failure") {
+        state.syncReady = false;
+        return { outcome: "failure" };
+      }
+      if (outcome === "missing") {
+        const initialized = await performMissingInit();
+        if (!initialized) {
+          state.syncReady = false;
+          return { outcome: "failure" };
+        }
+        state.syncReady = true;
+        state.hadSuccessfulPull = true;
+        return { outcome: "missing" };
+      }
+      if (outcome === "loaded") {
+        state.syncReady = true;
+        state.hadSuccessfulPull = true;
+        return { outcome: "loaded" };
+      }
+      state.syncReady = false;
+      return { outcome: "failure" };
+    } finally {
+      endPull();
+    }
+  }
+
+  async function reconnectLifecycle({ performGet, performMissingInit, performPush }) {
+    const result = await pullLifecycle({ performGet, performMissingInit });
+    if (!shouldReconnectPush(result.outcome)) return result;
+    await performPush();
+    return result;
+  }
+
+  return {
+    state,
+    beginPull,
+    endPull,
+    shouldTouchUpdatedAt,
+    afterLocalSave,
+    canPush,
+    onAuthFailure,
+    afterPushSuccess,
+    afterPushFailure,
+    shouldReconnectPush,
+    pullLifecycle,
+    reconnectLifecycle,
+    clearPendingPushTimer,
+    scheduleDeferredPush,
+  };
+}
+/* life-ledger-cloud-sync-gate-end */
+/* life-ledger-cloud-revision-start */
+const SYNC_CONFLICT_STORAGE_KEY = "life-ledger-sync-conflict-v1";
+const SYNC_CONFLICT_RECORD_VERSION = 1;
+function cloudStateRevision(value) {
+  const revision = Number(value);
+  return Number.isSafeInteger(revision) && revision >= 0 ? revision : 0;
+}
+function validCloudApplicationPayload(payload) {
+  return payload
+    && Array.isArray(payload.habits)
+    && payload.logs
+    && typeof payload.logs === "object"
+    && !Array.isArray(payload.logs);
+}
+function createCloudRevisionTracker(initialRevision = 0) {
+  let revision = cloudStateRevision(initialRevision);
+  return {
+    getRevision() { return revision; },
+    reset() { revision = 0; },
+    noteRemoteBody(body) { revision = cloudStateRevision(body?.revision); },
+    notePutSuccess(body) { revision = cloudStateRevision(body?.revision); },
+    baseRevisionForPut() { return revision; },
+  };
+}
+function mergeRemoteCloudPayload(remotePayload, seed, cloneDataFn) {
+  if (!validCloudApplicationPayload(remotePayload)) return null;
+  return {
+    ...cloneDataFn(seed),
+    ...remotePayload,
+    dailyGoals: remotePayload.dailyGoals || {},
+    weeklyGoals: remotePayload.weeklyGoals || {},
+    longTermGoals: remotePayload.longTermGoals || [],
+    weeklyOutputs: remotePayload.weeklyOutputs || {},
+    weeklyReviews: remotePayload.weeklyReviews || {},
+  };
+}
+function createConflictRecoveryPortableBackup(currentState, storage, {
+  backupFormat,
+  backupSchemaVersion,
+  encodePreferences,
+  cloneDataFn,
+  suffix = "",
+} = {}) {
+  const preferences = encodePreferences(storage, { suffix });
+  return {
+    format: backupFormat,
+    schemaVersion: backupSchemaVersion,
+    app: "Life Ledger · Deep Review",
+    exportedAt: new Date().toISOString(),
+    scope: "all",
+    range: { scope: "all", start: "", end: "" },
+    data: cloneDataFn(currentState),
+    ...(preferences ? { preferences } : {}),
+  };
+}
+function encodeSyncConflictRecord({
+  backup,
+  provider,
+  baseRevision,
+  remoteRevision,
+  detectedAt = Date.now(),
+  pendingRemoteResolution = false,
+}) {
+  return {
+    version: SYNC_CONFLICT_RECORD_VERSION,
+    detectedAt,
+    provider,
+    baseRevision: cloudStateRevision(baseRevision),
+    remoteRevision: cloudStateRevision(remoteRevision),
+    backup,
+    ...(pendingRemoteResolution ? { pendingRemoteResolution: true } : {}),
+  };
+}
+function decodeSyncConflictRecord(raw, { backupFormat, backupSchemaVersion } = {}) {
+  if (!backupPrefIsRecord(raw) || raw.version !== SYNC_CONFLICT_RECORD_VERSION) return null;
+  if (raw.pendingRemoteResolution !== undefined && raw.pendingRemoteResolution !== true) return null;
+  const backup = raw.backup;
+  if (!backupPrefIsRecord(backup) || backup.format !== backupFormat || backup.scope !== "all") return null;
+  if (!Number.isFinite(Number(backup.schemaVersion)) || Number(backup.schemaVersion) > backupSchemaVersion) return null;
+  if (!validCloudApplicationPayload(backup.data)) return null;
+  if (decodeBackupPreferences(backup.preferences) === null && backup.preferences != null) return null;
+  const detectedAt = Number(raw.detectedAt);
+  if (!Number.isFinite(detectedAt) || detectedAt <= 0) return null;
+  return {
+    version: SYNC_CONFLICT_RECORD_VERSION,
+    detectedAt,
+    provider: typeof raw.provider === "string" ? raw.provider : "",
+    baseRevision: cloudStateRevision(raw.baseRevision),
+    remoteRevision: cloudStateRevision(raw.remoteRevision),
+    backup,
+    pendingRemoteResolution: raw.pendingRemoteResolution === true,
+  };
+}
+function syncConflictRecordPendingRemote(record) {
+  return record?.pendingRemoteResolution === true;
+}
+function readSyncConflictRecord(storage, options) {
+  if (!storage || typeof storage.getItem !== "function") return null;
+  let rawText = null;
+  try { rawText = storage.getItem(SYNC_CONFLICT_STORAGE_KEY); } catch { return null; }
+  if (!rawText) return null;
+  try {
+    return decodeSyncConflictRecord(JSON.parse(rawText), options);
+  } catch {
+    return null;
+  }
+}
+function writeSyncConflictRecord(storage, record) {
+  if (!storage || typeof storage.setItem !== "function" || !record) return false;
+  try {
+    storage.setItem(SYNC_CONFLICT_STORAGE_KEY, JSON.stringify(record));
+    return true;
+  } catch {
+    return false;
+  }
+}
+function clearSyncConflictRecord(storage) {
+  if (!storage || typeof storage.removeItem !== "function") return false;
+  try {
+    storage.removeItem(SYNC_CONFLICT_STORAGE_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}
+function conflictRecoveryDownloadName(record) {
+  const stamp = new Date(record.detectedAt);
+  const y = stamp.getFullYear();
+  const m = String(stamp.getMonth() + 1).padStart(2, "0");
+  const d = String(stamp.getDate()).padStart(2, "0");
+  return `life-ledger-conflict-backup-${y}-${m}-${d}.json`;
+}
+function planCloudStateConflict({
+  losingState,
+  storage,
+  conflictBody,
+  baseRevision,
+  provider,
+  backupFormat,
+  backupSchemaVersion,
+  encodePreferences,
+  cloneDataFn,
+  seed,
+  suffix = "",
+}) {
+  const backup = createConflictRecoveryPortableBackup(losingState, storage, {
+    backupFormat,
+    backupSchemaVersion,
+    encodePreferences,
+    cloneDataFn,
+    suffix,
+  });
+  const record = encodeSyncConflictRecord({
+    backup,
+    provider,
+    baseRevision,
+    remoteRevision: conflictBody?.revision,
+    detectedAt: Date.now(),
+  });
+  const adopted = mergeRemoteCloudPayload(conflictBody?.payload, seed, cloneDataFn);
+  if (!adopted) {
+    return {
+      kind: "malformed",
+      record: encodeSyncConflictRecord({
+        backup,
+        provider,
+        baseRevision,
+        remoteRevision: conflictBody?.revision,
+        detectedAt: record.detectedAt,
+        pendingRemoteResolution: true,
+      }),
+    };
+  }
+  return {
+    kind: "adopted",
+    record,
+    adoptedState: adopted,
+    remoteRevision: cloudStateRevision(conflictBody.revision),
+  };
+}
+function commitCloudConflictPlan(plan, storage, persist = writeSyncConflictRecord) {
+  if (!persist(storage, plan.record)) return { status: "storage_failed" };
+  if (plan.kind === "adopted") return { status: "adopted", plan };
+  return { status: "pending_remote" };
+}
+function resolvePendingConflictOnRemoteGet(remote, storage, seed, cloneDataFn, codecOptions, persist = writeSyncConflictRecord) {
+  const pending = readSyncConflictRecord(storage, codecOptions);
+  if (!syncConflictRecordPendingRemote(pending)) return null;
+  const adoptedState = mergeRemoteCloudPayload(remote?.payload, seed, cloneDataFn);
+  if (!adoptedState) return null;
+  const cleared = encodeSyncConflictRecord({
+    backup: pending.backup,
+    provider: pending.provider,
+    baseRevision: pending.baseRevision,
+    remoteRevision: remote?.revision,
+    detectedAt: pending.detectedAt,
+  });
+  if (!persist(storage, cleared)) return null;
+  return {
+    adoptedState,
+    remoteRevision: cloudStateRevision(remote?.revision),
+    record: { ...cleared, pendingRemoteResolution: false },
+  };
+}
+const SYNC_CONFLICT_STORAGE_BLOCK_KEY = "life-ledger-sync-conflict-storage-block-v1";
+const SYNC_CONFLICT_STORAGE_BLOCK_VERSION = 1;
+let cloudSyncConflictStorageBlockSession = false;
+function encodeSyncConflictStorageBlockMarker(detectedAt = Date.now()) {
+  return JSON.stringify({ version: SYNC_CONFLICT_STORAGE_BLOCK_VERSION, detectedAt });
+}
+function decodeSyncConflictStorageBlockMarker(raw) {
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed?.version !== SYNC_CONFLICT_STORAGE_BLOCK_VERSION) return false;
+    const detectedAt = Number(parsed.detectedAt);
+    return Number.isFinite(detectedAt) && detectedAt > 0;
+  } catch {
+    return false;
+  }
+}
+function readSyncConflictStorageBlockFromStore(store) {
+  if (!store || typeof store.getItem !== "function") return false;
+  try {
+    const raw = store.getItem(SYNC_CONFLICT_STORAGE_BLOCK_KEY);
+    return raw ? decodeSyncConflictStorageBlockMarker(raw) : false;
+  } catch {
+    return false;
+  }
+}
+function activateSyncConflictStorageBlock(localStorageRef, sessionStorageRef) {
+  cloudSyncConflictStorageBlockSession = true;
+  const marker = encodeSyncConflictStorageBlockMarker();
+  try { localStorageRef?.setItem?.(SYNC_CONFLICT_STORAGE_BLOCK_KEY, marker); } catch { /* storage unavailable */ }
+  try { sessionStorageRef?.setItem?.(SYNC_CONFLICT_STORAGE_BLOCK_KEY, marker); } catch { /* storage unavailable */ }
+}
+function clearSyncConflictStorageBlock(localStorageRef, sessionStorageRef) {
+  cloudSyncConflictStorageBlockSession = false;
+  try { localStorageRef?.removeItem?.(SYNC_CONFLICT_STORAGE_BLOCK_KEY); } catch { /* storage unavailable */ }
+  try { sessionStorageRef?.removeItem?.(SYNC_CONFLICT_STORAGE_BLOCK_KEY); } catch { /* storage unavailable */ }
+}
+function syncConflictStorageBlockActive(localStorageRef, sessionStorageRef) {
+  if (cloudSyncConflictStorageBlockSession) return true;
+  if (readSyncConflictStorageBlockFromStore(localStorageRef)) {
+    cloudSyncConflictStorageBlockSession = true;
+    return true;
+  }
+  if (readSyncConflictStorageBlockFromStore(sessionStorageRef)) {
+    cloudSyncConflictStorageBlockSession = true;
+    return true;
+  }
+  return false;
+}
+function cloudSyncStorageBlockPaused(
+  provider = cloudProvider,
+  localStorageRef = localStorage,
+  sessionStorageRef = sessionStorage,
+) {
+  return provider === "cloudflare" && syncConflictStorageBlockActive(localStorageRef, sessionStorageRef);
+}
+function conflictRecoveryStorageFallbackActive(record, provider, localStorageRef, sessionStorageRef) {
+  return !record && cloudSyncStorageBlockPaused(provider, localStorageRef, sessionStorageRef);
+}
+/* life-ledger-cloud-revision-end */
+const cloudRevisionTracker = createCloudRevisionTracker();
+let cloudPendingConflictResolvedOnLastGet = false;
+let cloudSyncRuntime = null;
+function initCloudSyncRuntime() {
+  cloudSyncRuntime = createCloudSyncRuntime({
+    initialSyncReady: !cloudMode,
+    pushDelayMs: 500,
+    getCloudMode: () => cloudMode,
+    getAuthExpired: () => authExpired,
+    onDeferredPush: () => { void pushCloudState(); },
+  });
+}
+initCloudSyncRuntime();
 function saveState(options = {}) {
-  state.meta = { ...(state.meta || {}), updatedAt: Date.now() };
+  const priorUpdatedAt = state.meta?.updatedAt || 0;
+  const touchUpdatedAt = cloudSyncRuntime.shouldTouchUpdatedAt(options);
+  state.meta = { ...(state.meta || {}), updatedAt: touchUpdatedAt ? Date.now() : priorUpdatedAt };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   requestPersistentStorage();
-  if (cloudMode && !options.skipCloud) {
-    clearTimeout(cloudTimer);
-    cloudTimer = setTimeout(pushCloudState, 500);
-  }
+  cloudSyncRuntime.afterLocalSave(options);
 }
 async function requestPersistentStorage() {
   if (persistenceRequested || location.protocol === "file:" || !navigator.storage?.persist) return;
@@ -2845,6 +3300,7 @@ function isAuthFailure(response) {
 }
 function markAuthExpired() {
   authExpired = true;
+  cloudSyncRuntime.onAuthFailure();
   clearTimeout(cloudRetryTimer);
   setSaveMode("auth", tr("save.authExpired"));
 }
@@ -2878,73 +3334,222 @@ async function openCloudBaseAuth() {
 function scheduleCloudRetry() {
   clearTimeout(cloudRetryTimer);
   cloudRetryTimer = setTimeout(() => {
-    if (!authExpired && navigator.onLine) pushCloudState();
+    if (!authExpired && navigator.onLine) void runCloudReconnectSync();
   }, 4000);
 }
-async function pushCloudState() {
+async function runCloudReconnectSync() {
+  if (!cloudMode || authExpired || !navigator.onLine) return;
+  if (cloudSyncStorageBlockPaused()) return;
+  if (cloudReconnectPromise) return cloudReconnectPromise;
+  cloudReconnectPromise = (async () => {
+    try {
+      const result = await pullCloudState();
+      if (result.outcome === "auth") markAuthExpired();
+      if (cloudSyncRuntime.shouldReconnectPush(result.outcome) && !cloudSyncConflictBlocksAutoPush()) await pushCloudState();
+    } catch (error) {
+      console.warn("Cloud reconnect sync failed", error);
+    }
+  })().finally(() => {
+    cloudReconnectPromise = null;
+  });
+  return cloudReconnectPromise;
+}
+async function pushCloudState(options = {}) {
+  if (cloudProvider === "cloudflare" && cloudSyncStorageBlockPaused()) {
+    setSaveMode("", tr("save.conflictStorageFailed"));
+    return false;
+  }
+  if (!cloudSyncRuntime.canPush(options)) return false;
+  cloudSyncRuntime.clearPendingPushTimer();
   setSaveMode("syncing", tr("save.syncing"));
   try {
     if (cloudProvider === "cloudbase") {
       await cloudBaseAdapter.putState(state);
       authExpired = false;
+      cloudSyncRuntime.afterPushSuccess();
       setSaveMode("cloud", tr("save.cloudSaved"));
-      return;
+      return true;
     }
+    const baseRevision = cloudRevisionTracker.baseRevisionForPut();
     const response = await fetch(CLOUD_API, {
       method: "PUT",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ payload: state }),
+      body: JSON.stringify({ payload: state, baseRevision }),
     });
-    if (isAuthFailure(response)) { markAuthExpired(); return; }
+    if (isAuthFailure(response)) { markAuthExpired(); return false; }
+    if (response.status === 409) {
+      let conflictBody = null;
+      try { conflictBody = await response.json(); } catch { conflictBody = null; }
+      const plan = planCloudStateConflict({
+        losingState: state,
+        storage: localStorage,
+        conflictBody,
+        baseRevision,
+        provider: cloudProvider,
+        backupFormat: BACKUP_FORMAT,
+        backupSchemaVersion: BACKUP_SCHEMA_VERSION,
+        encodePreferences: encodeBackupPreferences,
+        cloneDataFn: cloneData,
+        seed,
+        suffix: window.LifeLedgerStorageSuffix || "",
+      });
+      const commit = commitCloudConflictPlan(plan, localStorage);
+      if (commit.status === "storage_failed") {
+        activateSyncConflictStorageBlock(localStorage, sessionStorage);
+        cloudSyncRuntime.afterPushFailure();
+        refreshConflictRecoveryVisibility();
+        setSaveMode("", tr("save.conflictStorageFailed"));
+        return false;
+      }
+      refreshConflictRecoveryVisibility();
+      if (commit.status === "adopted") {
+        const adoptedPlan = commit.plan;
+        state = adoptedPlan.adoptedState;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        cloudRevisionTracker.noteRemoteBody({ revision: adoptedPlan.remoteRevision });
+        adoptCloudProfile(conflictBody?.payload, { skipCloud: true, preserveUpdatedAt: true });
+        renderDeviceProfile();
+        applyCloudPrefs({ skipCloud: true, preserveUpdatedAt: true });
+        renderAll();
+        authExpired = false;
+        cloudSyncRuntime.afterPushSuccess();
+        setSaveMode("cloud", tr("save.cloudSaved"));
+        showToast(tr("toast.conflictPreserved"));
+        return true;
+      }
+      cloudSyncRuntime.afterPushFailure();
+      setSaveMode("", tr("save.conflictPendingResolution"));
+      return false;
+    }
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const body = await response.json();
+    cloudRevisionTracker.notePutSuccess(body);
     authExpired = false;
+    cloudSyncRuntime.afterPushSuccess();
     setSaveMode("cloud", tr("save.cloudSaved"));
+    return true;
   } catch (error) {
     if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) {
       markAuthExpired();
-      return;
+      return false;
     }
     console.warn("Cloud sync failed", error);
+    cloudSyncRuntime.afterPushFailure();
     setSaveMode("", tr("save.networkRetry"));
     scheduleCloudRetry();
+    return false;
   }
 }
 async function pullCloudState() {
-  setSaveMode("syncing", tr("save.connecting"));
-  try {
-    if (cloudProvider === "cloudbase") {
-      const remote = await cloudBaseAdapter.getState();
-      if (!remote) { adoptCloudProfile(null); await pushCloudState(); return; }
-      if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
-        state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, longTermGoals: remote.payload.longTermGoals || [], weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        renderAll();
-      }
-      adoptCloudProfile(remote?.payload); renderDeviceProfile(); applyCloudPrefs();
-      authExpired = false;
-      setSaveMode("cloud", tr("save.cloudSaved"));
-      return;
+  if (cloudProvider === "cloudflare" && cloudSyncStorageBlockPaused()) {
+    setSaveMode("", tr("save.conflictStorageFailed"));
+    return { outcome: "storage_blocked" };
+  }
+  if (cloudPullPromise) return cloudPullPromise;
+  cloudPullPromise = pullCloudStateOnce().finally(() => { cloudPullPromise = null; });
+  return cloudPullPromise;
+}
+async function fetchCloudRemoteOutcome() {
+  if (cloudProvider === "cloudbase") {
+    const remote = await cloudBaseAdapter.getState();
+    if (!remote) {
+      adoptCloudProfile(null, { skipCloud: true, preserveUpdatedAt: true });
+      return "missing";
     }
-    const response = await fetch(CLOUD_API, { headers: { accept: "application/json" } });
-    if (isAuthFailure(response)) { markAuthExpired(); return; }
-    if (response.status === 404) { adoptCloudProfile(null); await pushCloudState(); return; }
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const remote = await response.json();
     if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
       state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, longTermGoals: remote.payload.longTermGoals || [], weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
     }
-    adoptCloudProfile(remote?.payload); renderDeviceProfile(); applyCloudPrefs();
-    setSaveMode("cloud", tr("save.cloudSaved"));
+    adoptCloudProfile(remote?.payload, { skipCloud: true, preserveUpdatedAt: true });
+    renderDeviceProfile();
+    applyCloudPrefs({ skipCloud: true, preserveUpdatedAt: true });
+    authExpired = false;
+    return "loaded";
+  }
+  const response = await fetch(CLOUD_API, { headers: { accept: "application/json" } });
+  if (isAuthFailure(response)) return "auth";
+  if (response.status === 404) {
+    cloudRevisionTracker.reset();
+    adoptCloudProfile(null, { skipCloud: true, preserveUpdatedAt: true });
+    return "missing";
+  }
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const remote = await response.json();
+  cloudPendingConflictResolvedOnLastGet = false;
+  const pendingResolved = resolvePendingConflictOnRemoteGet(
+    remote,
+    localStorage,
+    seed,
+    cloneData,
+    syncConflictRecordOptions(),
+  );
+  if (pendingResolved) {
+    cloudPendingConflictResolvedOnLastGet = true;
+    state = pendingResolved.adoptedState;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    cloudRevisionTracker.noteRemoteBody({ revision: pendingResolved.remoteRevision });
+    adoptCloudProfile(remote?.payload, { skipCloud: true, preserveUpdatedAt: true });
+    renderDeviceProfile();
+    applyCloudPrefs({ skipCloud: true, preserveUpdatedAt: true });
+    renderAll();
+    refreshConflictRecoveryVisibility();
+    authExpired = false;
+    return "loaded";
+  }
+  cloudRevisionTracker.noteRemoteBody(remote);
+  const merged = mergeRemoteCloudPayload(remote?.payload, seed, cloneData);
+  if (merged && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
+    state = merged;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    renderAll();
+  }
+  adoptCloudProfile(remote?.payload, { skipCloud: true, preserveUpdatedAt: true });
+  renderDeviceProfile();
+  applyCloudPrefs({ skipCloud: true, preserveUpdatedAt: true });
+  authExpired = false;
+  return "loaded";
+}
+async function pullCloudStateOnce() {
+  setSaveMode("syncing", tr("save.connecting"));
+  try {
+    const result = await cloudSyncRuntime.pullLifecycle({
+      performGet: async () => {
+        try {
+          return await fetchCloudRemoteOutcome();
+        } catch (error) {
+          if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) return "auth";
+          return "failure";
+        }
+      },
+      performMissingInit: () => pushCloudState({ force: true, allowDuringPull: true }),
+    });
+    if (result.outcome === "auth") markAuthExpired();
+    else if (result.outcome === "loaded") {
+      setSaveMode("cloud", tr("save.cloudSaved"));
+      if (cloudPendingConflictResolvedOnLastGet) {
+        cloudSyncRuntime.afterPushSuccess();
+        cloudPendingConflictResolvedOnLastGet = false;
+      } else if (!cloudSyncConflictBlocksAutoPush()) {
+        cloudSyncRuntime.scheduleDeferredPush();
+      }
+    }
+    else if (result.outcome === "failure") {
+      console.warn("Cloud pull failed");
+      setSaveMode("", tr("save.networkRetry"));
+      scheduleCloudRetry();
+    }
+    return result;
   } catch (error) {
     if (cloudProvider === "cloudbase" && isCloudBaseAuthError(error)) {
       markAuthExpired();
-      return;
+      return { outcome: "auth" };
     }
     console.warn("Cloud pull failed", error);
+    cloudSyncRuntime.state.syncReady = false;
     setSaveMode("", tr("save.networkRetry"));
     scheduleCloudRetry();
+    return { outcome: "failure" };
   }
 }
 
@@ -3173,7 +3778,10 @@ async function connectGoogleCalendar() {
   button.disabled = true;
   button.textContent = tr("calendarSync.connecting");
   try {
-    const payload = await calendarApi("connect", { method: "POST" });
+    const payload = await calendarApi("connect", {
+      method: "POST",
+      headers: desktopMode === "tauri-cloud" ? { "X-Life-Ledger-Desktop": "tauri-cloud" } : {},
+    });
     location.assign(payload.authorizationUrl);
   } catch (error) {
     button.disabled = false;
@@ -3302,11 +3910,195 @@ function completionFor(date) {
   const log = getLog(date);
   return habits.length ? Math.round((log.completed.filter(id => habits.some(h => h.id === id)).length / habits.length) * 100) : 0;
 }
-function showToast(message) {
-  const toast = $("#toast"); $("p", toast).textContent = message;
-  toast.classList.add("show"); clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove("show"), 1600);
+/* life-ledger-habit-delete-undo-start */
+function ensureToastActionButton(toast) {
+  if (!toast) return null;
+  let button = $(".toast-action", toast) || toast.querySelector?.(".toast-action");
+  if (!button && typeof document !== "undefined" && typeof document.createElement === "function") {
+    button = document.createElement("button");
+    button.type = "button";
+    button.className = "toast-action";
+    button.id = "toastAction";
+    button.hidden = true;
+    button.disabled = true;
+    toast.appendChild?.(button);
+  }
+  return button;
 }
+
+function clearToastActionState(toast = $("#toast")) {
+  showToast.activeAction = null;
+  if (!toast) return;
+  toast.classList?.remove("has-action");
+  const button = $(".toast-action", toast) || toast.querySelector?.(".toast-action");
+  if (button) {
+    button.hidden = true;
+    button.disabled = true;
+    button.textContent = "";
+    button.onclick = null;
+    button.onkeydown = null;
+  }
+}
+
+function dismissToast(toast = $("#toast")) {
+  clearTimeout(showToast.timer);
+  showToast.timer = null;
+  clearToastActionState(toast);
+  toast?.classList?.remove("show");
+}
+
+function showToast(message, options = {}) {
+  const toast = $("#toast");
+  clearTimeout(showToast.timer);
+  showToast.timer = null;
+  clearToastActionState(toast);
+  if (!toast) return;
+  const textNode = $("p", toast) || toast.querySelector?.("p");
+  if (textNode) textNode.textContent = message;
+  const actionLabel = typeof options?.actionLabel === "string" ? options.actionLabel.trim() : "";
+  const onAction = typeof options?.onAction === "function" ? options.onAction : null;
+  const hasAction = Boolean(actionLabel && onAction);
+  if (hasAction) {
+    const button = ensureToastActionButton(toast);
+    let consumed = false;
+    const runOnce = () => {
+      if (consumed || showToast.activeAction !== runOnce) return false;
+      consumed = true;
+      dismissToast(toast);
+      onAction();
+      return true;
+    };
+    showToast.activeAction = runOnce;
+    toast.classList?.add("has-action");
+    if (button) {
+      button.type = "button";
+      button.textContent = actionLabel;
+      button.hidden = false;
+      button.disabled = false;
+      button.onclick = event => {
+        event?.preventDefault?.();
+        runOnce();
+      };
+      button.onkeydown = event => {
+        if (event?.key === "Enter" || event?.key === " " || event?.key === "Spacebar") {
+          event.preventDefault?.();
+          runOnce();
+        } else if (event?.key === "Escape") {
+          event.preventDefault?.();
+          dismissToast(toast);
+        }
+      };
+    }
+  }
+  toast.classList?.add("show");
+  const duration = Number.isFinite(options?.duration) ? options.duration : (hasAction ? 4500 : 1600);
+  showToast.timer = setTimeout(() => {
+    dismissToast(toast);
+  }, duration);
+}
+
+function createHabitDeletionSnapshot(habitId) {
+  const index = state.habits.findIndex(item => item.id === habitId);
+  if (index < 0) return null;
+  const habit = cloneData(state.habits[index]);
+  const logs = [];
+  for (const [date, log] of Object.entries(state.logs || {})) {
+    if (Array.isArray(log?.completed) && log.completed.includes(habit.id)) {
+      logs.push({ date, completed: [...log.completed] });
+    }
+  }
+  return { habit, index, logs };
+}
+
+function restoreFocusAfterHabitChange(targetHabitId, source = "") {
+  const inHabitsView = source === "inspector" || document?.body?.dataset?.activeView === "habits";
+  if (inHabitsView) {
+    const rowButton = targetHabitId
+      ? $$(".habit-settings-main").find(button => button.dataset?.id === targetHabitId)
+      : null;
+    const fallback = rowButton
+      || (!($("#habitInspectorForm")?.hidden) && $("#habitInspectorForm input[name=\"name\"]"))
+      || $("#openHabitDialog")
+      || $(".nav-item.active");
+    fallback?.focus?.({ preventScroll: true });
+    return;
+  }
+  const active = document?.activeElement;
+  if (!active || active === document?.body || active.isConnected === false || active.closest?.("dialog:not([open])")) {
+    const fallback = $(".habit-card button, .habit-card") || $("#openHabitDialog") || $(".nav-item.active");
+    fallback?.focus?.({ preventScroll: true });
+  }
+}
+
+function restoreHabitDeletion(snapshot, options = {}) {
+  if (!snapshot?.habit) return false;
+  const restoredHabit = cloneData(snapshot.habit);
+  const existingIndex = state.habits.findIndex(item => item.id === restoredHabit.id);
+  if (existingIndex >= 0) state.habits.splice(existingIndex, 1);
+  const targetIndex = Math.max(0, Math.min(snapshot.index, state.habits.length));
+  state.habits.splice(targetIndex, 0, restoredHabit);
+  if (!state.logs || typeof state.logs !== "object") state.logs = {};
+  for (const entry of snapshot.logs || []) {
+    const existingLog = state.logs[entry.date];
+    if (existingLog && typeof existingLog === "object") {
+      existingLog.completed = [...entry.completed];
+    } else {
+      state.logs[entry.date] = { completed: [...entry.completed], mood: null, note: "" };
+    }
+  }
+  selectedHabitSettingsId = restoredHabit.id;
+  const inspectorForm = $("#habitInspectorForm");
+  if (inspectorForm) {
+    if (inspectorForm.dataset) delete inspectorForm.dataset.dirty;
+    populateHabitInspectorForm(restoredHabit.id);
+  }
+  saveState();
+  renderAll();
+  restoreFocusAfterHabitChange(restoredHabit.id, options.source);
+  return true;
+}
+
+async function confirmAndDeleteHabit(habitId, options = {}) {
+  const initialHabit = state.habits.find(item => item.id === habitId);
+  if (!initialHabit) return false;
+  const confirmed = await appConfirm(tr("habits.deleteConfirm", { habit: displayHabitName(initialHabit) }));
+  if (!confirmed) return false;
+  const snapshot = createHabitDeletionSnapshot(initialHabit.id);
+  if (!snapshot) return false;
+  const { habit: removedHabit, index } = snapshot;
+  const wasSelected = selectedHabitSettingsId === removedHabit.id;
+  state.habits = state.habits.filter(item => item.id !== removedHabit.id);
+  Object.values(state.logs || {}).forEach(log => {
+    if (Array.isArray(log?.completed)) {
+      log.completed = log.completed.filter(id => id !== removedHabit.id);
+    }
+  });
+  if (editingHabitId === removedHabit.id && !options.closeDialog) editingHabitId = null;
+  if (wasSelected || !selectedHabitSettingsId || !state.habits.some(item => item.id === selectedHabitSettingsId)) {
+    selectedHabitSettingsId = state.habits[index]?.id || state.habits[index - 1]?.id || state.habits[0]?.id || "";
+  }
+  const inspectorForm = $("#habitInspectorForm");
+  if (inspectorForm) {
+    if (inspectorForm.dataset) delete inspectorForm.dataset.dirty;
+    if (selectedHabitSettingsId) populateHabitInspectorForm(selectedHabitSettingsId);
+    else {
+      inspectorForm.reset?.();
+      renderHabitStreakCalendar("");
+    }
+  }
+  saveState();
+  if (options.closeDialog) closeHabitDialog();
+  renderAll();
+  restoreFocusAfterHabitChange(selectedHabitSettingsId, options.source);
+  showToast(tr("habits.deleted", { habit: displayHabitName(removedHabit) }), {
+    actionLabel: languageText("撤销", "Undo", "Rückgängig"),
+    onAction: () => {
+      restoreHabitDeletion(snapshot, options);
+    },
+  });
+  return true;
+}
+/* life-ledger-habit-delete-undo-end */
 
 function initSelects() {
   const year = $("#yearSelect"), month = $("#monthSelect");
@@ -3970,13 +4762,15 @@ function attachVoiceInput(field) {
 async function saveVoiceReflection({ date, text }) {
   if (voiceTarget) { const target = voiceTarget; voiceTarget = null; target(text); return; }
   if (isFutureDate(date)) throw new Error("Voice reflection cannot be saved to a future date");
-  if (cloudMode && !authExpired) await pullCloudState();
+  let pullResult = null;
+  if (cloudMode && !authExpired) pullResult = await pullCloudState();
+  if (cloudMode && (!cloudSyncRuntime.state.syncReady || pullResult?.outcome === "auth" || pullResult?.outcome === "failure")) return;
   const existing = getLog(date).note || "";
   const note = window.LifeLedgerVoiceCheckin.appendReflection(existing, text);
   state.logs[date] = { ...getLog(date), note };
-  saveState({ skipCloud: true });
+  saveState({ skipCloud: true, bumpUpdatedAt: true });
   renderHomeJournal();
-  if (cloudMode) await pushCloudState();
+  if (cloudMode) await pushCloudState({ force: true });
 }
 
 function initVoiceReflection() {
@@ -4933,16 +5727,7 @@ function saveHabitFromForm(event) {
   saveState(); closeHabitDialog(); renderAll(); showToast(isEditing ? tr("habits.updated") : tr("habits.added"));
 }
 async function deleteHabit() {
-  const habit = state.habits.find(h => h.id === editingHabitId);
-  if (!habit || !(await appConfirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) })))) return;
-  state.habits = state.habits.filter(h => h.id !== habit.id);
-  Object.values(state.logs).forEach(log => {
-    if (Array.isArray(log.completed)) log.completed = log.completed.filter(id => id !== habit.id);
-  });
-  saveState();
-  closeHabitDialog();
-  renderAll();
-  showToast(tr("habits.deleted", { habit: displayHabitName(habit) }));
+  return confirmAndDeleteHabit(editingHabitId, { source: "dialog", closeDialog: true });
 }
 
 function datesForReview(scope, key) {
@@ -5036,6 +5821,59 @@ function setBackupTab(tab = "export") {
   $$('[data-backup-panel]').forEach(panel => { panel.hidden = panel.dataset.backupPanel !== selected; });
   $("#exportConfirm").hidden = selected !== "export";
 }
+function syncConflictRecordOptions() {
+  return { backupFormat: BACKUP_FORMAT, backupSchemaVersion: BACKUP_SCHEMA_VERSION };
+}
+function cloudSyncConflictBlocksAutoPush() {
+  if (cloudProvider !== "cloudflare") return false;
+  if (cloudSyncStorageBlockPaused()) return true;
+  return syncConflictRecordPendingRemote(readSyncConflictRecord(localStorage, syncConflictRecordOptions()));
+}
+function refreshConflictRecoveryVisibility() {
+  const row = $("#conflictRecoveryRow");
+  if (!row) return;
+  const record = readSyncConflictRecord(localStorage, syncConflictRecordOptions());
+  const fallback = conflictRecoveryStorageFallbackActive(record, cloudProvider, localStorage, sessionStorage);
+  row.hidden = !record && !fallback;
+  const dismiss = $("#dismissConflictRecovery");
+  if (dismiss) dismiss.hidden = fallback || !record;
+}
+function downloadStoredConflictRecovery() {
+  const record = readSyncConflictRecord(localStorage, syncConflictRecordOptions());
+  const fallback = conflictRecoveryStorageFallbackActive(record, cloudProvider, localStorage, sessionStorage);
+  if (fallback) {
+    try {
+      const backup = createBackup("all");
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      triggerFileDownload(blob, `life-ledger-conflict-backup-${isoDate(new Date())}.json`);
+      clearSyncConflictStorageBlock(localStorage, sessionStorage);
+      refreshConflictRecoveryVisibility();
+      void pullCloudState();
+      showToast(tr("backup.conflictDownloaded"));
+    } catch (error) {
+      console.warn("Conflict storage fallback download failed", error);
+      setSaveMode("", tr("save.conflictStorageFailed"));
+    }
+    return;
+  }
+  if (!record) {
+    refreshConflictRecoveryVisibility();
+    return;
+  }
+  const blob = new Blob([JSON.stringify(record.backup, null, 2)], { type: "application/json" });
+  triggerFileDownload(blob, conflictRecoveryDownloadName(record));
+  showToast(tr("backup.conflictDownloaded"));
+}
+async function dismissStoredConflictRecovery() {
+  const record = readSyncConflictRecord(localStorage, syncConflictRecordOptions());
+  if (!record) {
+    refreshConflictRecoveryVisibility();
+    return;
+  }
+  if (!await appConfirm(tr("backup.conflictDismissConfirm"))) return;
+  clearSyncConflictRecord(localStorage);
+  refreshConflictRecoveryVisibility();
+}
 function openBackupDialog() {
   $("#exportMonth").value = monthKey(new Date());
   $("#exportDate").value = isoDate(new Date());
@@ -5044,6 +5882,7 @@ function openBackupDialog() {
   $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
   $("#mediaBackupOption").hidden = !photosEnabled;
   setBackupTab("export");
+  refreshConflictRecoveryVisibility();
   $("#exportDialog").showModal();
 }
 function syncExportButtonPlacement() {
@@ -5065,8 +5904,195 @@ function syncMobileToolbar() {
   button.setAttribute("aria-expanded", String(mobile && mobileToolbarOpen));
   button.setAttribute("aria-label", mobileToolbarOpen ? tr("toolbar.close") : tr("toolbar.open"));
 }
+/* life-ledger-backup-preferences-start */
+// Backup schema v3: a small, explicit codec for user-facing settings. Full backups carry them in a separate
+// `preferences: { version, values }` envelope; partial backups never do. Every field below is parsed from its
+// stored string, validated and normalised; anything invalid is dropped. There is deliberately no way to walk
+// "all life-ledger keys": cloud URL, auth/session, calendar credentials, notification permission, weather cache,
+// the running focus timer, restore safety and demo/migration/earlier-records keys have no entry here.
+const BACKUP_PREFERENCES_VERSION = 1;
+const BACKUP_PREFERENCES_MIN_SCHEMA = 3;
+const BACKUP_PREF_LANGUAGES = Object.freeze(["en", "de", "zh"]);
+const BACKUP_PREF_THEMES = Object.freeze(["system", "light", "dark"]);
+const BACKUP_PREF_FONTS = Object.freeze(["system", "rounded", "serif"]);
+const BACKUP_PREF_CALENDAR_VIEWS = Object.freeze(["mood", "heatmap"]);
+const BACKUP_PREF_PALETTES = Object.freeze(["green", "blue", "spectrum"]);
+const BACKUP_PREF_WEEK_MODULES = Object.freeze(["review", "goals", "completed", "insights"]);
+const BACKUP_PREF_WALL_FITS = Object.freeze(["cover", "contain"]);
+// Same card ids and sizes as today-cards.js / today-widgets.js (a test keeps them in step).
+const BACKUP_PREF_CARD_SIZES = Object.freeze({
+  habits: ["L", "W", "X"], calendar: ["L", "X"], dayplan: ["L"], tools: ["L", "M", "X"],
+  weather: ["L", "M", "S"], freq: ["L", "M"], rhythm: ["M", "S"], heatmap: ["S", "M", "L"],
+  wall: ["L", "S", "M", "X"], wall2: ["L", "S", "M", "X"], wall3: ["L", "S", "M", "X"],
+  photos: ["M", "L"], focus: ["S", "M"],
+});
+function backupPrefIsRecord(value) { return value !== null && typeof value === "object" && !Array.isArray(value); }
+function backupPrefText(value, max) {
+  if (typeof value !== "string") return "";
+  return value.replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, max);
+}
+function backupPrefChoice(choices) { return value => (typeof value === "string" && choices.includes(value) ? value : undefined); }
+function backupPrefBoolean(value) { return typeof value === "boolean" ? value : undefined; }
+function backupPrefList(allowed, { complete = false } = {}) {
+  return value => {
+    if (!Array.isArray(value)) return undefined;
+    const picked = [...new Set(value.filter(item => typeof item === "string" && allowed.includes(item)))];
+    return complete ? [...new Set([...picked, ...allowed])] : picked;
+  };
+}
+function backupPrefRawText(raw) { return raw; }
+function backupPrefRawBoolean(raw) { return raw === "true" ? true : raw === "false" ? false : undefined; }
+function backupPrefRawJson(raw) { try { return JSON.parse(raw); } catch { return undefined; } }
+function backupPrefReminder(value) {
+  if (!backupPrefIsRecord(value) || typeof value.enabled !== "boolean") return undefined;
+  if (typeof value.time !== "string" || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value.time)) return undefined;
+  return { enabled: value.enabled, time: value.time };
+}
+function backupPrefProfile(value) {
+  if (!backupPrefIsRecord(value)) return undefined;
+  const name = backupPrefText(value.name, 60);
+  const avatar = validAvatar(value.avatar) ? value.avatar : "";
+  if (!name && !avatar) return undefined;
+  return { name, avatar, frame: profileFrame(value.frame) };
+}
+function backupPrefTodayCards(value) {
+  if (!Array.isArray(value)) return undefined;
+  const seen = new Set();
+  const rows = [];
+  for (const row of value) {
+    if (!backupPrefIsRecord(row) || typeof row.id !== "string" || !Object.hasOwn(BACKUP_PREF_CARD_SIZES, row.id) || seen.has(row.id)) continue;
+    seen.add(row.id);
+    const sizes = BACKUP_PREF_CARD_SIZES[row.id];
+    rows.push({ id: row.id, size: sizes.includes(row.size) ? row.size : sizes[0], hidden: row.hidden === true });
+  }
+  return rows.length ? rows : undefined;
+}
+function backupPrefWeatherCity(value) {
+  if (!backupPrefIsRecord(value)) return undefined;
+  const name = backupPrefText(value.name, 80);
+  const { latitude, longitude } = value;
+  if (!name || typeof latitude !== "number" || typeof longitude !== "number") return undefined;
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) return undefined;
+  return { name, latitude, longitude };
+}
+function backupPrefHabitId(value) { return typeof value === "string" && /^[A-Za-z0-9_.:-]{1,80}$/.test(value) ? value : undefined; }
+function backupPrefWallPrefs(value) {
+  if (!backupPrefIsRecord(value)) return undefined;
+  const result = {};
+  if (typeof value.auto === "boolean") result.auto = value.auto;
+  if (typeof value.fit === "string" && BACKUP_PREF_WALL_FITS.includes(value.fit)) result.fit = value.fit;
+  return Object.keys(result).length ? result : undefined;
+}
+// name: key inside the envelope · key: localStorage key · suffixed: key carries the preview-workspace suffix ·
+// parse: stored string → candidate · clean: candidate → normalised value or undefined · write: value → stored string
+const backupPrefJson = value => JSON.stringify(value);
+const BACKUP_PREFERENCE_FIELDS = Object.freeze([
+  { name: "language", key: "life-ledger-language", parse: backupPrefRawText, clean: backupPrefChoice(BACKUP_PREF_LANGUAGES), write: String },
+  { name: "languageExplicit", key: "life-ledger-language-preference-set", parse: backupPrefRawBoolean, clean: backupPrefBoolean, write: String },
+  { name: "theme", key: "life-ledger-theme", parse: backupPrefRawText, clean: backupPrefChoice(BACKUP_PREF_THEMES), write: String },
+  { name: "font", key: "life-ledger-font", parse: backupPrefRawText, clean: backupPrefChoice(BACKUP_PREF_FONTS), write: String },
+  { name: "sidebarCollapsed", key: "life-ledger-sidebar-collapsed", parse: backupPrefRawBoolean, clean: backupPrefBoolean, write: String },
+  { name: "calendarView", key: "life-ledger-calendar-view", parse: backupPrefRawText, clean: backupPrefChoice(BACKUP_PREF_CALENDAR_VIEWS), write: String },
+  { name: "reminder", key: "life-ledger-reminder", parse: backupPrefRawJson, clean: backupPrefReminder, write: backupPrefJson },
+  { name: "deviceProfile", key: "life-ledger-device-profile", parse: backupPrefRawJson, clean: backupPrefProfile, write: backupPrefJson },
+  { name: "navOrder", key: "life-ledger-nav-order", parse: backupPrefRawJson, clean: value => backupPrefList(NAV_PAGES, { complete: true })(value), write: backupPrefJson },
+  { name: "todayCards", key: "life-ledger-web-today-cards-v4", suffixed: true, parse: backupPrefRawJson, clean: backupPrefTodayCards, write: backupPrefJson },
+  { name: "weatherCity", key: "life-ledger-weather-city", suffixed: true, parse: backupPrefRawJson, clean: backupPrefWeatherCity, write: backupPrefJson },
+  { name: "heatmapPalette", key: "life-ledger-heatmap-palette", suffixed: true, parse: backupPrefRawJson, clean: backupPrefChoice(BACKUP_PREF_PALETTES), write: backupPrefJson },
+  { name: "frequencyHabit", key: "life-ledger-freq-habit", suffixed: true, parse: backupPrefRawJson, clean: backupPrefHabitId, write: backupPrefJson },
+  { name: "weekCollapsed", key: "life-ledger-week-collapsed", parse: backupPrefRawJson, clean: backupPrefList(BACKUP_PREF_WEEK_MODULES), write: backupPrefJson },
+  { name: "wallPrefs1", key: "life-ledger-wall-prefs", suffixed: true, parse: backupPrefRawJson, clean: backupPrefWallPrefs, write: backupPrefJson },
+  { name: "wallPrefs2", key: "life-ledger-wall-prefs-2", suffixed: true, parse: backupPrefRawJson, clean: backupPrefWallPrefs, write: backupPrefJson },
+  { name: "wallPrefs3", key: "life-ledger-wall-prefs-3", suffixed: true, parse: backupPrefRawJson, clean: backupPrefWallPrefs, write: backupPrefJson },
+]);
+function backupPreferenceStorageKey(field, suffix = "") {
+  return field.key + (field.suffixed ? suffix : "");
+}
+function backupPrefEffectiveReminder(value, permission) {
+  const cleaned = backupPrefReminder(value);
+  if (!cleaned) return undefined;
+  const currentPermission = permission !== undefined
+    ? permission
+    : typeof reminderPermission === "function"
+      ? reminderPermission()
+      : "Notification" in window
+        ? window.Notification?.permission
+        : "unsupported";
+  return { enabled: Boolean(cleaned.enabled && currentPermission === "granted"), time: cleaned.time };
+}
+// Reads only the fields listed above from a storage-like object ({ getItem }) and returns the v1 envelope.
+function encodeBackupPreferences(storage, { suffix = "" } = {}) {
+  const values = {};
+  for (const field of BACKUP_PREFERENCE_FIELDS) {
+    let raw = null;
+    try { raw = storage.getItem(backupPreferenceStorageKey(field, suffix)); } catch { raw = null; }
+    if (typeof raw !== "string") continue;
+    const value = field.clean(field.parse(raw));
+    if (value !== undefined) values[field.name] = value;
+  }
+  return { version: BACKUP_PREFERENCES_VERSION, values };
+}
+// Returns a sanitised `{ version, values }` (including `{ version: 1, values: {} }` for a valid empty envelope)
+// or null when the envelope is absent, malformed, or contains only invalid entries.
+function decodeBackupPreferences(envelope) {
+  if (!backupPrefIsRecord(envelope) || envelope.version !== BACKUP_PREFERENCES_VERSION || !backupPrefIsRecord(envelope.values)) return null;
+  const rawKeys = Object.keys(envelope.values);
+  if (rawKeys.length === 0) return { version: BACKUP_PREFERENCES_VERSION, values: {} };
+  const values = {};
+  for (const field of BACKUP_PREFERENCE_FIELDS) {
+    if (!Object.hasOwn(envelope.values, field.name)) continue;
+    const value = field.clean(envelope.values[field.name]);
+    if (value !== undefined) values[field.name] = value;
+  }
+  return Object.keys(values).length ? { version: BACKUP_PREFERENCES_VERSION, values } : null;
+}
+// Only a full (scope "all") backup carries preferences.
+function backupPreferencesForScope(scope, storage, options) {
+  return scope === "all" ? encodeBackupPreferences(storage, options) : null;
+}
+// Only a full backup with schema 3 or newer yields preferences; v1/v2/legacy and partial backups yield null.
+function importedBackupPreferences(raw) {
+  if (raw?.format !== BACKUP_FORMAT || !(Number(raw.schemaVersion) >= BACKUP_PREFERENCES_MIN_SCHEMA) || raw.scope !== "all") return null;
+  return decodeBackupPreferences(raw.preferences);
+}
+// Replaces the allowlisted preference keys in `storage` with the valid decoded `envelope` values,
+// clearing any allowlisted key omitted from `envelope.values` and clamping reminder.enabled unless permission is granted.
+function applyBackupPreferences(storage, envelope, { suffix = "", permission } = {}) {
+  const decoded = decodeBackupPreferences(envelope);
+  if (!decoded || !storage || typeof storage.setItem !== "function") return false;
+  for (const field of BACKUP_PREFERENCE_FIELDS) {
+    const key = backupPreferenceStorageKey(field, suffix);
+    if (Object.hasOwn(decoded.values, field.name)) {
+      const value = field.name === "reminder"
+        ? backupPrefEffectiveReminder(decoded.values[field.name], permission)
+        : decoded.values[field.name];
+      if (value === undefined) {
+        try { storage.removeItem?.(key); } catch { /* storage unavailable */ }
+        continue;
+      }
+      try { storage.setItem(key, field.write(value)); } catch { /* storage unavailable */ }
+    } else {
+      try { storage.removeItem?.(key); } catch { /* storage unavailable */ }
+    }
+  }
+  return true;
+}
+function restoreBackupPreferences(storage, snapshot, options = {}) {
+  return applyBackupPreferences(storage, snapshot, options);
+}
+const RESTORE_SAFETY_VERSION = 1;
+function createRestoreSafetySnapshot(currentState, storage, { suffix = "" } = {}) {
+  return {
+    version: RESTORE_SAFETY_VERSION,
+    savedAt: Date.now(),
+    state: cloneData(currentState),
+    preferences: encodeBackupPreferences(storage, { suffix }),
+  };
+}
+/* life-ledger-backup-preferences-end */
 function createBackup(scope) {
   const range = exportRange(scope);
+  const preferences = backupPreferencesForScope(scope, localStorage, { suffix: window.LifeLedgerStorageSuffix || "" });
   return {
     format: BACKUP_FORMAT,
     schemaVersion: BACKUP_SCHEMA_VERSION,
@@ -5075,6 +6101,7 @@ function createBackup(scope) {
     scope,
     range,
     data: scopedState(range),
+    ...(preferences ? { preferences } : {}),
   };
 }
 function triggerFileDownload(blob, filename) {
@@ -5089,8 +6116,33 @@ function triggerFileDownload(blob, filename) {
   // WebKit may cancel a download when a Blob URL is revoked immediately.
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
+function inspectorSolidColor(value) {
+  return /^#[0-9a-fA-F]{6}$/.test(value) ? value : colors.sage.solid;
+}
+function decodeNativeOpenBackupPayload(buffer) {
+  const bytes = buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : new Uint8Array(buffer);
+  if (bytes.length < 3 || bytes[0] !== 1) throw new Error("invalid-bridge-frame");
+  const nameLength = bytes[1] | (bytes[2] << 8);
+  const nameStart = 3;
+  const nameEnd = nameStart + nameLength;
+  if (nameLength < 1 || nameEnd > bytes.length) throw new Error("invalid-bridge-frame");
+  const name = new TextDecoder().decode(bytes.subarray(nameStart, nameEnd));
+  const data = bytes.subarray(nameEnd);
+  const type = name.endsWith(".llmedia") ? "application/x-life-ledger-media" : "application/json";
+  return { name, file: new File([data], name, { type }) };
+}
 async function saveBackupBlob(blob, filename) {
-  if (!desktopNativeBackup || blob.type !== "application/json") {
+  if (!desktopNativeBackup) {
+    triggerFileDownload(blob, filename);
+    showToast(tr("toast.exported"));
+    return;
+  }
+  if (filename.endsWith(".llmedia") || blob.type === "application/x-life-ledger-media") {
+    const result = await desktopBridge.saveBackupBinary(new Uint8Array(await blob.arrayBuffer()), filename);
+    if (!result?.cancelled) showToast(tr("toast.exported"));
+    return;
+  }
+  if (blob.type !== "application/json" && !filename.endsWith(".json")) {
     triggerFileDownload(blob, filename);
     showToast(tr("toast.exported"));
     return;
@@ -5113,8 +6165,7 @@ async function downloadExport(event) {
       confirmButton.textContent = tr("backup.mediaExporting");
       const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
       const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
-      triggerFileDownload(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
-      showToast(tr("toast.exported"));
+      await saveBackupBlob(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
     } else {
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
       await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
@@ -5148,9 +6199,9 @@ function importedPayload(raw) {
     modern,
     scope: ["all", "month", "week", "day"].includes(scope) ? scope : "all",
     exportedAt: modern ? raw.exportedAt : payload.exportMeta?.exportedAt,
+    preferences: modern ? importedBackupPreferences(raw) : null,
     data: {
       ...cloneData(seed),
-      ...cloneData(payload),
       habits: cloneData(payload.habits),
       logs: cloneData(payload.logs),
       reviews: cloneData(payload.reviews || {}),
@@ -5161,6 +6212,7 @@ function importedPayload(raw) {
       weeklyReviews: cloneData(payload.weeklyReviews || {}),
       focusSessions: cloneData(payload.focusSessions || []),
       focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
+      ...(isRecord(payload.quoteSettings) ? { quoteSettings: cloneData(payload.quoteSettings) } : {}),
     },
   };
 }
@@ -5242,6 +6294,54 @@ function mergeBackupData(current, incoming) {
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
   };
 }
+function syncBackupPreferencesToRuntime() {
+  const storedLang = localStorage.getItem(LANGUAGE_KEY);
+  const explicitLang = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
+  currentLang = explicitLang === "true" && supportedLanguages.includes(storedLang)
+    ? storedLang
+    : explicitLang !== "false" && supportedLanguages.includes(storedLang)
+      ? storedLang
+      : supportedLanguages.includes(requestedLanguage)
+        ? requestedLanguage
+        : "en";
+  voiceReflection?.setLanguage?.(currentLang);
+  photoMemories?.setLanguage?.(currentLang);
+  const storedTheme = localStorage.getItem(THEME_KEY);
+  themeChoice = ["system", "light", "dark"].includes(storedTheme) ? storedTheme : "system";
+  applyTheme();
+  applyFont();
+  sidebarCollapsed = localStorage.getItem(SIDEBAR_KEY) === "true";
+  applySidebarState();
+  calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
+  reminderSettings = loadReminderSettings();
+  if (reminderSettings.enabled && reminderPermission() !== "granted") {
+    reminderSettings = { ...reminderSettings, enabled: false };
+    try { localStorage.setItem(REMINDER_KEY, JSON.stringify({ enabled: false, time: reminderSettings.time })); } catch { /* quota */ }
+  }
+  if ($("#reminderEnabled")) $("#reminderEnabled").checked = Boolean(reminderSettings.enabled);
+  if ($("#reminderTime")) $("#reminderTime").value = reminderSettings.time;
+  updateReminderStatus();
+  armReminderClock();
+  deviceProfileCache = null;
+  if (cloudMode && state) {
+    const localProfile = readDeviceProfile(localStorage.getItem(PROFILE_KEY));
+    let frame = profileFrame();
+    try { frame = profileFrame(JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}").frame); } catch { frame = profileFrame(); }
+    if (localProfile.name || localProfile.avatar) state.profile = { ...localProfile, frame };
+    else delete state.profile;
+  }
+  renderDeviceProfile();
+  applyNavOrder();
+  renderNavOrderSettings();
+  syncWeekCollapseState();
+  window.LifeLedgerTodayCards?.reload?.();
+  window.LifeLedgerTodayWidgets?.reload?.();
+  if (cloudMode && state && !(window.LifeLedgerStorageSuffix || "")) {
+    const nextPrefs = localPrefs();
+    if (Object.keys(nextPrefs).length) state.prefs = nextPrefs;
+    else delete state.prefs;
+  }
+}
 async function restorePendingImport() {
   if (!pendingImport) return;
   const isComplete = pendingImport.scope === "all";
@@ -5251,7 +6351,8 @@ async function restorePendingImport() {
   const restoreButton = $("#restoreImport");
   const originalLabel = restoreButton.textContent;
   restoreButton.disabled = true;
-  localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
+  const suffix = window.LifeLedgerStorageSuffix || "";
+  localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify(createRestoreSafetySnapshot(state, localStorage, { suffix })));
   const demoWasActive = isDemoWorkspaceActive();
   state = isComplete
     ? cloneData(pendingImport.data)
@@ -5259,6 +6360,9 @@ async function restorePendingImport() {
   if (demoWasActive) {
     dismissDemoMetadataAfterRestore();
     stripDemoCalendarPhotos();
+  }
+  if (isComplete && pendingImport.preferences && applyBackupPreferences(localStorage, pendingImport.preferences, { suffix })) {
+    syncBackupPreferencesToRuntime();
   }
   saveState();
   if (media?.entries?.length) {
@@ -5275,6 +6379,7 @@ async function restorePendingImport() {
   $("#undoRestore").hidden = false;
   $("#exportDialog").close();
   renderAll();
+  if ($("#dayDrawer")?.classList.contains("open")) renderDrawer();
   showToast(tr("toast.restored"));
   restoreButton.disabled = false;
   restoreButton.textContent = originalLabel;
@@ -5282,12 +6387,26 @@ async function restorePendingImport() {
 function undoLastRestore() {
   try {
     const safety = JSON.parse(localStorage.getItem(RESTORE_SAFETY_KEY));
-    const previous = importedPayload(safety?.state).data;
-    localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
+    if (!isRecord(safety)) throw new Error("invalid-restore-safety");
+    // Historical snapshots stored the raw application state (habits/logs at top level); they carry no preferences.
+    const legacyRawState = Array.isArray(safety.habits) && isRecord(safety.logs);
+    const hasPreferences = !legacyRawState && safety.preferences !== undefined;
+    if (hasPreferences && (safety.version !== RESTORE_SAFETY_VERSION || !decodeBackupPreferences(safety.preferences))) {
+      throw new Error("invalid-restore-safety-preferences");
+    }
+    const previous = importedPayload(legacyRawState ? safety : safety.state).data;
+    const suffix = window.LifeLedgerStorageSuffix || "";
     state = previous;
+    if (hasPreferences && restoreBackupPreferences(localStorage, safety.preferences, { suffix })) {
+      syncBackupPreferencesToRuntime();
+    }
     saveState();
+    // Undo is single-use: drop the safety copy so no redo toggle is created.
+    localStorage.removeItem(RESTORE_SAFETY_KEY);
+    $("#undoRestore").hidden = true;
     selectedAnalyticsHabitIds = [];
     renderAll();
+    if ($("#dayDrawer")?.classList.contains("open")) renderDrawer();
     showToast(tr("toast.restoreUndone"));
   } catch (error) {
     console.warn("Restore safety copy is unavailable", error);
@@ -6132,7 +7251,8 @@ function bindEvents() {
       authExpired = false;
       await refreshCloudBaseAccount();
       setCloudBaseAuthStatus(tr("cloudbase.connected"));
-      await pullCloudState();
+      const pullResult = await pullCloudState();
+      if (pullResult?.outcome === "auth") markAuthExpired();
       setTimeout(() => $("#cloudbaseAuthDialog").close(), 450);
     } catch (error) {
       console.warn("CloudBase sign-in failed", error);
@@ -6176,12 +7296,11 @@ function bindEvents() {
       return;
     }
     try {
-      const selected = await desktopBridge.openBackupJson();
-      if (!selected || selected.cancelled || !selected.contents) return;
-      const name = selected.name || `life-ledger-backup-${isoDate(new Date())}.json`;
-      const file = new File([selected.contents], name, { type: "application/json" });
+      const payload = await desktopBridge.openBackupFile();
+      const { file } = decodeNativeOpenBackupPayload(payload);
       await previewImportFile(file);
     } catch (error) {
+      if (String(error?.message || error || "").includes("backup-cancelled")) return;
       console.warn("Native backup import failed", error);
       clearImportSelection();
       $("#importError").textContent = String(error?.message || "").includes("file-too-large")
@@ -6197,6 +7316,8 @@ function bindEvents() {
   $("#importFile").addEventListener("change", event => previewImportFile(event.target.files?.[0]));
   $("#restoreImport").addEventListener("click", restorePendingImport);
   $("#undoRestore").addEventListener("click", undoLastRestore);
+  $("#downloadConflictRecovery")?.addEventListener("click", downloadStoredConflictRecovery);
+  $("#dismissConflictRecovery")?.addEventListener("click", () => { void dismissStoredConflictRecovery(); });
   $$(".close-export-dialog").forEach(button => button.addEventListener("click", () => {
     clearImportSelection();
     $("#exportDialog").close();
@@ -6207,7 +7328,7 @@ function bindEvents() {
     else location.reload();
   });
   window.addEventListener("online", () => {
-    if (cloudMode && !authExpired) pushCloudState();
+    if (cloudMode && !authExpired) void runCloudReconnectSync();
   });
   // Cloud edition: coming back to the window (tab switch or app switch on the Mac) picks up other devices' changes.
   let lastReturnPull = 0;
@@ -7245,9 +8366,14 @@ function renderInspectorColorSwatches() {
   const input = $('#habitInspectorForm input[name="color"]');
   if (!row || !input) return;
   const selected = colors[input.value] ? input.value : "sage";
-  row.innerHTML = Object.keys(colors).map(key => `<button type="button" class="color-swatch ${key === selected ? "selected" : ""}" data-color="${key}" style="--swatch:${colors[key].solid}" aria-label="${escapeHtml(tr(`dialog.colors.${key}`))}"></button>`).join("");
+  row.innerHTML = Object.keys(colors).map(key => {
+    const background = inspectorSolidColor(colors[key].solid);
+    return `<button type="button" class="color-swatch ${key === selected ? "selected" : ""}" data-color="${key}" style="background-color:${background} !important" aria-label="${escapeHtml(tr(`dialog.colors.${key}`))}"></button>`;
+  }).join("");
   $$(".color-swatch", row).forEach(button => button.addEventListener("click", () => {
     input.value = button.dataset.color;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
     renderInspectorColorSwatches();
   }));
 }
@@ -7394,26 +8520,7 @@ function announceSubmit(message) {
 }
 
 async function deleteHabitFromInspector() {
-  const habit = state.habits.find(item => item.id === selectedHabitSettingsId);
-  if (!habit || !(await appConfirm(tr("habits.deleteConfirm", { habit: displayHabitName(habit) })))) return;
-  const removed = cloneData(habit);
-  const index = state.habits.findIndex(item => item.id === habit.id);
-  state.habits = state.habits.filter(item => item.id !== habit.id);
-  Object.values(state.logs).forEach(log => {
-    if (Array.isArray(log.completed)) log.completed = log.completed.filter(id => id !== habit.id);
-  });
-  saveState();
-  selectedHabitSettingsId = state.habits[index]?.id || state.habits[0]?.id || "";
-  renderAll();
-  showToast(tr("habits.deleted", { habit: displayHabitName(habit) }), {
-    actionLabel: languageText("撤销", "Undo", "Rückgängig"),
-    onAction: () => {
-      state.habits.splice(index, 0, removed);
-      saveState();
-      selectedHabitSettingsId = removed.id;
-      renderAll();
-    },
-  });
+  return confirmAndDeleteHabit(selectedHabitSettingsId, { source: "inspector", closeDialog: false });
 }
 
 function handleHabitContextAction(action) {
@@ -7698,7 +8805,17 @@ function fitReviewText() {
 // (function declarations + var: this block sits below the boot call, and applyLanguage reads the profile at boot)
 var PROFILE_KEY = "life-ledger-device-profile", deviceProfileCache = null, profileUpload = 0;
 function validAvatar(value) { return typeof value === "string" && value.length <= 400000 && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(value); }
-function readDeviceProfile(raw) { try { const p = JSON.parse(raw) || {}; return { name: String(p.name || "").trim().slice(0, 60), avatar: validAvatar(p.avatar) ? p.avatar : "" }; } catch { return { name: "", avatar: "" }; } }
+function profileUpdatedAt(value) {
+  const updatedAt = Number(value);
+  return Number.isSafeInteger(updatedAt) && updatedAt >= 0 ? updatedAt : 0;
+}
+function shouldAdoptCloudProfile(remoteProfile, localProfile) {
+  if (!remoteProfile) return false;
+  const remoteUpdatedAt = profileUpdatedAt(remoteProfile.updatedAt);
+  const localUpdatedAt = profileUpdatedAt(localProfile?.updatedAt);
+  return !localProfile || remoteUpdatedAt > localUpdatedAt || (remoteUpdatedAt === 0 && localUpdatedAt === 0);
+}
+function readDeviceProfile(raw) { try { const p = JSON.parse(raw) || {}; return { name: String(p.name || "").trim().slice(0, 60), avatar: validAvatar(p.avatar) ? p.avatar : "", updatedAt: profileUpdatedAt(p.updatedAt) }; } catch { return { name: "", avatar: "", updatedAt: 0 }; } }
 function profileFrame(f) { const n = (v, lo, hi, d) => Number.isFinite(Number(v)) ? Math.min(hi, Math.max(lo, Number(v))) : d; return { x: n(f?.x, 0, 100, 50), y: n(f?.y, 0, 100, 50), zoom: n(f?.zoom, 1, 3, 1) }; }
 // Online edition (user 10/27): name and photo travel with the synced records, so every device shows the same.
 // Local edition: they stay on this device as before.
@@ -7707,11 +8824,17 @@ function getDeviceProfile() {
   if (cloudMode && state?.profile) { const p = readDeviceProfile(JSON.stringify(state.profile)); return { ...p, frame: profileFrame(state.profile.frame) }; }
   return deviceProfileCache;
 }
-function adoptCloudProfile(remote) {
+function adoptCloudProfile(remote, options = {}) {
   if (!cloudMode) return;
-  if (!state.profile && remote?.profile) state.profile = cloneData(remote.profile);
+  const remoteProfile = remote?.profile ? { ...readDeviceProfile(JSON.stringify(remote.profile)), frame: profileFrame(remote.profile.frame) } : null;
+  const localProfile = state.profile ? { ...readDeviceProfile(JSON.stringify(state.profile)), frame: profileFrame(state.profile.frame) } : null;
+  if (shouldAdoptCloudProfile(remoteProfile, localProfile)) {
+    state.profile = cloneData(remoteProfile);
+    saveState({ ...options, skipCloud: true, preserveUpdatedAt: true });
+    return;
+  }
   const local = deviceProfileCache || getDeviceProfile();
-  if (!state.profile && (local.name || local.avatar)) { state.profile = cloneData(local); saveState(); }
+  if (!state.profile && (local.name || local.avatar)) { state.profile = cloneData(local); saveState(options); }
 }
 function placeAvatar(img, frame) { const f = profileFrame(frame); img.style.objectPosition = `${f.x}% ${f.y}%`; img.style.transformOrigin = `${f.x}% ${f.y}%`; img.style.transform = f.zoom > 1 ? `scale(${f.zoom})` : ""; }
 function renderDeviceProfile() {
@@ -7743,7 +8866,7 @@ function renderDeviceProfile() {
   setText("#profileZoomLabel", languageText("缩放", "Zoom", "Zoom"));
 }
 function saveDeviceProfile(next) {
-  next = { name: next.name || "", avatar: next.avatar || "", frame: profileFrame(next.frame) };
+  next = { name: next.name || "", avatar: next.avatar || "", frame: profileFrame(next.frame), updatedAt: Date.now() };
   try { localStorage.setItem(PROFILE_KEY, JSON.stringify(next)); }
   catch { setText("#profileFeedback", languageText("无法保存，请检查设备存储空间。", "Could not save. Check device storage.", "Speichern fehlgeschlagen. Gerätespeicher prüfen.")); return; }
   deviceProfileCache = next;
@@ -8101,7 +9224,7 @@ function notePrefChange() {
   state.prefs = localPrefs();
   saveState();
 }
-function applyCloudPrefs() {
+function applyCloudPrefs(options = {}) {
   if (!cloudMode) return;
   window.LifeLedgerCloudPulled = true;
   window.LifeLedgerTodayWidgets?.syncWalls?.();
@@ -8111,7 +9234,7 @@ function applyCloudPrefs() {
     // (user 10/28), so the Mac app never seeds: it waits for the browser's choices.
     if (window.__TAURI__) return;
     const seed = localPrefs({ seed: true });
-    if (Object.keys(seed).length) { state.prefs = seed; saveState(); }
+    if (Object.keys(seed).length) { state.prefs = seed; saveState(options); }
     return;
   }
   let changed = false;

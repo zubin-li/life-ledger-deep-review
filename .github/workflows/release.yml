@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,11 +21,59 @@ jobs:
       - run: npm test
       - name: Verify release notes
         run: test -f ".github/releases/${GITHUB_REF_NAME}.md"
-      - name: Create GitHub release
+
+  macos-artifacts:
+    runs-on: macos-15
+    needs: verify
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+      - run: npm ci
+      - run: npm run desktop:prepare
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+      - name: Build unsigned macOS desktop bundles
+        run: npm run desktop:build
+      - name: Package app bundle zip
+        env:
+          TAURI_PRODUCT_NAME: Life Ledger
+        run: |
+          APP_NAME="${TAURI_PRODUCT_NAME}.app"
+          cd "src-tauri/target/release/bundle/macos"
+          ditto -c -k --sequesterRsrc --keepParent "${APP_NAME}" "Life-Ledger.app.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: life-ledger-macos-release-bundles
+          path: |
+            src-tauri/target/release/bundle/dmg/*.dmg
+            src-tauri/target/release/bundle/macos/Life-Ledger.app.zip
+          if-no-files-found: error
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [verify, macos-artifacts]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: life-ledger-macos-release-bundles
+          path: release-assets
+      - name: Create GitHub release with unsigned macOS artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" \
             --verify-tag \
             --title "Life Ledger · Deep Review ${GITHUB_REF_NAME#v}" \
-            --notes-file ".github/releases/${GITHUB_REF_NAME}.md"
+            --notes-file ".github/releases/${GITHUB_REF_NAME}.md" \
+            release-assets/*.dmg \
+            release-assets/*.zip

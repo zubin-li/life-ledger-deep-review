@@ -83,3 +83,16 @@ test("CloudBase adapter signs in and stores one private state per account", asyn
   assert.equal(storedDocument.ownerId, "user-123");
   assert.equal(saved.updatedAt, 42);
 });
+
+test("CloudBase adapter exposes legacy timestamp sync without compare-and-swap", () => {
+  assert.deepEqual(globalThis.LifeLedgerCloudBase.capabilities, {
+    compareAndSwap: false,
+    protocol: "timestamp",
+  });
+  const adapter = createAdapter({
+    config: { configured: false, envId: "", accessKey: "", region: "ap-shanghai" },
+  });
+  assert.deepEqual(adapter.capabilities, globalThis.LifeLedgerCloudBase.capabilities);
+  assert.equal(typeof adapter.getState, "function");
+  assert.equal(typeof adapter.putState, "function");
+});

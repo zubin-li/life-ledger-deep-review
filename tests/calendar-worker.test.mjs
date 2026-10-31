@@ -88,7 +88,12 @@ test("calendar connection uses offline read-only OAuth with PKCE", async () => {
   assert.equal(url.searchParams.get("access_type"), "offline");
   assert.equal(url.searchParams.get("code_challenge_method"), "S256");
   assert.deepEqual(url.searchParams.get("scope").split(" "), CALENDAR_SCOPES);
-  assert.ok(DB.calls.some(call => call.sql.includes("INSERT INTO calendar_oauth_states")));
+  const source = readFileSync(new URL("../src/calendar.js", import.meta.url), "utf8");
+  assert.match(source, /calendarConnectReturnPath\(request\)/);
+  assert.match(source, /safeCalendarRedirectPath\(record\.return_to\)/);
+  const insert = DB.calls.find(call => call.sql.includes("INSERT INTO calendar_oauth_states"));
+  assert.ok(insert);
+  assert.equal(insert.values[3], "/?calendar=connected&view=today");
 });
 
 test("calendar storage supports exactly two independent Google connections", () => {
