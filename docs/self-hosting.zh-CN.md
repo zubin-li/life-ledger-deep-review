@@ -69,11 +69,15 @@ npx wrangler d1 create life-ledger-deep-review-db
 npx wrangler r2 bucket create life-ledger-deep-review-photos
 ```
 
-把命令返回的数据库 ID 写入 `wrangler.jsonc`，替换其中的 `database_id` 占位值，然后执行：
+把命令返回的数据库 ID 写入 `wrangler.jsonc`，替换其中的 `database_id` 占位值，然后按 [Cloudflare 发布操作手册](cloudflare-release-runbook.zh-CN.md) 执行：
 
 ```bash
-npm run deploy
+npm run deploy:preflight
+npm run deploy:cloudflare -- --confirm
+npm run deploy:verify -- --url https://<你的-worker-域名>
 ```
+
+ guarded 部署会应用迁移 **0006**；在 Cloudflare Access 鉴权后确认 `GET /api/version` 返回就绪状态。
 
 不要把个人化后的数据库 ID 提交到上游 Pull Request。
 

@@ -1,10 +1,7 @@
 import { cp, mkdir, rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 
-const execFileAsync = promisify(execFile);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "desktop-dist");
 const desktop = resolve(root, "desktop");
@@ -18,7 +15,4 @@ await cp(resolve(desktop, "launcher.js"), resolve(dist, "launcher.js"));
 await cp(resolve(desktop, "launcher-i18n.js"), resolve(dist, "launcher-i18n.js"));
 await cp(resolve(desktop, "url-validation.js"), resolve(dist, "url-validation.js"));
 
-await mkdir(resolve(root, "src-tauri", "icons"), { recursive: true });
-await execFileAsync("npx", ["tauri", "icon", resolve(root, "public/assets/app-icon.svg"), "--output", resolve(root, "src-tauri/icons")], { cwd: root });
-
-console.log("Desktop assets prepared in desktop-dist and src-tauri/icons.");
+console.log("Desktop assets prepared in desktop-dist (Tauri icons unchanged; run npm run desktop:icons when app-icon.svg changes).");

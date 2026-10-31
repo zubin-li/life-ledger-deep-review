@@ -6,7 +6,7 @@ on:
     paths:
       - "desktop/**"
       - "src-tauri/**"
-      - "public/app.js"
+      - "public/**"
       - "scripts/desktop-prepare.mjs"
       - "package.json"
       - "package-lock.json"
@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   macos-desktop:
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 60
 
     steps:
@@ -61,9 +61,12 @@ jobs:
         run: npm run desktop:build
 
       - name: Package app bundle zip
+        env:
+          TAURI_PRODUCT_NAME: Life Ledger
         run: |
+          APP_NAME="${TAURI_PRODUCT_NAME}.app"
           cd "src-tauri/target/release/bundle/macos"
-          ditto -c -k --sequesterRsrc --keepParent "Life Ledger Deep Review.app" "Life-Ledger-Deep-Review.app.zip"
+          ditto -c -k --sequesterRsrc --keepParent "${APP_NAME}" "Life-Ledger.app.zip"
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
@@ -71,5 +74,5 @@ jobs:
           name: life-ledger-macos-desktop-bundles
           path: |
             src-tauri/target/release/bundle/dmg/*.dmg
-            src-tauri/target/release/bundle/macos/Life-Ledger-Deep-Review.app.zip
+            src-tauri/target/release/bundle/macos/Life-Ledger.app.zip
           if-no-files-found: error

@@ -1,0 +1,10 @@
+{
+  "createdAt": "2026-10-30T08:00:00.000Z",
+  "workerName": "life-ledger-deep-review",
+  "packageVersion": "2.0.6",
+  "gitCommit": "abc",
+  "previousDeployment": {
+    "versionId": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+    "id": "deployment-123"
+  }
+}

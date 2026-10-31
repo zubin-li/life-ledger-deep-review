@@ -480,9 +480,13 @@ dialog form > footer { justify-content: flex-end; gap: 8px; }
 .reminder-status-dot.ready { background: var(--sage); box-shadow: 0 0 0 5px color-mix(in srgb, var(--sage) 15%, transparent); }
 .reminder-status-dot.blocked { background: var(--coral); box-shadow: 0 0 0 5px color-mix(in srgb, var(--coral) 13%, transparent); }
 .reminder-caveat { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
-.toast { position: fixed; z-index: 60; left: 50%; bottom: 28px; display: flex; align-items: center; gap: 9px; background: var(--ink); color: white; padding: 11px 15px; border-radius: 999px; opacity: 0; transform: translate3d(-50%,8px,0); pointer-events: none; transition: opacity 180ms var(--ease-enter), transform 180ms var(--ease-enter); }
+.toast { position: fixed; z-index: 60; left: 50%; bottom: 28px; max-width: min(520px, calc(100vw - 24px)); display: flex; align-items: center; gap: 9px; background: var(--ink); color: white; padding: 11px 15px; border-radius: 999px; opacity: 0; transform: translate3d(-50%,8px,0); pointer-events: none; transition: opacity 180ms var(--ease-enter), transform 180ms var(--ease-enter); }
 .toast.show { opacity: 1; transform: translate3d(-50%,0,0); }
+.toast.show.has-action, .toast.show .toast-action { pointer-events: auto; }
 .toast span { color: #a8c5b1; }.toast p { margin: 0; font-size: 11px; }
+.toast .toast-action { flex: 0 0 auto; padding: 3px 8px; border-radius: 999px; color: #b8dfc6; cursor: pointer; white-space: nowrap; text-decoration: underline; text-underline-offset: 2px; }
+.toast .toast-action[hidden] { display: none !important; }
+.toast .toast-action:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* Editorial system inherited from the portfolio: restrained paper surfaces,
    literary typography, fine rules and a single terracotta accent. */
@@ -640,6 +644,8 @@ dialog { border-radius: 28px; }
   .memory-entry-photos[data-count="1"] { width: 100%; }
   .weekly-heading { display: block; }
   .week-navigator { width: 100%; margin-top: 0; grid-template-columns: 40px 1fr 40px; }
+  .toast { bottom: calc(88px + var(--mobile-nav-safe-bottom, 0px)); }
+  .toast .toast-action { min-height: 28px; padding: 4px 10px; }
 }
 
 /* Focus timer: a compact daily ritual, not a separate productivity dashboard. */
@@ -862,7 +868,12 @@ html[data-theme="dark"] .tracking-mode-choice label { border-color: var(--edge-s
 .import-preview-actions { margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px; }
 .import-preview > p { margin: 11px 0 0; color: var(--muted); font-size: 9px; line-height: 1.55; }
 .undo-restore-button { margin-top: 12px; padding: 4px 0; cursor: pointer; }
-.restore-file-button[hidden], .import-preview[hidden], .import-error[hidden], .undo-restore-button[hidden] { display: none !important; }
+.conflict-recovery-card { margin-top: 14px; padding: 13px 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); border-radius: 17px; background: color-mix(in srgb, var(--accent) 6%, var(--card)); }
+.conflict-recovery-copy { display: grid; gap: 3px; min-width: 0; }
+.conflict-recovery-copy strong { font-size: 12px; }
+.conflict-recovery-copy small { color: var(--muted); font-size: 9px; line-height: 1.45; }
+.conflict-recovery-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+.restore-file-button[hidden], .import-preview[hidden], .import-error[hidden], .undo-restore-button[hidden], .conflict-recovery-card[hidden] { display: none !important; }
 .profile-actions #exportButton svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 html[data-theme="dark"] .backup-intro { background: color-mix(in srgb, var(--sage-light) 56%, var(--surface-1)); }
 html[data-theme="dark"] .export-options > label, html[data-theme="dark"] .restore-file-button { background: rgba(255,255,255,.025); }
@@ -886,6 +897,8 @@ html[data-theme="dark"] .backup-tabs button.active { color: #fff; background: #3
   .restore-section { padding-bottom: 18px; }
   .import-preview-actions { display: grid; grid-template-columns: 1fr; }
   .import-preview-actions button { width: 100%; }
+  .conflict-recovery-card { align-items: stretch; flex-direction: column; }
+  .conflict-recovery-actions { justify-content: flex-end; }
 }
 .celebration { position: fixed; z-index: 80; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(67,139,255,.14), transparent 28rem); }
 .celebration-ring { width: 90px; height: 90px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.88); color: #46705a; font-size: 34px; box-shadow: 0 25px 80px rgba(29,29,31,.2), 0 0 0 0 rgba(101,169,255,.3); backdrop-filter: blur(22px); transform: scale(.5); }
@@ -1025,6 +1038,7 @@ html[data-theme="dark"] .icon-picker-popover { background: rgba(45,48,55,.98); b
 html[data-theme="dark"] .celebration-ring { background: rgba(48,58,53,.94); color: #b8dfc6; border: 1px solid rgba(184,223,198,.2); }
 html[data-theme="dark"] .toast { background: #eef2f0; color: #17191d; box-shadow: 0 14px 36px rgba(0,0,0,.34); }
 html[data-theme="dark"] .toast span { color: #43705a; }
+html[data-theme="dark"] .toast .toast-action { color: #2f5e48; }
 html[data-theme="dark"] .weekly-goal.done .weekly-goal-check,
 html[data-theme="dark"] .review-goal-item.done i { background: var(--accent); color: #0b1725; border-color: transparent; }
 html[data-theme="dark"] .danger-button { color: #ffae9d; background: rgba(255,111,91,.08); border-color: rgba(255,155,135,.28); }

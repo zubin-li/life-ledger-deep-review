@@ -1017,6 +1017,16 @@
         </section>
         <section class="backup-section restore-section" id="backupImportPanel" role="tabpanel" aria-labelledby="backupImportTab" data-backup-panel="import" hidden>
           <div class="backup-section-heading"><div><span class="kicker">RESTORE</span><h3 id="restoreSectionTitle">从备份恢复</h3></div><small id="restoreSectionHelp">支持新版备份和早期导出的 JSON。</small></div>
+          <div class="conflict-recovery-card" id="conflictRecoveryRow" hidden>
+            <div class="conflict-recovery-copy">
+              <strong id="conflictRecoveryTitle">同步冲突后已保留本机副本</strong>
+              <small id="conflictRecoveryHelp">同步冲突后保留了这台设备的副本；决定是否恢复前请先下载。</small>
+            </div>
+            <div class="conflict-recovery-actions">
+              <button class="secondary-button" id="downloadConflictRecovery" type="button">下载保留副本</button>
+              <button class="text-button" id="dismissConflictRecovery" type="button">移除保留副本</button>
+            </div>
+          </div>
           <input id="importFile" type="file" accept="application/json,.json,application/x-life-ledger-media,.llmedia" hidden />
           <button class="restore-file-button" id="chooseImportFile" type="button">
             <span class="restore-file-icon" aria-hidden="true">＋</span>
@@ -1075,7 +1085,7 @@
 
     <div class="celebration" id="celebration" aria-hidden="true"><div class="celebration-ring">✓</div><p id="celebrationText">今天计入完成度的目标全部完成了。</p></div>
 
-    <div class="toast" id="toast"><span>✓</span><p>已保存</p></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><p>已保存</p><button class="toast-action" id="toastAction" type="button" hidden></button></div>
     <div class="habit-context-menu" id="habitContextMenu" role="menu" hidden>
       <button type="button" role="menuitem" data-habit-context="toggle" id="habitContextToggle">Mark done</button>
       <button type="button" role="menuitem" data-habit-context="edit" id="habitContextEdit">Edit</button>

@@ -19,11 +19,16 @@
     "build:heic-vendor": "node scripts/build-heic-vendor.mjs",
     "build:cloudbase": "npm run build:cloudbase-sdk && node scripts/build-cloudbase.mjs",
     "deploy:cloudbase": "node scripts/deploy-cloudbase.mjs",
-    "check": "node --check public/app.js && node --check public/demo-workspace.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/index.js && node scripts/check.mjs",
+    "check": "node --check public/app.js && node --check public/demo-workspace.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/release-metadata.js && node --check src/version-endpoint.js && node --check src/index.js && node --check scripts/cloudflare-release.mjs && node scripts/check.mjs",
     "test": "npm run check && node --test tests/*.test.mjs",
     "db:migrations:apply": "wrangler d1 migrations apply DB --remote",
-    "deploy": "npm run db:migrations:apply && wrangler deploy",
+    "deploy:preflight": "node scripts/cloudflare-release.mjs preflight",
+    "deploy:cloudflare": "node scripts/cloudflare-release.mjs deploy",
+    "deploy:verify": "node scripts/cloudflare-release.mjs verify",
+    "deploy:rollback-command": "node scripts/cloudflare-release.mjs rollback-command",
+    "deploy": "node scripts/cloudflare-release.mjs deploy",
     "desktop:prepare": "node scripts/desktop-prepare.mjs",
+    "desktop:icons": "node scripts/desktop-icons.mjs",
     "desktop:dev": "npm run desktop:prepare && tauri dev",
     "desktop:check": "node --test tests/desktop-*.test.mjs",
     "desktop:build": "tauri build"
@@ -44,7 +49,6 @@
     "jose": "^6.1.0"
   },
   "devDependencies": {
-    "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/cli": "^2.8.5",
     "esbuild": "^0.25.9",
     "wrangler": "^4.122.0"

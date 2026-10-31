@@ -4,6 +4,25 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Authenticated `GET /api/version` release metadata, canonical release constants, guarded Cloudflare deploy tooling (`deploy:preflight`, `deploy:cloudflare -- --confirm`, `deploy:verify`, `deploy:rollback-command`), and English/Chinese operator runbooks under `docs/cloudflare-release-runbook*.md`.
+- Safer offline PWA shell caching (API/Access bypass, no forced reload on service-worker activation, demo/hairline/HEIC assets pre-cached) and a separate `npm run desktop:icons` command so `desktop:prepare` no longer regenerates Tauri icons on every run.
+- Backup schema v3 for approved non-secret preferences, safe full-restore/undo behavior, and native `.llmedia` binary import/export for the local macOS edition.
+- D1 state revisions with compare-and-swap writes, recoverable conflict snapshots, and a storage-failure safety block that prevents silent cloud overwrites.
+
+### Changed
+
+- Removed unused `@tauri-apps/api` devDependency; the desktop shell uses the injected `window.__TAURI__` bridge and `@tauri-apps/cli` for builds only.
+- Cloud clients now complete a successful first pull before any ordinary upload; reconnects and failed uploads must pull again before retrying.
+- Synced names and avatars now use their own update timestamp instead of inheriting unrelated workspace timestamps.
+
+### Fixed
+
+- Unified both habit deletion entry points behind one confirmation flow and added a one-shot Undo that restores the original habit position and exact historical completion arrays.
+- Kept native backup permissions restricted to the local Tauri window, preserved the connected desktop OAuth return marker, and aligned macOS workflow artifact paths with the actual `Life Ledger.app` bundle.
+- Corrected habit accent-color rendering in the macOS webview by applying literal catalog colors and emitting the expected input/change events.
+
 ## [2.0.6] - 2026-10-28
 
 ### Fixed

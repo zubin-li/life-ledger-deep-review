@@ -32,9 +32,9 @@ https://github.com/zubin-li/life-ledger-deep-review
 
 三、部署并保护
 
-1. 只执行尚未执行的非破坏性 D1 migration，然后在 DB、AI 和 PHOTOS binding 都存在的情况下部署 Worker 与静态资源。
+1. 只执行尚未执行的非破坏性 D1 migration（含 additive `0006_state_revision.sql`），然后在 DB、AI 和 PHOTOS binding 都存在的情况下，按 [Cloudflare 发布操作手册](cloudflare-release-runbook.zh-CN.md) 执行 `deploy:preflight`、`deploy:cloudflare -- --confirm`（strict / `--keep-vars`）部署 Worker 与静态资源。
 2. Cloudflare Access 只允许账户所有者指定的邮箱；正确配置 TEAM_DOMAIN 和 POLICY_AUD。
-3. 部署后验证正式网址、`/deployment-mode.js`、登录后的 `/api/state`、刷新后的同步、快速记录入口、私人照片上传/读取/时间轴、PWA 与备份导入导出；照片测试只能使用虚构素材。
+3. 部署后验证正式网址、经 Access 鉴权的 `GET /api/version` 就绪状态、`/deployment-mode.js`、登录后的 `/api/state`、刷新后的同步、快速记录入口、私人照片上传/读取/时间轴、PWA 与备份导入导出；照片测试只能使用虚构素材。
 4. 上述验收未通过前，不要进入 Google Cloud 配置。
 5. 不要为了适配账户而修改 `public/app.js` 等产品源码，也不要删除 PHOTOS binding 逃避 R2 前置条件。
 

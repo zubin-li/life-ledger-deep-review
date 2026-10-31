@@ -12,6 +12,8 @@ npm run desktop:prepare
 npm run desktop:build
 ```
 
+When `public/assets/app-icon.svg` changes, run `npm run desktop:icons` once to regenerate `src-tauri/icons/` before building.
+
 Build outputs are generated under `src-tauri/target/release/bundle/macos/` (`.app`) and `src-tauri/target/release/bundle/dmg/` (`.dmg`).
 
 ## Use modes

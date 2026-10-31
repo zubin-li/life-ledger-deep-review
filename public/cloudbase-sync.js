@@ -3,6 +3,7 @@
 
   const SDK_URL = "./vendor/cloudbase-sdk.js";
   const COLLECTION = "life_ledger_states";
+  const CAPABILITIES = Object.freeze({ compareAndSwap: false, protocol: "timestamp" });
 
   class CloudBaseAuthRequiredError extends Error {
     constructor(message = "CloudBase sign-in required") {
@@ -151,6 +152,7 @@
 
     return {
       config,
+      capabilities: CAPABILITIES,
       initialize,
       loginState,
       sendEmailCode,
@@ -164,6 +166,8 @@
   const api = {
     SDK_URL,
     COLLECTION,
+    CAPABILITIES,
+    capabilities: CAPABILITIES,
     CloudBaseAuthRequiredError,
     deploymentConfig,
     createAdapter,
