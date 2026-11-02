@@ -3869,6 +3869,11 @@ html[data-theme="dark"] .review-scatter-tip {
   cursor: default;
 }
 
+.review-scatter-dot-hit:focus-visible {
+  outline: none;
+}
+
+.review-scatter-dot-hit:focus-visible + circle,
 .review-scatter-dot-hit.is-active + circle {
   stroke: color-mix(in srgb, var(--ink) 35%, transparent);
   stroke-width: 1.5;
@@ -3879,7 +3884,8 @@ html[data-theme="dark"] .review-scatter-tip {
     transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 160ms ease;
   }
 
-  .review-scatter-dot-hit.is-active + circle {
+  .review-scatter-dot-hit.is-active + circle,
+  .review-scatter-dot-hit:focus-visible + circle {
     transform: scale(1.18);
     opacity: 1;
   }

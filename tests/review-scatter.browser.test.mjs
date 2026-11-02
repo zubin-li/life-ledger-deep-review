@@ -108,6 +108,16 @@ test(
       assert.notEqual(spendBefore, spendAfter, "previous month should show different spending total");
       const rollValue = await page.locator(".review-ledger-stats strong").first().getAttribute("data-roll-value");
       assert.equal(rollValue, spendAfter, "rolled stat should persist data-roll-value after animation");
+
+      const firstDot = page.locator("#reviewLedgerSummary .review-scatter-dot-hit[tabindex='0']").first();
+      await firstDot.focus();
+      await page.waitForSelector("#reviewLedgerSummary .review-scatter-tip:not([hidden])", { timeout: 5000 });
+      const tipVisible = await page.locator("#reviewLedgerSummary .review-scatter-tip strong").textContent();
+      assert.ok(tipVisible && tipVisible.length > 4, "keyboard focus on scatter dot should show tip readout");
+      await firstDot.press("ArrowRight");
+      await sleep(80);
+      const live = (await page.locator(".review-scatter-live").textContent())?.trim();
+      assert.ok(live && live.includes("—"), "arrow key between dots should update live region");
     } finally {
       await browser.close();
       server.kill("SIGTERM");

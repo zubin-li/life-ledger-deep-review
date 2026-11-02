@@ -671,7 +671,8 @@
     const l1 = scatterTipAttrEsc(line1);
     const l2 = scatterTipAttrEsc(line2);
     const aria = scatterTipAttrEsc(`${line1} — ${line2}`);
-    return `<g class="review-scatter-dot-group" style="--dot-i:${index}"><circle class="review-scatter-dot-hit" cx="${cx}" cy="${cy}" r="9" fill="transparent" data-tip-line1="${l1}" data-tip-line2="${l2}" aria-label="${aria}" tabindex="-1"/><circle class="${className}" cx="${cx}" cy="${cy}" r="4.5" fill="${color}" opacity="0.82" pointer-events="none"/></g>`;
+    const tab = index === 0 ? "0" : "-1";
+    return `<g class="review-scatter-dot-group" style="--dot-i:${index}"><circle class="review-scatter-dot-hit" cx="${cx}" cy="${cy}" r="9" fill="transparent" data-tip-line1="${l1}" data-tip-line2="${l2}" aria-label="${aria}" tabindex="${tab}" role="button"/><circle class="${className}" cx="${cx}" cy="${cy}" r="4.5" fill="${color}" opacity="0.82" pointer-events="none"/></g>`;
   }
 
   /** Daily mood vs spend points for a compact review scatter (needs ≥3 spending days with mood). */

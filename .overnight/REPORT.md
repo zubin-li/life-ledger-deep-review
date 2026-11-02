@@ -1,12 +1,26 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 8）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 9）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 8：** 复盘 Money 区三张 scatter 图支持悬停读数；习惯对比表的 spark 条可查看每日完成状态。
+**Batch 6 Round 9：** 复盘 Money 散点图可用 Tab 进入、方向键在同图内换点，焦点与悬停一样显示读数 tip。
 
 ---
 
-## 本轮（Batch 6 · Round 8）改动
+## 本轮（Batch 6 · Round 9）改动
+
+| 项目 | 说明 |
+|------|------|
+| **Scatter 键盘** | 每张图首点可 Tab 聚焦；←→↑↓ / Home / End 在同 SVG 内 roving；`focus-visible` 高亮与 pointer tip 共用样式；`review-scatter-live` 同步。 |
+| **测试** | 单元 **350 pass**（+1）；浏览器 **8 pass**（focus + ArrowRight 更新 live 区）。 |
+| **截图** | `.overnight/shots/b6r9-scatter-focus-*`。重拍：`node .overnight/capture-batch6-round9.mjs`（**5297**）。 |
+
+**去哪点：** `?local-preview=demo-showcase-v1` → **复盘** → **本月支出摘要** → 在 **Mood vs daily spending** 上按 Tab 直到散点获得焦点（或点击后 Tab），应出现 tip；再按 → 换点。
+
+**已知遗留：** inspector 习惯表仍隐藏；Round 10 写总验收清单。
+
+---
+
+## 上一轮（Batch 6 · Round 8）改动
 
 | 项目 | 说明 |
 |------|------|
@@ -18,7 +32,7 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 **去哪点：** `?local-preview=demo-showcase-v1` → **复盘** → 滚到 **本月支出摘要** → 在 **Mood vs daily spending** 等散点图上移动鼠标/手指，应出现白底 tip；再向下看 **每个习惯** 表格，悬停 **每日**  spark 条可看原生 tooltip。
 
-**已知遗留：** inspector 习惯表仍隐藏；scatter 点尚未做 Tab 键逐点聚焦。
+**已知遗留：** inspector 习惯表仍隐藏；Tab 逐点聚焦已在 Round 9 完成。
 
 ---
 

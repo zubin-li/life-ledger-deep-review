@@ -392,6 +392,9 @@ test("moodSpendScatter needs enough points and renders svg", () => {
   const svg = L.renderMoodSpendScatterSvg(scatter, { lang: "en", locale: "en-GB", currency: "EUR" });
   assert.match(svg, /review-mood-scatter-dot/);
   assert.match(svg, /data-tip-line1=/);
+  assert.match(svg, /tabindex="0"/);
+  assert.match(svg, /tabindex="-1"/);
+  assert.match(svg, /role="button"/);
   assert.match(svg, /#34c759/);
 });
 

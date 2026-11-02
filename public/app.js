@@ -8401,6 +8401,11 @@ function bindReviewScatterDotTips(host) {
     grid.removeEventListener("pointermove", host._scatterTipMove);
     grid.removeEventListener("pointerleave", host._scatterTipLeave);
   }
+  if (host._scatterTipFocus) {
+    grid.removeEventListener("focusin", host._scatterTipFocus);
+    grid.removeEventListener("focusout", host._scatterTipFocusOut);
+    grid.removeEventListener("keydown", host._scatterTipKey);
+  }
   const placeTip = (dot, clientX, clientY) => {
     const strong = tip.querySelector("strong");
     const span = tip.querySelector("span");
@@ -8432,9 +8437,50 @@ function bindReviewScatterDotTips(host) {
     placeTip(dot, event.clientX, event.clientY);
   };
   host._scatterTipLeave = () => hideReviewScatterTip(host);
+  const placeTipFromDot = dot => {
+    const rect = dot.getBoundingClientRect();
+    placeTip(dot, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  };
+  const dotsInChart = dot => [...(dot.closest("svg")?.querySelectorAll(".review-scatter-dot-hit") || [])];
+  const focusScatterDot = dot => {
+    if (!dot) return;
+    dotsInChart(dot).forEach(d => d.setAttribute("tabindex", d === dot ? "0" : "-1"));
+    dot.focus({ preventScroll: true });
+    placeTipFromDot(dot);
+  };
+  host._scatterTipFocus = event => {
+    const dot = event.target.closest?.(".review-scatter-dot-hit");
+    if (!dot || !grid.contains(dot)) return;
+    dotsInChart(dot).forEach(d => d.setAttribute("tabindex", d === dot ? "0" : "-1"));
+    placeTipFromDot(dot);
+  };
+  host._scatterTipFocusOut = event => {
+    const next = event.relatedTarget;
+    if (next && grid.contains(next)) return;
+    hideReviewScatterTip(host);
+  };
+  host._scatterTipKey = event => {
+    const dot = event.target.closest?.(".review-scatter-dot-hit");
+    if (!dot || !grid.contains(dot)) return;
+    const dots = dotsInChart(dot);
+    const idx = dots.indexOf(dot);
+    if (idx < 0) return;
+    let nextIdx = idx;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIdx = Math.min(idx + 1, dots.length - 1);
+    else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIdx = Math.max(idx - 1, 0);
+    else if (event.key === "Home") nextIdx = 0;
+    else if (event.key === "End") nextIdx = dots.length - 1;
+    else return;
+    if (nextIdx === idx) return;
+    event.preventDefault();
+    focusScatterDot(dots[nextIdx]);
+  };
   grid.addEventListener("pointerover", host._scatterTipOver);
   grid.addEventListener("pointermove", host._scatterTipMove);
   grid.addEventListener("pointerleave", host._scatterTipLeave);
+  grid.addEventListener("focusin", host._scatterTipFocus);
+  grid.addEventListener("focusout", host._scatterTipFocusOut);
+  grid.addEventListener("keydown", host._scatterTipKey);
 }
 
 function bindReviewScatterJumpSpy(panel) {

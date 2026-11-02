@@ -78,3 +78,14 @@ test("focus inline timer exposes running state for CSS micro-interaction", () =>
   assert.match(app, /inlineTimer\?\.classList\.toggle\("is-running"/);
   assert.match(app, /inlineTimer\?\.classList\.toggle\("is-break"/);
 });
+
+test("Batch 6 round 9 review scatter keyboard roving focus", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 6 round 8 — review scatter dot readout/);
+  assert.match(css, /\.review-scatter-dot-hit:focus-visible \+ circle/);
+  assert.match(app, /_scatterTipFocus/);
+  assert.match(app, /focusScatterDot/);
+  assert.match(core, /tabindex="\$\{tab\}"/);
+});

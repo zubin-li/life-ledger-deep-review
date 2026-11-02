@@ -1,22 +1,19 @@
 # Overnight progress
 
-## Batch 6 · Round 8 — done
+## Batch 6 · Round 9 — done
 
-- **REVIEW.md：** Round 1–2 的 MED/LOW 项此前已修（分类 `name`、CSV 引号/尾减号、滑动删除 vertical 阈值、Esc/背景、Mac ledger 步进、CNY 汇总提示）；本轮无新增 HIGH/MED 待修。
-- **复盘 scatter：** mood/habit/focus 散点加大透明 hit 区 + 浮动 `.review-scatter-tip`（日期 + 支出 + 语境）；`aria-live` 同步读数；`ledger-core` 导出 `*ScatterTipLines`。
-- **习惯 spark：** 复盘表格迷你条每格 `<title>`（日期 · 完成/未完成/未计划）+ hover 填色微调。
-- **测试：** 单元 **349 pass**（scatter tip 断言）；浏览器 **8 pass**。
-- **验收截图：** `node .overnight/capture-batch6-round8.mjs`（**5298**）→ `b6r8-scatter-tip-*`、`b6r8-habit-spark-*`。
+- **Scatter 键盘：** 每张散点图 roving `tabindex`（首点 `0`、其余 `-1`）；`focusin` 显示 tip + `aria-live`；方向键/Home/End 在同图内换点；`:focus-visible` 与 hover 共用描边/放大（`v210.css`）。
+- **测试：** 单元 **350 pass**（+1 selector）；浏览器 **8 pass**（散点 focus + ArrowRight 断言并入既有 review scatter 用例）。
+- **验收截图：** `node .overnight/capture-batch6-round9.mjs`（**5297**）→ `b6r9-scatter-focus-*`。
 
 ## Half-done
 
 - （无）
 
-## Next（Round 9–10）
+## Next（Round 10）
 
-- 可选：scatter 键盘 Tab 聚焦各点（当前 tabindex=-1 仅配合 hit 区）。
+- `REPORT.md` 总览与明日验收清单；showcase 图若需再对齐。
 - `#inspectorReviewTable` 仍被 `pages-858` 隐藏；合并到主面板需单独任务。
-- Round 10 收尾：`REPORT.md` 总览、showcase 图若需再对齐。
 
 ## Known bugs / gaps
 
@@ -27,13 +24,21 @@
 ## npm test
 
 ```
-349 pass, 0 fail (batch 6 round 8, unit gate)
+350 pass, 0 fail (batch 6 round 9, unit gate)
 8 pass, 0 fail (test:browser)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 6 · Round 8 — done
+
+- **REVIEW.md：** Round 1–2 的 MED/LOW 项此前已修（分类 `name`、CSV 引号/尾减号、滑动删除 vertical 阈值、Esc/背景、Mac ledger 步进、CNY 汇总提示）；本轮无新增 HIGH/MED 待修。
+- **复盘 scatter：** mood/habit/focus 散点加大透明 hit 区 + 浮动 `.review-scatter-tip`（日期 + 支出 + 语境）；`aria-live` 同步读数；`ledger-core` 导出 `*ScatterTipLines`。
+- **习惯 spark：** 复盘表格迷你条每格 `<title>`（日期 · 完成/未完成/未计划）+ hover 填色微调。
+- **测试：** 单元 **349 pass**（scatter tip 断言）；浏览器 **8 pass**。
+- **验收截图：** `node .overnight/capture-batch6-round8.mjs`（**5298**）→ `b6r8-scatter-tip-*`、`b6r8-habit-spark-*`。
 
 ## Batch 6 · Round 7 — done
 
@@ -68,3 +73,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 8
 ℹ tests 349 ℹ pass 349 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 350 ℹ pass 350 ℹ fail 0 
