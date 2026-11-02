@@ -7,7 +7,8 @@ W=/Users/ashan/Documents/Codex/ll-overnight
 L=$W/.overnight/logs
 CR=/Users/ashan/.agents/skills/cursor-delegate/scripts/relay.mjs
 AR=/Users/ashan/.agents/skills/agy-delegate/scripts/relay.mjs
-MODEL=${MODEL:-claude-opus-5-thinking-high}
+MODEL=${MODEL:-composer-2.5}
+FAILS=0; OK_ROUNDS=0
 ROUNDS=${ROUNDS:-12}
 DEADLINE=$(( $(date +%s) + ${HOURS:-10} * 3600 ))
 export PATH="$W/.overnight/shim:$HOME/.rustup/toolchains/stable-aarch64-apple-darwin/bin:$HOME/.cargo/bin:$PATH"
@@ -28,11 +29,15 @@ for i in $(seq 1 "$ROUNDS"); do
   g=$(gate "$i"); log "round $i: gate $g"; echo "round $i: $g" >> "$L/gates.txt"
   printf '\n## Driver gate after round %s\n%s\n' "$i" "$g" >> .overnight/PROGRESS.md
   git add -A && git commit -q -m "overnight round $i (cursor $MODEL)" -m "gate: $g" && log "round $i: committed $(git rev-parse --short HEAD)"
-  if grep -q "relay_failed\|quota\|rate limit\|usage limit" "$L/round-$i/stderr.txt" 2>/dev/null && [ "$(git diff HEAD~1 --stat | wc -l)" -eq 0 ]; then
-    log "round $i: no change and a quota/limit message — stopping"; break
-  fi
+  case "$st" in
+    completed*) FAILS=0; OK_ROUNDS=$((OK_ROUNDS + 1)) ;;
+    timeout*) FAILS=0; OK_ROUNDS=$((OK_ROUNDS + 1)) ;;   # watchdog: work may still be on disk, next round continues
+    *) FAILS=$((FAILS + 1)); log "round $i: failure $FAILS ($(tail -1 "$L/round-$i/stderr.txt" 2>/dev/null | cut -c1-160))"; sleep 120 ;;
+  esac
+  [ "$FAILS" -lt 2 ] || { log "two failed rounds in a row - stopping"; break; }
 done
 
+[ "$OK_ROUNDS" -gt 0 ] || { log "no successful round - skipping review"; exit 1; }
 log "review: antigravity read-only"
 node "$AR" --brief .overnight/REVIEW-BRIEF.md --cd "$W" --model gemini-4-argon-high --read-only --timeout 40m --out-dir "$L/review" > "$L/review.out" 2>&1
 python3 - "$L/review/result.json" "$W/.overnight/REVIEW.md" <<'EOF'
