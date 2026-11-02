@@ -8218,6 +8218,27 @@ function renderReviewInspectorTable() {
   }
 }
 
+function habitMonthSparkSvg(habit, dates) {
+  if (!dates?.length) return "";
+  const w = 84;
+  const h = 14;
+  const n = dates.length;
+  const gap = 1;
+  const bw = Math.max(1, (w - gap * (n - 1)) / n);
+  let x = 0;
+  const rects = dates.map(date => {
+    const planned = versionFor(habit, date) && countsTowardDaily(habit, date);
+    const rx = x;
+    x += bw + gap;
+    if (!planned) return `<rect x="${rx.toFixed(1)}" y="${h - 3}" width="${bw.toFixed(1)}" height="3" class="rv-spark-gap"/>`;
+    const done = getLog(date).completed.includes(habit.id);
+    const barH = done ? h - 3 : 4;
+    const y = done ? 1 : h - barH - 1;
+    return `<rect x="${rx.toFixed(1)}" y="${y}" width="${bw.toFixed(1)}" height="${barH}" class="${done ? "rv-spark-on" : "rv-spark-miss"}"/>`;
+  }).join("");
+  return `<svg class="rv-habit-spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${escapeHtml(displayHabitName(habit))}"><g>${rects}</g></svg>`;
+}
+
 function renderInsightDashboard() {
   if (!analyticsApi()?.dailySummary) return;
   const T = languageText, monthLabel = d => formatLocalizedDate(d, { year: 'numeric', month: 'long' });
@@ -8250,10 +8271,10 @@ function renderInsightDashboard() {
   </div>`;
   const rows = [...model.rows].sort((a, b) => b.percent - a.percent).map(row => {
     const habit = state.habits.find(h => h.id === row.id), old = previous.rows.find(p => p.id === row.id);
-    return `<tr style="${habitStyle(habit)}"><th scope="row"><span class="insight-habit-icon">${renderIcon(iconKey(habit))}</span>${escapeHtml(displayHabitName(habit))}</th><td>${row.completed} / ${row.eligible}</td><td><span class="rv-bar"><i style="width:${row.percent}%"></i></span><b>${row.percent}%</b></td><td>${delta(old ? diff(row.percent, old.percent) : null)}</td></tr>`;
+    return `<tr style="${habitStyle(habit)}"><th scope="row"><span class="insight-habit-icon">${renderIcon(iconKey(habit))}</span>${escapeHtml(displayHabitName(habit))}</th><td class="rv-spark-cell">${habitMonthSparkSvg(habit, dates)}</td><td>${row.completed} / ${row.eligible}</td><td><span class="rv-bar"><i style="width:${row.percent}%"></i></span><b>${row.percent}%</b></td><td>${delta(old ? diff(row.percent, old.percent) : null)}</td></tr>`;
   }).join('');
   const weekday = model.weekdays.map((r, i) => `<div class="rv-weekday"><span>${escapeHtml(i18n[currentLang].calendar.weekdays[i])}</span><div class="insight-weekday-track" aria-hidden="true"><i style="height:${r.percent || 0}%"></i></div><strong>${r.eligible ? `${r.percent}%` : '—'}</strong></div>`).join('');
-  $('#reviewHabitCompare').innerHTML = `<section class="insight-habit-panel rv-panel"><header><h3>${escapeHtml(T('每个习惯','Habit by habit','Gewohnheit für Gewohnheit'))}</h3><p>${escapeHtml(T('完成率 = 完成次数 ÷ 这个月按计划应做的次数；右列是和上个月相比的百分点。','Completion = times done ÷ times planned this month; the last column is the change vs last month in percentage points.','Quote = erledigt ÷ in diesem Monat geplant; rechts die Änderung zum Vormonat in Prozentpunkten.'))}</p></header>${rows ? `<table class="rv-table"><thead><tr><th>${escapeHtml(T('习惯','Habit','Gewohnheit'))}</th><th>${escapeHtml(T('完成 / 应做','Done / planned','Erledigt / geplant'))}</th><th>${escapeHtml(T('完成率','Rate','Quote'))}</th><th>${escapeHtml(T('比上月（百分点）','vs last month (pp)','zum Vormonat (Pp.)'))}</th></tr></thead><tbody>${rows}</tbody></table>` : `<p>${escapeHtml(tr('review.insufficient'))}</p>`}</section><section class="insight-weekday-panel rv-panel"><header><h3>${escapeHtml(T('一周里哪天最稳','Your steadiest weekday','Dein stärkster Wochentag'))}</h3><p>${escapeHtml(T('这个月每个星期几的平均完成率。','Average completion per weekday this month.','Durchschnitt je Wochentag in diesem Monat.'))}</p></header><div class="rv-weekdays">${weekday}</div></section>`;
+  $('#reviewHabitCompare').innerHTML = `<section class="insight-habit-panel rv-panel"><header><h3>${escapeHtml(T('每个习惯','Habit by habit','Gewohnheit für Gewohnheit'))}</h3><p>${escapeHtml(T('完成率 = 完成次数 ÷ 这个月按计划应做的次数；右列是和上个月相比的百分点。','Completion = times done ÷ times planned this month; the last column is the change vs last month in percentage points.','Quote = erledigt ÷ in diesem Monat geplant; rechts die Änderung zum Vormonat in Prozentpunkten.'))}</p></header>${rows ? `<table class="rv-table"><thead><tr><th>${escapeHtml(T('习惯','Habit','Gewohnheit'))}</th><th>${escapeHtml(T('每日','Daily','Täglich'))}</th><th>${escapeHtml(T('完成 / 应做','Done / planned','Erledigt / geplant'))}</th><th>${escapeHtml(T('完成率','Rate','Quote'))}</th><th>${escapeHtml(T('比上月（百分点）','vs last month (pp)','zum Vormonat (Pp.)'))}</th></tr></thead><tbody>${rows}</tbody></table>` : `<p>${escapeHtml(tr('review.insufficient'))}</p>`}</section><section class="insight-weekday-panel rv-panel"><header><h3>${escapeHtml(T('一周里哪天最稳','Your steadiest weekday','Dein stärkster Wochentag'))}</h3><p>${escapeHtml(T('这个月每个星期几的平均完成率。','Average completion per weekday this month.','Durchschnitt je Wochentag in diesem Monat.'))}</p></header><div class="rv-weekdays rv-weekdays--enter">${weekday}</div></section>`;
   const end = dates.at(-1);
   const periodic = activeHabits(end).filter(h => !countsTowardDaily(h, end) && ['weekly', 'monthly'].includes(versionFor(h, end)?.frequency)).map(h => {
     const v = versionFor(h, end), start = v.frequency === 'monthly' ? dates[0] : isoDate(weekDatesFromKey(isoWeekKey(parseDate(end))).monday);

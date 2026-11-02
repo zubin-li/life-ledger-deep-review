@@ -173,7 +173,12 @@
         currency: typeof b.currency === "string" ? b.currency : ledger.settings.defaultCurrency,
       }));
     }
-    if (Array.isArray(raw.recurring)) ledger.recurring = raw.recurring.filter(Boolean);
+    if (Array.isArray(raw.recurring)) {
+      ledger.recurring = raw.recurring
+        .filter(Boolean)
+        .map(r => normalizeRecurringEntry(r, ledger))
+        .filter(r => r && r.categoryId && r.accountId && Number.isInteger(r.amountMinor) && r.amountMinor !== 0);
+    }
     if (raw.meta && typeof raw.meta === "object") {
       ledger.meta.recentCategoryIds = Array.isArray(raw.meta.recentCategoryIds)
         ? raw.meta.recentCategoryIds.filter(id => typeof id === "string").slice(0, 12)
@@ -403,6 +408,57 @@
     if (!validTransaction(next)) return null;
     base.transactions[index] = next;
     return { ledger: base, transaction: next };
+  }
+
+  function normalizeRecurringEntry(raw, ledger) {
+    if (!raw || typeof raw !== "object") return null;
+    const accountId = typeof raw.accountId === "string"
+      ? raw.accountId
+      : (ledger.accounts.find(a => !a.archived)?.id || "");
+    return {
+      id: typeof raw.id === "string" ? raw.id : createId(),
+      label: String(raw.label || "").slice(0, 120),
+      accountId,
+      categoryId: typeof raw.categoryId === "string" ? raw.categoryId : "",
+      amountMinor: Number.isInteger(raw.amountMinor) ? raw.amountMinor : 0,
+      currency: typeof raw.currency === "string" ? raw.currency : ledger.settings.defaultCurrency,
+      dayOfMonth: Math.min(28, Math.max(1, Number(raw.dayOfMonth) || 1)),
+      cadence: raw.cadence === "monthly" ? "monthly" : "monthly",
+      note: typeof raw.note === "string" ? raw.note.slice(0, 500) : "",
+    };
+  }
+
+  function upsertRecurringTemplate(ledger, draft, options = {}) {
+    const base = normalize(ledger, options);
+    const rec = normalizeRecurringEntry({ ...draft, id: draft?.id || createId() }, base);
+    if (!rec || !rec.categoryId || !rec.accountId || !Number.isInteger(rec.amountMinor) || rec.amountMinor === 0) return null;
+    const cat = base.categories.find(c => c.id === rec.categoryId);
+    if (!cat) return null;
+    if (cat.kind === "income" && rec.amountMinor < 0) rec.amountMinor = Math.abs(rec.amountMinor);
+    if (cat.kind === "expense" && rec.amountMinor > 0) rec.amountMinor = -Math.abs(rec.amountMinor);
+    const index = base.recurring.findIndex(r => r && r.id === rec.id);
+    if (index >= 0) base.recurring[index] = rec;
+    else base.recurring.push(rec);
+    return { ledger: base, recurring: rec };
+  }
+
+  function removeRecurringTemplate(ledger, id) {
+    const base = normalize(ledger);
+    const index = base.recurring.findIndex(r => r && r.id === id);
+    if (index < 0) return null;
+    const removed = { ...base.recurring[index] };
+    base.recurring = base.recurring.filter((_, i) => i !== index);
+    return { ledger: base, removed, index };
+  }
+
+  function restoreRecurringTemplate(ledger, removed, index) {
+    const base = normalize(ledger);
+    if (!removed || typeof removed.id !== "string") return base;
+    const next = [...base.recurring];
+    const at = Number.isInteger(index) && index >= 0 && index <= next.length ? index : next.length;
+    next.splice(at, 0, { ...removed });
+    base.recurring = next;
+    return base;
   }
 
   function applyRecurringTemplate(ledger, recurringId, options = {}) {
@@ -831,6 +887,10 @@
     duplicateTransaction,
     updateTransaction,
     applyRecurringTemplate,
+    upsertRecurringTemplate,
+    removeRecurringTemplate,
+    restoreRecurringTemplate,
+    normalizeRecurringEntry,
     moodSpendComparison,
     monthSummary,
     monthKey,

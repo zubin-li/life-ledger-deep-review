@@ -9,13 +9,13 @@ All notable changes are documented here.
 - Ledger category **donut / treemap** toggle with SVG treemap layout and chart skeleton placeholders on the Money page.
 - Demo helper **`alignDemoMoodWithSpend`** so monthly review can show mood-vs-spending comparison on sample data.
 - Touch amount keypad on ledger (coarse pointer / narrow screens), duplicate transaction action, month summary number roll-up, ledger page enter stagger (`v211-polish.css`), Today spending card roll-up.
-- **Edit transaction** popover (opaque, body-level), **recurring templates** section with “Post now”, mobile **swipe-left to delete**, `updateTransaction` / `applyRecurringTemplate` in `ledger-core.js`.
+- **Edit transaction** popover (opaque, body-level), **recurring templates** with create/edit/delete (undo), “Post now”, mobile **swipe-left to delete**, `updateTransaction` / `applyRecurringTemplate` / `upsertRecurringTemplate` in `ledger-core.js`.
 - Demo sample **pads early-month** expenses so November donut, heatmap, and Today card match summary; sample includes two recurring templates.
 
 ### Changed
 
 - Mood-vs-spend review insight uses testable `moodSpendComparison` in `ledger-core.js`; quick-entry field no longer wrapped in `<label>` (Add button stays outside).
-- Today spending card **month total** uses absolute expense magnitude; Goal 2: Today card enter stagger, ledger empty states, review habit bar width transition.
+- Review **habit daily sparkline** column and weekday bar grow-in; Week/Timeline page enter stagger (`v211-polish.css`).
 
 ## [2.1.0] - 2026-11-02
 

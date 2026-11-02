@@ -78,6 +78,14 @@ async function shot(browserType, name, opts) {
     await page.click('.ledger-chart-mode[data-chart-mode="treemap"]');
     await page.waitForTimeout(300);
   }
+  if (opts.recurringPopover) {
+    await page.click(".ledger-recurring-add");
+    await page.waitForTimeout(350);
+  }
+  if (opts.view === "timeline") {
+    await page.click('.nav-item[data-view="timeline"]');
+    await page.waitForTimeout(400);
+  }
   await page.waitForTimeout(500);
   await page.screenshot({ path: join(outDir, `${name}.png`), fullPage: opts.fullPage !== false });
   await browser.close();
@@ -100,5 +108,17 @@ await shot(chromium, "ledger-treemap-light-1440", {
   theme: "light",
   demoLedger: true,
   treemap: true,
+});
+await shot(chromium, "ledger-recurring-popover-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  demoLedger: true,
+  recurringPopover: true,
+});
+await shot(chromium, "timeline-enter-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  demoLedger: true,
+  view: "timeline",
 });
 console.log("screenshots saved");

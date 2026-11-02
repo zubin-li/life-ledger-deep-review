@@ -107,6 +107,34 @@ test("updateTransaction patches amount and date", () => {
   assert.equal(updated.transaction.note, "b");
 });
 
+test("upsertRecurringTemplate creates updates and restores", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  const created = L.upsertRecurringTemplate(ledger, {
+    label: "Rent",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -95000,
+    dayOfMonth: 3,
+    cadence: "monthly",
+  }, { lang: "en" });
+  assert.ok(created);
+  assert.equal(created.recurring.dayOfMonth, 3);
+  assert.equal(created.ledger.recurring.length, 1);
+  const updated = L.upsertRecurringTemplate(created.ledger, {
+    ...created.recurring,
+    amountMinor: -88000,
+    dayOfMonth: 5,
+  }, { lang: "en" });
+  assert.equal(updated.recurring.amountMinor, -88000);
+  assert.equal(updated.ledger.recurring.length, 1);
+  const snap = L.removeRecurringTemplate(updated.ledger, updated.recurring.id);
+  assert.equal(snap.ledger.recurring.length, 0);
+  const back = L.restoreRecurringTemplate(snap.ledger, snap.removed, snap.index);
+  assert.equal(back.recurring.length, 1);
+});
+
 test("applyRecurringTemplate posts using today date", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

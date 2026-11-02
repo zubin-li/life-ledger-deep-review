@@ -236,23 +236,124 @@
 
   function renderRecurring(ledger) {
     const rows = (ledger.recurring || []).filter(Boolean);
+    const addBtn = `<button type="button" class="secondary-button ledger-recurring-add">${t("添加固定项", "Add recurring", "Hinzufügen")}</button>`;
     if (!rows.length) {
-      return `<p class="ledger-empty ledger-recurring-empty">${t("固定支出可在后续添加。", "Recurring templates will appear here.", "Wiederkehrende Buchungen erscheinen hier.")}</p>`;
+      return `<div class="ledger-recurring-head">${addBtn}</div><p class="ledger-empty ledger-recurring-empty">${t("固定支出可在下方添加。", "Add rent, subscriptions, or salary templates.", "Wiederkehrende Buchungen unten anlegen.")}</p>`;
     }
-    return `<ul class="ledger-recurring-list">${rows.map(rec => {
+    return `<div class="ledger-recurring-head"><span class="ledger-recurring-count">${rows.length}</span>${addBtn}</div><ul class="ledger-recurring-list">${rows.map(rec => {
       const cat = ledger.categories.find(c => c.id === rec.categoryId);
       const name = rec.label || (cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "");
       const amt = core().formatMoney(rec.amountMinor, rec.currency || ledger.settings.defaultCurrency, ctx.locale?.());
-      return `<li class="ledger-recurring">
+      const day = rec.dayOfMonth || 1;
+      const meta = `${t("每月", "Monthly", "Monatlich")} · ${t(`第 ${day} 日`, `day ${day}`, `Tag ${day}`)} · ${ctx.escape(amt)}`;
+      return `<li class="ledger-recurring" data-rec-id="${ctx.escape(rec.id)}">
         <span class="ledger-recurring-name">${ctx.escape(name)}</span>
-        <span class="ledger-recurring-meta">${t("每月", "Monthly", "Monatlich")} · ${ctx.escape(amt)}</span>
-        <button type="button" class="secondary-button ledger-recurring-apply" data-rec="${ctx.escape(rec.id)}">${t("记一笔", "Post now", "Buchen")}</button>
+        <span class="ledger-recurring-meta">${meta}</span>
+        <span class="ledger-recurring-actions">
+          <button type="button" class="icon-button ledger-recurring-edit" aria-label="${t("编辑", "Edit", "Bearbeiten")}">✎</button>
+          <button type="button" class="icon-button ledger-recurring-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
+          <button type="button" class="secondary-button ledger-recurring-apply" data-rec="${ctx.escape(rec.id)}">${t("记一笔", "Post now", "Buchen")}</button>
+        </span>
       </li>`;
     }).join("")}</ul>`;
   }
 
-  function closeEditPopover() {
+  function closeLedgerPopovers() {
     document.querySelector(".ledger-edit-popover")?.remove();
+    document.querySelector(".ledger-recurring-popover")?.remove();
+  }
+
+  function closeEditPopover() {
+    closeLedgerPopovers();
+  }
+
+  function expenseCategoryOptions(ledger, selectedId) {
+    return ledger.categories
+      .filter(c => c.kind === "expense" && !c.archived)
+      .map(c => {
+        const name = core().localizedCategoryName(c, ctx.lang?.());
+        const sel = c.id === selectedId ? " selected" : "";
+        return `<option value="${ctx.escape(c.id)}"${sel}>${ctx.escape(name)}</option>`;
+      })
+      .join("");
+  }
+
+  function openRecurringPopover(ledger, existing) {
+    closeLedgerPopovers();
+    const rec = existing || {
+      id: "",
+      label: "",
+      categoryId: ledger.categories.find(c => c.kind === "expense" && !c.archived)?.id || "",
+      amountMinor: -1000,
+      currency: ledger.settings.defaultCurrency,
+      dayOfMonth: 1,
+      cadence: "monthly",
+      note: "",
+    };
+    const amountDisplay = (Math.abs(rec.amountMinor) / 100).toFixed(2).replace(".", ",");
+    const pop = document.createElement("div");
+    pop.className = "ledger-recurring-popover ledger-edit-popover";
+    pop.innerHTML = `
+      <form class="ledger-edit-form ledger-recurring-form">
+        <header><strong>${existing ? t("编辑固定项", "Edit recurring", "Wiederkehrend bearbeiten") : t("新建固定项", "New recurring", "Neu wiederkehrend")}</strong></header>
+        <div class="ledger-edit-field">
+          <span>${t("名称", "Label", "Bezeichnung")}</span>
+          <input name="label" autocomplete="off" value="${ctx.escape(rec.label || "")}" placeholder="${t("例如房租", "e.g. Rent", "z. B. Miete")}" />
+        </div>
+        <div class="ledger-edit-field">
+          <span>${t("分类", "Category", "Kategorie")}</span>
+          <select name="category">${expenseCategoryOptions(ledger, rec.categoryId)}</select>
+        </div>
+        <div class="ledger-edit-field">
+          <span>${t("金额", "Amount", "Betrag")}</span>
+          <input name="amount" inputmode="decimal" value="${ctx.escape(amountDisplay)}" />
+        </div>
+        <div class="ledger-edit-field">
+          <span>${t("每月几号", "Day of month", "Tag im Monat")}</span>
+          <input name="day" type="number" min="1" max="28" value="${Number(rec.dayOfMonth) || 1}" />
+        </div>
+        <div class="ledger-edit-field">
+          <span>${t("备注", "Note", "Notiz")}</span>
+          <input name="note" value="${ctx.escape(rec.note || "")}" />
+        </div>
+        <div class="ledger-edit-actions">
+          <button type="button" class="secondary-button" data-rec-cancel>${t("取消", "Cancel", "Abbrechen")}</button>
+          <button type="submit" class="primary-button">${t("保存", "Save", "Speichern")}</button>
+        </div>
+      </form>`;
+    document.body.appendChild(pop);
+    const form = pop.querySelector("form");
+    pop.addEventListener("click", event => {
+      if (event.target === pop) closeLedgerPopovers();
+    });
+    pop.querySelector("[data-rec-cancel]")?.addEventListener("click", closeLedgerPopovers);
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const categoryId = form.querySelector('[name="category"]').value;
+      const cat = ledger.categories.find(c => c.id === categoryId);
+      const amountRaw = form.querySelector('[name="amount"]').value;
+      let amountMinor = rec.amountMinor;
+      const token = core().parseAmountToken(amountRaw);
+      if (token != null) amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
+      const dayOfMonth = Math.min(28, Math.max(1, Number(form.querySelector('[name="day"]').value) || 1));
+      const draft = {
+        id: existing?.id || core().createId(),
+        label: form.querySelector('[name="label"]').value.trim(),
+        categoryId,
+        accountId: rec.accountId || ledger.accounts.find(a => !a.archived)?.id,
+        amountMinor,
+        currency: rec.currency || ledger.settings.defaultCurrency,
+        dayOfMonth,
+        cadence: "monthly",
+        note: form.querySelector('[name="note"]').value.trim(),
+      };
+      const result = core().upsertRecurringTemplate(ledgerState(), draft, { lang: ctx.lang?.() });
+      if (!result) return;
+      commit(result.ledger);
+      closeLedgerPopovers();
+      ctx.toast?.(t("已保存固定项", "Recurring saved", "Wiederkehrend gespeichert"));
+      render();
+    });
   }
 
   function openEditPopover(host, tx, ledger) {
@@ -423,6 +524,39 @@
   }
 
   function bindRecurring(host) {
+    host.querySelector(".ledger-recurring-add")?.addEventListener("click", () => {
+      openRecurringPopover(ledgerState(), null);
+    });
+    host.querySelectorAll(".ledger-recurring-edit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.closest(".ledger-recurring")?.dataset.recId;
+        if (!id) return;
+        const rec = ledgerState().recurring.find(r => r && r.id === id);
+        if (!rec) return;
+        openRecurringPopover(ledgerState(), rec);
+      });
+    });
+    host.querySelectorAll(".ledger-recurring-del").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.closest(".ledger-recurring")?.dataset.recId;
+        if (!id) return;
+        const snap = core().removeRecurringTemplate(ledgerState(), id);
+        if (!snap) return;
+        commit(snap.ledger);
+        ctx.toast?.(
+          t("已删除固定项", "Recurring removed", "Vorlage entfernt"),
+          {
+            actionLabel: t("撤销", "Undo", "Rückgängig"),
+            onAction: () => {
+              const restored = core().restoreRecurringTemplate(ctx.state().ledger, snap.removed, snap.index);
+              commit(restored);
+              render();
+            },
+          },
+        );
+        render();
+      });
+    });
     host.querySelectorAll(".ledger-recurring-apply").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.dataset.rec;

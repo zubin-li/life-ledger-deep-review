@@ -1,36 +1,36 @@
 # Overnight progress
 
-## Round 5 — done
+## Round 6 — done
 
-- **Review mood × spend:** `alignDemoMoodWithSpend` ties demo journal moods on high/low spend days so monthly review shows the comparison line (seed 42 verified in `review-ledger-light-1440.png`).
-- **Ledger categories:** Donut / treemap toggle (slice-and-dice SVG, accent colors via `getComputedStyle`); chart skeleton shimmer on category viz + trend uPlot mount.
-- **Mac shell:** Headless WebKit shot with injected `desktop/mac/shell.js` + `shell.css` → `.overnight/shots/ledger-mac-shell-light-1440.png`.
-- **Demo seeding:** `maybeApplyDemoWorkspace` + Mac sample load call mood alignment after `buildDemoSample`.
-- **Tests:** +1 (`alignDemoMoodWithSpend`) → **257 pass**.
-- **Screenshots:** refreshed set + `ledger-treemap-light-1440.png`, Mac shell (5291).
+- **Recurring templates:** `upsertRecurringTemplate` / `removeRecurringTemplate` / `restoreRecurringTemplate` + normalize sanitization in `ledger-core.js`. Money page **Add recurring** + edit/delete (undo toast), opaque body popover (fields not wrapped in `<label>` with inner buttons).
+- **Review habits:** `habitMonthSparkSvg` daily strip column in habit table; weekday bars get staggered grow-in (`rv-weekdays--enter`).
+- **Page motion:** Week `.module-card` and Timeline feed/layout enter stagger in `v211-polish.css` (respects `html.motion-reduced`).
+- **Tests:** +1 recurring CRUD test → **258 pass**.
+- **Screenshots:** `ledger-recurring-popover-light-1440.png`, `timeline-enter-light-1440.png`, full capture refresh (5291).
 
 ## Half-done
 
-- Full recurring template editor (create/edit cadence beyond “Post now”).
-- Broader Goal 2: page transitions on week/timeline, habit/mood correlation beyond review one-liner, global skeleton pattern elsewhere.
+- Income-side recurring (salary templates) — UI only lists expense categories today.
+- fakecloud ledger smoke on 5298 — not run this round.
+- Broader Goal 2: global skeleton pattern on week/timeline loads, treemap tile labels.
 
 ## Next round priorities
 
-1. Recurring create/edit UI (opaque popover, no label/button trap).
-2. Week / timeline page enter transitions (match Today stagger).
-3. Habit insights mini-chart on review (streak sparkline or weekday bars polish).
-4. Optional: fakecloud ledger smoke on 5298.
+1. Recurring: income category option + optional weekly cadence (if justified in design note).
+2. fakecloud local stand-in smoke for `state.ledger` sync path.
+3. Mobile keypad vs bottom nav overlap mitigation (padding/safe-area on `#ledgerView`).
+4. More review correlations (focus vs spend) or habit streak headline polish.
 
 ## Known bugs / gaps
 
 - Mobile floating nav dock still overlaps ledger keypad area (pre-existing shell).
 - `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged, low risk.
-- Treemap is illustrative only (no labels on tiles; hover title only).
+- Treemap illustrative only (hover title, no in-tile labels).
 
 ## npm test
 
 ```
-257 pass, 0 fail (round 5)
+258 pass, 0 fail (round 6)
 ```
 
 ## Gate result
@@ -51,3 +51,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 5
 ℹ tests 257 ℹ pass 257 ℹ fail 0 
+
+## Driver gate after round 6
+ℹ tests 258 ℹ pass 258 ℹ fail 0 
