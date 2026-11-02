@@ -6,6 +6,7 @@
   let trendPlot = null;
   let categoryChartMode = "donut";
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
+  let lastHighlightTxId = "";
 
   const $ = (s, r = document) => r.querySelector(s);
   const t = (zh, en, de) => ctx.text(zh, en, de);
@@ -303,7 +304,8 @@
     return `<ul class="ledger-tx-list">${rows.map(tx => {
       const cat = ledger.categories.find(c => c.id === tx.categoryId);
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
-      return `<li class="ledger-tx" data-id="${ctx.escape(tx.id)}">
+      const enter = tx.id === lastHighlightTxId ? " is-enter" : "";
+      return `<li class="ledger-tx${enter}" data-id="${ctx.escape(tx.id)}">
         <span class="ledger-tx-date">${ctx.escape(tx.date.slice(5))}</span>
         <span class="ledger-tx-note">${ctx.escape(tx.note || name)}</span>
         <span class="ledger-tx-amt ${tx.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(core().formatMoney(tx.amountMinor, tx.currency, ctx.locale?.()))}</span>
@@ -621,12 +623,15 @@
         return;
       }
       input.classList.remove("is-error");
-      const { ledger: next } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
+      const { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
       const firstEntry = !ledger.transactions.length && next.transactions.length;
+      lastHighlightTxId = transaction.id;
       commit(next);
       input.value = "";
       input.classList.add("is-success");
       setTimeout(() => input.classList.remove("is-success"), 600);
+      form.classList.add("is-success-flash");
+      setTimeout(() => form.classList.remove("is-success-flash"), 600);
       if (firstEntry) dismissOnboarding(host);
       render();
     });
@@ -814,6 +819,7 @@
         if (!id) return;
         const result = core().duplicateTransaction(ledgerState(), id, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
         if (!result) return;
+        lastHighlightTxId = result.transaction?.id || "";
         commit(result.ledger);
         ctx.toast?.(t("已复制一笔记录", "Entry duplicated", "Eintrag dupliziert"));
         render();
@@ -937,6 +943,12 @@
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-donut-segments.is-retargeting"));
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-treemap.is-retargeting"));
     });
+    if (lastHighlightTxId) {
+      const hi = lastHighlightTxId;
+      setTimeout(() => {
+        if (lastHighlightTxId === hi) lastHighlightTxId = "";
+      }, 720);
+    }
     const roll = root.LifeLedgerInteraction?.rollText;
     if (roll) {
       ["income", "expense", "net"].forEach(key => {

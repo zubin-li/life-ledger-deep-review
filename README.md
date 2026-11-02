@@ -277,7 +277,8 @@ Cloud synchronization is optional. A local-only installation has separate data p
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Apply local migrations and start Wrangler development mode |
-| `npm test` | Run syntax, privacy-marker, structure, and Worker tests |
+| `npm test` | Run syntax, privacy-marker, structure, and Worker tests (no Playwright) |
+| `npm run test:browser` | Playwright WebKit/Chromium checks for Money, Today, and review UI |
 | `npm run check` | Run fast repository checks |
 | `npm run build:cloudbase` | Build a CloudBase artifact using `TCB_ENV_ID` and `TCB_ACCESS_KEY` |
 | `npm run deploy:cloudbase` | Build and deploy to Tencent CloudBase Static Hosting |

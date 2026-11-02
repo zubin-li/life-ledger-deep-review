@@ -24,6 +24,8 @@ All notable changes are documented here.
 - **Money:** budget progress bars grow with stagger when switching months (`v229-ledger-budget-bars.css`; `LifeLedgerReviewBars.animateLedgerBudgetFills`).
 - **Money:** category donut / treemap cells and daily spend heatmap stagger when switching months (`v230-ledger-chart-retarget.css`; `LifeLedgerInteraction.retarget` on chart scopes).
 - **Review:** monthly Money stat columns, scatter dots, and insight lines restagger when changing review months (`v231-review-ledger-retarget.css`; `LifeLedgerInteraction.retarget` on `#reviewLedgerSummary`).
+- **Money (Goal 2):** quick-entry form success flash, new transaction row enter, submit button press (`v232-ledger-entry-feedback.css`).
+- **QA:** `npm test` skips `*.browser.test.mjs`; run `npm run test:browser` for Playwright suites locally or in CI.
 - **QA:** `.overnight/fakecloud-stub/` mirrors minimal `/api/state` + D1 `revision` schema when repo-root `functions/` is absent; `fakecloud.sh` uses it automatically.
 - **QA:** `fakecloud.sh` copies the site into `/tmp/life-ledger-overnight-fakecloud` so local Pages dev does not inherit repo-root `wrangler.jsonc` D1 bindings (fixes empty `states` table / 500 on GET).
 

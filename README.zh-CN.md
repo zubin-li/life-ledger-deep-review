@@ -281,7 +281,8 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 | 命令 | 用途 |
 |---|---|
 | `npm run dev` | 执行本地迁移并启动 Wrangler 开发环境 |
-| `npm test` | 执行语法、隐私标记、结构和 Worker 测试 |
+| `npm test` | 执行语法、隐私标记、结构和 Worker 测试（不含 Playwright） |
+| `npm run test:browser` | Money / Today / 复盘等 Playwright 浏览器检查 |
 | `npm run check` | 快速检查仓库 |
 | `npm run build:cloudbase` | 使用 `TCB_ENV_ID` 与 `TCB_ACCESS_KEY` 构建 CloudBase 发布文件 |
 | `npm run deploy:cloudbase` | 构建并部署到腾讯云 CloudBase 静态网站托管 |

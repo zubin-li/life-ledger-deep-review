@@ -279,7 +279,8 @@ Cloud-Synchronisierung ist optional. Eine rein lokale Installation speichert get
 | Befehl | Zweck |
 |---|---|
 | `npm run dev` | Lokale Migrationen anwenden und Wrangler im Entwicklungsmodus starten |
-| `npm test` | Syntax-, Datenschutzmarker-, Struktur- und Worker-Tests ausführen |
+| `npm test` | Syntax-, Datenschutzmarker-, Struktur- und Worker-Tests ausführen (ohne Playwright) |
+| `npm run test:browser` | Playwright-Checks für Finanzen, Today und Review |
 | `npm run check` | Schnelle Repository-Prüfungen ausführen |
 | `npm run build:cloudbase` | CloudBase-Artefakt mit `TCB_ENV_ID` und `TCB_ACCESS_KEY` bauen |
 | `npm run deploy:cloudbase` | Bauen und zu Tencent CloudBase Static Hosting bereitstellen |

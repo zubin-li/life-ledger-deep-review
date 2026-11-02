@@ -1,0 +1,43 @@
+/* Goal 2 batch 4 r2: quick-entry success + new transaction row enter */
+
+.ledger-tx.is-enter {
+  animation: ledgerTxEnter 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+@keyframes ledgerTxEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ledger-quick .primary-button {
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.ledger-quick .primary-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+html.motion-reduced .ledger-tx.is-enter,
+html.motion-reduced .ledger-quick .primary-button:active:not(:disabled) {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-tx.is-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .ledger-quick .primary-button:active:not(:disabled) {
+    transform: none;
+  }
+}
