@@ -607,6 +607,58 @@ test("localizedCategoryName keeps English after zh seed", () => {
   assert.equal(L.localizedCategoryName(cat, "en"), "Groceries");
 });
 
+test("repairDefaultCategoryNames restores English when name was overwritten with zh", () => {
+  const raw = {
+    version: 1,
+    settings: { defaultCurrency: "EUR", secondaryCurrency: "CNY" },
+    accounts: [{
+      id: "a1", name: "Cash", currency: "EUR", kind: "checking", icon: "wallet", color: "sage", archived: false,
+    }],
+    categories: [{
+      id: "c1",
+      name: "日用",
+      nameZh: "日用",
+      nameDe: "Lebensmittel",
+      kind: "expense",
+      icon: "shopping",
+      color: "sage",
+      parentId: "",
+      archived: false,
+    }],
+    transactions: [],
+    budgets: [],
+    recurring: [],
+    meta: { recentCategoryIds: [], lastEntryAt: 0 },
+  };
+  const ledger = L.normalize(raw, { lang: "en" });
+  const cat = ledger.categories.find(c => c.id === "c1");
+  assert.equal(cat.name, "Groceries");
+  assert.equal(L.localizedCategoryName(cat, "en"), "Groceries");
+  assert.equal(L.localizedCategoryName(cat, "zh"), "日用");
+});
+
+test("dailyExpenseSeries covers seven days ending on selected date", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const exp = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -500, currency: "EUR", date: "2026-11-02", note: "a" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -200, currency: "EUR", date: "2026-10-31", note: "b" }));
+  const series = L.dailyExpenseSeries(ledger, "2026-11-02", 7);
+  assert.equal(series.length, 7);
+  assert.equal(series[series.length - 1].date, "2026-11-02");
+  assert.equal(series[series.length - 1].spendMinor, 500);
+  assert.equal(series.find(r => r.date === "2026-10-31")?.spendMinor, 200);
+});
+
+test("renderMiniSpendSparklineSvg returns polyline when data exists", () => {
+  const svg = L.renderMiniSpendSparklineSvg([
+    { date: "2026-11-01", spendMinor: 100 },
+    { date: "2026-11-02", spendMinor: 300 },
+  ]);
+  assert.match(svg, /<polyline/);
+  assert.equal(L.renderMiniSpendSparklineSvg([{ date: "x", spendMinor: 1 }]), "");
+});
+
 test("importGermanBankCsv respects semicolons inside quoted purpose", () => {
   const csv = `Datum;Verwendungszweck;Betrag
 01.11.2026;"Miete; Nebenkosten";850,00-`;

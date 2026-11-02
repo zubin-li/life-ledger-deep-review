@@ -86,6 +86,36 @@
     return out;
   }
 
+  function defaultDefForCategory(cat) {
+    if (!cat || cat.archived) return null;
+    const pool = cat.kind === "income" ? DEFAULT_INCOME_CATEGORIES : DEFAULT_EXPENSE_CATEGORIES;
+    return pool.find(def => (
+      cat.name === def.name
+      || cat.name === def.zh
+      || cat.name === def.de
+      || (cat.nameZh && cat.nameZh === def.zh)
+      || (cat.nameDe && cat.nameDe === def.de)
+    )) || null;
+  }
+
+  /** One-time repair when old seeds overwrote English `name` with zh/de. */
+  function repairDefaultCategoryNames(categories) {
+    if (!Array.isArray(categories)) return categories;
+    return categories.map(cat => {
+      const def = defaultDefForCategory(cat);
+      if (!def) return cat;
+      const next = { ...cat };
+      const nameWasLocalized = next.name === def.zh || next.name === def.de;
+      const localizedFieldsMatch = next.nameZh === def.zh || next.nameDe === def.de;
+      if (nameWasLocalized || (next.name !== def.name && localizedFieldsMatch)) {
+        next.name = def.name;
+      }
+      if (!next.nameZh) next.nameZh = def.zh;
+      if (!next.nameDe) next.nameDe = def.de;
+      return next;
+    });
+  }
+
   function ensurePrimaryAccount(ledger) {
     if (ledger.accounts.some(a => !a.archived)) return ledger;
     ledger.accounts.push({
@@ -174,6 +204,7 @@
         : [];
       ledger.meta.lastEntryAt = Number(raw.meta.lastEntryAt) || 0;
     }
+    ledger.categories = repairDefaultCategoryNames(ledger.categories);
     ledger.categories = seedDefaultCategories(ledger.categories, options.lang);
     ensurePrimaryAccount(ledger);
     return ledger;
@@ -940,6 +971,45 @@
       .reduce((sum, tx) => sum + Math.abs(tx.amountMinor), 0);
   }
 
+  /** Last N calendar days ending at endIso (inclusive), reporting-currency expenses only. */
+  function dailyExpenseSeries(ledger, endIso, days = 7) {
+    const base = normalize(ledger);
+    const end = ISO_DATE.test(endIso || "") ? endIso : isoDateFromDate(new Date());
+    const count = Math.max(1, Math.min(31, Number(days) || 7));
+    const spendByDate = new Map();
+    base.transactions.forEach(tx => {
+      if (!txInReportingCurrency(base, tx) || tx.amountMinor >= 0) return;
+      spendByDate.set(tx.date, (spendByDate.get(tx.date) || 0) + Math.abs(tx.amountMinor));
+    });
+    const anchor = new Date(`${end}T12:00:00`);
+    const out = [];
+    for (let i = count - 1; i >= 0; i -= 1) {
+      const d = new Date(anchor);
+      d.setDate(d.getDate() - i);
+      const date = isoDateFromDate(d);
+      out.push({ date, spendMinor: spendByDate.get(date) || 0 });
+    }
+    return out;
+  }
+
+  function renderMiniSpendSparklineSvg(series, options = {}) {
+    const rows = Array.isArray(series) ? series : [];
+    if (rows.length < 2) return "";
+    const w = options.width || 120;
+    const h = options.height || 28;
+    const pad = 2;
+    const max = Math.max(1, ...rows.map(r => r.spendMinor || 0));
+    const step = (w - pad * 2) / (rows.length - 1);
+    const points = rows.map((r, i) => {
+      const x = pad + i * step;
+      const y = pad + (h - pad * 2) * (1 - (r.spendMinor || 0) / max);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(" ");
+    const last = rows[rows.length - 1]?.spendMinor || 0;
+    const accent = last > 0 ? "var(--accent, #3d8f6a)" : "var(--text-3, #9aa0a6)";
+    return `<svg class="tw-spend-sparkline" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${accent}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="${points}"/></svg>`;
+  }
+
   function shiftYm(ym, delta) {
     const [y, m] = ym.split("-").map(Number);
     const d = new Date(y, m - 1 + delta, 1, 12);
@@ -1442,6 +1512,9 @@
     importGermanBankCsv,
     exportTransactionsCsv,
     spendingTodayMinor,
+    dailyExpenseSeries,
+    renderMiniSpendSparklineSvg,
+    repairDefaultCategoryNames,
     budgetProgress,
     upsertCategoryBudget,
     removeCategoryBudget,

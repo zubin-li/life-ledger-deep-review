@@ -1,12 +1,27 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 1）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 2）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 启动：** 在 Batch 5 十轮收束与 Antigravity 审查基础上，本轮优先落地 **审查项修复**（数据与 CSV 安全、移动端误删、Mac 换月、外币提示）。
+**Batch 6 Round 2：** 旧账本默认分类英文名回填 + Today「今日支出」卡 7 日迷你趋势。
 
 ---
 
-## 本轮（Batch 6 · Round 1）改动
+## 本轮（Batch 6 · Round 2）改动
+
+| 项目 | 说明 |
+|------|------|
+| **分类名修复** | 加载 `state.ledger` 时，若默认分类的 `name` 曾被旧逻辑写成「日用」等，`normalize` 会恢复 English canonical，界面切回 en 显示 Groceries 等。 |
+| **Today 支出卡** | 有近 7 日支出数据时出现绿色迷你折线（即使今天尚未记账）；样式在 `v210.css`。 |
+| **测试** | 单元 **343 pass**（+3）；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b6r2-today-spend-*`、`b6r2-ledger-de-dark-390-*`。重拍：`node .overnight/capture-batch6-round2.mjs`（**5294**）。 |
+
+**去哪点：** **今日** 滚动到 **今日支出 / Spending today** 卡，看金额下方折线；**设置 → 语言** 在 en/zh 间切换后打开 **记账**，默认分类名应对应语言。
+
+**已知遗留：** README 顶图仍是 Today v6，未单独突出记账侧栏。
+
+---
+
+## 上一轮（Batch 6 · Round 1）
 
 | 项目 | 说明 |
 |------|------|

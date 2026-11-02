@@ -103,7 +103,7 @@
     freq: shell("freq", `<span class="tw-side tw-freq-month"></span>`, `<div class="tw-freq-info"><div class="tw-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><b class="tw-freq-count"></b></div><div class="tw-freq-tabs" role="tablist"></div></div><div class="tw-heat-box"><div class="tw-heat-weekdays" aria-hidden="true"></div><div class="tw-freq-grid tw-heat-grid"></div></div>`),
     photos: shell("photos", `<button type="button" class="text-button tw-open-day" data-tw="openDay"></button>`, `<div class="tw-photo-list"></div><p class="tw-caption tw-photo-note"></p>`),
     focus: shell("focus", "", `<div class="tw-art tw-focus-art"></div><div class="tw-focus-main"><div class="tw-ring tw-focus-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><strong></strong></div><div class="tw-focus-meta"><span class="tw-focus-topic"></span><p class="tw-caption tw-focus-today"></p><button type="button" class="primary-button tw-focus-start"></button></div></div>`),
-    spending: shell("spending", `<strong class="tw-side tw-spend-month"></strong>`, `<div class="tw-spend-main"><strong class="tw-spend-today"></strong><p class="tw-caption tw-spend-note"></p><p class="tw-caption tw-spend-hint" hidden></p><button type="button" class="text-button tw-spend-open" data-tw="openLedger"></button></div>`),
+    spending: shell("spending", `<strong class="tw-side tw-spend-month"></strong>`, `<div class="tw-spend-main"><strong class="tw-spend-today"></strong><div class="tw-spend-spark" aria-hidden="true"></div><p class="tw-caption tw-spend-note"></p><p class="tw-caption tw-spend-hint" hidden></p><button type="button" class="text-button tw-spend-open" data-tw="openLedger"></button></div>`),
   };
   // Hero gets the weather chip (weather-widget.js fills #heroWeather).
   const chip = document.createElement("span");
@@ -546,6 +546,7 @@
     const note = $(".tw-spend-note", c);
     const hint = $(".tw-spend-hint", c);
     const monthSide = $(".tw-spend-month", c);
+    const sparkHost = $(".tw-spend-spark", c);
     const todayText = ledger
       ? (todayMinor ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : L.formatMoney(0, ledger.settings.defaultCurrency, locale))
       : "—";
@@ -569,6 +570,15 @@
     if (monthSide) monthSide.textContent = ledger
       ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
       : "";
+    if (sparkHost && ledger) {
+      const series = L.dailyExpenseSeries(ledger, today, 7);
+      const hasAny = series.some(r => r.spendMinor > 0);
+      sparkHost.innerHTML = hasAny ? L.renderMiniSpendSparklineSvg(series) : "";
+      sparkHost.hidden = !hasAny;
+    } else if (sparkHost) {
+      sparkHost.innerHTML = "";
+      sparkHost.hidden = true;
+    }
     c.classList.toggle("is-empty", !todayMinor);
     const showSpendEmptyEnter = !todayMinor && !ledgerHasEntries;
     c.classList.toggle("ll-empty-enter", showSpendEmptyEnter);

@@ -468,6 +468,17 @@ html[data-theme="dark"] .ledger-tx {
   opacity: 0.45;
 }
 
+.tw-spend-spark {
+  min-height: 28px;
+  margin: -0.15rem 0 0.1rem;
+  opacity: 0.92;
+}
+
+.tw-spend-sparkline {
+  display: block;
+  max-width: 100%;
+}
+
 @media (max-width: 640px) {
   .ledger-panels--wide {
     grid-template-columns: 1fr;
