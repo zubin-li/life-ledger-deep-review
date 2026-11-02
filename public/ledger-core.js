@@ -1078,25 +1078,43 @@
     const hotDates = datesWithCategorySpend(ledger, ym, new Set(overs.map(o => o.categoryId)));
     if (hotDates.size < 2) return null;
     const lowMood = options.lowMood || "低落";
+    const positiveMoods = options.positiveMoods || ["很好", "平静"];
     let lowOnHot = 0;
     let hotWithMood = 0;
     let lowOnOther = 0;
     let otherWithMood = 0;
+    let positiveOnHot = 0;
+    let positiveOnOther = 0;
     (dailyRows || []).forEach(row => {
       if (!row?.mood || !(row.spendMinor > 0)) return;
+      const isPositive = positiveMoods.includes(row.mood);
       if (hotDates.has(row.date)) {
         hotWithMood += 1;
         if (row.mood === lowMood) lowOnHot += 1;
+        if (isPositive) positiveOnHot += 1;
       } else {
         otherWithMood += 1;
         if (row.mood === lowMood) lowOnOther += 1;
+        if (isPositive) positiveOnOther += 1;
       }
     });
     if (hotWithMood < 2 || otherWithMood < 2) return null;
     const hotRate = lowOnHot / hotWithMood;
     const otherRate = lowOnOther / otherWithMood;
-    if (Math.abs(hotRate - otherRate) < 0.08) return null;
-    return { hotRate, otherRate, hotDays: hotWithMood, otherDays: otherWithMood, overs };
+    const positiveHotRate = positiveOnHot / hotWithMood;
+    const positiveOtherRate = positiveOnOther / otherWithMood;
+    const lowGap = Math.abs(hotRate - otherRate);
+    const positiveGap = Math.abs(positiveHotRate - positiveOtherRate);
+    if (lowGap < 0.08 && positiveGap < 0.08) return null;
+    return {
+      hotRate,
+      otherRate,
+      positiveHotRate,
+      positiveOtherRate,
+      hotDays: hotWithMood,
+      otherDays: otherWithMood,
+      overs,
+    };
   }
 
   function resolveBudgetLimitMinor(rawLimit, amountText) {

@@ -467,6 +467,43 @@ test("moodOverspendCategoryInsight compares low mood on hot spend days", () => {
   assert.ok(insight.hotRate > insight.otherRate);
 });
 
+test("moodOverspendCategoryInsight surfaces positive mood on hot spend days", () => {
+  let ledger = L.buildDemoSample({ now: new Date("2026-11-18T12:00:00"), lang: "en", contentSeed: 11 });
+  const ym = "2026-11";
+  const cat = ledger.categories.find(c => c.kind === "expense" && !c.archived);
+  ledger = L.upsertCategoryBudget(ledger, { month: ym, categoryId: cat.id, limitMinor: 100 }).ledger;
+  const hotDates = ["2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08"];
+  hotDates.forEach(date => {
+    ledger = L.addTransaction(ledger, {
+      accountId: ledger.accounts[0].id,
+      categoryId: cat.id,
+      amountMinor: -5000,
+      currency: "EUR",
+      date,
+      note: "hot",
+    }).ledger;
+  });
+  const otherDates = ["2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"];
+  const otherCat = ledger.categories.find(c => c.kind === "expense" && c.id !== cat.id);
+  otherDates.forEach(date => {
+    ledger = L.addTransaction(ledger, {
+      accountId: ledger.accounts[0].id,
+      categoryId: otherCat.id,
+      amountMinor: -800,
+      currency: "EUR",
+      date,
+      note: "other",
+    }).ledger;
+  });
+  const dailyRows = [
+    ...hotDates.map(date => ({ date, mood: "很好", spendMinor: 5000 })),
+    ...otherDates.map(date => ({ date, mood: "低落", spendMinor: 800 })),
+  ];
+  const insight = L.moodOverspendCategoryInsight(ledger, ym, dailyRows);
+  assert.ok(insight);
+  assert.ok(insight.positiveHotRate > insight.positiveOtherRate);
+});
+
 test("habitCompletionSpendScatter needs enough points and renders svg", () => {
   const sparse = L.habitCompletionSpendScatter([{ completionPercent: 50, spendMinor: 100 }]);
   assert.equal(sparse, null);

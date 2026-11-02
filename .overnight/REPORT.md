@@ -1,12 +1,28 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 4）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 5）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 4：** 复盘页记账区 **预算超支摘要** + 演示数据对齐；习惯逐条对比 **hairline 空状态**。
+**Batch 6 Round 5：** 预算心情侧写扩展（低落更少 / 很好·平静）；复盘 **每日完成率** 折线与 inspector 空状态统一 hairline。
 
 ---
 
-## 本轮（Batch 6 · Round 4）改动
+## 本轮（Batch 6 · Round 5）改动
+
+| 项目 | 说明 |
+|------|------|
+| **预算 · 心情** | 超支分类摘要行可追加第二句：超支类支出日 **低落更少**，或 **很好/平静** 占比更高（`positiveHotRate`）。 |
+| **复盘趋势** | 当月尚无可连线完成率时，**Completion, day by day** 卡片显示 hairline 引导，不再只有空 SVG。 |
+| **Inspector** | 复盘侧栏习惯明细数据不足时用同一套 hairline 空状态。 |
+| **测试** | 单元 **347 pass**（+1）；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b6r5-review-budget-*`、`b6r5-review-trend-empty-*`。重拍：`node .overnight/capture-batch6-round5.mjs`（**5297**）。 |
+
+**去哪点：** `?local-preview=demo-showcase-v1` → **复盘** → 向下看 **Money** 区 **Budget** 行（可含心情第二句）；清空当月打卡或新月份 → 看 **每天的完成率** 下方 hairline。
+
+**已知遗留：** README 顶图仍是 Today v6；showcase 默认数据未必触发「平静更多」第二句（逻辑已支持）。
+
+---
+
+## 上一轮（Batch 6 · Round 4）改动
 
 | 项目 | 说明 |
 |------|------|

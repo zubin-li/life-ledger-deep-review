@@ -8571,9 +8571,12 @@ function renderReviewLedgerSummary() {
     if (moodBudget) {
       const hotPct = Math.round(moodBudget.hotRate * 100);
       const otherPct = Math.round(moodBudget.otherRate * 100);
-      if (moodBudget.hotRate > moodBudget.otherRate) {
+      const posHotPct = Math.round((moodBudget.positiveHotRate || 0) * 100);
+      const posOtherPct = Math.round((moodBudget.positiveOtherRate || 0) * 100);
+      let moodExtra = "";
+      if (moodBudget.hotRate > moodBudget.otherRate + 0.08) {
         const extra = L.spendInsightDeltaPercent(hotPct, Math.max(1, otherPct));
-        const moodExtra = extra
+        moodExtra = extra
           ? languageText(
             `在这些分类有支出的日子里，记录「低落」的比例约高出 ${extra}%。`,
             `On days you spent in those categories, low mood was logged about ${extra}% more often.`,
@@ -8584,8 +8587,47 @@ function renderReviewLedgerSummary() {
             `Low mood on those spend days ${hotPct}% vs ${otherPct}% on other spending days.`,
             `„Schwer“ an diesen Tagen ${hotPct} % vs ${otherPct} % an anderen Ausgabetagen.`,
           );
-        moodBudgetHtml = `<span class="review-ledger-insight-delta"> ${escapeHtml(moodExtra)}</span>`;
+      } else if (moodBudget.otherRate > moodBudget.hotRate + 0.08) {
+        const extra = L.spendInsightDeltaPercent(otherPct, Math.max(1, hotPct));
+        moodExtra = extra
+          ? languageText(
+            `在这些分类有支出的日子里，「低落」记录约少 ${extra}%。`,
+            `On those category spend days, low mood was logged about ${extra}% less often.`,
+            `An diesen Kategorie-Tagen wurde „schwer“ etwa ${extra} % seltener notiert.`,
+          )
+          : languageText(
+            `在这些分类有支出的日子里，「低落」占比 ${hotPct}%，其它支出日 ${otherPct}%。`,
+            `Low mood on those spend days ${hotPct}% vs ${otherPct}% on other spending days.`,
+            `„Schwer“ an diesen Tagen ${hotPct} % vs ${otherPct} % an anderen Ausgabetagen.`,
+          );
+      } else if (moodBudget.positiveHotRate > moodBudget.positiveOtherRate + 0.08) {
+        const extra = L.spendInsightDeltaPercent(posHotPct, Math.max(1, posOtherPct));
+        moodExtra = extra
+          ? languageText(
+            `在这些分类有支出的日子里，「很好 / 平静」约多出 ${extra}%。`,
+            `On those category spend days, calm or good mood was logged about ${extra}% more often.`,
+            `An diesen Kategorie-Tagen waren „gut / ruhig“ etwa ${extra} % häufiger.`,
+          )
+          : languageText(
+            `在这些分类有支出的日子里，「很好 / 平静」占比 ${posHotPct}%，其它支出日 ${posOtherPct}%。`,
+            `Calm or good mood on those days ${posHotPct}% vs ${posOtherPct}% on other spending days.`,
+            `„Gut / ruhig“ an diesen Tagen ${posHotPct} % vs ${posOtherPct} % an anderen Ausgabetagen.`,
+          );
+      } else if (moodBudget.positiveOtherRate > moodBudget.positiveHotRate + 0.08) {
+        const extra = L.spendInsightDeltaPercent(posOtherPct, Math.max(1, posHotPct));
+        moodExtra = extra
+          ? languageText(
+            `在其它支出日，「很好 / 平静」约多出 ${extra}%。`,
+            `On other spending days, calm or good mood was logged about ${extra}% more often.`,
+            `An anderen Ausgabetagen waren „gut / ruhig“ etwa ${extra} % häufiger.`,
+          )
+          : languageText(
+            `在这些分类有支出的日子里，「很好 / 平静」占比 ${posHotPct}%，其它支出日 ${posOtherPct}%。`,
+            `Calm or good mood on those days ${posHotPct}% vs ${posOtherPct}% on other spending days.`,
+            `„Gut / ruhig“ an diesen Tagen ${posHotPct} % vs ${posOtherPct} % an anderen Ausgabetagen.`,
+          );
       }
+      if (moodExtra) moodBudgetHtml = `<span class="review-ledger-insight-delta"> ${escapeHtml(moodExtra)}</span>`;
     }
     budgetLine = `<p class="review-ledger-budget" style="--insight-i:3"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("预算", "Budget", "Budget"))}</span><span class="review-ledger-insight-body">${escapeHtml(budgetBody)}${moodBudgetHtml}</span></p>`;
   }
@@ -8927,7 +8969,16 @@ function renderReviewInspectorTable() {
   const dates = analyticsDates();
   const current = slotTotals(dates);
   if (!current.eligible) {
-    table.innerHTML = `<p class="analytics-empty">${escapeHtml(tr("review.insufficient"))}</p>`;
+    table.innerHTML = hairlineEmptyMarkup(
+      "./assets/hairline/empty-insights.svg",
+      tr("review.insufficient"),
+      languageText(
+        "这个月还没有足够的打卡或习惯计划。坚持记录几天后再来看明细。",
+        "Not enough check-ins or planned habits this month yet. Keep logging for a few days.",
+        "Noch zu wenig Check-ins oder geplante Gewohnheiten in diesem Monat. Halte ein paar Tage durch.",
+      ),
+    );
+    hydrateHairlineMounts(table);
     const focusPanel = $("#inspectorReviewFocus");
     if (focusPanel) focusPanel.innerHTML = "";
     return;
@@ -9030,14 +9081,43 @@ function renderInsightDashboard() {
 }
 
 function renderInsightTrend(model) {
-  const chart=$('#reviewTrendChart'),points=model.points,w=640,h=200,left=42,right=20,top=20,bottom=32;
-  const x=i=>left+i/Math.max(1,points.length-1)*(w-left-right),y=p=>top+(1-p/100)*(h-top-bottom);
-  let drawing=false;
-  const path=points.map((p,i)=>{if(!p.recorded || p.percent==null){drawing=false;return '';}const command=drawing?'L':'M';drawing=true;return `${command}${x(i)},${y(p.percent)}`;}).join(' ');
-  const circles=points.map((p,i)=>p.recorded && p.percent!=null?`<circle cx="${x(i)}" cy="${y(p.percent)}" r="3"/>`:'').join('');
-  const grid=[0,50,100].map(p=>`<line x1="${left}" y1="${y(p)}" x2="${w-right}" y2="${y(p)}"/><text x="0" y="${y(p)+4}">${p}%</text>`).join('');
-  const labels=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])].map(i=>`<text x="${x(i)}" y="${h-4}" text-anchor="${i===0?'start':i===points.length-1?'end':'middle'}">${escapeHtml(formatLocalizedDate(parseDate(points[i].date),{month:'short',day:'numeric'}))}</text>`).join('');
-  chart.innerHTML=`<header class="insight-chart-heading"><div><h3>${escapeHtml(languageText('每天的完成率','Completion, day by day','Erfüllung Tag für Tag'))}</h3><p>${escapeHtml(languageText('移动鼠标查看某一天；空白是没有记录的日子。','Hover to read a day; gaps are days without an entry.','Mit der Maus einen Tag ansehen; Lücken sind Tage ohne Eintrag.'))}</p></div><output id="insightPointReadout" aria-live="polite"></output></header><svg id="insightTrendSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="${escapeHtml(tr('review.trendTitle'))}"><g class="insight-plot-grid">${grid}${labels}</g><path class="insight-plot-line" d="${path}"/><g class="insight-plot-dots">${circles}</g><line id="insightCursorLine" y1="${top}" y2="${h-bottom}"/></svg><label class="insight-chart-explore"><span>${escapeHtml(languageText('左右探索日期','Explore dates','Datum erkunden'))}</span><input id="insightDateScrubber" type="range" min="0" max="${points.length-1}" value="${points.length-1}" step="1"></label>`;
+  const chart = $("#reviewTrendChart");
+  const points = model.points;
+  const trendTitle = languageText("每天的完成率", "Completion, day by day", "Erfüllung Tag für Tag");
+  const trendHelp = languageText(
+    "移动鼠标查看某一天；空白是没有记录的日子。",
+    "Hover to read a day; gaps are days without an entry.",
+    "Mit der Maus einen Tag ansehen; Lücken sind Tage ohne Eintrag.",
+  );
+  const trendEmptyHelp = languageText(
+    "这个月还没有带完成率的日子。先打卡几天，折线会在这里连起来。",
+    "No days with completion data yet this month. Check in for a few days and the line will appear here.",
+    "Noch keine Tage mit Erfüllungsdaten in diesem Monat. Halte ein paar Tage durch, dann erscheint die Linie.",
+  );
+  const w = 640;
+  const h = 200;
+  const left = 42;
+  const right = 20;
+  const top = 20;
+  const bottom = 32;
+  const x = i => left + i / Math.max(1, points.length - 1) * (w - left - right);
+  const y = p => top + (1 - p / 100) * (h - top - bottom);
+  let drawing = false;
+  const path = points.map((p, i) => {
+    if (!p.recorded || p.percent == null) { drawing = false; return ""; }
+    const command = drawing ? "L" : "M";
+    drawing = true;
+    return `${command}${x(i)},${y(p.percent)}`;
+  }).join(" ");
+  if (!path.trim()) {
+    chart.innerHTML = `<header class="insight-chart-heading"><div><h3>${escapeHtml(trendTitle)}</h3><p>${escapeHtml(trendHelp)}</p></div></header>${hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.trendTitle"), trendEmptyHelp)}`;
+    hydrateHairlineMounts(chart);
+    return;
+  }
+  const circles = points.map((p, i) => (p.recorded && p.percent != null ? `<circle cx="${x(i)}" cy="${y(p.percent)}" r="3"/>` : "")).join("");
+  const grid = [0, 50, 100].map(p => `<line x1="${left}" y1="${y(p)}" x2="${w - right}" y2="${y(p)}"/><text x="0" y="${y(p) + 4}">${p}%</text>`).join("");
+  const labels = [...new Set([0, Math.floor((points.length - 1) / 2), points.length - 1])].map(i => `<text x="${x(i)}" y="${h - 4}" text-anchor="${i === 0 ? "start" : i === points.length - 1 ? "end" : "middle"}">${escapeHtml(formatLocalizedDate(parseDate(points[i].date), { month: "short", day: "numeric" }))}</text>`).join("");
+  chart.innerHTML = `<header class="insight-chart-heading"><div><h3>${escapeHtml(trendTitle)}</h3><p>${escapeHtml(trendHelp)}</p></div><output id="insightPointReadout" aria-live="polite"></output></header><svg id="insightTrendSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="${escapeHtml(tr("review.trendTitle"))}"><g class="insight-plot-grid">${grid}${labels}</g><path class="insight-plot-line" d="${path}"/><g class="insight-plot-dots">${circles}</g><line id="insightCursorLine" y1="${top}" y2="${h - bottom}"/></svg><label class="insight-chart-explore"><span>${escapeHtml(languageText("左右探索日期", "Explore dates", "Datum erkunden"))}</span><input id="insightDateScrubber" type="range" min="0" max="${points.length - 1}" value="${points.length - 1}" step="1"></label>`;
   const plotLine = chart.querySelector(".insight-plot-line");
   const dotGroup = chart.querySelector(".insight-plot-dots");
   const motionOff = document.documentElement.classList.contains("motion-reduced") || matchMedia("(prefers-reduced-motion: reduce)").matches;

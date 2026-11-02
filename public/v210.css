@@ -3013,6 +3013,14 @@ html.motion-reduced .review-ledger-insights.is-retargeting :is(
   padding: 1.25rem 1rem;
 }
 
+#reviewTrendChart .hairline-empty,
+#inspectorReviewTable .hairline-empty {
+  margin: 0.75rem 0 0.25rem;
+  padding: 1.35rem 1.1rem;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--desk-canvas) 72%, transparent);
+}
+
 @media (min-width: 960px) {
   .review-ledger-insights:has(.review-ledger-budget) {
     grid-template-columns: repeat(2, minmax(0, 1fr));

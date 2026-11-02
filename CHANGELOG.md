@@ -6,6 +6,8 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Review Money insights:** budget line also notes fewer low-mood days or more calm/good mood on over-budget category spend days (`positiveHotRate` / `positiveOtherRate` in `moodOverspendCategoryInsight`).
+- **Review habit trend:** when no completion line exists yet, the day-by-day chart shows hairline empty guidance; inspector habit table uses the same empty pattern.
 - **Review Money insights:** over-budget categories summary with optional low-mood correlation on spend days in those categories; habit-by-habit table uses hairline empty art when data is thin (`budgetOverspendList`, `moodOverspendCategoryInsight`).
 - **Review Money insights:** mood/habit/focus comparison lines include a percent delta when one side spends more; top expense category shown under monthly stats (`spendInsightDeltaPercent`, `v210.css`).
 - **Timeline & shared empty art:** `hairlineEmptyMarkup` uses `ll-empty-enter` for feed/journal/habit empty placeholders.
