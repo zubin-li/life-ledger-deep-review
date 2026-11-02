@@ -64,6 +64,7 @@
     week: d => click(d < 0 ? "#previousWorkspaceWeek" : "#nextWorkspaceWeek"),
     timeline: d => click(d < 0 ? "#timelinePreviousMonth" : "#timelineNextMonth"),
     review: d => click(d < 0 ? "#prevMonth" : "#nextMonth"),
+    ledger: d => click(d < 0 ? "[data-ledger-prev]" : "[data-ledger-next]"),
   };
   const closeDialogs = () => document.querySelectorAll("dialog[open]").forEach(d => d.close());
   function handle(action) {

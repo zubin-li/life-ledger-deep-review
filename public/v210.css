@@ -3630,3 +3630,15 @@ html.motion-reduced .backup-tabs.is-tab-switch button.active {
     animation: none !important;
   }
 }
+
+/* Batch 6 R1 — foreign-currency summary hint (Antigravity review) */
+.ledger-fx-hint {
+  margin: 0.35rem 0 0;
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--text-muted, #6b7280);
+  line-height: 1.35;
+}
+
+html[data-theme="dark"] .ledger-fx-hint {
+  color: var(--text-muted, #9ca3af);
+}

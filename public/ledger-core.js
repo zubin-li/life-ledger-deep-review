@@ -83,17 +83,6 @@
         });
       });
     }
-    if (code === "zh") {
-      out.forEach(c => {
-        if (c.nameZh && c.kind === "expense") c.name = c.nameZh;
-        if (c.nameZh && c.kind === "income") c.name = c.nameZh;
-      });
-    }
-    if (code === "de") {
-      out.forEach(c => {
-        if (c.nameDe) c.name = c.nameDe;
-      });
-    }
     return out;
   }
 
@@ -311,14 +300,22 @@
 
   function monthSummary(ledger, ym) {
     const base = normalize(ledger);
-    const rows = transactionsInMonth(base, ym).filter(tx => txInReportingCurrency(base, tx));
+    const inMonth = transactionsInMonth(base, ym);
+    const rows = inMonth.filter(tx => txInReportingCurrency(base, tx));
+    const otherCurrencyCount = inMonth.filter(tx => !txInReportingCurrency(base, tx)).length;
     let income = 0;
     let expense = 0;
     rows.forEach(tx => {
       if (tx.amountMinor >= 0) income += tx.amountMinor;
       else expense += tx.amountMinor;
     });
-    return { incomeMinor: income, expenseMinor: expense, netMinor: income + expense, count: rows.length };
+    return {
+      incomeMinor: income,
+      expenseMinor: expense,
+      netMinor: income + expense,
+      count: rows.length,
+      otherCurrencyCount,
+    };
   }
 
   function dailySpendHeatmap(ledger, ym) {
@@ -858,13 +855,26 @@
     return ISO_DATE.test(iso) ? iso : "";
   }
 
+  function splitGermanCsvLine(line) {
+    const parts = String(line || "").match(/(?:[^;"]+|"[^"]*")+/g);
+    if (!parts) return [];
+    return parts.map(cell => cell.replace(/^"|"$/g, "").replace(/""/g, '"').trim());
+  }
+
   function parseGermanAmount(value) {
     let s = String(value || "").trim().replace(/["']/g, "").replace(/\s/g, "");
     if (!s) return null;
+    let sign = 1;
+    if (s.endsWith("-")) {
+      sign = -1;
+      s = s.slice(0, -1);
+    } else if (s.endsWith("+")) {
+      s = s.slice(0, -1);
+    }
     s = s.replace(/\./g, "").replace(",", ".");
     const n = Number(s);
     if (!Number.isFinite(n)) return null;
-    return Math.round(n * 100);
+    return sign * Math.round(n * 100);
   }
 
   function importGermanBankCsv(text, ledger, options = {}) {
@@ -877,7 +887,7 @@
     let skipped = 0;
     const start = lines[0].toLowerCase().includes("datum") ? 1 : 0;
     for (let i = start; i < lines.length; i++) {
-      const cols = lines[i].split(";");
+      const cols = splitGermanCsvLine(lines[i]);
       if (cols.length < 3) { skipped++; continue; }
       const date = parseGermanDate(cols[0].replace(/"/g, ""));
       let amountMinor = null;

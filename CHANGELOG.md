@@ -61,6 +61,7 @@ All notable changes are documented here.
 
 ### Fixed
 
+- **Money (Batch 6 R1 / Antigravity review):** seeded categories keep English `name` for language switching; German CSV splits quoted fields and parses trailing-minus amounts; month summary shows a hint when non-default-currency rows are excluded; edit popover dismisses on backdrop/Escape (all ledger popovers Escape); mobile swipe-delete ignores vertical scroll; Mac menu previous/next month works on Money.
 - **Page motion:** `is-entering` stagger selectors now attach to `#todayView`, `#timelineView`, and `#longrangeView` themselves (was a no-op descendant selector); long-range enter animation actually plays.
 - **Review motion:** same fix for `#reviewView` — metrics cards and trend chart stagger on sidebar entry (pages-858 rule never matched).
 - **Money (mobile ≤480px height):** amount keypad pins above the tab bar while the quick field is focused (opaque dock, no scroll chase).

@@ -8,6 +8,23 @@
   let categoryChartMode = "donut";
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
   let lastHighlightTxId = "";
+  let popoverEscapeHandler = null;
+
+  function detachPopoverEscape() {
+    if (!popoverEscapeHandler) return;
+    window.removeEventListener("keydown", popoverEscapeHandler);
+    popoverEscapeHandler = null;
+  }
+
+  function attachPopoverEscape(onClose) {
+    detachPopoverEscape();
+    popoverEscapeHandler = event => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      onClose();
+    };
+    window.addEventListener("keydown", popoverEscapeHandler);
+  }
 
   const $ = (s, r = document) => r.querySelector(s);
   const t = (zh, en, de) => ctx.text(zh, en, de);
@@ -268,6 +285,7 @@
       </form>`;
     document.body.appendChild(pop);
     const form = pop.querySelector("form");
+    attachPopoverEscape(closeLedgerPopovers);
     pop.addEventListener("click", event => {
       if (event.target === pop) closeLedgerPopovers();
     });
@@ -355,6 +373,7 @@
   }
 
   function closeLedgerPopovers() {
+    detachPopoverEscape();
     document.querySelector(".ledger-edit-popover")?.remove();
     document.querySelector(".ledger-recurring-popover")?.remove();
     document.querySelector(".ledger-budget-popover")?.remove();
@@ -455,6 +474,7 @@
       </form>`;
     document.body.appendChild(pop);
     const form = pop.querySelector("form");
+    attachPopoverEscape(closeLedgerPopovers);
     const syncCadenceFields = () => {
       const mode = form.querySelector('[name="cadence"]')?.value === "weekly" ? "weekly" : "monthly";
       form.querySelectorAll("[data-cadence-field]").forEach(el => {
@@ -520,6 +540,10 @@
     document.body.appendChild(pop);
     const form = pop.querySelector("form");
     const amountInput = form.querySelector('[name="amount"]');
+    attachPopoverEscape(closeEditPopover);
+    pop.addEventListener("click", event => {
+      if (event.target === pop) closeEditPopover();
+    });
     pop.querySelector("[data-edit-cancel]")?.addEventListener("click", closeEditPopover);
     amountInput?.addEventListener("input", () => amountInput.classList.remove("is-error"));
     form.addEventListener("submit", event => {
@@ -808,12 +832,15 @@
   function bindSwipeDelete(host) {
     host.querySelectorAll(".ledger-tx").forEach(row => {
       let startX = 0;
+      let startY = 0;
       row.addEventListener("touchstart", event => {
         startX = event.touches[0]?.clientX || 0;
+        startY = event.touches[0]?.clientY || 0;
       }, { passive: true });
       row.addEventListener("touchend", event => {
         const endX = event.changedTouches[0]?.clientX || 0;
-        if (startX - endX > 72) row.querySelector(".ledger-tx-del")?.click();
+        const endY = event.changedTouches[0]?.clientY || 0;
+        if (Math.abs(startY - endY) < 35 && startX - endX > 72) row.querySelector(".ledger-tx-del")?.click();
       }, { passive: true });
     });
   }
@@ -879,6 +906,14 @@
     const summary = core().monthSummary(ledger, ym);
     const breakdown = core().categoryBreakdown(ledger, ym, "expense");
     const cur = ledger.settings.defaultCurrency;
+    const secCur = ledger.settings.secondaryCurrency || "CNY";
+    const fxHint = summary.otherCurrencyCount > 0
+      ? `<p class="ledger-fx-hint">${t(
+        `另有 ${summary.otherCurrencyCount} 笔 ${secCur} 未计入上方汇总`,
+        `${summary.otherCurrencyCount} ${secCur} ${summary.otherCurrencyCount === 1 ? "entry" : "entries"} not in totals above`,
+        `${summary.otherCurrencyCount} ${secCur}-Buchungen nicht in der Summe oben`,
+      )}</p>`
+      : "";
 
     host.innerHTML = `
       <header class="ledger-header">
@@ -896,6 +931,7 @@
         <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, ctx.locale?.()))}</strong></article>
         <article><small>${t("结余", "Net", "Saldo")}</small><strong data-ledger-sum="net">${ctx.escape(core().formatMoney(summary.netMinor, cur, ctx.locale?.()))}</strong></article>
       </div>
+      ${fxHint}
       <form class="ledger-quick" id="ledgerQuickForm">
         <div class="ledger-quick-label">
           <span>${t("快速录入", "Quick entry", "Schnellerfassung")}</span>

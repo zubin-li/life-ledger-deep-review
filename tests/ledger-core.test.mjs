@@ -597,3 +597,40 @@ test("scopeLedgerForBackup filters transactions to export range", () => {
   assert.equal(scoped.transactions.length, 1);
   assert.equal(scoped.transactions[0].note, "new");
 });
+
+test("localizedCategoryName keeps English after zh seed", () => {
+  const ledger = L.normalize(null, { lang: "zh" });
+  const cat = ledger.categories.find(c => c.kind === "expense" && c.nameZh === "日用");
+  assert.ok(cat);
+  assert.equal(cat.name, "Groceries");
+  assert.equal(L.localizedCategoryName(cat, "zh"), "日用");
+  assert.equal(L.localizedCategoryName(cat, "en"), "Groceries");
+});
+
+test("importGermanBankCsv respects semicolons inside quoted purpose", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+01.11.2026;"Miete; Nebenkosten";850,00-`;
+  const { imported, skipped, ledger } = L.importGermanBankCsv(csv, null, { lang: "de" });
+  assert.equal(skipped, 0);
+  assert.equal(imported, 1);
+  assert.equal(ledger.transactions[0].amountMinor, -85000);
+  assert.match(ledger.transactions[0].note, /Nebenkosten/);
+});
+
+test("importGermanBankCsv parses trailing-minus amounts in short rows", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+02.11.2026;REWE;12,50-`;
+  const { imported, ledger } = L.importGermanBankCsv(csv, null, { lang: "de" });
+  assert.equal(imported, 1);
+  assert.equal(ledger.transactions[0].amountMinor, -1250);
+});
+
+test("monthSummary reports otherCurrencyCount", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const exp = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -100, currency: "CNY", date: "2026-11-02", note: "cny" }));
+  const summary = L.monthSummary(ledger, "2026-11");
+  assert.equal(summary.otherCurrencyCount, 1);
+  assert.equal(summary.expenseMinor, 0);
+});
