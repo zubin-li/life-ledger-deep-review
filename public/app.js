@@ -8374,6 +8374,18 @@ function renderInsightTrend(model) {
   const grid=[0,50,100].map(p=>`<line x1="${left}" y1="${y(p)}" x2="${w-right}" y2="${y(p)}"/><text x="0" y="${y(p)+4}">${p}%</text>`).join('');
   const labels=[...new Set([0,Math.floor((points.length-1)/2),points.length-1])].map(i=>`<text x="${x(i)}" y="${h-4}" text-anchor="${i===0?'start':i===points.length-1?'end':'middle'}">${escapeHtml(formatLocalizedDate(parseDate(points[i].date),{month:'short',day:'numeric'}))}</text>`).join('');
   chart.innerHTML=`<header class="insight-chart-heading"><div><h3>${escapeHtml(languageText('每天的完成率','Completion, day by day','Erfüllung Tag für Tag'))}</h3><p>${escapeHtml(languageText('移动鼠标查看某一天；空白是没有记录的日子。','Hover to read a day; gaps are days without an entry.','Mit der Maus einen Tag ansehen; Lücken sind Tage ohne Eintrag.'))}</p></div><output id="insightPointReadout" aria-live="polite"></output></header><svg id="insightTrendSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="${escapeHtml(tr('review.trendTitle'))}"><g class="insight-plot-grid">${grid}${labels}</g><path class="insight-plot-line" d="${path}"/><g class="insight-plot-dots">${circles}</g><line id="insightCursorLine" y1="${top}" y2="${h-bottom}"/></svg><label class="insight-chart-explore"><span>${escapeHtml(languageText('左右探索日期','Explore dates','Datum erkunden'))}</span><input id="insightDateScrubber" type="range" min="0" max="${points.length-1}" value="${points.length-1}" step="1"></label>`;
+  const plotLine = chart.querySelector(".insight-plot-line");
+  const dotGroup = chart.querySelector(".insight-plot-dots");
+  const motionOff = document.documentElement.classList.contains("motion-reduced") || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (plotLine && path && !motionOff) {
+    const len = plotLine.getTotalLength();
+    plotLine.style.strokeDasharray = `${len}`;
+    plotLine.style.strokeDashoffset = `${len}`;
+    plotLine.classList.add("insight-plot-line--draw");
+    dotGroup?.classList.add("insight-plot-dots--draw");
+    dotGroup?.querySelectorAll("circle").forEach((node, i) => { node.style.setProperty("--dot-i", String(i)); });
+    requestAnimationFrame(() => { plotLine.style.strokeDashoffset = "0"; });
+  }
   const input=$('#insightDateScrubber'),readout=$('#insightPointReadout'),line=$('#insightCursorLine');
   const update=i=>{const point=points[i];input.value=i;const label=formatLocalizedDate(parseDate(point.date),{month:'short',day:'numeric'});const value=point.eligible===0?languageText('无日常计划','No daily plan','Kein Tagesplan'):!point.recorded?languageText('未记录','Not recorded','Nicht erfasst'):`${point.percent}% · ${point.completed}/${point.eligible}`;readout.textContent=`${label} · ${value}`;input.setAttribute('aria-valuetext',readout.textContent);line.setAttribute('x1',x(i));line.setAttribute('x2',x(i));};
   input.addEventListener('input',()=>update(Number(input.value)));

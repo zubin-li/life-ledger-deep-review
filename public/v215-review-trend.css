@@ -1,0 +1,76 @@
+/* Round 12 — review trend line draw + insight block stagger */
+
+#reviewInsights .review-insight-block {
+  animation: rvInsightIn 0.48s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+#reviewInsights .review-insight-block:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+#reviewInsights .review-insight-block:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+#reviewInsights .review-insight-block:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+@keyframes rvInsightIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insight-plot-line.insight-plot-line--draw {
+  transition: stroke-dashoffset 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.insight-plot-dots.insight-plot-dots--draw circle {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rvTrendDotIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(0.55s + var(--dot-i, 0) * 28ms);
+}
+
+@keyframes rvTrendDotIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+html.motion-reduced #reviewInsights .review-insight-block,
+html.motion-reduced .insight-plot-dots.insight-plot-dots--draw circle {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+html.motion-reduced .insight-plot-line.insight-plot-line--draw {
+  transition: none;
+  stroke-dashoffset: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #reviewInsights .review-insight-block,
+  .insight-plot-dots.insight-plot-dots--draw circle {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .insight-plot-line.insight-plot-line--draw {
+    transition: none;
+    stroke-dashoffset: 0 !important;
+  }
+}

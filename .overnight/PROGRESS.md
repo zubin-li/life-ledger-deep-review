@@ -1,24 +1,24 @@
 # Overnight progress
 
-## Round 11 — done
+## Round 12 — done
 
-- **记账 onboarding 自动收起：** 首笔快速录入、CSV 导入、固定项「记一笔」成功后调用 `dismissOnboarding()`（localStorage + 280ms fade）；「知道了」共用同一逻辑。
-- **Goal 2 · 空状态：** 新样式 `v214-goals-journal.css` — 周目标 hairline 入场、空周时 inline 添加框一次 pulse、日记 timeline `memory-empty` 入场、长期目标 hairline（`pages-art.js`）。
-- **文档：** README EN/ZH/DE 记账 bullet 补 onboarding/Today 示例说明；CHANGELOG Unreleased 一行。
-- **PWA：** `v214-goals-journal.css` 进 `index.html` + `sw.js` APP_SHELL。
-- **截图：** `week-goals-empty-zh-light-1440.png`；capture 支持 `emptyWeekGoals`。
-- **测试：** **268 pass, 0 fail**（无新增用例）。
+- **Today 支出 hint：** `ledger.transactions.length > 0` 时隐藏「试试：12,50 咖啡」类语法提示（与记账页 onboarding 一致：首笔或 CSV 导入后即不再打扰）；仍保留「今天还没有支出」文案当今日为零。
+- **Goal 2 · 复盘动效：** `v215-review-trend.css` — 习惯完成率折线 **stroke 绘制** + 数据点 stagger；`#reviewInsights` 三块指标 **入场 stagger**；`renderInsightTrend` 内 dashoffset 动画，尊重 `motion-reduced` / `prefers-reduced-motion`。
+- **测试：** 新增 `tests/today-spending-hint.test.mjs`（源码契约）。
+- **文档：** README EN/ZH/DE 记账 bullet 补「导入后 Today 示例亦隐藏」；CHANGELOG Unreleased 一行。
+- **PWA：** `v215-review-trend.css` → `index.html` + `sw.js` APP_SHELL。
+- **截图：** Mac shell 空周目标、日记时间轴空状态（Daily timeline 模式）、复盘页（review-trend-draw）；修正 capture 脚本 `emptyJournalMonth` 需点 `[data-journal-mode="timeline"]`。
 
 ## Half-done
 
 - fakecloud Pages dev smoke — still no `functions/` in overnight clone.
 - 极矮视口 dock vs 键盘仍可能轻微重叠（已加 padding，未在真机验证）。
 
-## Next round priorities
+## Next round priorities (round 13–14)
 
-1. Goal 2：复盘/习惯/日记更多 insights 或 chart 动效（若时间允许）。
-2. 记账：首笔成功后 Today hint 是否也应随状态隐藏（目前仅 ledger onboarding 自动 dismiss）。
-3. 可选：Mac shell 截图补 week empty / journal empty。
+1. 最后一轮：全量 capture 回归、REPORT 截图表对齐、任何 MED 视觉毛刺。
+2. 可选：Today 卡片在「有历史无今日支出」时是否改 copy（当前语义正确，仅 hint 已藏）。
+3. fakecloud 仍低优先级（缺 functions）。
 
 ## Known bugs / gaps
 
@@ -28,7 +28,7 @@
 ## npm test
 
 ```
-268 pass, 0 fail (round 11)
+269 pass, 0 fail (round 12)
 ```
 
 ## Gate result
@@ -70,3 +70,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 11
 ℹ tests 268 ℹ pass 268 ℹ fail 0 
+
+## Driver gate after round 12
+ℹ tests 269 ℹ pass 269 ℹ fail 0 

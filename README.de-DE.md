@@ -106,7 +106,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 - Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
 - Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen
 - Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen
-- **Finanzen:** Schnellerfassung (z. B. `12,50 Kaffee`), deutscher CSV-Import/-Export, Budgetfortschritt, Today-Karte **Ausgaben heute**, Monatsausgaben im Rückblick — in `state.ledger`, mit Backup und Cloud-Sync; beim ersten Besuch zeigen die Finanzseite und die Today-Karte Beispiele im Schnellerfassungs-Stil, die nach der ersten Buchung verschwinden
+- **Finanzen:** Schnellerfassung (z. B. `12,50 Kaffee`), deutscher CSV-Import/-Export, Budgetfortschritt, Today-Karte **Ausgaben heute**, Monatsausgaben im Rückblick — in `state.ledger`, mit Backup und Cloud-Sync; beim ersten Besuch zeigen die Finanzseite und die Today-Karte Beispiele im Schnellerfassungs-Stil, die nach der ersten Buchung oder einem CSV-Import verschwinden
 - Validierte JSON-Sicherung und geführte Wiederherstellung, einschließlich früherer Exportformate
 - Benutzeroberfläche auf Englisch, vereinfachtem Chinesisch und Deutsch
 - Helles, dunkles und systemabhängiges Erscheinungsbild

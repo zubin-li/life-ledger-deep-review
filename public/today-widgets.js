@@ -555,9 +555,10 @@
       c.dataset.spendToday = todayText;
     }
     if (note) note.textContent = todayMinor ? t("spendingToday") : t("spendingEmpty");
+    const ledgerHasEntries = Boolean(ledger?.transactions?.length);
     if (hint) {
       hint.textContent = t("spendingHint");
-      hint.hidden = Boolean(todayMinor);
+      hint.hidden = Boolean(todayMinor) || ledgerHasEntries;
     }
     if (monthSide) monthSide.textContent = ledger
       ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
