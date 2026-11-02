@@ -1,0 +1,21 @@
+/* Batch 2 round 7 — scroll-spy active state for review jump chips */
+
+@media (max-width: 959px) {
+  .review-scatter-jump-chip.is-active {
+    border-color: color-mix(in srgb, var(--accent, #007aff) 55%, var(--hairline));
+    background: color-mix(in srgb, var(--accent-soft, rgba(0, 122, 255, 0.12)) 70%, var(--surface-elevated, var(--bg)));
+    color: var(--text);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--accent, #007aff) 25%, transparent);
+  }
+
+  html[data-theme="dark"] .review-scatter-jump-chip.is-active {
+    background: color-mix(in srgb, var(--accent, #0a84ff) 22%, var(--surface-elevated, var(--bg)));
+    border-color: color-mix(in srgb, var(--accent, #0a84ff) 45%, var(--hairline));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-scatter-jump-chip.is-active {
+    box-shadow: none;
+  }
+}

@@ -1,22 +1,22 @@
 # Overnight progress
 
-## Batch 2 · Round 6 — done
+## Batch 2 · Round 7 — done
 
 - **REVIEW.md：** 仍为空（`status: failed`），无 HIGH/MED。
-- **复盘移动跳转：** 统计行下方增加 `review-scatter-jump` 药丸按钮（心情 / 习惯 / 专注 / 洞察，三语），`scrollIntoView` + `scroll-margin-top`；宽屏 ≥960px 隐藏（`v221-review-scatter-jump.css`）。
-- **复盘金额动画：** 切换复盘月份时，支出/收入/结余复用 `LifeLedgerInteraction.rollText`（与 Today 支出卡一致）。
-- **锚点：** `#review-scatter-mood|habit|focus`、`#review-ledger-insights`（`tabindex="-1"` 便于 focus）。
-- **截图：** `review-scatter-jump-zh-light-390.png`、`review-scatter-jump-webkit-zh-light-390.png`、`review-scatter-fullpage-de-dark-390.png`（整页）、`review-scatter-jump-light-1440.png`（无跳转条）；`capture-round6.mjs`，端口 5293。
-- **npm test：** **277/277** 通过（契约扩展 jump nav + v221）。
+- **复盘跳转 scroll-spy：** `bindReviewScatterJumpSpy`（视口锚线 + `IntersectionObserver` + `scroll` 同步）；点击 chip 时 650ms hold，避免滚动监听立刻盖掉选中态；`aria-current="location"` + `is-active`（`v222-review-jump-spy.css`）。
+- **测试：** `tests/review-scatter.browser.test.mjs`（Playwright：spy、点击 hold、复盘月份 roll）；契约扩展 `review-scatter-grid.test.mjs`。
+- **截图：** `review-jump-spy-zh-light-390.png`、`review-jump-spy-de-dark-390.png`、`review-jump-spy-webkit-zh-light-390.png`、`review-jump-spy-light-1440.png`（`capture-round7.mjs`，5295）。
+- **npm test：** **278/278** 通过。
 
 ## Half-done
 
 - （无）
 
-## Next (round 7+)
+## Next (round 8+)
 
-- fakecloud 仍缺 repo-root `functions/`（overnight clone 限制）。
-- 可选：点击跳转 chip 后的 active 态；复盘月份 roll 的 Playwright 断言。
+- 记账页「设置分类预算」UI（core 已有 `budgets` + demo，空态文案仍写「后续版本」）。
+- fakecloud 仍缺 repo-root `functions/`。
+- 可选：Mac shell 注入截图、复盘 roll 数值断言更严。
 
 ## Known bugs / gaps
 
@@ -26,7 +26,7 @@
 ## npm test
 
 ```
-277 pass, 0 fail (batch 2 round 6)
+278 pass, 0 fail (batch 2 round 7)
 ```
 
 ## Gate result
@@ -57,6 +57,10 @@ _pending (driver appends after commit)_
 
 移动 insight kicker + v220 冲突预览字号 — gate 277 pass.
 
+## Batch 2 Round 6 summary
+
+移动跳转药丸 + 月份金额 roll — gate 277 pass.
+
 ## Driver gate after round 1
 ℹ tests 272 ℹ pass 272 ℹ fail 0 
 
@@ -74,3 +78,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 6
 ℹ tests 277 ℹ pass 277 ℹ fail 0 
+
+## Driver gate after round 7
+ℹ tests 278 ℹ pass 278 ℹ fail 0 

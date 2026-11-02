@@ -18,4 +18,8 @@ test("review money panel uses scatter grid and insight stack markup", () => {
   const jump = readFileSync(new URL("../public/v221-review-scatter-jump.css", import.meta.url), "utf8");
   assert.match(jump, /review-scatter-jump-chip/);
   assert.match(jump, /scroll-margin-top/);
+  const spy = readFileSync(new URL("../public/v222-review-jump-spy.css", import.meta.url), "utf8");
+  assert.match(spy, /review-scatter-jump-chip\.is-active/);
+  assert.match(app, /bindReviewScatterJumpSpy/);
+  assert.match(app, /IntersectionObserver/);
 });

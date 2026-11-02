@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 2 · Round 6）
+# Life Ledger 夜间构建报告（Batch 2 · Round 7）
 
-在 Round 5（移动 insight 小标题 + 冲突预览字号）之上，本 round 让 **移动复盘** 在长篇散点之间可以一键跳转，并在 **切换月份** 时让支出摘要数字有过渡感。
+在 Round 6（移动跳转药丸 + 复盘月份金额 roll）之上，本 round 让 **跳转 chip 会随滚动高亮**，并在 **点击跳转** 时短暂锁定选中态，避免被 scroll 监听抢掉。
 
 ---
 
@@ -8,24 +8,24 @@
 
 | 项目 | 说明 |
 |------|------|
-| **跳转药丸** | 本月支出摘要统计下方：`心情 / 习惯 / 专注 / 洞察`（en/de 同步），仅 ≤959px 显示；点击平滑滚到对应散点或洞察卡片。 |
-| **锚点与可聚焦** | 各散点 wrap 与洞察栈带 `id` + `scroll-margin-top`，避免被顶栏挡住。 |
-| **金额 roll** | 复盘月份变化时，支出/收入/结余调用已有 `rollText`，与 Today「今日支出」一致；尊重 `motion-reduced`。 |
-| **样式** | `public/v221-review-scatter-jump.css`；`index.html` / `sw.js` 已挂预缓存。 |
-| **测试** | 277 项全绿（`review-scatter-grid.test.mjs` 断言 jump markup + v221）。 |
-| **CHANGELOG** | Unreleased 已记 v221。 |
+| **Scroll-spy** | 复盘 Money 面板：`IntersectionObserver` + 窗口 `scroll`，按视口约 36% 锚线判断当前散点/洞察区块，对应 chip 加 `is-active`。 |
+| **点击 hold** | 点 chip 后 ~650ms 内优先保持该 chip 高亮（配合 `scrollIntoView`）。 |
+| **样式** | `public/v222-review-jump-spy.css`（浅色/深色 active 药丸）；已挂 `index.html` / `sw.js`。 |
+| **浏览器测试** | `tests/review-scatter.browser.test.mjs`：spy、点击、换月 `roll-host`（本地 5294 + Playwright Chromium）。 |
+| **契约** | `review-scatter-grid.test.mjs` 断言 spy 函数与 v222。 |
+| **CHANGELOG** | Unreleased 已记 v222 scroll-spy。 |
 
-REQUIREMENTS：延续「mood vs habits vs spending 相关洞察」——移动端三张散点 + 三段文字很长，跳转条减少盲目滚动（对应 owner 对复盘相关性的持续打磨）。
+REQUIREMENTS：延续 owner 对 **心情 / 习惯 / 专注 vs 支出** 相关洞察的可读性——长页滚动时 chip 高亮告诉用户「当前在看哪张图」（对应 requirements 表里复盘相关性打磨）。
 
 ---
 
 ## 明早怎么验（约 2 分钟）
 
-1. **移动跳转：** `cd public && python3 -m http.server 5291 --bind 127.0.0.1` → 390 宽、浅色、中文、演示工作区 → **复盘** → 滚到 **本月支出摘要**，应见四个药丸；点 **习惯** 应滚到习惯散点。对照 `.overnight/shots/review-scatter-jump-zh-light-390.png`。
-2. **宽屏无药丸：** 1440 宽对照 `review-scatter-jump-light-1440.png`（只有三列散点，无跳转条）。
-3. **整页回归（德/深色）：** `review-scatter-fullpage-de-dark-390.png`。
-4. **月份 roll：** 复盘页用 ← → 换月，观察支出/收入/结余是否短暂 roll（非 reduced-motion 时）。
-5. **回归：** `npm test` → **277 pass, 0 fail**。
+1. **高亮随滚动：** `cd public && python3 -m http.server 5291 --bind 127.0.0.1` → 390 宽、演示工作区、**复盘** → 慢慢滚过三张散点，观察药丸高亮是否切换。对照 `.overnight/shots/review-jump-spy-zh-light-390.png`（习惯 chip 高亮）。
+2. **点击锁定：** 点 **专注**，滚动画过程中 chip 应保持「专注」高亮约半秒。
+3. **德/深色：** `review-jump-spy-de-dark-390.png`（Fokus 高亮）。
+4. **宽屏：** `review-jump-spy-light-1440.png`（无药丸条，回归）。
+5. **自动化：** `npm test` → **278 pass, 0 fail**。
 
 ---
 
@@ -33,27 +33,28 @@ REQUIREMENTS：延续「mood vs habits vs spending 相关洞察」——移动�
 
 | 场景 | 文件 |
 |------|------|
-| 跳转条 · 移动中文浅色（新） | `review-scatter-jump-zh-light-390.png`、`review-scatter-jump-webkit-zh-light-390.png` |
-| 复盘 Money 整页 · 德/深色 390（新） | `review-scatter-fullpage-de-dark-390.png` |
-| 宽屏无跳转条（新） | `review-scatter-jump-light-1440.png` |
-| Round 5 | `review-scatter-grid-zh-light-390.png`、冲突预览 390 等 |
+| 中文浅色 390 · 习惯 chip 高亮（新） | `review-jump-spy-zh-light-390.png` |
+| 德文深色 390 · Fokus 高亮（新） | `review-jump-spy-de-dark-390.png` |
+| WebKit 390（新） | `review-jump-spy-webkit-zh-light-390.png` |
+| 英文宽屏 1440（新） | `review-jump-spy-light-1440.png` |
+| Round 6 | `review-scatter-jump-*.png` 等 |
 
 ---
 
 ## 试过 / 未做
 
-- **Desktop 不显示跳转条：** 宽屏三列已同屏，药丸会占垂直空间且无必要 — 用 CSS `display:none` ≥960px。
-- **未做** fakecloud 真 CAS；未做 chip 选中态（避免与 focus-visible 打架）。
+- **锚线算法：** 先用「最大 intersectionRatio」→ 在 390 高三张图叠放时易误判；改为 **锚线命中** + 最近中心 fallback。
+- **未做：** 记账预算设置 UI（数据模型与 demo 预算已有，空态仍提示「后续版本」）；fakecloud CAS。
 
 ---
 
 ## 已知问题
 
 - fakecloud 不能代表真 Cloudflare 409。
-- 390 首屏仍可能只看到摘要 + 药丸 + 第一张散点顶部（与真机一致）；用药丸或继续滚动看全三张图。
+- scroll-spy 在极短视口或多段 insight 同时穿过锚线时，可能短暂停在相邻 chip（可接受，点击 hold 可纠正）。
 
 ---
 
 ## npm test
 
-**277 pass, 0 fail**（Batch 2 Round 6，实测）。
+**278 pass, 0 fail**（Batch 2 Round 7，实测）。

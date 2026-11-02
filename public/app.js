@@ -8000,6 +8000,73 @@ function renderReviewInsights() {
   container.dataset.rateValue = nextRate;
 }
 
+function disconnectReviewScatterJumpSpy(host) {
+  host?._reviewJumpSpy?.disconnect?.();
+  if (host?._reviewJumpSpyScroll) window.removeEventListener("scroll", host._reviewJumpSpyScroll);
+  if (host) {
+    host._reviewJumpSpy = null;
+    host._reviewJumpSpyScroll = null;
+  }
+}
+
+function bindReviewScatterJumpSpy(panel) {
+  const nav = panel?.querySelector(".review-scatter-jump");
+  if (!nav) return;
+  disconnectReviewScatterJumpSpy(panel);
+  const chips = [...nav.querySelectorAll("[data-review-scatter-jump]")];
+  const sections = chips
+    .map(btn => document.getElementById(btn.getAttribute("data-review-scatter-jump")))
+    .filter(Boolean);
+  if (sections.length < 2) return;
+  const setActive = id => {
+    chips.forEach(btn => {
+      const on = btn.getAttribute("data-review-scatter-jump") === id;
+      btn.classList.toggle("is-active", on);
+      if (on) btn.setAttribute("aria-current", "location");
+      else btn.removeAttribute("aria-current");
+    });
+  };
+  const pickSectionByViewport = () => {
+    const vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    const anchor = vh * 0.36;
+    let lineHit = "";
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= anchor && rect.bottom >= anchor) lineHit = sec.id;
+    });
+    if (lineHit) return lineHit;
+    let bestId = sections[0].id;
+    let bestScore = Infinity;
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      const centerDist = Math.abs((rect.top + rect.bottom) / 2 - anchor);
+      if (centerDist < bestScore) {
+        bestScore = centerDist;
+        bestId = sec.id;
+      }
+    });
+    return bestId;
+  };
+  const syncActiveFromScroll = () => {
+    const holdUntil = panel._reviewJumpHoldUntil || 0;
+    if (panel._reviewJumpHoldId && performance.now() < holdUntil) {
+      setActive(panel._reviewJumpHoldId);
+      return;
+    }
+    panel._reviewJumpHoldId = "";
+    setActive(pickSectionByViewport());
+  };
+  const observer = new IntersectionObserver(
+    () => syncActiveFromScroll(),
+    { root: null, rootMargin: "-12% 0px -48% 0px", threshold: [0, 0.05, 0.15, 0.35, 0.55, 0.8] },
+  );
+  sections.forEach(sec => observer.observe(sec));
+  panel._reviewJumpSpy = observer;
+  panel._reviewJumpSpyScroll = () => syncActiveFromScroll();
+  window.addEventListener("scroll", panel._reviewJumpSpyScroll, { passive: true });
+  syncActiveFromScroll();
+}
+
 function renderReviewLedgerSummary() {
   const host = $("#reviewLedgerSummary");
   const L = globalThis.LifeLedgerLedger;
@@ -8007,6 +8074,7 @@ function renderReviewLedgerSummary() {
   const ym = monthKey(cursor);
   const ledger = state.ledger ? L.normalize(state.ledger, { lang: currentLang }) : null;
   if (!ledger?.transactions?.length) {
+    disconnectReviewScatterJumpSpy(host);
     host.hidden = true;
     host.innerHTML = "";
     return;
@@ -8147,11 +8215,21 @@ function renderReviewLedgerSummary() {
   const motionReduced = document.documentElement.classList.contains("motion-reduced");
   host.querySelectorAll("[data-review-scatter-jump]").forEach(btn => {
     btn.addEventListener("click", () => {
-      const target = document.getElementById(btn.getAttribute("data-review-scatter-jump"));
+      const id = btn.getAttribute("data-review-scatter-jump");
+      host._reviewJumpHoldId = id;
+      host._reviewJumpHoldUntil = performance.now() + 650;
+      host.querySelectorAll(".review-scatter-jump-chip").forEach(chip => {
+        const on = chip === btn;
+        chip.classList.toggle("is-active", on);
+        if (on) chip.setAttribute("aria-current", "location");
+        else chip.removeAttribute("aria-current");
+      });
+      const target = document.getElementById(id);
       target?.scrollIntoView({ behavior: motionReduced ? "auto" : "smooth", block: "nearest" });
       target?.focus?.({ preventScroll: true });
     });
   });
+  bindReviewScatterJumpSpy(host);
 }
 
 function analyticsApi() {
