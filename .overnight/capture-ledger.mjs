@@ -11,6 +11,32 @@ const SHELL_CSS = readFileSync("/Users/ashan/Documents/Codex/ll-overnight/deskto
 
 const base = "http://127.0.0.1:5291/index.html?mode=local";
 
+async function seedYesterdaySpendOnly(page) {
+  await page.evaluate(() => {
+    const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
+    if (!key || !window.LifeLedgerLedger) return;
+    let state;
+    try { state = JSON.parse(localStorage.getItem(key)); } catch { return; }
+    const lang = localStorage.getItem("life-ledger-language") || "en";
+    state.ledger = window.LifeLedgerLedger.normalize(null, { lang });
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const cat = state.ledger.categories.find(c => c.type === "expense");
+    const acct = state.ledger.accounts[0];
+    if (cat && acct) {
+      window.LifeLedgerLedger.addTransaction(state.ledger, {
+        accountId: acct.id,
+        categoryId: cat.id,
+        amountMinor: -450,
+        date: iso,
+        note: "Coffee",
+      });
+    }
+    localStorage.setItem(key, JSON.stringify(state));
+  });
+}
+
 async function clearLedgerForOnboarding(page) {
   await page.evaluate(() => {
     const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
@@ -104,6 +130,10 @@ async function shot(browserType, name, opts) {
   }
   if (opts.emptyLedger) {
     await clearLedgerForOnboarding(page);
+    await page.reload({ waitUntil: "networkidle" });
+  }
+  if (opts.yesterdaySpendOnly) {
+    await seedYesterdaySpendOnly(page);
     await page.reload({ waitUntil: "networkidle" });
   }
   if (opts.view === "review") {
@@ -270,5 +300,12 @@ await shot(chromium, "journal-empty-zh-light-1440", {
   theme: "light",
   lang: "zh",
   emptyJournalMonth: true,
+});
+await shot(chromium, "today-spending-quiet-zh-390", {
+  viewport: { width: 390, height: 844 },
+  theme: "light",
+  lang: "zh",
+  view: "today",
+  yesterdaySpendOnly: true,
 });
 console.log("screenshots saved");

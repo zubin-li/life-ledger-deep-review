@@ -8,3 +8,8 @@ test("Today spending hint hides once the ledger has any transaction", () => {
   assert.match(widgets, /ledgerHasEntries\s*=\s*Boolean\(ledger\?\.transactions\?\.length\)/);
   assert.match(widgets, /hint\.hidden\s*=\s*Boolean\(todayMinor\)\s*\|\|\s*ledgerHasEntries/);
 });
+
+test("Today spending note uses quiet copy when ledger has history but today is zero", () => {
+  assert.match(widgets, /spendingEmptyQuiet/);
+  assert.match(widgets, /ledgerHasEntries\s*\?\s*t\("spendingEmptyQuiet"\)\s*:\s*t\("spendingEmpty"\)/);
+});

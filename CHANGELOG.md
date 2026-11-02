@@ -18,6 +18,7 @@ All notable changes are documented here.
 - Ledger **first-run onboarding** banner (dismissible), Today spending **quick-entry hint** when empty, review habit **sparkline enter** animation, mobile keypad bottom clearance (`v213-onboarding.css`).
 - Week / long-term / journal **empty-state reveal** animation and empty-week goal inline hint (`v214-goals-journal.css`); onboarding auto-dismisses after the first posted entry.
 - Review **completion trend** line draw + insight metric stagger; Today spending syntax hint hides after the first ledger entry (`v215-review-trend.css`).
+- Today **Spending today** card uses softer copy on quiet days once the ledger already has entries (hint still hidden).
 
 ### Changed
 
