@@ -957,6 +957,160 @@ html.motion-reduced #journalPhotoLibrary.journal-library--ready :is(.journal-lib
   z-index: 2;
 }
 
+/* Batch 5 round 6 — calendar enter, feed filter/load-more, timeline list filter, composer polish */
+#journalFeedPane.is-filter-entering .journal-feed-heading {
+  animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#journalFeedPane.is-filter-entering .journal-feed-filter select {
+  transition: transform 220ms var(--ease-enter, ease), box-shadow 220ms ease;
+  transform: scale(1.02);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--desk-text, #111) 8%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry:not(.journal-feed-entry--append) {
+    animation: none !important;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append {
+    animation: llFeedRowIn 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(2) {
+    animation-delay: 35ms;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(3) {
+    animation-delay: 70ms;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(n + 4) {
+    animation-delay: 105ms;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside) {
+    animation: llCalDayIn 0.38s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n + 1) {
+    animation-delay: 0ms;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n + 2) {
+    animation-delay: 18ms;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n) {
+    animation-delay: 36ms;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row {
+    animation: llTimelineRowIn 0.36s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(2) {
+    animation-delay: 28ms;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(3) {
+    animation-delay: 56ms;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(n + 4) {
+    animation-delay: 84ms;
+  }
+}
+
+@keyframes llCalDayIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes llTimelineRowIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+#timelineView .journal-composer {
+  border-radius: 14px;
+  padding: 2px;
+  transition:
+    box-shadow 280ms var(--ease-enter, ease),
+    background 280ms ease;
+}
+
+#timelineView .journal-composer:focus-within {
+  background: color-mix(in srgb, var(--desk-teal, #3d8b8b) 8%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--desk-teal) 35%, transparent),
+    0 12px 32px color-mix(in srgb, var(--desk-text) 8%, transparent);
+}
+
+#timelineView .journal-composer textarea:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--desk-teal) 55%, var(--separator));
+}
+
+.journal-composer-status[data-pending] {
+  opacity: 0.78;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .journal-composer-status[data-pending] {
+    animation: llComposerPending 1.1s ease-in-out infinite;
+  }
+}
+
+@keyframes llComposerPending {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+html.motion-reduced :is(
+  #journalFeedPane.is-filter-entering .journal-feed-heading,
+  #journalFeed[data-feed-motion="append"] .journal-feed-entry,
+  #timelineView.is-calendar-entering .calendar-day,
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row,
+  .journal-composer-status[data-pending]
+) {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #journalFeedPane.is-filter-entering .journal-feed-heading,
+  #journalFeed[data-feed-motion="append"] .journal-feed-entry,
+  #timelineView.is-calendar-entering .calendar-day,
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row,
+  .journal-composer-status[data-pending] {
+    animation: none !important;
+  }
+
+  #journalFeedPane.is-filter-entering .journal-feed-filter select {
+    transform: none;
+  }
+}
+
 html[data-theme="dark"] .ledger-recurring {
   background: rgba(255, 255, 255, 0.05);
 }

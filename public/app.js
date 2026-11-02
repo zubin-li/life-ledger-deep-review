@@ -7013,9 +7013,9 @@ function initFocusTimer() {
 
 function bindEvents() {
   $$("[data-journal-mode]").forEach(button => button.addEventListener("click", () => setJournalMode(button.dataset.journalMode)));
-  $('#journalMonthFilter').addEventListener('change',()=>{journalVisibleCount=24;void renderTimeline();});
-  $('#journalAllMonths').addEventListener('click',()=>{$('#journalMonthFilter').value='';journalVisibleCount=24;void renderTimeline();});
-  $('#journalLoadMore').addEventListener('click',()=>{journalVisibleCount+=24;void renderTimeline();});
+  $('#journalMonthFilter').addEventListener('change',()=>{journalVisibleCount=24;pulseJournalFeedFilter();void renderTimeline();});
+  $('#journalAllMonths').addEventListener('click',()=>{$('#journalMonthFilter').value='';journalVisibleCount=24;pulseJournalFeedFilter();void renderTimeline();});
+  $('#journalLoadMore').addEventListener('click',()=>{journalFeedRevealFrom=journalVisibleCount;journalVisibleCount+=24;void renderTimeline();});
   $$('#habitLibraryFilters button').forEach(button=>button.addEventListener('click',()=>{habitLibraryFilter=button.dataset.habitFilter;renderHabitSettings();}));
   $('#habitLibrarySearch').addEventListener('input',event=>{habitLibrarySearch=event.target.value;renderHabitSettings();});
 
@@ -7037,6 +7037,7 @@ function bindEvents() {
       item.classList.toggle("active", active);
       item.setAttribute("aria-pressed", String(active));
     });
+    timelineListEntering = true;
     void renderTimeline();
   }));
 
@@ -7596,6 +7597,24 @@ let selectedTimelineDate = isoDate(new Date());
 let timelineFilter = "all";
 let journalMode = "weeks";
 let journalVisibleCount = 24;
+let journalFeedRevealFrom = 0;
+let journalFeedFilterEntering = false;
+let timelineListEntering = false;
+
+function pulseJournalFeedFilter() {
+  journalFeedRevealFrom = 0;
+  journalFeedFilterEntering = true;
+  $("#journalFeedPane")?.classList.add("is-filter-entering");
+}
+
+function finishJournalFeedFilterMotion() {
+  if (!journalFeedFilterEntering) return;
+  const feedPane = $("#journalFeedPane");
+  requestAnimationFrame(() => {
+    feedPane?.classList.remove("is-filter-entering");
+    journalFeedFilterEntering = false;
+  });
+}
 let insightView = "trend";
 let analyticsWindow = 30;
 let selectedHabitSettingsId = "";
@@ -7820,15 +7839,23 @@ async function renderJournalFeed(version) {
     entries.sort((a,b) => b.from.localeCompare(a.from));
   }
   const visible = entries.slice(0,journalVisibleCount);
-  host.innerHTML = visible.length ? visible.map(e => {
+  const appendFrom = journalFeedRevealFrom;
+  if (host) {
+    if (appendFrom > 0) host.dataset.feedMotion = "append";
+    else delete host.dataset.feedMotion;
+  }
+  host.innerHTML = visible.length ? visible.map((e, index) => {
     const text = journalTextMarkup(e.text), extra = e.extra && e.extra !== e.text ? journalTextMarkup(e.extra) : '';
     const images = photos.filter(p => p.date === e.key);
     const photoDetails = mode === 'weeks' ? `<details class="feed-week-photos" data-from="${e.from}" data-to="${e.to}"><summary>${escapeHtml(languageText('看看这一周的照片','Photos from this week','Fotos dieser Woche'))}</summary><div class="feed-photo-list"></div></details>` : '';
-    return `<article class="journal-feed-entry" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
+    const appendClass = appendFrom > 0 && index >= appendFrom ? " journal-feed-entry--append" : "";
+    return `<article class="journal-feed-entry${appendClass}" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
   }).join('') : `<div class="feed-empty">${hairlineEmptyMarkup('./assets/hairline/empty-journal.svg',languageText('这里，留给以后的回看','Room for the next chapter','Platz für das nächste Kapitel'),languageText('这个范围还没有文字或照片。可以切换月份，或先写下一段复盘。','No writing or photos in this range yet. Try another month, or write a reflection.','Noch keine Texte oder Fotos in diesem Zeitraum. Wähle einen anderen Monat oder schreibe einen Rückblick.'))}</div>`;
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
   host?.classList.add('ll-paint-host--ready');
   hydrateHairlineMounts(host);
+  finishJournalFeedFilterMotion();
+  journalFeedRevealFrom = 0;
   $('#journalLoadMore').hidden = entries.length <= visible.length;
   $('#journalLoadMore').textContent = languageText('继续向前翻','Read further back','Weiter zurücklesen');
   host.querySelectorAll('[data-feed-open]').forEach(button => button.addEventListener('click',()=>{
@@ -7882,6 +7909,8 @@ function applyTimelineFilter(entries) {
 function renderTimelineEntryList(entries = []) {
   const container = $("#timelineEntryList");
   if (!container) return;
+  const listEntering = timelineListEntering;
+  if (listEntering) timelineListEntering = false;
   if (!entries.length) {
     container.innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"));
     hydrateHairlineMounts(container);
@@ -7908,6 +7937,10 @@ function renderTimelineEntryList(entries = []) {
     renderTimelineDetail();
     $$("#timelineView .calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
   }));
+  if (listEntering) {
+    container.classList.add("timeline-entry-list--entering");
+    requestAnimationFrame(() => container.classList.remove("timeline-entry-list--entering"));
+  }
   window.LifeLedgerInteraction?.glideTo(container, container.querySelector(".timeline-entry-row.selected"));
 }
 
@@ -8887,10 +8920,16 @@ function setJournalMode(mode) {
   const feedModeChanged = feedModes.includes(previousMode) && feedModes.includes(journalMode) && previousMode !== journalMode;
   const feedPane = $("#journalFeedPane");
   if (feedModeChanged && feedPane) feedPane.classList.add("is-mode-entering");
+  const timelineView = $("#timelineView");
+  const calendarEntering = journalMode === "calendar" && previousMode !== "calendar";
+  if (calendarEntering && timelineView) timelineView.classList.add("is-calendar-entering");
   if ($("#timelineView")?.classList.contains("active")) {
     void renderTimeline().then(() => {
       if (feedModeChanged && feedPane) {
         requestAnimationFrame(() => feedPane.classList.remove("is-mode-entering"));
+      }
+      if (calendarEntering && timelineView) {
+        requestAnimationFrame(() => timelineView.classList.remove("is-calendar-entering"));
       }
     });
     requestAnimationFrame(() => {
@@ -8898,6 +8937,9 @@ function setJournalMode(mode) {
     });
   } else if (feedModeChanged && feedPane) {
     feedPane.classList.remove("is-mode-entering");
+  }
+  if (!($("#timelineView")?.classList.contains("active")) && calendarEntering && timelineView) {
+    timelineView.classList.remove("is-calendar-entering");
   }
 }
 

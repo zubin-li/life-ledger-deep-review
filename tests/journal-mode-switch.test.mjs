@@ -13,4 +13,8 @@ test("setJournalMode marks feed pane when switching weeks, months, or daily feed
   assert.match(app, /const previousMode = journalMode/);
   assert.match(app, /feedPane\.classList\.add\("is-mode-entering"\)/);
   assert.match(app, /journal-library--ready/);
+  assert.match(app, /is-calendar-entering/);
+  assert.match(app, /journalFeedRevealFrom/);
+  assert.match(app, /pulseJournalFeedFilter/);
+  assert.match(app, /timeline-entry-list--entering/);
 });

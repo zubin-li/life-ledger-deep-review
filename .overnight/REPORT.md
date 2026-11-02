@@ -1,10 +1,26 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 5 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 6 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 5）改动
+## 本轮（Batch 5 · Round 6）改动
+
+| 项目 | 说明 |
+|------|------|
+| **日历模式入场** | 时间轴 → **日历**：月历格短暂 scale 入场（`is-calendar-entering`）。 |
+| **Feed 月份筛选** | 日/周/月 feed 顶栏 **定位月份** 变更时，标题与下拉有轻微反馈，列表刷新。 |
+| **加载更多** | **继续向前翻** 只动画新出现的行，已读条目不再整页重闪。 |
+| **日历侧栏筛选** | 全部 / 照片 / 笔记 切换时，左侧日列表行轻微横向入场。 |
+| **Composer** | 日历布局下快速笔记框 focus 外框与保存中 pulse（与 workspace 一致）。 |
+| **测试** | 单元 **332 pass**；浏览器 **8 pass**。 |
+| **截图** | `b5r6-calendar-*`、`b5r6-feed-filter-*`。重拍：`node .overnight/capture-batch5-round6.mjs`（5294）。 |
+
+**验收提示：** 时间轴点 **日历** 看月格依次弹出；在日度 feed 改 **Go to month** 或点 **Read further back**；日历模式下切换 **All / Photos / Notes** 看左侧列表；在 composer 输入应见保存态闪烁。
+
+---
+
+## 上一轮（Batch 5 · Round 5）改动
 
 | 项目 | 说明 |
 |------|------|
