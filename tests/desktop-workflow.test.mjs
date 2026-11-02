@@ -35,7 +35,7 @@ test("release workflow builds macOS artifacts on macos-15 before attaching them 
   assert.match(releaseWorkflow, /needs: \[verify, macos-artifacts\]/);
   assert.match(releaseWorkflow, /download-artifact@v4/);
   assert.match(releaseWorkflow, /gh release create/);
-  assert.match(releaseWorkflow, /release-assets\/\*\.dmg/);
-  assert.match(releaseWorkflow, /release-assets\/\*\.zip/);
+  assert.match(releaseWorkflow, /release-assets\/dmg\/\*\.dmg/);
+  assert.match(releaseWorkflow, /release-assets\/macos\/\*\.zip/);
   assert.match(releaseWorkflow, /npm run desktop:build/);
 });

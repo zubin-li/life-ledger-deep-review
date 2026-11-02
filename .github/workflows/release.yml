@@ -75,5 +75,5 @@ jobs:
             --verify-tag \
             --title "Life Ledger · Deep Review ${GITHUB_REF_NAME#v}" \
             --notes-file ".github/releases/${GITHUB_REF_NAME}.md" \
-            release-assets/*.dmg \
-            release-assets/*.zip
+            release-assets/dmg/*.dmg \
+            release-assets/macos/*.zip
