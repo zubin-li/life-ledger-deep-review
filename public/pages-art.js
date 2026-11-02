@@ -155,6 +155,10 @@
       const accent = hasHelp ? PALETTE.sage.solid : PALETTE.blue.solid;
       prependArt(empty, artName, accent);
     }
+    if (empty && !empty.dataset.llEnter) {
+      empty.dataset.llEnter = "1";
+      empty.classList.add("ll-empty-enter");
+    }
     root.querySelectorAll(".score-card").forEach(card => {
       if (!card.dataset.llAccent) {
         card.dataset.llAccent = "1";

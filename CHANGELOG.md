@@ -19,10 +19,11 @@ All notable changes are documented here.
 - **Review:** mood-vs-spend scatter chart in the monthly Money summary panel (`v216-mood-scatter.css`).
 - **Ledger charts:** SVG annular donut for category breakdown (reliable in WebKit/headless; `breakdownDonutSlices` / `annularSectorPath`).
 - **Review score grid:** completion rate/count roll on month change, staggered card enter, hairline empty when no habits (`v226-review-score-donut.css`).
+- **Review rhythm bars:** month completion bar-chart retarget, habit compare bar width pulse, weekday column regrow + percent roll, focus week bars stagger (`review-bars.js`, `v227-review-bars-weekday.css`).
 
 ### Changed
 
-- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v226`.
+- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v227`.
 - **Maintainability:** documented CSS slice layout in `.overnight/CSS-LAYERS.md`; removed duplicate `isoFromDate` in `ledger-core.js`; `.overnight/scratch/` gitignored and deleted from the tree.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`).
 

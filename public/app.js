@@ -5175,10 +5175,14 @@ function renderReview() {
   );
   rollScoreGridValues(scoreHost);
   hydrateHairlineMounts(scoreHost);
-  $("#barChart").innerHTML = monthDates.map((d, i) => {
+  scoreHost.querySelector(".hairline-empty")?.classList.add("ll-empty", "ll-empty-enter");
+  const barHost = $("#barChart");
+  barHost.innerHTML = monthDates.map((d, i) => {
     const p = completionFor(d);
-    return `<i class="bar ${p >= 75 ? "high" : ""}" title="${tr("calendar.dayPercent", { day: i + 1, month: month + 1, percent: p })}" style="height:${Math.max(3, p)}%;animation-delay:${Math.min(i * 12, 250)}ms"></i>`;
+    return `<i class="bar ${p >= 75 ? "high" : ""}" title="${tr("calendar.dayPercent", { day: i + 1, month: month + 1, percent: p })}" style="height:${Math.max(3, p)}%;--bar-i:${i}"></i>`;
   }).join("");
+  pulseReviewRhythmBars();
+  requestAnimationFrame(() => requestAnimationFrame(() => pulseReviewRhythmBars()));
   renderPeriodicGoals(monthDates);
   $("#reviewText").value = state.reviews[key] || "";
   fitReviewText();
@@ -5249,6 +5253,7 @@ function renderFocusReview(year, month) {
       const level = item.minutes ? Math.max(.16, item.minutes / max) : 0;
       return `<span class="focus-heatmap-day" style="--focus-level:${level}" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.date.getDate()}</b><small>${item.minutes ? Math.round(item.minutes) : ""}</small></span>`;
     }).join("")}`;
+    window.LifeLedgerInteraction?.retarget(chart);
     setText("#focusReviewRange", reviewPeriodLabel("month", selectedFocusReviewMonth));
     setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPreviousMonth", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPreviousMonth", { minutes: Math.abs(difference) }) : tr("focus.sameAsPreviousMonth"));
     setText("#focusReviewMonthTotal", tr("focus.monthActivity", { days: activeDays, average: activeDays ? Math.round(total / activeDays) : 0 }));
@@ -5270,7 +5275,8 @@ function renderFocusReview(year, month) {
     const monthEnd = isoDate(new Date(year, month + 1, 0, 12));
     const monthTotal = focusSessionsBetween(monthStart, monthEnd).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
     const max = Math.max(25, ...daily.map(item => item.minutes));
-    chart.innerHTML = daily.map(item => `<span class="focus-review-day" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.minutes ? Math.round(item.minutes) : ""}</b><i style="height:${Math.max(4, item.minutes / max * 100)}%"></i><small>${escapeHtml(weekdayShortName(item.date.getDay()))}</small></span>`).join("");
+    chart.innerHTML = daily.map((item, index) => `<span class="focus-review-day" style="--focus-bar-i:${index}" title="${escapeHtml(formatDateChip(item.date))} · ${Math.round(item.minutes)} ${escapeHtml(tr("focus.reviewUnit"))}"><b>${item.minutes ? Math.round(item.minutes) : ""}</b><i style="height:${Math.max(4, item.minutes / max * 100)}%"></i><small>${escapeHtml(weekdayShortName(item.date.getDay()))}</small></span>`).join("");
+    window.LifeLedgerInteraction?.retarget(chart);
     setText("#focusReviewRange", formatWeekRange(selectedReviewWeek));
     setText("#focusReviewComparison", total === 0 ? tr("focus.noFocus") : difference > 0 ? tr("focus.moreThanPrevious", { minutes: difference }) : difference < 0 ? tr("focus.lessThanPrevious", { minutes: Math.abs(difference) }) : tr("focus.sameAsPrevious"));
     setText("#focusReviewMonthTotal", tr("focus.monthTotal", { month: currentLang === "zh" ? `${month + 1}月` : monthName(month), minutes: Math.round(monthTotal) }));
@@ -8095,6 +8101,27 @@ function rollScoreGridValues(grid) {
       card.dataset.prevCount = next;
     }
   });
+}
+
+function pulseReviewRhythmBars() {
+  const bars = window.LifeLedgerReviewBars;
+  const retarget = window.LifeLedgerInteraction?.retarget;
+  const roll = window.LifeLedgerInteraction?.rollText;
+  const barHost = $("#barChart");
+  if (barHost) {
+    barHost.querySelectorAll(".bar").forEach((el, index) => el.style.setProperty("--bar-i", String(index)));
+    retarget?.(barHost);
+  }
+  const compare = $("#reviewHabitCompare");
+  if (compare && bars) {
+    bars.animateBarWidthFills(compare);
+    retarget?.(compare);
+    const weekdayPanel = compare.querySelector(".insight-weekday-panel .rv-weekdays")
+      || compare.querySelector(".analytics-bars:last-of-type");
+    retarget?.(weekdayPanel);
+    bars.rollPanelTextValues(weekdayPanel || compare, "strong, .analytics-bar-row span", "rvWd", roll);
+    bars.rollPanelTextValues(compare, ".rv-bar + b, .analytics-bar-row span", "rvPct", roll);
+  }
 }
 
 function disconnectReviewScatterJumpSpy(host) {
