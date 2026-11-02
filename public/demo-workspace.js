@@ -1,7 +1,7 @@
 // Deterministic local-only demo workspace builders. DOM-free so node:test can execute the real logic.
 
 export const DEMO_META_VERSION = 1;
-export const DEMO_PERSONA_VERSION = 10; // bump to refresh an active older demo
+export const DEMO_PERSONA_VERSION = 11; // bump to refresh an active older demo
 import { personaPack, demoScheduleFor } from "./demo-persona.js?v=10";
 import { demoDayContent, DEMO_EVENTS } from "./demo-life.js?v=10";
 export const DEMO_CONTENT_SEED = 0x6d656d6f; // "memo"
@@ -476,6 +476,16 @@ function pickMood(rng, moods) {
   return moods[2];
 }
 
+/** Seed demo through at least mid-month so review money × habit insights exist early in the month. */
+export function demoSeedAnchor(now = new Date()) {
+  const d = new Date(now);
+  d.setHours(12, 0, 0, 0);
+  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  const targetDay = Math.min(18, lastDay);
+  if (d.getDate() < targetDay) d.setDate(targetDay);
+  return d;
+}
+
 export function buildDemoPhotoSchedule(now = new Date()) {
   const end = isoDateAt(now);
   const start = isoDateAt(addDays(now, -89));
@@ -814,5 +824,6 @@ if (typeof window !== "undefined") {
     buildClearedWorkspace,
     relocalizeDemoWorkspace,
     demoScheduleFor,
+    demoSeedAnchor,
   };
 }

@@ -29,6 +29,19 @@
   min-height: 180px;
 }
 
+.ll-skeleton--calendar {
+  min-height: 16.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.timeline-calendar-card.ll-paint-host:not(.ll-paint-host--ready) .ll-skeleton--calendar {
+  display: block;
+}
+
+.timeline-calendar-card.ll-paint-host.ll-paint-host--ready .ll-skeleton--calendar {
+  display: none;
+}
+
 .ll-paint-host--ready .ll-skeleton {
   display: none;
 }

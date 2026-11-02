@@ -17,13 +17,24 @@ async function seedDemoLedger(page) {
     if (!key || !window.LifeLedgerLedger) return;
     let state;
     try { state = JSON.parse(localStorage.getItem(key)); } catch { return; }
-    const now = new Date("2026-11-02T12:00:00");
+    const now = new Date("2026-11-18T12:00:00");
     state.ledger = window.LifeLedgerLedger.buildDemoSample({
       now,
       lang: localStorage.getItem("life-ledger-language") || "en",
       contentSeed: 42,
     });
+    const habitIds = (state.habits || []).map(h => h.id);
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(state.logs, state.ledger, now);
+    window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(state.logs, state.ledger, habitIds, now);
+    const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    for (let d = 1; d <= now.getDate(); d += 1) {
+      const iso = `${ym}-${String(d).padStart(2, "0")}`;
+      if (!state.logs[iso]) {
+        state.logs[iso] = { completed: habitIds.slice(0, 3), mood: "平静", note: "", moodReason: "" };
+      }
+    }
+    state.meta = state.meta || {};
+    state.meta.demo = { ...(state.meta.demo || {}), active: true, version: 1, persona: 11, seededAt: now.toISOString() };
     state.focusSessions = state.focusSessions || [];
     const focusDays = ["2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"];
     focusDays.forEach((date, i) => {
@@ -106,6 +117,11 @@ async function shot(browserType, name, opts) {
     await page.click('.nav-item[data-view="timeline"]');
     await page.waitForTimeout(400);
   }
+  if (opts.view === "calendar") {
+    await page.click('.nav-item[data-view="timeline"]');
+    await page.click('[data-journal-mode="calendar"]');
+    await page.waitForTimeout(500);
+  }
   if (opts.view === "week") {
     await page.click('.nav-item[data-view="week"]');
     await page.waitForTimeout(400);
@@ -169,10 +185,10 @@ await shot(chromium, "week-insights-light-1440", {
   demoLedger: true,
   view: "week",
 });
-await shot(chromium, "timeline-enter-light-1440", {
+await shot(chromium, "timeline-calendar-light-1440", {
   viewport: { width: 1440, height: 900 },
   theme: "light",
   demoLedger: true,
-  view: "timeline",
+  view: "calendar",
 });
 console.log("screenshots saved");

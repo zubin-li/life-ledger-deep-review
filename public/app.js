@@ -2643,6 +2643,15 @@ function isDemoWorkspaceActive() {
   return Boolean(demoWorkspaceApi()?.isDemoActive(state));
 }
 
+/** Demo workspaces pretend today is at least mid-month in the current month so review charts are not empty on the 1st. */
+function effectiveDemoTodayIso() {
+  const real = isoDate(new Date());
+  if (!isDemoWorkspaceActive()) return real;
+  const cap = isoDate(demoWorkspaceApi().demoSeedAnchor(new Date()));
+  if (cap.slice(0, 7) !== real.slice(0, 7)) return real;
+  return cap > real ? cap : real;
+}
+
 function demoPhotoAnchorDate() {
   const seededAt = state?.meta?.demo?.seededAt;
   if (seededAt && !Number.isNaN(Date.parse(seededAt))) return new Date(seededAt);
@@ -2722,18 +2731,21 @@ function maybeApplyDemoWorkspace() {
   const dismissed = localStorage.getItem(demoDismissedStorageKey()) === "1";
   const storedRaw = localStorage.getItem(STORAGE_KEY);
   if (!api.shouldSeedDemo({ eligible, dismissed, storedRaw, state })) return;
+  const demoAnchor = api.demoSeedAnchor?.(new Date()) ?? new Date();
   const demoState = api.buildDemoWorkspace({
-    now: new Date(),
+    now: demoAnchor,
     lang: currentLang,
     seedHabits: cloneData(seed.habits),
   });
   if (window.LifeLedgerLedger?.buildDemoSample) {
     demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
-      now: new Date(),
+      now: demoAnchor,
       lang: currentLang,
       contentSeed: demoState.meta?.demo?.contentSeed,
     });
-    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, new Date());
+    const habitIds = (demoState.habits || []).map(h => h.id);
+    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
   }
   state = { ...cloneData(seed), ...demoState };
   saveState();
@@ -4381,6 +4393,12 @@ function timelineDateLabel(value) {
   };
 }
 
+function setJournalCalendarPaintLoading(loading) {
+  const card = document.querySelector("#timelineView .timeline-calendar-card.ll-paint-host");
+  if (!card) return;
+  card.classList.toggle("ll-paint-host--ready", !loading);
+}
+
 async function renderTimeline() {
   if (['weeks','months','timeline'].includes(journalMode)) {
     const version = ++timelineRenderVersion;
@@ -4390,7 +4408,9 @@ async function renderTimeline() {
   }
   const version = ++timelineRenderVersion;
   timelineRendering = true;
-  renderJournalCalendar();
+  const photoMonthKey = monthKey(timelineCursor);
+  const awaitingPhotos = Boolean(photoMemories && photosEnabled && !calendarPhotoLoadedMonths.has(photoMonthKey));
+  if (awaitingPhotos) setJournalCalendarPaintLoading(true);
   const { from, to } = timelineRange(timelineCursor);
   let photos = [];
   try {
@@ -4405,6 +4425,7 @@ async function renderTimeline() {
   }
   [...calendarPhotosByDate.keys()].filter(day => day >= from && day <= to).forEach(day => calendarPhotosByDate.delete(day));
   photos.forEach(photo => calendarPhotosByDate.set(photo.date, [...(calendarPhotosByDate.get(photo.date) || []), photo]));
+  calendarPhotoLoadedMonths.add(photoMonthKey);
   const photoDates = new Set(photos.map(photo => photo.date));
   const entries = timelineEntriesForMonth(timelineCursor);
   photoDates.forEach(date => {
@@ -4419,6 +4440,8 @@ async function renderTimeline() {
     const todayKey = isoDate(new Date());
     selectedTimelineDate = visibleEntries[0]?.date || (todayKey >= from && todayKey <= to ? todayKey : to);
   }
+  renderJournalCalendar();
+  setJournalCalendarPaintLoading(false);
   renderTimelineEntryList(visibleEntries);
   renderJournalPhotoLibrary(photos);
   renderJournalComposer();
@@ -4868,6 +4891,10 @@ async function loadCalendarPhotoMonth(date) {
     photos.forEach(photo => calendarPhotosByDate.set(photo.date, [...(calendarPhotosByDate.get(photo.date) || []), photo]));
     calendarPhotoLoadedMonths.add(key);
     if (monthKey(cursor) === key) renderCalendar();
+    if ($("#timelineView")?.classList.contains("active") && !["weeks", "months", "timeline"].includes(journalMode)) {
+      renderJournalCalendar();
+      setJournalCalendarPaintLoading(false);
+    }
     if ($("#dayDrawer")?.classList.contains("open") && selectedDate.slice(0, 7) === key) renderDrawerMemory(selectedDate);
   } catch {
     // Calendar memory markers are optional; the photo editor keeps its own actionable status.
@@ -8005,12 +8032,12 @@ function analyticsDates() {
 }
 // The elapsed days of a calendar month (whole month when it is over, nothing when it has not started).
 function reviewMonthDates(date) {
-  const year = date.getFullYear(), month = date.getMonth(), today = isoDate(new Date());
+  const year = date.getFullYear(), month = date.getMonth(), today = effectiveDemoTodayIso();
   return Array.from({ length: new Date(year, month + 1, 0).getDate() }, (_, i) => isoDate(new Date(year, month, i + 1, 12))).filter(d => d <= today);
 }
 
 function analyticsEndIso() {
-  const today = isoDate(new Date());
+  const today = effectiveDemoTodayIso();
   const cursorIso = isoDate(cursor);
   return cursorIso > today ? today : cursorIso;
 }
@@ -9314,14 +9341,17 @@ async function loadMacSample() {
   try { localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify({ savedAt: new Date().toISOString(), keys: saved })); }
   catch { return; }
   removeLocalKeys();
-  const demoState = api.buildDemoWorkspace({ now: new Date(), lang: currentLang, seedHabits: cloneData(seed.habits) });
+  const demoAnchor = api.demoSeedAnchor?.(new Date()) ?? new Date();
+  const demoState = api.buildDemoWorkspace({ now: demoAnchor, lang: currentLang, seedHabits: cloneData(seed.habits) });
   if (window.LifeLedgerLedger?.buildDemoSample) {
     demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
-      now: new Date(),
+      now: demoAnchor,
       lang: currentLang,
       contentSeed: demoState.meta?.demo?.contentSeed,
     });
-    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, new Date());
+    const habitIds = (demoState.habits || []).map(h => h.id);
+    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
   }
   state = { ...cloneData(seed), ...demoState };
   saveState();

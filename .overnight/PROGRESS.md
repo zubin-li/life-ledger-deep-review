@@ -1,24 +1,23 @@
 # Overnight progress
 
-## Round 8 — done
+## Round 9 — done
 
-- **Treemap i18n:** `truncateTreemapLabel` / `treemapLabelMaxChars` in `ledger-core.js`; labels scale with cell size and locale (DE shorter density); stroke/contrast tweak in `v211-polish.css`.
-- **Review correlation:** `habitCompletionSpendInsight` + third line on monthly Money panel (needs ≥4 days with spend + completion variance; demo month still often only 2 logged days).
-- **Skeleton polish:** `LifeLedgerInteraction.paintWithSkeleton` + `skeletonMarkup`; `v212-skeleton.css`; journal **日度** feed shows skeleton while photos load; review heatmap/habit panels shimmer one frame on repaint; week insight `<strong>` pulse while stats recalc.
-- **PWA cache:** `v212-skeleton.css` in `sw.js` APP_SHELL.
-- **Tests:** +2 treemap truncate + habit completion insight → **265 pass**.
-- **Screenshots:** `ledger-treemap-de-light-1440.png`, `week-insights-light-1440.png`, capture refresh (5291).
+- **Demo review depth:** `demoSeedAnchor()` (≥18th of month) for `buildDemoWorkspace` / ledger sample; **`alignDemoHabitCompletionWithSpend`**; **`effectiveDemoTodayIso()`** extends `reviewMonthDates` / analytics only while demo active (real users unchanged). `DEMO_PERSONA_VERSION` → 11.
+- **Timeline calendar:** month photo load shows **`ll-skeleton--calendar`** on `.timeline-calendar-card`; `renderTimeline` loads photos before painting grid (fixes missing photo markers); `loadCalendarPhotoMonth` refreshes journal calendar when active.
+- **Treemap:** `isLightAccentColor` / `relativeLuminance` in `ledger-core.js`; pale cells get `ledger-treemap-label--dim`.
+- **Tests:** +3 ledger (luminance, align demo habits), +1 demoSeedAnchor → **268 pass**.
+- **Screenshots:** refreshed batch on 5291; review now shows 18/18 days + mood/focus money lines (`.overnight/shots/review-ledger-light-1440.png`); new `timeline-calendar-light-1440.png`.
 
 ## Half-done
 
 - fakecloud Pages dev smoke — still no `functions/` in overnight clone.
-- Habit×支出复盘文案在演示数据下常不出现（当月记录天数不足 4 天）。
+- Habit×支出第三行在截图描述里不稳定可见（DOM 有逻辑；若仍缺，再加大 spend 方差或 scroll capture）。
 
 ## Next round priorities
 
-1. Pad demo logs across more November days so habit×spend insight visible in review screenshots.
-2. Timeline calendar mode skeleton while photo month loads (same pattern as feed).
-3. Optional: treemap label luminance class for pale accent tiles.
+1. Polish Today / ledger empty states or onboarding hint (Goal 2).
+2. Habit review sparkline animation (if not already on reduced-motion).
+3. Optional: mobile keypad vs dock overlap tweak.
 
 ## Known bugs / gaps
 
@@ -29,7 +28,7 @@
 ## npm test
 
 ```
-265 pass, 0 fail (round 8)
+268 pass, 0 fail (round 9)
 ```
 
 ## Gate result
@@ -58,7 +57,10 @@ _pending (driver appends after commit)_
 ℹ tests 263 ℹ pass 263 ℹ fail 0 
 
 ## Driver gate after round 8
-_pending_
+ℹ tests 265 ℹ pass 265 ℹ fail 0 
 
 ## Driver gate after round 8
 ℹ tests 265 ℹ pass 265 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 268 ℹ pass 268 ℹ fail 0 

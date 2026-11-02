@@ -13,6 +13,8 @@ All notable changes are documented here.
 - Demo sample **pads early-month** expenses so November donut, heatmap, and Today card match summary; sample includes two recurring templates.
 - **Recurring:** income categories + weekly cadence; **`focusSpendInsight`** on monthly review; treemap cell labels; **`tests/ledger-cloud-merge.test.mjs`**.
 - **`habitCompletionSpendInsight`** on monthly review (habit completion vs spending); shared **`paintWithSkeleton`** / journal feed loading skeleton (`v212-skeleton.css`).
+- Demo **`demoSeedAnchor`** (mid-month sample), **`alignDemoHabitCompletionWithSpend`**, and **`effectiveDemoTodayIso`** so review money insights are visible early in the month on sample data only.
+- Timeline **calendar** mode: photo load skeleton on month grid, calendar re-render after photos; treemap **pale-tile** label class via `isLightAccentColor`.
 
 ### Changed
 

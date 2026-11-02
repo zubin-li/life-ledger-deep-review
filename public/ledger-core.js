@@ -535,6 +535,36 @@
     return { greatAvg, lowAvg, greatDays, lowDays };
   }
 
+  function parseCssRgb(color) {
+    const s = String(color || "").trim();
+    let m = s.match(/^#([0-9a-f]{3,8})$/i);
+    if (m) {
+      let hex = m[1];
+      if (hex.length === 3) hex = hex.split("").map(c => c + c).join("");
+      if (hex.length === 6) {
+        return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+      }
+    }
+    m = s.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+    if (m) return [Number(m[1]), Number(m[2]), Number(m[3])];
+    return null;
+  }
+
+  function relativeLuminance(color) {
+    const rgb = parseCssRgb(color);
+    if (!rgb) return null;
+    const linear = rgb.map(v => {
+      const c = Math.max(0, Math.min(255, v)) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+  }
+
+  function isLightAccentColor(color) {
+    const lum = relativeLuminance(color);
+    return lum != null && lum > 0.58;
+  }
+
   function truncateTreemapLabel(text, maxChars) {
     const raw = String(text || "").trim();
     if (!raw) return "";
@@ -932,6 +962,35 @@
     return ledger;
   }
 
+  /** Demo-only: high habit completion on lower-spend days (and the reverse) for review habit × spend insight. */
+  function alignDemoHabitCompletionWithSpend(logs, ledger, habitIds, now = new Date()) {
+    if (!logs || !ledger?.transactions?.length || !habitIds?.length) return logs;
+    const anchor = now instanceof Date ? now : new Date(now);
+    const today = isoFromDate(anchor);
+    const ym = monthKey(today);
+    const spendByDate = new Map();
+    ledger.transactions.forEach(tx => {
+      if (!tx.date.startsWith(ym) || tx.date > today || tx.amountMinor >= 0) return;
+      spendByDate.set(tx.date, (spendByDate.get(tx.date) || 0) + Math.abs(tx.amountMinor));
+    });
+    const dates = [...spendByDate.keys()].sort();
+    if (dates.length < 4) return logs;
+    const sorted = [...dates].sort((a, b) => spendByDate.get(a) - spendByDate.get(b));
+    const lowSpend = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 3)));
+    const highSpend = sorted.slice(-Math.max(1, Math.ceil(sorted.length / 3)));
+    const allIds = habitIds.filter(Boolean);
+    lowSpend.forEach(date => {
+      const base = logs[date] || { completed: [], mood: "平静", note: "", moodReason: "" };
+      logs[date] = { ...base, completed: [...allIds] };
+    });
+    highSpend.forEach(date => {
+      const base = logs[date];
+      if (!base) return;
+      logs[date] = { ...base, completed: allIds.length ? [allIds[0]] : [] };
+    });
+    return logs;
+  }
+
   /** Demo-only: tag lowest-spend days as 很好 and highest as 低落 so review mood vs spend insights render. */
   function alignDemoMoodWithSpend(logs, ledger, now = new Date()) {
     if (!logs || !ledger?.transactions?.length) return logs;
@@ -980,6 +1039,10 @@
     habitCompletionSpendInsight,
     truncateTreemapLabel,
     treemapLabelMaxChars,
+    parseCssRgb,
+    relativeLuminance,
+    isLightAccentColor,
+    alignDemoHabitCompletionWithSpend,
     nearestWeekdayIso,
     monthSummary,
     monthKey,

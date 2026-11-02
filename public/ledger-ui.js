@@ -130,10 +130,12 @@
     const items = breakdown.slice(0, 8).map(row => {
       const cat = ledger.categories.find(c => c.id === row.categoryId);
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+      const color = accentFill(cat?.color);
       return {
         value: row.amountMinor,
-        color: accentFill(cat?.color),
+        color,
         label: name,
+        lightFill: core().isLightAccentColor(color),
       };
     });
     const cells = layoutTreemapCells(items, 0, 0, 100, 100, true);
@@ -142,7 +144,7 @@
       const maxChars = core().treemapLabelMaxChars(cell.w, cell.h, lang);
       const short = maxChars ? core().truncateTreemapLabel(cell.label, maxChars) : "";
       const label = short
-        ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label">${ctx.escape(short)}</text>`
+        ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label${cell.lightFill ? " ledger-treemap-label--dim" : ""}">${ctx.escape(short)}</text>`
         : "";
       return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1"><title>${ctx.escape(cell.label)}</title></rect>${label}`;
     }).join("");

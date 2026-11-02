@@ -18,6 +18,7 @@ import {
   resolveDismissedKey,
   resolveStorageKey,
   shouldSeedDemo,
+  demoSeedAnchor,
 } from "../public/demo-workspace.js";
 import { demoScheduleFor } from "../public/demo-persona.js";
 
@@ -253,6 +254,14 @@ test("round-12 demo richness thresholds for zh and en at 2026-10-22", () => {
     const demo = buildDemoWorkspace({ now: ACCEPT_NOW, lang, seedHabits: starterHabits });
     assertDemoRichness(demo, lang);
   }
+});
+
+test("demoSeedAnchor extends early-month seeds through the 18th", () => {
+  const early = demoSeedAnchor(new Date(2026, 10, 2, 9, 0, 0));
+  assert.equal(early.getDate(), 18);
+  assert.equal(early.getMonth(), 10);
+  const late = demoSeedAnchor(new Date(2026, 10, 22, 9, 0, 0));
+  assert.equal(late.getDate(), 22);
 });
 
 test("hasMeaningfulUserData detects non-empty workspace", () => {

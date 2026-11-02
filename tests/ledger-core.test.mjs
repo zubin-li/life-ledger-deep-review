@@ -226,6 +226,37 @@ test("habitCompletionSpendInsight compares high vs low completion spend", () => 
   assert.ok(insight.lowCompletionAvg > insight.highCompletionAvg);
 });
 
+test("isLightAccentColor detects pale fills for treemap labels", () => {
+  assert.equal(L.isLightAccentColor("#ffffff"), true);
+  assert.equal(L.isLightAccentColor("#111111"), false);
+  assert.equal(L.isLightAccentColor("rgb(240, 240, 200)"), true);
+});
+
+test("alignDemoHabitCompletionWithSpend yields review insight rows", () => {
+  const now = new Date(2026, 10, 18, 12, 0, 0);
+  let ledger = L.buildDemoSample({ now, lang: "en" });
+  const logs = {};
+  for (let d = 1; d <= 18; d += 1) {
+    const iso = `2026-11-${String(d).padStart(2, "0")}`;
+    logs[iso] = { completed: ["a"], mood: "平静", note: "", moodReason: "" };
+  }
+  const habitIds = ["a", "b", "c", "d", "e", "f", "g"];
+  L.alignDemoHabitCompletionWithSpend(logs, ledger, habitIds, now);
+  const ym = "2026-11";
+  const dates = Array.from({ length: 18 }, (_, i) => `2026-11-${String(i + 1).padStart(2, "0")}`);
+  const dailyRows = dates.map(date => {
+    const done = logs[date]?.completed?.length || 0;
+    return {
+      date,
+      spendMinor: L.spendingTodayMinor(ledger, date),
+      completionPercent: Math.round((done / habitIds.length) * 100),
+    };
+  });
+  const insight = L.habitCompletionSpendInsight(dailyRows);
+  assert.ok(insight);
+  assert.ok(insight.lowCompletionAvg > insight.highCompletionAvg);
+});
+
 test("monthlyTrendSeries returns six months", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;
