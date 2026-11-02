@@ -1,23 +1,21 @@
 # Overnight progress
 
-## Batch 2 · Round 3 — done
+## Batch 2 · Round 4 — done
 
 - **REVIEW.md：** 仍为空（`status: failed`），无 HIGH/MED。
-- **复盘 · 专注散点：** 第三张迷你图 **Focus time vs daily spending**（`focusSpendScatter` / `renderFocusSpendScatterSvg`，`v218-focus-scatter.css`）；与心情/习惯同一套 violet 分区 + dot 入场动画。
-- **演示数据：** `alignDemoFocusWithSpend` 在低支出日注入较长专注会话、高支出日较短；演示工作区与 `capture-ledger` / `capture-round3` 种子均调用。
-- **冲突预览截图：** 注入合法 `life-ledger-sync-conflict-v1` 记录 → 设置 → 导入与导出 → **Money merge preview** 两列数字（42 vs 41 笔）。`import-conflict-ledger-preview-light-1440.png`。
-- **截图：** `review-focus-spend-light-1440.png`（滚至 `.review-focus-scatter-wrap`）；冲突对话框见上。
-- **npm test：** **276/276** 通过（+2：focus scatter、alignDemoFocusWithSpend）。
+- **复盘散点宽屏网格：** `review-scatter-grid` 包裹心情/习惯/专注三张散点；≥960px 三列并排，窄屏仍纵向分隔。下方 `review-ledger-insights` 三句对比文案（宽屏亦三列）。`v219-review-scatter-grid.css`，`index.html` + `sw.js`。
+- **冲突预览截图变体：** 深色 390 Chromium + WebKit 德语（移动工具栏先展开）。`import-conflict-ledger-preview-dark-390.png`、`import-conflict-ledger-preview-webkit-dark-de-390.png`。
+- **截图：** `review-scatter-grid-light-1440.png`（三列 + insight 卡片）。
+- **npm test：** **277/277** 通过（+1：`review-scatter-grid.test.mjs`）。
 
 ## Half-done
 
 - （无）
 
-## Next (round 4+)
+## Next (round 5+)
 
-- 复盘三张散点宽屏并排网格（可选，当前纵向堆叠已可读）。
-- fakecloud 仍缺 repo-root `functions/`。
-- 冲突预览 WebKit / 深色 / 390 变体（可选）。
+- fakecloud 仍缺 repo-root `functions/`（overnight clone 限制）。
+- 可选：复盘散点 mobile 单列间距微调；Chromium 冲突预览 light-390。
 
 ## Known bugs / gaps
 
@@ -27,7 +25,7 @@
 ## npm test
 
 ```
-276 pass, 0 fail (batch 2 round 3)
+277 pass, 0 fail (batch 2 round 4)
 ```
 
 ## Gate result
@@ -46,6 +44,10 @@ _pending (driver appends after commit)_
 
 习惯散点、冲突记账预览 UI — gate 274 pass.
 
+## Batch 2 Round 3 summary
+
+专注散点、冲突预览 light 1440 截图 — gate 276 pass.
+
 ## Driver gate after round 1
 ℹ tests 272 ℹ pass 272 ℹ fail 0 
 
@@ -54,3 +56,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 3
 ℹ tests 276 ℹ pass 276 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 277 ℹ pass 277 ℹ fail 0 

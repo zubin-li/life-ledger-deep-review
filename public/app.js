@@ -8104,6 +8104,14 @@ function renderReviewLedgerSummary() {
       `An Tagen mit hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
     ))}</p>`;
   }
+  const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
+  const scatterSection = scatterParts.length
+    ? `<div class="review-scatter-grid">${scatterParts.join("")}</div>`
+    : "";
+  const insightParts = [moodLine, habitLine, focusLine].filter(Boolean);
+  const insightSection = insightParts.length
+    ? `<div class="review-ledger-insights">${insightParts.join("")}</div>`
+    : "";
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
@@ -8111,7 +8119,7 @@ function renderReviewLedgerSummary() {
       <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${moodScatterBlock}${habitScatterBlock}${focusScatterBlock}${moodLine}${focusLine}${habitLine}</article>`;
+    </div>${scatterSection}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 
