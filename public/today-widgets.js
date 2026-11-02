@@ -541,6 +541,7 @@
     const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "de-DE");
     const todayMinor = ledger ? L.spendingTodayMinor(ledger, today) : 0;
     const monthSummary = ledger ? L.monthSummary(ledger, ym) : { expenseMinor: 0 };
+    const ledgerHasEntries = Boolean(ledger?.transactions?.length);
     const todayEl = $(".tw-spend-today", c);
     const note = $(".tw-spend-note", c);
     const hint = $(".tw-spend-hint", c);
@@ -559,7 +560,6 @@
         ? t("spendingToday")
         : (ledgerHasEntries ? t("spendingEmptyQuiet") : t("spendingEmpty"));
     }
-    const ledgerHasEntries = Boolean(ledger?.transactions?.length);
     if (hint) {
       hint.textContent = t("spendingHint");
       hint.hidden = Boolean(todayMinor) || ledgerHasEntries;

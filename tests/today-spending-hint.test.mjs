@@ -13,3 +13,9 @@ test("Today spending note uses quiet copy when ledger has history but today is z
   assert.match(widgets, /spendingEmptyQuiet/);
   assert.match(widgets, /ledgerHasEntries\s*\?\s*t\("spendingEmptyQuiet"\)\s*:\s*t\("spendingEmpty"\)/);
 });
+
+test("ledgerHasEntries is declared before spending note reads it", () => {
+  const decl = widgets.indexOf("const ledgerHasEntries = Boolean(ledger?.transactions?.length)");
+  const note = widgets.indexOf('t("spendingEmptyQuiet")');
+  assert.ok(decl > 0 && note > decl, "avoid temporal dead zone in spending()");
+});

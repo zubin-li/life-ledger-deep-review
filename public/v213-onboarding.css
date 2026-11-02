@@ -122,6 +122,20 @@ html.motion-reduced #reviewView .rv-habit-spark--enter rect {
   }
 }
 
+@media (max-width: 640px) and (max-height: 560px) {
+  .ledger-view .ledger-page,
+  #ledgerView .ledger-page {
+    padding-bottom: max(
+      calc(340px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
+      calc(140px + var(--mobile-nav-safe-bottom, 0px))
+    );
+  }
+
+  .ledger-keypad {
+    scroll-margin-bottom: calc(220px + var(--mobile-nav-safe-bottom, 0px));
+  }
+}
+
 #ledgerQuickInput:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--sage, #6f8f7d) 55%, transparent);
   outline-offset: 2px;

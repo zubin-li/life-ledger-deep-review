@@ -1,33 +1,31 @@
 # Overnight progress
 
-## Batch 2 · Round 9 — done
+## Batch 2 · Round 10 — done (final)
 
 - **REVIEW.md：** 仍为空（`status: failed`），无 HIGH/MED。
-- **语言初始化：** `public/app.js` 与 `syncBackupPreferencesToRuntime` 对齐——仅设置 `life-ledger-language`、未设 `language-preference-set` 时也会用存储语言（修复 Playwright / 深链下 UI 英文、分类中文的错位）；`tests/language-init.test.mjs`（4 项）。
-- **复盘 roll 断言：** `review-scatter.browser.test.mjs` 增加 `.roll-old`/`.roll-new` 与 `data-roll-value` 校验。
-- **记账预算浏览器测试：** `ledger-budget.browser.test.mjs` 验证无 preference 标志时中文弹层标题与页眉。
-- **Mac shell 截图：** `capture-round9.mjs` → `ledger-budget-popover-zh-mac-1440-*`、`ledger-budget-progress-mac-de-dark-1440-*`（5297，注入 `desktop/mac/shell.*`）。
-- **文档：** CHANGELOG Unreleased「Language」修复一行。
-- **npm test：** **286/286** 通过。
+- **Bugfix：** `public/today-widgets.js` — `ledgerHasEntries` 提前声明，修复今日支出卡在「今日无支出」路径上的 TDZ 运行时错误。
+- **极矮视口：** `v213-onboarding.css` 增加 `max-height: 560px` 下更大 `padding-bottom` / keypad `scroll-margin`。
+- **测试：** +1 静态（声明顺序）、+2 Playwright（今日支出 hint、记账 onboarding 德文 dismiss 持久化）→ **289/289**。
+- **截图：** `capture-round10.mjs`（5294）→ `round10-spending-hint-zh-390-*`、`round10-ledger-onboarding-de-light-390-*`、`round10-ledger-onboarding-zh-dark-1440-*`（Chromium + WebKit）。
+- **CHANGELOG：** Unreleased 补充 Today TDZ 修复与 mobile padding。
 
 ## Half-done
 
 - （无）
 
-## Next (round 10)
+## Next
 
-- fakecloud 仍缺 repo-root `functions/`（overnight 克隆限制）。
-- 可选：极矮视口 dock/键盘（`v213`）、更多 Goal 2 空态/动效。
+- 夜间批次结束。明早可验 fakecloud（仍缺 repo-root `functions/`）与真机极矮视口。
 
 ## Known bugs / gaps
 
-- 极矮视口 dock vs 键盘可能轻微重叠（未改 `v213`）。
 - fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
+- 极矮视口 dock/键盘：已加 padding，真机若仍重叠可再调 `v213` 数值。
 
 ## npm test
 
 ```
-286 pass, 0 fail (batch 2 round 9)
+289 pass, 0 fail (batch 2 round 10)
 ```
 
 ## Gate result
@@ -70,6 +68,10 @@ _pending (driver appends after commit)_
 
 分类预算 UI + 281 测试 — gate 281 pass.
 
+## Batch 2 Round 9 summary
+
+语言 boot 对齐 + 286 测试 — gate 286 pass.
+
 ## Driver gate after round 1
 ℹ tests 272 ℹ pass 272 ℹ fail 0 
 
@@ -96,3 +98,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 9
 ℹ tests 286 ℹ pass 286 ℹ fail 0 
+
+## Driver gate after round 10
+ℹ tests 289 ℹ pass 289 ℹ fail 0 

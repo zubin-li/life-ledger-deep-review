@@ -16,8 +16,13 @@ All notable changes are documented here.
 - **Import & export:** read-only **Money merge preview** on the sync-conflict recovery card (`v217-conflict-ledger.css`).
 - **Review:** mood-vs-spend scatter chart in the monthly Money summary panel (`v216-mood-scatter.css`).
 
+### Changed
+
+- **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`).
+
 ### Fixed
 
+- **Today spending card:** `ledgerHasEntries` is evaluated before the empty-state copy runs, fixing a temporal-dead-zone crash when the card renders on days with no spend.
 - **Language:** stored `life-ledger-language` now applies on first paint when the user has not opted out (`language-preference-set` ≠ `false`), matching backup restore and fixing Playwright / deep-link cases where UI strings stayed English while localized data did not.
 - **Cloud sync:** pending conflict resolution on GET now merges the conflict backup’s `ledger` when the remote payload omits it (same rule as immediate 409 adopt).
 
