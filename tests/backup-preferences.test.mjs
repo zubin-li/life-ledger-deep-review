@@ -593,6 +593,7 @@ function loadRestoreHarness({ stored = {}, state, permission = "granted", suffix
     extractFunctionSource(app, "function profileFrame(f)"),
     extractFunctionSource(app, "function isRecord(value)"),
     block,
+    extractFunctionSource(app, "function keepCloudWallMedia(wallMedia)"),
     extractFunctionSource(app, "function importedPayload(raw)"),
     extractFunctionSource(app, "function mergeBackupData(current, incoming)"),
     extractFunctionSource(app, "function loadReminderSettings()"),
