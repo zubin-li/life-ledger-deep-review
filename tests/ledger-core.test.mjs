@@ -404,6 +404,12 @@ test("moodSpendComparison averages great vs low mood days", () => {
   assert.equal(cmp.lowAvg, 6000);
 });
 
+test("spendInsightDeltaPercent rounds percent lift between averages", () => {
+  assert.equal(L.spendInsightDeltaPercent(6000, 1500), 300);
+  assert.equal(L.spendInsightDeltaPercent(1500, 1500), null);
+  assert.equal(L.spendInsightDeltaPercent(100, 0), null);
+});
+
 test("habitCompletionSpendScatter needs enough points and renders svg", () => {
   const sparse = L.habitCompletionSpendScatter([{ completionPercent: 50, spendMinor: 100 }]);
   assert.equal(sparse, null);

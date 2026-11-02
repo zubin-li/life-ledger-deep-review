@@ -2075,6 +2075,24 @@ html.motion-reduced .review-focus-scatter-dot {
   display: block;
 }
 
+.review-ledger-insight-delta {
+  color: var(--secondaryLabel, var(--muted));
+  font-weight: 500;
+}
+
+.review-ledger-topcat {
+  margin: 0.55rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--secondaryLabel, var(--muted));
+}
+
+@media (min-width: 960px) {
+  .review-ledger-topcat {
+    margin-top: 0.65rem;
+  }
+}
+
 @media (max-width: 959px) {
   .review-scatter-grid {
     gap: 0.6rem;

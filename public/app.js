@@ -7825,7 +7825,7 @@ function renderWeekPromotedReview() {
 }
 
 function hairlineEmptyMarkup(asset, title, help, attrs = "") {
-  return `<div class="hairline-empty"><div class="hairline-mount is-empty" data-hairline-src="${escapeHtml(asset)}" ${attrs} aria-hidden="true"></div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(help)}</p></div>`;
+  return `<div class="hairline-empty ll-empty-enter"><div class="hairline-mount is-empty" data-hairline-src="${escapeHtml(asset)}" ${attrs} aria-hidden="true"></div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(help)}</p></div>`;
 }
 
 function hydrateHairlineMounts(scope = document) {
@@ -8510,7 +8510,14 @@ function renderReviewLedgerSummary() {
       `On great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
       `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
     );
-    moodLine = `<p class="review-ledger-mood" style="--insight-i:0"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("心情", "Mood", "Stimmung"))}</span><span class="review-ledger-insight-body">${escapeHtml(moodBody)}</span></p>`;
+    const moodDeltaPct = L.spendInsightDeltaPercent(Math.max(greatAvg, lowAvg), Math.min(greatAvg, lowAvg));
+    const moodDelta = moodDeltaPct
+      ? (lowAvg > greatAvg
+        ? languageText(`较低落日约高出 ${moodDeltaPct}%。`, `Low-mood days ran about ${moodDeltaPct}% higher.`, `An schwachen Tagen etwa ${moodDeltaPct} % mehr.`)
+        : languageText(`心情较好日约高出 ${moodDeltaPct}%。`, `Great-mood days ran about ${moodDeltaPct}% higher.`, `An sehr guten Tagen etwa ${moodDeltaPct} % mehr.`))
+      : "";
+    const moodDeltaHtml = moodDelta ? `<span class="review-ledger-insight-delta"> ${escapeHtml(moodDelta)}</span>` : "";
+    moodLine = `<p class="review-ledger-mood" style="--insight-i:0"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("心情", "Mood", "Stimmung"))}</span><span class="review-ledger-insight-body">${escapeHtml(moodBody)}${moodDeltaHtml}</span></p>`;
   }
   let focusLine = "";
   if (focusCompare) {
@@ -8520,7 +8527,14 @@ function renderReviewLedgerSummary() {
       `On your most focused days you spent ${L.formatMoney(-highFocusAvg, cur, locale)} on average vs ${L.formatMoney(-lowFocusAvg, cur, locale)} when focus was lighter.`,
       `An fokussierten Tagen im Schnitt ${L.formatMoney(-highFocusAvg, cur, locale)} Ausgaben, an ruhigeren ${L.formatMoney(-lowFocusAvg, cur, locale)}.`,
     );
-    focusLine = `<p class="review-ledger-focus" style="--insight-i:1"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span><span class="review-ledger-insight-body">${escapeHtml(focusBody)}</span></p>`;
+    const focusDeltaPct = L.spendInsightDeltaPercent(Math.max(highFocusAvg, lowFocusAvg), Math.min(highFocusAvg, lowFocusAvg));
+    const focusDelta = focusDeltaPct
+      ? (lowFocusAvg > highFocusAvg
+        ? languageText(`专注较少日约高出 ${focusDeltaPct}%。`, `Lighter-focus days ran about ${focusDeltaPct}% higher.`, `An ruhigeren Tagen etwa ${focusDeltaPct} % mehr.`)
+        : languageText(`专注较多日约高出 ${focusDeltaPct}%。`, `Focused days ran about ${focusDeltaPct}% higher.`, `An fokussierten Tagen etwa ${focusDeltaPct} % mehr.`))
+      : "";
+    const focusDeltaHtml = focusDelta ? `<span class="review-ledger-insight-delta"> ${escapeHtml(focusDelta)}</span>` : "";
+    focusLine = `<p class="review-ledger-focus" style="--insight-i:1"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span><span class="review-ledger-insight-body">${escapeHtml(focusBody)}${focusDeltaHtml}</span></p>`;
   }
   let habitLine = "";
   if (habitCompare) {
@@ -8530,7 +8544,14 @@ function renderReviewLedgerSummary() {
       `On days you completed more habits you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
       `An Tagen mit hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
     );
-    habitLine = `<p class="review-ledger-habits" style="--insight-i:2"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}</span></p>`;
+    const habitDeltaPct = L.spendInsightDeltaPercent(Math.max(highCompletionAvg, lowCompletionAvg), Math.min(highCompletionAvg, lowCompletionAvg));
+    const habitDelta = habitDeltaPct
+      ? (lowCompletionAvg > highCompletionAvg
+        ? languageText(`完成度较低日约高出 ${habitDeltaPct}%。`, `Lower-completion days ran about ${habitDeltaPct}% higher.`, `An schwachen Gewohnheitstagen etwa ${habitDeltaPct} % mehr.`)
+        : languageText(`完成度较高日约高出 ${habitDeltaPct}%。`, `Higher-completion days ran about ${habitDeltaPct}% higher.`, `An starken Gewohnheitstagen etwa ${habitDeltaPct} % mehr.`))
+      : "";
+    const habitDeltaHtml = habitDelta ? `<span class="review-ledger-insight-delta"> ${escapeHtml(habitDelta)}</span>` : "";
+    habitLine = `<p class="review-ledger-habits" style="--insight-i:2"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}${habitDeltaHtml}</span></p>`;
   }
   const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
   const scatterSection = scatterParts.length
@@ -8543,6 +8564,18 @@ function renderReviewLedgerSummary() {
   const spendText = L.formatMoney(summary.expenseMinor, cur, locale);
   const incomeText = L.formatMoney(summary.incomeMinor, cur, locale);
   const netText = L.formatMoney(summary.netMinor, cur, locale);
+  const topBreakdown = L.categoryBreakdown(ledger, ym, "expense");
+  let topCategoryLine = "";
+  if (topBreakdown[0]?.amountMinor) {
+    const topCat = ledger.categories.find(c => c.id === topBreakdown[0].categoryId);
+    const topName = L.localizedCategoryName(topCat, currentLang);
+    const topAmt = L.formatMoney(-topBreakdown[0].amountMinor, cur, locale);
+    topCategoryLine = `<p class="review-ledger-topcat">${escapeHtml(languageText(
+      `本月最大支出：${topName} · ${topAmt}`,
+      `Top category: ${topName} · ${topAmt}`,
+      `Größte Ausgabe: ${topName} · ${topAmt}`,
+    ))}</p>`;
+  }
   const jumpLabel = (id, label) => `<button type="button" class="review-scatter-jump-chip" data-review-scatter-jump="${id}">${escapeHtml(label)}</button>`;
   const jumpChips = [];
   if (moodScatter) jumpChips.push(jumpLabel("review-scatter-mood", languageText("心情", "Mood", "Stimmung")));
@@ -8559,7 +8592,7 @@ function renderReviewLedgerSummary() {
       <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
       <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
       <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
-    </div>${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;
+    </div>${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
   const roll = globalThis.LifeLedgerInteraction?.rollText;
   const statKeys = ["reviewStatSpend", "reviewStatIncome", "reviewStatNet"];

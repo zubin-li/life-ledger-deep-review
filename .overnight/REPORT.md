@@ -1,12 +1,28 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 2）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 3）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 2：** 旧账本默认分类英文名回填 + Today「今日支出」卡 7 日迷你趋势。
+**Batch 6 Round 3：** 复盘页记账面板——最大支出分类 + 心情/习惯/专注洞察百分比；README 导览补记账桌面图；共用空状态入场动效。
 
 ---
 
-## 本轮（Batch 6 · Round 2）改动
+## 本轮（Batch 6 · Round 3）改动
+
+| 项目 | 说明 |
+|------|------|
+| **复盘 · 记账** | 月支出三卡下方显示 **本月最大支出分类**；洞察区在对比两句后追加 **约高出 N%**（`spendInsightDeltaPercent`）。 |
+| **空状态** | `hairlineEmptyMarkup` 统一 `ll-empty-enter`（时间轴列表、feed、习惯设置等复用处）。 |
+| **README** | 英/中/德 Product tour 在 Timeline 与手机三图之间插入 **08-ledger-v21** 桌面截图；顶图 hero 仍为 Today v6。 |
+| **测试** | 单元 **344 pass**（+1）；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b6r3-review-ledger-*`。重拍：`node .overnight/capture-batch6-round3.mjs`（**5295**）。 |
+
+**去哪点：** 侧栏 **复盘** → 向下滚到 **记账 / 本月支出摘要** → 看 **Größte Ausgabe / 最大支出** 与底部 **STIMMUNG/心情** 洞察里的百分比句。
+
+**已知遗留：** README 首屏大图未换；若希望首屏即见记账，可改 hero 或 Today 侧栏缩略图。
+
+---
+
+## 上一轮（Batch 6 · Round 2）改动
 
 | 项目 | 说明 |
 |------|------|

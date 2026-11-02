@@ -578,6 +578,14 @@
     return { greatAvg, lowAvg, greatDays, lowDays };
   }
 
+  /** Percent lift from the lower average to the higher (both positive spend amounts). */
+  function spendInsightDeltaPercent(higherAvg, lowerAvg) {
+    const high = Number(higherAvg);
+    const low = Number(lowerAvg);
+    if (!Number.isFinite(high) || !Number.isFinite(low) || low <= 0 || high <= low) return null;
+    return Math.round(((high - low) / low) * 100);
+  }
+
   const MOOD_SCATTER_ORDER = ["很好", "平静", "低落"];
   const MOOD_SCATTER_COLORS = { 很好: "#34c759", 平静: "#64d2ff", 低落: "#ff9f0a" };
 
@@ -1483,6 +1491,7 @@
     restoreRecurringTemplate,
     normalizeRecurringEntry,
     moodSpendComparison,
+    spendInsightDeltaPercent,
     moodSpendScatter,
     renderMoodSpendScatterSvg,
     habitCompletionSpendScatter,

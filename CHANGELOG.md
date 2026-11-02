@@ -4,6 +4,12 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- **Review Money insights:** mood/habit/focus comparison lines include a percent delta when one side spends more; top expense category shown under monthly stats (`spendInsightDeltaPercent`, `v210.css`).
+- **Timeline & shared empty art:** `hairlineEmptyMarkup` uses `ll-empty-enter` for feed/journal/habit empty placeholders.
+- **README (EN/ZH/DE):** product tour adds desktop Money (`08-ledger-v21`) screenshot between Timeline and mobile row.
+
 ### Added
 
 - **Today & journal (Goal 2):** hero card daypart ambience (morning/afternoon/evening/night), progress-ring glow when habits complete, journal composer focus elevation, timeline feed row enter + hover lift, **reflection streak** badge on daily timeline (`v224-today-journal-hero.css`; `LifeLedgerAnalytics.reflectionStreak`).

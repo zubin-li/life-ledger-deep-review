@@ -155,6 +155,11 @@ Need the previous version? Tag `v1.3.0` stays available — see [Roll back to 1.
 <p align="center"><strong>A private memory line.</strong> Read days, weeks and months downward; any day opens for editing, photos stay footnotes.</p>
 
 <p align="center">
+  <img src="docs/images/demo-preview/en-desktop/en-08-ledger-v21.png" width="78%" alt="Money: month overview, categories and quick entry" />
+</p>
+<p align="center"><strong>Bookkeeping built in.</strong> Quick entry, German CSV import, budgets, and spending woven into Today and monthly Review.</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/en-mobile/en-01-today-v6.png" width="30%" alt="Today cards on mobile" />
   <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v6.png" width="30%" alt="Timeline on mobile" />
   <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v6.png" width="30%" alt="Monthly review on mobile" />

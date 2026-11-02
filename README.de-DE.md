@@ -155,6 +155,11 @@ Vorherige Version nötig? Der Tag `v1.3.0` bleibt erhalten – siehe [Zurück zu
 <p align="center"><strong>Eine private Erinnerungslinie.</strong> Tage, Wochen und Monate von oben nach unten lesen; jeder Tag lässt sich öffnen und bearbeiten.</p>
 
 <p align="center">
+  <img src="docs/images/demo-preview/de-desktop/de-08-ledger-v21.png" width="78%" alt="Finanzen: Monatsüberblick, Kategorien und Schnellerfassung" />
+</p>
+<p align="center"><strong>Integrierte Finanzübersicht.</strong> Schnellerfassung, deutscher CSV-Import, Budgets – verbunden mit Heute und Monatsrückblick.</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/de-mobile/de-01-today-v6.png" width="30%" alt="Heute-Karten auf dem Smartphone" />
   <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v6.png" width="30%" alt="Zeitleiste auf dem Smartphone" />
   <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v6.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
