@@ -5319,7 +5319,7 @@ function renderPeriodicGoals(dates) {
   const habits = activeHabits(finalDate);
   if (!habits.length) {
     $("#analyticsMetricPicker").innerHTML = "";
-    $("#weeklyResistance").innerHTML = `<div class="period-dashboard-empty"><span>${renderIcon("target")}</span><strong>${tr("review.noPeriodic")}</strong><p>${tr("review.noPeriodicHelp")}</p></div>`;
+    $("#weeklyResistance").innerHTML = `<div class="period-dashboard-empty ll-empty ll-empty-enter"><span>${renderIcon("target")}</span><strong>${tr("review.noPeriodic")}</strong><p>${tr("review.noPeriodicHelp")}</p></div>`;
     return;
   }
   selectedAnalyticsHabitIds = selectedAnalyticsHabitIds.filter(id => habits.some(habit => habit.id === id));
@@ -5340,7 +5340,7 @@ function renderPeriodicGoals(dates) {
   const todayKey = isoDate(new Date());
   const elapsedDates = dates.filter(date => date <= todayKey);
   if (!elapsedDates.length) {
-    $("#weeklyResistance").innerHTML = `<div class="period-dashboard-empty"><span>${renderIcon("chart")}</span><strong>${tr("review.noDataYet")}</strong></div>`;
+    $("#weeklyResistance").innerHTML = `<div class="period-dashboard-empty ll-empty ll-empty-enter"><span>${renderIcon("chart")}</span><strong>${tr("review.noDataYet")}</strong></div>`;
     return;
   }
   const groups = new Map();
@@ -5381,12 +5381,12 @@ function renderPeriodicGoals(dates) {
         const barWidth = groupWidth / Math.max(1, series.length) - 2;
         const x = xFor(index) - groupWidth / 2 + seriesIndex * (barWidth + 2);
         const y = yFor(value.rate);
-        return `<rect class="analytics-bar" x="${x}" y="${y}" width="${barWidth}" height="${chartBottom - y}" rx="${Math.min(4, barWidth / 2)}" style="--series-color:${item.color}"><title>${escapeHtml(displayHabitName(item.habit))} · ${periods[index].label}: ${value.rate}%</title></rect>`;
+        return `<rect class="analytics-bar" x="${x}" y="${y}" width="${barWidth}" height="${chartBottom - y}" rx="${Math.min(4, barWidth / 2)}" style="--series-color:${item.color};--series-i:${seriesIndex}"><title>${escapeHtml(displayHabitName(item.habit))} · ${periods[index].label}: ${value.rate}%</title></rect>`;
       }).join("")).join("")
-    : series.map(item => {
+    : series.map((item, seriesIndex) => {
         const points = item.values.map((value, index) => ({ x: xFor(index), y: yFor(value.rate), value: value.rate }));
         const line = smoothDashboardPath(points);
-        return `<path class="analytics-line" d="${line}" style="--series-color:${item.color}"/>${points.map((point, index) => `<circle class="analytics-point" cx="${point.x}" cy="${point.y}" r="3.8" style="--series-color:${item.color}"><title>${escapeHtml(displayHabitName(item.habit))} · ${periods[index].label}: ${point.value}%</title></circle>`).join("")}`;
+        return `<path class="analytics-line" d="${line}" style="--series-color:${item.color};--series-i:${seriesIndex}"/>${points.map((point, index) => `<circle class="analytics-point" cx="${point.x}" cy="${point.y}" r="3.8" style="--series-color:${item.color};--series-i:${seriesIndex}"><title>${escapeHtml(displayHabitName(item.habit))} · ${periods[index].label}: ${point.value}%</title></circle>`).join("")}`;
       }).join("");
   const firstLabel = periods[0]?.label || "";
   const lastLabel = periods.at(-1)?.label || "";
@@ -5402,6 +5402,8 @@ function renderPeriodicGoals(dates) {
       </svg>
       <div class="period-chart-axis"><span>${firstLabel}</span><span>${lastLabel !== firstLabel ? lastLabel : ""}</span></div>
     </div>`;
+  pulsePeriodicAnalyticsChart();
+  requestAnimationFrame(() => pulsePeriodicAnalyticsChart());
 }
 
 function smoothDashboardPath(points) {
@@ -8240,16 +8242,46 @@ function pulseReviewRhythmBars() {
     barHost.querySelectorAll(".bar").forEach((el, index) => el.style.setProperty("--bar-i", String(index)));
     retarget?.(barHost);
   }
+  pulseReviewHabitCompareMotion();
+}
+
+function pulseReviewHabitCompareMotion() {
+  const bars = window.LifeLedgerReviewBars;
+  const retarget = window.LifeLedgerInteraction?.retarget;
+  const roll = window.LifeLedgerInteraction?.rollText;
   const compare = $("#reviewHabitCompare");
-  if (compare && bars) {
-    bars.animateBarWidthFills(compare);
-    retarget?.(compare);
-    const weekdayPanel = compare.querySelector(".insight-weekday-panel .rv-weekdays")
-      || compare.querySelector(".analytics-bars:last-of-type");
-    retarget?.(weekdayPanel);
-    bars.rollPanelTextValues(weekdayPanel || compare, "strong, .analytics-bar-row span", "rvWd", roll);
-    bars.rollPanelTextValues(compare, ".rv-bar + b, .analytics-bar-row span", "rvPct", roll);
+  if (!compare || !bars) return;
+  compare.querySelectorAll("tbody tr").forEach((row, index) => row.style.setProperty("--spark-row-i", String(index)));
+  bars.animateBarWidthFills(compare);
+  retarget?.(compare);
+  const weekdayPanel = compare.querySelector(".insight-weekday-panel .rv-weekdays")
+    || compare.querySelector(".analytics-bars:last-of-type");
+  retarget?.(weekdayPanel);
+  bars.rollPanelTextValues(weekdayPanel || compare, "strong, .analytics-bar-row span", "rvWd", roll);
+  bars.rollPanelTextValues(compare, ".rv-bar + b, .analytics-bar-row span", "rvPct", roll);
+}
+
+function pulseReviewInsightMotion() {
+  const retarget = window.LifeLedgerInteraction?.retarget;
+  const metrics = $("#reviewInsights")?.querySelector(".rv-metrics");
+  retarget?.(metrics);
+  const title = $("#reviewTitle");
+  if (title?.dataset.rvMonthPulse === "1") {
+    delete title.dataset.rvMonthPulse;
+    retarget?.(title);
   }
+  pulseReviewHabitCompareMotion();
+  requestAnimationFrame(() => requestAnimationFrame(() => pulseReviewHabitCompareMotion()));
+}
+
+function pulsePeriodicAnalyticsChart() {
+  const host = $("#weeklyResistance");
+  const chart = host?.querySelector(".analytics-chart");
+  if (!chart) return;
+  chart.querySelectorAll(".analytics-bar").forEach((node, index) => node.style.setProperty("--bar-i", String(index)));
+  chart.querySelectorAll(".analytics-line").forEach((node, index) => node.style.setProperty("--series-i", String(index)));
+  chart.querySelectorAll(".analytics-point").forEach((node, index) => node.style.setProperty("--dot-i", String(index)));
+  window.LifeLedgerInteraction?.retarget(chart);
 }
 
 function disconnectReviewScatterJumpSpy(host) {
@@ -8800,7 +8832,13 @@ function renderInsightDashboard() {
   const prevMonth = new Date(cursor.getFullYear(), cursor.getMonth() - 1, 15, 12);
   const dates = analyticsDates(), prevDates = reviewMonthDates(prevMonth);
   $('#reviewTitle').innerHTML = `<button type="button" class="rv-month-step" data-rv-month="-1" aria-label="${escapeHtml(T('上个月','Previous month','Vormonat'))}">‹</button><span>${escapeHtml(monthLabel(cursor))} · ${escapeHtml(T('月度复盘','Monthly review','Monatsrückblick'))}</span><button type="button" class="rv-month-step" data-rv-month="1" aria-label="${escapeHtml(T('下个月','Next month','Nächster Monat'))}" ${monthKey(cursor) >= monthKey(new Date()) ? 'disabled' : ''}>›</button>`;
-  $$('#reviewTitle [data-rv-month]').forEach(b => b.addEventListener('click', () => { cursor.setDate(15); cursor.setMonth(cursor.getMonth() + Number(b.dataset.rvMonth)); renderAll(); }));
+  $$('#reviewTitle [data-rv-month]').forEach(b => b.addEventListener('click', () => {
+    const title = $("#reviewTitle");
+    if (title) title.dataset.rvMonthPulse = "1";
+    cursor.setDate(15);
+    cursor.setMonth(cursor.getMonth() + Number(b.dataset.rvMonth));
+    renderAll();
+  }));
   $('#reviewObservations').innerHTML = ''; $('#reviewObservations').hidden = true;
   $('#reviewNarrativeTitle').textContent = T('这个月的复盘','This month in words','Der Monat in Worten');
   if (!dates.length) {
@@ -8841,6 +8879,7 @@ function renderInsightDashboard() {
   }).join('');
   $('#reviewPeriodHabits').innerHTML = periodic ? `<h3>${escapeHtml(T('按周、按月计的习惯','Weekly & monthly habits','Wöchentliche & monatliche Gewohnheiten'))}</h3><div>${periodic}</div>` : '';
   renderInsightTrend(model);
+  pulseReviewInsightMotion();
 }
 
 function renderInsightTrend(model) {

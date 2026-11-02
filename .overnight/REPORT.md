@@ -1,10 +1,25 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 6 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 7 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 6）改动
+## 本轮（Batch 5 · Round 7）改动
+
+| 项目 | 说明 |
+|------|------|
+| **复盘换月** | 侧栏 **复盘** → 点标题旁 **‹ ›**：四张指标卡与习惯对比区应再次轻微入场；数字仍走 rollText。 |
+| **周期习惯图** | 复盘页下方 **选择指标** chip 或柱/线切换：SVG 柱/线/点 retarget 动画。 |
+| **Today 编辑** | **Edit cards** → 拖一张卡或 **←/→** 见虚线高亮；点 **Done** 底栏与按钮短暂 pulse。 |
+| **空状态** | 周期习惯无数据时用统一 `ll-empty-enter`。 |
+| **测试** | 单元 **333 pass**；浏览器 **8 pass**。 |
+| **截图** | `b5r7-review-metrics-*`、`b5r7-today-edit-*`。重拍：`node .overnight/capture-batch5-round7.mjs`（5295）。 |
+
+**验收提示：** 复盘在 10 月 ↔ 9 月间切换看指标卡；在 chip 间点选看小图动画；Today 编辑卡片后点 Done 看底栏反馈。
+
+---
+
+## 上一轮（Batch 5 · Round 6）改动
 
 | 项目 | 说明 |
 |------|------|

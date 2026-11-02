@@ -1,5 +1,44 @@
 # Overnight progress
 
+## Batch 5 · Round 7 — done
+
+- **REVIEW.md：** 无新 HIGH/MED；历史项已在前几轮修复。
+- **Goal 2 — 复盘页 filter / 指标：**
+  - 切换复盘月份（‹ ›）：`pulseReviewInsightMotion` — 标题、四张指标卡 `retarget`；习惯对比表 `rv-bar` /  spark 行 /  weekday 柱与 `LifeLedgerReviewBars` 联动。
+  - 周期习惯图表（指标 chip / 柱线切换）：`pulsePeriodicAnalyticsChart` + `#weeklyResistance .analytics-chart.is-retargeting` 动画。
+  - 周期习惯空状态：`period-dashboard-empty` 统一 `ll-empty ll-empty-enter`。
+- **Goal 2 — Today 卡片编辑：**
+  - 拖拽排序 / 左右移动：`tc-drop-success` 轮廓反馈；点 **Done**：`.tc-bar.is-saved` + 完成钮 pulse。
+- **测试：** `view-enter-selectors` +1 契约；单元 **333 pass**；浏览器 **8 pass**。
+- **截图：** `capture-batch5-round7.mjs`（5295）→ `b5r7-review-metrics-*`、`b5r7-today-edit-*`（WebKit + Chromium）。
+
+## Half-done
+
+- （无）
+
+## Next（Round 8）
+
+- Goal 2：侧栏切换全局一致性抽查（ledger / week / longrange 与 review 同级 polish）。
+- 文档：SHOWCASE / README 虚构截图是否含记账侧栏（发版前核对）。
+- 可选：复盘 scatter jump chip 切换时的 section 高亮过渡。
+
+## Known bugs / gaps
+
+- 并行跑多个 fakecloud / 未清理 wrangler 时 browser 套件仍可能超时（清进程后 **8 pass**）。
+- 非 preview URL 的纯 Cloudflare 首次访问不会自动 seed 记账（ intentional）。
+- demo 工作区有多张 `tw-wall` 卡片，截图脚本取第一张非空墙。
+
+## npm test
+
+```
+333 pass, 0 fail (batch 5 round 7, unit gate)
+8 pass, 0 fail (test:browser)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 5 · Round 6 — done
 
 - **REVIEW.md：** 无新 HIGH/MED；历史项已在 Round 1 修复，本轮未改。
@@ -54,3 +93,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 6
 ℹ tests 332 ℹ pass 332 ℹ fail 0 
+
+## Driver gate after round 7
+ℹ tests 333 ℹ pass 333 ℹ fail 0 

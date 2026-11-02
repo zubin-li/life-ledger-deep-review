@@ -213,8 +213,9 @@
     }
   }
 
-  function setEditing(on, { focus = true } = {}) {
+  function setEditing(on, { focus = true, saved = false } = {}) {
     if (editing === on) return;
+    if (!on && editing && saved) pulseEditSaved();
     editing = on;
     view.classList.toggle("tc-editing", on);
     // Card content is inert while editing: no clicks, no tab stops, only the card controls.
@@ -229,11 +230,12 @@
         easing: "cubic-bezier(.2,.8,.2,1)", ghostClass: "tc-ghost", chosenClass: "tc-chosen",
         // Backfill pauses while dragging so cards don't jump under the pointer.
         onStart: () => { dragging = true; view.classList.add("tc-dragging"); },
-        onEnd: () => {
+        onEnd: evt => {
           view.classList.remove("tc-dragging");
           setTimeout(() => { dragging = false; });
           const order = [...view.querySelectorAll(":scope > .tc-card")].map(el => el.dataset.card);
           layout.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)); save(); apply();
+          pulseCardReorder(evt.item);
         },
       });
     }
@@ -244,6 +246,25 @@
   new MutationObserver(() => { if (editing && !view.classList.contains("active")) setEditing(false, { focus: false }); }).observe(view, { attributes: true, attributeFilter: ["class"] });
 
   const flash = el => { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("tc-new"); void el.offsetWidth; el.classList.add("tc-new"); setTimeout(() => el.classList.remove("tc-new"), 1600); };
+
+  const pulseEditSaved = () => {
+    bar.classList.remove("tc-saved");
+    void bar.offsetWidth;
+    bar.classList.add("tc-saved");
+    bar.querySelector(".tc-done")?.classList.add("tc-done--pulse");
+    setTimeout(() => {
+      bar.classList.remove("tc-saved");
+      bar.querySelector(".tc-done")?.classList.remove("tc-done--pulse");
+    }, 720);
+  };
+
+  const pulseCardReorder = card => {
+    if (!card) return;
+    card.classList.remove("tc-drop-success");
+    void card.offsetWidth;
+    card.classList.add("tc-drop-success");
+    setTimeout(() => card.classList.remove("tc-drop-success"), 560);
+  };
 
   view.addEventListener("click", e => {
     if (!editing || dragging) return;
@@ -260,12 +281,13 @@
       if (!other) return;
       const a = layout.indexOf(row), z = layout.indexOf(other);
       [layout[a], layout[z]] = [layout[z], layout[a]];
+      pulseCardReorder(card);
     }
     save(); apply();
     (b.dataset.tc === "hide" ? bar.querySelector(".tc-add-btn") : els[id].querySelector(`[data-tc="${b.dataset.tc}"]:not(:disabled)`) || els[id].querySelector(".tc-gear"))?.focus();
   });
   toggle.addEventListener("click", () => setEditing(!editing));
-  bar.querySelector(".tc-done").addEventListener("click", () => setEditing(false));
+  bar.querySelector(".tc-done").addEventListener("click", () => setEditing(false, { saved: true }));
   bar.querySelector(".tc-reset").addEventListener("click", () => { layout = defaults(); save(); apply(); window.renderToday?.(); });
   bar.querySelector(".tc-add-btn").addEventListener("click", openLibrary);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && editing && !document.querySelector("dialog[open], .day-drawer.open")) setEditing(false); });

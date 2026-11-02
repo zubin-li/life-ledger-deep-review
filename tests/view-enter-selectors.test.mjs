@@ -25,6 +25,20 @@ test("v210 view enter stagger targets the active view element (not a phantom anc
   assert.match(css, /journal-feed-entry--append/);
 });
 
+test("Batch 5 round 7 review metric motion and Today edit saved feedback", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const cards = fs.readFileSync(new URL("../public/today-cards.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 5 round 7 — review month\/metric motion/);
+  assert.match(css, /#reviewInsights \.rv-metrics\.is-retargeting/);
+  assert.match(css, /#weeklyResistance \.analytics-chart\.is-retargeting/);
+  assert.match(css, /\.tc-bar\.is-saved/);
+  assert.match(app, /pulseReviewInsightMotion/);
+  assert.match(app, /pulsePeriodicAnalyticsChart/);
+  assert.match(cards, /pulseEditSaved/);
+  assert.match(cards, /tc-drop-success/);
+});
+
 test("short viewport ledger keypad docks fixed while quick field focused", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   assert.match(css, /Batch 5 round 3 — dock keypad/);

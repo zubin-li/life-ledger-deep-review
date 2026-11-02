@@ -3374,3 +3374,109 @@ html.motion-reduced #weeklyGoalList .ll-week-all-done.ll-empty-enter {
     animation: none !important;
   }
 }
+
+/* Batch 5 round 7 — review month/metric motion, periodic chart retarget, Today edit saved */
+
+@media (prefers-reduced-motion: no-preference) {
+  #reviewTitle.is-retargeting > span {
+    animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #reviewInsights .rv-metrics.is-retargeting > article {
+    animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(2) { animation-delay: 35ms; }
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(3) { animation-delay: 70ms; }
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(4) { animation-delay: 105ms; }
+
+  #reviewView .review-habit-compare.is-retargeting .rv-bar i {
+    transform-origin: left center;
+    animation: rvAnalyticsBarGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--bar-i, 0) * 22ms);
+  }
+
+  #reviewView .review-habit-compare.is-retargeting tbody tr {
+    animation: llTimelineRowIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--spark-row-i, 0) * 28ms);
+  }
+
+  #weeklyResistance .analytics-chart.is-retargeting .analytics-bar {
+    transform-origin: center bottom;
+    animation: rvWeekdayGrow 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--series-i, 0) * 48ms + var(--bar-i, 0) * 10ms);
+  }
+
+  #weeklyResistance .analytics-chart.is-retargeting .analytics-point {
+    transform-origin: center;
+    animation: llCalDayIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--series-i, 0) * 40ms + var(--dot-i, 0) * 12ms);
+  }
+
+  #weeklyResistance .analytics-chart.is-retargeting .analytics-line {
+    stroke-dasharray: 420;
+    stroke-dashoffset: 420;
+    animation: insightPlotLineDraw 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) forwards;
+    animation-delay: calc(var(--series-i, 0) * 90ms);
+  }
+
+  .tc-bar.is-saved {
+    animation: tcBarSaved 620ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  .tc-bar .tc-done.tc-done--pulse {
+    animation: tcDonePulse 620ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  .tc-editing > .tc-card.tc-drop-success {
+    outline-color: color-mix(in srgb, var(--accent) 78%, transparent);
+    transition: outline-color 180ms ease;
+  }
+}
+
+@keyframes insightPlotLineDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tcBarSaved {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  45% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes tcDonePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+}
+
+html.motion-reduced #reviewTitle.is-retargeting > span,
+html.motion-reduced #reviewInsights .rv-metrics.is-retargeting > article,
+html.motion-reduced #reviewView .review-habit-compare.is-retargeting :is(.rv-bar i, tbody tr),
+html.motion-reduced #weeklyResistance .analytics-chart.is-retargeting :is(.analytics-bar, .analytics-line, .analytics-point),
+html.motion-reduced .tc-bar.is-saved,
+html.motion-reduced .tc-bar .tc-done.tc-done--pulse {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #reviewTitle.is-retargeting > span,
+  #reviewInsights .rv-metrics.is-retargeting > article,
+  #reviewView .review-habit-compare.is-retargeting :is(.rv-bar i, tbody tr),
+  #weeklyResistance .analytics-chart.is-retargeting :is(.analytics-bar, .analytics-line, .analytics-point),
+  .tc-bar.is-saved,
+  .tc-bar .tc-done.tc-done--pulse {
+    animation: none !important;
+  }
+}
