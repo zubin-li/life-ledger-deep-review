@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), "..");
 const app = fs.readFileSync(join(repo, "public/app.js"), "utf8");
-const css = fs.readFileSync(join(repo, "public/v231-review-ledger-retarget.css"), "utf8");
+const css = fs.readFileSync(join(repo, "public/v210.css"), "utf8");
 
 test("review ledger summary uses is-retargeting scopes and retarget hook", () => {
   assert.match(app, /review-ledger-stats is-retargeting/);
@@ -16,7 +16,7 @@ test("review ledger summary uses is-retargeting scopes and retarget hook", () =>
   assert.match(app, /retarget\?\.\(host\.querySelector\("\.review-ledger-stats\.is-retargeting"\)\)/);
 });
 
-test("v231 review ledger retarget stylesheet covers stats, scatter, insights", () => {
+test("v210 review ledger retarget rules cover stats, scatter, insights", () => {
   assert.match(css, /\.review-ledger-stats\.is-retargeting/);
   assert.match(css, /\.review-scatter-grid\.is-retargeting/);
   assert.match(css, /\.review-ledger-insights\.is-retargeting/);

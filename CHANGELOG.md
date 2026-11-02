@@ -31,6 +31,8 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Assets:** consolidated overnight styles `v211`–`v232` into a single `v210.css` (fewer `<link>` tags and SW cache entries; REVIEW #4).
+- **Today (Goal 2):** sidebar active pill fades in; habit check adds a brief accent ring on the habits card (`v210.css` round 3 section).
 - **Review:** heatmap-only legacy analytics path when the insight dashboard is active — no duplicate habit/weekday DOM in `#reviewHabitCompare` (`reviewUsesInsightPanels` in `app.js`).
 
 - **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v230`.

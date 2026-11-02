@@ -1,25 +1,26 @@
 # Overnight progress
 
-## Batch 4 · Round 2 — done
+## Batch 4 · Round 3 — done
 
-- **REVIEW #5（LOW）：** `npm test` 排除 `*.browser.test.mjs`；新增 `npm run test:browser`（4 个 Playwright 套件）；`tests/npm-scripts.test.mjs` 锁定脚本约定；README EN/ZH/DE 补充说明。
-- **Goal 2：** `v232-ledger-entry-feedback.css` — 快速录入表单 `is-success-flash`（接 v213）、新交易行 `is-enter`、提交按钮按压；`ledger-ui.js` 跟踪 `lastHighlightTxId`（添加/复制）。
-- **测试：** `npm test` **310 pass, 0 fail**；`npm run test:browser` **4 pass, 0 fail**（合计 314 用例，与拆分前 313+1 新脚本测试一致）。
-- **截图：** `capture-batch4-round2.mjs`（5295）→ `b4r2-ledger-entry-zh-light-1440-*`、`b4r2-ledger-quick-de-dark-390-*`（WebKit + Chromium）。
+- **REVIEW #4（LOW）：** 将 `v211`–`v232` 共 23 个样式文件合并进 `public/v210.css`（保留 `merged from …` 注释）；`index.html` 仅保留一条 `v210.css`；`sw.js` 的 `APP_SHELL` 与 `NETWORK_FIRST_SUFFIXES` 同步精简。
+- **测试：** 新增 `tests/css-consolidation.test.mjs`；`review-scatter-grid` / `ledger-chart-retarget` / `review-ledger-retarget` 改为断言 `v210.css`；`npm test` **312 pass, 0 fail**；`npm run test:browser` **4 pass, 0 fail**。
+- **Goal 2：** 侧栏 active 竖条淡入；Today 习惯卡 `just-checked` 短暂 accent 环（`v210.css` round 3 段）。
+- **文档：** `CHANGELOG [Unreleased] Changed`；`.overnight/CSS-LAYERS.md` 重写为单文件策略。
+- **截图：** `capture-batch4-round3.mjs`（5297）→ `b4r3-today-hero-zh-light-1440-*`、`b4r3-ledger-summary-de-dark-390-*`（WebKit + Chromium）。
 
 ## Half-done
 
 - （无）
 
-## Next（Round 3+）
+## Next（Round 4+）
 
-- REVIEW LOW #4：CSS `v211`–`v232` 合并进 `v210.css`（需整批改 `index.html`/`sw.js`）。
-- Goal 2：Today 其它卡片或习惯页再抛光；可选 CI 增加 `npm run test:browser` job。
+- Goal 2：本周/习惯库页再抛光，或复盘页空状态文案。
+- 可选：GitHub Actions 增加 `npm run test:browser` job。
 - fakecloud 浏览器完整同步/409 UI 仍可选 owner 本机 smoke。
 
 ## Known bugs / gaps
 
-- 极矮视口 dock/键盘：已加 padding，真机若仍重叠可再调 `v213`。
+- 极矮视口 dock/键盘：合并后规则仍在 `v210` 的 v213 段，真机若仍重叠可再调。
 - Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据而非 bug。
 - score-grid 在折叠的「详细指标」内，用户需点开 summary 才见。
 - 复盘 scatter 与 v216 初次渲染仍有一次 dot 动画（v231 在 `is-retargeting` 下覆盖）；可接受。
@@ -28,13 +29,20 @@
 ## npm test
 
 ```
-310 pass, 0 fail (batch 4 round 2, unit gate)
+312 pass, 0 fail (batch 4 round 3, unit gate)
 4 pass, 0 fail (test:browser)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 4 · Round 2 — done
+
+- **REVIEW #5（LOW）：** `npm test` 排除 `*.browser.test.mjs`；新增 `npm run test:browser`（4 个 Playwright 套件）；`tests/npm-scripts.test.mjs` 锁定脚本约定；README EN/ZH/DE 补充说明。
+- **Goal 2：** `v232-ledger-entry-feedback.css` — 快速录入表单 `is-success-flash`（接 v213）、新交易行 `is-enter`、提交按钮按压；`ledger-ui.js` 跟踪 `lastHighlightTxId`（添加/复制）。
+- **测试：** `npm test` **310 pass, 0 fail**；`npm run test:browser` **4 pass, 0 fail**（合计 314 用例，与拆分前 313+1 新脚本测试一致）。
+- **截图：** `capture-batch4-round2.mjs`（5295）→ `b4r2-ledger-entry-zh-light-1440-*`、`b4r2-ledger-quick-de-dark-390-*`（WebKit + Chromium）。
 
 ## Batch 4 · Round 1 — done
 
@@ -50,29 +58,8 @@ _pending (driver appends after commit)_
 ## Driver gate after round 1
 ℹ tests 313 ℹ pass 313 ℹ fail 0 
 
-## Batch 3 · Round 10 — done（收官）
-
-- **REVIEW.md：** 无待办 HIGH/MED（#1–#6 已在早期 batch 修复；本 round 未复现）。
-- **QA — fakecloud 端到端：** 修复 `fakecloud.sh`——scratch 改到 `/tmp/life-ledger-overnight-fakecloud`，避免继承 repo `wrangler.jsonc` 的 D1 绑定；手测 GET 404 → PUT `baseRevision:0`（含 ledger）→ GET 200 revision 1。
-- **文档：** `CHANGELOG [Unreleased]` 记录 fakecloud 目录修复。
-- **测试：** `fakecloud-stub.test.mjs` +1 → **310/310**。
-- **截图：** `capture-batch3-round10.mjs`（5296）→ `b3r10-ledger-donut-zh-light-1440-*`、`b3r10-today-spending-en-dark-390-*`。
-- **收官：** `REPORT.md` 总报告已更新；版本 2.1.0 / Mac 3.1.0 与 README/CHANGELOG 已核对。
-
-## Driver gate after round 6
-ℹ tests 302 ℹ pass 302 ℹ fail 0 
-
-## Driver gate after round 7
-ℹ tests 303 ℹ pass 303 ℹ fail 0 
-
-## Driver gate after round 8
-ℹ tests 305 ℹ pass 305 ℹ fail 0 
-
-## Driver gate after round 9
-ℹ tests 309 ℹ pass 309 ℹ fail 0 
-
-## Driver gate after round 10
-ℹ tests 310 ℹ pass 310 ℹ fail 0 
-
 ## Driver gate after round 2
 ℹ tests 310 ℹ pass 310 ℹ fail 0 
+
+## Driver gate after round 3
+ℹ tests 312 ℹ pass 312 ℹ fail 0 

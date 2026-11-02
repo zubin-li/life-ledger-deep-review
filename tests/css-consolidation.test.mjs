@@ -1,0 +1,22 @@
+import { readFileSync, existsSync } from "node:fs";
+import test from "node:test";
+import assert from "node:assert/strict";
+
+const index = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+const v210Links = [...index.matchAll(/href="\.\/v210\.css/g)];
+const splitV21Links = [...index.matchAll(/href="\.\/v21[1-9][^"]*\.css/g)];
+
+test("2.1 styles load from consolidated v210.css only", () => {
+  assert.equal(v210Links.length, 1, "expected exactly one v210.css link");
+  assert.equal(splitV21Links.length, 0, "v211+ split stylesheets should be removed from index.html");
+});
+
+test("legacy v211–v232 stylesheets are removed from public/", () => {
+  for (const name of [
+    "v211-polish.css",
+    "v232-ledger-entry-feedback.css",
+    "v231-review-ledger-retarget.css",
+  ]) {
+    assert.ok(!existsSync(new URL(`../public/${name}`, import.meta.url)), `${name} should be merged into v210.css`);
+  }
+});
