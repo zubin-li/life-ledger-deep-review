@@ -1,0 +1,62 @@
+/* Batch 2 round 6 — mobile jump chips for review scatter sections + scroll targets */
+
+.review-scatter-jump {
+  display: none;
+}
+
+@media (max-width: 959px) {
+  .review-scatter-jump {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+    padding-bottom: 0.15rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .review-scatter-jump::-webkit-scrollbar {
+    display: none;
+  }
+
+  .review-scatter-jump-chip {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0.38rem 0.72rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--hairline) 70%, transparent);
+    background: color-mix(in srgb, var(--surface-elevated, var(--bg)) 92%, var(--accent-soft, transparent) 8%);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  }
+
+  .review-scatter-jump-chip:active {
+    transform: scale(0.96);
+  }
+
+  .review-scatter-jump-chip:focus-visible {
+    outline: 2px solid var(--accent, #007aff);
+    outline-offset: 2px;
+  }
+
+  :is(#review-scatter-mood, #review-scatter-habit, #review-scatter-focus, #review-ledger-insights) {
+    scroll-margin-top: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-scatter-jump-chip {
+    transition: none;
+  }
+
+  .review-scatter-jump-chip:active {
+    transform: none;
+  }
+}

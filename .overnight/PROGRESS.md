@@ -1,21 +1,22 @@
 # Overnight progress
 
-## Batch 2 · Round 5 — done
+## Batch 2 · Round 6 — done
 
 - **REVIEW.md：** 仍为空（`status: failed`），无 HIGH/MED。
-- **复盘洞察小标题：** 三句 mood/habit/focus 对比文案增加 `review-ledger-insight-kicker`（心情 / Habits / Fokus 三语），正文在 `review-ledger-insight-body`。
-- **移动端复盘：** `v220-review-mobile.css` — 散点全宽、更紧分隔与 legend；洞察卡片间距；冲突合并预览在 ≤480px 略放大字号。
-- **截图：** `review-scatter-grid-zh-light-390.png`、`review-scatter-grid-webkit-zh-light-390.png`、`import-conflict-ledger-preview-light-390.png`（`capture-round5.mjs`，`language-preference-set` + 从 `public/` 起服）。
-- **npm test：** **277/277** 通过（契约测试扩展 kicker + v220）。
+- **复盘移动跳转：** 统计行下方增加 `review-scatter-jump` 药丸按钮（心情 / 习惯 / 专注 / 洞察，三语），`scrollIntoView` + `scroll-margin-top`；宽屏 ≥960px 隐藏（`v221-review-scatter-jump.css`）。
+- **复盘金额动画：** 切换复盘月份时，支出/收入/结余复用 `LifeLedgerInteraction.rollText`（与 Today 支出卡一致）。
+- **锚点：** `#review-scatter-mood|habit|focus`、`#review-ledger-insights`（`tabindex="-1"` 便于 focus）。
+- **截图：** `review-scatter-jump-zh-light-390.png`、`review-scatter-jump-webkit-zh-light-390.png`、`review-scatter-fullpage-de-dark-390.png`（整页）、`review-scatter-jump-light-1440.png`（无跳转条）；`capture-round6.mjs`，端口 5293。
+- **npm test：** **277/277** 通过（契约扩展 jump nav + v221）。
 
 ## Half-done
 
 - （无）
 
-## Next (round 6+)
+## Next (round 7+)
 
 - fakecloud 仍缺 repo-root `functions/`（overnight clone 限制）。
-- 可选：复盘 mobile 首屏同时露出第一张散点（当前 WebKit 截图为摘要 + 散点顶部）；Chromium 390 中文整页 scroll 截图。
+- 可选：点击跳转 chip 后的 active 态；复盘月份 roll 的 Playwright 断言。
 
 ## Known bugs / gaps
 
@@ -25,7 +26,7 @@
 ## npm test
 
 ```
-277 pass, 0 fail (batch 2 round 5)
+277 pass, 0 fail (batch 2 round 6)
 ```
 
 ## Gate result
@@ -52,6 +53,10 @@ _pending (driver appends after commit)_
 
 复盘散点宽屏三列 + insight 栈 — gate 277 pass.
 
+## Batch 2 Round 5 summary
+
+移动 insight kicker + v220 冲突预览字号 — gate 277 pass.
+
 ## Driver gate after round 1
 ℹ tests 272 ℹ pass 272 ℹ fail 0 
 
@@ -65,4 +70,7 @@ _pending (driver appends after commit)_
 ℹ tests 277 ℹ pass 277 ℹ fail 0 
 
 ## Driver gate after round 5
+ℹ tests 277 ℹ pass 277 ℹ fail 0 
+
+## Driver gate after round 6
 ℹ tests 277 ℹ pass 277 ℹ fail 0 

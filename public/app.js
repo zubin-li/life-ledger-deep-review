@@ -8045,7 +8045,7 @@ function renderReviewLedgerSummary() {
           : languageText("低落", "Low", "Schwer");
       return `<span class="review-mood-scatter-legend-item" data-mood="${escapeHtml(mood)}">${escapeHtml(label)}</span>`;
     }).join("");
-    moodScatterBlock = `<div class="review-mood-scatter-wrap">
+    moodScatterBlock = `<div class="review-mood-scatter-wrap" id="review-scatter-mood" tabindex="-1">
       <p class="review-mood-scatter-caption">${escapeHtml(languageText("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben"))}</p>
       ${scatterSvg}
       <div class="review-mood-scatter-legend" aria-hidden="true">${legend}</div>
@@ -8058,7 +8058,7 @@ function renderReviewLedgerSummary() {
       { band: "high", label: languageText("习惯完成高", "High habit completion", "Hohe Gewohnheitsquote") },
       { band: "low", label: languageText("习惯完成低", "Low habit completion", "Niedrige Gewohnheitsquote") },
     ].map(({ band, label }) => `<span class="review-habit-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
-    habitScatterBlock = `<div class="review-habit-scatter-wrap">
+    habitScatterBlock = `<div class="review-habit-scatter-wrap" id="review-scatter-habit" tabindex="-1">
       <p class="review-habit-scatter-caption">${escapeHtml(languageText("习惯完成度与当日支出", "Habit completion vs daily spending", "Gewohnheitsquote und Tagesausgaben"))}</p>
       ${habitSvg}
       <div class="review-habit-scatter-legend" aria-hidden="true">${habitLegend}</div>
@@ -8071,7 +8071,7 @@ function renderReviewLedgerSummary() {
       { band: "high", label: languageText("专注较多", "More focus time", "Mehr Fokuszeit") },
       { band: "low", label: languageText("专注较少", "Less focus time", "Weniger Fokuszeit") },
     ].map(({ band, label }) => `<span class="review-focus-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
-    focusScatterBlock = `<div class="review-focus-scatter-wrap">
+    focusScatterBlock = `<div class="review-focus-scatter-wrap" id="review-scatter-focus" tabindex="-1">
       <p class="review-focus-scatter-caption">${escapeHtml(languageText("专注时长与当日支出", "Focus time vs daily spending", "Fokuszeit und Tagesausgaben"))}</p>
       ${focusSvg}
       <div class="review-focus-scatter-legend" aria-hidden="true">${focusLegend}</div>
@@ -8113,17 +8113,45 @@ function renderReviewLedgerSummary() {
     : "";
   const insightParts = [moodLine, habitLine, focusLine].filter(Boolean);
   const insightSection = insightParts.length
-    ? `<div class="review-ledger-insights">${insightParts.join("")}</div>`
+    ? `<div class="review-ledger-insights" id="review-ledger-insights" tabindex="-1">${insightParts.join("")}</div>`
+    : "";
+  const spendText = L.formatMoney(summary.expenseMinor, cur, locale);
+  const incomeText = L.formatMoney(summary.incomeMinor, cur, locale);
+  const netText = L.formatMoney(summary.netMinor, cur, locale);
+  const jumpLabel = (id, label) => `<button type="button" class="review-scatter-jump-chip" data-review-scatter-jump="${id}">${escapeHtml(label)}</button>`;
+  const jumpChips = [];
+  if (moodScatter) jumpChips.push(jumpLabel("review-scatter-mood", languageText("心情", "Mood", "Stimmung")));
+  if (habitScatter) jumpChips.push(jumpLabel("review-scatter-habit", languageText("习惯", "Habits", "Gewohnheiten")));
+  if (focusScatter) jumpChips.push(jumpLabel("review-scatter-focus", languageText("专注", "Focus", "Fokus")));
+  if (insightParts.length) jumpChips.push(jumpLabel("review-ledger-insights", languageText("洞察", "Insights", "Einblicke")));
+  const jumpNav = jumpChips.length >= 2
+    ? `<nav class="review-scatter-jump" aria-label="${escapeHtml(languageText("本月相关图表", "Monthly chart sections", "Monatsdiagramme"))}">${jumpChips.join("")}</nav>`
     : "";
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
     <div class="review-ledger-stats">
-      <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
-      <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
-      <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${scatterSection}${insightSection}</article>`;
+      <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
+      <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
+      <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
+    </div>${jumpNav}${scatterSection}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
+  const roll = globalThis.LifeLedgerInteraction?.rollText;
+  const statKeys = ["reviewStatSpend", "reviewStatIncome", "reviewStatNet"];
+  const statTexts = [spendText, incomeText, netText];
+  host.querySelectorAll(".review-ledger-stats strong").forEach((el, i) => {
+    const prev = host.dataset[statKeys[i]] || "";
+    if (roll && prev && prev !== statTexts[i]) roll(el, statTexts[i], prev);
+    host.dataset[statKeys[i]] = statTexts[i];
+  });
+  const motionReduced = document.documentElement.classList.contains("motion-reduced");
+  host.querySelectorAll("[data-review-scatter-jump]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = document.getElementById(btn.getAttribute("data-review-scatter-jump"));
+      target?.scrollIntoView({ behavior: motionReduced ? "auto" : "smooth", block: "nearest" });
+      target?.focus?.({ preventScroll: true });
+    });
+  });
 }
 
 function analyticsApi() {
