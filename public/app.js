@@ -8375,6 +8375,68 @@ function disconnectReviewScatterJumpSpy(host) {
   }
 }
 
+function hideReviewScatterTip(host) {
+  const tip = host?.querySelector(".review-scatter-tip");
+  if (tip) {
+    tip.hidden = true;
+    tip.setAttribute("aria-hidden", "true");
+  }
+  host?.querySelectorAll(".review-scatter-dot-hit.is-active").forEach(el => el.classList.remove("is-active"));
+}
+
+function bindReviewScatterDotTips(host) {
+  const grid = host?.querySelector(".review-scatter-grid");
+  if (!grid) return;
+  let tip = grid.querySelector(".review-scatter-tip");
+  if (!tip) {
+    tip = document.createElement("div");
+    tip.className = "review-scatter-tip";
+    tip.hidden = true;
+    tip.setAttribute("aria-hidden", "true");
+    tip.innerHTML = "<strong></strong><span></span>";
+    grid.appendChild(tip);
+  }
+  if (host._scatterTipOver) {
+    grid.removeEventListener("pointerover", host._scatterTipOver);
+    grid.removeEventListener("pointermove", host._scatterTipMove);
+    grid.removeEventListener("pointerleave", host._scatterTipLeave);
+  }
+  const placeTip = (dot, clientX, clientY) => {
+    const strong = tip.querySelector("strong");
+    const span = tip.querySelector("span");
+    if (strong) strong.textContent = dot.dataset.tipLine1 || "";
+    if (span) span.textContent = dot.dataset.tipLine2 || "";
+    tip.hidden = false;
+    tip.removeAttribute("aria-hidden");
+    const gridRect = grid.getBoundingClientRect();
+    const x = Math.min(Math.max(clientX - gridRect.left, 12), gridRect.width - 12);
+    const y = Math.max(clientY - gridRect.top - 8, 12);
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+    grid.querySelectorAll(".review-scatter-dot-hit.is-active").forEach(el => el.classList.remove("is-active"));
+    dot.classList.add("is-active");
+    const live = host.querySelector(".review-scatter-live");
+    if (live) live.textContent = `${dot.dataset.tipLine1 || ""} — ${dot.dataset.tipLine2 || ""}`.trim();
+  };
+  host._scatterTipOver = event => {
+    const dot = event.target.closest?.(".review-scatter-dot-hit");
+    if (!dot || !grid.contains(dot)) {
+      hideReviewScatterTip(host);
+      return;
+    }
+    placeTip(dot, event.clientX, event.clientY);
+  };
+  host._scatterTipMove = event => {
+    const dot = event.target.closest?.(".review-scatter-dot-hit");
+    if (!dot || !grid.contains(dot)) return;
+    placeTip(dot, event.clientX, event.clientY);
+  };
+  host._scatterTipLeave = () => hideReviewScatterTip(host);
+  grid.addEventListener("pointerover", host._scatterTipOver);
+  grid.addEventListener("pointermove", host._scatterTipMove);
+  grid.addEventListener("pointerleave", host._scatterTipLeave);
+}
+
 function bindReviewScatterJumpSpy(panel) {
   const nav = panel?.querySelector(".review-scatter-jump");
   if (!nav) return;
@@ -8468,9 +8530,10 @@ function renderReviewLedgerSummary() {
   const focusScatter = L.focusSpendScatter(dailyRows);
   const focusCompare = L.focusSpendInsight(dailyRows);
   const habitCompare = L.habitCompletionSpendInsight(dailyRows);
+  const scatterRenderOpts = { lang: currentLang, locale, currency: cur };
   let moodScatterBlock = "";
   if (moodScatter) {
-    const scatterSvg = L.renderMoodSpendScatterSvg(moodScatter);
+    const scatterSvg = L.renderMoodSpendScatterSvg(moodScatter, scatterRenderOpts);
     const legend = moodScatter.moodOrder.map(mood => {
       const label = mood === "很好"
         ? languageText("很好", "Good", "Gut")
@@ -8487,7 +8550,7 @@ function renderReviewLedgerSummary() {
   }
   let habitScatterBlock = "";
   if (habitScatter) {
-    const habitSvg = L.renderHabitCompletionSpendScatterSvg(habitScatter);
+    const habitSvg = L.renderHabitCompletionSpendScatterSvg(habitScatter, scatterRenderOpts);
     const habitLegend = [
       { band: "high", label: languageText("习惯完成高", "High habit completion", "Hohe Gewohnheitsquote") },
       { band: "low", label: languageText("习惯完成低", "Low habit completion", "Niedrige Gewohnheitsquote") },
@@ -8500,7 +8563,7 @@ function renderReviewLedgerSummary() {
   }
   let focusScatterBlock = "";
   if (focusScatter) {
-    const focusSvg = L.renderFocusSpendScatterSvg(focusScatter);
+    const focusSvg = L.renderFocusSpendScatterSvg(focusScatter, scatterRenderOpts);
     const focusLegend = [
       { band: "high", label: languageText("专注较多", "More focus time", "Mehr Fokuszeit") },
       { band: "low", label: languageText("专注较少", "Less focus time", "Weniger Fokuszeit") },
@@ -8642,7 +8705,7 @@ function renderReviewLedgerSummary() {
   }
   const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
   const scatterSection = scatterParts.length
-    ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}</div>`
+    ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div></div>`
     : "";
   const insightParts = [moodLine, habitLine, focusLine, budgetLine].filter(Boolean);
   const insightSection = insightParts.length
@@ -8711,6 +8774,7 @@ function renderReviewLedgerSummary() {
       target?.focus?.({ preventScroll: true });
     });
   });
+  bindReviewScatterDotTips(host);
   bindReviewScatterJumpSpy(host);
   requestAnimationFrame(() => {
     const retarget = globalThis.LifeLedgerInteraction?.retarget;
@@ -9020,17 +9084,27 @@ function habitMonthSparkSvg(habit, dates, options = {}) {
   const bw = Math.max(1, (w - gap * (n - 1)) / n);
   let x = 0;
   let i = 0;
+  const doneLabel = languageText("已完成", "Done", "Erledigt");
+  const missLabel = languageText("未完成", "Missed", "Offen");
+  const gapLabel = languageText("未计划", "Not planned", "Nicht geplant");
+  const sparkTitle = (date, planned, done) => {
+    const dateLabel = formatLocalizedDate(parseDate(date), { month: "short", day: "numeric" });
+    const status = !planned ? gapLabel : done ? doneLabel : missLabel;
+    return `${dateLabel} · ${status}`;
+  };
+  const xmlTitle = value => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   const rects = dates.map(date => {
     const planned = versionFor(habit, date) && countsTowardDaily(habit, date);
     const rx = x;
     x += bw + gap;
     const idx = i++;
     const delay = animate ? ` style="--spark-i:${idx}"` : "";
-    if (!planned) return `<rect x="${rx.toFixed(1)}" y="${h - 3}" width="${bw.toFixed(1)}" height="3" class="rv-spark-gap"${delay}/>`;
+    const title = `<title>${xmlTitle(sparkTitle(date, planned, planned && getLog(date).completed.includes(habit.id)))}</title>`;
+    if (!planned) return `<rect x="${rx.toFixed(1)}" y="${h - 3}" width="${bw.toFixed(1)}" height="3" class="rv-spark-gap"${delay}>${title}</rect>`;
     const done = getLog(date).completed.includes(habit.id);
     const barH = done ? h - 3 : 4;
     const y = done ? 1 : h - barH - 1;
-    return `<rect x="${rx.toFixed(1)}" y="${y}" width="${bw.toFixed(1)}" height="${barH}" class="${done ? "rv-spark-on" : "rv-spark-miss"}"${delay}/>`;
+    return `<rect x="${rx.toFixed(1)}" y="${y}" width="${bw.toFixed(1)}" height="${barH}" class="${done ? "rv-spark-on" : "rv-spark-miss"}"${delay}>${title}</rect>`;
   }).join("");
   const sparkClass = animate ? " rv-habit-spark--enter" : "";
   return `<svg class="rv-habit-spark${sparkClass}" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${escapeHtml(displayHabitName(habit))}"><g>${rects}</g></svg>`;

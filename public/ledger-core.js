@@ -595,6 +595,85 @@
   const MOOD_SCATTER_ORDER = ["很好", "平静", "低落"];
   const MOOD_SCATTER_COLORS = { 很好: "#34c759", 平静: "#64d2ff", 低落: "#ff9f0a" };
 
+  function scatterTipAttrEsc(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function scatterTipLocale(lang) {
+    const code = String(lang || "en").slice(0, 2);
+    if (code === "zh") return "zh-CN";
+    if (code === "de") return "de-DE";
+    return "en-GB";
+  }
+
+  function formatScatterTipDate(iso, locale) {
+    if (!ISO_DATE.test(iso)) return iso;
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, m - 1, d, 12);
+    return new Intl.DateTimeFormat(locale || "de-DE", { month: "short", day: "numeric" }).format(dt);
+  }
+
+  function moodScatterDisplayLabel(mood, lang) {
+    const code = String(lang || "en").slice(0, 2);
+    if (mood === "很好") return code === "zh" ? "很好" : code === "de" ? "Gut" : "Good";
+    if (mood === "平静") return code === "zh" ? "平静" : code === "de" ? "Ruhig" : "Calm";
+    if (mood === "低落") return code === "zh" ? "低落" : code === "de" ? "Schwer" : "Low";
+    return mood;
+  }
+
+  function moodScatterTipLines(point, options = {}) {
+    const locale = options.locale || scatterTipLocale(options.lang);
+    const currency = options.currency || "EUR";
+    const spend = formatMoney(-Math.abs(point.spendMinor), currency, locale);
+    const mood = moodScatterDisplayLabel(point.mood, options.lang);
+    return {
+      line1: formatScatterTipDate(point.date, locale),
+      line2: `${spend} · ${mood}`,
+    };
+  }
+
+  function habitScatterTipLines(point, options = {}) {
+    const locale = options.locale || scatterTipLocale(options.lang);
+    const currency = options.currency || "EUR";
+    const spend = formatMoney(-Math.abs(point.spendMinor), currency, locale);
+    const pct = `${point.completionPercent}%`;
+    const code = String(options.lang || "en").slice(0, 2);
+    const habitsLabel = code === "zh" ? "习惯" : code === "de" ? "Gewohnheiten" : "Habits";
+    return {
+      line1: formatScatterTipDate(point.date, locale),
+      line2: `${spend} · ${pct} ${habitsLabel}`,
+    };
+  }
+
+  function focusScatterTipLines(point, options = {}) {
+    const locale = options.locale || scatterTipLocale(options.lang);
+    const currency = options.currency || "EUR";
+    const spend = formatMoney(-Math.abs(point.spendMinor), currency, locale);
+    const code = String(options.lang || "en").slice(0, 2);
+    const mins = Math.round(point.focusMinutes);
+    const focusLabel = code === "zh"
+      ? `${mins} 分钟专注`
+      : code === "de"
+        ? `${mins} Min. Fokus`
+        : `${mins} min focus`;
+    return {
+      line1: formatScatterTipDate(point.date, locale),
+      line2: `${spend} · ${focusLabel}`,
+    };
+  }
+
+  function scatterDotMarkup({ x, y, color, index, className, line1, line2 }) {
+    const cx = x.toFixed(1);
+    const cy = y.toFixed(1);
+    const l1 = scatterTipAttrEsc(line1);
+    const l2 = scatterTipAttrEsc(line2);
+    const aria = scatterTipAttrEsc(`${line1} — ${line2}`);
+    return `<g class="review-scatter-dot-group" style="--dot-i:${index}"><circle class="review-scatter-dot-hit" cx="${cx}" cy="${cy}" r="9" fill="transparent" data-tip-line1="${l1}" data-tip-line2="${l2}" aria-label="${aria}" tabindex="-1"/><circle class="${className}" cx="${cx}" cy="${cy}" r="4.5" fill="${color}" opacity="0.82" pointer-events="none"/></g>`;
+  }
+
   /** Daily mood vs spend points for a compact review scatter (needs ≥3 spending days with mood). */
   function moodSpendScatter(dailyRows, options = {}) {
     const moodOrder = options.moodOrder || MOOD_SCATTER_ORDER;
@@ -627,18 +706,28 @@
     const plotH = height - pad.top - pad.bottom;
     const slots = scatter.moodOrder.length;
     const maxSpend = Math.max(1, scatter.maxSpend);
+    const tipOpts = { lang: options.lang, locale: options.locale, currency: options.currency };
     const dots = scatter.points.map((p, i) => {
       const xSlot = (p.moodIndex + 0.5) / slots;
       const x = pad.left + xSlot * plotW + p.jitter * (plotW / slots) * 0.35;
       const y = pad.top + plotH - (p.spendMinor / maxSpend) * plotH;
       const color = MOOD_SCATTER_COLORS[p.mood] || "#888";
-      return `<circle class="review-mood-scatter-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" opacity="0.82" style="--dot-i:${i}"/>`;
+      const tip = moodScatterTipLines(p, tipOpts);
+      return scatterDotMarkup({
+        x,
+        y,
+        color,
+        index: i,
+        className: "review-mood-scatter-dot",
+        line1: tip.line1,
+        line2: tip.line2,
+      });
     }).join("");
     const guides = scatter.moodOrder.map((mood, i) => {
       const x = pad.left + ((i + 0.5) / slots) * plotW;
       return `<line class="review-mood-scatter-guide" x1="${x.toFixed(1)}" y1="${pad.top}" x2="${x.toFixed(1)}" y2="${pad.top + plotH}" stroke="currentColor" stroke-opacity="0.08"/>`;
     }).join("");
-    return `<svg class="review-mood-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${guides}${dots}</svg>`;
+    return `<svg class="review-mood-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-label="">${guides}${dots}</svg>`;
   }
 
   const HABIT_SCATTER_COLORS = { high: "#6f8f7d", mid: "#9aa8a0", low: "#e07a5f" };
@@ -682,15 +771,25 @@
     const zones = `<rect x="${pad.left}" y="${pad.top}" width="${Math.max(0, loX - pad.left).toFixed(1)}" height="${plotH}" fill="${HABIT_SCATTER_COLORS.low}" opacity="0.06"/>
       <rect x="${loX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, hiX - loX).toFixed(1)}" height="${plotH}" fill="${HABIT_SCATTER_COLORS.mid}" opacity="0.05"/>
       <rect x="${hiX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, pad.left + plotW - hiX).toFixed(1)}" height="${plotH}" fill="${HABIT_SCATTER_COLORS.high}" opacity="0.08"/>`;
+    const tipOpts = { lang: options.lang, locale: options.locale, currency: options.currency };
     const dots = scatter.points.map((p, i) => {
       const xNorm = Math.max(0, Math.min(100, p.completionPercent)) / 100;
       const x = pad.left + xNorm * plotW + p.jitter * 4;
       const y = pad.top + plotH - (p.spendMinor / maxSpend) * plotH;
       const color = HABIT_SCATTER_COLORS[p.band] || HABIT_SCATTER_COLORS.mid;
-      return `<circle class="review-habit-scatter-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" opacity="0.82" style="--dot-i:${i}"/>`;
+      const tip = habitScatterTipLines(p, tipOpts);
+      return scatterDotMarkup({
+        x,
+        y,
+        color,
+        index: i,
+        className: "review-habit-scatter-dot",
+        line1: tip.line1,
+        line2: tip.line2,
+      });
     }).join("");
     const axis = `<line x1="${pad.left}" y1="${pad.top + plotH}" x2="${pad.left + plotW}" y2="${pad.top + plotH}" stroke="currentColor" stroke-opacity="0.12"/>`;
-    return `<svg class="review-habit-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${zones}${axis}${dots}</svg>`;
+    return `<svg class="review-habit-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-label="">${zones}${axis}${dots}</svg>`;
   }
 
   const FOCUS_SCATTER_COLORS = { high: "#7c6fd6", mid: "#9aa8c8", low: "#c4b5fd" };
@@ -737,15 +836,25 @@
     const zones = `<rect x="${pad.left}" y="${pad.top}" width="${Math.max(0, loX - pad.left).toFixed(1)}" height="${plotH}" fill="${FOCUS_SCATTER_COLORS.low}" opacity="0.07"/>
       <rect x="${loX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, hiX - loX).toFixed(1)}" height="${plotH}" fill="${FOCUS_SCATTER_COLORS.mid}" opacity="0.05"/>
       <rect x="${hiX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, pad.left + plotW - hiX).toFixed(1)}" height="${plotH}" fill="${FOCUS_SCATTER_COLORS.high}" opacity="0.1"/>`;
+    const tipOpts = { lang: options.lang, locale: options.locale, currency: options.currency };
     const dots = scatter.points.map((p, i) => {
       const xNorm = Math.max(0, Math.min(maxFocus, p.focusMinutes)) / maxFocus;
       const x = pad.left + xNorm * plotW + p.jitter * 4;
       const y = pad.top + plotH - (p.spendMinor / maxSpend) * plotH;
       const color = FOCUS_SCATTER_COLORS[p.band] || FOCUS_SCATTER_COLORS.mid;
-      return `<circle class="review-focus-scatter-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" opacity="0.82" style="--dot-i:${i}"/>`;
+      const tip = focusScatterTipLines(p, tipOpts);
+      return scatterDotMarkup({
+        x,
+        y,
+        color,
+        index: i,
+        className: "review-focus-scatter-dot",
+        line1: tip.line1,
+        line2: tip.line2,
+      });
     }).join("");
     const axis = `<line x1="${pad.left}" y1="${pad.top + plotH}" x2="${pad.left + plotW}" y2="${pad.top + plotH}" stroke="currentColor" stroke-opacity="0.12"/>`;
-    return `<svg class="review-focus-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${zones}${axis}${dots}</svg>`;
+    return `<svg class="review-focus-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-label="">${zones}${axis}${dots}</svg>`;
   }
 
   function ledgerStatsSnapshot(ledger, options = {}) {
@@ -1624,6 +1733,9 @@
     moodSpendComparison,
     spendInsightDeltaPercent,
     moodSpendScatter,
+    moodScatterTipLines,
+    habitScatterTipLines,
+    focusScatterTipLines,
     renderMoodSpendScatterSvg,
     habitCompletionSpendScatter,
     renderHabitCompletionSpendScatterSvg,

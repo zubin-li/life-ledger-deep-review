@@ -6,6 +6,7 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Review Money scatter:** hover/focus readout on mood/habit/focus dots (date, spend, context); habit spark bars show per-day `<title>` tooltips.
 - **Ledger categories:** default-category repair no longer treats user categories as built-ins when only the Chinese/German label collides (`defaultSlug` + icon/color match).
 - **Review:** weekly/monthly habit rows use card layout and staggered enter on the visible monthly review panel.
 - **Today:** hero quote and date chip gently retarget when browsing other days (`is-day-retarget`).

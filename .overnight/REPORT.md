@@ -1,12 +1,28 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 7）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 7：** 自定义分类不再被默认分类误修复；复盘周/月习惯卡片可见；Today 换日 hero 轻动效；README 手机行含记账图。
+**Batch 6 Round 8：** 复盘 Money 区三张 scatter 图支持悬停读数；习惯对比表的 spark 条可查看每日完成状态。
 
 ---
 
-## 本轮（Batch 6 · Round 7）改动
+## 本轮（Batch 6 · Round 8）改动
+
+| 项目 | 说明 |
+|------|------|
+| **Scatter 读数** | 心情 / 习惯 / 专注 vs 支出散点：透明 hit 区 + 不透明浮动 tip（日期、金额、第三维标签）；屏幕阅读器 `review-scatter-live` 同步。 |
+| **习惯 spark** | `#reviewHabitCompare` 迷你条每格 SVG `<title>`（三语日期 + 完成/未完成/未计划）；hover 时完成/未完成条略提亮。 |
+| **REVIEW 审查** | 历史 MED 项已在早期轮次修复；本轮未复现新问题。 |
+| **测试** | 单元 **349 pass**；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b6r8-*`（含 tip 可见的 `b6r8-scatter-tip-en-light-1440-chromium.png`）。重拍：`node .overnight/capture-batch6-round8.mjs`（**5298**）。 |
+
+**去哪点：** `?local-preview=demo-showcase-v1` → **复盘** → 滚到 **本月支出摘要** → 在 **Mood vs daily spending** 等散点图上移动鼠标/手指，应出现白底 tip；再向下看 **每个习惯** 表格，悬停 **每日**  spark 条可看原生 tooltip。
+
+**已知遗留：** inspector 习惯表仍隐藏；scatter 点尚未做 Tab 键逐点聚焦。
+
+---
+
+## 上一轮（Batch 6 · Round 7）改动
 
 | 项目 | 说明 |
 |------|------|

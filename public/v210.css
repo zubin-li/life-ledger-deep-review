@@ -3828,3 +3828,79 @@ html.motion-reduced .hero-card.is-day-retarget .hero-copy h2,
 html.motion-reduced .hero-card.is-day-retarget .date-chip {
   animation: none !important;
 }
+
+/* Batch 6 round 8 — review scatter dot readout + habit spark hover */
+.review-scatter-grid {
+  position: relative;
+}
+
+.review-scatter-tip {
+  position: absolute;
+  z-index: 12;
+  pointer-events: none;
+  padding: 0.35rem 0.55rem;
+  border-radius: 10px;
+  background: var(--surface-elevated, #fff);
+  border: 1px solid color-mix(in srgb, var(--hairline) 80%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--ink, #000) 12%, transparent);
+  display: grid;
+  gap: 0.1rem;
+  max-width: min(240px, 92vw);
+  transform: translate(-50%, -100%);
+}
+
+html[data-theme="dark"] .review-scatter-tip {
+  background: #151b24;
+}
+
+.review-scatter-tip strong {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.review-scatter-tip span {
+  font-size: 0.78rem;
+  color: var(--secondaryLabel, var(--muted));
+}
+
+.review-scatter-dot-hit {
+  cursor: default;
+}
+
+.review-scatter-dot-hit.is-active + circle {
+  stroke: color-mix(in srgb, var(--ink) 35%, transparent);
+  stroke-width: 1.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .review-scatter-dot-group circle:last-child {
+    transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 160ms ease;
+  }
+
+  .review-scatter-dot-hit.is-active + circle {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+
+#reviewView .rv-habit-spark rect.rv-spark-on,
+#reviewView .rv-habit-spark rect.rv-spark-miss {
+  transition: fill 140ms ease, opacity 140ms ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #reviewView .rv-habit-spark:hover rect.rv-spark-on {
+    fill: color-mix(in srgb, var(--sage) 92%, #fff);
+  }
+
+  #reviewView .rv-habit-spark:hover rect.rv-spark-miss {
+    opacity: 0.72;
+  }
+}
+
+html.motion-reduced .review-scatter-dot-group circle:last-child,
+html.motion-reduced #reviewView .rv-habit-spark rect {
+  transition: none !important;
+}

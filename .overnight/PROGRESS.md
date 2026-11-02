@@ -1,5 +1,40 @@
 # Overnight progress
 
+## Batch 6 · Round 8 — done
+
+- **REVIEW.md：** Round 1–2 的 MED/LOW 项此前已修（分类 `name`、CSV 引号/尾减号、滑动删除 vertical 阈值、Esc/背景、Mac ledger 步进、CNY 汇总提示）；本轮无新增 HIGH/MED 待修。
+- **复盘 scatter：** mood/habit/focus 散点加大透明 hit 区 + 浮动 `.review-scatter-tip`（日期 + 支出 + 语境）；`aria-live` 同步读数；`ledger-core` 导出 `*ScatterTipLines`。
+- **习惯 spark：** 复盘表格迷你条每格 `<title>`（日期 · 完成/未完成/未计划）+ hover 填色微调。
+- **测试：** 单元 **349 pass**（scatter tip 断言）；浏览器 **8 pass**。
+- **验收截图：** `node .overnight/capture-batch6-round8.mjs`（**5298**）→ `b6r8-scatter-tip-*`、`b6r8-habit-spark-*`。
+
+## Half-done
+
+- （无）
+
+## Next（Round 9–10）
+
+- 可选：scatter 键盘 Tab 聚焦各点（当前 tabindex=-1 仅配合 hit 区）。
+- `#inspectorReviewTable` 仍被 `pages-858` 隐藏；合并到主面板需单独任务。
+- Round 10 收尾：`REPORT.md` 总览、showcase 图若需再对齐。
+
+## Known bugs / gaps
+
+- 并行 fakecloud / 未清 wrangler 时 browser 套件可能超时（清进程后 8 pass）。
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- showcase 演示数据经 demo align 函数塑造洞察；真实用户数据不受影响。
+
+## npm test
+
+```
+349 pass, 0 fail (batch 6 round 8, unit gate)
+8 pass, 0 fail (test:browser)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 6 · Round 7 — done
 
 - **REVIEW.md：** 无新 HIGH/MED；Round 1–2 审查项仍有效。
@@ -9,42 +44,6 @@
 - **README：** 英/中/德 mobile 行增加第四张 `08-ledger-v21`（22% 四列）。
 - **测试：** 单元 **349 pass**（+1）；浏览器 **8 pass**（首轮 fakecloud 冲突用例超时，清 wrangler 后通过）。
 - **验收截图：** `node .overnight/capture-batch6-round7.mjs`（**5299**）→ `b6r7-review-period-*`、`b6r7-today-hero-roll-*`、`b6r7-ledger-de-dark-390-*`。
-
-## Half-done
-
-- （无）
-
-## Next（Round 8+）
-
-- 复盘 scatter 点 hover 读数 / 习惯 spark 再抛光（可选）。
-- `#inspectorReviewTable` 仍被 `pages-858` 隐藏；若需合并到主面板可单独开任务。
-
-## Known bugs / gaps
-
-- 并行 fakecloud / 未清 wrangler 时 browser 套件可能超时（清进程后 8 pass）。
-- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
-- showcase 演示数据经 demo align 函数塑造洞察；真实用户数据不受影响。
-- 旧版曾在中文界面 seed 且 `name` 被写成中文的分类，仍依赖 `repairDefaultCategoryNames`（icon/color 与默认一致时）。
-
-## npm test
-
-```
-349 pass, 0 fail (batch 6 round 7, unit gate)
-8 pass, 0 fail (test:browser, after wrangler cleanup)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
-
-## Batch 6 · Round 6 — done
-
-- **REVIEW.md：** 无新 HIGH/MED；Round 1–2 已修项未复现。
-- **Demo · 预算心情第二句：** 新增 `alignDemoMoodWithBudgetOverspend`（在 `alignDemoMoodWithSpend` 之后），showcase 种子数据在超支分类支出日偏向「很好/平静」，复盘 **Budget** 行可出现「很好/平静」follow-up（`.review-ledger-insight-delta`）。
-- **Inspector 有数据：** `#inspectorReviewTable` 习惯分行卡片化 + `--enter` 交错（`v210.css`）；注：当前复盘页 CSS 隐藏 `.review-score-table`（`pages-858` / `#reviewView`），线上 UI 以 **Monthly review** 主面板为准，details 块为遗留 DOM。
-- **README hero：** 英/中/德顶图换为 `08-ledger-v21`（2.1 记账）。
-- **测试：** 单元 **348 pass**（+1）；浏览器 **8 pass**。
-- **验收截图：** `node .overnight/capture-batch6-round6.mjs`（**5298**）→ `b6r6-review-budget-positive-*`（含 delta 断言）。
 
 ## Driver gate after round 1
 ℹ tests 340 ℹ pass 340 ℹ fail 0
@@ -65,4 +64,7 @@ _pending (driver appends after commit)_
 ℹ tests 348 ℹ pass 348 ℹ fail 0 
 
 ## Driver gate after round 7
+ℹ tests 349 ℹ pass 349 ℹ fail 0 
+
+## Driver gate after round 8
 ℹ tests 349 ℹ pass 349 ℹ fail 0 
