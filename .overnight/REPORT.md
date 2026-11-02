@@ -1,10 +1,23 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 2 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 3 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 2）改动
+## 本轮（Batch 5 · Round 3）改动
+
+| 项目 | 说明 |
+|------|------|
+| **复盘入场动效** | 侧栏进入「复盘 / Review / Monatsrückblick」时，顶部指标卡、完成率折线、底部复盘区应依次轻微入场（与 Round 2 修复 Today/长期页为同一类选择器问题）。 |
+| **记账 keypad（矮屏）** | 手机宽度且视口高 ≤480px：聚焦快速录入框时，数字键盘固定在底部 Tab 栏上方，不必滚到底找键盘。 |
+| **测试** | 单元 **330 pass**（+1 CSS 契约）；浏览器 **8 pass**。 |
+| **截图** | `b5r3-review-zh-light-1440-*`、`b5r3-review-de-dark-390-*`、`b5r3-ledger-keypad-en-light-390-*`。重拍：`node .overnight/capture-batch5-round3.mjs`（5297）。 |
+
+**验收提示：** 侧栏 **复盘** ↔ **本周** 来回切换，指标三卡应有 stagger；记账页在窄矮窗口点快速录入，键盘应贴底悬浮。
+
+---
+
+## 上一轮（Batch 5 · Round 2）
 
 | 项目 | 说明 |
 |------|------|

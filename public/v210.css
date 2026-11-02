@@ -805,6 +805,26 @@ html.motion-reduced #longrangeView.view.is-entering :is(.horizon-pin, .horizon-h
   animation: none;
 }
 
+/* Batch 5 round 3 — review enter stagger (fix: is-entering lives on #reviewView, not an ancestor) */
+#reviewView.view.is-entering .review-intro,
+#reviewView.view.is-entering #reviewInsights .insight-metrics > article,
+#reviewView.view.is-entering #reviewTrendChart,
+#reviewView.view.is-entering #reviewLedgerSummary:not([hidden]),
+#reviewView.view.is-entering .review-narrative {
+  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#reviewView.view.is-entering #reviewInsights .insight-metrics > article:nth-child(1) { animation-delay: 35ms; }
+#reviewView.view.is-entering #reviewInsights .insight-metrics > article:nth-child(2) { animation-delay: 70ms; }
+#reviewView.view.is-entering #reviewInsights .insight-metrics > article:nth-child(3) { animation-delay: 105ms; }
+#reviewView.view.is-entering #reviewInsights .insight-metrics > article:nth-child(4) { animation-delay: 140ms; }
+#reviewView.view.is-entering #reviewTrendChart { animation-delay: 175ms; }
+#reviewView.view.is-entering .review-narrative { animation-delay: 210ms; }
+
+html.motion-reduced #reviewView.view.is-entering :is(.review-intro, #reviewInsights .insight-metrics > article, #reviewTrendChart, .review-narrative) {
+  animation: none;
+}
+
 html[data-theme="dark"] .ledger-recurring {
   background: rgba(255, 255, 255, 0.05);
 }
@@ -1132,9 +1152,30 @@ html.motion-reduced #reviewView .rv-habit-spark--enter rect {
   }
 
   .ledger-keypad {
-    position: relative;
-    z-index: 2;
     scroll-margin-bottom: calc(240px + var(--mobile-nav-safe-bottom, 0px));
+  }
+
+  /* Batch 5 round 3 — dock keypad above mobile tab bar while quick field focused */
+  #ledgerView .ledger-quick:focus-within ~ .ledger-keypad {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--mobile-nav-safe-bottom, 0px) + env(safe-area-inset-bottom, 0px));
+    z-index: 11500;
+    margin: 0;
+    padding: 0.45rem 0.75rem 0.35rem;
+    background: var(--desk-canvas, var(--canvas, #f1f5f9));
+    border-top: 1px solid var(--desk-border, var(--hairline, rgba(0, 0, 0, 0.08)));
+    box-shadow: 0 -10px 36px rgba(29, 49, 70, 0.14);
+  }
+
+  html[data-theme="dark"] #ledgerView .ledger-quick:focus-within ~ .ledger-keypad {
+    background: var(--desk-canvas, #15191e);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  #ledgerView:has(.ledger-quick:focus-within) .ledger-page {
+    scroll-padding-bottom: calc(200px + var(--mobile-nav-safe-bottom, 0px));
   }
 }
 

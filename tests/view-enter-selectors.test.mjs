@@ -11,6 +11,15 @@ test("v210 view enter stagger targets the active view element (not a phantom anc
   assert.match(css, /#timelineView\.view\.is-entering/);
   assert.match(css, /#longrangeView\.view\.is-entering/);
   assert.match(css, /Batch 5 round 2 — Today hero \+ daily tool enter stagger/);
+  assert.match(css, /#reviewView\.view\.is-entering/);
+  assert.match(css, /Batch 5 round 3 — review enter stagger/);
+});
+
+test("short viewport ledger keypad docks fixed while quick field focused", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  assert.match(css, /Batch 5 round 3 — dock keypad/);
+  assert.match(css, /#ledgerView \.ledger-quick:focus-within ~ \.ledger-keypad/);
+  assert.match(css, /position:\s*fixed/);
 });
 
 test("focus inline timer exposes running state for CSS micro-interaction", () => {

@@ -53,10 +53,13 @@ All notable changes are documented here.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`); Batch 4 Round 10 extends clearance for ≤640px and ≤480px height.
 
 - **Goal 2 (Batch 5 R2):** Today hero / daily-tool / calendar enter stagger; inline focus ring breathe while timer runs; Playwright regression for invalid edit amounts; Mac shell Today screenshot (`b5r2-*`).
+- **Goal 2 (Batch 5 R3):** Review page enter stagger via `#reviewView.view.is-entering`; short-viewport ledger keypad fixed dock while quick field focused; screenshots `b5r3-*`.
 
 ### Fixed
 
 - **Page motion:** `is-entering` stagger selectors now attach to `#todayView`, `#timelineView`, and `#longrangeView` themselves (was a no-op descendant selector); long-range enter animation actually plays.
+- **Review motion:** same fix for `#reviewView` — metrics cards and trend chart stagger on sidebar entry (pages-858 rule never matched).
+- **Money (mobile ≤480px height):** amount keypad pins above the tab bar while the quick field is focused (opaque dock, no scroll chase).
 - **Today focus tab:** `setDailyToolPage` / `updateDailyToolControls` no longer hard-code journal — the Focus timer panel is reachable again on Today.
 - **Money (CSV export):** export includes explicit `currency` column (and `amount` header) so EUR/CNY rows are not mislabeled as `amount_eur` (Antigravity review).
 - **Money (edit):** invalid amount in the edit popover shows `.is-error` instead of silently keeping the old amount.
