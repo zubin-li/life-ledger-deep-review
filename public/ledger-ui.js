@@ -52,7 +52,7 @@
     const hasData = series.some(row => row.expenseMinor > 0 || row.incomeMinor > 0);
     const paint = () => {
       if (!hasData || !uPlot) {
-        host.innerHTML = `<p class="ledger-empty">${t("暂无趋势数据", "Add entries to see the trend.", "Noch keine Trenddaten.")}</p>`;
+        host.innerHTML = `<p class="ledger-empty ll-empty-enter">${t("暂无趋势数据", "Add entries to see the trend.", "Noch keine Trenddaten.")}</p>`;
         host.classList.add("ledger-trend--ready");
         return;
       }
@@ -126,7 +126,7 @@
 
   function renderTreemap(breakdown, ledger) {
     const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
-    if (!total) return `<div class="ledger-donut ledger-donut--empty">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
+    if (!total) return `<div class="ledger-donut ledger-donut--empty ll-empty-enter">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
     const items = breakdown.slice(0, 8).map(row => {
       const cat = ledger.categories.find(c => c.id === row.categoryId);
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
@@ -162,7 +162,7 @@
 
   function renderDonut(breakdown, ledger) {
     const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
-    if (!total) return `<div class="ledger-donut ledger-donut--empty">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
+    if (!total) return `<div class="ledger-donut ledger-donut--empty ll-empty-enter">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
     const slices = core().breakdownDonutSlices(breakdown, 6);
     const paths = slices.map(slice => {
       const cat = ledger.categories.find(c => c.id === slice.categoryId);
@@ -211,7 +211,7 @@
   function renderBudgets(ledger, ym) {
     const rows = core().budgetProgress(ledger, ym);
     if (!rows.length) {
-      return `<p class="ledger-empty ledger-budget-empty">${t(
+      return `<p class="ledger-empty ledger-budget-empty ll-empty-enter">${t(
         "点击「设置预算」为本月支出分类添加上限。",
         "Tap “Set budget” to add a monthly limit for an expense category.",
         "Tippe auf „Budget setzen“, um ein Monatslimit für eine Ausgabenkategorie festzulegen.",
@@ -296,7 +296,7 @@
     const rows = core().filterTransactions(ledger, ym, listFilter)
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
     if (!rows.length) {
-      return `<p class="ledger-empty">${listFilter
+      return `<p class="ledger-empty ll-empty-enter">${listFilter
         ? t("没有匹配的交易。", "No matching entries.", "Keine passenden Buchungen.")
         : t("这个月还没有记录。试试输入「12,50 咖啡」。", "Nothing this month yet. Try \"12.50 coffee\".", "Noch nichts in diesem Monat. Probiere „12,50 Kaffee“.")}</p>`;
     }
@@ -320,7 +320,7 @@
     const rows = (ledger.recurring || []).filter(Boolean);
     const addBtn = `<button type="button" class="secondary-button ledger-recurring-add">${t("添加固定项", "Add recurring", "Hinzufügen")}</button>`;
     if (!rows.length) {
-      return `<div class="ledger-recurring-head">${addBtn}</div><p class="ledger-empty ledger-recurring-empty">${t("房租、订阅或工资等固定项可在下方添加。", "Add rent, subscriptions, or salary templates.", "Miete, Abos oder Gehalt als Vorlage anlegen.")}</p>`;
+      return `<div class="ledger-recurring-head">${addBtn}</div><p class="ledger-empty ledger-recurring-empty ll-empty-enter">${t("房租、订阅或工资等固定项可在下方添加。", "Add rent, subscriptions, or salary templates.", "Miete, Abos oder Gehalt als Vorlage anlegen.")}</p>`;
     }
     return `<div class="ledger-recurring-head"><span class="ledger-recurring-count">${rows.length}</span>${addBtn}</div><ul class="ledger-recurring-list">${rows.map(rec => {
       const cat = ledger.categories.find(c => c.id === rec.categoryId);
@@ -561,7 +561,7 @@
 
   function renderOnboarding(ledger) {
     if (ledger.transactions.length || onboardingDismissed()) return "";
-    return `<aside class="ledger-onboarding ll-empty" data-ledger-onboarding>
+    return `<aside class="ledger-onboarding ll-empty ll-empty-enter" data-ledger-onboarding>
       <div class="ll-art" data-art="week-insights-empty"></div>
       <div class="ledger-onboarding-copy">
         <strong>${t("从这里记第一笔", "Log your first entry here", "Hier die erste Buchung erfassen")}</strong>

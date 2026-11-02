@@ -570,6 +570,10 @@
       ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
       : "";
     c.classList.toggle("is-empty", !todayMinor);
+    const showSpendEmptyEnter = !todayMinor && !ledgerHasEntries;
+    c.classList.toggle("ll-empty-enter", showSpendEmptyEnter);
+    if (showSpendEmptyEnter) c.dataset.spendEmptyEnter = "1";
+    else delete c.dataset.spendEmptyEnter;
   }
   $(".tw-spend-open", cards.spending).addEventListener("click", () => switchToView?.("ledger"));
 

@@ -936,7 +936,7 @@
     const base = normalize(ledger);
     const spentByCat = new Map();
     transactionsInMonth(base, ym).forEach(tx => {
-      if (tx.amountMinor >= 0) return;
+      if (tx.amountMinor >= 0 || !txInReportingCurrency(base, tx)) return;
       spentByCat.set(tx.categoryId, (spentByCat.get(tx.categoryId) || 0) + Math.abs(tx.amountMinor));
     });
     return base.budgets

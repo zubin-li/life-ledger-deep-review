@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 3 · Round 5）
+# Life Ledger 夜间构建报告（Batch 3 · Round 6）
 
-本 round 完成 **复盘页节奏动画**（月完成柱、习惯/星期 analytics 条、专注周柱）并统一部分 **空状态入场**。
+本 round 处理 **Antigravity REVIEW** 核对、**记账/Today 空状态动效**，并补齐 **预算进度** 的默认货币过滤。
 
 ---
 
@@ -8,57 +8,54 @@
 
 | 项目 | 说明 |
 |------|------|
-| **`review-bars.js`** | 可测的条带动画 helper：`animateBarWidthFills`（含 `.analytics-bar-track`）、`rollPanelTextValues`（换月 roll 百分比文案）。 |
-| **`pulseReviewRhythmBars`** | 在 `renderReview()` 末尾调用；换月时 retarget `#barChart`、习惯对比区宽度条、星期柱；专注周视图 `focus-review-day` 带 `--focus-bar-i`。 |
-| **异步骨架** | `paintWithSkeleton` 会晚于 `renderInsightDashboard` 写入 DOM → 增加双 `requestAnimationFrame` 二次脉冲，确保 analytics 条也动画。 |
-| **`v227-review-bars-weekday.css`** | bar-chart retarget、analytics 条 scaleX、星期条 scaleY、focus 柱 stagger、`ll-empty-enter` 扩展。 |
-| **空状态** | score-grid hairline、`period-dashboard-empty` 加 `ll-empty-enter`。 |
-| **测试** | `tests/review-bars.test.mjs` → **301 pass, 0 fail**。 |
+| **REVIEW 修复状态** | 备份含 `ledger`、收入快捷录入/编辑、德 CSV 引号、默认货币汇总、Today 负零 — 已在 CHANGELOG Unreleased「Fixed」中；代码与 `backup-ledger.test.mjs` / `ledger-core.test.mjs` 一致。 |
+| **`v228-ledger-empty-enter.css`** | 记账 onboarding、各 `ledger-empty`、donut 空态、Today 支出卡（空账本）的 `llEmptyReveal`；尊重 `prefers-reduced-motion`。 |
+| **`budgetProgress`** | 非默认货币支出不再计入预算条。 |
+| **测试** | +1 → **302 pass, 0 fail**。 |
 
 ---
 
-## 明早怎么验（约 3 分钟）
+## 明早怎么验（约 2 分钟）
 
-1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`（或打开 `?local-preview=demo-showcase-v1` 看 demo 数据）
-2. **复盘** — 点标题栏 **‹ ›** 换月：右侧「详细指标」里 **每日完成柱**应重新长高；下方习惯/星期 **横条** 从 0 展开。
-3. 展开 **详细指标**，专注回顾 **周** 视图：七根柱应交错入场。
-4. `npm test` → **301 pass, 0 fail**
+1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`
+2. 设置里 **清除示例** 或首次 dismiss demo 后打开 **记账** — 应见 onboarding 卡片与「暂无支出分类 / 暂无趋势数据」。
+3. **今日** 支出卡：无账本时德/中文案 + 语法提示（`Z. B.: 12,50 Kaffee`）。
+4. `npm test` → **302 pass, 0 fail**
 
 ---
 
-## 截图（Batch 3 Round 5）
+## 截图（Batch 3 Round 6）
 
 | 场景 | 文件 |
 |------|------|
-| 中文 · 月完成柱 · 1440 light | `b3r5-review-barchart-zh-light-1440-chromium.png` / `-webkit.png` |
-| 德文 · 星期规律 analytics 条 · 1440 light | `b3r5-review-weekday-de-light-1440-chromium.png` / `-webkit.png` |
+| 中文 · 空账本 + onboarding · 1440 light | `b3r6-ledger-empty-zh-light-1440-chromium.png` / `-webkit.png` |
+| 德文 · Today 支出空态 · 390 light | `b3r6-today-spend-empty-de-light-390-chromium.png` / `-webkit.png` |
 
-重拍：`.overnight/capture-batch3-round5.mjs`（端口 **5299**，URL 带 `local-preview=demo-showcase-v1`）。
+重拍：`.overnight/capture-batch3-round6.mjs`（端口 **5297**；init 须写 `life-ledger-local-edition=2026-10-sample-v6` + `life-ledger-demo-dismissed-v1=1`，否则会再次载入三个月样例）。
 
 ---
 
 ## 已知问题
 
-- 线上 DOM 中 habit/weekday 来自 **`analytics-bars`**（skeleton 路径），与代码里 **`rv-weekdays`** 面板不同步 — 动画已按实际 DOM 适配，长期应合并渲染路径。
 - fakecloud 仍缺 `functions/`。
-- score-grid 仍在折叠的 `#reviewDetailedMetrics` 内。
+- 复盘 habit/weekday 仍有两套 DOM 路径（见 Round 5 说明）。
 
 ---
 
 ## 试过但未做
 
-- 合并 `renderInsightDashboard` / `paintReviewAnalyticsPanels`（范围大，留下轮）。
-- 记账 / Today 空状态全面 `ll-empty-enter`。
+- 合并 `renderInsightDashboard` / `paintReviewAnalyticsPanels`。
+- mood×习惯×支出 新关联卡片（复盘已有 scatter + insight 文案）。
 
 ---
 
 ## npm test
 
-**301 pass, 0 fail**（Batch 3 Round 5，实测）。
+**302 pass, 0 fail**（Batch 3 Round 6，实测）。
 
 ---
 
 ## 下次可做
 
-- 记账空账本 hairline + 动效；mood×习惯×支出关联小洞察。
-- fakecloud stub 或复制 `functions/` 供在线版本地验。
+- 复盘渲染路径合并；fakecloud stub。
+- 记账月切换时 budget 条 stagger（与 v227 复盘条类似）。

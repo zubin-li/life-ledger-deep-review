@@ -20,16 +20,17 @@ All notable changes are documented here.
 - **Ledger charts:** SVG annular donut for category breakdown (reliable in WebKit/headless; `breakdownDonutSlices` / `annularSectorPath`).
 - **Review score grid:** completion rate/count roll on month change, staggered card enter, hairline empty when no habits (`v226-review-score-donut.css`).
 - **Review rhythm bars:** month completion bar-chart retarget, habit compare bar width pulse, weekday column regrow + percent roll, focus week bars stagger (`review-bars.js`, `v227-review-bars-weekday.css`).
+- **Money & Today empty states:** ledger onboarding, list/budget/recurring/donut/trend placeholders and Today spending card use shared `ll-empty-enter` motion (`v228-ledger-empty-enter.css`).
 
 ### Changed
 
-- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v227`.
+- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v228`.
 - **Maintainability:** documented CSS slice layout in `.overnight/CSS-LAYERS.md`; removed duplicate `isoFromDate` in `ledger-core.js`; `.overnight/scratch/` gitignored and deleted from the tree.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`).
 
 ### Fixed
 
-- **Money (review fixes):** backup export includes `state.ledger` (scoped by date range); partial restore merges ledger transactions/categories; quick entry and edit preserve income categories without a leading `+`; German CSV quoted amounts import; summaries and Today spend use default currency only; Today card no longer shows `-0,00` on zero-spend days; quick-entry default date uses local timezone.
+- **Money (review fixes):** backup export includes `state.ledger` (scoped by date range); partial restore merges ledger transactions/categories; quick entry and edit preserve income categories without a leading `+`; German CSV quoted amounts import; summaries, budgets, and Today spend use default currency only; Today card no longer shows `-0,00` on zero-spend days; quick-entry default date uses local timezone.
 - **Today spending card:** `ledgerHasEntries` is evaluated before the empty-state copy runs, fixing a temporal-dead-zone crash when the card renders on days with no spend.
 - **Language:** stored `life-ledger-language` now applies on first paint when the user has not opted out (`language-preference-set` ≠ `false`), matching backup restore and fixing Playwright / deep-link cases where UI strings stayed English while localized data did not.
 - **Cloud sync:** pending conflict resolution on GET now merges the conflict backup’s `ledger` when the remote payload omits it (same rule as immediate 409 adopt).

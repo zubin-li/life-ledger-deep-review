@@ -488,6 +488,23 @@ test("monthSummary and spendingToday ignore non-default currency", () => {
   assert.equal(L.spendingTodayMinor(ledger, "2026-11-02"), 10000);
 });
 
+test("budgetProgress ignores non-default currency spend", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const exp = ledger.categories.find(c => c.kind === "expense").id;
+  ledger = L.upsertCategoryBudget(ledger, {
+    categoryId: exp,
+    month: "2026-11",
+    amountText: "500",
+    currency: "EUR",
+  }, { lang: "en" }).ledger;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -10000, currency: "EUR", date: "2026-11-02", note: "eur" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -50000, currency: "CNY", date: "2026-11-02", note: "cny" }));
+  const rows = L.budgetProgress(ledger, "2026-11");
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].spentMinor, 10000);
+});
+
 test("mergeLedgerForBackup deduplicates transactions by id", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

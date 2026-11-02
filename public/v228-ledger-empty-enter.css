@@ -1,0 +1,37 @@
+/* Goal 2 — ledger + Today spending empty enter (v2.1.0) */
+
+.ledger-onboarding.ll-empty-enter,
+.ledger-empty.ll-empty-enter,
+.ledger-donut--empty.ll-empty-enter,
+.ledger-recurring-empty.ll-empty-enter,
+.tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-main {
+  animation: llEmptyReveal 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+.tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint:not([hidden]) {
+  animation: llEmptyReveal 640ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.12s both;
+}
+
+html.motion-reduced .ledger-onboarding.ll-empty-enter,
+html.motion-reduced .ledger-empty.ll-empty-enter,
+html.motion-reduced .ledger-donut--empty.ll-empty-enter,
+html.motion-reduced .ledger-recurring-empty.ll-empty-enter,
+html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-main,
+html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-onboarding.ll-empty-enter,
+  .ledger-empty.ll-empty-enter,
+  .ledger-donut--empty.ll-empty-enter,
+  .ledger-recurring-empty.ll-empty-enter,
+  .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-main,
+  .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
