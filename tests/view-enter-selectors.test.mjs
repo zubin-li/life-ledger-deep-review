@@ -13,6 +13,9 @@ test("v210 view enter stagger targets the active view element (not a phantom anc
   assert.match(css, /Batch 5 round 2 — Today hero \+ daily tool enter stagger/);
   assert.match(css, /#reviewView\.view\.is-entering/);
   assert.match(css, /Batch 5 round 3 — review enter stagger/);
+  assert.match(css, /#habitsView\.view\.is-entering/);
+  assert.match(css, /Batch 5 round 4 — habits \+ week enter stagger/);
+  assert.match(css, /#weekView\.view\.is-entering #weekCalendar \.week-calendar-day/);
 });
 
 test("short viewport ledger keypad docks fixed while quick field focused", () => {

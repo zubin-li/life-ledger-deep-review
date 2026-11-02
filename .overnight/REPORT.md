@@ -1,10 +1,24 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 3 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 4 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 3）改动
+## 本轮（Batch 5 · Round 4）改动
+
+| 项目 | 说明 |
+|------|------|
+| **习惯页入场** | 侧栏进入「习惯设置」时：标题区 → 每日提醒卡 → 三张统计卡 → 筛选栏 → 习惯列表依次 `pageCardIn`（`#habitsView.view.is-entering`）。 |
+| **本周页入场** | 页头标题区先入场；四个 module 卡片仍用原有 stagger；下方 **Completed Days** 里七天日历列 200–410ms 依次出现。 |
+| **CSS 审计** | `pages-858` 里 `.view.is-entering #weekView …` 在 `is-entering` 挂在 `#weekView` 上时仍匹配后代；module 卡片由 v210 更高优先级规则覆盖。 |
+| **测试** | 单元 **330 pass**；浏览器 **8 pass**（若 fakecloud 超时，先结束占用 5296/5298 的 wrangler 进程）。 |
+| **截图** | `b5r4-habits-zh-light-1440-*`、`b5r4-habits-de-dark-390-*`、`b5r4-week-en-light-1440-*`、`b5r4-week-zh-dark-390-*`。重拍：`node .overnight/capture-batch5-round4.mjs`（5296）。 |
+
+**验收提示：** 侧栏 **习惯设置** ↔ **今日** 来回切，应看到统计三卡与列表轻微依次入场；**本周** 页在 module 卡片之后，周一到周日列应略带延迟依次出现。
+
+---
+
+## 上一轮（Batch 5 · Round 3）改动
 
 | 项目 | 说明 |
 |------|------|

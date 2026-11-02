@@ -1,21 +1,22 @@
 # Overnight progress
 
-## Batch 5 · Round 3 — done
+## Batch 5 · Round 4 — done
 
-- **REVIEW.md：** 无新项；Round 1–2 已消化 Antigravity 列表。
-- **Goal 2 — 复盘入场动效：** 与 Today/长期页同类 bug：`pages-858.css` 使用 `.view.is-entering #reviewView …`，但 `is-entering` 加在 `#reviewView` 自身，后代选择器永不匹配。已在 `v210.css` 增加 `#reviewView.view.is-entering` 分段 stagger（指标卡 → 趋势图 → 复盘 textarea）。
-- **Goal 1 — 极矮视口 keypad：** `max-width: 640px` 且 `max-height: 480px` 时，快速录入 `:focus-within` 将 `.ledger-keypad` 固定于底栏上方（不透明背景、`z-index: 11500`），减轻与 Tab 栏重叠。
-- **测试：** `view-enter-selectors.test.mjs` +1（review stagger + keypad dock CSS 契约）。
-- **截图：** `capture-batch5-round3.mjs`（5297）→ `b5r3-review-zh-light-1440-*`、`b5r3-review-de-dark-390-*`、`b5r3-ledger-keypad-en-light-390-*`（WebKit + Chromium）。
+- **REVIEW.md：** 无新项；Round 1–3 已消化 Antigravity 列表。
+- **Goal 2 — pages-858 审计：** `.view.is-entering #weekView …` 类规则在 `is-entering` 加在 `#weekView` 自身时仍有效（后代选择器）；`#weekView .module-card` 已由 v210 更高特异性覆盖。复盘指标由 `#reviewView.view.is-entering` 覆盖 pages-858 的 `#reviewView .insight-metrics` 规则。
+- **Goal 2 — 习惯 / 本周入场：** `#habitsView.view.is-entering` 分段（标题区 → 提醒卡 → 三统计卡 → 筛选 → 列表）；`#weekView.view.is-entering` 增加页头 + `#weekCalendar` 七列日历 stagger（200–410ms，接在 module-card 之后）。移除旧的 `.view.is-entering #habitLibraryOverview` 块，避免与新区重复。
+- **测试：** `view-enter-selectors.test.mjs` 断言 habits/week 选择器；单元 **330 pass**；浏览器 **8 pass**（清 wrangler/5296 竞态后）。
+- **截图：** `capture-batch5-round4.mjs`（5296）→ `b5r4-habits-zh-light-1440-*`、`b5r4-habits-de-dark-390-*`、`b5r4-week-en-light-1440-*`、`b5r4-week-zh-dark-390-*`（WebKit + Chromium）。
 
 ## Half-done
 
 - （无）
 
-## Next（Round 4）
+## Next（Round 5）
 
-- Goal 2：审计 `pages-858.css` 中仍依赖 `.view.is-entering #weekView` 的规则（`#weekView.view.is-entering` 已在 v210 覆盖 module-card；日历格等仍靠祖先选择器，有效）。
-- 可选：habits / photos 页专用 enter stagger；stable 发版 checklist（版本号已 2.1.0，可核对 README 截图与 SHOWCASE）。
+- Goal 2：时间轴 Photos 模式切换时的 feed 入场；或 Today 照片墙卡片 polish。
+- 可选：发版前核对 README/SHOWCASE 虚构截图是否含记账侧栏项。
+- 若 browser 套件偶发超时：跑前 `pkill -f wrangler` / 释放 5296–5298。
 
 ## Known bugs / gaps
 
@@ -25,13 +26,24 @@
 ## npm test
 
 ```
-330 pass, 0 fail (batch 5 round 3, unit gate)
-8 pass, 0 fail (test:browser)
+330 pass, 0 fail (batch 5 round 4, unit gate)
+8 pass, 0 fail (test:browser, after clearing stale wrangler)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 5 · Round 3 — done
+
+- **REVIEW.md：** 无新项；Round 1–2 已消化 Antigravity 列表。
+- **Goal 2 — 复盘入场动效：** 与 Today/长期页同类 bug：`pages-858.css` 使用 `.view.is-entering #reviewView …`，但 `is-entering` 加在 `#reviewView` 自身，后代选择器永不匹配。已在 `v210.css` 增加 `#reviewView.view.is-entering` 分段 stagger（指标卡 → 趋势图 → 复盘 textarea）。
+- **Goal 1 — 极矮视口 keypad：** `max-width: 640px` 且 `max-height: 480px` 时，快速录入 `:focus-within` 将 `.ledger-keypad` 固定于底栏上方（不透明背景、`z-index: 11500`），减轻与 Tab 栏重叠。
+- **测试：** `view-enter-selectors.test.mjs` +1（review stagger + keypad dock CSS 契约）。
+- **截图：** `capture-batch5-round3.mjs`（5297）→ `b5r3-review-zh-light-1440-*`、`b5r3-review-de-dark-390-*`、`b5r3-ledger-keypad-en-light-390-*`（WebKit + Chromium）。
+
+## Driver gate after round 3
+ℹ tests 330 ℹ pass 330 ℹ fail 0 
 
 ## Batch 5 · Round 2 — done
 
@@ -58,5 +70,5 @@ _pending (driver appends after commit)_
 ## Driver gate after round 1
 ℹ tests 327 ℹ pass 327 ℹ fail 0 
 
-## Driver gate after round 3
+## Driver gate after round 4
 ℹ tests 330 ℹ pass 330 ℹ fail 0 

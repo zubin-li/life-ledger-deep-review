@@ -825,6 +825,50 @@ html.motion-reduced #reviewView.view.is-entering :is(.review-intro, #reviewInsig
   animation: none;
 }
 
+/* Batch 5 round 4 — habits + week enter stagger (is-entering on the view itself) */
+#habitsView.view.is-entering .habits-view-header,
+#habitsView.view.is-entering .habit-reminder-card,
+#habitsView.view.is-entering #habitLibraryOverview article,
+#habitsView.view.is-entering .habit-library-tools,
+#habitsView.view.is-entering .habit-settings-table {
+  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#habitsView.view.is-entering .habit-reminder-card { animation-delay: 35ms; }
+#habitsView.view.is-entering #habitLibraryOverview article:nth-child(1) { animation-delay: 70ms; }
+#habitsView.view.is-entering #habitLibraryOverview article:nth-child(2) { animation-delay: 105ms; }
+#habitsView.view.is-entering #habitLibraryOverview article:nth-child(3) { animation-delay: 140ms; }
+#habitsView.view.is-entering .habit-library-tools { animation-delay: 120ms; }
+#habitsView.view.is-entering .habit-settings-table { animation-delay: 165ms; }
+
+#weekView.view.is-entering .week-page-header {
+  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#weekView.view.is-entering #weekCalendar .week-calendar-day {
+  animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(1) { animation-delay: 200ms; }
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(2) { animation-delay: 235ms; }
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(3) { animation-delay: 270ms; }
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(4) { animation-delay: 305ms; }
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(5) { animation-delay: 340ms; }
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(6) { animation-delay: 375ms; }
+#weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(7) { animation-delay: 410ms; }
+
+html.motion-reduced #habitsView.view.is-entering :is(.habits-view-header, .habit-reminder-card, #habitLibraryOverview article, .habit-library-tools, .habit-settings-table),
+html.motion-reduced #weekView.view.is-entering :is(.week-page-header, #weekCalendar .week-calendar-day) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #habitsView.view.is-entering :is(.habits-view-header, .habit-reminder-card, #habitLibraryOverview article, .habit-library-tools, .habit-settings-table),
+  #weekView.view.is-entering :is(.week-page-header, #weekCalendar .week-calendar-day) {
+    animation: none;
+  }
+}
+
 html[data-theme="dark"] .ledger-recurring {
   background: rgba(255, 255, 255, 0.05);
 }
@@ -2790,27 +2834,7 @@ html.motion-reduced .ledger-quick .primary-button:active:not(:disabled) {
   }
 }
 
-.view.is-entering #habitLibraryOverview article,
-.view.is-entering .habit-library-tools,
-.view.is-entering .habit-settings-table {
-  animation: ll-habit-enter 0.42s var(--ease-enter, ease) both;
-}
-
-.view.is-entering #habitLibraryOverview article:nth-child(2) {
-  animation-delay: 45ms;
-}
-
-.view.is-entering #habitLibraryOverview article:nth-child(3) {
-  animation-delay: 90ms;
-}
-
-.view.is-entering .habit-library-tools {
-  animation-delay: 70ms;
-}
-
-.view.is-entering .habit-settings-table {
-  animation-delay: 110ms;
-}
+/* habits enter stagger: see Batch 5 round 4 (#habitsView.view.is-entering) */
 
 #habitLibraryFilters button {
   transition:
@@ -2856,18 +2880,12 @@ html[data-workspace] .habit-settings-row.selected {
   text-align: center;
 }
 
-html.motion-reduced .view.is-entering :is(#habitLibraryOverview article, .habit-library-tools, .habit-settings-table),
 html.motion-reduced #habitLibraryFilters button:active:not(.active) {
   animation: none !important;
   transform: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .view.is-entering :is(#habitLibraryOverview article, .habit-library-tools, .habit-settings-table) {
-    animation: none !important;
-    transform: none !important;
-  }
-
   #habitLibraryFilters button:active:not(.active) {
     transform: none;
   }
