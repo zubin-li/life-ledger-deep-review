@@ -4553,6 +4553,20 @@ function renderToday() {
   const scoredHabits = dailyHabits(date);
   const complete = log.completed.filter(id => scoredHabits.some(h => h.id === id)).length;
   const progress = scoredHabits.length ? Math.round(complete / scoredHabits.length * 100) : 0;
+  const heroCard = $(".hero-card");
+  if (heroCard) {
+    heroCard.dataset.viewingToday = viewingToday ? "true" : "false";
+    if (viewingToday) {
+      const hour = new Date().getHours();
+      const daypart = hour >= 5 && hour < 12 ? "morning"
+        : hour >= 12 && hour < 18 ? "afternoon"
+          : hour >= 18 && hour < 23 ? "evening"
+            : "night";
+      heroCard.dataset.daypart = daypart;
+    } else {
+      delete heroCard.dataset.daypart;
+    }
+  }
   $("#todayDateChip").textContent = formatDateChip(selected);
   // Future day (user 10/22: "什么都点不了"): say why, and point to what can be done — goals and schedule.
   $("#heroProgressText").textContent = future
@@ -7693,7 +7707,19 @@ async function renderJournalFeed(version) {
   const words = mode === 'weeks' ? languageText('周度','Weekly','Wöchentlich') : mode === 'months' ? languageText('月度','Monthly','Monatlich') : languageText('日度','Daily','Täglich');
   $('#journalFeedKicker').textContent = languageText('留下来的，都是生活','LIFE, IN YOUR OWN WORDS','DAS LEBEN, IN EIGENEN WORTEN');
   $('#journalFeedTitle').textContent = languageText(`${words}时间轴`,`${words} timeline`,`${words}e Zeitleiste`);
-  $('#journalFeedDescription').textContent = languageText('沿着时间向下读。文字在前，照片是偶尔的注脚。','Read down through time. Your words lead; photos are little footnotes.','Durch die Zeit nach unten lesen. Worte zuerst, Fotos als kleine Fußnoten.');
+  const baseDesc = languageText('沿着时间向下读。文字在前，照片是偶尔的注脚。','Read down through time. Your words lead; photos are little footnotes.','Durch die Zeit nach unten lesen. Worte zuerst, Fotos als kleine Fußnoten.');
+  let streakHtml = '';
+  if (mode === 'timeline') {
+    const streak = window.LifeLedgerAnalytics?.reflectionStreak?.(state.logs, isoDate(new Date())) || 0;
+    if (streak >= 2) {
+      streakHtml = `<p class="journal-feed-streak" role="status">${escapeHtml(languageText(
+        `连续 ${streak} 天有记录`,
+        `${streak}-day reflection streak`,
+        `${streak} Tage in Folge notiert`,
+      ))}</p>`;
+    }
+  }
+  $('#journalFeedDescription').innerHTML = `${escapeHtml(baseDesc)}${streakHtml}`;
   $('#journalMonthFilterLabel').textContent = languageText('定位月份','Go to month','Monat wählen');
   $('#journalAllMonths').textContent = languageText('全部月份','All months','Alle Monate');
   $('#journalAllMonths').disabled = !month;

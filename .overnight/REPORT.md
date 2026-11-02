@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 3 · Round 1）
+# Life Ledger 夜间构建报告（Batch 3 · Round 2）
 
-Antigravity 代码审查（`.overnight/REVIEW.md`）指出备份/收入/CSV 三类**数据安全**问题。本 round 优先全部 HIGH/MED 修复，并补回归测试与截图。
+Round 1 已关闭审查中的数据安全问题。本 round 做 **REVIEW 剩余 LOW项**、**Today/日记 Goal 2 打磨**，并补截图与测试。
 
 ---
 
@@ -8,68 +8,61 @@ Antigravity 代码审查（`.overnight/REVIEW.md`）指出备份/收入/CSV 三�
 
 | 项目 | 说明 |
 |------|------|
-| **备份导出含 ledger** | 设置 → 导出任意范围时，`scopedState` 现在带上 `ledger`（按月/周/日会过滤交易日期）。 |
-| **快录 & 编辑保留收入** | `2000 工资` / `2000 Gehalt` 无 `+` 也会记为正数收入；编辑交易改金额不再把工资变成餐饮支出。 |
-| **德 CSV 引号** | 银行导出里 `"-12,50"` 这类字段可正常导入。 |
-| **默认货币汇总** | 月汇总、今日支出、热力图只加总 `settings.defaultCurrency`（默认 EUR），避免 EUR+CNY 直接相加。 |
-| **部分恢复合并 ledger** | 合并备份（非整包覆盖）会把导入包里的记账交易/分类等与现有数据按 id 合并。 |
-| **Today 零支出显示** | 今日 0 支出时不再出现 `-0,00 €`。 |
-| **快录日期** | 无「昨天/今天」词时，用本地日期而非 UTC。 |
-| **测试** | **297 pass, 0 fail**（+8 项）。 |
+| **CSS 分层说明** | `.overnight/CSS-LAYERS.md` — 为何 v211–v224 分文件加载，而非单文件合并。 |
+| **清理 scratch** | `.overnight/scratch/` 已删并加入 `.gitignore`（审查 #9）。 |
+| **isoFromDate 去重** | `ledger-core.js` 只保留 `isoDateFromDate`（审查 #8 部分）。 |
+| **Today hero** | 今日 hero 卡片按时段（晨/午/傍晚/夜）有 subtle 背景光晕；习惯进度 >0 时进度环轻 pulse（尊重 reduced-motion）。 |
+| **日记时间轴** | composer 聚焦时卡片浮起；日度模式下 **连续记录 streak** 徽章（≥2 天有 note 或 mood 原因）；条目入场与桌面 hover 微抬。 |
+| **测试** | **299 pass, 0 fail**（+2 reflection streak）。 |
 
 ---
 
-## 明早怎么验（约 5 分钟）
+## 明早怎么验（约 3 分钟）
 
 1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`
-2. **记账** → 快录 `2000 工资` → 月汇总收入应增加（非餐饮负值）。
-3. **设置 → 备份 → 导出全部** → 打开 JSON，确认有 `"ledger"` 且含 `transactions`。
-4. **设置 → 导入** 刚导出的文件（或另一台/另一 scope 合并）→ 交易仍在。
-5. **CSV 导入**：一行 `01.11.2026;Test;"-12,50"` → 应导入 1 条，非 silent skip。
-6. **Today** → 有历史但今日无支出 → 金额显示 `0,00 €` 而非 `-0,00`。
-7. `npm test` → **297 pass, 0 fail**
+2. **今日** — 看 hero 左上角日期 chip 与深色卡片内缘是否有与时段相关的暖/冷色光（仅「今天」）。
+3. **时间轴** → 切 **日度 / Daily** — 若连续多天写过日记或心情原因，标题下会出现 pill 形 streak 文案。
+4. **时间轴** — 点进某天，在 composer 里输入，看聚焦时边框/阴影是否更明显。
+5. `npm test` → **299 pass, 0 fail**
 
 ---
 
-## 截图（Batch 3 Round 1）
+## 截图（Batch 3 Round 2）
 
 | 场景 | 文件 |
 |------|------|
-| 德文 · Today 支出（demo）· 390 | `b3r1-spending-zero-de-390-chromium.png` / `-webkit.png` |
-| 中文 · 记账侧栏 · 1440 | `b3r1-ledger-overview-zh-light-1440-chromium.png` / `-webkit.png` |
+| 中文 · Today hero · 1440 light | `b3r2-today-hero-zh-light-1440-chromium.png` / `-webkit.png` |
+| 德文 · 记账（demo donut 已 wait）· 1440 | `b3r2-ledger-donut-de-light-1440-chromium.png` / `-webkit.png` |
+| 英文 · 日记 streak · 390 dark | `b3r2-journal-streak-en-dark-390-chromium.png` / `-webkit.png` |
 
-（记账页 demo 全屏图表可下轮加 `waitFor` 后重拍；本 round 重点在数据修复。）
+重拍脚本：`.overnight/capture-batch3-round2.mjs`（端口 5296）。
 
 ---
 
-## REVIEW 处理情况
+## REVIEW LOW 处理
 
-| # | 严重度 | 状态 |
-|---|--------|------|
-| 1–3 | HIGH | 已修 + 测试 |
-| 4–6 | MED | 已修 + 测试 |
-| 7 | LOW | 已修（本地日期） |
-| 8 | LOW | 未做（CSS 文件未合并） |
-| 9 | LOW | 未做（`.overnight/scratch/` 仍约 6.6MB） |
-
-审查结论 **NOT SAFE** 的三项（备份丢 ledger、收入变支出、引号 CSV）已在本 round 关闭。
+| # | 状态 |
+|---|------|
+| 8 CSS 合并 | **文档化**（`CSS-LAYERS.md`）+ 去掉 JS 重复日期函数；未物理合并 CSS（避免巨型 diff）。 |
+| 9 scratch 镜像 | **已删 + gitignore** |
 
 ---
 
 ## 已知问题
 
-- fakecloud 仍缺 repo-root `functions/`。
-- CSS 文件较多（审查 #8）；功能无回归。
+- fakecloud 仍缺 `functions/`。
+- Demo 工作区日志很多，streak 可能显示「74 天」一类大数 — 真实数据下 streak 按连续有字/心情原因的天数计算。
+- 记账页圆环在部分截图里对比度仍偏淡，下轮可加 scroll + 绘制等待。
 
 ---
 
 ## npm test
 
-**297 pass, 0 fail**（Batch 3 Round 1，实测）。
+**299 pass, 0 fail**（Batch 3 Round 2，实测）。
 
 ---
 
 ## 下次可做
 
-- 合并或归档 `v211`–`v223` CSS；清理 scratch 镜像。
-- 真 cloud 409 + ledger 手测；Goal 2 journal/Today 构图再大胆一版。
+- README 三语补一句 reflection streak；习惯/复盘 insight 数字 roll-up。
+- 记账图表截图稳定性；Goal 2 其他页面空状态再统一一轮。

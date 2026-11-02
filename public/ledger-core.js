@@ -1107,10 +1107,6 @@
     return ledger;
   }
 
-  function isoFromDate(d) {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  }
-
   function expenseCountInMonth(ledger, ym) {
     return transactionsInMonth(ledger, ym).filter(tx => tx.amountMinor < 0).length;
   }
@@ -1121,7 +1117,7 @@
 
   /** Demo-only: early-month views still show donut, heatmap, and Today card spend. */
   function ensureDemoMonthActivity(ledger, now, lang, rng) {
-    const today = isoFromDate(now);
+    const today = isoDateFromDate(now);
     const ym = monthKey(today);
     const account = ledger.accounts[0]?.id;
     if (!account) return ledger;
@@ -1213,7 +1209,7 @@
   function alignDemoHabitCompletionWithSpend(logs, ledger, habitIds, now = new Date()) {
     if (!logs || !ledger?.transactions?.length || !habitIds?.length) return logs;
     const anchor = now instanceof Date ? now : new Date(now);
-    const today = isoFromDate(anchor);
+    const today = isoDateFromDate(anchor);
     const ym = monthKey(today);
     const spendByDate = new Map();
     ledger.transactions.forEach(tx => {
@@ -1242,7 +1238,7 @@
   function alignDemoMoodWithSpend(logs, ledger, now = new Date()) {
     if (!logs || !ledger?.transactions?.length) return logs;
     const anchor = now instanceof Date ? now : new Date(now);
-    const today = isoFromDate(anchor);
+    const today = isoDateFromDate(anchor);
     const ym = monthKey(today);
     const spendByDate = new Map();
     ledger.transactions.forEach(tx => {
@@ -1311,7 +1307,7 @@
   function alignDemoFocusWithSpend(focusSessions, ledger, now = new Date()) {
     if (!ledger?.transactions?.length) return focusSessions || [];
     const anchor = now instanceof Date ? now : new Date(now);
-    const today = isoFromDate(anchor);
+    const today = isoDateFromDate(anchor);
     const ym = monthKey(today);
     const spendByDate = new Map();
     ledger.transactions.forEach(tx => {

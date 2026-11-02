@@ -1,0 +1,190 @@
+/* Goal 2 — Today hero daypart ambience + journal composer / feed polish */
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 72%;
+  pointer-events: none;
+  opacity: 0.55;
+  background: radial-gradient(
+    120% 80% at 18% 0%,
+    color-mix(in srgb, var(--accent, #d97861) 28%, transparent),
+    transparent 62%
+  );
+  transition: opacity 480ms var(--ease-enter, ease);
+}
+
+.hero-card[data-daypart="morning"]::before {
+  background: radial-gradient(
+    115% 75% at 12% -5%,
+    color-mix(in srgb, #f4c56a 42%, transparent),
+    color-mix(in srgb, var(--sage, #7a9e8e) 18%, transparent) 48%,
+    transparent 68%
+  );
+}
+
+.hero-card[data-daypart="afternoon"]::before {
+  background: radial-gradient(
+    110% 70% at 20% 0%,
+    color-mix(in srgb, var(--accent, #d97861) 32%, transparent),
+    transparent 65%
+  );
+}
+
+.hero-card[data-daypart="evening"]::before {
+  background: radial-gradient(
+    120% 80% at 8% 5%,
+    color-mix(in srgb, #9b7bb8 26%, transparent),
+    color-mix(in srgb, var(--accent, #d97861) 14%, transparent) 55%,
+    transparent 72%
+  );
+}
+
+.hero-card[data-daypart="night"]::before {
+  opacity: 0.38;
+  background: radial-gradient(
+    100% 65% at 24% 0%,
+    color-mix(in srgb, #6b8fd4 22%, transparent),
+    transparent 70%
+  );
+}
+
+html[data-theme="dark"] .hero-card::before {
+  opacity: 0.42;
+}
+
+.hero-card .hero-copy,
+.hero-card .progress-orbit {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-card .date-chip {
+  transition: transform 320ms var(--ease-enter, ease), opacity 320ms ease;
+}
+
+.hero-card[data-viewing-today="true"] .date-chip {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .progress-orbit[style*="--progress:"]:not([style*="--progress: 0"]):not([style*="--progress:0"]) .progress-orbit-ring {
+    animation: llOrbitGlow 2.8s ease-in-out infinite;
+  }
+}
+
+@keyframes llOrbitGlow {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+html.motion-reduced .progress-orbit .progress-orbit-ring {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-orbit .progress-orbit-ring {
+    animation: none !important;
+  }
+}
+
+html[data-workspace] .journal-composer {
+  border-radius: 14px;
+  padding: 2px;
+  transition:
+    box-shadow 280ms var(--ease-enter, ease),
+    background 280ms ease;
+}
+
+html[data-workspace] .journal-composer:focus-within {
+  background: color-mix(in srgb, var(--desk-teal, #3d8b8b) 8%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--desk-teal) 35%, transparent),
+    0 12px 32px color-mix(in srgb, var(--desk-text) 8%, transparent);
+}
+
+html[data-workspace] .journal-composer textarea:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--desk-teal) 55%, var(--separator));
+}
+
+.journal-feed-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font: 600 11px/1.2 var(--font-body);
+  letter-spacing: 0.02em;
+  color: var(--desk-teal);
+  background: color-mix(in srgb, var(--desk-teal) 10%, var(--desk-card));
+  border: 1px solid color-mix(in srgb, var(--desk-teal) 22%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #journalFeed.ll-paint-host--ready .journal-feed-entry {
+    animation: llFeedRowIn 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(2) {
+    animation-delay: 40ms;
+  }
+
+  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(3) {
+    animation-delay: 80ms;
+  }
+
+  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(n + 4) {
+    animation-delay: 120ms;
+  }
+}
+
+@keyframes llFeedRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html.motion-reduced #journalFeed .journal-feed-entry {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #journalFeed .journal-feed-entry {
+    animation: none !important;
+  }
+
+  .hero-card::before {
+    transition: none;
+  }
+}
+
+@media (hover: hover) {
+  #journalFeed .feed-paper {
+    transition: transform 200ms var(--ease-enter, ease), box-shadow 200ms ease;
+  }
+
+  #journalFeed .journal-feed-entry:hover .feed-paper {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px color-mix(in srgb, var(--desk-text) 7%, transparent);
+  }
+}
