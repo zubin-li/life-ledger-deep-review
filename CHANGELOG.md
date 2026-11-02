@@ -26,7 +26,7 @@ All notable changes are documented here.
 - **Review:** monthly Money stat columns, scatter dots, and insight lines restagger when changing review months (`v231-review-ledger-retarget.css`; `LifeLedgerInteraction.retarget` on `#reviewLedgerSummary`).
 - **Money (Goal 2):** quick-entry form success flash, new transaction row enter, submit button press (`v232-ledger-entry-feedback.css`).
 - **QA:** `npm test` skips `*.browser.test.mjs`; run `npm run test:browser` for Playwright suites locally or in CI.
-- **QA:** `.overnight/fakecloud-stub/` mirrors minimal `/api/state` + D1 `revision` schema when repo-root `functions/` is absent; `fakecloud.sh` uses it automatically.
+- **QA:** `fakecloud-online.browser.test.mjs` smoke-tests Cloudflare mode against `.overnight/fakecloud.sh` (run via `npm run test:browser`).
 - **QA:** `fakecloud.sh` copies the site into `/tmp/life-ledger-overnight-fakecloud` so local Pages dev does not inherit repo-root `wrangler.jsonc` D1 bindings (fixes empty `states` table / 500 on GET).
 
 ### Changed
@@ -38,6 +38,8 @@ All notable changes are documented here.
 - **Review (Goal 2):** collapsed **Detailed metrics** also shows up to three top habit completion chips (colour + %); hidden when expanded to avoid duplicating the score grid (`v210.css` round 6).
 - **Week (Goal 2):** module cards stagger on page enter; calendar day empty cells use softer enter styling (`v210.css` round 5).
 - **Week (Goal 2):** insights stat cards stagger after modules; empty insights hairline uses shared enter motion (`v210.css` round 6).
+- **Week (Goal 2):** when every weekly goal is checked off, the celebration banner matches long-term empty styling and `ll-empty-enter` motion (`pages-art.js`, `v210.css` round 7).
+- **Review (Goal 2):** collapsed habit chips align cleanly on viewports ≤520px (`v210.css` round 7).
 - **Money (Goal 2):** ledger page enter animations target `#ledgerView.view.is-entering` (fixes inert stagger selectors).
 - **CI:** separate `browser` job runs `npm run test:browser` after installing Playwright; `playwright` is a devDependency with shared `tests/playwright-resolve.mjs`.
 - **Review:** heatmap-only legacy analytics path when the insight dashboard is active — no duplicate habit/weekday DOM in `#reviewHabitCompare` (`reviewUsesInsightPanels` in `app.js`).
@@ -48,6 +50,7 @@ All notable changes are documented here.
 
 ### Fixed
 
+- **Week / Timeline polish:** `pages-art.js` and `pages-polish.css` are now loaded in `index.html` and the service worker shell (they existed but were never wired, so empty-state art and the weekly all-done banner did not run).
 - **Money (review fixes):** backup export includes `state.ledger` (scoped by date range); partial restore merges ledger transactions/categories; quick entry and edit preserve income categories without a leading `+`; German CSV quoted amounts import; summaries, budgets, and Today spend use default currency only; Today card no longer shows `-0,00` on zero-spend days; quick-entry default date uses local timezone.
 - **Today spending card:** `ledgerHasEntries` is evaluated before the empty-state copy runs, fixing a temporal-dead-zone crash when the card renders on days with no spend.
 - **Language:** stored `life-ledger-language` now applies on first paint when the user has not opted out (`language-preference-set` ≠ `false`), matching backup restore and fixing Playwright / deep-link cases where UI strings stayed English while localized data did not.

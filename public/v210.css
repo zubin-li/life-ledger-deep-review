@@ -2908,3 +2908,69 @@ html.motion-reduced #weekView.view.is-entering .week-insight-card {
     animation: none !important;
   }
 }
+
+/* ========== batch 4 round 7 — review chips narrow + week all-done banner ========== */
+@media (max-width: 520px) {
+  #reviewDetailedMetrics > summary {
+    align-items: flex-start;
+    row-gap: 4px;
+  }
+
+  .review-detailed-summary-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-right: 1.25rem;
+  }
+
+  .review-detailed-summary-preview {
+    flex: 1 1 100%;
+    text-align: start;
+  }
+
+  .review-detailed-summary-chips {
+    justify-content: flex-start;
+    margin-top: 2px;
+  }
+
+  .review-detailed-habit-chip {
+    max-width: min(100%, 10rem);
+  }
+}
+
+#weeklyGoalList .ll-week-all-done.ll-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 18px 12px 10px;
+  margin-top: 10px;
+  border-radius: var(--radius-card, 18px);
+  color: var(--secondaryLabel, var(--muted));
+  background: color-mix(in srgb, var(--card, #fff) 94%, var(--w-soft, var(--sage-soft, #dbe6dc)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--w-solid, var(--sage)) 16%, transparent);
+}
+
+#weeklyGoalList .ll-week-all-done.ll-empty-enter {
+  animation: llEmptyReveal 0.52s var(--ease-enter, ease) both;
+}
+
+#weeklyGoalList .ll-week-all-done .ll-art {
+  max-width: 120px;
+  width: 100%;
+}
+
+#weeklyGoalList .ll-week-all-done strong {
+  font: 650 var(--text-secondary-ui, 0.8125rem/1.45) var(--font-body);
+  color: var(--label, var(--ink));
+  letter-spacing: 0.01em;
+}
+
+html.motion-reduced #weeklyGoalList .ll-week-all-done.ll-empty-enter {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #weeklyGoalList .ll-week-all-done.ll-empty-enter {
+    animation: none !important;
+  }
+}

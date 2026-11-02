@@ -100,7 +100,7 @@
       if (goals.length && goals.length === done.length) {
         if (!banner) {
           banner = document.createElement("div");
-          banner.className = "ll-week-all-done ll-empty";
+          banner.className = "ll-week-all-done ll-empty ll-empty-enter";
           banner.innerHTML = "<strong></strong>";
           list.appendChild(banner);
         }
