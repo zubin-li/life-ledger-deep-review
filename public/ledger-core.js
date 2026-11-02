@@ -911,12 +911,14 @@
   }
 
   function exportTransactionsCsv(ledger, ym) {
-    const rows = transactionsInMonth(normalize(ledger), ym);
-    const header = "date;note;category;amount_eur\n";
+    const base = normalize(ledger);
+    const rows = transactionsInMonth(base, ym);
+    const header = "date;note;category;amount;currency\n";
     const body = rows.map(tx => {
-      const cat = ledger.categories.find(c => c.id === tx.categoryId);
+      const cat = base.categories.find(c => c.id === tx.categoryId);
       const amount = (tx.amountMinor / 100).toFixed(2).replace(".", ",");
-      return `${tx.date.split("-").reverse().join(".")};"${tx.note.replace(/"/g, "'")}";"${cat?.name || ""}";${amount}`;
+      const currency = tx.currency || base.settings.defaultCurrency || "EUR";
+      return `${tx.date.split("-").reverse().join(".")};"${tx.note.replace(/"/g, "'")}";"${cat?.name || ""}";${amount};${currency}`;
     }).join("\n");
     return header + body;
   }

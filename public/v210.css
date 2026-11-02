@@ -95,6 +95,11 @@ html[data-theme="dark"] .ledger-quick input {
   border-color: var(--danger-text, #c44);
 }
 
+.ledger-edit-field input.is-error {
+  border-color: var(--danger-text, #c44);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger-text, #c44) 18%, transparent);
+}
+
 .ledger-chips {
   display: flex;
   flex-wrap: wrap;
@@ -768,6 +773,23 @@ html.motion-reduced .view.is-entering #timelineView :is(.journal-mode-switch, #j
 
 .view.is-entering #weekView .module-card:nth-child(2) { animation-delay: 45ms; }
 .view.is-entering #weekView .module-card:nth-child(3) { animation-delay: 90ms; }
+
+/* Batch 5 round 1 — long-range workspace enter stagger */
+.view.is-entering #longrangeView .horizon-pin,
+.view.is-entering #longrangeView .horizon-heading,
+.view.is-entering #longrangeView .horizon-phase-board,
+.view.is-entering #longrangeView .horizon-section {
+  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+.view.is-entering #longrangeView .horizon-heading { animation-delay: 35ms; }
+.view.is-entering #longrangeView .horizon-phase-board { animation-delay: 70ms; }
+.view.is-entering #longrangeView .horizon-section:nth-of-type(1) { animation-delay: 105ms; }
+.view.is-entering #longrangeView .horizon-section.horizon-ongoing { animation-delay: 140ms; }
+
+html.motion-reduced .view.is-entering #longrangeView :is(.horizon-pin, .horizon-heading, .horizon-phase-board, .horizon-section) {
+  animation: none;
+}
 
 html[data-theme="dark"] .ledger-recurring {
   background: rgba(255, 255, 255, 0.05);

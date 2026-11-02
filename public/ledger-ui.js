@@ -518,15 +518,20 @@
       </form>`;
     document.body.appendChild(pop);
     const form = pop.querySelector("form");
+    const amountInput = form.querySelector('[name="amount"]');
     pop.querySelector("[data-edit-cancel]")?.addEventListener("click", closeEditPopover);
+    amountInput?.addEventListener("input", () => amountInput.classList.remove("is-error"));
     form.addEventListener("submit", event => {
       event.preventDefault();
-      const amountRaw = form.querySelector('[name="amount"]').value;
+      const amountRaw = amountInput.value;
       const token = core().parseAmountToken(amountRaw);
-      let amountMinor = tx.amountMinor;
-      if (token != null) {
-        amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
+      if (token == null) {
+        amountInput.classList.add("is-error");
+        amountInput.focus();
+        return;
       }
+      amountInput.classList.remove("is-error");
+      let amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
       const date = form.querySelector('[name="date"]').value || tx.date;
       const note = form.querySelector('[name="note"]').value || "";
       const result = core().updateTransaction(ledgerState(), tx.id, { amountMinor, date, note }, { lang: ctx.lang?.() });

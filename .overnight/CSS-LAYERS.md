@@ -7,7 +7,8 @@ Load order in `index.html`:
 3. `vendor/widget-ui.css`
 4. `today-cards.css`
 5. `v202.css` — 2.0 polish slice
-6. **`v210.css`** — bookkeeping UI + all overnight 2.1 Goal 2 polish (formerly `v211`–`v232`, merged batch 4 round 3)
+6. `pages-polish.css` — week/timeline empty-state art (loaded before final override layer)
+7. **`v210.css`** — bookkeeping UI + all overnight 2.1 Goal 2 polish (formerly `v211`–`v232`, merged batch 4 round 3); **must remain last** in `index.html`
 
 New overnight CSS should append to **`v210.css`** (with a dated section comment) unless a change is large enough to warrant a post-release split in 2.2.
 

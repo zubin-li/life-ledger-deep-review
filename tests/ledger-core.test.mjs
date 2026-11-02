@@ -56,6 +56,32 @@ test("importGermanBankCsv parses semicolon rows", () => {
   assert.equal(ledger.transactions[1].amountMinor, 250000);
 });
 
+test("exportTransactionsCsv includes amount and currency per row", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const expenseCat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, {
+    accountId: account,
+    categoryId: expenseCat,
+    amountMinor: -1250,
+    currency: "EUR",
+    date: "2026-11-01",
+    note: "coffee",
+  }));
+  ({ ledger } = L.addTransaction(ledger, {
+    accountId: account,
+    categoryId: expenseCat,
+    amountMinor: -8800,
+    currency: "CNY",
+    date: "2026-11-02",
+    note: "gift",
+  }));
+  const csv = L.exportTransactionsCsv(ledger, "2026-11");
+  assert.match(csv, /^date;note;category;amount;currency/);
+  assert.match(csv, /02\.11\.2026;"gift";.*;-88,00;CNY/);
+  assert.match(csv, /01\.11\.2026;"coffee";.*;-12,50;EUR/);
+});
+
 test("backup round-trip preserves ledger via JSON clone", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

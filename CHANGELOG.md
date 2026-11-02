@@ -25,6 +25,7 @@ All notable changes are documented here.
 - **Money:** category donut / treemap cells and daily spend heatmap stagger when switching months (`v230-ledger-chart-retarget.css`; `LifeLedgerInteraction.retarget` on chart scopes).
 - **Review:** monthly Money stat columns, scatter dots, and insight lines restagger when changing review months (`v231-review-ledger-retarget.css`; `LifeLedgerInteraction.retarget` on `#reviewLedgerSummary`).
 - **Money (Goal 2):** quick-entry form success flash, new transaction row enter, submit button press (`v232-ledger-entry-feedback.css`).
+- **Long-range (Goal 2):** horizon workspace sections stagger on page enter (`v210.css` batch 5 round 1).
 - **QA:** `npm test` skips `*.browser.test.mjs`; run `npm run test:browser` for Playwright suites locally or in CI.
 - **QA:** `fakecloud-conflict.browser.test.mjs` exercises stale CAS PUT → conflict recovery card on the Import tab, including Money merge preview (after seeding ledger on cloud payload).
 - **QA:** `fakecloud-preview-ledger.browser.test.mjs` — `?mode=cloudflare&local-preview=demo-showcase-v1` seeds fiction demo (incl. Money) and uploads ledger on first sync without manual API seeding.
@@ -53,6 +54,10 @@ All notable changes are documented here.
 
 ### Fixed
 
+- **Money (CSV export):** export includes explicit `currency` column (and `amount` header) so EUR/CNY rows are not mislabeled as `amount_eur` (Antigravity review).
+- **Money (edit):** invalid amount in the edit popover shows `.is-error` instead of silently keeping the old amount.
+- **Assets:** `pages-polish.css` loads before `v210.css` again so consolidated 2.1 polish wins the cascade (Antigravity review).
+- **Release QA:** deploy unit test writes manifests into a temp dir instead of `.life-ledger-deployments/`.
 - **Week / Timeline polish:** `pages-art.js` and `pages-polish.css` are now loaded in `index.html` and the service worker shell (they existed but were never wired, so empty-state art and the weekly all-done banner did not run).
 - **Money (review fixes):** backup export includes `state.ledger` (scoped by date range); partial restore merges ledger transactions/categories; quick entry and edit preserve income categories without a leading `+`; German CSV quoted amounts import; summaries, budgets, and Today spend use default currency only; Today card no longer shows `-0,00` on zero-spend days; quick-entry default date uses local timezone.
 - **Today spending card:** `ledgerHasEntries` is evaluated before the empty-state copy runs, fixing a temporal-dead-zone crash when the card renders on days with no spend.

@@ -20,3 +20,12 @@ test("legacy v211–v232 stylesheets are removed from public/", () => {
     assert.ok(!existsSync(new URL(`../public/${name}`, import.meta.url)), `${name} should be merged into v210.css`);
   }
 });
+
+test("v210.css is the last stylesheet in index.html", () => {
+  const links = [...index.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)"/g)].map(m => m[1]);
+  assert.ok(links.length >= 2);
+  assert.equal(links[links.length - 1], "v210.css?v=2.1.0");
+  const polishIdx = links.indexOf("pages-polish.css?v=2.1.0");
+  const v210Idx = links.indexOf("v210.css?v=2.1.0");
+  assert.ok(polishIdx >= 0 && v210Idx > polishIdx, "pages-polish.css must load before v210.css");
+});

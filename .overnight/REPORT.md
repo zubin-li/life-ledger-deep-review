@@ -1,10 +1,24 @@
-# Life Ledger 夜间构建总报告（Batch 4 · Round 10 · 收束）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 1 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 4 · Round 10）改动
+## 本轮（Batch 5 · Round 1）改动
+
+| 项目 | 说明 |
+|------|------|
+| **Antigravity 复核修复** | CSV 导出含 `currency` 列；编辑金额无效时红框提示；CSS 顺序 `pages-polish` → `v210`；deploy 单测用临时 manifest 目录。 |
+| **长期页动效** | 侧栏「长期」进入时 pin / 标题 / 阶段看板 / 计划区块依次 `pageCardIn`（`v210.css`）。 |
+| **截图** | `b5r1-longrange-zh-light-1440-*`、`b5r1-longrange-de-dark-390-*`。重拍：`node .overnight/capture-batch5-round1.mjs`（5293）。 |
+| **测试** | 单元 **327 pass**（+2：CSV 导出、cascade）；浏览器 **7 pass**。 |
+
+**验收提示：** 导出 CSV 表头现为 `date;note;category;amount;currency`；若同时有 EUR/CNY 流水，导出文件可区分币种。编辑一笔交易 → 金额填 `abc` → 应出现红色边框且不保存错误金额。
+
+---
+
+## 历史（Batch 4 · Round 10 · 收束）
+
 
 | 项目 | 说明 |
 |------|------|
@@ -77,6 +91,7 @@ Headless 壳注入见 `.overnight/shots/b4r8-week-all-done-mac-de-light-1440-*` 
 | R8 | 409 冲突、de/Mac 庆祝条、长期空状态 | `b4r8-*` |
 | R9 | zh · Week 全完成 · dark 390 | `b4r9-*` |
 | **R10** | **记账 1440 zh/de + 矮视口 keypad** | **`b4r10-*`** |
+| **B5 R1** | **长期页 zh 1440 / de dark 390** | **`b5r1-longrange-*`** |
 
 更早 Batch 3 截图：`b3r1`–`b3r10`、以及 `capture-ledger.mjs` 产出的 `ledger-*` 系列。
 
@@ -102,7 +117,14 @@ Headless 壳注入见 `.overnight/shots/b4r8-week-all-done-mac-de-light-1440-*` 
 
 ---
 
-## npm test（Round 10 实测）
+## npm test（Batch 5 Round 1 实测）
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **327 pass, 0 fail** |
+| `npm run test:browser` | **7 pass, 0 fail**（跑前若失败可先 `pkill -f wrangler`） |
+
+## npm test（Batch 4 Round 10 实测）
 
 | 命令 | 结果 |
 |------|------|

@@ -57,11 +57,13 @@ test("deploy applies remote migrations before wrangler deploy", () => {
     if (args.includes("deploy")) return { status: 0, stdout: "", stderr: "" };
     return { status: 0, stdout: "[]", stderr: "" };
   };
+  const manifestDir = mkdtempSync(join(tmpdir(), "ll-deploy-manifest-"));
   const result = runDeploy({
     confirm: true,
     skipRemote: true,
     runner,
     buildSha: "sha1",
+    manifestDir,
   });
   assert.equal(result.ok, true);
   const migrationIndex = calls.findIndex(line => line.includes("migrations") && line.includes("apply"));
