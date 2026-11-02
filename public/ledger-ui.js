@@ -140,15 +140,15 @@
     });
     const cells = layoutTreemapCells(items, 0, 0, 100, 100, true);
     const lang = ctx.lang?.() || "en";
-    const rects = cells.map(cell => {
+    const rects = cells.map((cell, index) => {
       const maxChars = core().treemapLabelMaxChars(cell.w, cell.h, lang);
       const short = maxChars ? core().truncateTreemapLabel(cell.label, maxChars) : "";
       const label = short
         ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label${cell.lightFill ? " ledger-treemap-label--dim" : ""}">${ctx.escape(short)}</text>`
         : "";
-      return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1"><title>${ctx.escape(cell.label)}</title></rect>${label}`;
+      return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1" style="--cell-i:${index}"><title>${ctx.escape(cell.label)}</title></rect>${label}`;
     }).join("");
-    return `<svg class="ledger-treemap" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}">${rects}</svg>`;
+    return `<svg class="ledger-treemap is-retargeting" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}">${rects}</svg>`;
   }
 
   function renderCategoryViz(breakdown, ledger) {
@@ -164,13 +164,13 @@
     const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
     if (!total) return `<div class="ledger-donut ledger-donut--empty ll-empty-enter">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
     const slices = core().breakdownDonutSlices(breakdown, 6);
-    const paths = slices.map(slice => {
+    const paths = slices.map((slice, index) => {
       const cat = ledger.categories.find(c => c.id === slice.categoryId);
       const fill = accentFill(cat?.color);
       const d = core().annularSectorPath(50, 50, 30, 48, slice.startAngle, slice.endAngle);
-      return `<path d="${d}" fill="${ctx.escape(fill)}"><title>${ctx.escape(cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "")}</title></path>`;
+      return `<path d="${d}" fill="${ctx.escape(fill)}" style="--seg-i:${index}"><title>${ctx.escape(cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "")}</title></path>`;
     }).join("");
-    return `<svg class="ledger-donut ledger-donut-svg" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}"><g class="ledger-donut-segments">${paths}</g><circle class="ledger-donut-hole" cx="50" cy="50" r="30" fill="var(--surface-page, #f5f5f0)"/></svg>`;
+    return `<svg class="ledger-donut ledger-donut-svg" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}"><g class="ledger-donut-segments is-retargeting">${paths}</g><circle class="ledger-donut-hole" cx="50" cy="50" r="30" fill="var(--surface-page, #f5f5f0)"/></svg>`;
   }
 
   function renderHeatmap(ledger, ym) {
@@ -183,9 +183,9 @@
       const iso = `${ym}-${String(day).padStart(2, "0")}`;
       const val = map.get(iso) || 0;
       const level = val ? Math.min(4, Math.ceil((val / max) * 4)) : 0;
-      cells += `<span class="ledger-heat ledger-heat-${level}" title="${ctx.escape(iso)}"></span>`;
+      cells += `<span class="ledger-heat ledger-heat-${level}" style="--heat-i:${day - 1}" title="${ctx.escape(iso)}"></span>`;
     }
-    return `<div class="ledger-heat-grid" aria-hidden="true">${cells}</div>`;
+    return `<div class="ledger-heat-grid is-retargeting" aria-hidden="true">${cells}</div>`;
   }
 
   function renderChips(ledger) {
@@ -933,6 +933,9 @@
       const budgetList = host.querySelector(".ledger-budget-list.is-retargeting");
       root.LifeLedgerReviewBars?.animateLedgerBudgetFills(budgetList);
       root.LifeLedgerInteraction?.retarget?.(budgetList);
+      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-heat-grid.is-retargeting"));
+      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-donut-segments.is-retargeting"));
+      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-treemap.is-retargeting"));
     });
     const roll = root.LifeLedgerInteraction?.rollText;
     if (roll) {

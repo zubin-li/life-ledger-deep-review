@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 3 · Round 7）
+# Life Ledger 夜间构建报告（Batch 3 · Round 8）
 
-本 round **收敛复盘页双轨渲染**，并为 **记账预算进度条** 加上换月 stagger 动效。
+本 round 为 **记账页分类圆环 / 树图 / 每日支出热力图** 补上与预算条同类的 **换月 stagger 动效**。
 
 ---
 
@@ -8,53 +8,54 @@
 
 | 项目 | 说明 |
 |------|------|
-| **`reviewUsesInsightPanels`** | 有 `dailySummary` 时，`renderReviewTrendChart` 只更新热力图；`#reviewHabitCompare`  exclusively 由 `renderInsightDashboard` 填充（习惯表 + `.rv-weekdays`），避免先画 legacy `analytics-bars` 再被覆盖的浪费与节奏条 selector 混乱。 |
-| **`v229-ledger-budget-bars.css`** | 预算 `--p` 条在 `.ledger-budget-list.is-retargeting` 下 stagger 展开；`animateLedgerBudgetFills` 在 `review-bars.js`。 |
-| **测试** | +1 → **303 pass, 0 fail**。 |
+| **`v230-ledger-chart-retarget.css`** | 热力图格子 scale-in（按 `--heat-i` 错开）；donut 扇区与 treemap 格子 scale + fade-in（`--seg-i` / `--cell-i`）。 |
+| **`ledger-ui.js`** | 渲染时给上述容器加 `is-retargeting`；在 `requestAnimationFrame` 里对预算条、热力图、donut、treemap 调用 `LifeLedgerInteraction.retarget` 以重播动画。 |
+| **测试** | `tests/ledger-chart-retarget.test.mjs` → **305 pass, 0 fail**。 |
 
 ---
 
-## 明早怎么验（约 2 分钟）
+## 明早怎么验（约 1 分钟）
 
-1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`，打开 `?mode=local&local-preview=demo-showcase-v1`
-2. **复盘** → 展开习惯对比区，应见 **星期柱**（`.rv-weekdays`），换月时柱高与百分比仍有 v227 脉冲（非 legacy 横条列表）。
-3. **记账** → **预算进度**，点月份 ‹ ›，进度条应从 0 长到当前比例（减少 motion 时无动画）。
-4. `npm test` → **303 pass, 0 fail**
+1. 本地 demo：`?mode=local&local-preview=demo-showcase-v1` → **记账**。
+2. 点月份 **‹** 或 **›**：分类圆环扇区应依次弹出；向下滚到 **每日支出**，小格应波浪式出现（系统开启「减少动态效果」时应无动画）。
+3. 分类区可切 **树图**，换月时色块同样 stagger。
+4. `npm test` → **305 pass, 0 fail**。
 
 ---
 
-## 截图（Batch 3 Round 7）
+## 截图（Batch 3 Round 8）
 
 | 场景 | 文件 |
 |------|------|
-| 中文 · 复盘星期柱 · 1440 light | `b3r7-review-weekday-zh-light-1440-chromium.png` / `-webkit.png` |
-| 德文 · 预算区 · 390 dark | `b3r7-ledger-budget-de-dark-390-chromium.png` / `-webkit.png` |
+| 中文 · 分类圆环 · 1440 light（换月后） | `b3r8-ledger-donut-zh-light-1440-chromium.png` / `-webkit.png` |
+| 德文 · 每日支出热力 · 390 dark | `b3r8-ledger-heat-de-dark-390-chromium.png` / `-webkit.png` |
 
-重拍：`.overnight/capture-batch3-round7.mjs`（端口 **5296**）。
+重拍：`.overnight/capture-batch3-round8.mjs`（端口 **5295**）。
 
 ---
 
 ## 已知问题
 
-- fakecloud 仍缺 `functions/`。
-- Round 5 截图脚本仍指向 `.analytics-bars` weekday 面板；当前 UI 以 `.rv-weekdays` 为准（Round 7 脚本已修正）。
+- fakecloud 仍缺 `functions/`，在线版本地替身未跑通。
+- REVIEW.md 中的 HIGH 项（备份、收入解析、CSV 引号）已在更早 batch 修复；本 round 未改相关逻辑。
 
 ---
 
 ## 试过但未做
 
-- 删除未使用的 `renderHabitBars` / `renderWeekdayBars`（仍作为无 `dailySummary` 时的 fallback）。
-- fakecloud stub 拷贝。
+- 在线版 fakecloud 最小 `functions/` 拷贝（受「不碰 server migrations」约束，需只读 stub 设计）。
+- uPlot 支出趋势换月过渡（destroy/recreate 已足够快，未加第二层动画）。
 
 ---
 
 ## npm test
 
-**303 pass, 0 fail**（Batch 3 Round 7，实测）。
+**305 pass, 0 fail**（Batch 3 Round 8，实测）。
 
 ---
 
-## 下次可做
+## 下次可做（Round 9–10）
 
-- 记账分类 donut / 日支出热力图换月 stagger。
-- 在线版 fakecloud 最小 `functions/` 替身（只读 state，不碰 migrations）。
+- fakecloud 只读 Pages 替身（若可从 sibling 只读参考，不写入 `functions/` migrations）。
+- 复盘页其它 panel 的统一 retarget 策略文档化。
+- 空账本 + 真实 LOCAL_EDITION 截图补一组（避免 demo 注入干扰）。

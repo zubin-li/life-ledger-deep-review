@@ -22,12 +22,13 @@ All notable changes are documented here.
 - **Review rhythm bars:** month completion bar-chart retarget, habit compare bar width pulse, weekday column regrow + percent roll, focus week bars stagger (`review-bars.js`, `v227-review-bars-weekday.css`).
 - **Money & Today empty states:** ledger onboarding, list/budget/recurring/donut/trend placeholders and Today spending card use shared `ll-empty-enter` motion (`v228-ledger-empty-enter.css`).
 - **Money:** budget progress bars grow with stagger when switching months (`v229-ledger-budget-bars.css`; `LifeLedgerReviewBars.animateLedgerBudgetFills`).
+- **Money:** category donut / treemap cells and daily spend heatmap stagger when switching months (`v230-ledger-chart-retarget.css`; `LifeLedgerInteraction.retarget` on chart scopes).
 
 ### Changed
 
 - **Review:** heatmap-only legacy analytics path when the insight dashboard is active — no duplicate habit/weekday DOM in `#reviewHabitCompare` (`reviewUsesInsightPanels` in `app.js`).
 
-- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v229`.
+- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v230`.
 - **Maintainability:** documented CSS slice layout in `.overnight/CSS-LAYERS.md`; removed duplicate `isoFromDate` in `ledger-core.js`; `.overnight/scratch/` gitignored and deleted from the tree.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`).
 
