@@ -11,6 +11,17 @@ const SHELL_CSS = readFileSync("/Users/ashan/Documents/Codex/ll-overnight/deskto
 
 const base = "http://127.0.0.1:5291/index.html?mode=local";
 
+async function clearLedgerForOnboarding(page) {
+  await page.evaluate(() => {
+    const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
+    if (!key || !window.LifeLedgerLedger) return;
+    let state;
+    try { state = JSON.parse(localStorage.getItem(key)); } catch { return; }
+    state.ledger = window.LifeLedgerLedger.emptyLedger();
+    localStorage.removeItem("life-ledger-ledger-onboarding-dismissed");
+    localStorage.setItem(key, JSON.stringify(state));
+  });
+}
 async function seedDemoLedger(page) {
   await page.evaluate(() => {
     const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
@@ -89,6 +100,10 @@ async function shot(browserType, name, opts) {
   }
   if (opts.demoLedger) {
     await seedDemoLedger(page);
+    await page.reload({ waitUntil: "networkidle" });
+  }
+  if (opts.emptyLedger) {
+    await clearLedgerForOnboarding(page);
     await page.reload({ waitUntil: "networkidle" });
   }
   if (opts.view === "review") {
@@ -190,5 +205,17 @@ await shot(chromium, "timeline-calendar-light-1440", {
   theme: "light",
   demoLedger: true,
   view: "calendar",
+});
+await shot(chromium, "ledger-onboarding-zh-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  lang: "zh",
+  emptyLedger: true,
+});
+await shot(chromium, "review-sparks-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  view: "review",
+  demoLedger: true,
 });
 console.log("screenshots saved");

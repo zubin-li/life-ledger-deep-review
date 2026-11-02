@@ -15,6 +15,7 @@ All notable changes are documented here.
 - **`habitCompletionSpendInsight`** on monthly review (habit completion vs spending); shared **`paintWithSkeleton`** / journal feed loading skeleton (`v212-skeleton.css`).
 - Demo **`demoSeedAnchor`** (mid-month sample), **`alignDemoHabitCompletionWithSpend`**, and **`effectiveDemoTodayIso`** so review money insights are visible early in the month on sample data only.
 - Timeline **calendar** mode: photo load skeleton on month grid, calendar re-render after photos; treemap **pale-tile** label class via `isLightAccentColor`.
+- Ledger **first-run onboarding** banner (dismissible), Today spending **quick-entry hint** when empty, review habit **sparkline enter** animation, mobile keypad bottom clearance (`v213-onboarding.css`).
 
 ### Changed
 

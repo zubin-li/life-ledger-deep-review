@@ -465,6 +465,37 @@
     });
   }
 
+  const ONBOARDING_KEY = "life-ledger-ledger-onboarding-dismissed";
+
+  function onboardingDismissed() {
+    try {
+      return localStorage.getItem(ONBOARDING_KEY) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function renderOnboarding(ledger) {
+    if (ledger.transactions.length || onboardingDismissed()) return "";
+    return `<aside class="ledger-onboarding ll-empty" data-ledger-onboarding>
+      <div class="ll-art" data-art="week-insights-empty"></div>
+      <div class="ledger-onboarding-copy">
+        <strong>${t("从这里记第一笔", "Log your first entry here", "Hier die erste Buchung erfassen")}</strong>
+        <p>${t(
+          "在上方输入框试试：12,50 咖啡、-45 Miete gestern、+2000 工资。分类芯片可一键填入名称。",
+          "Use the quick field above: 12.50 coffee, -45 rent yesterday, +2000 salary. Category chips fill names for you.",
+          "Im Feld oben z. B.: 12,50 Kaffee · -45 Miete gestern · +2000 Gehalt. Kategorien-Chips füllen Namen ein.",
+        )}</p>
+        <button type="button" class="text-button" data-ledger-hint-dismiss>${t("知道了", "Got it", "Verstanden")}</button>
+      </div>
+    </aside>`;
+  }
+
+  function mountOnboardingArt(host) {
+    const box = host.querySelector("[data-ledger-onboarding] .ll-art[data-art]");
+    if (box && root.LifeLedgerHairline?.mount) root.LifeLedgerHairline.mount(box, box.dataset.art);
+  }
+
   function renderKeypad() {
     const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ",", "0", "⌫"];
     return `<div class="ledger-keypad" role="group" aria-label="${t("金额键盘", "Amount keypad", "Ziffernblock")}">
@@ -723,6 +754,7 @@
       </form>
       ${renderKeypad()}
       <div class="ledger-chips">${renderChips(ledger)}</div>
+      ${renderOnboarding(ledger)}
       <div class="ledger-toolbar">
         <input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" />
         <button type="button" class="secondary-button" data-ledger-import>${t("导入 CSV", "Import CSV", "CSV importieren")}</button>
@@ -761,6 +793,11 @@
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
         ${renderList(ledger, ym)}
       </section>`;
+    host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => {
+      try { localStorage.setItem(ONBOARDING_KEY, "1"); } catch { /* ignore */ }
+      host.querySelector("[data-ledger-onboarding]")?.remove();
+    });
+    mountOnboardingArt(host);
     bindInteractions(host, ledger, ym);
     requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));
     requestAnimationFrame(() => {
