@@ -1,2 +1,2 @@
-习惯颜色可以正常修改了；本机窗口的网页更新到 2.0.8；以后有新版本时，应用里会直接提示更新。
-Habit colours can be changed again; the local window gets web 2.0.8; future versions are offered right here in the app.
+修复应用签名：签名现在覆盖整个应用，从网页下载的安装包不会再被 macOS 误判为“已损坏”。这也是第一次通过应用内更新送达。
+The app's signature now covers the whole app, so a downloaded copy is no longer reported as damaged. This is the first update delivered inside the app.

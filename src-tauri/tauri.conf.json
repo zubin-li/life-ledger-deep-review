@@ -1,7 +1,7 @@
 {
   "$schema": "./gen/schemas/desktop-schema.json",
   "productName": "Life Ledger",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "identifier": "app.zubinli.lifeledger",
   "build": {
     "beforeDevCommand": "npm run desktop:prepare",
@@ -31,7 +31,8 @@
       "icons/icon.icns"
     ],
     "macOS": {
-      "minimumSystemVersion": "12.0"
+      "minimumSystemVersion": "12.0",
+      "signingIdentity": "-"
     },
     "createUpdaterArtifacts": true
   },

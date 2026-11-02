@@ -14,6 +14,7 @@ test("in-app updates use a signed feed over https and never install silently", (
   assert.match(u.pubkey, /^[A-Za-z0-9+/=]{100,}$/, "minisign public key (base64)");
   assert.deepEqual(u.endpoints, ["https://github.com/zubin-li/life-ledger-deep-review/releases/download/mac-updates/latest.json"]);
   assert.equal(conf.bundle.createUpdaterArtifacts, true);
+  assert.equal(conf.bundle.macOS.signingIdentity, "-", "ad-hoc signature sealed over the whole bundle (CI builds were unsealed)");
   assert.ok(!JSON.stringify(conf).includes("dangerousInsecureTransportProtocol"));
   assert.match(updates, /OkCancelCustom\(install\.clone\(\), text\("later"\)/, "asks first");
   // The only other install path is the QA-only auto-accept, compiled into `--features qa` test builds, never releases.

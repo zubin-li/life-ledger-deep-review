@@ -4,6 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.9] - 2026-11-02
+
+Life Ledger for Mac 3.0.3 (web unchanged apart from the version).
+
+### Fixed
+
+- **Mac app signature covers the whole app.** Release builds only signed the program file, not the app bundle around it; macOS can then call a browser-downloaded copy "damaged" instead of offering **Open Anyway**. The bundle is now ad-hoc signed as a whole (`signingIdentity: "-"`). This is also the first version delivered through the in-app update.
+
 ## [2.0.8] - 2026-11-02
 
 Web 2.0.8 and Life Ledger for Mac 3.0.2.
