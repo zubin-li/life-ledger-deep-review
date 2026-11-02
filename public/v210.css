@@ -2043,7 +2043,8 @@ html.motion-reduced .review-focus-scatter-dot {
 
 .review-ledger-insights .review-ledger-mood,
 .review-ledger-insights .review-ledger-habits,
-.review-ledger-insights .review-ledger-focus {
+.review-ledger-insights .review-ledger-focus,
+.review-ledger-insights .review-ledger-budget {
   margin: 0;
   font-size: 0.84rem;
   line-height: 1.45;
@@ -2927,7 +2928,8 @@ html.motion-reduced .ledger-treemap.is-retargeting rect {
   .review-ledger-insights.is-retargeting :is(
     .review-ledger-mood,
     .review-ledger-habits,
-    .review-ledger-focus
+    .review-ledger-focus,
+    .review-ledger-budget
   ) {
     animation: rvLedgerInsightIn 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: calc(var(--insight-i, 0) * 55ms);
@@ -2976,7 +2978,8 @@ html.motion-reduced .review-scatter-grid.is-retargeting :is(
 html.motion-reduced .review-ledger-insights.is-retargeting :is(
   .review-ledger-mood,
   .review-ledger-habits,
-  .review-ledger-focus
+  .review-ledger-focus,
+  .review-ledger-budget
 ) {
   animation: none !important;
   opacity: 1 !important;
@@ -2993,11 +2996,26 @@ html.motion-reduced .review-ledger-insights.is-retargeting :is(
   .review-ledger-insights.is-retargeting :is(
     .review-ledger-mood,
     .review-ledger-habits,
-    .review-ledger-focus
+    .review-ledger-focus,
+    .review-ledger-budget
   ) {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+
+/* Batch 6 round 4 — habit compare hairline empty + 4-up insight grid */
+
+.insight-habit-panel .hairline-empty {
+  margin: 0.5rem 0 0.75rem;
+  padding: 1.25rem 1rem;
+}
+
+@media (min-width: 960px) {
+  .review-ledger-insights:has(.review-ledger-budget) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

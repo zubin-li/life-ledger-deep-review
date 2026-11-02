@@ -8553,11 +8553,47 @@ function renderReviewLedgerSummary() {
     const habitDeltaHtml = habitDelta ? `<span class="review-ledger-insight-delta"> ${escapeHtml(habitDelta)}</span>` : "";
     habitLine = `<p class="review-ledger-habits" style="--insight-i:2"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}${habitDeltaHtml}</span></p>`;
   }
+  let budgetLine = "";
+  const overs = L.budgetOverspendList(ledger, ym);
+  if (overs.length) {
+    const totalOver = overs.reduce((sum, row) => sum + row.overMinor, 0);
+    const worst = overs[0];
+    const worstCat = ledger.categories.find(c => c.id === worst.categoryId);
+    const worstName = L.localizedCategoryName(worstCat, currentLang);
+    const overText = L.formatMoney(-totalOver, cur, locale);
+    const budgetBody = languageText(
+      `${overs.length} 个分类超预算，共超出 ${overText}；最多的是 ${worstName}。`,
+      `${overs.length} ${overs.length === 1 ? "category" : "categories"} over budget (${overText} total); ${worstName} led.`,
+      `${overs.length} ${overs.length === 1 ? "Kategorie" : "Kategorien"} über Budget (${overText} gesamt); ${worstName} führt.`,
+    );
+    const moodBudget = L.moodOverspendCategoryInsight(ledger, ym, dailyRows);
+    let moodBudgetHtml = "";
+    if (moodBudget) {
+      const hotPct = Math.round(moodBudget.hotRate * 100);
+      const otherPct = Math.round(moodBudget.otherRate * 100);
+      if (moodBudget.hotRate > moodBudget.otherRate) {
+        const extra = L.spendInsightDeltaPercent(hotPct, Math.max(1, otherPct));
+        const moodExtra = extra
+          ? languageText(
+            `在这些分类有支出的日子里，记录「低落」的比例约高出 ${extra}%。`,
+            `On days you spent in those categories, low mood was logged about ${extra}% more often.`,
+            `An Tagen mit Ausgaben dort war „schwer“ etwa ${extra} % häufiger.`,
+          )
+          : languageText(
+            `在这些分类有支出的日子里，「低落」占比 ${hotPct}%，其它支出日 ${otherPct}%。`,
+            `Low mood on those spend days ${hotPct}% vs ${otherPct}% on other spending days.`,
+            `„Schwer“ an diesen Tagen ${hotPct} % vs ${otherPct} % an anderen Ausgabetagen.`,
+          );
+        moodBudgetHtml = `<span class="review-ledger-insight-delta"> ${escapeHtml(moodExtra)}</span>`;
+      }
+    }
+    budgetLine = `<p class="review-ledger-budget" style="--insight-i:3"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("预算", "Budget", "Budget"))}</span><span class="review-ledger-insight-body">${escapeHtml(budgetBody)}${moodBudgetHtml}</span></p>`;
+  }
   const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
   const scatterSection = scatterParts.length
     ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}</div>`
     : "";
-  const insightParts = [moodLine, habitLine, focusLine].filter(Boolean);
+  const insightParts = [moodLine, habitLine, focusLine, budgetLine].filter(Boolean);
   const insightSection = insightParts.length
     ? `<div class="review-ledger-insights is-retargeting" id="review-ledger-insights" tabindex="-1">${insightParts.join("")}</div>`
     : "";
@@ -8980,7 +9016,7 @@ function renderInsightDashboard() {
     return `<tr style="${habitStyle(habit)}"><th scope="row"><span class="insight-habit-icon">${renderIcon(iconKey(habit))}</span>${escapeHtml(displayHabitName(habit))}</th><td class="rv-spark-cell">${habitMonthSparkSvg(habit, dates)}</td><td>${row.completed} / ${row.eligible}</td><td><span class="rv-bar"><i style="width:${row.percent}%"></i></span><b>${row.percent}%</b></td><td>${delta(old ? diff(row.percent, old.percent) : null)}</td></tr>`;
   }).join('');
   const weekday = model.weekdays.map((r, i) => `<div class="rv-weekday"><span>${escapeHtml(i18n[currentLang].calendar.weekdays[i])}</span><div class="insight-weekday-track" aria-hidden="true"><i style="height:${r.percent || 0}%"></i></div><strong>${r.eligible ? `${r.percent}%` : '—'}</strong></div>`).join('');
-  $('#reviewHabitCompare').innerHTML = `<section class="insight-habit-panel rv-panel"><header><h3>${escapeHtml(T('每个习惯','Habit by habit','Gewohnheit für Gewohnheit'))}</h3><p>${escapeHtml(T('完成率 = 完成次数 ÷ 这个月按计划应做的次数；右列是和上个月相比的百分点。','Completion = times done ÷ times planned this month; the last column is the change vs last month in percentage points.','Quote = erledigt ÷ in diesem Monat geplant; rechts die Änderung zum Vormonat in Prozentpunkten.'))}</p></header>${rows ? `<table class="rv-table rv-table--sparks"><thead><tr><th>${escapeHtml(T('习惯','Habit','Gewohnheit'))}</th><th>${escapeHtml(T('每日','Daily','Täglich'))}</th><th>${escapeHtml(T('完成 / 应做','Done / planned','Erledigt / geplant'))}</th><th>${escapeHtml(T('完成率','Rate','Quote'))}</th><th>${escapeHtml(T('比上月（百分点）','vs last month (pp)','zum Vormonat (Pp.)'))}</th></tr></thead><tbody>${rows}</tbody></table>` : `<p>${escapeHtml(tr('review.insufficient'))}</p>`}</section><section class="insight-weekday-panel rv-panel"><header><h3>${escapeHtml(T('一周里哪天最稳','Your steadiest weekday','Dein stärkster Wochentag'))}</h3><p>${escapeHtml(T('这个月每个星期几的平均完成率。','Average completion per weekday this month.','Durchschnitt je Wochentag in diesem Monat.'))}</p></header><div class="rv-weekdays rv-weekdays--enter">${weekday}</div></section>`;
+  $('#reviewHabitCompare').innerHTML = `<section class="insight-habit-panel rv-panel"><header><h3>${escapeHtml(T('每个习惯','Habit by habit','Gewohnheit für Gewohnheit'))}</h3><p>${escapeHtml(T('完成率 = 完成次数 ÷ 这个月按计划应做的次数；右列是和上个月相比的百分点。','Completion = times done ÷ times planned this month; the last column is the change vs last month in percentage points.','Quote = erledigt ÷ in diesem Monat geplant; rechts die Änderung zum Vormonat in Prozentpunkten.'))}</p></header>${rows ? `<table class="rv-table rv-table--sparks"><thead><tr><th>${escapeHtml(T('习惯','Habit','Gewohnheit'))}</th><th>${escapeHtml(T('每日','Daily','Täglich'))}</th><th>${escapeHtml(T('完成 / 应做','Done / planned','Erledigt / geplant'))}</th><th>${escapeHtml(T('完成率','Rate','Quote'))}</th><th>${escapeHtml(T('比上月（百分点）','vs last month (pp)','zum Vormonat (Pp.)'))}</th></tr></thead><tbody>${rows}</tbody></table>` : hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.insufficient"), languageText("这个月还没有足够的习惯数据。先坚持打卡几天再来看对比。", "Not enough habit data this month yet. Check in for a few days to see comparisons.", "Noch zu wenig Gewohnheitsdaten in diesem Monat. Halte ein paar Tage durch, dann siehst du Vergleiche."))}</section><section class="insight-weekday-panel rv-panel"><header><h3>${escapeHtml(T('一周里哪天最稳','Your steadiest weekday','Dein stärkster Wochentag'))}</h3><p>${escapeHtml(T('这个月每个星期几的平均完成率。','Average completion per weekday this month.','Durchschnitt je Wochentag in diesem Monat.'))}</p></header><div class="rv-weekdays rv-weekdays--enter">${weekday}</div></section>`;
   const end = dates.at(-1);
   const periodic = activeHabits(end).filter(h => !countsTowardDaily(h, end) && ['weekly', 'monthly'].includes(versionFor(h, end)?.frequency)).map(h => {
     const v = versionFor(h, end), start = v.frequency === 'monthly' ? dates[0] : isoDate(weekDatesFromKey(isoWeekKey(parseDate(end))).monday);

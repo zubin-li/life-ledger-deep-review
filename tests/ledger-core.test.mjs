@@ -105,11 +105,13 @@ test("remove and restore transaction", () => {
 });
 
 test("buildDemoSample creates transactions and budgets", () => {
-  const ledger = L.buildDemoSample({ now: new Date("2026-11-02T12:00:00"), lang: "en", contentSeed: 123 });
+  const ledger = L.buildDemoSample({ now: new Date("2026-11-18T12:00:00"), lang: "en", contentSeed: 123 });
   assert.ok(ledger.transactions.length > 10);
   assert.ok(ledger.budgets.length >= 1);
   const progress = L.budgetProgress(ledger, "2026-11");
   assert.ok(Array.isArray(progress));
+  const overs = L.budgetOverspendList(ledger, "2026-11");
+  assert.ok(overs.length >= 1, "demo month should include over-budget categories for review");
 });
 
 test("upsertCategoryBudget and budgetProgress", () => {
@@ -408,6 +410,61 @@ test("spendInsightDeltaPercent rounds percent lift between averages", () => {
   assert.equal(L.spendInsightDeltaPercent(6000, 1500), 300);
   assert.equal(L.spendInsightDeltaPercent(1500, 1500), null);
   assert.equal(L.spendInsightDeltaPercent(100, 0), null);
+});
+
+test("budgetOverspendList lists categories above limit", () => {
+  let ledger = L.buildDemoSample({ now: new Date("2026-11-18T12:00:00"), lang: "en", contentSeed: 42 });
+  const ym = "2026-11";
+  const cat = ledger.categories.find(c => c.kind === "expense" && !c.archived);
+  ledger = L.upsertCategoryBudget(ledger, { month: ym, categoryId: cat.id, limitMinor: 500 }).ledger;
+  ledger = L.addTransaction(ledger, {
+    accountId: ledger.accounts[0].id,
+    categoryId: cat.id,
+    amountMinor: -2500,
+    currency: "EUR",
+    date: "2026-11-10",
+    note: "test",
+  }).ledger;
+  const overs = L.budgetOverspendList(ledger, ym);
+  assert.ok(overs.length >= 1);
+  assert.ok(overs[0].overMinor >= 2000);
+});
+
+test("moodOverspendCategoryInsight compares low mood on hot spend days", () => {
+  let ledger = L.buildDemoSample({ now: new Date("2026-11-18T12:00:00"), lang: "en", contentSeed: 7 });
+  const ym = "2026-11";
+  const cat = ledger.categories.find(c => c.kind === "expense" && !c.archived);
+  ledger = L.upsertCategoryBudget(ledger, { month: ym, categoryId: cat.id, limitMinor: 100 }).ledger;
+  const hotDates = ["2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08"];
+  hotDates.forEach((date, i) => {
+    ledger = L.addTransaction(ledger, {
+      accountId: ledger.accounts[0].id,
+      categoryId: cat.id,
+      amountMinor: -5000,
+      currency: "EUR",
+      date,
+      note: "hot",
+    }).ledger;
+  });
+  const otherDates = ["2026-11-12", "2026-11-13", "2026-11-14", "2026-11-15"];
+  const otherCat = ledger.categories.find(c => c.kind === "expense" && c.id !== cat.id);
+  otherDates.forEach(date => {
+    ledger = L.addTransaction(ledger, {
+      accountId: ledger.accounts[0].id,
+      categoryId: otherCat.id,
+      amountMinor: -800,
+      currency: "EUR",
+      date,
+      note: "other",
+    }).ledger;
+  });
+  const dailyRows = [
+    ...hotDates.map(date => ({ date, mood: "低落", spendMinor: 5000 })),
+    ...otherDates.map(date => ({ date, mood: "很好", spendMinor: 800 })),
+  ];
+  const insight = L.moodOverspendCategoryInsight(ledger, ym, dailyRows);
+  assert.ok(insight);
+  assert.ok(insight.hotRate > insight.otherRate);
 });
 
 test("habitCompletionSpendScatter needs enough points and renders svg", () => {

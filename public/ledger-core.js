@@ -1044,6 +1044,61 @@
       .sort((a, b) => b.ratio - a.ratio);
   }
 
+  /** Categories over monthly limit, largest overspend first. */
+  function budgetOverspendList(ledger, ym) {
+    return budgetProgress(ledger, ym)
+      .filter(b => b.spentMinor > b.limitMinor)
+      .map(b => ({
+        categoryId: b.categoryId,
+        spentMinor: b.spentMinor,
+        limitMinor: b.limitMinor,
+        overMinor: b.spentMinor - b.limitMinor,
+        ratio: b.ratio,
+      }));
+  }
+
+  function datesWithCategorySpend(ledger, ym, categoryIds) {
+    const base = normalize(ledger);
+    const dates = new Set();
+    if (!categoryIds?.size) return dates;
+    transactionsInMonth(base, ym).forEach(tx => {
+      if (tx.amountMinor >= 0 || !categoryIds.has(tx.categoryId) || !txInReportingCurrency(base, tx)) return;
+      if (typeof tx.date === "string") dates.add(tx.date);
+    });
+    return dates;
+  }
+
+  /**
+   * On days with spend in categories that ended over budget, compare low-mood rate vs other spending days.
+   * dailyRows: { date, mood, spendMinor } from review panel builder.
+   */
+  function moodOverspendCategoryInsight(ledger, ym, dailyRows, options = {}) {
+    const overs = budgetOverspendList(ledger, ym);
+    if (!overs.length) return null;
+    const hotDates = datesWithCategorySpend(ledger, ym, new Set(overs.map(o => o.categoryId)));
+    if (hotDates.size < 2) return null;
+    const lowMood = options.lowMood || "低落";
+    let lowOnHot = 0;
+    let hotWithMood = 0;
+    let lowOnOther = 0;
+    let otherWithMood = 0;
+    (dailyRows || []).forEach(row => {
+      if (!row?.mood || !(row.spendMinor > 0)) return;
+      if (hotDates.has(row.date)) {
+        hotWithMood += 1;
+        if (row.mood === lowMood) lowOnHot += 1;
+      } else {
+        otherWithMood += 1;
+        if (row.mood === lowMood) lowOnOther += 1;
+      }
+    });
+    if (hotWithMood < 2 || otherWithMood < 2) return null;
+    const hotRate = lowOnHot / hotWithMood;
+    const otherRate = lowOnOther / otherWithMood;
+    if (Math.abs(hotRate - otherRate) < 0.08) return null;
+    return { hotRate, otherRate, hotDays: hotWithMood, otherDays: otherWithMood, overs };
+  }
+
   function resolveBudgetLimitMinor(rawLimit, amountText) {
     if (Number.isInteger(rawLimit) && rawLimit > 0) return rawLimit;
     const token = parseAmountToken(amountText);
@@ -1173,6 +1228,21 @@
     return base;
   }
 
+  /** Demo-only: ensure current month has 1–2 over-budget categories for Review insights. */
+  function alignDemoBudgetOverspendForReview(ledger, ym) {
+    const base = normalize(ledger);
+    const progress = budgetProgress(base, ym);
+    if (!progress.length) return base;
+    const top = [...progress].sort((a, b) => b.spentMinor - a.spentMinor).slice(0, 2);
+    top.forEach(row => {
+      if (row.spentMinor < 800 || row.spentMinor > row.limitMinor) return;
+      const targetLimit = Math.max(500, Math.round(row.spentMinor * 0.78));
+      const idx = base.budgets.findIndex(b => b.id === row.id);
+      if (idx >= 0) base.budgets[idx] = { ...base.budgets[idx], limitMinor: targetLimit };
+    });
+    return base;
+  }
+
   function buildDemoSample(options = {}) {
     const now = options.now instanceof Date ? options.now : new Date(options.now || Date.now());
     const lang = options.lang || "en";
@@ -1232,6 +1302,7 @@
     ledger = ensureDemoBudgets(ledger, monthKey(today));
     ledger = ensureDemoBudgets(ledger, shiftYm(monthKey(today), -1));
     ledger = ensureDemoMonthActivity(ledger, now, lang, rng);
+    ledger = alignDemoBudgetOverspendForReview(ledger, monthKey(today));
     return ledger;
   }
 
@@ -1525,6 +1596,8 @@
     renderMiniSpendSparklineSvg,
     repairDefaultCategoryNames,
     budgetProgress,
+    budgetOverspendList,
+    moodOverspendCategoryInsight,
     upsertCategoryBudget,
     removeCategoryBudget,
     restoreCategoryBudget,

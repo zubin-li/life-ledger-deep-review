@@ -1,12 +1,28 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 3）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 4）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 3：** 复盘页记账面板——最大支出分类 + 心情/习惯/专注洞察百分比；README 导览补记账桌面图；共用空状态入场动效。
+**Batch 6 Round 4：** 复盘页记账区 **预算超支摘要** + 演示数据对齐；习惯逐条对比 **hairline 空状态**。
 
 ---
 
-## 本轮（Batch 6 · Round 3）改动
+## 本轮（Batch 6 · Round 4）改动
+
+| 项目 | 说明 |
+|------|------|
+| **复盘 · 预算** | 当月有分类超限时，洞察区新增 **预算** 行：超支个数、合计超出金额、最大超支分类；若在那些分类有支出的日子里「低落」更多，会追加百分比句。 |
+| **Demo** | `buildDemoSample` 末尾收紧当月 1–2 个高支出分类的预算上限，showcase 打开复盘即可看到预算行（不影响真实用户账本）。 |
+| **习惯表格空状态** | 复盘页 **每个习惯** 无足够数据时显示 hairline 插画 + 三语引导，不再只是一行 insufficient 文案。 |
+| **测试** | 单元 **346 pass**（+2）；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b6r4-review-budget-*`。重拍：`node .overnight/capture-batch6-round4.mjs`（**5296**）。 |
+
+**去哪点：** 侧栏 **复盘** → 滚到 **本月支出摘要** → 看底部洞察 **预算 / Budget**（demo：`?local-preview=demo-showcase-v1`）。
+
+**已知遗留：** README 首屏大图未换；超支–心情句仅在低落侧更高时出现。
+
+---
+
+## 上一轮（Batch 6 · Round 3）改动
 
 | 项目 | 说明 |
 |------|------|
