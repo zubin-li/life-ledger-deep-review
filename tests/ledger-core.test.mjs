@@ -114,3 +114,30 @@ test("spendingTodayMinor sums expenses only", () => {
   ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: inc, amountMinor: 5000, currency: "EUR", date: "2026-11-02", note: "" }));
   assert.equal(L.spendingTodayMinor(ledger, "2026-11-02"), 300);
 });
+
+test("duplicateTransaction clones amount and category for today", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  const { ledger: withTx, transaction } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -420, currency: "EUR", date: "2026-10-01", note: "lunch" });
+  const dup = L.duplicateTransaction(withTx, transaction.id, { lang: "en", today: "2026-11-02" });
+  assert.ok(dup);
+  assert.equal(dup.ledger.transactions.length, 2);
+  const copy = dup.ledger.transactions.find(t => t.id !== transaction.id);
+  assert.equal(copy.amountMinor, -420);
+  assert.equal(copy.date, "2026-11-02");
+});
+
+test("moodSpendComparison averages great vs low mood days", () => {
+  const rows = [
+    { mood: "很好", spendMinor: 1000 },
+    { mood: "很好", spendMinor: 2000 },
+    { mood: "低落", spendMinor: 5000 },
+    { mood: "低落", spendMinor: 7000 },
+    { mood: "平静", spendMinor: 9999 },
+  ];
+  const cmp = L.moodSpendComparison(rows);
+  assert.ok(cmp);
+  assert.equal(cmp.greatAvg, 1500);
+  assert.equal(cmp.lowAvg, 6000);
+});

@@ -544,7 +544,15 @@
     const todayEl = $(".tw-spend-today", c);
     const note = $(".tw-spend-note", c);
     const monthSide = $(".tw-spend-month", c);
-    if (todayEl) todayEl.textContent = ledger ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : "—";
+    const todayText = ledger ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : "—";
+    const prevToday = c.dataset.spendToday || "";
+    if (todayEl) {
+      todayEl.textContent = todayText;
+      if (window.LifeLedgerInteraction?.rollText && todayText !== prevToday && prevToday) {
+        window.LifeLedgerInteraction.rollText(todayEl, todayText, prevToday);
+      }
+      c.dataset.spendToday = todayText;
+    }
     if (note) note.textContent = todayMinor ? t("spendingToday") : t("spendingEmpty");
     if (monthSide) monthSide.textContent = ledger
       ? `${t("spendingMonth")} · ${L.formatMoney(monthSummary.expenseMinor, ledger.settings.defaultCurrency, locale)}`

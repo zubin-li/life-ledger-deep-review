@@ -1,0 +1,104 @@
+/* Overnight 2.1 polish — load last */
+.ledger-page {
+  padding-bottom: calc(2rem + var(--mobile-nav-safe-bottom, 0px));
+}
+
+.ledger-quick-label {
+  display: block;
+}
+
+.ledger-tx-actions {
+  display: inline-flex;
+  gap: 0.15rem;
+  align-items: center;
+}
+
+.ledger-tx {
+  grid-template-columns: 3rem 1fr auto auto;
+}
+
+.ledger-keypad {
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+@media (pointer: coarse), (max-width: 640px) {
+  .ledger-keypad {
+    display: grid;
+  }
+}
+
+.ledger-key {
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline, rgba(0, 0, 0, 0.08));
+  background: var(--surface-elevated, rgba(255, 255, 255, 0.72));
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+html[data-theme="dark"] .ledger-key {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ledger-key:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+.ledger-key-sign {
+  grid-column: span 4;
+  font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-key:active {
+    transform: none;
+  }
+}
+
+.view.is-entering #ledgerView .ledger-summary article,
+.view.is-entering #ledgerView .ledger-quick,
+.view.is-entering #ledgerView .ledger-panel,
+.view.is-entering #ledgerView .ledger-budget-wrap,
+.view.is-entering #ledgerView .ledger-list-wrap {
+  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+.view.is-entering #ledgerView .ledger-summary article:nth-child(2) { animation-delay: 40ms; }
+.view.is-entering #ledgerView .ledger-summary article:nth-child(3) { animation-delay: 80ms; }
+.view.is-entering #ledgerView .ledger-panel:nth-child(2) { animation-delay: 60ms; }
+.view.is-entering #ledgerView .ledger-panel:nth-child(3) { animation-delay: 100ms; }
+
+html.motion-reduced .view.is-entering #ledgerView :is(.ledger-summary article, .ledger-panel) {
+  animation: none;
+}
+
+.tw-card.tw-spending {
+  transition: transform 0.15s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tw-card.tw-spending:active {
+    transform: scale(0.985);
+  }
+}
+
+.review-ledger-panel {
+  animation: pageCardIn 0.5s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+@media (max-width: 640px) {
+  .ledger-tx {
+    grid-template-columns: 2.5rem 1fr auto;
+  }
+  .ledger-tx-actions {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    flex-direction: column;
+  }
+}

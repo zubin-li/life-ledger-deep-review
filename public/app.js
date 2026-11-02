@@ -7933,30 +7933,20 @@ function renderReviewLedgerSummary() {
   const locale = i18n[currentLang]?.locale || "de-DE";
   const cur = ledger.settings.defaultCurrency;
   const dates = reviewMonthDates(cursor);
-  const moodGreat = "很好";
-  const moodLow = "低落";
-  let greatSpend = 0;
-  let greatDays = 0;
-  let lowSpend = 0;
-  let lowDays = 0;
-  dates.forEach(date => {
-    const spend = L.spendingTodayMinor(ledger, date);
-    if (!spend) return;
-    const mood = getLog(date).mood;
-    if (mood === moodGreat) { greatSpend += spend; greatDays += 1; }
-    if (mood === moodLow) { lowSpend += spend; lowDays += 1; }
-  });
+  const dailyRows = dates.map(date => ({
+    date,
+    mood: getLog(date).mood,
+    spendMinor: L.spendingTodayMinor(ledger, date),
+  }));
+  const moodCompare = L.moodSpendComparison(dailyRows);
   let moodLine = "";
-  if (greatDays && lowDays) {
-    const greatAvg = Math.round(greatSpend / greatDays);
-    const lowAvg = Math.round(lowSpend / lowDays);
-    if (greatAvg !== lowAvg) {
-      moodLine = `<p class="review-ledger-mood">${escapeHtml(languageText(
-        `心情较好日平均支出 ${L.formatMoney(-greatAvg, cur, locale)}，较低落日 ${L.formatMoney(-lowAvg, cur, locale)}。`,
-        `On great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
-        `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
-      ))}</p>`;
-    }
+  if (moodCompare) {
+    const { greatAvg, lowAvg } = moodCompare;
+    moodLine = `<p class="review-ledger-mood">${escapeHtml(languageText(
+      `心情较好日平均支出 ${L.formatMoney(-greatAvg, cur, locale)}，较低落日 ${L.formatMoney(-lowAvg, cur, locale)}。`,
+      `On great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
+      `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
+    ))}</p>`;
   }
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>

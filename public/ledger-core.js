@@ -368,6 +368,42 @@
     return base;
   }
 
+  function duplicateTransaction(ledger, id, options = {}) {
+    const base = normalize(ledger, options);
+    const tx = base.transactions.find(t => t.id === id);
+    if (!tx) return null;
+    const today = options.today || tx.date;
+    return addTransaction(base, {
+      accountId: tx.accountId,
+      categoryId: tx.categoryId,
+      amountMinor: tx.amountMinor,
+      currency: tx.currency,
+      date: today,
+      note: tx.note,
+    }, options);
+  }
+
+  /** Compare average daily spend on great-mood vs low-mood days (mood values are canonical zh keys). */
+  function moodSpendComparison(dailyRows, options = {}) {
+    const greatMood = options.greatMood || "很好";
+    const lowMood = options.lowMood || "低落";
+    let greatSpend = 0;
+    let greatDays = 0;
+    let lowSpend = 0;
+    let lowDays = 0;
+    (dailyRows || []).forEach(row => {
+      const spend = row?.spendMinor || 0;
+      if (!spend) return;
+      if (row.mood === greatMood) { greatSpend += spend; greatDays += 1; }
+      if (row.mood === lowMood) { lowSpend += spend; lowDays += 1; }
+    });
+    if (!greatDays || !lowDays) return null;
+    const greatAvg = Math.round(greatSpend / greatDays);
+    const lowAvg = Math.round(lowSpend / lowDays);
+    if (greatAvg === lowAvg) return null;
+    return { greatAvg, lowAvg, greatDays, lowDays };
+  }
+
   function parseGermanDate(value) {
     const m = String(value || "").trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
     if (!m) return "";
@@ -618,6 +654,8 @@
     addTransaction,
     removeTransaction,
     restoreTransaction,
+    duplicateTransaction,
+    moodSpendComparison,
     monthSummary,
     monthKey,
     transactionsInMonth,

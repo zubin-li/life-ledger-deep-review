@@ -1,38 +1,37 @@
-# Overnight progress (Round 1)
+# Overnight progress
 
-## Done this round
+## Round 3 — done
 
-- Research note: `.overnight/LEDGER-DESIGN.md` (data model, OSS references, screen plan).
-- Core module `public/ledger-core.js`: normalize/empty ledger, quick entry (`12,50 咖啡`, `-45 Miete gestern`), month totals, category breakdown, daily heatmap data, German `;` CSV import, CSV export, undo-friendly remove/restore.
-- UI `public/ledger-ui.js` + `public/v210.css`: sidebar nav, ledger view (summary, quick entry, chips, donut, heatmap, transaction list, delete + undo toast).
-- State wiring: backup import includes `ledger`; cloud `mergeRemoteCloudPayload` keeps local ledger when remote has none; SW shell lists new assets.
-- Tests: `tests/ledger-core.test.mjs` (8 cases).
-- Headless screenshots: `.overnight/shots/ledger-chromium-light-1440.png`, `.overnight/shots/ledger-webkit-dark-de-390.png`.
+- **ledger-core:** `duplicateTransaction`, `moodSpendComparison` (testable mood vs spend averages); tests +2 (253 total).
+- **ledger-ui:** touch amount keypad (coarse / ≤640px), duplicate action on rows, month summary `rollText`, quick-entry field no longer inside `<label>`.
+- **Goal 2 (start):** `public/v211-polish.css` — ledger page enter stagger, extra bottom safe-area, spending card press feedback, review ledger panel motion; Today spending amount roll-up.
+- **Review:** mood-vs-spend line uses `moodSpendComparison` instead of inline logic.
+- **Screenshots:** demo-seeded captures via `?lang=` — `.overnight/shots/ledger-chromium-light-1440.png`, `ledger-webkit-dark-de-390.png`, `today-spending-zh-390.png`, `review-ledger-light-1440.png`.
+- **CHANGELOG** `[Unreleased]` notes for above.
 
 ## Half-done
 
-- Version still **2.0.10 / Mac 3.0.4** (2.1.0 / 3.1.0 bump deferred until Today card + README + polish land).
-- Today「今日支出」card, month review spending block, demo sample transactions, budgets, recurring, uPlot trend, touch keypad, CSV UI, search/filter.
-- Goal 2 global polish not started (only ledger page styling).
+- Demo sample still skews November toward income (expenses mostly in prior months in heatmap/trend) — charts vs summary mismatch in screenshots.
+- Recurring templates, treemap view, swipe-delete on mobile, broader Goal 2 (habits/mood charts, skeletons, page transitions elsewhere).
+- Mac shell screenshot pass not re-run this round.
 
 ## Next round priorities
 
-1. Bump release metadata to web **2.1.0** / Mac **3.1.0** with README EN/ZH/DE.
-2. Today card + review integration; demo workspace sample ledger.
-3. CSV import/export buttons on ledger page; budget progress rows.
-4. uPlot spending trend; more headless shots (zh, light 390).
-5. Begin cross-insights (mood vs spend) on review page.
+1. Enrich `buildDemoSample` so current month has visible expenses (donut + Today card non-zero).
+2. Goal 2 sweep: empty states, habit review micro-charts, `is-entering` coverage on Today cards.
+3. Ledger: edit transaction inline, recurring entry stubs in UI.
+4. Optional Mac-window shot via `ll-mac-qa/habitpick-silent.mjs` pattern.
 
 ## Known bugs / gaps
 
-- Mobile bottom nav can overlap ledger content on narrow widths (pre-existing shell).
-- Playwright lang switch in capture script may use wrong localStorage key — de screenshot still mostly English.
-- `mergeRemoteCloudPayload` on conflict adopt path (3136) does not yet pass `localLedger` (edge case).
+- Mobile floating nav dock still overlaps ledger keypad area (pre-existing shell).
+- `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged, low risk.
+- Mood correlation only appears when both 很好 and 低落 days have spend in the month.
 
 ## npm test
 
 ```
-248 pass, 0 fail (after round 1 changes)
+253 pass, 0 fail (round 3)
 ```
 
 ## Gate result
@@ -44,3 +43,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 2
 ℹ tests 251 ℹ pass 251 ℹ fail 0 
+
+## Driver gate after round 3
+ℹ tests 253 ℹ pass 253 ℹ fail 0 

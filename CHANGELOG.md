@@ -4,6 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Touch amount keypad on ledger (coarse pointer / narrow screens), duplicate transaction action, month summary number roll-up, ledger page enter stagger (`v211-polish.css`), Today spending card roll-up.
+
+### Changed
+
+- Mood-vs-spend review insight uses testable `moodSpendComparison` in `ledger-core.js`; quick-entry field no longer wrapped in `<label>` (Add button stays outside).
+
 ## [2.1.0] - 2026-11-02
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0.

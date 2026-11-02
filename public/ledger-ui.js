@@ -4,6 +4,7 @@
   let viewMonth = "";
   let listFilter = "";
   let trendPlot = null;
+  let lastSummaryDisplay = { income: "", expense: "", net: "" };
 
   const $ = (s, r = document) => r.querySelector(s);
   const t = (zh, en, de) => ctx.text(zh, en, de);
@@ -150,9 +151,42 @@
         <span class="ledger-tx-date">${ctx.escape(tx.date.slice(5))}</span>
         <span class="ledger-tx-note">${ctx.escape(tx.note || name)}</span>
         <span class="ledger-tx-amt ${tx.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(core().formatMoney(tx.amountMinor, tx.currency, ctx.locale?.()))}</span>
-        <button type="button" class="icon-button ledger-tx-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
+        <span class="ledger-tx-actions">
+          <button type="button" class="icon-button ledger-tx-dup" aria-label="${t("复制", "Duplicate", "Duplizieren")}">⧉</button>
+          <button type="button" class="icon-button ledger-tx-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
+        </span>
       </li>`;
     }).join("")}</ul>`;
+  }
+
+  function renderKeypad() {
+    const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ",", "0", "⌫"];
+    return `<div class="ledger-keypad" role="group" aria-label="${t("金额键盘", "Amount keypad", "Ziffernblock")}">
+      ${keys.map(k => `<button type="button" class="ledger-key" data-key="${k === "⌫" ? "backspace" : k}">${k}</button>`).join("")}
+      <button type="button" class="ledger-key ledger-key-sign" data-key="sign">±</button>
+    </div>`;
+  }
+
+  function bindKeypad(host) {
+    const input = host.querySelector("#ledgerQuickForm input[name=quick]");
+    const pad = host.querySelector(".ledger-keypad");
+    if (!input || !pad) return;
+    pad.querySelectorAll(".ledger-key").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.key;
+        let value = input.value;
+        if (key === "backspace") {
+          input.value = value.slice(0, -1);
+        } else if (key === "sign") {
+          if (/^\s*[-+]/.test(value)) input.value = value.replace(/^\s*[-+]/, "");
+          else if (/^\s*\d/.test(value) || /^\s*[,.\d]/.test(value)) input.value = `-${value.trimStart()}`;
+          else input.value = `- ${value}`;
+        } else {
+          input.value = value + key;
+        }
+        input.focus();
+      });
+    });
   }
 
   function bindInteractions(host, ledger, ym) {
@@ -192,6 +226,7 @@
         const h = list.querySelector("h3");
         list.innerHTML = `${h ? h.outerHTML : ""}${renderList(ledgerState(), ym)}`;
         bindDelete(host, ledgerState());
+        bindDuplicate(host);
       }
     });
     host.querySelector("[data-ledger-export]")?.addEventListener("click", () => {
@@ -221,6 +256,22 @@
       reader.readAsText(file);
     });
     bindDelete(host, ledger);
+    bindDuplicate(host);
+    bindKeypad(host);
+  }
+
+  function bindDuplicate(host) {
+    host.querySelectorAll(".ledger-tx-dup").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.closest(".ledger-tx")?.dataset.id;
+        if (!id) return;
+        const result = core().duplicateTransaction(ledgerState(), id, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
+        if (!result) return;
+        commit(result.ledger);
+        ctx.toast?.(t("已复制一笔记录", "Entry duplicated", "Eintrag dupliziert"));
+        render();
+      });
+    });
   }
 
   function bindDelete(host, ledger) {
@@ -270,17 +321,18 @@
         </div>
       </header>
       <div class="ledger-summary">
-        <article><small>${t("收入", "Income", "Einnahmen")}</small><strong>${ctx.escape(core().formatMoney(summary.incomeMinor, cur, ctx.locale?.()))}</strong></article>
-        <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, ctx.locale?.()))}</strong></article>
-        <article><small>${t("结余", "Net", "Saldo")}</small><strong>${ctx.escape(core().formatMoney(summary.netMinor, cur, ctx.locale?.()))}</strong></article>
+        <article><small>${t("收入", "Income", "Einnahmen")}</small><strong data-ledger-sum="income">${ctx.escape(core().formatMoney(summary.incomeMinor, cur, ctx.locale?.()))}</strong></article>
+        <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, ctx.locale?.()))}</strong></article>
+        <article><small>${t("结余", "Net", "Saldo")}</small><strong data-ledger-sum="net">${ctx.escape(core().formatMoney(summary.netMinor, cur, ctx.locale?.()))}</strong></article>
       </div>
       <form class="ledger-quick" id="ledgerQuickForm">
-        <label class="ledger-quick-label">
+        <div class="ledger-quick-label">
           <span>${t("快速录入", "Quick entry", "Schnellerfassung")}</span>
-          <input name="quick" type="text" enterkeyhint="done" autocomplete="off" placeholder="${t("12,50 咖啡 · -45 Miete gestern", "12.50 coffee · -45 rent yesterday", "12,50 Kaffee · -45 Miete gestern")}" />
-        </label>
+          <input name="quick" id="ledgerQuickInput" type="text" enterkeyhint="done" autocomplete="off" placeholder="${t("12,50 咖啡 · -45 Miete gestern", "12.50 coffee · -45 rent yesterday", "12,50 Kaffee · -45 Miete gestern")}" />
+        </div>
         <button type="submit" class="primary-button">${t("添加", "Add", "Hinzufügen")}</button>
       </form>
+      ${renderKeypad()}
       <div class="ledger-chips">${renderChips(ledger)}</div>
       <div class="ledger-toolbar">
         <input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" />
@@ -312,6 +364,16 @@
       </section>`;
     bindInteractions(host, ledger, ym);
     requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));
+    const roll = root.LifeLedgerInteraction?.rollText;
+    if (roll) {
+      ["income", "expense", "net"].forEach(key => {
+        const el = host.querySelector(`[data-ledger-sum="${key}"]`);
+        const next = el?.textContent || "";
+        const prev = lastSummaryDisplay[key] || "";
+        if (el && next !== prev) roll(el, next, prev);
+        lastSummaryDisplay[key] = next;
+      });
+    }
   }
 
   root.LifeLedgerLedgerUI = {
