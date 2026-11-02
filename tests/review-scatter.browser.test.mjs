@@ -98,13 +98,18 @@ test(
       await page.locator('[data-review-scatter-jump="review-scatter-habit"]').click();
       const activeFromClick = await page.locator('.review-scatter-jump-chip.is-active[data-review-scatter-jump="review-scatter-habit"]').count();
       assert.equal(activeFromClick, 1, "clicking habit chip should mark it active");
-      const spendBefore = await page.locator(".review-ledger-stats strong").first().textContent();
+      const spendBefore = (await page.locator(".review-ledger-stats strong").first().textContent())?.trim();
       await page.locator('.rv-month-step[data-rv-month="-1"]').click();
-      await sleep(80);
+      await sleep(120);
       const rolling = await page.locator(".review-ledger-stats strong.roll-host").count();
       assert.ok(rolling >= 1, "month change should trigger roll animation on stat values");
-      const spendAfter = await page.locator(".review-ledger-stats strong").first().textContent();
+      const rollLayers = await page.locator(".review-ledger-stats strong.roll-host .roll-old, .review-ledger-stats strong.roll-host .roll-new").count();
+      assert.ok(rollLayers >= 2, "roll animation should expose outgoing and incoming layers");
+      await sleep(220);
+      const spendAfter = (await page.locator(".review-ledger-stats strong").first().textContent())?.trim();
       assert.notEqual(spendBefore, spendAfter, "previous month should show different spending total");
+      const rollValue = await page.locator(".review-ledger-stats strong").first().getAttribute("data-roll-value");
+      assert.equal(rollValue, spendAfter, "rolled stat should persist data-roll-value after animation");
     } finally {
       await browser.close();
       server.kill("SIGTERM");

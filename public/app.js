@@ -2048,11 +2048,14 @@ const monthNames = {
 const supportedLanguages = ["en", "de", "zh"];
 const requestedLanguage = new URLSearchParams(location.search).get("lang");
 const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
+const explicitLanguagePreference = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
 let currentLang = supportedLanguages.includes(requestedLanguage)
   ? requestedLanguage
-  : localStorage.getItem(LANGUAGE_PREFERENCE_KEY) === "true" && supportedLanguages.includes(storedLanguage)
+  : explicitLanguagePreference === "true" && supportedLanguages.includes(storedLanguage)
     ? storedLanguage
-    : "en";
+    : explicitLanguagePreference !== "false" && supportedLanguages.includes(storedLanguage)
+      ? storedLanguage
+      : "en";
 const cloneData = value => typeof structuredClone === "function"
   ? structuredClone(value)
   : JSON.parse(JSON.stringify(value));
