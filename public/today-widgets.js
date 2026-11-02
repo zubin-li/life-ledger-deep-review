@@ -546,7 +546,9 @@
     const note = $(".tw-spend-note", c);
     const hint = $(".tw-spend-hint", c);
     const monthSide = $(".tw-spend-month", c);
-    const todayText = ledger ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : "—";
+    const todayText = ledger
+      ? (todayMinor ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : L.formatMoney(0, ledger.settings.defaultCurrency, locale))
+      : "—";
     const prevToday = c.dataset.spendToday || "";
     if (todayEl) {
       todayEl.textContent = todayText;

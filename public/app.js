@@ -5861,6 +5861,15 @@ function scopedState(range) {
     if (range.scope === "all" || (isoDate(sunday) >= range.start && isoDate(monday) <= range.end)) result.weeklyReviews[key] = value;
   });
   result.focusSessions = (state.focusSessions || []).filter(session => withinRange(session.date, range)).map(cloneData);
+  if (state.ledger && window.LifeLedgerLedger?.scopeLedgerForBackup) {
+    result.ledger = window.LifeLedgerLedger.scopeLedgerForBackup(
+      state.ledger,
+      date => withinRange(date, range),
+      { lang: currentLang },
+    );
+  } else if (state.ledger) {
+    result.ledger = cloneData(state.ledger);
+  }
   return result;
 }
 function updateExportFields() {
@@ -6389,6 +6398,9 @@ function mergeBackupData(current, incoming) {
   });
   const focusSessions = new Map((current.focusSessions || []).map(session => [session.id, cloneData(session)]));
   (incoming.focusSessions || []).forEach(session => focusSessions.set(session.id, cloneData(session)));
+  const ledger = window.LifeLedgerLedger?.mergeLedgerForBackup
+    ? window.LifeLedgerLedger.mergeLedgerForBackup(current.ledger, incoming.ledger, { lang: currentLang })
+    : (incoming.ledger ? cloneData(incoming.ledger) : current.ledger ? cloneData(current.ledger) : undefined);
   return {
     ...cloneData(current),
     habits: [...habits.values()],
@@ -6401,6 +6413,7 @@ function mergeBackupData(current, incoming) {
     weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
+    ...(ledger ? { ledger } : {}),
   };
 }
 function syncBackupPreferencesToRuntime() {

@@ -522,12 +522,10 @@
     form.addEventListener("submit", event => {
       event.preventDefault();
       const amountRaw = form.querySelector('[name="amount"]').value;
-      const parsed = core().parseQuickEntry(`${amountRaw} ${catName}`, ledger, { lang: ctx.lang?.(), today: tx.date });
+      const token = core().parseAmountToken(amountRaw);
       let amountMinor = tx.amountMinor;
-      if (parsed.ok) amountMinor = parsed.draft.amountMinor;
-      else {
-        const token = core().parseAmountToken(amountRaw);
-        if (token != null) amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
+      if (token != null) {
+        amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
       }
       const date = form.querySelector('[name="date"]').value || tx.date;
       const note = form.querySelector('[name="note"]').value || "";

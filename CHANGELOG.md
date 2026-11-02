@@ -22,6 +22,7 @@ All notable changes are documented here.
 
 ### Fixed
 
+- **Money (review fixes):** backup export includes `state.ledger` (scoped by date range); partial restore merges ledger transactions/categories; quick entry and edit preserve income categories without a leading `+`; German CSV quoted amounts import; summaries and Today spend use default currency only; Today card no longer shows `-0,00` on zero-spend days; quick-entry default date uses local timezone.
 - **Today spending card:** `ledgerHasEntries` is evaluated before the empty-state copy runs, fixing a temporal-dead-zone crash when the card renders on days with no spend.
 - **Language:** stored `life-ledger-language` now applies on first paint when the user has not opted out (`language-preference-set` ≠ `false`), matching backup restore and fixing Playwright / deep-link cases where UI strings stayed English while localized data did not.
 - **Cloud sync:** pending conflict resolution on GET now merges the conflict backup’s `ledger` when the remote payload omits it (same rule as immediate 409 adopt).

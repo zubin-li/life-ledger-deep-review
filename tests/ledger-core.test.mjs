@@ -445,3 +445,67 @@ test("alignDemoMoodWithSpend tags high and low spend days for review insights", 
   assert.ok(cmp);
   assert.ok(cmp.lowAvg > cmp.greatAvg);
 });
+
+test("parseQuickEntry treats salary category as income without plus sign", () => {
+  const ledger = L.normalize(null, { lang: "zh" });
+  const parsed = L.parseQuickEntry("2000 工资", ledger, { lang: "zh", today: "2026-11-02" });
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.draft.amountMinor, 200000);
+  const cat = ledger.categories.find(c => c.id === parsed.draft.categoryId);
+  assert.equal(cat?.kind, "income");
+});
+
+test("importGermanBankCsv parses quoted semicolon amounts", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+01.11.2026;REWE;"-12,50"`;
+  const { imported, skipped, ledger } = L.importGermanBankCsv(csv, null, { lang: "de" });
+  assert.equal(imported, 1);
+  assert.equal(skipped, 0);
+  assert.equal(ledger.transactions[0].amountMinor, -1250);
+});
+
+test("monthSummary and spendingToday ignore non-default currency", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const exp = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -10000, currency: "EUR", date: "2026-11-02", note: "eur" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -50000, currency: "CNY", date: "2026-11-02", note: "cny" }));
+  const summary = L.monthSummary(ledger, "2026-11");
+  assert.equal(summary.expenseMinor, -10000);
+  assert.equal(L.spendingTodayMinor(ledger, "2026-11-02"), 10000);
+});
+
+test("mergeLedgerForBackup deduplicates transactions by id", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -100, currency: "EUR", date: "2026-11-01", note: "a" }));
+  const tx = ledger.transactions[0];
+  const incoming = L.normalize(null, { lang: "en" });
+  incoming.transactions.push({ ...tx, note: "merged" });
+  incoming.transactions.push({
+    id: "extra-tx",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -200,
+    currency: "EUR",
+    date: "2026-11-02",
+    note: "b",
+    createdAt: 1,
+    updatedAt: 1,
+  });
+  const merged = L.mergeLedgerForBackup(ledger, incoming, { lang: "en" });
+  assert.equal(merged.transactions.length, 2);
+  assert.equal(merged.transactions.find(t => t.id === tx.id)?.note, "merged");
+});
+
+test("scopeLedgerForBackup filters transactions to export range", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -100, currency: "EUR", date: "2026-10-15", note: "old" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -200, currency: "EUR", date: "2026-11-02", note: "new" }));
+  const scoped = L.scopeLedgerForBackup(ledger, date => date >= "2026-11-01" && date <= "2026-11-30", { lang: "en" });
+  assert.equal(scoped.transactions.length, 1);
+  assert.equal(scoped.transactions[0].note, "new");
+});

@@ -225,10 +225,10 @@
         break;
       }
     }
-    const iso = options.today || new Date().toISOString().slice(0, 10);
+    const iso = options.today || isoDateFromDate(new Date());
     const d = new Date(`${iso}T12:00:00`);
     d.setDate(d.getDate() + dateOffset);
-    const date = d.toISOString().slice(0, 10);
+    const date = isoDateFromDate(d);
 
     const amountMatch = raw.match(/^([+-]?\d[\d.,]*)\s*(.*)$/) || raw.match(/^(.+?)\s+([+-]?\d[\d.,]*)$/);
     let amountMinor = null;
@@ -258,12 +258,14 @@
     }
 
     const explicitIncome = /^\+\s*\d/.test(String(text || "").trim());
-    if (amountMinor > 0 && !explicitIncome) {
+    const incomeCategoryByName = category?.kind === "income" && hint
+      && activeCategories.some(c => c.id === category.id && (
+        localizedCategoryName(c, lang).toLowerCase() === hint
+        || localizedCategoryName(c, lang).toLowerCase().includes(hint)
+        || hint.includes(localizedCategoryName(c, lang).toLowerCase())
+      ));
+    if (amountMinor > 0 && !explicitIncome && !incomeCategoryByName) {
       amountMinor = -Math.abs(amountMinor);
-      if (category?.kind === "income") {
-        category = activeCategories.find(c => c.kind === "expense" && /other|sonst|其他|餐饮|coffee/i.test(localizedCategoryName(c, lang)))
-          || activeCategories.find(c => c.kind === "expense");
-      }
     }
     if (amountMinor > 0 && category?.kind === "expense") amountMinor = -Math.abs(amountMinor);
     if (amountMinor < 0 && category?.kind === "income" && explicitIncome) amountMinor = Math.abs(amountMinor);
@@ -298,8 +300,18 @@
     return ledger.transactions.filter(tx => monthKey(tx.date) === ym);
   }
 
+  function reportingCurrency(ledger) {
+    return normalize(ledger).settings.defaultCurrency || "EUR";
+  }
+
+  function txInReportingCurrency(ledger, tx) {
+    const cur = reportingCurrency(ledger);
+    return (tx.currency || cur) === cur;
+  }
+
   function monthSummary(ledger, ym) {
-    const rows = transactionsInMonth(ledger, ym);
+    const base = normalize(ledger);
+    const rows = transactionsInMonth(base, ym).filter(tx => txInReportingCurrency(base, tx));
     let income = 0;
     let expense = 0;
     rows.forEach(tx => {
@@ -310,9 +322,10 @@
   }
 
   function dailySpendHeatmap(ledger, ym) {
+    const base = normalize(ledger);
     const map = new Map();
-    transactionsInMonth(ledger, ym).forEach(tx => {
-      if (tx.amountMinor >= 0) return;
+    transactionsInMonth(base, ym).forEach(tx => {
+      if (!txInReportingCurrency(base, tx) || tx.amountMinor >= 0) return;
       map.set(tx.date, (map.get(tx.date) || 0) + Math.abs(tx.amountMinor));
     });
     return map;
@@ -808,7 +821,7 @@
   }
 
   function parseGermanAmount(value) {
-    let s = String(value || "").trim().replace(/\s/g, "");
+    let s = String(value || "").trim().replace(/["']/g, "").replace(/\s/g, "");
     if (!s) return null;
     s = s.replace(/\./g, "").replace(",", ".");
     const n = Number(s);
@@ -871,8 +884,9 @@
   }
 
   function spendingTodayMinor(ledger, isoDate) {
-    return normalize(ledger).transactions
-      .filter(tx => tx.date === isoDate && tx.amountMinor < 0)
+    const base = normalize(ledger);
+    return base.transactions
+      .filter(tx => tx.date === isoDate && tx.amountMinor < 0 && txInReportingCurrency(base, tx))
       .reduce((sum, tx) => sum + Math.abs(tx.amountMinor), 0);
   }
 
@@ -1251,6 +1265,48 @@
     return logs;
   }
 
+  function mergeById(left, right) {
+    const map = new Map((left || []).filter(Boolean).map(item => [item.id, item]));
+    (right || []).filter(Boolean).forEach(item => map.set(item.id, { ...item }));
+    return [...map.values()];
+  }
+
+  function mergeLedgerForBackup(current, incoming, options = {}) {
+    if (!incoming && !current) return undefined;
+    const base = normalize(current || null, options);
+    if (!incoming) return base;
+    const add = normalize(incoming, options);
+    return {
+      ...base,
+      settings: { ...base.settings, ...(add.settings || {}) },
+      accounts: mergeById(base.accounts, add.accounts),
+      categories: mergeById(base.categories, add.categories),
+      transactions: mergeById(base.transactions, add.transactions).sort((a, b) => {
+        const byDate = String(a.date).localeCompare(String(b.date));
+        return byDate || String(a.id).localeCompare(String(b.id));
+      }),
+      budgets: mergeById(base.budgets, add.budgets),
+      recurring: mergeById(base.recurring, add.recurring),
+    };
+  }
+
+  function scopeLedgerForBackup(ledger, withinRange, options = {}) {
+    if (!ledger) return undefined;
+    const base = normalize(ledger, options);
+    const copy = {
+      ...base,
+      accounts: base.accounts.map(a => ({ ...a })),
+      categories: base.categories.map(c => ({ ...c })),
+      transactions: base.transactions.map(t => ({ ...t })),
+      budgets: base.budgets.map(b => ({ ...b })),
+      recurring: base.recurring.map(r => ({ ...r })),
+    };
+    if (typeof withinRange === "function") {
+      copy.transactions = copy.transactions.filter(tx => withinRange(tx.date));
+    }
+    return copy;
+  }
+
   /** Demo-only: more focus minutes on lower-spend days (and the reverse) for review focus × spend scatter. */
   function alignDemoFocusWithSpend(focusSessions, ledger, now = new Date()) {
     if (!ledger?.transactions?.length) return focusSessions || [];
@@ -1341,6 +1397,8 @@
     buildDemoSample,
     alignDemoMoodWithSpend,
     alignDemoFocusWithSpend,
+    mergeLedgerForBackup,
+    scopeLedgerForBackup,
     createId,
   };
 })(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : global);
