@@ -1,5 +1,12 @@
 # Overnight progress
 
+## Round 14 — done (final)
+
+- **终稿：** `CHANGELOG.md` 将 Round 5–13 的 Unreleased 条目并入 `[2.1.0]`，`Unreleased` 留空占位。
+- **验收：** 全量 Playwright 截图回归 21 场景重跑通过（`capture-regression.mjs`）；目视 `today-spending-quiet-zh-390.png` — 安静日文案、无语法 hint、`-€0.00` 正常。
+- **npm test：** 270/270 通过（本 round 未改产品代码）。
+- **REPORT.md** 更新为 Round 14 终稿（14 轮摘要、明日点击路径、已知 gap）。
+
 ## Round 13 — done
 
 - **Today 支出 · 安静日 copy：** 账本已有流水但当日为零时，副文案改为 `spendingEmptyQuiet`（中/英/德），不再与「从未记账」共用 `spendingEmpty`；语法 hint 逻辑不变。
@@ -10,23 +17,18 @@
 
 ## Half-done
 
-- fakecloud Pages dev smoke — still no `functions/` in overnight clone.
-- 极矮视口 dock vs 键盘仍可能轻微重叠（已加 padding，未在真机验证）。
-
-## Next round (14 / final)
-
-1. 收尾：REPORT 与 PROGRESS 终稿；若有视觉问题再单点修。
-2. fakecloud 仍低优先级（缺 functions）。
+- （无 — 夜间 scope 在此 clone 内已收束。）
 
 ## Known bugs / gaps
 
 - `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged.
-- fakecloud script expects repo-root `functions/` + `schema.sql` (missing here).
+- fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
+- 极矮视口 dock vs 键盘仍可能轻微重叠（CSS padding 已加，未真机验证）。
 
 ## npm test
 
 ```
-270 pass, 0 fail (round 13)
+270 pass, 0 fail (round 14)
 ```
 
 ## Gate result
@@ -57,9 +59,6 @@ _pending (driver appends after commit)_
 ## Driver gate after round 8
 ℹ tests 265 ℹ pass 265 ℹ fail 0 
 
-## Driver gate after round 8
-ℹ tests 265 ℹ pass 265 ℹ fail 0 
-
 ## Driver gate after round 9
 ℹ tests 268 ℹ pass 268 ℹ fail 0 
 
@@ -73,7 +72,7 @@ _pending (driver appends after commit)_
 ℹ tests 269 ℹ pass 269 ℹ fail 0 
 
 ## Driver gate after round 13
-_pending_
+ℹ tests 270 ℹ pass 270 ℹ fail 0 
 
-## Driver gate after round 13
+## Driver gate after round 14
 ℹ tests 270 ℹ pass 270 ℹ fail 0 

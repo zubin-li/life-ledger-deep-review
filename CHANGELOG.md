@@ -4,28 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-### Added
-
-- Ledger category **donut / treemap** toggle with SVG treemap layout and chart skeleton placeholders on the Money page.
-- Demo helper **`alignDemoMoodWithSpend`** so monthly review can show mood-vs-spending comparison on sample data.
-- Touch amount keypad on ledger (coarse pointer / narrow screens), duplicate transaction action, month summary number roll-up, ledger page enter stagger (`v211-polish.css`), Today spending card roll-up.
-- **Edit transaction** popover (opaque, body-level), **recurring templates** with create/edit/delete (undo), “Post now”, mobile **swipe-left to delete**, `updateTransaction` / `applyRecurringTemplate` / `upsertRecurringTemplate` in `ledger-core.js`.
-- Demo sample **pads early-month** expenses so November donut, heatmap, and Today card match summary; sample includes two recurring templates.
-- **Recurring:** income categories + weekly cadence; **`focusSpendInsight`** on monthly review; treemap cell labels; **`tests/ledger-cloud-merge.test.mjs`**.
-- **`habitCompletionSpendInsight`** on monthly review (habit completion vs spending); shared **`paintWithSkeleton`** / journal feed loading skeleton (`v212-skeleton.css`).
-- Demo **`demoSeedAnchor`** (mid-month sample), **`alignDemoHabitCompletionWithSpend`**, and **`effectiveDemoTodayIso`** so review money insights are visible early in the month on sample data only.
-- Timeline **calendar** mode: photo load skeleton on month grid, calendar re-render after photos; treemap **pale-tile** label class via `isLightAccentColor`.
-- Ledger **first-run onboarding** banner (dismissible), Today spending **quick-entry hint** when empty, review habit **sparkline enter** animation, mobile keypad bottom clearance (`v213-onboarding.css`).
-- Week / long-term / journal **empty-state reveal** animation and empty-week goal inline hint (`v214-goals-journal.css`); onboarding auto-dismisses after the first posted entry.
-- Review **completion trend** line draw + insight metric stagger; Today spending syntax hint hides after the first ledger entry (`v215-review-trend.css`).
-- Today **Spending today** card uses softer copy on quiet days once the ledger already has entries (hint still hidden).
-
-### Changed
-
-- Mood-vs-spend review insight uses testable `moodSpendComparison` in `ledger-core.js`; quick-entry field no longer wrapped in `<label>` (Add button stays outside).
-- Review **habit daily sparkline** column and weekday bar grow-in; Week/Timeline page enter stagger (`v211-polish.css`).
-- Mobile ledger page extra bottom padding for keypad; review best-streak headline styling.
-- Treemap labels use locale-aware truncation; review heatmap/habit panels show skeleton shimmer while repainting; week insight numbers pulse while recalculating.
+Nothing yet.
 
 ## [2.1.0] - 2026-11-02
 
@@ -33,14 +12,18 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0.
 
 ### Added
 
-- **Bookkeeping (记账):** `state.ledger` with quick entry, category donut, daily heatmap, uPlot spending trend, budget progress, search/filter, German CSV import/export, undoable delete. Sidebar **Money / 记账 / Finanzen** in all editions.
-- **Today card — Spending today:** day and month totals with link to the ledger page.
-- **Monthly review:** spending summary panel and optional mood-vs-spend average comparison when both exist.
-- **Sample workspace:** fictional demo includes ~90 days of EUR transactions and category budgets.
-- **Goal 2 (partial):** ledger page toolbar, budget bars, review panel styling, card micro-layout (`v210.css`).
+- **Bookkeeping (记账):** `state.ledger` (accounts, categories with icon/colour, transactions, budgets, recurring templates) in integer minor units + ISO currency; local save, cloud CAS payload, backup v3, demo sample, undoable delete. Sidebar **Money / 记账 / Finanzen** in all editions.
+- **Quick entry:** natural-language field (`12,50 咖啡`, `-45 Miete gestern`, …), touch amount keypad, category chips, edit/duplicate/swipe-delete, opaque edit popover, recurring create/edit/delete with “Post now”.
+- **Money views:** month overview, donut/treemap toggle (SVG treemap), daily spend heatmap, uPlot trend, budget progress, search/filter, German CSV import/export (`;`, decimal comma, DD.MM.YYYY).
+- **Today card — Spending today:** day/month totals, roll-up animation, link to Money; first-visit syntax hint (hidden after first entry/import); quieter copy on days with ledger history but zero spend today.
+- **Monthly review:** spending summary, mood-vs-spend and habit-completion-vs-spend insights, focus-vs-spend insight, habit sparkline enter, completion trend line draw (`v210`–`v215` CSS: polish, skeletons, onboarding, goals/journal empty states, review trend).
+- **Sample workspace:** ~90 days EUR transactions, category budgets, early-month padding, recurring templates; demo helpers align mood/habit/focus insights for review.
+- **Tests:** ledger parsing, totals, CSV, backup round-trip, cloud merge with ledger, Today spending hint contracts.
 
 ### Changed
 
+- Mood-vs-spend uses testable `moodSpendComparison` in `ledger-core.js`; quick-entry field no longer wrapped in `<label>` (Add button stays outside).
+- Timeline calendar photo skeleton; treemap pale-tile labels; mobile ledger bottom padding for keypad; week insight number pulse while recalculating.
 - Release metadata, PWA cache, and asset `?v=` markers aligned to **2.1.0** / Mac **3.1.0**.
 
 ## [2.0.10] - 2026-11-02
