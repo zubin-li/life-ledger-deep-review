@@ -164,9 +164,10 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 <p align="center"><strong>内置记账。</strong> 快速录入、德语 CSV 导入、分类预算，并与今日卡片和月度复盘联动。</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-v6.png" width="30%" alt="手机版今日卡片" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v6.png" width="30%" alt="手机版时间轴" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v6.png" width="30%" alt="手机版月度复盘" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-v6.png" width="22%" alt="手机版今日卡片" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-08-ledger-v21.png" width="22%" alt="手机版记账" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v6.png" width="22%" alt="手机版时间轴" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v6.png" width="22%" alt="手机版月度复盘" />
 </p>
 
 <p align="center"><strong>为各种屏幕设计。</strong> 卡片在手机上自动排成一列，底部导航，编辑模式支持触控。</p>

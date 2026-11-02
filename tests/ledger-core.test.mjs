@@ -799,6 +799,36 @@ test("importGermanBankCsv parses trailing-minus amounts in short rows", () => {
   assert.equal(ledger.transactions[0].amountMinor, -1250);
 });
 
+test("custom category is not treated as default when only nameZh collides", () => {
+  const raw = {
+    version: 1,
+    settings: { defaultCurrency: "EUR", secondaryCurrency: "CNY" },
+    accounts: [{
+      id: "a1", name: "Cash", currency: "EUR", kind: "checking", icon: "wallet", color: "sage", archived: false,
+    }],
+    categories: [{
+      id: "custom-coffee",
+      name: "Coffee fund",
+      nameZh: "日用",
+      nameDe: "Kaffee",
+      kind: "expense",
+      icon: "coffee",
+      color: "amber",
+      parentId: "",
+      archived: false,
+    }],
+    transactions: [],
+    budgets: [],
+    recurring: [],
+    meta: { recentCategoryIds: [], lastEntryAt: 0 },
+  };
+  const ledger = L.normalize(raw, { lang: "en" });
+  const cat = ledger.categories.find(c => c.id === "custom-coffee");
+  assert.equal(cat.name, "Coffee fund");
+  assert.equal(L.localizedCategoryName(cat, "zh"), "日用");
+  assert.equal(L.localizedCategoryName(cat, "en"), "Coffee fund");
+});
+
 test("monthSummary reports otherCurrencyCount", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

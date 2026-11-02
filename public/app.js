@@ -4652,6 +4652,14 @@ function renderToday() {
     }
   }
   $("#todayDateChip").textContent = formatDateChip(selected);
+  const heroCardEl = $(".hero-card");
+  if (heroCardEl && heroCardEl.dataset.planDate && heroCardEl.dataset.planDate !== date) {
+    heroCardEl.classList.remove("is-day-retarget");
+    void heroCardEl.offsetWidth;
+    heroCardEl.classList.add("is-day-retarget");
+    window.setTimeout(() => heroCardEl.classList.remove("is-day-retarget"), 480);
+  }
+  if (heroCardEl) heroCardEl.dataset.planDate = date;
   // Future day (user 10/22: "什么都点不了"): say why, and point to what can be done — goals and schedule.
   $("#heroProgressText").textContent = future
     ? languageText("这一天还没到 · 可以先安排目标和日程", "This day hasn't come yet · plan goals and schedule now", "Dieser Tag kommt noch · Ziele und Termine jetzt planen")
@@ -9079,7 +9087,10 @@ function renderInsightDashboard() {
     const total = v.frequency === 'monthly' ? count : dates.filter(d => versionFor(h, d)?.frequency === 'weekly' && getLog(d).completed.includes(h.id)).length;
     return `<article style="${habitStyle(h)}"><span class="insight-habit-icon">${renderIcon(iconKey(h))}</span><div><strong>${escapeHtml(displayHabitName(h))}</strong><small>${escapeHtml(frequencyLabel(v))}</small></div><b>${escapeHtml(v.frequency === 'monthly' ? `${count} / ${periodTargetFor(v)}` : T(`本月 ${total} 次`, `${total} this month`, `${total} im Monat`))}</b></article>`;
   }).join('');
-  $('#reviewPeriodHabits').innerHTML = periodic ? `<h3>${escapeHtml(T('按周、按月计的习惯','Weekly & monthly habits','Wöchentliche & monatliche Gewohnheiten'))}</h3><div>${periodic}</div>` : '';
+  $('#reviewPeriodHabits').innerHTML = periodic ? `<h3>${escapeHtml(T('按周、按月计的习惯','Weekly & monthly habits','Wöchentliche & monatliche Gewohnheiten'))}</h3><div class="review-period-habits-list review-period-habits-list--live">${periodic}</div>` : '';
+  requestAnimationFrame(() => {
+    $("#reviewPeriodHabits")?.querySelector(".review-period-habits-list--live")?.classList.add("review-period-habits-list--enter");
+  });
   renderInsightTrend(model);
   pulseReviewInsightMotion();
 }

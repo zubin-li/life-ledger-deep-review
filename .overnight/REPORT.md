@@ -1,12 +1,29 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 6）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 7）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 6：** showcase 预算心情第二句可稳定出现；README 顶图换记账；复盘 inspector 习惯分行卡片化（DOM 暂隐藏）。
+**Batch 6 Round 7：** 自定义分类不再被默认分类误修复；复盘周/月习惯卡片可见；Today 换日 hero 轻动效；README 手机行含记账图。
 
 ---
 
-## 本轮（Batch 6 · Round 6）改动
+## 本轮（Batch 6 · Round 7）改动
+
+| 项目 | 说明 |
+|------|------|
+| **分类安全** | 仅中文名与默认分类相同、但图标/颜色不同的自定义分类，切语言时不再被改成 Groceries；新 seed 带 `defaultSlug`。 |
+| **复盘 · 周/月习惯** | `#reviewPeriodHabits` 卡片圆角 + 入场交错（与 inspector 同款动效，但在主面板可见）。 |
+| **Today hero** | 在日滚动条切换日期时，标题 quote 与 date chip 有短促 `is-day-retarget`（尊重 reduced-motion）。 |
+| **README** | 英/中/德 Product tour 手机四图：Today · **Money** · Timeline · Review。 |
+| **测试** | 单元 **349 pass**（+1）；浏览器 **8 pass**（偶发 fakecloud 超时需清 wrangler）。 |
+| **截图** | `.overnight/shots/b6r7-*`。重拍：`node .overnight/capture-batch6-round7.mjs`（**5299**）。 |
+
+**去哪点：** `?local-preview=demo-showcase-v1` → **复盘** 向下滚看 **按周、按月计的习惯** 卡片；**今日** 点日滚动条换一天看 hero 文案轻弹；README 手机行应含记账竖图。
+
+**已知遗留：** 隐藏 inspector 表格仍未挂到主布局；scatter 点 hover 读数未做。
+
+---
+
+## 上一轮（Batch 6 · Round 6）改动
 
 | 项目 | 说明 |
 |------|------|

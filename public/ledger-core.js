@@ -4,19 +4,19 @@
   const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
   const DEFAULT_EXPENSE_CATEGORIES = [
-    { name: "Groceries", icon: "shopping", color: "sage", zh: "日用", de: "Lebensmittel" },
-    { name: "Dining", icon: "coffee", color: "amber", zh: "餐饮", de: "Essen" },
-    { name: "Transport", icon: "car", color: "blue", zh: "交通", de: "Mobilität" },
-    { name: "Housing", icon: "home", color: "coral", zh: "住房", de: "Wohnen" },
-    { name: "Health", icon: "heart", color: "violet", zh: "健康", de: "Gesundheit" },
-    { name: "Shopping", icon: "shopping", color: "cyan", zh: "购物", de: "Einkauf" },
-    { name: "Entertainment", icon: "music", color: "amber", zh: "娱乐", de: "Freizeit" },
-    { name: "Other", icon: "more", color: "sage", zh: "其他", de: "Sonstiges" },
+    { slug: "groceries", name: "Groceries", icon: "shopping", color: "sage", zh: "日用", de: "Lebensmittel" },
+    { slug: "dining", name: "Dining", icon: "coffee", color: "amber", zh: "餐饮", de: "Essen" },
+    { slug: "transport", name: "Transport", icon: "car", color: "blue", zh: "交通", de: "Mobilität" },
+    { slug: "housing", name: "Housing", icon: "home", color: "coral", zh: "住房", de: "Wohnen" },
+    { slug: "health", name: "Health", icon: "heart", color: "violet", zh: "健康", de: "Gesundheit" },
+    { slug: "shopping", name: "Shopping", icon: "shopping", color: "cyan", zh: "购物", de: "Einkauf" },
+    { slug: "entertainment", name: "Entertainment", icon: "music", color: "amber", zh: "娱乐", de: "Freizeit" },
+    { slug: "other", name: "Other", icon: "more", color: "sage", zh: "其他", de: "Sonstiges" },
   ];
   const DEFAULT_INCOME_CATEGORIES = [
-    { name: "Salary", icon: "wallet", color: "sage", zh: "工资", de: "Gehalt" },
-    { name: "Side income", icon: "sparkles", color: "amber", zh: "副业", de: "Nebeneinkommen" },
-    { name: "Other income", icon: "plus", color: "blue", zh: "其他收入", de: "Sonstige Einnahmen" },
+    { slug: "salary", name: "Salary", icon: "wallet", color: "sage", zh: "工资", de: "Gehalt" },
+    { slug: "side-income", name: "Side income", icon: "sparkles", color: "amber", zh: "副业", de: "Nebeneinkommen" },
+    { slug: "other-income", name: "Other income", icon: "plus", color: "blue", zh: "其他收入", de: "Sonstige Einnahmen" },
   ];
 
   function clone(value) {
@@ -57,6 +57,7 @@
       DEFAULT_EXPENSE_CATEGORIES.forEach(def => {
         out.push({
           id: createId(),
+          defaultSlug: def.slug,
           name: def.name,
           nameZh: def.zh,
           nameDe: def.de,
@@ -72,6 +73,7 @@
       DEFAULT_INCOME_CATEGORIES.forEach(def => {
         out.push({
           id: createId(),
+          defaultSlug: def.slug,
           name: def.name,
           nameZh: def.zh,
           nameDe: def.de,
@@ -86,16 +88,20 @@
     return out;
   }
 
+  function categoryMatchesDefault(cat, def) {
+    if (cat.defaultSlug && def.slug && cat.defaultSlug === def.slug) return true;
+    if (cat.name === def.name) return true;
+    if (cat.name === def.zh || cat.name === def.de) return true;
+    const glyphMatch = cat.icon === def.icon && cat.color === def.color;
+    if (glyphMatch && cat.nameZh === def.zh) return true;
+    if (glyphMatch && cat.nameDe === def.de) return true;
+    return false;
+  }
+
   function defaultDefForCategory(cat) {
     if (!cat || cat.archived) return null;
     const pool = cat.kind === "income" ? DEFAULT_INCOME_CATEGORIES : DEFAULT_EXPENSE_CATEGORIES;
-    return pool.find(def => (
-      cat.name === def.name
-      || cat.name === def.zh
-      || cat.name === def.de
-      || (cat.nameZh && cat.nameZh === def.zh)
-      || (cat.nameDe && cat.nameDe === def.de)
-    )) || null;
+    return pool.find(def => categoryMatchesDefault(cat, def)) || null;
   }
 
   /** One-time repair when old seeds overwrote English `name` with zh/de. */

@@ -6,6 +6,10 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Ledger categories:** default-category repair no longer treats user categories as built-ins when only the Chinese/German label collides (`defaultSlug` + icon/color match).
+- **Review:** weekly/monthly habit rows use card layout and staggered enter on the visible monthly review panel.
+- **Today:** hero quote and date chip gently retarget when browsing other days (`is-day-retarget`).
+- **README (EN/ZH/DE):** mobile product row includes Money (`08-ledger-v21`) alongside Today, Timeline, and Review.
 - **Review Money insights:** budget line also notes fewer low-mood days or more calm/good mood on over-budget category spend days (`positiveHotRate` / `positiveOtherRate` in `moodOverspendCategoryInsight`).
 - **Review habit trend:** when no completion line exists yet, the day-by-day chart shows hairline empty guidance; inspector habit table uses the same empty pattern.
 - **Demo showcase:** `alignDemoMoodWithBudgetOverspend` nudges moods on over-budget category spend days so Review budget insights include the calm/good follow-up sentence.

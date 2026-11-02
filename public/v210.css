@@ -3756,3 +3756,75 @@ html.motion-reduced .backup-tabs.is-tab-switch button.active {
 html[data-theme="dark"] .ledger-fx-hint {
   color: var(--text-muted, #9ca3af);
 }
+
+/* Batch 6 round 7 — visible weekly/monthly habit cards on Review */
+
+#reviewView .insight-period-habits .review-period-habits-list--live {
+  display: grid !important;
+  gap: 8px;
+}
+
+#reviewView .review-period-habits-list--live > article {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--separator, var(--line)) 88%, transparent);
+  background: color-mix(in srgb, var(--desk-canvas, var(--paper-deep)) 78%, transparent);
+  min-width: 0;
+}
+
+#reviewView .review-period-habits-list--live > article > div {
+  flex: 1;
+  min-width: 0;
+}
+
+#reviewView .review-period-habits-list--live > article b {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-period-habits-list--live.review-period-habits-list--enter > article {
+  animation: inspectorStatEnter 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--ins-i, 0) * 42ms);
+}
+
+.review-period-habits-list--live.review-period-habits-list--enter > article:nth-child(1) { --ins-i: 0; }
+.review-period-habits-list--live.review-period-habits-list--enter > article:nth-child(2) { --ins-i: 1; }
+.review-period-habits-list--live.review-period-habits-list--enter > article:nth-child(3) { --ins-i: 2; }
+.review-period-habits-list--live.review-period-habits-list--enter > article:nth-child(4) { --ins-i: 3; }
+
+html.motion-reduced .review-period-habits-list--live.review-period-habits-list--enter > article {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-period-habits-list--live.review-period-habits-list--enter > article {
+    animation: none !important;
+  }
+}
+
+/* Today hero — soft retarget when browsing other days */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-card.is-day-retarget .hero-copy h2,
+  .hero-card.is-day-retarget .date-chip {
+    animation: heroDayRetarget 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes heroDayRetarget {
+  from {
+    opacity: 0.55;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html.motion-reduced .hero-card.is-day-retarget .hero-copy h2,
+html.motion-reduced .hero-card.is-day-retarget .date-chip {
+  animation: none !important;
+}
