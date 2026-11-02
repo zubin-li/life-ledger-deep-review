@@ -63,6 +63,11 @@ async function seedDemoLedger(page) {
     const habitIds = (state.habits || []).map(h => h.id);
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(state.logs, state.ledger, now);
     window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(state.logs, state.ledger, habitIds, now);
+    state.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
+      state.focusSessions,
+      state.ledger,
+      now,
+    ) ?? state.focusSessions;
     const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
     for (let d = 1; d <= now.getDate(); d += 1) {
       const iso = `${ym}-${String(d).padStart(2, "0")}`;
@@ -72,20 +77,48 @@ async function seedDemoLedger(page) {
     }
     state.meta = state.meta || {};
     state.meta.demo = { ...(state.meta.demo || {}), active: true, version: 1, persona: 11, seededAt: now.toISOString() };
-    state.focusSessions = state.focusSessions || [];
-    const focusDays = ["2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"];
-    focusDays.forEach((date, i) => {
-      state.focusSessions.push({
-        id: `demo-focus-${i}`,
-        date,
-        label: "Demo",
-        outcome: "completed",
-        startedAt: Date.parse(`${date}T09:00:00`),
-        endedAt: Date.parse(`${date}T09:00:00`) + (i % 2 === 0 ? 90 : 15) * 60000,
-        durationMs: (i % 2 === 0 ? 90 : 15) * 60000,
-      });
-    });
     localStorage.setItem(key, JSON.stringify(state));
+  });
+}
+
+async function seedConflictLedgerPreview(page) {
+  await page.evaluate(() => {
+    const stateKey = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
+    if (!stateKey || !window.LifeLedgerLedger) return;
+    let state;
+    try { state = JSON.parse(localStorage.getItem(stateKey)); } catch { return; }
+    const preserved = JSON.parse(JSON.stringify(state));
+    let ledger = window.LifeLedgerLedger.normalize(preserved.ledger || null, { lang: "en" });
+    const acct = ledger.accounts[0]?.id;
+    const cat = ledger.categories.find(c => c.kind === "expense")?.id;
+    if (acct && cat) {
+      const added = window.LifeLedgerLedger.addTransaction(ledger, {
+        accountId: acct,
+        categoryId: cat,
+        amountMinor: -9999,
+        currency: "EUR",
+        date: "2026-11-10",
+        note: "Conflict preserved",
+      });
+      ledger = added.ledger || added;
+    }
+    preserved.ledger = ledger;
+    const record = {
+      version: 1,
+      detectedAt: Date.now(),
+      provider: "cloudflare",
+      baseRevision: 1,
+      remoteRevision: 2,
+      pendingRemoteResolution: true,
+      backup: {
+        format: "life-ledger-backup",
+        schemaVersion: 3,
+        scope: "all",
+        data: preserved,
+        preferences: { version: 1, values: {} },
+      },
+    };
+    localStorage.setItem("life-ledger-sync-conflict-v1", JSON.stringify(record));
   });
 }
 
@@ -136,11 +169,22 @@ async function shot(browserType, name, opts) {
     await seedYesterdaySpendOnly(page);
     await page.reload({ waitUntil: "networkidle" });
   }
+  if (opts.conflictPreview) {
+    await seedConflictLedgerPreview(page);
+    await page.reload({ waitUntil: "networkidle" });
+    await page.click("#settingsButton");
+    await page.click("#settingsBackup");
+    await page.click("#backupImportTab");
+    await page.waitForSelector("#conflictLedgerPreview:not([hidden])", { timeout: 8000 });
+    await page.waitForTimeout(300);
+  }
   if (opts.view === "review") {
     await page.click('.nav-item[data-view="review"]');
+    await page.locator(".review-focus-scatter-wrap").scrollIntoViewIfNeeded().catch(() => {});
+    await page.waitForTimeout(350);
   } else if (opts.view === "today") {
     await page.click('.nav-item[data-view="today"]');
-  } else {
+  } else if (!opts.conflictPreview) {
     await page.click('.nav-item[data-view="ledger"]');
   }
   if (opts.treemap) {
@@ -264,6 +308,12 @@ await shot(chromium, "review-focus-spend-light-1440", {
   theme: "light",
   view: "review",
   demoLedger: true,
+});
+await shot(chromium, "import-conflict-ledger-preview-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  demoLedger: true,
+  conflictPreview: true,
 });
 await shot(chromium, "ledger-treemap-de-light-1440", {
   viewport: { width: 1440, height: 900 },

@@ -346,6 +346,33 @@ test("habitCompletionSpendScatter needs enough points and renders svg", () => {
   assert.match(svg, /#6f8f7d/);
 });
 
+test("focusSpendScatter needs enough points and renders svg", () => {
+  const sparse = L.focusSpendScatter([{ focusMinutes: 30, spendMinor: 100 }]);
+  assert.equal(sparse, null);
+  const rows = [
+    { date: "2026-11-01", focusMinutes: 90, spendMinor: 1000 },
+    { date: "2026-11-02", focusMinutes: 85, spendMinor: 1200 },
+    { date: "2026-11-03", focusMinutes: 10, spendMinor: 5000 },
+    { date: "2026-11-04", focusMinutes: 15, spendMinor: 4500 },
+  ];
+  const scatter = L.focusSpendScatter(rows);
+  assert.ok(scatter);
+  assert.equal(scatter.points.length, 4);
+  const svg = L.renderFocusSpendScatterSvg(scatter);
+  assert.match(svg, /review-focus-scatter-dot/);
+  assert.match(svg, /#7c6fd6/);
+});
+
+test("alignDemoFocusWithSpend adds sessions on spend days", () => {
+  const ledger = L.buildDemoSample({ now: new Date("2026-11-18T12:00:00"), lang: "en", contentSeed: 42 });
+  const sessions = L.alignDemoFocusWithSpend([], ledger, new Date("2026-11-18T12:00:00"));
+  assert.ok(sessions.length >= 4);
+  const highFocus = sessions.filter(s => s.durationMs >= 85 * 60000);
+  const lowFocus = sessions.filter(s => s.durationMs <= 20 * 60000);
+  assert.ok(highFocus.length >= 1);
+  assert.ok(lowFocus.length >= 1);
+});
+
 test("ledgerConflictCompare surfaces transaction count mismatch", () => {
   let ledgerA = L.normalize(null, { lang: "en" });
   const acct = ledgerA.accounts[0].id;

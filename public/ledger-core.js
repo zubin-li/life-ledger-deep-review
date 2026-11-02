@@ -636,6 +636,61 @@
     return `<svg class="review-habit-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${zones}${axis}${dots}</svg>`;
   }
 
+  const FOCUS_SCATTER_COLORS = { high: "#7c6fd6", mid: "#9aa8c8", low: "#c4b5fd" };
+
+  /** Focus minutes (x) vs daily spend (y); needs ≥3 spending days with focus data. */
+  function focusSpendScatter(dailyRows, options = {}) {
+    const minSpend = options.minSpendMinor || 1;
+    const highMinutes = options.highMinutes ?? 60;
+    const lowMinutes = options.lowMinutes ?? 25;
+    const maxFocusCap = options.maxFocusMinutes ?? 180;
+    const points = [];
+    (dailyRows || []).forEach((row, index) => {
+      const spend = row?.spendMinor || 0;
+      if (spend < minSpend || !Number.isFinite(row.focusMinutes)) return;
+      const mins = Math.max(0, row.focusMinutes);
+      let band = "mid";
+      if (mins >= highMinutes) band = "high";
+      else if (mins <= lowMinutes) band = "low";
+      points.push({
+        date: row.date,
+        focusMinutes: mins,
+        spendMinor: spend,
+        band,
+        jitter: ((index * 11 + spend) % 5) / 5 - 0.5,
+      });
+    });
+    if (points.length < 3) return null;
+    const maxSpend = Math.max(...points.map(p => p.spendMinor));
+    const maxFocus = Math.max(highMinutes + 1, ...points.map(p => p.focusMinutes), maxFocusCap);
+    return { points, maxSpend, maxFocus, highMinutes, lowMinutes };
+  }
+
+  function renderFocusSpendScatterSvg(scatter, options = {}) {
+    if (!scatter?.points?.length) return "";
+    const width = options.width || 280;
+    const height = options.height || 92;
+    const pad = { left: 10, right: 10, top: 10, bottom: 22 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+    const maxSpend = Math.max(1, scatter.maxSpend);
+    const maxFocus = Math.max(1, scatter.maxFocus);
+    const hiX = pad.left + (scatter.highMinutes / maxFocus) * plotW;
+    const loX = pad.left + (scatter.lowMinutes / maxFocus) * plotW;
+    const zones = `<rect x="${pad.left}" y="${pad.top}" width="${Math.max(0, loX - pad.left).toFixed(1)}" height="${plotH}" fill="${FOCUS_SCATTER_COLORS.low}" opacity="0.07"/>
+      <rect x="${loX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, hiX - loX).toFixed(1)}" height="${plotH}" fill="${FOCUS_SCATTER_COLORS.mid}" opacity="0.05"/>
+      <rect x="${hiX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, pad.left + plotW - hiX).toFixed(1)}" height="${plotH}" fill="${FOCUS_SCATTER_COLORS.high}" opacity="0.1"/>`;
+    const dots = scatter.points.map((p, i) => {
+      const xNorm = Math.max(0, Math.min(maxFocus, p.focusMinutes)) / maxFocus;
+      const x = pad.left + xNorm * plotW + p.jitter * 4;
+      const y = pad.top + plotH - (p.spendMinor / maxSpend) * plotH;
+      const color = FOCUS_SCATTER_COLORS[p.band] || FOCUS_SCATTER_COLORS.mid;
+      return `<circle class="review-focus-scatter-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" opacity="0.82" style="--dot-i:${i}"/>`;
+    }).join("");
+    const axis = `<line x1="${pad.left}" y1="${pad.top + plotH}" x2="${pad.left + plotW}" y2="${pad.top + plotH}" stroke="currentColor" stroke-opacity="0.12"/>`;
+    return `<svg class="review-focus-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${zones}${axis}${dots}</svg>`;
+  }
+
   function ledgerStatsSnapshot(ledger, options = {}) {
     if (!ledger) return { hasLedger: false, transactions: 0, accounts: 0, categories: 0 };
     const base = normalize(ledger, options);
@@ -1144,6 +1199,42 @@
     return logs;
   }
 
+  /** Demo-only: more focus minutes on lower-spend days (and the reverse) for review focus × spend scatter. */
+  function alignDemoFocusWithSpend(focusSessions, ledger, now = new Date()) {
+    if (!ledger?.transactions?.length) return focusSessions || [];
+    const anchor = now instanceof Date ? now : new Date(now);
+    const today = isoFromDate(anchor);
+    const ym = monthKey(today);
+    const spendByDate = new Map();
+    ledger.transactions.forEach(tx => {
+      if (!tx.date.startsWith(ym) || tx.date > today || tx.amountMinor >= 0) return;
+      spendByDate.set(tx.date, (spendByDate.get(tx.date) || 0) + Math.abs(tx.amountMinor));
+    });
+    const dates = [...spendByDate.keys()].sort();
+    if (dates.length < 4) return focusSessions || [];
+    const sorted = [...dates].sort((a, b) => spendByDate.get(a) - spendByDate.get(b));
+    const lowSpend = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 3)));
+    const highSpend = sorted.slice(-Math.max(1, Math.ceil(sorted.length / 3)));
+    const sessions = (focusSessions || []).filter(s => !String(s?.id || "").startsWith("demo-focus-align-"));
+    const pushSession = (date, minutes) => {
+      const startedAt = Date.parse(`${date}T10:00:00`);
+      if (!Number.isFinite(startedAt)) return;
+      const durationMs = minutes * 60000;
+      sessions.push({
+        id: `demo-focus-align-${date}`,
+        date,
+        label: "Demo",
+        outcome: "completed",
+        startedAt,
+        endedAt: startedAt + durationMs,
+        durationMs,
+      });
+    };
+    lowSpend.forEach(date => pushSession(date, 85 + (date.charCodeAt(8) % 20)));
+    highSpend.forEach(date => pushSession(date, 12 + (date.charCodeAt(9) % 8)));
+    return sessions;
+  }
+
   root.LifeLedgerLedger = {
     LEDGER_VERSION,
     emptyLedger,
@@ -1165,6 +1256,8 @@
     renderMoodSpendScatterSvg,
     habitCompletionSpendScatter,
     renderHabitCompletionSpendScatterSvg,
+    focusSpendScatter,
+    renderFocusSpendScatterSvg,
     ledgerStatsSnapshot,
     ledgerConflictCompare,
     focusSpendInsight,
@@ -1192,6 +1285,7 @@
     shiftYm,
     buildDemoSample,
     alignDemoMoodWithSpend,
+    alignDemoFocusWithSpend,
     createId,
   };
 })(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : global);

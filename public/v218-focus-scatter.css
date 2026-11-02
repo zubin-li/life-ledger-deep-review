@@ -1,0 +1,81 @@
+/* Batch 2 round 3 — review focus time vs spend scatter */
+
+.review-focus-scatter-wrap {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid color-mix(in srgb, var(--hairline) 70%, transparent);
+}
+
+.review-focus-scatter-caption {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.review-focus-scatter {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  color: var(--text);
+}
+
+.review-focus-scatter-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rvFocusDotIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--dot-i, 0) * 24ms);
+}
+
+@keyframes rvFocusDotIn {
+  from {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  to {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+}
+
+.review-focus-scatter-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.review-focus-scatter-legend-item[data-band="high"]::before {
+  background: #7c6fd6;
+}
+
+.review-focus-scatter-legend-item[data-band="low"]::before {
+  background: #c4b5fd;
+}
+
+.review-focus-scatter-legend-item::before {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: 0.05em;
+}
+
+html.motion-reduced .review-focus-scatter-dot {
+  animation: none;
+  opacity: 0.82;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-focus-scatter-dot {
+    animation: none;
+    opacity: 0.82;
+    transform: none;
+  }
+}

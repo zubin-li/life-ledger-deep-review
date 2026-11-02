@@ -2746,6 +2746,11 @@ function maybeApplyDemoWorkspace() {
     const habitIds = (demoState.habits || []).map(h => h.id);
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
     window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
+    demoState.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
+      demoState.focusSessions,
+      demoState.ledger,
+      demoAnchor,
+    ) ?? demoState.focusSessions;
   }
   state = { ...cloneData(seed), ...demoState };
   saveState();
@@ -8026,6 +8031,7 @@ function renderReviewLedgerSummary() {
   const moodCompare = L.moodSpendComparison(dailyRows);
   const moodScatter = L.moodSpendScatter(dailyRows);
   const habitScatter = L.habitCompletionSpendScatter(dailyRows);
+  const focusScatter = L.focusSpendScatter(dailyRows);
   const focusCompare = L.focusSpendInsight(dailyRows);
   const habitCompare = L.habitCompletionSpendInsight(dailyRows);
   let moodScatterBlock = "";
@@ -8056,6 +8062,19 @@ function renderReviewLedgerSummary() {
       <p class="review-habit-scatter-caption">${escapeHtml(languageText("习惯完成度与当日支出", "Habit completion vs daily spending", "Gewohnheitsquote und Tagesausgaben"))}</p>
       ${habitSvg}
       <div class="review-habit-scatter-legend" aria-hidden="true">${habitLegend}</div>
+    </div>`;
+  }
+  let focusScatterBlock = "";
+  if (focusScatter) {
+    const focusSvg = L.renderFocusSpendScatterSvg(focusScatter);
+    const focusLegend = [
+      { band: "high", label: languageText("专注较多", "More focus time", "Mehr Fokuszeit") },
+      { band: "low", label: languageText("专注较少", "Less focus time", "Weniger Fokuszeit") },
+    ].map(({ band, label }) => `<span class="review-focus-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
+    focusScatterBlock = `<div class="review-focus-scatter-wrap">
+      <p class="review-focus-scatter-caption">${escapeHtml(languageText("专注时长与当日支出", "Focus time vs daily spending", "Fokuszeit und Tagesausgaben"))}</p>
+      ${focusSvg}
+      <div class="review-focus-scatter-legend" aria-hidden="true">${focusLegend}</div>
     </div>`;
   }
   let moodLine = "";
@@ -8092,7 +8111,7 @@ function renderReviewLedgerSummary() {
       <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${moodScatterBlock}${habitScatterBlock}${moodLine}${focusLine}${habitLine}</article>`;
+    </div>${moodScatterBlock}${habitScatterBlock}${focusScatterBlock}${moodLine}${focusLine}${habitLine}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 
@@ -9442,6 +9461,11 @@ async function loadMacSample() {
     const habitIds = (demoState.habits || []).map(h => h.id);
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
     window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
+    demoState.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
+      demoState.focusSessions,
+      demoState.ledger,
+      demoAnchor,
+    ) ?? demoState.focusSessions;
   }
   state = { ...cloneData(seed), ...demoState };
   saveState();
