@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [返回 README](../README.zh-CN.md)
 
-Life Ledger 2.0 把今日变成卡片工作台，并重新设计了所有页面。所有截图都来自本地版自带的三个月虚构示例数据。
+Life Ledger 2.1 在 2.0 卡片工作台之上新增 **记账**。所有截图都来自本地版自带的三个月虚构示例数据。
 
 ## 桌面版
 
@@ -50,7 +50,9 @@ Life Ledger 2.0 把今日变成卡片工作台，并重新设计了所有页面�
 
 ### 记账
 
-侧栏点 **记账**（在「复盘」与「习惯设置」之间）：快速录入、分类图表、预算与 CSV 导入/导出；本地预览演示也会载入虚构流水。下方桌面截图仍为 2.0 卡片改版素材，2.1 将补充专用记账展示图。
+<img src="images/demo-preview/zh-desktop/zh-08-ledger-v21.png" alt="记账：快速录入、图表与预算" />
+
+侧栏点 **记账**（在「复盘」与「习惯设置」之间）：快速录入、分类图表、预算与 CSV 导入/导出；本地预览演示也会载入虚构流水。
 
 ## 手机版
 
@@ -77,8 +79,10 @@ Life Ledger 2.0 把今日变成卡片工作台，并重新设计了所有页面�
   </tr>
   <tr>
     <td width="33%"><img src="images/demo-preview/zh-mobile/zh-05-habits-v6.png" alt="习惯设置" /></td>
+    <td width="33%"><img src="images/demo-preview/zh-mobile/zh-08-ledger-v21.png" alt="记账" /></td>
   </tr>
   <tr>
     <td><strong>习惯设置</strong></td>
+    <td><strong>记账</strong></td>
   </tr>
 </table>

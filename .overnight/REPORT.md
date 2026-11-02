@@ -1,10 +1,27 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 9 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 10 · 收束）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
+**十轮已全部完成。** 记账（Goal 1）与 Goal 2 动效/抛光在 Batch 4–5 交付；本轮补齐 **产品展示图** 与文档契约。
+
 ---
 
-## 本轮（Batch 5 · Round 9）改动
+## 本轮（Batch 5 · Round 10）改动
+
+| 项目 | 说明 |
+|------|------|
+| **SHOWCASE 记账图** | 英/中/德各 2 张（桌面 1600×1050、手机 860×1864 量级）：`docs/images/demo-preview/**/{en,zh,de}-08-ledger-v21.png`；侧栏可见 **记账 / Money / Geld** 高亮。 |
+| **SHOWCASE 正文** | 三语页面增加桌面 `<img>` + 手机表格列；导语改为 2.1 含记账（其余 v6 图仍为 2.0 卡片改版）。 |
+| **测试** | `readme-locales` 断言 ledger 展示图存在；单元 **336 pass**；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b5r10-showcase-ledger-*`。重拍 showcase PNG：`node .overnight/capture-showcase-ledger-v21.mjs`（5299）；验收图：`node .overnight/capture-batch5-round10.mjs`（5291）。 |
+
+**验收提示：** 打开 `docs/SHOWCASE.zh-CN.md` 预览或 README 里的 showcase 链接，应看到 **记账** 专节大图；本地 `?local-preview=demo-showcase-v1` 与图一致。
+
+**发版前可选：** README 顶图仍是 Today v6；若希望首屏也体现记账，可另拍 Today 侧栏或换 hero 链到 `08-ledger-v21`。
+
+---
+
+## 上一轮（Batch 5 · Round 9）改动
 
 | 项目 | 说明 |
 |------|------|

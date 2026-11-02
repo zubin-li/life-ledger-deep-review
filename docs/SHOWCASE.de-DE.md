@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Zurück zur README](../README.de-DE.md)
 
-Life Ledger 2.0 macht Heute zu einem Karten-Arbeitsbereich und gestaltet alle Seiten neu. Alle Screenshots stammen aus dem fiktiven dreimonatigen Beispiel-Arbeitsbereich der lokalen Version.
+Life Ledger 2.1 ergänzt **Geld** (Finanzen) zum Karten-Arbeitsbereich von 2.0. Alle Screenshots stammen aus dem fiktiven dreimonatigen Beispiel-Arbeitsbereich der lokalen Version.
 
 ## Desktop
 
@@ -50,7 +50,9 @@ Ziele, Farben, Symbole und Häufigkeit (täglich, wöchentlich, monatlich) für 
 
 ### Geld (Finanzen)
 
-In der Seitenleiste **Geld** wählen (zwischen Rückblick und Gewohnheiten): Schnellerfassung, Kategoriediagramme, Budgets sowie CSV-Import/-Export; die lokale Vorschau lädt fiktive Beispielbuchungen. Die Desktop-Screenshots unten stammen noch aus dem 2.0-Karten-Refresh — eigene Geld-Ansichten folgen mit 2.1.
+<img src="images/demo-preview/de-desktop/de-08-ledger-v21.png" alt="Geld: Schnellerfassung, Diagramme und Budgets" />
+
+In der Seitenleiste **Geld** wählen (zwischen Rückblick und Gewohnheiten): Schnellerfassung, Kategoriediagramme, Budgets sowie CSV-Import/-Export; die lokale Vorschau lädt fiktive Beispielbuchungen.
 
 ## Smartphone
 
@@ -77,8 +79,10 @@ In der Seitenleiste **Geld** wählen (zwischen Rückblick und Gewohnheiten): Sch
   </tr>
   <tr>
     <td width="33%"><img src="images/demo-preview/de-mobile/de-05-habits-v6.png" alt="Gewohnheiten" /></td>
+    <td width="33%"><img src="images/demo-preview/de-mobile/de-08-ledger-v21.png" alt="Geld" /></td>
   </tr>
   <tr>
     <td><strong>Gewohnheiten</strong></td>
+    <td><strong>Geld</strong></td>
   </tr>
 </table>

@@ -64,3 +64,13 @@ test("every localized showcase includes the current Timeline feature", async () 
     assert.match(source, new RegExp(`images/demo-preview/${lang}-mobile/${lang}-07-timeline-v\\d+\\.png`));
   }
 });
+
+test("every localized showcase includes Money bookkeeping screenshots", async () => {
+  for (const { lang, showcase } of docs) {
+    const source = await readFile(resolve(root, showcase), "utf8");
+    assert.match(source, new RegExp(`images/demo-preview/${lang}-desktop/${lang}-08-ledger-v21\\.png`));
+    assert.match(source, new RegExp(`images/demo-preview/${lang}-mobile/${lang}-08-ledger-v21\\.png`));
+    await access(resolve(root, `docs/images/demo-preview/${lang}-desktop/${lang}-08-ledger-v21.png`));
+    await access(resolve(root, `docs/images/demo-preview/${lang}-mobile/${lang}-08-ledger-v21.png`));
+  }
+});

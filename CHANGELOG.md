@@ -57,6 +57,7 @@ All notable changes are documented here.
 - **Goal 2 (Batch 5 R3):** Review page enter stagger via `#reviewView.view.is-entering`; short-viewport ledger keypad fixed dock while quick field focused; screenshots `b5r3-*`.
 - **Goal 2 (Batch 5 R4):** Habits page enter stagger scoped to `#habitsView.view.is-entering` (header → reminder → stats → list); week page header + seven-day calendar column stagger after module cards; screenshots `b5r4-*`.
 - **Goal 2 (Batch 5 R9):** Settings and import/export dialogs play a short enter animation; backup Export/Import tab switch retargets the panel; Today hero/mood row spacing; review scatter jump announces section in reduced motion with a static outline spotlight; screenshots `b5r9-*`.
+- **Docs (Batch 5 R10):** fictional **Money** showcase PNGs (`*-08-ledger-v21.png`) in EN/ZH/DE desktop and mobile; SHOWCASE pages updated; `readme-locales` asserts ledger screenshots exist.
 
 ### Fixed
 
