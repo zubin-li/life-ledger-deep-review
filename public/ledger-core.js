@@ -584,6 +584,83 @@
     return `<svg class="review-mood-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${guides}${dots}</svg>`;
   }
 
+  const HABIT_SCATTER_COLORS = { high: "#6f8f7d", mid: "#9aa8a0", low: "#e07a5f" };
+
+  /** Habit completion % (x) vs daily spend (y); needs ≥3 spending days with completion data. */
+  function habitCompletionSpendScatter(dailyRows, options = {}) {
+    const minSpend = options.minSpendMinor || 1;
+    const highThreshold = options.highThreshold ?? 70;
+    const lowThreshold = options.lowThreshold ?? 40;
+    const points = [];
+    (dailyRows || []).forEach((row, index) => {
+      const spend = row?.spendMinor || 0;
+      if (spend < minSpend || !Number.isFinite(row.completionPercent)) return;
+      const pct = row.completionPercent;
+      let band = "mid";
+      if (pct >= highThreshold) band = "high";
+      else if (pct <= lowThreshold) band = "low";
+      points.push({
+        date: row.date,
+        completionPercent: pct,
+        spendMinor: spend,
+        band,
+        jitter: ((index * 13 + spend) % 5) / 5 - 0.5,
+      });
+    });
+    if (points.length < 3) return null;
+    const maxSpend = Math.max(...points.map(p => p.spendMinor));
+    return { points, maxSpend, highThreshold, lowThreshold };
+  }
+
+  function renderHabitCompletionSpendScatterSvg(scatter, options = {}) {
+    if (!scatter?.points?.length) return "";
+    const width = options.width || 280;
+    const height = options.height || 92;
+    const pad = { left: 10, right: 10, top: 10, bottom: 22 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+    const maxSpend = Math.max(1, scatter.maxSpend);
+    const hiX = pad.left + (scatter.highThreshold / 100) * plotW;
+    const loX = pad.left + (scatter.lowThreshold / 100) * plotW;
+    const zones = `<rect x="${pad.left}" y="${pad.top}" width="${Math.max(0, loX - pad.left).toFixed(1)}" height="${plotH}" fill="${HABIT_SCATTER_COLORS.low}" opacity="0.06"/>
+      <rect x="${loX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, hiX - loX).toFixed(1)}" height="${plotH}" fill="${HABIT_SCATTER_COLORS.mid}" opacity="0.05"/>
+      <rect x="${hiX.toFixed(1)}" y="${pad.top}" width="${Math.max(0, pad.left + plotW - hiX).toFixed(1)}" height="${plotH}" fill="${HABIT_SCATTER_COLORS.high}" opacity="0.08"/>`;
+    const dots = scatter.points.map((p, i) => {
+      const xNorm = Math.max(0, Math.min(100, p.completionPercent)) / 100;
+      const x = pad.left + xNorm * plotW + p.jitter * 4;
+      const y = pad.top + plotH - (p.spendMinor / maxSpend) * plotH;
+      const color = HABIT_SCATTER_COLORS[p.band] || HABIT_SCATTER_COLORS.mid;
+      return `<circle class="review-habit-scatter-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" opacity="0.82" style="--dot-i:${i}"/>`;
+    }).join("");
+    const axis = `<line x1="${pad.left}" y1="${pad.top + plotH}" x2="${pad.left + plotW}" y2="${pad.top + plotH}" stroke="currentColor" stroke-opacity="0.12"/>`;
+    return `<svg class="review-habit-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${zones}${axis}${dots}</svg>`;
+  }
+
+  function ledgerStatsSnapshot(ledger, options = {}) {
+    if (!ledger) return { hasLedger: false, transactions: 0, accounts: 0, categories: 0 };
+    const base = normalize(ledger, options);
+    return {
+      hasLedger: true,
+      transactions: base.transactions.length,
+      accounts: base.accounts.filter(a => !a.archived).length,
+      categories: base.categories.filter(c => !c.archived).length,
+    };
+  }
+
+  /** Compare preserved device ledger vs current state for sync-conflict UI (read-only). */
+  function ledgerConflictCompare(preservedLedger, currentLedger, options = {}) {
+    const preserved = ledgerStatsSnapshot(preservedLedger, options);
+    const current = ledgerStatsSnapshot(currentLedger, options);
+    if (!preserved.hasLedger && !current.hasLedger) return null;
+    return {
+      preserved,
+      current,
+      differs: preserved.transactions !== current.transactions
+        || preserved.categories !== current.categories
+        || preserved.accounts !== current.accounts,
+    };
+  }
+
   function parseCssRgb(color) {
     const s = String(color || "").trim();
     let m = s.match(/^#([0-9a-f]{3,8})$/i);
@@ -1086,6 +1163,10 @@
     moodSpendComparison,
     moodSpendScatter,
     renderMoodSpendScatterSvg,
+    habitCompletionSpendScatter,
+    renderHabitCompletionSpendScatterSvg,
+    ledgerStatsSnapshot,
+    ledgerConflictCompare,
     focusSpendInsight,
     habitCompletionSpendInsight,
     truncateTreemapLabel,

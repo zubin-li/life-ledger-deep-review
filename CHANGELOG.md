@@ -6,6 +6,8 @@ All notable changes are documented here.
 
 ### Added
 
+- **Review:** habit-completion-vs-spend scatter in the monthly Money panel (`v217-habit-scatter.css`).
+- **Import & export:** read-only **Money merge preview** on the sync-conflict recovery card (`v217-conflict-ledger.css`).
 - **Review:** mood-vs-spend scatter chart in the monthly Money summary panel (`v216-mood-scatter.css`).
 
 ### Fixed

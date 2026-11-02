@@ -147,6 +147,10 @@ async function shot(browserType, name, opts) {
     await page.click('.ledger-chart-mode[data-chart-mode="treemap"]');
     await page.waitForTimeout(300);
   }
+  if (opts.focusKeypad) {
+    await page.click("#ledgerQuickInput");
+    await page.waitForTimeout(350);
+  }
   if (opts.recurringPopover) {
     await page.click(".ledger-recurring-add");
     await page.waitForTimeout(350);
@@ -239,6 +243,20 @@ await shot(chromium, "ledger-recurring-weekly-light-1440", {
 await shot(chromium, "ledger-mobile-keypad-light-390", {
   viewport: { width: 390, height: 844 },
   theme: "light",
+  demoLedger: true,
+  focusKeypad: true,
+});
+await shot(webkit, "ledger-mobile-keypad-webkit-dark-390", {
+  viewport: { width: 390, height: 844 },
+  theme: "dark",
+  lang: "de",
+  demoLedger: true,
+  focusKeypad: true,
+});
+await shot(chromium, "review-habit-scatter-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  view: "review",
   demoLedger: true,
 });
 await shot(chromium, "review-focus-spend-light-1440", {

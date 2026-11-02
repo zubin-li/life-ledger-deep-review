@@ -5884,6 +5884,45 @@ function cloudSyncConflictBlocksAutoPush() {
   if (cloudSyncStorageBlockPaused()) return true;
   return syncConflictRecordPendingRemote(readSyncConflictRecord(localStorage, syncConflictRecordOptions()));
 }
+function renderConflictLedgerPreview() {
+  const el = $("#conflictLedgerPreview");
+  if (!el) return;
+  const record = readSyncConflictRecord(localStorage, syncConflictRecordOptions());
+  const L = globalThis.LifeLedgerLedger;
+  if (!record || !L) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  const cmp = L.ledgerConflictCompare(record.backup?.data?.ledger, state.ledger, { lang: currentLang });
+  if (!cmp) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  const { preserved, current } = cmp;
+  const txLabel = languageText("笔交易", "transactions", "Buchungen");
+  const preservedTitle = languageText("保留副本（本机）", "Preserved copy (this device)", "Aufbewahrte Kopie (dieses Gerät)");
+  const currentTitle = languageText("当前记录（云端）", "Current records (cloud)", "Aktuelle Einträge (Cloud)");
+  const hint = cmp.differs
+    ? languageText(
+      "记账条目数量不一致；下载保留副本可恢复本机账本。",
+      "Money entry counts differ; download the preserved copy to recover this device’s ledger.",
+      "Die Anzahl der Finanzeinträge weicht ab; lade die aufbewahrte Kopie herunter, um das Geräte-Ledger wiederherzustellen.",
+    )
+    : languageText(
+      "记账条目数量一致。",
+      "Money entry counts match.",
+      "Finanzeinträge stimmen überein.",
+    );
+  el.hidden = false;
+  el.innerHTML = `<p class="conflict-ledger-preview-kicker">${escapeHtml(languageText("记账合并预览", "Money merge preview", "Finanzen-Vorschau"))}</p>
+    <dl class="conflict-ledger-preview-grid">
+      <div><dt>${escapeHtml(preservedTitle)}</dt><dd>${preserved.transactions} ${escapeHtml(txLabel)} · ${preserved.categories} ${escapeHtml(languageText("分类", "categories", "Kategorien"))}</dd></div>
+      <div><dt>${escapeHtml(currentTitle)}</dt><dd>${current.transactions} ${escapeHtml(txLabel)} · ${current.categories} ${escapeHtml(languageText("分类", "categories", "Kategorien"))}</dd></div>
+    </dl>
+    <p class="conflict-ledger-preview-hint">${escapeHtml(hint)}</p>`;
+}
 function refreshConflictRecoveryVisibility() {
   const row = $("#conflictRecoveryRow");
   if (!row) return;
@@ -5892,6 +5931,7 @@ function refreshConflictRecoveryVisibility() {
   row.hidden = !record && !fallback;
   const dismiss = $("#dismissConflictRecovery");
   if (dismiss) dismiss.hidden = fallback || !record;
+  renderConflictLedgerPreview();
 }
 function downloadStoredConflictRecovery() {
   const record = readSyncConflictRecord(localStorage, syncConflictRecordOptions());
@@ -7985,6 +8025,7 @@ function renderReviewLedgerSummary() {
   });
   const moodCompare = L.moodSpendComparison(dailyRows);
   const moodScatter = L.moodSpendScatter(dailyRows);
+  const habitScatter = L.habitCompletionSpendScatter(dailyRows);
   const focusCompare = L.focusSpendInsight(dailyRows);
   const habitCompare = L.habitCompletionSpendInsight(dailyRows);
   let moodScatterBlock = "";
@@ -8002,6 +8043,19 @@ function renderReviewLedgerSummary() {
       <p class="review-mood-scatter-caption">${escapeHtml(languageText("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben"))}</p>
       ${scatterSvg}
       <div class="review-mood-scatter-legend" aria-hidden="true">${legend}</div>
+    </div>`;
+  }
+  let habitScatterBlock = "";
+  if (habitScatter) {
+    const habitSvg = L.renderHabitCompletionSpendScatterSvg(habitScatter);
+    const habitLegend = [
+      { band: "high", label: languageText("习惯完成高", "High habit completion", "Hohe Gewohnheitsquote") },
+      { band: "low", label: languageText("习惯完成低", "Low habit completion", "Niedrige Gewohnheitsquote") },
+    ].map(({ band, label }) => `<span class="review-habit-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
+    habitScatterBlock = `<div class="review-habit-scatter-wrap">
+      <p class="review-habit-scatter-caption">${escapeHtml(languageText("习惯完成度与当日支出", "Habit completion vs daily spending", "Gewohnheitsquote und Tagesausgaben"))}</p>
+      ${habitSvg}
+      <div class="review-habit-scatter-legend" aria-hidden="true">${habitLegend}</div>
     </div>`;
   }
   let moodLine = "";
@@ -8038,7 +8092,7 @@ function renderReviewLedgerSummary() {
       <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${moodScatterBlock}${moodLine}${focusLine}${habitLine}</article>`;
+    </div>${moodScatterBlock}${habitScatterBlock}${moodLine}${focusLine}${habitLine}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 

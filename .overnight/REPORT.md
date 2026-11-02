@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 2 · Round 1）
+# Life Ledger 夜间构建报告（Batch 2 · Round 2）
 
-在 **2.1.0 / Mac 3.1.0** 首版交付基础上的第二轮迭代。本 round 聚焦：**云同步 ledger 边界**、**复盘相关图加深**、文档与 PWA 缓存对齐。
+在 Round 1（云 ledger 边界、心情散点）之上，本 round 补全 **习惯×支出可视化** 与 **同步冲突时的记账预览**，并做 WebKit 手机 keypad 回归截图。
 
 ---
 
@@ -8,24 +8,20 @@
 
 | 项目 | 说明 |
 |------|------|
-| **云同步修复** | 待处理冲突在下次 GET 采纳 remote 时，若 payload 无 `ledger`，保留冲突备份中的本地账本（此前会丢 ledger）。 |
-| **复盘 · 心情散点** | Review → Money 月度摘要内新增「心情与当日支出」散点（绿/蓝/橙 = 很好/平静/低落），与原有平均支出文案并存。 |
-| **样式** | `public/v216-mood-scatter.css`（入场 dot 动画，`prefers-reduced-motion` 关闭）。 |
-| **README** | Mac 下载说明由 3.0.0 更正为 **3.1.0**（EN/ZH/DE）。 |
-| **测试** | 272 项全绿（+2）。 |
+| **复盘 · 习惯散点** | Review → Money 卡片内「习惯完成度与当日支出」SVG 散点（高完成 sage / 低完成 coral 分区），配套 `v217-habit-scatter.css`。 |
+| **冲突 · 记账预览** | 设置 → 导入与导出 → 同步冲突保留卡片：对比「保留副本」与「当前云端」的交易笔数、分类数，差异时提示下载恢复。`ledgerConflictCompare` + `v217-conflict-ledger.css`。 |
+| **测试** | 274 项全绿（+2）。 |
+| **CHANGELOG** | Unreleased 已记上述两项。 |
 
-REQUIREMENTS 呼应：「crafted 洞察 / mood vs spending 相关」——在 Round 10–12 文案洞察之上增加可扫一眼的散点分布（`.hermes/requirements/REQUIREMENTS.md` 中「少打扰、可复盘」方向）。
+REQUIREMENTS：延续「mood vs habits vs spending 相关洞察」与「少打扰、可复盘」——在 Round 1 心情散点旁增加习惯维度，冲突场景给出可读的账本差异摘要。
 
 ---
 
-## 明早怎么验（新增 1 分钟）
+## 明早怎么验（约 2 分钟）
 
-1. 照旧：`public` 起 5291，`?mode=local`，加载**演示工作区**（或自有含 ledger + 心情的数据）。
-2. **侧栏 → Review（复盘）**，滚到 **Money / 本月支出** 卡片。
-3. 应看到散点图 + 图例（Good / Calm / Low）及原有「great-mood vs low-mood 平均支出」句子。
-4. 截图对照：`.overnight/shots/review-mood-scatter-light-1440.png`。
-
-记账、Today 支出、CSV 等首版能力不变；全量回归仍可用 `node .overnight/capture-regression.mjs`（需先起 5291）。
+1. **习惯散点：** `public` + `5291`，`?mode=local`，加载**演示工作区** → **Review** → 滚到 **Monthly spending** → 应同时看到 **Mood vs daily spending** 与 **Habit completion vs daily spending** 两张小图。对照 `.overnight/shots/review-habit-scatter-light-1440.png`。
+2. **冲突预览：** 需已有云冲突保留记录（或从 Round 1 说明的 409 流程得到）→ 打开 **导入与导出** → 冲突卡片内应出现「Money merge preview / 记账合并预览」两列数字。无冲突时该区域隐藏属正常。
+3. **手机 keypad：** 侧栏 **Finanzen** → 点快速录入框 → 数字键盘应露出且不与底栏严重重叠。对照 `.overnight/shots/ledger-mobile-keypad-webkit-dark-de-390.png`（德文深色 WebKit 390）。
 
 ---
 
@@ -33,32 +29,28 @@ REQUIREMENTS 呼应：「crafted 洞察 / mood vs spending 相关」——在 Ro
 
 | 场景 | 文件 |
 |------|------|
-| 复盘 · 心情散点（新） | `review-mood-scatter-light-1440.png` |
-| 首版 21 张索引 | 见 Batch 1 Round 14 报告（`ledger-*`, `today-spending-*`, …） |
+| 复盘 · 习惯散点（新） | `review-habit-scatter-light-1440.png` |
+| 记账 · WebKit keypad（新） | `ledger-mobile-keypad-webkit-dark-de-390.png` |
+| Round 1 心情散点 | `review-mood-scatter-light-1440.png` |
+| 首版索引 | Batch 1 Round 14（`ledger-*`, `today-spending-*`, …） |
 
 ---
 
-## REVIEW.md
+## 试过 / 未做
 
-Antigravity 输出为空，未产生 HIGH/MED 待办。
-
----
-
-## 已知问题（未改）
-
-- fakecloud 在本 clone 无 `functions/`，不能代表真 Cloudflare CAS。
-- 极矮视口下记账数字键盘与底部 dock 可能轻微重叠。
+- **未改** `v213` padding：WebKit 390 截图中间距可接受。
+- **未做** focus-vs-spend 第三张散点（留给 round 3）。
+- **未截** 冲突对话框实图（overnight clone 无真 409，需注入 localStorage 或真云）。
 
 ---
 
-## 下一 round 建议
+## 已知问题
 
-- 习惯完成度 vs 支出散点或双轴条。
-- ledger 云冲突合并预览 UI（只读 diff，仍不写 server）。
-- keypad 390 宽 WebKit 截图 + padding 微调。
+- fakecloud 无 `functions/`，不能代表真 CAS。
+- 冲突预览仅在 `conflictRecoveryRow` 可见且有 ledger 统计时出现。
 
 ---
 
 ## npm test
 
-**272 pass, 0 fail**（Batch 2 Round 1，实测）。
+**274 pass, 0 fail**（Batch 2 Round 2，实测）。

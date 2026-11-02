@@ -329,6 +329,43 @@ test("moodSpendComparison averages great vs low mood days", () => {
   assert.equal(cmp.lowAvg, 6000);
 });
 
+test("habitCompletionSpendScatter needs enough points and renders svg", () => {
+  const sparse = L.habitCompletionSpendScatter([{ completionPercent: 50, spendMinor: 100 }]);
+  assert.equal(sparse, null);
+  const rows = [
+    { date: "2026-11-01", completionPercent: 90, spendMinor: 1000 },
+    { date: "2026-11-02", completionPercent: 85, spendMinor: 1200 },
+    { date: "2026-11-03", completionPercent: 20, spendMinor: 5000 },
+    { date: "2026-11-04", completionPercent: 15, spendMinor: 4500 },
+  ];
+  const scatter = L.habitCompletionSpendScatter(rows);
+  assert.ok(scatter);
+  assert.equal(scatter.points.length, 4);
+  const svg = L.renderHabitCompletionSpendScatterSvg(scatter);
+  assert.match(svg, /review-habit-scatter-dot/);
+  assert.match(svg, /#6f8f7d/);
+});
+
+test("ledgerConflictCompare surfaces transaction count mismatch", () => {
+  let ledgerA = L.normalize(null, { lang: "en" });
+  const acct = ledgerA.accounts[0].id;
+  const cat = ledgerA.categories.find(c => c.kind === "expense").id;
+  ledgerA = L.addTransaction(ledgerA, {
+    accountId: acct,
+    categoryId: cat,
+    amountMinor: -100,
+    currency: "EUR",
+    date: "2026-11-01",
+    note: "a",
+  }).ledger;
+  const ledgerB = L.normalize(null, { lang: "en" });
+  const cmp = L.ledgerConflictCompare(ledgerA, ledgerB, { lang: "en" });
+  assert.ok(cmp);
+  assert.equal(cmp.preserved.transactions, 1);
+  assert.equal(cmp.current.transactions, 0);
+  assert.equal(cmp.differs, true);
+});
+
 test("alignDemoMoodWithSpend tags high and low spend days for review insights", () => {
   const ledger = L.buildDemoSample({ now: new Date("2026-11-02T12:00:00"), lang: "en", contentSeed: 42 });
   const logs = {
