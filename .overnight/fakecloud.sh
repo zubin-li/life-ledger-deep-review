@@ -1,10 +1,11 @@
 #!/bin/bash
 # Local Cloudflare Pages stand-in for this overnight clone (no remote D1/R2).
+# Runs outside the repo tree so wrangler does not pick up root wrangler.jsonc bindings.
 # usage: .overnight/fakecloud.sh [port]   (default 5298)
 set -eu
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PORT=${1:-5298}
-DIR="${ROOT}/.overnight/scratch/fakecloud"
+DIR="${TMPDIR:-/tmp}/life-ledger-overnight-fakecloud"
 rm -rf "$DIR"
 mkdir -p "$DIR"
 rsync -a "$ROOT/public/" "$DIR/"

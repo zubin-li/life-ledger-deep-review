@@ -23,3 +23,8 @@ test("fakecloud.sh falls back to overnight stub when repo functions missing", ()
   assert.match(shell, /fakecloud-stub/);
   assert.match(shell, /schema-qa\.sql/);
 });
+
+test("fakecloud.sh runs outside repo so root wrangler.jsonc is not used", () => {
+  assert.doesNotMatch(shell, /\.overnight\/scratch\/fakecloud/);
+  assert.match(shell, /life-ledger-overnight-fakecloud/);
+});
