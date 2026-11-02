@@ -6,6 +6,7 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Review Money scatter:** keyboard roving focus on scatter dots (Tab, arrows, Home/End) with the same tip as hover; `aria-live` readout (`v210.css` Batch 6 R9).
 - **Review Money scatter:** hover/focus readout on mood/habit/focus dots (date, spend, context); habit spark bars show per-day `<title>` tooltips.
 - **Ledger categories:** default-category repair no longer treats user categories as built-ins when only the Chinese/German label collides (`defaultSlug` + icon/color match).
 - **Review:** weekly/monthly habit rows use card layout and staggered enter on the visible monthly review panel.

@@ -1,12 +1,71 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 9）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 10 · 收束）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 9：** 复盘 Money 散点图可用 Tab 进入、方向键在同图内换点，焦点与悬停一样显示读数 tip。
+**Batch 6 十轮结束：** 记账首发 + 全站 Goal 2 抛光 + Antigravity 审查项已修；单元 **350**、浏览器 **8** 全绿。
 
 ---
 
-## 本轮（Batch 6 · Round 9）改动
+## 明早验收清单（建议 15–25 分钟）
+
+| # | 做什么 | 通过标准 |
+|---|--------|----------|
+| 1 | 本地 demo | `public/` → `5291` → `?mode=local&local-preview=demo-showcase-v1` 能打开，侧栏 **记账** 有三卡与图表 |
+| 2 | 快速录入 | 试 `12,50 咖啡`、`-45 Miete gestern`；列表出现新行，撤销可用 |
+| 3 | Today 卡 | **今日** 滚到 **今日支出 / Spending today**，有金额与近 7 日迷你折线（demo） |
+| 4 | 复盘 Money | **复盘** → **本月支出摘要**：散点 hover 有 tip；**Tab** 聚焦散点 → **→** 换点（Round 9）；底部 **Budget** 行可见（demo 超支，见 `b6r10-review-budget-*`） |
+| 5 | 语言 | **设置 → 语言** en/zh/de 切换，记账默认分类名与 UI 一致 |
+| 6 | CSV | **设置 → 导入与导出** 或记账页导出；表头含 `currency`；德式 CSV 可导入（`;`、小数逗号） |
+| 7 | 在线 fakecloud | `bash .overnight/fakecloud.sh 5298` → `?mode=cloudflare&local-preview=demo-showcase-v1` 同步后记账有数据 |
+| 8 | 文档 | README / SHOWCASE 三语 hero 为 **08-ledger-v21**；手机 Product tour 四图含 Money |
+| 9 | 回归 | 习惯颜色/图标选择器：颜色在 `<label>` 外、popover 不透明（2.0.10 修复，勿回归） |
+| 10 | 测试（可选） | 仓库根目录 `npm test` + `npm run test:browser`（若 fakecloud 超时先 `pkill -f wrangler`） |
+
+**代表截图（Round 10）：**
+
+- 记账 zh 1440：`.overnight/shots/b6r10-ledger-zh-light-1440-chromium.png`
+- Today 支出 de dark 390：`.overnight/shots/b6r10-today-spend-de-dark-390-webkit.png`
+- 复盘 Budget + 散点 en：`.overnight/shots/b6r10-review-budget-en-light-1440-webkit.png`
+- Mac 壳 Finanzen de：`.overnight/shots/b6r10-ledger-mac-de-light-1440-webkit.png`
+
+重拍：`node .overnight/capture-batch6-round10.mjs`（端口 **5296**）。
+
+---
+
+## 2.1.0 交付摘要（Goal 1 + Goal 2）
+
+### 记账（`state.ledger`）
+
+- **数据：** 账户、分类（图标+色）、流水、月度预算、固定收支；整数 minor + EUR/CNY；缺字段 = 空账本；随本地/云 CAS/备份 v3/demo 迁移；删除可撤销。
+- **录入：** 自然语言快速字段、触屏数字键盘、分类 chips、编辑/复制/滑动删除（水平阈值）、德式 CSV 导入导出。
+- **视图：** 月汇总、donut/treemap、日历热力、uPlot 趋势、预算条、搜索筛选。
+- **集成：** Today **今日支出** 卡、复盘 Money 面板（心情/习惯/专注 vs 支出、预算洞察、散点键盘可达性）。
+
+设计：`.overnight/LEDGER-DESIGN.md` · 第三方：`THIRD_PARTY_NOTICES.md`
+
+### 全站抛光（Batch 3–6）
+
+- 侧栏/页面入场、数字 roll-up、Review 指标与 jump-spy、Week/习惯/长期/时间轴动效、Money 空状态与图表 retarget、设置对话框入场等（主样式 `public/v210.css`）。
+- **审查修复（Batch 6 R1）：** 分类英文名、CSV 引号/尾减号、popover Esc/遮罩、滑动删除 vertical 阈值、Mac 记账换月、CNY 汇总提示。
+
+### 刻意未做
+
+- 不改 `functions/`、D1 migration；云端非 preview 首次不 seed 账本。
+- `#inspectorReviewTable` 仍隐藏（习惯评分明细只在 DOM 存在，主面板用 `#reviewPeriodHabits` 等可见区块）。
+
+---
+
+## 本轮（Batch 6 · Round 10）改动
+
+| 项目 | 说明 |
+|------|------|
+| **收束文档** | 本报告顶部验收清单；`CHANGELOG` [Unreleased] 散点键盘说明；`capture-batch6-round10.mjs`。 |
+| **测试** | 单元 **350 pass**；浏览器 **8 pass**（本轮实测）。 |
+| **截图** | 见上表 `b6r10-*`。 |
+
+---
+
+## 上一轮（Batch 6 · Round 9）改动
 
 | 项目 | 说明 |
 |------|------|
@@ -16,9 +75,56 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 **去哪点：** `?local-preview=demo-showcase-v1` → **复盘** → **本月支出摘要** → 在 **Mood vs daily spending** 上按 Tab 直到散点获得焦点（或点击后 Tab），应出现 tip；再按 → 换点。
 
-**已知遗留：** inspector 习惯表仍隐藏；Round 10 写总验收清单。
+---
+
+## 快速启动命令
+
+```text
+cd public && python3 -m http.server 5291 --bind 127.0.0.1
+# http://127.0.0.1:5291/index.html?mode=local&local-preview=demo-showcase-v1
+```
+
+```bash
+bash .overnight/fakecloud.sh 5298
+# http://127.0.0.1:5298/index.html?mode=cloudflare&local-preview=demo-showcase-v1
+```
 
 ---
+
+## npm test（Batch 6 Round 10 实测）
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **350 pass, 0 fail** |
+| `npm run test:browser` | **8 pass, 0 fail** |
+
+---
+
+## 截图索引（Batch 6）
+
+| 轮次 | 场景 | 前缀 |
+|------|------|------|
+| R1 | 审查修复、CNY 提示 | `b6r1-ledger-*` |
+| R2 | Today 支出 spark、分类名 | `b6r2-*` |
+| R3–R6 | 复盘洞察、预算、demo 对齐 | `b6r3`–`b6r6` |
+| R7 | 周/月习惯卡片、hero retarget | `b6r7-*` |
+| R8 | scatter tip、habit spark title | `b6r8-*` |
+| R9 | scatter 键盘 focus | `b6r9-*` |
+| **R10** | **收束：记账 / Today / 复盘 Budget / Mac 壳** | **`b6r10-*`** |
+
+更早 Batch 3–5：见下文历史节 · 目录 `.overnight/shots/`
+
+---
+
+## 版本与文档
+
+- 版本：**2.1.0**（web）/ **3.1.0**（Mac）
+- `CHANGELOG`：`[2.1.0]` 记账首发 + `[Unreleased]` Batch 3–6 抛光
+- README **EN / ZH / DE** + SHOWCASE 三语含 Money  fictitious 图
+
+---
+
+<!-- 以下为各轮详细记录，供追溯 -->
 
 ## 上一轮（Batch 6 · Round 8）改动
 

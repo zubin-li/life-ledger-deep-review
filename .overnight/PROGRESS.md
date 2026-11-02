@@ -1,36 +1,46 @@
 # Overnight progress
 
-## Batch 6 · Round 9 — done
+## Batch 6 · Round 10 — done（十轮收束）
 
-- **Scatter 键盘：** 每张散点图 roving `tabindex`（首点 `0`、其余 `-1`）；`focusin` 显示 tip + `aria-live`；方向键/Home/End 在同图内换点；`:focus-visible` 与 hover 共用描边/放大（`v210.css`）。
-- **测试：** 单元 **350 pass**（+1 selector）；浏览器 **8 pass**（散点 focus + ArrowRight 断言并入既有 review scatter 用例）。
-- **验收截图：** `node .overnight/capture-batch6-round9.mjs`（**5297**）→ `b6r9-scatter-focus-*`。
+- **文档：** `REPORT.md` 重写顶部「明早验收清单」与 Batch 6 交付摘要；`CHANGELOG` [Unreleased] 补充散点键盘 roving 说明。
+- **验收截图：** `node .overnight/capture-batch6-round10.mjs`（**5296**）→ `b6r10-ledger-zh-light-1440-chromium.png`、`b6r10-today-spend-de-dark-390-webkit.png`、`b6r10-review-budget-en-light-1440-webkit.png`、`b6r10-ledger-mac-de-light-1440-webkit.png`（目视 OK：记账三卡+图表、复盘 Budget 行、Mac 壳 Finanzen）。
+- **测试：** 单元 **350 pass**；浏览器 **8 pass**（本轮重跑）。
+- **REVIEW.md：** 历史 MED/LOW 已在 Batch 6 R1 等轮修复；本轮无新增待修项。
+- **未做（刻意）：** `#inspectorReviewTable` 仍被 `pages-858` 隐藏，合并进主复盘面板需单独任务。
 
 ## Half-done
 
 - （无）
 
-## Next（Round 10）
+## Next（发版 / 主人自选）
 
-- `REPORT.md` 总览与明日验收清单；showcase 图若需再对齐。
-- `#inspectorReviewTable` 仍被 `pages-858` 隐藏；合并到主面板需单独任务。
+- 真实 Cloudflare 环境用副本验证 ledger CAS 同步一次。
+- 若希望复盘页展示 inspector 习惯明细表，需解除隐藏并设计宽屏布局。
+- `[Unreleased]` 条目可在 stable 发版时并入 `[2.1.0]` 或下一版本。
 
 ## Known bugs / gaps
 
 - 并行 fakecloud / 未清 wrangler 时 browser 套件可能超时（清进程后 8 pass）。
 - 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
 - showcase 演示数据经 demo align 函数塑造洞察；真实用户数据不受影响。
+- Demo 下 Journal reflection streak 数字偏大（历史已知）。
 
 ## npm test
 
 ```
-350 pass, 0 fail (batch 6 round 9, unit gate)
-8 pass, 0 fail (test:browser)
+350 pass, 0 fail (batch 6 round 10, unit gate)
+8 pass, 0 fail (test:browser, round 10)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 6 · Round 9 — done
+
+- **Scatter 键盘：** 每张散点图 roving `tabindex`（首点 `0`、其余 `-1`）；`focusin` 显示 tip + `aria-live`；方向键/Home/End 在同图内换点；`:focus-visible` 与 hover 共用描边/放大（`v210.css`）。
+- **测试：** 单元 **350 pass**（+1 selector）；浏览器 **8 pass**（散点 focus + ArrowRight 断言并入既有 review scatter 用例）。
+- **验收截图：** `node .overnight/capture-batch6-round9.mjs`（**5297**）→ `b6r9-scatter-focus-*`。
 
 ## Batch 6 · Round 8 — done
 
@@ -75,4 +85,7 @@ _pending (driver appends after commit)_
 ℹ tests 349 ℹ pass 349 ℹ fail 0 
 
 ## Driver gate after round 9
+ℹ tests 350 ℹ pass 350 ℹ fail 0 
+
+## Driver gate after round 10
 ℹ tests 350 ℹ pass 350 ℹ fail 0 
