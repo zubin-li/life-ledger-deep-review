@@ -2,6 +2,7 @@
   const core = () => root.LifeLedgerLedger;
   let ctx = null;
   let viewMonth = "";
+  let ledgerMonthPulse = false;
   let listFilter = "";
   let trendPlot = null;
   let categoryChartMode = "donut";
@@ -650,8 +651,8 @@
         input.focus();
       });
     });
-    host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, -1); render(); });
-    host.querySelector("[data-ledger-next]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, 1); render(); });
+    host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, -1); ledgerMonthPulse = true; render(); });
+    host.querySelector("[data-ledger-next]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, 1); ledgerMonthPulse = true; render(); });
     host.querySelector("#ledgerFilter")?.addEventListener("input", e => {
       listFilter = e.target.value;
       const list = host.querySelector(".ledger-list-wrap");
@@ -832,6 +833,18 @@
     });
   }
 
+  function pulseLedgerMonthMotion(host) {
+    const summary = host.querySelector(".ledger-summary");
+    const heading = host.querySelector(".ledger-header h2");
+    root.LifeLedgerInteraction?.retarget?.(summary);
+    if (heading) {
+      heading.classList.remove("is-retargeting");
+      void heading.offsetWidth;
+      heading.classList.add("is-retargeting");
+      root.setTimeout?.(() => heading.classList.remove("is-retargeting"), 520);
+    }
+  }
+
   function bindDelete(host, ledger) {
     host.querySelectorAll(".ledger-tx-del").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -963,6 +976,10 @@
         if (el && next !== prev) roll(el, next, prev);
         lastSummaryDisplay[key] = next;
       });
+    }
+    if (ledgerMonthPulse) {
+      ledgerMonthPulse = false;
+      pulseLedgerMonthMotion(host);
     }
   }
 

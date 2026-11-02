@@ -2110,6 +2110,7 @@ let selectedReviewWeek = isoWeekKey(new Date());
 let focusReviewScope = "week";
 let selectedFocusReviewMonth = monthKey(new Date());
 let selectedWorkspaceWeek = isoWeekKey(new Date());
+let weekNavPulse = false;
 let goalHorizon = "week";
 let editingLongTermGoalId = null;
 let dayPlanRoutinesExpanded = false;
@@ -4318,6 +4319,46 @@ function renderWeeklyWorkspace() {
     if (action === "delete") list.splice(index, 1);
     state.weeklyGoals[key] = list; saveState(); renderWeeklyWorkspace();
   }));
+  if (weekNavPulse) {
+    weekNavPulse = false;
+    pulseWeekWorkspaceMotion();
+  }
+}
+
+function pulseWeekWorkspaceMotion() {
+  const retarget = window.LifeLedgerInteraction?.retarget;
+  const header = $("#weekView .week-page-header");
+  retarget?.(header);
+  $("#weekView")?.querySelectorAll(".module-card").forEach((card, index) => {
+    card.style.setProperty("--module-i", String(index));
+    retarget?.(card);
+  });
+}
+
+function pulseShellNav(view) {
+  if (!lastShownView || view === lastShownView) return;
+  const title = $("#viewTitle");
+  if (title) {
+    title.classList.remove("is-view-switch");
+    void title.offsetWidth;
+    title.classList.add("is-view-switch");
+    setTimeout(() => title.classList.remove("is-view-switch"), 520);
+  }
+  const nav = $(`.nav-item[data-view="${view}"]`);
+  if (nav) {
+    nav.classList.remove("is-landing");
+    void nav.offsetWidth;
+    nav.classList.add("is-landing");
+    setTimeout(() => nav.classList.remove("is-landing"), 480);
+  }
+}
+
+function spotlightReviewScatterSection(section) {
+  if (!section || document.documentElement.classList.contains("motion-reduced")) return;
+  section.classList.remove("is-scatter-spotlight");
+  void section.offsetWidth;
+  section.classList.add("is-scatter-spotlight");
+  setTimeout(() => section.classList.remove("is-scatter-spotlight"), 720);
 }
 
 function applyGoalHorizon() {
@@ -7410,16 +7451,19 @@ function bindEvents() {
   });
   $("#previousWorkspaceWeek").addEventListener("click", () => {
     selectedWorkspaceWeek = shiftWeekKey(selectedWorkspaceWeek, -1);
+    weekNavPulse = true;
     renderWeeklyWorkspace();
   });
   $("#nextWorkspaceWeek").addEventListener("click", () => {
     selectedWorkspaceWeek = shiftWeekKey(selectedWorkspaceWeek, 1);
+    weekNavPulse = true;
     renderWeeklyWorkspace();
   });
   $("#currentWorkspaceWeek").addEventListener("click", () => {
     const currentKey = isoWeekKey(new Date());
     if (selectedWorkspaceWeek === currentKey) return;
     selectedWorkspaceWeek = currentKey;
+    weekNavPulse = true;
     renderWeeklyWorkspace();
   });
   $("#exportButton").addEventListener("click", openBackupDialog);
@@ -8509,6 +8553,7 @@ function renderReviewLedgerSummary() {
         else chip.removeAttribute("aria-current");
       });
       const target = document.getElementById(id);
+      spotlightReviewScatterSection(target);
       target?.scrollIntoView({ behavior: motionReduced ? "auto" : "smooth", block: "nearest" });
       target?.focus?.({ preventScroll: true });
     });
@@ -9375,6 +9420,7 @@ function renderJournalCalendarLegend() {
 
 var lastShownView = "";
 function switchToView(view) {
+  pulseShellNav(view);
   const button = $(`.nav-item[data-view="${view}"]`);
   if (!button) return;
   $$(".nav-item").forEach(item => {

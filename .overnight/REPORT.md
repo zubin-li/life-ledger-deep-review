@@ -1,10 +1,26 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 7 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 8 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 7）改动
+## 本轮（Batch 5 · Round 8）改动
+
+| 项目 | 说明 |
+|------|------|
+| **侧栏切换** | 在 Today / 记账 / 本周等页面间切换：顶栏标题与当前侧栏项有轻微入场/landing 动效（非首次打开应用时）。 |
+| **本周换周** | **本周** → **‹ ›** 或 **This week**：页头与三个 module 卡片 retarget，与复盘换月同级。 |
+| **记账换月** | **记账** → **‹ ›**：月份标题 + 收入/支出/结余三卡 retarget。 |
+| **复盘 scatter** | 复盘页底部 jump chip（心情/习惯/专注）点击后，对应 scatter 区块短暂高亮外框。 |
+| **SHOWCASE** | 英/中/德 showcase 文档增加记账入口说明；PNG 仍为 2.0 v6，专用记账图留待发版。 |
+| **测试** | 单元 **334 pass**；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b5r8-*`。重拍：`node .overnight/capture-batch5-round8.mjs`（端口 **5293**，勿与 fakecloud **5296** 同时跑）。 |
+
+**验收提示：** 侧栏 **今日 → 记账 → 本周** 看顶栏标题是否轻弹；记账与本周各点一次 **‹**；复盘有 scatter 时点 chip 看区块外框。
+
+---
+
+## 上一轮（Batch 5 · Round 7）改动
 
 | 项目 | 说明 |
 |------|------|

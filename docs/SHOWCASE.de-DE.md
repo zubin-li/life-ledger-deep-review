@@ -48,6 +48,10 @@ Tage, Wochen und Monate von oben nach unten; in Foto- und Kalenderansicht lässt
 
 Ziele, Farben, Symbole und Häufigkeit (täglich, wöchentlich, monatlich) für jede Gewohnheit.
 
+### Geld (Finanzen)
+
+In der Seitenleiste **Geld** wählen (zwischen Rückblick und Gewohnheiten): Schnellerfassung, Kategoriediagramme, Budgets sowie CSV-Import/-Export; die lokale Vorschau lädt fiktive Beispielbuchungen. Die Desktop-Screenshots unten stammen noch aus dem 2.0-Karten-Refresh — eigene Geld-Ansichten folgen mit 2.1.
+
 ## Smartphone
 
 <table>

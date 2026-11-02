@@ -3480,3 +3480,86 @@ html.motion-reduced .tc-bar .tc-done.tc-done--pulse {
     animation: none !important;
   }
 }
+
+/* Batch 5 round 8 — shell nav, week modules, ledger month, scatter spotlight */
+
+@media (prefers-reduced-motion: no-preference) {
+  #viewTitle.is-view-switch {
+    animation: pageCardIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  .nav-item.is-landing {
+    animation: navItemLand 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  @keyframes navItemLand {
+    0% {
+      transform: translateX(0) scale(0.98);
+    }
+    45% {
+      transform: translateX(2px) scale(1.02);
+    }
+    100% {
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  #weekView.view.is-entering .module-card {
+    animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(420ms + var(--module-i, 0) * 45ms);
+  }
+
+  #weekView .week-page-header.is-retargeting,
+  #weekView .module-card.is-retargeting {
+    animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--module-i, 0) * 40ms);
+  }
+
+  #ledgerView .ledger-header h2.is-retargeting {
+    animation: pageCardIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #ledgerView .ledger-summary.is-retargeting > article {
+    animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #ledgerView .ledger-summary.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
+  #ledgerView .ledger-summary.is-retargeting > article:nth-child(2) { animation-delay: 35ms; }
+  #ledgerView .ledger-summary.is-retargeting > article:nth-child(3) { animation-delay: 70ms; }
+
+  :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight {
+    animation: scatterSpotlight 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+@keyframes scatterSpotlight {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--desk-accent, #167dce) 0%, transparent);
+  }
+  35% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--desk-accent, #167dce) 28%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--desk-accent, #167dce) 0%, transparent);
+  }
+}
+
+html.motion-reduced #viewTitle.is-view-switch,
+html.motion-reduced .nav-item.is-landing,
+html.motion-reduced #weekView.view.is-entering .module-card,
+html.motion-reduced #weekView :is(.week-page-header, .module-card).is-retargeting,
+html.motion-reduced #ledgerView :is(.ledger-header h2, .ledger-summary > article).is-retargeting,
+html.motion-reduced :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #viewTitle.is-view-switch,
+  .nav-item.is-landing,
+  #weekView.view.is-entering .module-card,
+  #weekView :is(.week-page-header, .module-card).is-retargeting,
+  #ledgerView :is(.ledger-header h2, .ledger-summary > article).is-retargeting,
+  :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight {
+    animation: none !important;
+  }
+}

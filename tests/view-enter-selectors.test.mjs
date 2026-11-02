@@ -39,6 +39,21 @@ test("Batch 5 round 7 review metric motion and Today edit saved feedback", () =>
   assert.match(cards, /tc-drop-success/);
 });
 
+test("Batch 5 round 8 shell nav, week modules, ledger month, scatter spotlight", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 5 round 8 — shell nav, week modules, ledger month, scatter spotlight/);
+  assert.match(css, /#viewTitle\.is-view-switch/);
+  assert.match(css, /#weekView\.view\.is-entering \.module-card/);
+  assert.match(css, /#ledgerView \.ledger-summary\.is-retargeting/);
+  assert.match(css, /\.is-scatter-spotlight/);
+  assert.match(app, /pulseShellNav/);
+  assert.match(app, /pulseWeekWorkspaceMotion/);
+  assert.match(app, /spotlightReviewScatterSection/);
+  assert.match(ledgerUi, /pulseLedgerMonthMotion/);
+});
+
 test("short viewport ledger keypad docks fixed while quick field focused", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   assert.match(css, /Batch 5 round 3 — dock keypad/);

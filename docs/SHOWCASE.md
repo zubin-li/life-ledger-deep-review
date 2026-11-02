@@ -48,6 +48,10 @@ Days, weeks and months read downward; the photo and calendar views open any day 
 
 Targets, colors, icons and frequency (daily, weekly, monthly) for every habit.
 
+### Money (bookkeeping)
+
+Open **Money** in the sidebar (between Review and Habit settings). Quick entry, category charts, budgets, and CSV import/export live there; the fictional demo workspace also includes sample transactions when you use local preview. Desktop showcase PNGs below are still from the 2.0 card refresh — a dedicated Money screenshot set is planned for 2.1.
+
 ## Mobile
 
 <table>
