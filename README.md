@@ -106,7 +106,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - AI-assisted voice-to-journal reflection with editable review before saving
 - Weekly goals, checklist behavior, outputs, and archived notes
 - Monthly review with habit comparisons and line/bar charts
-- **Bookkeeping (Money):** quick entry (`12.50 coffee`), German CSV import/export, budgets, Today **Spending today** card, and monthly spending summary in Review — stored in `state.ledger` with backup and cloud sync; first visit shows inline examples on the Money page and on Today until your first posted or imported entry; on later quiet days the card only says nothing new was logged today
+- **Bookkeeping (Money):** quick entry (`12.50 coffee`), German CSV import/export, **Set budget** per expense category (monthly limits with progress bars), Today **Spending today** card, and monthly spending summary in Review — stored in `state.ledger` with backup and cloud sync; first visit shows inline examples on the Money page and on Today until your first posted or imported entry; on later quiet days the card only says nothing new was logged today
 - Validated JSON backup and guided restore, including earlier export formats
 - English, Simplified Chinese, and German interfaces
 - Light, dark, and system appearance

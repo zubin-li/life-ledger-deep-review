@@ -1,0 +1,46 @@
+/* Budget set/edit UI — v2.1.0 */
+
+.ledger-budget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.ledger-budget-head h3 {
+  margin: 0;
+}
+
+.ledger-budget {
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto auto;
+}
+
+.ledger-budget-actions {
+  display: inline-flex;
+  gap: 0.15rem;
+  align-items: center;
+}
+
+.ledger-budget-form-month {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.72;
+}
+
+.ledger-budget-empty {
+  margin-top: 0.25rem;
+}
+
+.ledger-edit-field select[disabled] {
+  opacity: 0.72;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-budget-bar::after {
+    transition: none;
+  }
+}

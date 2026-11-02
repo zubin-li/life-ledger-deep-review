@@ -902,6 +902,58 @@
       .sort((a, b) => b.ratio - a.ratio);
   }
 
+  function resolveBudgetLimitMinor(rawLimit, amountText) {
+    if (Number.isInteger(rawLimit) && rawLimit > 0) return rawLimit;
+    const token = parseAmountToken(amountText);
+    if (token != null && token > 0) return token;
+    return null;
+  }
+
+  function upsertCategoryBudget(ledger, draft, options = {}) {
+    const base = normalize(ledger, options);
+    const month = typeof draft?.month === "string" && /^\d{4}-\d{2}$/.test(draft.month) ? draft.month : "";
+    if (!month) return null;
+    const categoryId = typeof draft?.categoryId === "string" ? draft.categoryId : "";
+    const cat = base.categories.find(c => c.id === categoryId && !c.archived);
+    if (!cat || cat.kind !== "expense") return null;
+    const limitMinor = resolveBudgetLimitMinor(draft.limitMinor, draft.amountText);
+    if (!limitMinor) return null;
+    const currency = typeof draft.currency === "string" ? draft.currency : base.settings.defaultCurrency;
+    const id = typeof draft.id === "string" && draft.id ? draft.id : createId();
+    const idxById = base.budgets.findIndex(b => b.id === id);
+    const idxByPair = base.budgets.findIndex(b => b.month === month && b.categoryId === categoryId);
+    const next = {
+      id,
+      categoryId,
+      month,
+      limitMinor,
+      currency,
+    };
+    if (idxById >= 0) base.budgets[idxById] = { ...base.budgets[idxById], ...next };
+    else if (idxByPair >= 0) base.budgets[idxByPair] = { ...base.budgets[idxByPair], ...next };
+    else base.budgets.push(next);
+    return { ledger: base, budget: next };
+  }
+
+  function removeCategoryBudget(ledger, id) {
+    const base = normalize(ledger);
+    const index = base.budgets.findIndex(b => b && b.id === id);
+    if (index < 0) return null;
+    const removed = { ...base.budgets[index] };
+    base.budgets = base.budgets.filter((_, i) => i !== index);
+    return { ledger: base, removed, index };
+  }
+
+  function restoreCategoryBudget(ledger, removed, index) {
+    const base = normalize(ledger);
+    if (!removed || typeof removed.categoryId !== "string") return base;
+    const next = [...base.budgets];
+    const at = Number.isInteger(index) && index >= 0 && index <= next.length ? index : next.length;
+    next.splice(at, 0, { ...removed });
+    base.budgets = next;
+    return base;
+  }
+
   function monthlyTrendSeries(ledger, endYm, months = 6) {
     const base = normalize(ledger);
     const out = [];
@@ -1280,6 +1332,9 @@
     exportTransactionsCsv,
     spendingTodayMinor,
     budgetProgress,
+    upsertCategoryBudget,
+    removeCategoryBudget,
+    restoreCategoryBudget,
     monthlyTrendSeries,
     filterTransactions,
     shiftYm,

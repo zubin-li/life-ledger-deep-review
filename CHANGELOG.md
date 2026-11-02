@@ -10,6 +10,7 @@ All notable changes are documented here.
 - **Review:** mobile scatter rhythm, insight kickers (Mood/Habits/Focus), and clearer conflict Money preview on narrow screens (`v220-review-mobile.css`).
 - **Review:** mobile jump chips to scroll to mood/habit/focus charts and insight stack; month stat roll-up when changing months (`v221-review-scatter-jump.css`).
 - **Review:** scroll-spy highlights the jump chip for the chart section in view (`v222-review-jump-spy.css`).
+- **Money:** per-category monthly budget limits with set/edit popover and undoable delete (`v223-ledger-budget-ui.css`).
 - **Review:** habit-completion-vs-spend scatter in the monthly Money panel (`v217-habit-scatter.css`).
 - **Review:** focus-time-vs-spend scatter beside mood/habit charts (`v218-focus-scatter.css`); demo workspace aligns focus minutes with spend for insights.
 - **Import & export:** read-only **Money merge preview** on the sync-conflict recovery card (`v217-conflict-ledger.css`).

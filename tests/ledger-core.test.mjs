@@ -86,6 +86,42 @@ test("buildDemoSample creates transactions and budgets", () => {
   assert.ok(Array.isArray(progress));
 });
 
+test("upsertCategoryBudget and budgetProgress", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  const result = L.upsertCategoryBudget(ledger, { categoryId: cat, month: "2026-11", amountText: "350,00" });
+  assert.ok(result);
+  assert.equal(result.budget.limitMinor, 35000);
+  ledger = result.ledger;
+  const account = ledger.accounts[0].id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -5000, currency: "EUR", date: "2026-11-05", note: "shop" }));
+  const progress = L.budgetProgress(ledger, "2026-11");
+  assert.equal(progress.length, 1);
+  assert.equal(progress[0].spentMinor, 5000);
+  assert.equal(progress[0].ratio, 5000 / 35000);
+});
+
+test("remove and restore category budget", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.upsertCategoryBudget(ledger, { categoryId: cat, month: "2026-11", limitMinor: 10000 }));
+  const id = ledger.budgets[0].id;
+  const snap = L.removeCategoryBudget(ledger, id);
+  assert.equal(snap.ledger.budgets.length, 0);
+  const back = L.restoreCategoryBudget(snap.ledger, snap.removed, snap.index);
+  assert.equal(back.budgets.length, 1);
+  assert.equal(back.budgets[0].limitMinor, 10000);
+});
+
+test("backup round-trip preserves budgets", () => {
+  let ledger = L.normalize(null, { lang: "de" });
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.upsertCategoryBudget(ledger, { categoryId: cat, month: "2026-11", limitMinor: 4200 }));
+  const restored = L.normalize(JSON.parse(JSON.stringify(ledger)), { lang: "de" });
+  assert.equal(restored.budgets.length, 1);
+  assert.equal(restored.budgets[0].limitMinor, 4200);
+});
+
 test("buildDemoSample fills current month expenses for early-month demo", () => {
   const ledger = L.buildDemoSample({ now: new Date("2026-11-02T12:00:00"), lang: "en", contentSeed: 42 });
   const summary = L.monthSummary(ledger, "2026-11");

@@ -202,22 +202,96 @@
     }).join("");
   }
 
+  function expenseCategoryOptions(ledger, selectedId) {
+    return ledger.categories.filter(c => c.kind === "expense" && !c.archived).map(c => {
+      const name = core().localizedCategoryName(c, ctx.lang?.());
+      const sel = c.id === selectedId ? " selected" : "";
+      return `<option value="${ctx.escape(c.id)}"${sel}>${ctx.escape(name)}</option>`;
+    }).join("");
+  }
+
   function renderBudgets(ledger, ym) {
     const rows = core().budgetProgress(ledger, ym);
     if (!rows.length) {
-      return `<p class="ledger-empty ledger-budget-empty">${t("可在后续版本设置分类预算。", "Category budgets appear when set.", "Kategoriebudgets erscheinen hier.")}</p>`;
+      return `<p class="ledger-empty ledger-budget-empty">${t(
+        "点击「设置预算」为本月支出分类添加上限。",
+        "Tap “Set budget” to add a monthly limit for an expense category.",
+        "Tippe auf „Budget setzen“, um ein Monatslimit für eine Ausgabenkategorie festzulegen.",
+      )}</p>`;
     }
     return `<ul class="ledger-budget-list">${rows.map(row => {
       const cat = ledger.categories.find(c => c.id === row.categoryId);
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
       const pct = Math.min(100, Math.round(row.ratio * 100));
       const over = row.ratio > 1;
-      return `<li class="ledger-budget${over ? " is-over" : ""}">
+      return `<li class="ledger-budget${over ? " is-over" : ""}" data-budget-id="${ctx.escape(row.id)}">
         <span class="ledger-budget-name">${ctx.escape(name)}</span>
+        <span class="ledger-budget-actions">
+          <button type="button" class="icon-button ledger-budget-edit" aria-label="${t("编辑", "Edit", "Bearbeiten")}">✎</button>
+          <button type="button" class="icon-button ledger-budget-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
+        </span>
         <span class="ledger-budget-amt">${ctx.escape(core().formatMoney(row.spentMinor, row.currency, ctx.locale?.()))} / ${ctx.escape(core().formatMoney(row.limitMinor, row.currency, ctx.locale?.()))}</span>
         <span class="ledger-budget-bar" style="--p:${pct / 100}"></span>
       </li>`;
     }).join("")}</ul>`;
+  }
+
+  function openBudgetPopover(ledger, ym, existing) {
+    closeLedgerPopovers();
+    const expenseCat = ledger.categories.find(c => c.kind === "expense" && !c.archived);
+    const budget = existing || {
+      id: "",
+      categoryId: expenseCat?.id || "",
+      month: ym,
+      limitMinor: 10000,
+      currency: ledger.settings.defaultCurrency,
+    };
+    const amountDisplay = (budget.limitMinor / 100).toFixed(2).replace(".", ",");
+    const pop = document.createElement("div");
+    pop.className = "ledger-budget-popover ledger-edit-popover";
+    pop.innerHTML = `
+      <form class="ledger-edit-form ledger-budget-form">
+        <header><strong>${existing ? t("编辑预算", "Edit budget", "Budget bearbeiten") : t("设置预算", "Set budget", "Budget setzen")}</strong></header>
+        <p class="ledger-budget-form-month">${ctx.escape(monthLabel(ym))}</p>
+        <div class="ledger-edit-field">
+          <span>${t("分类", "Category", "Kategorie")}</span>
+          <select name="category"${existing ? " disabled" : ""}>${expenseCategoryOptions(ledger, budget.categoryId)}</select>
+        </div>
+        <div class="ledger-edit-field">
+          <span>${t("上限", "Limit", "Limit")}</span>
+          <input name="limit" inputmode="decimal" autocomplete="off" value="${ctx.escape(amountDisplay)}" placeholder="${t("例如 350", "e.g. 350", "z. B. 350")}" />
+        </div>
+        <div class="ledger-edit-actions">
+          <button type="button" class="secondary-button" data-budget-cancel>${t("取消", "Cancel", "Abbrechen")}</button>
+          <button type="submit" class="primary-button">${t("保存", "Save", "Speichern")}</button>
+        </div>
+      </form>`;
+    document.body.appendChild(pop);
+    const form = pop.querySelector("form");
+    pop.addEventListener("click", event => {
+      if (event.target === pop) closeLedgerPopovers();
+    });
+    pop.querySelector("[data-budget-cancel]")?.addEventListener("click", closeLedgerPopovers);
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const categoryId = existing?.categoryId || form.querySelector('[name="category"]').value;
+      const limitRaw = form.querySelector('[name="limit"]').value;
+      const result = core().upsertCategoryBudget(ledgerState(), {
+        id: existing?.id,
+        categoryId,
+        month: ym,
+        amountText: limitRaw,
+        currency: budget.currency || ledger.settings.defaultCurrency,
+      }, { lang: ctx.lang?.() });
+      if (!result) {
+        form.querySelector('[name="limit"]')?.classList.add("is-error");
+        return;
+      }
+      commit(result.ledger);
+      closeLedgerPopovers();
+      ctx.toast?.(t("已保存预算", "Budget saved", "Budget gespeichert"));
+      render();
+    });
   }
 
   function renderList(ledger, ym) {
@@ -282,6 +356,7 @@
   function closeLedgerPopovers() {
     document.querySelector(".ledger-edit-popover")?.remove();
     document.querySelector(".ledger-recurring-popover")?.remove();
+    document.querySelector(".ledger-budget-popover")?.remove();
   }
 
   function closeEditPopover() {
@@ -615,6 +690,7 @@
     bindDuplicate(host);
     bindEdit(host);
     bindRecurring(host);
+    bindBudget(host, ym);
     bindSwipeDelete(host);
     bindKeypad(host);
     host.querySelectorAll("[data-chart-mode]").forEach(btn => {
@@ -681,6 +757,42 @@
         commit(result.ledger);
         if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
         ctx.toast?.(t("已记一笔", "Entry posted", "Gebucht"));
+        render();
+      });
+    });
+  }
+
+  function bindBudget(host, ym) {
+    host.querySelector(".ledger-budget-add")?.addEventListener("click", () => {
+      openBudgetPopover(ledgerState(), ym, null);
+    });
+    host.querySelectorAll(".ledger-budget-edit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.closest(".ledger-budget")?.dataset.budgetId;
+        if (!id) return;
+        const row = ledgerState().budgets.find(b => b && b.id === id);
+        if (!row) return;
+        openBudgetPopover(ledgerState(), ym, row);
+      });
+    });
+    host.querySelectorAll(".ledger-budget-del").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.closest(".ledger-budget")?.dataset.budgetId;
+        if (!id) return;
+        const snap = core().removeCategoryBudget(ledgerState(), id);
+        if (!snap) return;
+        commit(snap.ledger);
+        ctx.toast?.(
+          t("已删除预算", "Budget removed", "Budget entfernt"),
+          {
+            actionLabel: t("撤销", "Undo", "Rückgängig"),
+            onAction: () => {
+              const restored = core().restoreCategoryBudget(ctx.state().ledger, snap.removed, snap.index);
+              commit(restored);
+              render();
+            },
+          },
+        );
         render();
       });
     });
@@ -801,7 +913,10 @@
         </section>
       </div>
       <section class="ledger-budget-wrap">
-        <h3>${t("预算进度", "Budget progress", "Budgetfortschritt")}</h3>
+        <div class="ledger-budget-head">
+          <h3>${t("预算进度", "Budget progress", "Budgetfortschritt")}</h3>
+          <button type="button" class="secondary-button ledger-budget-add">${t("设置预算", "Set budget", "Budget setzen")}</button>
+        </div>
         ${renderBudgets(ledger, ym)}
       </section>
       <section class="ledger-recurring-wrap">

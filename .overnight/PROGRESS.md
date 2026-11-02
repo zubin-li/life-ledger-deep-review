@@ -1,22 +1,22 @@
 # Overnight progress
 
-## Batch 2 · Round 7 — done
+## Batch 2 · Round 8 — done
 
 - **REVIEW.md：** 仍为空（`status: failed`），无 HIGH/MED。
-- **复盘跳转 scroll-spy：** `bindReviewScatterJumpSpy`（视口锚线 + `IntersectionObserver` + `scroll` 同步）；点击 chip 时 650ms hold，避免滚动监听立刻盖掉选中态；`aria-current="location"` + `is-active`（`v222-review-jump-spy.css`）。
-- **测试：** `tests/review-scatter.browser.test.mjs`（Playwright：spy、点击 hold、复盘月份 roll）；契约扩展 `review-scatter-grid.test.mjs`。
-- **截图：** `review-jump-spy-zh-light-390.png`、`review-jump-spy-de-dark-390.png`、`review-jump-spy-webkit-zh-light-390.png`、`review-jump-spy-light-1440.png`（`capture-round7.mjs`，5295）。
-- **npm test：** **278/278** 通过。
+- **记账分类预算 UI：** `upsertCategoryBudget` / `removeCategoryBudget` / `restoreCategoryBudget`（`ledger-core.js`）；Money 页「设置预算」弹层、进度条行内编辑/删除（可撤销）、空态文案更新（`ledger-ui.js` + `v223-ledger-budget-ui.css`）；`index.html` / `sw.js`。
+- **测试：** `ledger-core.test.mjs` 新增 3 项（upsert/progress、remove/restore、backup 预算 round-trip）。
+- **文档：** CHANGELOG Unreleased、README EN/ZH/DE 一句说明。
+- **截图：** `ledger-budget-popover-zh-light-390-{chromium,webkit}.png`、`ledger-budget-progress-de-dark-390-*`、`ledger-budget-progress-light-1440-*`（`capture-round8.mjs`，5296）。
+- **npm test：** **281/281** 通过。
 
 ## Half-done
 
 - （无）
 
-## Next (round 8+)
+## Next (round 9+)
 
-- 记账页「设置分类预算」UI（core 已有 `budgets` + demo，空态文案仍写「后续版本」）。
 - fakecloud 仍缺 repo-root `functions/`。
-- 可选：Mac shell 注入截图、复盘 roll 数值断言更严。
+- 可选：Mac shell 注入预算截图、复盘 roll 数值断言更严、预算 popover 与界面语言完全同步（init 时序）。
 
 ## Known bugs / gaps
 
@@ -26,7 +26,7 @@
 ## npm test
 
 ```
-278 pass, 0 fail (batch 2 round 7)
+281 pass, 0 fail (batch 2 round 8)
 ```
 
 ## Gate result
@@ -61,6 +61,10 @@ _pending (driver appends after commit)_
 
 移动跳转药丸 + 月份金额 roll — gate 277 pass.
 
+## Batch 2 Round 7 summary
+
+复盘 scroll-spy + 浏览器测试 — gate 278 pass.
+
 ## Driver gate after round 1
 ℹ tests 272 ℹ pass 272 ℹ fail 0 
 
@@ -81,3 +85,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 7
 ℹ tests 278 ℹ pass 278 ℹ fail 0 
+
+## Driver gate after round 8
+ℹ tests 281 ℹ pass 281 ℹ fail 0 
