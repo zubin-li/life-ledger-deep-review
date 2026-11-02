@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M44 86h72a18 18 0 0 0 12-32 26 26 0 0 0-48-12 18 18 0 0 0-36 10 18 18 0 0 0 0 34z"/>
+  </g>
+  <g data-layer="2" stroke="var(--amber, #b86b3d)" stroke-width="1.2" vector-effect="non-scaling-stroke">
+    <path d="M38 100l84-80"/>
+  </g>
+  <g data-layer="3" stroke="var(--sage, #68725c)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <circle cx="80" cy="62" r="12"/>
+    <path d="M80 56v6"/>
+    <circle cx="80" cy="68" r="1.5" fill="currentColor"/>
+  </g>
+</svg>

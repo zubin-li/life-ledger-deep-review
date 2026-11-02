@@ -22,7 +22,7 @@ ledger.accounts[]       // id, name, currency, kind, icon, color, archived
 ledger.categories[]     // id, name, kind: expense|income, icon, color, parentId?, archived
 ledger.transactions[]   // id, accountId, categoryId, amountMinor (signed), currency, date (ISO), note, createdAt, updatedAt
 ledger.budgets[]        // id, categoryId, month "YYYY-MM", limitMinor, currency
-ledger.recurring[]      // id, template fields, cadence (later UI)
+ledger.recurring[]      // id, template fields, cadence monthly|weekly, dayOfMonth or weekday
 ledger.meta             // recentCategoryIds[], lastEntryAt
 ```
 

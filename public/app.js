@@ -7938,8 +7938,10 @@ function renderReviewLedgerSummary() {
     date,
     mood: getLog(date).mood,
     spendMinor: L.spendingTodayMinor(ledger, date),
+    focusMinutes: focusSessionsBetween(date, date).reduce((sum, session) => sum + focusSessionMinutes(session), 0),
   }));
   const moodCompare = L.moodSpendComparison(dailyRows);
+  const focusCompare = L.focusSpendInsight(dailyRows);
   let moodLine = "";
   if (moodCompare) {
     const { greatAvg, lowAvg } = moodCompare;
@@ -7949,6 +7951,15 @@ function renderReviewLedgerSummary() {
       `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
     ))}</p>`;
   }
+  let focusLine = "";
+  if (focusCompare) {
+    const { highFocusAvg, lowFocusAvg } = focusCompare;
+    focusLine = `<p class="review-ledger-focus">${escapeHtml(languageText(
+      `专注较多日平均支出 ${L.formatMoney(-highFocusAvg, cur, locale)}，专注较少日 ${L.formatMoney(-lowFocusAvg, cur, locale)}。`,
+      `On your most focused days you spent ${L.formatMoney(-highFocusAvg, cur, locale)} on average vs ${L.formatMoney(-lowFocusAvg, cur, locale)} when focus was lighter.`,
+      `An fokussierten Tagen im Schnitt ${L.formatMoney(-highFocusAvg, cur, locale)} Ausgaben, an ruhigeren ${L.formatMoney(-lowFocusAvg, cur, locale)}.`,
+    ))}</p>`;
+  }
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
@@ -7956,7 +7967,7 @@ function renderReviewLedgerSummary() {
       <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${moodLine}</article>`;
+    </div>${moodLine}${focusLine}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 

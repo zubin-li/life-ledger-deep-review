@@ -155,6 +155,56 @@ test("applyRecurringTemplate posts using today date", () => {
   assert.equal(result.transaction.amountMinor, -999);
 });
 
+test("upsertRecurringTemplate accepts income categories", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const inc = ledger.categories.find(c => c.kind === "income").id;
+  const created = L.upsertRecurringTemplate(ledger, {
+    label: "Salary",
+    accountId: account,
+    categoryId: inc,
+    amountMinor: 320000,
+    dayOfMonth: 1,
+    cadence: "monthly",
+  }, { lang: "en" });
+  assert.ok(created);
+  assert.equal(created.recurring.amountMinor, 320000);
+});
+
+test("weekly recurring applies on nearest weekday", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-w",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -500,
+    currency: "EUR",
+    cadence: "weekly",
+    weekday: 0,
+    label: "Weekly",
+  });
+  const result = L.applyRecurringTemplate(ledger, "rec-w", { lang: "en", today: "2026-11-02" });
+  assert.ok(result);
+  assert.equal(result.transaction.date, "2026-11-02");
+  assert.equal(L.nearestWeekdayIso(0, "2026-11-05"), "2026-11-01");
+});
+
+test("focusSpendInsight compares high vs low focus spend", () => {
+  const rows = [
+    { focusMinutes: 120, spendMinor: 1000 },
+    { focusMinutes: 90, spendMinor: 1500 },
+    { focusMinutes: 80, spendMinor: 1200 },
+    { focusMinutes: 10, spendMinor: 8000 },
+    { focusMinutes: 5, spendMinor: 7000 },
+    { focusMinutes: 0, spendMinor: 6500 },
+  ];
+  const insight = L.focusSpendInsight(rows);
+  assert.ok(insight);
+  assert.ok(insight.lowFocusAvg > insight.highFocusAvg);
+});
+
 test("monthlyTrendSeries returns six months", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

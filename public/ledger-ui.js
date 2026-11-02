@@ -137,7 +137,13 @@
       };
     });
     const cells = layoutTreemapCells(items, 0, 0, 100, 100, true);
-    const rects = cells.map(cell => `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1"><title>${ctx.escape(cell.label)}</title></rect>`).join("");
+    const rects = cells.map(cell => {
+      const showLabel = cell.w >= 14 && cell.h >= 11;
+      const label = showLabel
+        ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label">${ctx.escape(cell.label.slice(0, 8))}</text>`
+        : "";
+      return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1"><title>${ctx.escape(cell.label)}</title></rect>${label}`;
+    }).join("");
     return `<svg class="ledger-treemap" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}">${rects}</svg>`;
   }
 
@@ -238,14 +244,25 @@
     const rows = (ledger.recurring || []).filter(Boolean);
     const addBtn = `<button type="button" class="secondary-button ledger-recurring-add">${t("添加固定项", "Add recurring", "Hinzufügen")}</button>`;
     if (!rows.length) {
-      return `<div class="ledger-recurring-head">${addBtn}</div><p class="ledger-empty ledger-recurring-empty">${t("固定支出可在下方添加。", "Add rent, subscriptions, or salary templates.", "Wiederkehrende Buchungen unten anlegen.")}</p>`;
+      return `<div class="ledger-recurring-head">${addBtn}</div><p class="ledger-empty ledger-recurring-empty">${t("房租、订阅或工资等固定项可在下方添加。", "Add rent, subscriptions, or salary templates.", "Miete, Abos oder Gehalt als Vorlage anlegen.")}</p>`;
     }
     return `<div class="ledger-recurring-head"><span class="ledger-recurring-count">${rows.length}</span>${addBtn}</div><ul class="ledger-recurring-list">${rows.map(rec => {
       const cat = ledger.categories.find(c => c.id === rec.categoryId);
       const name = rec.label || (cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "");
       const amt = core().formatMoney(rec.amountMinor, rec.currency || ledger.settings.defaultCurrency, ctx.locale?.());
-      const day = rec.dayOfMonth || 1;
-      const meta = `${t("每月", "Monthly", "Monatlich")} · ${t(`第 ${day} 日`, `day ${day}`, `Tag ${day}`)} · ${ctx.escape(amt)}`;
+      const cadence = rec.cadence === "weekly" ? "weekly" : "monthly";
+      const weekdayNames = [
+        t("周日", "Sun", "So"),
+        t("周一", "Mon", "Mo"),
+        t("周二", "Tue", "Di"),
+        t("周三", "Wed", "Mi"),
+        t("周四", "Thu", "Do"),
+        t("周五", "Fri", "Fr"),
+        t("周六", "Sat", "Sa"),
+      ];
+      const meta = cadence === "weekly"
+        ? `${t("每周", "Weekly", "Wöchentlich")} · ${weekdayNames[Number(rec.weekday) || 0] || weekdayNames[1]} · ${ctx.escape(amt)}`
+        : `${t("每月", "Monthly", "Monatlich")} · ${t(`第 ${rec.dayOfMonth || 1} 日`, `day ${rec.dayOfMonth || 1}`, `Tag ${rec.dayOfMonth || 1}`)} · ${ctx.escape(amt)}`;
       return `<li class="ledger-recurring" data-rec-id="${ctx.escape(rec.id)}">
         <span class="ledger-recurring-name">${ctx.escape(name)}</span>
         <span class="ledger-recurring-meta">${meta}</span>
@@ -267,15 +284,21 @@
     closeLedgerPopovers();
   }
 
-  function expenseCategoryOptions(ledger, selectedId) {
-    return ledger.categories
-      .filter(c => c.kind === "expense" && !c.archived)
-      .map(c => {
+  function recurringCategoryOptions(ledger, selectedId) {
+    const renderGroup = (kind, labelZh, labelEn, labelDe) => {
+      const cats = ledger.categories.filter(c => c.kind === kind && !c.archived);
+      if (!cats.length) return "";
+      const label = t(labelZh, labelEn, labelDe);
+      return `<optgroup label="${ctx.escape(label)}">${cats.map(c => {
         const name = core().localizedCategoryName(c, ctx.lang?.());
         const sel = c.id === selectedId ? " selected" : "";
         return `<option value="${ctx.escape(c.id)}"${sel}>${ctx.escape(name)}</option>`;
-      })
-      .join("");
+      }).join("")}</optgroup>`;
+    };
+    return [
+      renderGroup("expense", "支出", "Expense", "Ausgabe"),
+      renderGroup("income", "收入", "Income", "Einnahmen"),
+    ].join("");
   }
 
   function openRecurringPopover(ledger, existing) {
@@ -283,13 +306,17 @@
     const rec = existing || {
       id: "",
       label: "",
-      categoryId: ledger.categories.find(c => c.kind === "expense" && !c.archived)?.id || "",
+      categoryId: ledger.categories.find(c => c.kind === "expense" && !c.archived)?.id
+        || ledger.categories.find(c => !c.archived)?.id
+        || "",
       amountMinor: -1000,
       currency: ledger.settings.defaultCurrency,
       dayOfMonth: 1,
       cadence: "monthly",
+      weekday: new Date().getDay(),
       note: "",
     };
+    const cadence = rec.cadence === "weekly" ? "weekly" : "monthly";
     const amountDisplay = (Math.abs(rec.amountMinor) / 100).toFixed(2).replace(".", ",");
     const pop = document.createElement("div");
     pop.className = "ledger-recurring-popover ledger-edit-popover";
@@ -302,15 +329,40 @@
         </div>
         <div class="ledger-edit-field">
           <span>${t("分类", "Category", "Kategorie")}</span>
-          <select name="category">${expenseCategoryOptions(ledger, rec.categoryId)}</select>
+          <select name="category">${recurringCategoryOptions(ledger, rec.categoryId)}</select>
         </div>
         <div class="ledger-edit-field">
           <span>${t("金额", "Amount", "Betrag")}</span>
           <input name="amount" inputmode="decimal" value="${ctx.escape(amountDisplay)}" />
         </div>
         <div class="ledger-edit-field">
+          <span>${t("频率", "Cadence", "Rhythmus")}</span>
+          <select name="cadence">
+            <option value="monthly"${cadence === "monthly" ? " selected" : ""}>${t("每月", "Monthly", "Monatlich")}</option>
+            <option value="weekly"${cadence === "weekly" ? " selected" : ""}>${t("每周", "Weekly", "Wöchentlich")}</option>
+          </select>
+        </div>
+        <div class="ledger-edit-field ledger-recurring-day" data-cadence-field="monthly"${cadence === "weekly" ? " hidden" : ""}>
           <span>${t("每月几号", "Day of month", "Tag im Monat")}</span>
           <input name="day" type="number" min="1" max="28" value="${Number(rec.dayOfMonth) || 1}" />
+        </div>
+        <div class="ledger-edit-field ledger-recurring-weekday" data-cadence-field="weekly"${cadence !== "weekly" ? " hidden" : ""}>
+          <span>${t("星期几", "Weekday", "Wochentag")}</span>
+          <select name="weekday">
+            ${[0, 1, 2, 3, 4, 5, 6].map(wd => {
+              const names = [
+                t("周日", "Sunday", "Sonntag"),
+                t("周一", "Monday", "Montag"),
+                t("周二", "Tuesday", "Dienstag"),
+                t("周三", "Wednesday", "Mittwoch"),
+                t("周四", "Thursday", "Donnerstag"),
+                t("周五", "Friday", "Freitag"),
+                t("周六", "Saturday", "Samstag"),
+              ];
+              const sel = (Number(rec.weekday) || 0) === wd ? " selected" : "";
+              return `<option value="${wd}"${sel}>${names[wd]}</option>`;
+            }).join("")}
+          </select>
         </div>
         <div class="ledger-edit-field">
           <span>${t("备注", "Note", "Notiz")}</span>
@@ -323,6 +375,13 @@
       </form>`;
     document.body.appendChild(pop);
     const form = pop.querySelector("form");
+    const syncCadenceFields = () => {
+      const mode = form.querySelector('[name="cadence"]')?.value === "weekly" ? "weekly" : "monthly";
+      form.querySelectorAll("[data-cadence-field]").forEach(el => {
+        el.hidden = el.dataset.cadenceField !== mode;
+      });
+    };
+    form.querySelector('[name="cadence"]')?.addEventListener("change", syncCadenceFields);
     pop.addEventListener("click", event => {
       if (event.target === pop) closeLedgerPopovers();
     });
@@ -336,6 +395,8 @@
       const token = core().parseAmountToken(amountRaw);
       if (token != null) amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
       const dayOfMonth = Math.min(28, Math.max(1, Number(form.querySelector('[name="day"]').value) || 1));
+      const cadenceSel = form.querySelector('[name="cadence"]')?.value === "weekly" ? "weekly" : "monthly";
+      const weekday = Math.min(6, Math.max(0, Number(form.querySelector('[name="weekday"]')?.value) || 0));
       const draft = {
         id: existing?.id || core().createId(),
         label: form.querySelector('[name="label"]').value.trim(),
@@ -344,7 +405,8 @@
         amountMinor,
         currency: rec.currency || ledger.settings.defaultCurrency,
         dayOfMonth,
-        cadence: "monthly",
+        cadence: cadenceSel,
+        weekday: cadenceSel === "weekly" ? weekday : undefined,
         note: form.querySelector('[name="note"]').value.trim(),
       };
       const result = core().upsertRecurringTemplate(ledgerState(), draft, { lang: ctx.lang?.() });
@@ -688,7 +750,7 @@
         ${renderBudgets(ledger, ym)}
       </section>
       <section class="ledger-recurring-wrap">
-        <h3>${t("固定支出", "Recurring", "Wiederkehrend")}</h3>
+        <h3>${t("固定收支", "Recurring", "Wiederkehrend")}</h3>
         ${renderRecurring(ledger)}
       </section>
       <section class="ledger-list-wrap">

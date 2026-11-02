@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <rect x="42" y="30" width="76" height="58" rx="6"/>
+  </g>
+  <g data-layer="2" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M42 70l18-16 16 12 14-10 28 18"/>
+  </g>
+  <g data-layer="3" stroke="var(--accent, #4f7a64)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <circle cx="96" cy="48" r="5"/>
+  </g>
+</svg>

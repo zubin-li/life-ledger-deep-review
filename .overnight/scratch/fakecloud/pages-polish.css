@@ -1,0 +1,261 @@
+/* Week / Timeline / Insights / Habits — shared card language (.hermes/DESIGN.md §1, §6). Web only. */
+html:not([data-desktop]) #weekView,
+html:not([data-desktop]) #timelineView,
+html:not([data-desktop]) #reviewView,
+html:not([data-desktop]) #habitsView {
+  --ll-shadow: 0 12px 38px rgba(29, 29, 31, 0.055), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --ll-radius: 24px;
+}
+
+/* Icon chip + header row */
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-chip {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--w-soft, var(--sage-light));
+  color: var(--w-solid, var(--sage));
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-chip svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-panel-title {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-panel-title > .ll-chip {
+  grid-row: 1 / span 3;
+  align-self: center;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-panel-title > :not(.ll-chip) {
+  grid-column: 2;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-panel-title .kicker {
+  margin: 0;
+  font: 650 10.5px/1.2 var(--font-body);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-panel-title :is(h2, h3) {
+  margin: 4px 0 0;
+  font: 600 clamp(17px, 2.2vw, 20px) "Noto Serif SC", var(--font-display);
+}
+html:not([data-desktop]) #habitsView .settings-intro .ll-panel-title > p {
+  margin: 4px 0 0;
+  font: 600 18px "Noto Serif SC", var(--font-display);
+  color: var(--ink);
+}
+
+/* Hairline art */
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-art {
+  width: 100%;
+  max-width: 140px;
+  margin-inline: auto;
+  color: var(--muted);
+  --accent: var(--w-solid, var(--sage));
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-art svg :is(path, line, rect, circle, polyline, ellipse)[stroke]:not([stroke="none"]) {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-art.is-drawn svg :is(path, line, rect, circle, polyline, ellipse)[stroke]:not([stroke="none"]) {
+  animation: ll-art-draw 320ms ease forwards;
+}
+@keyframes ll-art-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 20px 12px;
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-empty > strong {
+  font: 600 15px "Noto Serif SC", var(--font-display);
+  color: var(--ink);
+}
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-empty > p,
+html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-empty > span {
+  margin: 0;
+  max-width: 320px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+/* Card surfaces + bubble */
+html:not([data-desktop]) #weekView .weekly-goals-card,
+html:not([data-desktop]) #weekView .weekly-writing-panel,
+html:not([data-desktop]) #reviewView .panel,
+html:not([data-desktop]) #reviewView .score-card,
+html:not([data-desktop]) #habitsView .setting-row,
+html:not([data-desktop]) #habitsView .habit-reminder-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ll-radius);
+  box-shadow: var(--ll-shadow);
+}
+html:not([data-desktop]) #weekView .weekly-goals-panel {
+  border-radius: var(--ll-radius);
+  box-shadow: var(--ll-shadow);
+  overflow: hidden;
+}
+html:not([data-desktop]) :is(#weekView, #reviewView, #habitsView) :is(.weekly-goals-card, .weekly-writing-panel, .panel, .score-card, .setting-row, .habit-reminder-card)::after {
+  content: "";
+  position: absolute;
+  inset: auto -34px -58px auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--w-soft, var(--sage-light));
+  opacity: 0.55;
+  pointer-events: none;
+}
+html:not([data-desktop]) #weekView .weekly-goals-card {
+  --w-soft: #f4d8d0;
+  --w-solid: #d97861;
+}
+html:not([data-desktop]) #weekView .weekly-writing-panel {
+  --w-soft: #f3e5bf;
+  --w-solid: #d7a84c;
+}
+html:not([data-desktop]) #reviewView .focus-review-panel {
+  --w-soft: #e7e0f4;
+  --w-solid: #8b79c6;
+}
+html:not([data-desktop]) #reviewView .chart-panel {
+  --w-soft: #dbe6dc;
+  --w-solid: #6f8f7d;
+}
+html:not([data-desktop]) #reviewView .resistance-panel {
+  --w-soft: #d9e4e7;
+  --w-solid: #6e8c98;
+}
+html:not([data-desktop]) #reviewView .monthly-reflection-panel {
+  --w-soft: #f3e5bf;
+  --w-solid: #d7a84c;
+}
+html:not([data-desktop]) #reviewView .score-card {
+  --w-soft: #dbe6dc;
+  --w-solid: #6f8f7d;
+}
+html:not([data-desktop]) #habitsView .habit-reminder-card,
+html:not([data-desktop]) #habitsView .setting-row {
+  --w-soft: #dbe6dc;
+  --w-solid: #6f8f7d;
+}
+
+html:not([data-desktop]) #weekView .weekly-writing-heading {
+  position: relative;
+  padding-right: 88px;
+}
+html:not([data-desktop]) #weekView .ll-writing-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 72px;
+  max-width: 96px;
+  margin: 0;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+html:not([data-desktop]) #weekView .weekly-goal-empty.ll-empty,
+html:not([data-desktop]) #weekView .ll-week-all-done {
+  padding: 18px 8px 8px;
+}
+html:not([data-desktop]) #weekView p.weekly-goal-empty.ll-empty {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+html:not([data-desktop]) #timelineView .memory-empty.ll-polished {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-style: solid;
+  background: color-mix(in srgb, var(--card) 92%, var(--paper-deep));
+}
+html:not([data-desktop]) #timelineView .memory-empty.ll-polished > div > svg:not(.ll-art svg) {
+  display: none;
+}
+html:not([data-desktop]) #reviewView .period-dashboard-empty.ll-polished > span:first-child {
+  display: none;
+}
+html:not([data-desktop]) #habitsView .habit-settings-list > .ll-empty {
+  min-height: 220px;
+  border: 1px dashed var(--line);
+  border-radius: var(--ll-radius);
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+}
+
+html:not([data-desktop]) #timelineView .timeline-intro h2 {
+  font: 600 clamp(22px, 4vw, 40px) "Noto Serif SC", var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+html[data-theme="dark"]:not([data-desktop]) #weekView .weekly-goals-card,
+html[data-theme="dark"]:not([data-desktop]) #weekView .weekly-writing-panel,
+html[data-theme="dark"]:not([data-desktop]) #reviewView :is(.panel, .score-card),
+html[data-theme="dark"]:not([data-desktop]) #habitsView :is(.setting-row, .habit-reminder-card) {
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+html[data-theme="dark"]:not([data-desktop]) :is(#weekView, #reviewView, #habitsView) :is(.weekly-goals-card, .weekly-writing-panel, .panel, .score-card, .setting-row, .habit-reminder-card)::after {
+  opacity: 0.62;
+  background: color-mix(in srgb, var(--w-solid, var(--sage)) 28%, transparent);
+}
+html[data-theme="dark"]:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-chip {
+  background: color-mix(in srgb, var(--w-solid, var(--sage)) 18%, var(--surface-2));
+  color: color-mix(in srgb, var(--w-solid, var(--sage)) 72%, white);
+  border: 1px solid color-mix(in srgb, var(--w-solid, var(--sage)) 28%, transparent);
+}
+
+@media (max-width: 760px) {
+  html:not([data-desktop]) #weekView .weekly-writing-heading {
+    padding-right: 0;
+    flex-wrap: wrap;
+  }
+  html:not([data-desktop]) #weekView .ll-writing-art {
+    position: static;
+    width: 56px;
+    margin: 0 0 8px auto;
+  }
+  html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-panel-title {
+    column-gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-art svg :is(path, line, rect, circle, polyline, ellipse)[stroke]:not([stroke="none"]) {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}
+html.motion-reduced:not([data-desktop]) :is(#weekView, #timelineView, #reviewView, #habitsView) .ll-art svg :is(path, line, rect, circle, polyline, ellipse)[stroke]:not([stroke="none"]) {
+  stroke-dashoffset: 0;
+  animation: none;
+}

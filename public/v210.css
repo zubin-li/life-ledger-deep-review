@@ -440,6 +440,12 @@ html[data-theme="dark"] .ledger-tx {
   opacity: 0.85;
 }
 
+.review-ledger-focus {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  opacity: 0.85;
+}
+
 .tw-spend-main {
   display: grid;
   gap: 0.35rem;

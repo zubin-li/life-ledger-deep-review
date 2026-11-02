@@ -3,6 +3,20 @@
   padding-bottom: calc(2rem + var(--mobile-nav-safe-bottom, 0px));
 }
 
+@media (max-width: 640px) {
+  .ledger-view .ledger-page,
+  #ledgerView .ledger-page {
+    padding-bottom: max(
+      calc(240px + var(--mobile-nav-safe-bottom, 0px)),
+      calc(92px + var(--mobile-nav-safe-bottom, 0px))
+    );
+  }
+
+  .ledger-quick {
+    scroll-margin-bottom: calc(160px + var(--mobile-nav-safe-bottom, 0px));
+  }
+}
+
 .ledger-quick-label {
   display: block;
 }
@@ -76,6 +90,38 @@ html[data-theme="dark"] .ledger-key {
 
 html.motion-reduced .view.is-entering #ledgerView :is(.ledger-summary article, .ledger-panel) {
   animation: none;
+}
+
+.ledger-treemap-label {
+  fill: rgba(255, 255, 255, 0.92);
+  font-size: 4.5px;
+  font-weight: 650;
+  pointer-events: none;
+  paint-order: stroke fill;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 0.35px;
+}
+
+html[data-theme="dark"] .ledger-treemap-label {
+  fill: rgba(255, 255, 255, 0.88);
+  stroke: rgba(0, 0, 0, 0.55);
+}
+
+#reviewView .review-insight-block:nth-child(3) .review-insight-value {
+  background: linear-gradient(120deg, var(--ink), color-mix(in srgb, var(--sage) 40%, var(--ink)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.motion-reduced #reviewView .review-insight-block .review-insight-value {
+  background: none;
+  -webkit-background-clip: unset;
+  color: inherit;
+}
+
+.ledger-recurring-form [data-cadence-field][hidden] {
+  display: none;
 }
 
 .tw-card.tw-spending {

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M48 24h50l26 26v46a10 10 0 0 1-10 10H48a10 10 0 0 1-10-10V34a10 10 0 0 1 10-10z"/>
+    <path d="M98 24v26h26"/>
+  </g>
+  <g data-layer="2" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke">
+    <path d="M52 64h44"/>
+    <path d="M52 78h36"/>
+    <path d="M52 92h28"/>
+  </g>
+  <g data-layer="3" stroke="var(--accent, #0071e3)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <circle cx="106" cy="80" r="12"/>
+    <path d="M106 74v12"/>
+    <path d="M100 80h12"/>
+  </g>
+</svg>

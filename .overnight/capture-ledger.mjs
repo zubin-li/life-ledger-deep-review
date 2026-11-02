@@ -24,6 +24,19 @@ async function seedDemoLedger(page) {
       contentSeed: 42,
     });
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(state.logs, state.ledger, now);
+    state.focusSessions = state.focusSessions || [];
+    const focusDays = ["2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"];
+    focusDays.forEach((date, i) => {
+      state.focusSessions.push({
+        id: `demo-focus-${i}`,
+        date,
+        label: "Demo",
+        outcome: "completed",
+        startedAt: Date.parse(`${date}T09:00:00`),
+        endedAt: Date.parse(`${date}T09:00:00`) + (i % 2 === 0 ? 90 : 15) * 60000,
+        durationMs: (i % 2 === 0 ? 90 : 15) * 60000,
+      });
+    });
     localStorage.setItem(key, JSON.stringify(state));
   });
 }
@@ -82,6 +95,13 @@ async function shot(browserType, name, opts) {
     await page.click(".ledger-recurring-add");
     await page.waitForTimeout(350);
   }
+  if (opts.recurringIncome) {
+    await page.click(".ledger-recurring-add");
+    await page.waitForTimeout(200);
+    await page.selectOption('select[name="cadence"]', "weekly");
+    await page.selectOption('select[name="category"]', { label: /Salary|Einkommen|工资/i }).catch(() => {});
+    await page.waitForTimeout(200);
+  }
   if (opts.view === "timeline") {
     await page.click('.nav-item[data-view="timeline"]');
     await page.waitForTimeout(400);
@@ -114,6 +134,23 @@ await shot(chromium, "ledger-recurring-popover-light-1440", {
   theme: "light",
   demoLedger: true,
   recurringPopover: true,
+});
+await shot(chromium, "ledger-recurring-weekly-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  demoLedger: true,
+  recurringIncome: true,
+});
+await shot(chromium, "ledger-mobile-keypad-light-390", {
+  viewport: { width: 390, height: 844 },
+  theme: "light",
+  demoLedger: true,
+});
+await shot(chromium, "review-focus-spend-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  view: "review",
+  demoLedger: true,
 });
 await shot(chromium, "timeline-enter-light-1440", {
   viewport: { width: 1440, height: 900 },

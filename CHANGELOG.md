@@ -11,11 +11,13 @@ All notable changes are documented here.
 - Touch amount keypad on ledger (coarse pointer / narrow screens), duplicate transaction action, month summary number roll-up, ledger page enter stagger (`v211-polish.css`), Today spending card roll-up.
 - **Edit transaction** popover (opaque, body-level), **recurring templates** with create/edit/delete (undo), “Post now”, mobile **swipe-left to delete**, `updateTransaction` / `applyRecurringTemplate` / `upsertRecurringTemplate` in `ledger-core.js`.
 - Demo sample **pads early-month** expenses so November donut, heatmap, and Today card match summary; sample includes two recurring templates.
+- **Recurring:** income categories + weekly cadence; **`focusSpendInsight`** on monthly review; treemap cell labels; **`tests/ledger-cloud-merge.test.mjs`**.
 
 ### Changed
 
 - Mood-vs-spend review insight uses testable `moodSpendComparison` in `ledger-core.js`; quick-entry field no longer wrapped in `<label>` (Add button stays outside).
 - Review **habit daily sparkline** column and weekday bar grow-in; Week/Timeline page enter stagger (`v211-polish.css`).
+- Mobile ledger page extra bottom padding for keypad; review best-streak headline styling.
 
 ## [2.1.0] - 2026-11-02
 

@@ -423,9 +423,33 @@
       amountMinor: Number.isInteger(raw.amountMinor) ? raw.amountMinor : 0,
       currency: typeof raw.currency === "string" ? raw.currency : ledger.settings.defaultCurrency,
       dayOfMonth: Math.min(28, Math.max(1, Number(raw.dayOfMonth) || 1)),
-      cadence: raw.cadence === "monthly" ? "monthly" : "monthly",
+      cadence: raw.cadence === "weekly" ? "weekly" : "monthly",
+      weekday: raw.cadence === "weekly"
+        ? Math.min(6, Math.max(0, Number.isInteger(raw.weekday) ? raw.weekday : new Date().getDay()))
+        : undefined,
       note: typeof raw.note === "string" ? raw.note.slice(0, 500) : "",
     };
+  }
+
+  function isoDateFromDate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  /** Latest date on or before referenceIso whose weekday matches (0=Sun … 6=Sat). */
+  function nearestWeekdayIso(weekday, referenceIso) {
+    const ref = referenceIso && ISO_DATE.test(referenceIso)
+      ? referenceIso
+      : isoDateFromDate(new Date());
+    const start = new Date(`${ref}T12:00:00`);
+    for (let i = 0; i < 7; i += 1) {
+      const d = new Date(start);
+      d.setDate(d.getDate() - i);
+      if (d.getDay() === weekday) return isoDateFromDate(d);
+    }
+    return ref;
   }
 
   function upsertRecurringTemplate(ledger, draft, options = {}) {
@@ -466,10 +490,18 @@
     const rec = base.recurring.find(r => r && r.id === recurringId);
     if (!rec || !Number.isInteger(rec.amountMinor)) return null;
     const today = options.today && ISO_DATE.test(options.today) ? options.today : "";
-    const ym = today ? today.slice(0, 7) : monthKey(new Date().toISOString().slice(0, 10));
-    const day = Math.min(28, Math.max(1, Number(rec.dayOfMonth) || 1));
-    const scheduled = `${ym}-${String(day).padStart(2, "0")}`;
-    const date = today || scheduled;
+    const refIso = today || isoDateFromDate(new Date());
+    let date = today;
+    if (!date) {
+      if (rec.cadence === "weekly") {
+        const wd = Number.isInteger(rec.weekday) ? rec.weekday : 1;
+        date = nearestWeekdayIso(wd, refIso);
+      } else {
+        const ym = refIso.slice(0, 7);
+        const day = Math.min(28, Math.max(1, Number(rec.dayOfMonth) || 1));
+        date = `${ym}-${String(day).padStart(2, "0")}`;
+      }
+    }
     const accountId = rec.accountId || base.accounts.find(a => !a.archived)?.id;
     if (!accountId || !rec.categoryId) return null;
     return addTransaction(base, {
@@ -501,6 +533,21 @@
     const lowAvg = Math.round(lowSpend / lowDays);
     if (greatAvg === lowAvg) return null;
     return { greatAvg, lowAvg, greatDays, lowDays };
+  }
+
+  /** Compare average spend on highest- vs lowest-focus days (by focus minutes in the row). */
+  function focusSpendInsight(dailyRows, options = {}) {
+    const minSpend = options.minSpendMinor || 1;
+    const rows = (dailyRows || []).filter(row => (row?.spendMinor || 0) >= minSpend && Number.isFinite(row.focusMinutes));
+    if (rows.length < 4) return null;
+    const sorted = [...rows].sort((a, b) => b.focusMinutes - a.focusMinutes);
+    const bucket = Math.max(1, Math.ceil(sorted.length / 3));
+    const high = sorted.slice(0, bucket);
+    const low = sorted.slice(-bucket);
+    const highAvg = Math.round(high.reduce((s, r) => s + r.spendMinor, 0) / high.length);
+    const lowAvg = Math.round(low.reduce((s, r) => s + r.spendMinor, 0) / low.length);
+    if (highAvg === lowAvg) return null;
+    return { highFocusAvg: highAvg, lowFocusAvg: lowAvg, highFocusDays: high.length, lowFocusDays: low.length };
   }
 
   function parseGermanDate(value) {
@@ -892,6 +939,8 @@
     restoreRecurringTemplate,
     normalizeRecurringEntry,
     moodSpendComparison,
+    focusSpendInsight,
+    nearestWeekdayIso,
     monthSummary,
     monthKey,
     transactionsInMonth,

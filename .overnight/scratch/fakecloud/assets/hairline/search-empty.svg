@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <circle cx="72" cy="54" r="20"/>
+    <path d="M86 68l18 18"/>
+  </g>
+  <g data-layer="2" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M64 54h16"/>
+  </g>
+  <g data-layer="3" stroke="var(--accent, #4f7a64)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M72 48v12"/>
+  </g>
+</svg>
