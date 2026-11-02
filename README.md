@@ -102,7 +102,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 ## Highlights
 
 - Daily habits with adjustable targets and effective dates
-- Read-only daily calendar, mood, journal, and event notes
+- Read-only daily calendar, mood, journal, and event notes; **Daily** timeline mode shows a consecutive **reflection streak** when journal notes or mood reasons land on back-to-back days
 - AI-assisted voice-to-journal reflection with editable review before saving
 - Weekly goals, checklist behavior, outputs, and archived notes
 - Monthly review with habit comparisons and line/bar charts

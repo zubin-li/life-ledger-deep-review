@@ -102,7 +102,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 ## Funktionen
 
 - Tägliche Gewohnheiten mit anpassbaren Zielen und Gültigkeitsdatum
-- Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen
+- Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen; in der **Tages**-Ansicht der Zeitleiste erscheint ein **Reflexions-Streak**, wenn an aufeinanderfolgenden Tagen Tagebuch oder Stimmungsgründe erfasst wurden
 - Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
 - Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen
 - Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen

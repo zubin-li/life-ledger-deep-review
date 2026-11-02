@@ -7,6 +7,7 @@ All notable changes are documented here.
 ### Added
 
 - **Today & journal (Goal 2):** hero card daypart ambience (morning/afternoon/evening/night), progress-ring glow when habits complete, journal composer focus elevation, timeline feed row enter + hover lift, **reflection streak** badge on daily timeline (`v224-today-journal-hero.css`; `LifeLedgerAnalytics.reflectionStreak`).
+- **Review & Today (Goal 2):** month insight metrics and hero habit count use `LifeLedgerInteraction.rollText`; habit cards get press/completed glow; ledger category donut reveal + ring contrast (`v225-roll-habit-ledger.css`).
 - **Review:** wide-screen three-column grid for mood/habit/focus scatter charts plus compact insight stack (`v219-review-scatter-grid.css`).
 - **Review:** mobile scatter rhythm, insight kickers (Mood/Habits/Focus), and clearer conflict Money preview on narrow screens (`v220-review-mobile.css`).
 - **Review:** mobile jump chips to scroll to mood/habit/focus charts and insight stack; month stat roll-up when changing months (`v221-review-scatter-jump.css`).
@@ -19,6 +20,7 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`.
 - **Maintainability:** documented CSS slice layout in `.overnight/CSS-LAYERS.md`; removed duplicate `isoFromDate` in `ledger-core.js`; `.overnight/scratch/` gitignored and deleted from the tree.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`).
 

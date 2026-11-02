@@ -1,5 +1,45 @@
 # Overnight progress
 
+## Batch 3 · Round 3 — done
+
+- **Goal 2 — 数字 roll-up：**
+  - `renderInsightDashboard` 三块指标用 `.insight-metric-roll` + `rollInsightMetricValues`（换月时 roll）。
+  - `renderReviewInsights` 连续 streak / 最佳 streak 与完成率一并 roll。
+  - Today hero `#progressNumber` 完成数在变化时 roll（保留 number-pop）。
+- **Goal 2 — 习惯 / 记账视觉：**
+  - `v225-roll-habit-ledger.css`：习惯卡片 `:active` 缩放、完成态轻阴影；donut 外环对比 + `is-ready` 入场（尊重 reduced-motion）。
+  - `index.html` + `sw.js` 注册 v225；`CSS-LAYERS.md` 更新。
+- **文档：** README EN/ZH/DE 各补一句 timeline **reflection streak**；CHANGELOG Unreleased 记 roll + v225。
+- **截图：** `capture-batch3-round3.mjs`（5297）→ scroll + `is-ready` 等待；`b3r3-ledger-donut-*`、`b3r3-review-metrics-zh-*`（Chromium + WebKit）。
+- **测试：** **299/299**（无新增用例；行为为 UI 层）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- WebKit 记账 donut 截图仍偏淡/空心（与 r2 同类）；可试 element screenshot 或 treemap 模式对照。
+- Goal 2：复盘 score-grid、习惯 spark 条动画；空状态再统一一轮。
+- fakecloud 仍缺 repo-root `functions/`。
+
+## Known bugs / gaps
+
+- fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
+- 极矮视口 dock/键盘：已加 padding，真机若仍重叠可再调 `v213` 数值。
+- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据而非 bug。
+- WebKit `conic-gradient` donut 在 headless 截图里对比度低（运行时一般可见）。
+
+## npm test
+
+```
+299 pass, 0 fail (batch 3 round 3)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 3 · Round 2 — done
 
 - **REVIEW LOW #8：** 未合并 CSS；新增 `.overnight/CSS-LAYERS.md` 说明 v210–v224 分层与加载顺序。
@@ -12,44 +52,11 @@
 - **测试：** +2（`reflection-streak.test.mjs`）→ **299/299**。
 - **截图：** `capture-batch3-round2.mjs`（5296）→ 记账 donut 等待非空、journal 切 Daily 模式后拍 streak；`b3r2-*` Chromium + WebKit。
 
-## Half-done
-
-- （无）
-
-## Next
-
-- 记账页 donut/treemap 截图可再 `scrollIntoView` + 等 conic-gradient 绘制（本轮 WebKit 侧栏图偏淡）。
-- Goal 2：习惯卡片 / 复盘 insight 数字 roll-up 再一轮；README 三语可补 reflection streak 一句。
-- fakecloud 仍缺 repo-root `functions/`。
-
-## Known bugs / gaps
-
-- fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
-- 极矮视口 dock/键盘：已加 padding，真机若仍重叠可再调 `v213` 数值。
-- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据而非 bug。
-
-## npm test
-
-```
-299 pass, 0 fail (batch 3 round 2)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
-
 ## Batch 3 · Round 1 — done
 
 - **REVIEW.md（Antigravity）：** 已处理全部 HIGH + MED；LOW #8（CSS 合并）、#9（scratch 镜像）留到下轮。
-- **#1 HIGH — 备份导出丢 ledger：** `scopedState` 经 `LifeLedgerLedger.scopeLedgerForBackup` 写入 `result.ledger`（按导出范围过滤交易）。
-- **#2 HIGH — 收入被记成餐饮：** `parseQuickEntry` 在匹配到收入分类名（如「工资」）时保留正数；编辑弹层改用 `parseAmountToken` + 分类 kind，不再经快录字符串回环。
-- **#3 HIGH — 德 CSV 引号金额：** `parseGermanAmount` 剥离 `"`/`'`。
-- **#4 MED — EUR/CNY 混加：** `monthSummary` / `dailySpendHeatmap` / `spendingTodayMinor` 只统计 `defaultCurrency`。
-- **#5 MED — 部分恢复丢 ledger：** `mergeBackupData` → `mergeLedgerForBackup`（按 id 合并交易/分类/账户/预算/固定项）。
-- **#6 MED — Today `-0,00`：** 零支出日用 `formatMoney(0, …)`，避免 `-0`。
-- **#7 LOW — 快录 UTC 日期：** 默认日用 `isoDateFromDate`（本地）。
-- **测试：** +8（ledger-core 6 + backup-ledger 3）→ **297/297**。
-- **截图：** `capture-batch3-round1.mjs`（5295）→ `b3r1-spending-zero-de-390-*`、`b3r1-ledger-overview-zh-light-1440-*`（Chromium + WebKit）。
+- **#1–#7：** 备份/恢复/快录/CSV/货币/Today -0/时区 — 见 CHANGELOG Unreleased Fixed。
+- **测试：** +8 → **297/297**。
 
 ## Prior batch (Batch 2 rounds 1–10)
 
@@ -62,4 +69,7 @@ _pending (driver appends after commit)_
 ℹ tests 297 ℹ pass 297 ℹ fail 0 
 
 ## Driver gate after round 2
+ℹ tests 299 ℹ pass 299 ℹ fail 0 
+
+## Driver gate after round 3
 ℹ tests 299 ℹ pass 299 ℹ fail 0 

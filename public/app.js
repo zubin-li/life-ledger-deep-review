@@ -4581,7 +4581,14 @@ function renderToday() {
   const progressCount = `${complete} / ${scoredHabits.length}`;
   if (progressNumber.dataset.value !== progressCount) {
     progressNumber.dataset.value = progressCount;
+    const prevComplete = progressNumber.dataset.complete || "";
+    const nextComplete = String(complete);
     progressNumber.innerHTML = `<b>${complete}</b><small>/ ${scoredHabits.length}</small>`;
+    const completeEl = progressNumber.querySelector("b");
+    if (completeEl && prevComplete && prevComplete !== nextComplete) {
+      LifeLedgerInteraction?.rollText(completeEl, nextComplete, prevComplete);
+    }
+    progressNumber.dataset.complete = nextComplete;
     progressNumber.classList.remove("number-pop");
     void progressNumber.offsetWidth;
     progressNumber.classList.add("number-pop");
@@ -8033,13 +8040,32 @@ function renderReviewInsights() {
   const deltaClass = current.percent != null && previous.percent != null && current.percent > previous.percent ? "up" : current.percent < previous.percent ? "down" : "";
   const previousRate = container.dataset.rateValue || "";
   const nextRate = formatRate(current);
+  const nextStreak = String(lead ? lead.stats.streaks.current : 0);
+  const nextBest = String(lead ? lead.stats.streaks.best : 0);
   container.innerHTML = `${summary}
     <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(nextRate)}</strong><span class="review-insight-label">${escapeHtml(tr("review.rateLabel"))}</span><span class="review-insight-delta">${escapeHtml(`${current.completed}/${current.eligible}`)}</span>${delta ? `<span class="review-insight-delta ${deltaClass}">${escapeHtml(delta)}</span>` : ""}</div>
-    <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.current : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.streakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? displayHabitName(lead.habit) : "—")}</span></div>
-    <div class="review-insight-block"><strong class="review-insight-value">${lead ? lead.stats.streaks.best : 0}</strong><span class="review-insight-label">${escapeHtml(tr("review.bestStreakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? countLabel(lead.stats.streaks.best) : "")}</span></div>`;
-  const rate = container.querySelector(".review-insight-value");
-  if (rate) LifeLedgerInteraction?.rollText(rate, nextRate, previousRate);
+    <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(nextStreak)}</strong><span class="review-insight-label">${escapeHtml(tr("review.streakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? displayHabitName(lead.habit) : "—")}</span></div>
+    <div class="review-insight-block"><strong class="review-insight-value">${escapeHtml(nextBest)}</strong><span class="review-insight-label">${escapeHtml(tr("review.bestStreakLabel"))}</span><span class="review-insight-delta">${escapeHtml(lead ? countLabel(lead.stats.streaks.best) : "")}</span></div>`;
+  const roll = LifeLedgerInteraction?.rollText;
+  const values = container.querySelectorAll(".review-insight-value");
+  if (roll && values[0]) roll(values[0], nextRate, previousRate);
+  if (roll && values[1]) roll(values[1], nextStreak, container.dataset.streakCurrent || "");
+  if (roll && values[2]) roll(values[2], nextBest, container.dataset.streakBest || "");
   container.dataset.rateValue = nextRate;
+  container.dataset.streakCurrent = nextStreak;
+  container.dataset.streakBest = nextBest;
+}
+
+function rollInsightMetricValues(container, selector, storageKey) {
+  const roll = globalThis.LifeLedgerInteraction?.rollText;
+  if (!roll || !container) return;
+  container.querySelectorAll(selector).forEach((el, index) => {
+    const next = el.textContent?.trim() || "";
+    const key = `${storageKey}-${index}`;
+    const prev = container.dataset[key] || "";
+    if (prev && prev !== next) roll(el, next, prev);
+    container.dataset[key] = next;
+  });
 }
 
 function disconnectReviewScatterJumpSpy(host) {
@@ -8592,13 +8618,15 @@ function renderInsightDashboard() {
   const moods = { '很好': 0, '平静': 0, '低落': 0 };
   dates.forEach(d => { const m = getLog(d).mood; if (m in moods) moods[m] += 1; });
   const range = reportRangeSentence(dates), over = dates.length === new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
-  $('#reviewInsights').innerHTML = `<p class="rv-range">${escapeHtml(range)} · ${escapeHtml(over ? T(`整月 ${dates.length} 天`, `whole month, ${dates.length} days`, `ganzer Monat, ${dates.length} Tage`) : T(`本月进行中，截至今天 ${dates.length} 天`, `month in progress, ${dates.length} days so far`, `Monat läuft, ${dates.length} Tage bisher`))} · ${escapeHtml(T(`与 ${monthLabel(prevMonth)} 比较`, `compared with ${monthLabel(prevMonth)}`, `im Vergleich zu ${monthLabel(prevMonth)}`))}</p>
+  const insightsHost = $('#reviewInsights');
+  insightsHost.innerHTML = `<p class="rv-range">${escapeHtml(range)} · ${escapeHtml(over ? T(`整月 ${dates.length} 天`, `whole month, ${dates.length} days`, `ganzer Monat, ${dates.length} Tage`) : T(`本月进行中，截至今天 ${dates.length} 天`, `month in progress, ${dates.length} days so far`, `Monat läuft, ${dates.length} Tage bisher`))} · ${escapeHtml(T(`与 ${monthLabel(prevMonth)} 比较`, `compared with ${monthLabel(prevMonth)}`, `im Vergleich zu ${monthLabel(prevMonth)}`))}</p>
   <div class="insight-metrics rv-metrics">
-    <article><span>${escapeHtml(T('习惯完成率','Habit completion','Gewohnheiten erfüllt'))}</span><strong>${model.percent ?? 0}<em>%</em>${delta(diff(model.percent, previous.percent))}</strong><small>${escapeHtml(T(`完成 ${model.completed} 次 · 应做 ${model.eligible} 次`, `${model.completed} done of ${model.eligible} planned`, `${model.completed} von ${model.eligible} geplant`))}</small></article>
-    <article><span>${escapeHtml(T('专注时长','Focus time','Fokuszeit'))}</span><strong>${(minutes / 60).toFixed(1)}<em> ${escapeHtml(T('小时','h','Std.'))}</em>${delta(hasPrev ? Math.round((minutes - prevMinutes) / 6) / 10 : null)}</strong><small>${escapeHtml(T(`${focusSessionsBetween(dates[0], dates.at(-1)).length} 次专注`, `${focusSessionsBetween(dates[0], dates.at(-1)).length} sessions`, `${focusSessionsBetween(dates[0], dates.at(-1)).length} Einheiten`))}</small></article>
-    <article><span>${escapeHtml(T('有记录的天数','Days with an entry','Tage mit Eintrag'))}</span><strong>${model.recordedDays}<em> / ${dates.length}</em></strong><small>${escapeHtml(T('打卡、日记或心情','Check-in, journal or mood','Check-in, Tagebuch oder Stimmung'))}</small></article>
+    <article><span>${escapeHtml(T('习惯完成率','Habit completion','Gewohnheiten erfüllt'))}</span><strong><span class="insight-metric-roll">${model.percent ?? 0}</span><em>%</em>${delta(diff(model.percent, previous.percent))}</strong><small>${escapeHtml(T(`完成 ${model.completed} 次 · 应做 ${model.eligible} 次`, `${model.completed} done of ${model.eligible} planned`, `${model.completed} von ${model.eligible} geplant`))}</small></article>
+    <article><span>${escapeHtml(T('专注时长','Focus time','Fokuszeit'))}</span><strong><span class="insight-metric-roll">${(minutes / 60).toFixed(1)}</span><em> ${escapeHtml(T('小时','h','Std.'))}</em>${delta(hasPrev ? Math.round((minutes - prevMinutes) / 6) / 10 : null)}</strong><small>${escapeHtml(T(`${focusSessionsBetween(dates[0], dates.at(-1)).length} 次专注`, `${focusSessionsBetween(dates[0], dates.at(-1)).length} sessions`, `${focusSessionsBetween(dates[0], dates.at(-1)).length} Einheiten`))}</small></article>
+    <article><span>${escapeHtml(T('有记录的天数','Days with an entry','Tage mit Eintrag'))}</span><strong><span class="insight-metric-roll">${model.recordedDays}</span><em> / ${dates.length}</em></strong><small>${escapeHtml(T('打卡、日记或心情','Check-in, journal or mood','Check-in, Tagebuch oder Stimmung'))}</small></article>
     <article class="rv-mood"><span>${escapeHtml(T('心情','Mood','Stimmung'))}</span><div>${Object.entries(moods).map(([m, n]) => `<b class="${{ '很好': 'mood-good', '平静': 'mood-calm', '低落': 'mood-low' }[m]}"><i>${moodCalendarIcon(m)}</i>${n}<small>${escapeHtml(moodLabel(m))}</small></b>`).join('')}</div></article>
   </div>`;
+  rollInsightMetricValues(insightsHost, ".insight-metric-roll", "rvMetric");
   const rows = [...model.rows].sort((a, b) => b.percent - a.percent).map(row => {
     const habit = state.habits.find(h => h.id === row.id), old = previous.rows.find(p => p.id === row.id);
     return `<tr style="${habitStyle(habit)}"><th scope="row"><span class="insight-habit-icon">${renderIcon(iconKey(habit))}</span>${escapeHtml(displayHabitName(habit))}</th><td class="rv-spark-cell">${habitMonthSparkSvg(habit, dates)}</td><td>${row.completed} / ${row.eligible}</td><td><span class="rv-bar"><i style="width:${row.percent}%"></i></span><b>${row.percent}%</b></td><td>${delta(old ? diff(row.percent, old.percent) : null)}</td></tr>`;
