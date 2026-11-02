@@ -1,0 +1,89 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import vm from "node:vm";
+
+const code = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+const root = {};
+vm.runInNewContext(code, { window: root, globalThis: root, crypto: { randomUUID: () => "11111111-1111-4111-8111-111111111111" } });
+const L = root.LifeLedgerLedger;
+
+test("normalize missing ledger is empty with defaults", () => {
+  const ledger = L.normalize(undefined);
+  assert.equal(ledger.version, 1);
+  assert.ok(ledger.accounts.length >= 1);
+  assert.ok(ledger.categories.some(c => c.kind === "expense"));
+  assert.equal(ledger.transactions.length, 0);
+});
+
+test("parseQuickEntry handles comma decimals and German yesterday", () => {
+  const ledger = L.emptyLedger();
+  const parsed = L.parseQuickEntry("-45 Miete gestern", ledger, { lang: "de", today: "2026-11-02" });
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.draft.amountMinor, -4500);
+  assert.equal(parsed.draft.date, "2026-11-01");
+});
+
+test("parseQuickEntry coffee amount", () => {
+  const ledger = L.normalize(null, { lang: "zh" });
+  const parsed = L.parseQuickEntry("12,50 咖啡", ledger, { lang: "zh", today: "2026-11-02" });
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.draft.amountMinor, -1250);
+});
+
+test("monthSummary totals signed amounts", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const expenseCat = ledger.categories.find(c => c.kind === "expense").id;
+  const incomeCat = ledger.categories.find(c => c.kind === "income").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: expenseCat, amountMinor: -500, currency: "EUR", date: "2026-11-01", note: "a" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: incomeCat, amountMinor: 200000, currency: "EUR", date: "2026-11-02", note: "salary" }));
+  const summary = L.monthSummary(ledger, "2026-11");
+  assert.equal(summary.expenseMinor, -500);
+  assert.equal(summary.incomeMinor, 200000);
+  assert.equal(summary.netMinor, 199500);
+});
+
+test("importGermanBankCsv parses semicolon rows", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+01.11.2026;REWE;-12,50
+02.11.2026;Gehalt;2500,00`;
+  const { ledger, imported, skipped } = L.importGermanBankCsv(csv, null, { lang: "de" });
+  assert.equal(imported, 2);
+  assert.equal(skipped, 0);
+  assert.equal(ledger.transactions.length, 2);
+  assert.equal(ledger.transactions[0].amountMinor, -1250);
+  assert.equal(ledger.transactions[1].amountMinor, 250000);
+});
+
+test("backup round-trip preserves ledger via JSON clone", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -999, currency: "EUR", date: "2026-11-02", note: "test" }));
+  const payload = { habits: [], logs: {}, ledger: JSON.parse(JSON.stringify(ledger)) };
+  const restored = L.normalize(payload.ledger, { lang: "en" });
+  assert.equal(restored.transactions.length, 1);
+  assert.equal(restored.transactions[0].amountMinor, -999);
+});
+
+test("remove and restore transaction", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  const { ledger: withTx, transaction } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -100, currency: "EUR", date: "2026-11-02", note: "x" });
+  const snap = L.removeTransaction(withTx, transaction.id);
+  assert.equal(snap.ledger.transactions.length, 0);
+  const back = L.restoreTransaction(snap.ledger, snap.removed, snap.index);
+  assert.equal(back.transactions.length, 1);
+});
+
+test("spendingTodayMinor sums expenses only", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const exp = ledger.categories.find(c => c.kind === "expense").id;
+  const inc = ledger.categories.find(c => c.kind === "income").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -300, currency: "EUR", date: "2026-11-02", note: "" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: inc, amountMinor: 5000, currency: "EUR", date: "2026-11-02", note: "" }));
+  assert.equal(L.spendingTodayMinor(ledger, "2026-11-02"), 300);
+});

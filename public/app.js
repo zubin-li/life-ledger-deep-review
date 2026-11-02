@@ -92,7 +92,7 @@ const i18n = {
     metaDescription: "一套会随着你成长的私人习惯与深度复盘系统。",
     brand: "Life Ledger",
     brandSmall: "深度复盘",
-    nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", habits: "习惯设置" ,
+    nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", ledger: "记账", habits: "习惯设置" ,
 "longrange": "长期"
 },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
@@ -132,6 +132,7 @@ const i18n = {
       timeline: "时间轴",
       review: "月度复盘",
       habits: "习惯",
+      ledger: "记账",
 
 "longrange": "长期"
 },
@@ -732,7 +733,7 @@ const i18n = {
     metaDescription: "A private habit and deep-review system that grows with you.",
     brand: "Life Ledger",
     brandSmall: "DEEP REVIEW",
-    nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", habits: "Habits" ,
+    nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", ledger: "Money", habits: "Habits" ,
 "longrange": "Horizon"
 },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
@@ -772,6 +773,7 @@ const i18n = {
       timeline: "Timeline",
       review: "Monthly Review",
       habits: "Habits",
+      ledger: "Money",
 
 "longrange": "Horizon"
 },
@@ -1372,7 +1374,7 @@ const i18n = {
     metaDescription: "Ein privates System für Gewohnheiten und tiefgehende Rückblicke, das mit dir wächst.",
     brand: "Life Ledger",
     brandSmall: "TIEFE REFLEXION",
-    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", habits: "Gewohnheiten" ,
+    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", ledger: "Finanzen", habits: "Gewohnheiten" ,
 "longrange": "Horizont"
 },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
@@ -1412,6 +1414,7 @@ const i18n = {
       timeline: "Zeitleiste",
       review: "Monatsrückblick",
       habits: "Gewohnheiten",
+      ledger: "Finanzen",
 
 "longrange": "Horizont"
 },
@@ -2998,9 +3001,9 @@ function createCloudRevisionTracker(initialRevision = 0) {
     baseRevisionForPut() { return revision; },
   };
 }
-function mergeRemoteCloudPayload(remotePayload, seed, cloneDataFn) {
+function mergeRemoteCloudPayload(remotePayload, seed, cloneDataFn, localLedger) {
   if (!validCloudApplicationPayload(remotePayload)) return null;
-  return {
+  const merged = {
     ...cloneDataFn(seed),
     ...remotePayload,
     dailyGoals: remotePayload.dailyGoals || {},
@@ -3009,6 +3012,12 @@ function mergeRemoteCloudPayload(remotePayload, seed, cloneDataFn) {
     weeklyOutputs: remotePayload.weeklyOutputs || {},
     weeklyReviews: remotePayload.weeklyReviews || {},
   };
+  if (remotePayload.ledger !== undefined) {
+    merged.ledger = cloneDataFn(window.LifeLedgerLedger?.normalize(remotePayload.ledger) || remotePayload.ledger);
+  } else if (localLedger !== undefined) {
+    merged.ledger = cloneDataFn(localLedger);
+  }
+  return merged;
 }
 function createConflictRecoveryPortableBackup(currentState, storage, {
   backupFormat,
@@ -3500,7 +3509,7 @@ async function fetchCloudRemoteOutcome() {
     return "loaded";
   }
   cloudRevisionTracker.noteRemoteBody(remote);
-  const merged = mergeRemoteCloudPayload(remote?.payload, seed, cloneData);
+  const merged = mergeRemoteCloudPayload(remote?.payload, seed, cloneData, state.ledger);
   if (merged && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
     state = merged;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -4130,6 +4139,7 @@ function renderAll() {
   renderReview();
   renderHabitSettings();
   if (document.body.dataset.activeView === "longrange") renderLongRange();
+  if (document.body.dataset.activeView === "ledger") renderLedger();
   if ($("#timelineView")?.classList.contains("active")) void renderTimeline();
   decorateMotionSurfaces();
   window.dispatchEvent(new Event("life-ledger-rendered"));
@@ -6226,6 +6236,7 @@ function importedPayload(raw) {
       focusSessions: cloneData(payload.focusSessions || []),
       focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
       ...(isRecord(payload.quoteSettings) ? { quoteSettings: cloneData(payload.quoteSettings) } : {}),
+      ...(isRecord(payload.ledger) ? { ledger: cloneData(payload.ledger) } : {}),
     },
   };
 }
@@ -8229,6 +8240,21 @@ function renderLongRange() {
   });
 }
 
+function renderLedger() {
+  window.LifeLedgerLedgerUI?.render({
+    state: () => state,
+    save: () => saveState(),
+    text: languageText,
+    escape: escapeHtml,
+    iso: isoDate,
+    lang: () => currentLang,
+    locale: () => i18n[currentLang]?.locale || "de-DE",
+    monthName: date => new Intl.DateTimeFormat(i18n[currentLang].locale, { month: "long", year: "numeric" }).format(date),
+    toast: (message, options) => showToast(message, options),
+    changed: () => {},
+  });
+}
+
 function setJournalMode(mode) {
   const previousRects = journalMode === "photos" || mode === "photos"
     ? captureSiblingRects(".journal-photo-library img, .timeline-entry-list img", node => node.src)
@@ -8671,6 +8697,7 @@ function switchToView(view) {
   if (view === "timeline") void renderTimeline();
   if (view === "review") { renderReview(); requestAnimationFrame(fitReviewText); }
   if (view === "habits") renderHabitSettings();
+  if (view === "ledger") renderLedger();
 }
 
 function applyPortedPageLanguage() {
@@ -8694,6 +8721,7 @@ setAria("#journalModeSwitch", languageText("时间轴内容", "Timeline content"
 setText("#journalScrollTitle", tr("viewTitles.timeline"));
 setText("#insightsScrollTitle", tr("viewTitles.review"));
 setText("#habitsScrollTitle", tr("viewTitles.habits"));
+setText("#ledgerScrollTitle", tr("viewTitles.ledger"));
 setAria("#analyticsPeriod", tr("review.windowAria"));
 setText("#habitColName", tr("habits.colName"));
 setText("#habitColTarget", tr("habits.colTarget"));

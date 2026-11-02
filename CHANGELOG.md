@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- **Bookkeeping (记账) — foundation:** `state.ledger` data model, quick entry parsing, German CSV import/export helpers, sidebar **Money / 记账 / Finanzen** page with month summary, category donut, daily heatmap, undoable delete. Cloud merge and v3 backup carry `ledger`. Version remains 2.0.10 until the full 2.1.0 release.
+
 ## [2.0.10] - 2026-11-02
 
 Web 2.0.10 and Life Ledger for Mac 3.0.4.

@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.10" />
     <link rel="stylesheet" href="./today-cards.css?v=2.0.10" />
     <link rel="stylesheet" href="./v202.css?v=2.0.10" />
+    <link rel="stylesheet" href="./v210.css?v=2.0.10" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -53,6 +54,7 @@
           <button class="nav-item" data-view="longrange"><span class="nav-icon">⚑</span><span class="nav-label">长期</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
+          <button class="nav-item" data-view="ledger"><span class="nav-icon">€</span><span class="nav-label">记账</span></button>
           <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
         </nav>
 
@@ -583,6 +585,14 @@
           </details>
         </section>
 
+        <section class="view ledger-view" id="ledgerView">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="ledgerScrollTitle">Money</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
+          <div class="ledger-page"></div>
+        </section>
+
         <section class="view habit-library" id="habitsView">
           <header class="view-scroll-header">
             <h2 class="view-large-title" id="habitsScrollTitle">Habits</h2>
@@ -1106,7 +1116,9 @@
     <script src="./habit-analytics.js?v=2.0.10"></script>
     <script src="./interaction.js?v=2.0.10"></script>
     <script src="./long-range.js?v=2.0.10"></script>
+    <script src="./ledger-core.js?v=2.0.10"></script>
     <script src="./app.js?v=2.0.10"></script>
+    <script src="./ledger-ui.js?v=2.0.10"></script>
     <script src="./vendor/sortable.min.js"></script>
     <script src="./hairline.js?v=2.0.10"></script>
     <script src="./vendor/widget-ui.js?v=2.0.10"></script>
