@@ -1,0 +1,79 @@
+/* Batch 2 round 5 — review scatter mobile rhythm + insight kickers + conflict preview legibility */
+
+.review-ledger-insight-kicker {
+  display: block;
+  margin-bottom: 0.22rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.review-ledger-insight-body {
+  display: block;
+}
+
+@media (max-width: 959px) {
+  .review-scatter-grid {
+    gap: 0.6rem;
+    padding-top: 0.65rem;
+  }
+
+  .review-scatter-grid > * + * {
+    padding-top: 0.65rem;
+  }
+
+  .review-scatter-grid :is(.review-mood-scatter-caption, .review-habit-scatter-caption, .review-focus-scatter-caption) {
+    font-size: 0.68rem;
+    margin-bottom: 0.28rem;
+  }
+
+  .review-scatter-grid :is(.review-mood-scatter, .review-habit-scatter, .review-focus-scatter) {
+    max-width: none;
+    width: 100%;
+  }
+
+  .review-scatter-grid :is(.review-mood-scatter-legend, .review-habit-scatter-legend, .review-focus-scatter-legend) {
+    gap: 0.45rem 0.75rem;
+    font-size: 0.72rem;
+  }
+
+  .review-ledger-insights {
+    margin-top: 0.95rem;
+    padding: 0.72rem 0.82rem;
+    gap: 0.72rem;
+  }
+
+  .review-ledger-insights .review-ledger-insight-kicker {
+    font-size: 0.64rem;
+  }
+
+  .review-ledger-insights .review-ledger-insight-body {
+    font-size: 0.82rem;
+    line-height: 1.48;
+  }
+}
+
+@media (max-width: 480px) {
+  .conflict-ledger-preview {
+    padding: 11px 12px;
+  }
+
+  .conflict-ledger-preview-kicker {
+    font-size: 10px;
+  }
+
+  .conflict-ledger-preview-grid dt {
+    font-size: 10px;
+  }
+
+  .conflict-ledger-preview-grid dd {
+    font-size: 11.5px;
+  }
+
+  .conflict-ledger-preview-hint {
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+}

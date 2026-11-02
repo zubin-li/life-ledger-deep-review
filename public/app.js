@@ -8080,29 +8080,32 @@ function renderReviewLedgerSummary() {
   let moodLine = "";
   if (moodCompare) {
     const { greatAvg, lowAvg } = moodCompare;
-    moodLine = `<p class="review-ledger-mood">${escapeHtml(languageText(
+    const moodBody = languageText(
       `心情较好日平均支出 ${L.formatMoney(-greatAvg, cur, locale)}，较低落日 ${L.formatMoney(-lowAvg, cur, locale)}。`,
       `On great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
       `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
-    ))}</p>`;
+    );
+    moodLine = `<p class="review-ledger-mood"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("心情", "Mood", "Stimmung"))}</span><span class="review-ledger-insight-body">${escapeHtml(moodBody)}</span></p>`;
   }
   let focusLine = "";
   if (focusCompare) {
     const { highFocusAvg, lowFocusAvg } = focusCompare;
-    focusLine = `<p class="review-ledger-focus">${escapeHtml(languageText(
+    const focusBody = languageText(
       `专注较多日平均支出 ${L.formatMoney(-highFocusAvg, cur, locale)}，专注较少日 ${L.formatMoney(-lowFocusAvg, cur, locale)}。`,
       `On your most focused days you spent ${L.formatMoney(-highFocusAvg, cur, locale)} on average vs ${L.formatMoney(-lowFocusAvg, cur, locale)} when focus was lighter.`,
       `An fokussierten Tagen im Schnitt ${L.formatMoney(-highFocusAvg, cur, locale)} Ausgaben, an ruhigeren ${L.formatMoney(-lowFocusAvg, cur, locale)}.`,
-    ))}</p>`;
+    );
+    focusLine = `<p class="review-ledger-focus"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span><span class="review-ledger-insight-body">${escapeHtml(focusBody)}</span></p>`;
   }
   let habitLine = "";
   if (habitCompare) {
     const { highCompletionAvg, lowCompletionAvg } = habitCompare;
-    habitLine = `<p class="review-ledger-habits">${escapeHtml(languageText(
+    const habitBody = languageText(
       `习惯完成度较高日平均支出 ${L.formatMoney(-highCompletionAvg, cur, locale)}，完成度较低日 ${L.formatMoney(-lowCompletionAvg, cur, locale)}。`,
       `On days you completed more habits you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
       `An Tagen mit hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
-    ))}</p>`;
+    );
+    habitLine = `<p class="review-ledger-habits"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}</span></p>`;
   }
   const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
   const scatterSection = scatterParts.length
