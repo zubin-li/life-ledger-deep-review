@@ -792,6 +792,33 @@
     return ledger;
   }
 
+  /** Demo-only: tag lowest-spend days as 很好 and highest as 低落 so review mood vs spend insights render. */
+  function alignDemoMoodWithSpend(logs, ledger, now = new Date()) {
+    if (!logs || !ledger?.transactions?.length) return logs;
+    const anchor = now instanceof Date ? now : new Date(now);
+    const today = isoFromDate(anchor);
+    const ym = monthKey(today);
+    const spendByDate = new Map();
+    ledger.transactions.forEach(tx => {
+      if (!tx.date.startsWith(ym) || tx.date > today || tx.amountMinor >= 0) return;
+      spendByDate.set(tx.date, (spendByDate.get(tx.date) || 0) + Math.abs(tx.amountMinor));
+    });
+    const ranked = [...spendByDate.entries()].sort((a, b) => a[1] - b[1]);
+    if (ranked.length < 2) return logs;
+    const greatMood = "很好";
+    const lowMood = "低落";
+    const lowDates = new Set(ranked.slice(-Math.max(1, Math.ceil(ranked.length / 3))).map(row => row[0]));
+    const greatDates = new Set(ranked.slice(0, Math.max(1, Math.ceil(ranked.length / 3))).map(row => row[0]));
+    ranked.forEach(([date]) => {
+      if (!logs[date]) return;
+      let mood = logs[date].mood;
+      if (greatDates.has(date)) mood = greatMood;
+      else if (lowDates.has(date)) mood = lowMood;
+      if (mood !== logs[date].mood) logs[date] = { ...logs[date], mood };
+    });
+    return logs;
+  }
+
   root.LifeLedgerLedger = {
     LEDGER_VERSION,
     emptyLedger,
@@ -820,6 +847,7 @@
     filterTransactions,
     shiftYm,
     buildDemoSample,
+    alignDemoMoodWithSpend,
     createId,
   };
 })(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : global);

@@ -2733,6 +2733,7 @@ function maybeApplyDemoWorkspace() {
       lang: currentLang,
       contentSeed: demoState.meta?.demo?.contentSeed,
     });
+    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, new Date());
   }
   state = { ...cloneData(seed), ...demoState };
   saveState();
@@ -9245,7 +9246,16 @@ async function loadMacSample() {
   try { localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify({ savedAt: new Date().toISOString(), keys: saved })); }
   catch { return; }
   removeLocalKeys();
-  state = { ...cloneData(seed), ...api.buildDemoWorkspace({ now: new Date(), lang: currentLang, seedHabits: cloneData(seed.habits) }) };
+  const demoState = api.buildDemoWorkspace({ now: new Date(), lang: currentLang, seedHabits: cloneData(seed.habits) });
+  if (window.LifeLedgerLedger?.buildDemoSample) {
+    demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
+      now: new Date(),
+      lang: currentLang,
+      contentSeed: demoState.meta?.demo?.contentSeed,
+    });
+    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, new Date());
+  }
+  state = { ...cloneData(seed), ...demoState };
   saveState();
   location.reload();
 }

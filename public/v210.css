@@ -151,6 +151,107 @@ html[data-theme="dark"] .ledger-quick input {
   border-radius: 50%;
 }
 
+.ledger-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.ledger-panel-head h3 {
+  margin: 0;
+}
+
+.ledger-chart-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--hairline, rgba(0, 0, 0, 0.08)) 40%, transparent);
+}
+
+.ledger-chart-mode {
+  border: 0;
+  background: transparent;
+  font-size: 0.68rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0.72;
+}
+
+.ledger-chart-mode.is-active {
+  background: var(--surface-elevated, #fff);
+  opacity: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .ledger-chart-mode.is-active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ledger-category-viz {
+  position: relative;
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+}
+
+.ledger-category-viz .ledger-skeleton--donut {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ledger-category-viz.is-ready .ledger-skeleton--donut {
+  display: none;
+}
+
+.ledger-treemap {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ledger-skeleton {
+  background: linear-gradient(
+    105deg,
+    color-mix(in srgb, var(--hairline, #ccc) 25%, transparent) 0%,
+    color-mix(in srgb, var(--hairline, #ccc) 45%, transparent) 45%,
+    color-mix(in srgb, var(--hairline, #ccc) 25%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: ledger-shimmer 1.15s ease-in-out infinite;
+}
+
+.ledger-skeleton--chart {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+}
+
+.ledger-trend:not(.ledger-trend--ready) .ledger-empty {
+  opacity: 0;
+}
+
+@keyframes ledger-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-skeleton {
+    animation: none;
+    opacity: 0.35;
+  }
+}
+
 .ledger-heat-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);

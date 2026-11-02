@@ -4,6 +4,7 @@
   let viewMonth = "";
   let listFilter = "";
   let trendPlot = null;
+  let categoryChartMode = "donut";
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
 
   const $ = (s, r = document) => r.querySelector(s);
@@ -44,36 +45,109 @@
   function renderTrend(host, ledger, ym) {
     destroyTrendPlot();
     if (!host) return;
+    host.classList.remove("ledger-trend--ready");
+    host.innerHTML = `<div class="ledger-skeleton ledger-skeleton--chart" aria-hidden="true"></div>`;
     const uPlot = root.LifeLedgerWidgetUI?.uPlot;
     const series = core().monthlyTrendSeries(ledger, ym, 6);
     const hasData = series.some(row => row.expenseMinor > 0 || row.incomeMinor > 0);
-    if (!hasData || !uPlot) {
-      host.innerHTML = `<p class="ledger-empty">${t("暂无趋势数据", "Add entries to see the trend.", "Noch keine Trenddaten.")}</p>`;
-      return;
+    const paint = () => {
+      if (!hasData || !uPlot) {
+        host.innerHTML = `<p class="ledger-empty">${t("暂无趋势数据", "Add entries to see the trend.", "Noch keine Trenddaten.")}</p>`;
+        host.classList.add("ledger-trend--ready");
+        return;
+      }
+      host.innerHTML = "";
+      const width = Math.max(200, Math.floor(host.clientWidth || 280));
+      const height = 120;
+      const dark = document.documentElement.dataset.theme === "dark";
+      const ink = dark ? "#9eafbe" : "#738495";
+      const grid = dark ? "rgba(200,220,235,.09)" : "rgba(60,90,120,.09)";
+      const accent = dark ? "#7fd4b0" : "#2d7a62";
+      const labels = series.map(row => row.ym.slice(5));
+      trendPlot = new uPlot({
+        width,
+        height,
+        pxAlign: 1,
+        padding: [8, 8, 0, 0],
+        legend: { show: false },
+        select: { show: false },
+        cursor: { show: false },
+        scales: { x: { time: false }, y: { auto: true } },
+        series: [{}, { label: "€", stroke: accent, width: 2, points: { show: false } }],
+        axes: [
+          { stroke: ink, font: "10px -apple-system, system-ui", size: 18, grid: { stroke: grid, width: 1 }, ticks: { show: false } },
+          { stroke: ink, font: "10px -apple-system, system-ui", size: 28, space: 22, grid: { show: false }, ticks: { show: false }, values: (_u, vals) => vals.map(v => `${Math.round(v / 100)}`) },
+        ],
+      }, [labels, series.map(row => row.expenseMinor)], host);
+      host.classList.add("ledger-trend--ready");
+    };
+    requestAnimationFrame(paint);
+  }
+
+  function accentFill(colorName) {
+    const key = (colorName || "sage").replace(/[^a-z0-9-]/gi, "") || "sage";
+    const root = document.documentElement;
+    const picked = getComputedStyle(root).getPropertyValue(`--accent-${key}`).trim();
+    if (picked) return picked;
+    return getComputedStyle(root).getPropertyValue("--accent-sage").trim() || "#3a8f7a";
+  }
+
+  function layoutTreemapCells(items, x, y, w, h, horizontal) {
+    if (!items.length) return [];
+    if (items.length === 1) {
+      return [{ ...items[0], x, y, w, h }];
     }
-    host.innerHTML = "";
-    const width = Math.max(200, Math.floor(host.clientWidth || 280));
-    const height = 120;
-    const dark = document.documentElement.dataset.theme === "dark";
-    const ink = dark ? "#9eafbe" : "#738495";
-    const grid = dark ? "rgba(200,220,235,.09)" : "rgba(60,90,120,.09)";
-    const accent = dark ? "#7fd4b0" : "#2d7a62";
-    const labels = series.map(row => row.ym.slice(5));
-    trendPlot = new uPlot({
-      width,
-      height,
-      pxAlign: 1,
-      padding: [8, 8, 0, 0],
-      legend: { show: false },
-      select: { show: false },
-      cursor: { show: false },
-      scales: { x: { time: false }, y: { auto: true } },
-      series: [{}, { label: "€", stroke: accent, width: 2, points: { show: false } }],
-      axes: [
-        { stroke: ink, font: "10px -apple-system, system-ui", size: 18, grid: { stroke: grid, width: 1 }, ticks: { show: false } },
-        { stroke: ink, font: "10px -apple-system, system-ui", size: 28, space: 22, grid: { show: false }, ticks: { show: false }, values: (_u, vals) => vals.map(v => `${Math.round(v / 100)}`) },
-      ],
-    }, [labels, series.map(row => row.expenseMinor)], host);
+    const total = items.reduce((s, row) => s + row.value, 0);
+    let acc = 0;
+    let split = 0;
+    for (let i = 0; i < items.length - 1; i += 1) {
+      acc += items[i].value;
+      const ratio = acc / total;
+      if (ratio >= 0.45) { split = i + 1; break; }
+      split = i + 1;
+    }
+    const left = items.slice(0, split);
+    const right = items.slice(split);
+    const leftTotal = left.reduce((s, row) => s + row.value, 0);
+    const slice = horizontal
+      ? { lw: w * (leftTotal / total), rw: w - w * (leftTotal / total) }
+      : { lh: h * (leftTotal / total), rh: h - h * (leftTotal / total) };
+    if (horizontal) {
+      return [
+        ...layoutTreemapCells(left, x, y, slice.lw, h, !horizontal),
+        ...layoutTreemapCells(right, x + slice.lw, y, slice.rw, h, !horizontal),
+      ];
+    }
+    return [
+      ...layoutTreemapCells(left, x, y, w, slice.lh, !horizontal),
+      ...layoutTreemapCells(right, x, y + slice.lh, w, slice.rh, !horizontal),
+    ];
+  }
+
+  function renderTreemap(breakdown, ledger) {
+    const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
+    if (!total) return `<div class="ledger-donut ledger-donut--empty">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
+    const items = breakdown.slice(0, 8).map(row => {
+      const cat = ledger.categories.find(c => c.id === row.categoryId);
+      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+      return {
+        value: row.amountMinor,
+        color: accentFill(cat?.color),
+        label: name,
+      };
+    });
+    const cells = layoutTreemapCells(items, 0, 0, 100, 100, true);
+    const rects = cells.map(cell => `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1"><title>${ctx.escape(cell.label)}</title></rect>`).join("");
+    return `<svg class="ledger-treemap" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}">${rects}</svg>`;
+  }
+
+  function renderCategoryViz(breakdown, ledger) {
+    const body = categoryChartMode === "treemap"
+      ? renderTreemap(breakdown, ledger)
+      : renderDonut(breakdown, ledger);
+    const empty = body.includes("ledger-donut--empty");
+    const skel = empty ? "" : `<div class="ledger-skeleton ledger-skeleton--donut" aria-hidden="true"></div>`;
+    return `<div class="ledger-category-viz${empty ? " is-ready" : ""}">${skel}${body}</div>`;
   }
 
   function renderDonut(breakdown, ledger) {
@@ -328,6 +402,12 @@
     bindRecurring(host);
     bindSwipeDelete(host);
     bindKeypad(host);
+    host.querySelectorAll("[data-chart-mode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        categoryChartMode = btn.dataset.chartMode || "donut";
+        render();
+      });
+    });
   }
 
   function bindEdit(host) {
@@ -450,9 +530,15 @@
         <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
       </div>
       <div class="ledger-panels ledger-panels--wide">
-        <section class="ledger-panel">
-          <h3>${t("分类", "Categories", "Kategorien")}</h3>
-          ${renderDonut(breakdown, ledger)}
+        <section class="ledger-panel ledger-panel--categories">
+          <div class="ledger-panel-head">
+            <h3>${t("分类", "Categories", "Kategorien")}</h3>
+            <div class="ledger-chart-toggle" role="group" aria-label="${t("图表样式", "Chart style", "Diagramm")}">
+              <button type="button" class="ledger-chart-mode${categoryChartMode === "donut" ? " is-active" : ""}" data-chart-mode="donut" aria-pressed="${categoryChartMode === "donut"}">${t("圆环", "Donut", "Ring")}</button>
+              <button type="button" class="ledger-chart-mode${categoryChartMode === "treemap" ? " is-active" : ""}" data-chart-mode="treemap" aria-pressed="${categoryChartMode === "treemap"}">${t("树图", "Treemap", "Baum")}</button>
+            </div>
+          </div>
+          ${renderCategoryViz(breakdown, ledger)}
         </section>
         <section class="ledger-panel">
           <h3>${t("支出趋势", "Spending trend", "Ausgabentrend")}</h3>
@@ -477,6 +563,10 @@
       </section>`;
     bindInteractions(host, ledger, ym);
     requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));
+    requestAnimationFrame(() => {
+      const viz = host.querySelector(".ledger-category-viz");
+      if (viz && !viz.classList.contains("is-ready")) viz.classList.add("is-ready");
+    });
     const roll = root.LifeLedgerInteraction?.rollText;
     if (roll) {
       ["income", "expense", "net"].forEach(key => {
