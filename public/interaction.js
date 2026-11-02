@@ -655,9 +655,36 @@
     };
   }
 
+  function skeletonMarkup(className = "ll-skeleton ll-skeleton--block") {
+    return `<div class="${className}" aria-hidden="true"></div>`;
+  }
+
+  function paintWithSkeleton(host, paint, options = {}) {
+    if (!host || typeof paint !== "function") return;
+    const skelClass = options.skeletonClass || "ll-skeleton ll-skeleton--block";
+    const minMs = Number(options.minMs) || 0;
+    host.classList.remove("ll-paint-host--ready");
+    host.innerHTML = skeletonMarkup(skelClass);
+    const started = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const finish = () => {
+      const run = () => {
+        paint();
+        host.classList.add("ll-paint-host--ready");
+      };
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      const wait = Math.max(0, minMs - (now - started));
+      if (wait > 0) setTimeout(run, wait);
+      else requestAnimationFrame(run);
+    };
+    if (options.defer === false) finish();
+    else requestAnimationFrame(finish);
+  }
+
   const exported = {
     VIEW_ORDER,
     MOTION_CLASS,
+    skeletonMarkup,
+    paintWithSkeleton,
     normalizeQuery,
     filterCommands,
     matchRanges,

@@ -535,6 +535,43 @@
     return { greatAvg, lowAvg, greatDays, lowDays };
   }
 
+  function truncateTreemapLabel(text, maxChars) {
+    const raw = String(text || "").trim();
+    if (!raw) return "";
+    const limit = Math.max(3, Number(maxChars) || 8);
+    if (raw.length <= limit) return raw;
+    if (limit <= 3) return raw.slice(0, limit);
+    return `${raw.slice(0, limit - 1)}…`;
+  }
+
+  /** Map treemap cell size (0–100 viewBox units) to a readable label length. */
+  function treemapLabelMaxChars(cellW, cellH, lang) {
+    const side = Math.min(Number(cellW) || 0, Number(cellH) || 0);
+    if (side < 11) return 0;
+    const density = lang === "de" ? 0.38 : lang === "zh" ? 0.52 : 0.45;
+    return Math.max(4, Math.min(16, Math.floor(side * density)));
+  }
+
+  /** Compare average spend on days with high vs low habit completion (completionPercent 0–100). */
+  function habitCompletionSpendInsight(dailyRows, options = {}) {
+    const minSpend = options.minSpendMinor || 1;
+    const rows = (dailyRows || []).filter(row => (row?.spendMinor || 0) >= minSpend && Number.isFinite(row.completionPercent));
+    if (rows.length < 4) return null;
+    const sorted = [...rows].sort((a, b) => b.completionPercent - a.completionPercent);
+    const bucket = Math.max(1, Math.ceil(sorted.length / 3));
+    const high = sorted.slice(0, bucket);
+    const low = sorted.slice(-bucket);
+    const highAvg = Math.round(high.reduce((s, r) => s + r.spendMinor, 0) / high.length);
+    const lowAvg = Math.round(low.reduce((s, r) => s + r.spendMinor, 0) / low.length);
+    if (highAvg === lowAvg) return null;
+    return {
+      highCompletionAvg: highAvg,
+      lowCompletionAvg: lowAvg,
+      highCompletionDays: high.length,
+      lowCompletionDays: low.length,
+    };
+  }
+
   /** Compare average spend on highest- vs lowest-focus days (by focus minutes in the row). */
   function focusSpendInsight(dailyRows, options = {}) {
     const minSpend = options.minSpendMinor || 1;
@@ -940,6 +977,9 @@
     normalizeRecurringEntry,
     moodSpendComparison,
     focusSpendInsight,
+    habitCompletionSpendInsight,
+    truncateTreemapLabel,
+    treemapLabelMaxChars,
     nearestWeekdayIso,
     monthSummary,
     monthKey,

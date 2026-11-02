@@ -137,10 +137,12 @@
       };
     });
     const cells = layoutTreemapCells(items, 0, 0, 100, 100, true);
+    const lang = ctx.lang?.() || "en";
     const rects = cells.map(cell => {
-      const showLabel = cell.w >= 14 && cell.h >= 11;
-      const label = showLabel
-        ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label">${ctx.escape(cell.label.slice(0, 8))}</text>`
+      const maxChars = core().treemapLabelMaxChars(cell.w, cell.h, lang);
+      const short = maxChars ? core().truncateTreemapLabel(cell.label, maxChars) : "";
+      const label = short
+        ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label">${ctx.escape(short)}</text>`
         : "";
       return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1"><title>${ctx.escape(cell.label)}</title></rect>${label}`;
     }).join("");

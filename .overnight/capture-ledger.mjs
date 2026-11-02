@@ -106,6 +106,10 @@ async function shot(browserType, name, opts) {
     await page.click('.nav-item[data-view="timeline"]');
     await page.waitForTimeout(400);
   }
+  if (opts.view === "week") {
+    await page.click('.nav-item[data-view="week"]');
+    await page.waitForTimeout(400);
+  }
   await page.waitForTimeout(500);
   await page.screenshot({ path: join(outDir, `${name}.png`), fullPage: opts.fullPage !== false });
   await browser.close();
@@ -151,6 +155,19 @@ await shot(chromium, "review-focus-spend-light-1440", {
   theme: "light",
   view: "review",
   demoLedger: true,
+});
+await shot(chromium, "ledger-treemap-de-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  lang: "de",
+  demoLedger: true,
+  treemap: true,
+});
+await shot(chromium, "week-insights-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  demoLedger: true,
+  view: "week",
 });
 await shot(chromium, "timeline-enter-light-1440", {
   viewport: { width: 1440, height: 900 },

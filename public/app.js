@@ -7469,6 +7469,7 @@ function dateLocale() {
 function renderWeekInsights() {
   const grid = $("#weekInsightsGrid");
   if (!grid) return;
+  grid.classList.add("week-insights--loading");
 
   const key = selectedWorkspaceWeek;
   const { monday } = weekDatesFromKey(key);
@@ -7529,6 +7530,7 @@ function renderWeekInsights() {
       window.LifeLedgerInteraction?.mountHairline(emptyArt, "./assets/hairline/week-insights-empty.svg");
     }
   }
+  requestAnimationFrame(() => grid.classList.remove("week-insights--loading"));
 }
 
 function habitStreak(habitId, date) {
@@ -7593,6 +7595,12 @@ async function renderJournalFeed(version) {
   syncJournalMonthOptions();
   const mode = journalMode, month = $('#journalMonthFilter').value;
   const host = $('#journalFeed');
+  const feedNeedsAsync = mode === 'timeline';
+  if (feedNeedsAsync && host) {
+    host.classList.remove('ll-paint-host--ready');
+    host.innerHTML = window.LifeLedgerInteraction?.skeletonMarkup?.('ll-skeleton ll-skeleton--feed')
+      || '<div class="ll-skeleton ll-skeleton--feed" aria-hidden="true"></div>';
+  }
   const words = mode === 'weeks' ? languageText('周度','Weekly','Wöchentlich') : mode === 'months' ? languageText('月度','Monthly','Monatlich') : languageText('日度','Daily','Täglich');
   $('#journalFeedKicker').textContent = languageText('留下来的，都是生活','LIFE, IN YOUR OWN WORDS','DAS LEBEN, IN EIGENEN WORTEN');
   $('#journalFeedTitle').textContent = languageText(`${words}时间轴`,`${words} timeline`,`${words}e Zeitleiste`);
@@ -7633,6 +7641,7 @@ async function renderJournalFeed(version) {
     return `<article class="journal-feed-entry" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
   }).join('') : `<div class="feed-empty">${hairlineEmptyMarkup('./assets/hairline/empty-journal.svg',languageText('这里，留给以后的回看','Room for the next chapter','Platz für das nächste Kapitel'),languageText('这个范围还没有文字或照片。可以切换月份，或先写下一段复盘。','No writing or photos in this range yet. Try another month, or write a reflection.','Noch keine Texte oder Fotos in diesem Zeitraum. Wähle einen anderen Monat oder schreibe einen Rückblick.'))}</div>`;
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
+  host?.classList.add('ll-paint-host--ready');
   hydrateHairlineMounts(host);
   $('#journalLoadMore').hidden = entries.length <= visible.length;
   $('#journalLoadMore').textContent = languageText('继续向前翻','Read further back','Weiter zurücklesen');
@@ -7934,14 +7943,21 @@ function renderReviewLedgerSummary() {
   const locale = i18n[currentLang]?.locale || "de-DE";
   const cur = ledger.settings.defaultCurrency;
   const dates = reviewMonthDates(cursor);
-  const dailyRows = dates.map(date => ({
-    date,
-    mood: getLog(date).mood,
-    spendMinor: L.spendingTodayMinor(ledger, date),
-    focusMinutes: focusSessionsBetween(date, date).reduce((sum, session) => sum + focusSessionMinutes(session), 0),
-  }));
+  const dailyRows = dates.map(date => {
+    const scored = dailyHabits(date);
+    const done = scored.filter(h => getLog(date).completed.includes(h.id)).length;
+    const completionPercent = scored.length ? Math.round((done / scored.length) * 100) : null;
+    return {
+      date,
+      mood: getLog(date).mood,
+      spendMinor: L.spendingTodayMinor(ledger, date),
+      focusMinutes: focusSessionsBetween(date, date).reduce((sum, session) => sum + focusSessionMinutes(session), 0),
+      completionPercent,
+    };
+  });
   const moodCompare = L.moodSpendComparison(dailyRows);
   const focusCompare = L.focusSpendInsight(dailyRows);
+  const habitCompare = L.habitCompletionSpendInsight(dailyRows);
   let moodLine = "";
   if (moodCompare) {
     const { greatAvg, lowAvg } = moodCompare;
@@ -7960,6 +7976,15 @@ function renderReviewLedgerSummary() {
       `An fokussierten Tagen im Schnitt ${L.formatMoney(-highFocusAvg, cur, locale)} Ausgaben, an ruhigeren ${L.formatMoney(-lowFocusAvg, cur, locale)}.`,
     ))}</p>`;
   }
+  let habitLine = "";
+  if (habitCompare) {
+    const { highCompletionAvg, lowCompletionAvg } = habitCompare;
+    habitLine = `<p class="review-ledger-habits">${escapeHtml(languageText(
+      `习惯完成度较高日平均支出 ${L.formatMoney(-highCompletionAvg, cur, locale)}，完成度较低日 ${L.formatMoney(-lowCompletionAvg, cur, locale)}。`,
+      `On days you completed more habits you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
+      `An Tagen mit hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
+    ))}</p>`;
+  }
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
@@ -7967,7 +7992,7 @@ function renderReviewLedgerSummary() {
       <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${moodLine}${focusLine}</article>`;
+    </div>${moodLine}${focusLine}${habitLine}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 
@@ -8052,6 +8077,23 @@ function countLabel(count) {
   return `${value} 次`;
 }
 
+function paintReviewAnalyticsPanels(dates, points) {
+  const paint = window.LifeLedgerInteraction?.paintWithSkeleton;
+  const heatmap = $("#reviewHeatmap");
+  const compare = $("#reviewHabitCompare");
+  if (heatmap) {
+    const body = () => { heatmap.innerHTML = renderConsistencyHeatmap(dates); };
+    if (paint) paint(heatmap, body, { skeletonClass: "ll-skeleton ll-skeleton--heatmap" });
+    else body();
+  }
+  if (compare) {
+    const html = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
+    const body = () => { compare.innerHTML = html; };
+    if (paint) paint(compare, body, { skeletonClass: "ll-skeleton ll-skeleton--habit-bars" });
+    else body();
+  }
+}
+
 function renderReviewTrendChart() {
   const chart = $("#reviewTrendChart");
   if (!chart || !analyticsApi()) return;
@@ -8075,10 +8117,7 @@ function renderReviewTrendChart() {
     });
     chart.innerHTML = `<h3 class="review-trend-title">${escapeHtml(tr("review.trendTitle"))} <span class="review-trend-range">${escapeHtml(range)}</span></h3><div class="review-trend-plot review-trend-with-note">${renderTrendSvg(points, range)}<aside class="review-trend-note">${hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.trendTitle"), tr("review.insufficient"))}</aside></div>`;
     hydrateHairlineMounts(chart);
-    const heatmap = $("#reviewHeatmap");
-    const compare = $("#reviewHabitCompare");
-    if (heatmap) heatmap.innerHTML = renderConsistencyHeatmap(dates);
-    if (compare) compare.innerHTML = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
+    paintReviewAnalyticsPanels(dates, points);
     return;
   }
   const points = dates.map(date => ({ date, value: completionFor(date) }));
@@ -8103,10 +8142,7 @@ function renderReviewTrendChart() {
   }
   host.dataset.signature = String(dates.length);
   host.innerHTML = `${trend}${focus}`;
-  const heatmap = $("#reviewHeatmap");
-  if (heatmap) heatmap.innerHTML = renderConsistencyHeatmap(dates);
-  const compare = $("#reviewHabitCompare");
-  if (compare) compare.innerHTML = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
+  paintReviewAnalyticsPanels(dates, points);
 }
 
 function renderTrendSvg(points, summary) {

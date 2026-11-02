@@ -1,43 +1,35 @@
 # Overnight progress
 
-## Round 6 — done
+## Round 8 — done
 
-- **Recurring templates:** `upsertRecurringTemplate` / `removeRecurringTemplate` / `restoreRecurringTemplate` + normalize sanitization in `ledger-core.js`. Money page **Add recurring** + edit/delete (undo toast), opaque body popover (fields not wrapped in `<label>` with inner buttons).
-- **Review habits:** `habitMonthSparkSvg` daily strip column in habit table; weekday bars get staggered grow-in (`rv-weekdays--enter`).
-- **Page motion:** Week `.module-card` and Timeline feed/layout enter stagger in `v211-polish.css` (respects `html.motion-reduced`).
-- **Tests:** +1 recurring CRUD test → **258 pass**.
-- **Screenshots:** `ledger-recurring-popover-light-1440.png`, `timeline-enter-light-1440.png`, full capture refresh (5291).
-
-## Round 7 — done
-
-- **Recurring income + weekly cadence:** popover optgroups (expense/income), cadence monthly|weekly with weekday field; core `normalizeRecurringEntry` / `applyRecurringTemplate` / `nearestWeekdayIso`.
-- **Review:** `focusSpendInsight` + second line on monthly Money panel (high- vs low-focus day spend); demo capture seeds sample `focusSessions`.
-- **Ledger polish:** treemap in-tile labels (large cells), mobile `#ledgerView` bottom padding for keypad + nav, best-streak headline gradient on review insights.
-- **Cloud merge tests:** `tests/ledger-cloud-merge.test.mjs` exercises `mergeRemoteCloudPayload` local-ledger retention (functions/ not in this clone — full fakecloud wrangler skipped).
-- **Tests:** +5 → **263 pass**.
-- **Screenshots:** `ledger-recurring-weekly-light-1440.png`, `ledger-mobile-keypad-light-390.png`, `review-focus-spend-light-1440.png`, capture refresh.
+- **Treemap i18n:** `truncateTreemapLabel` / `treemapLabelMaxChars` in `ledger-core.js`; labels scale with cell size and locale (DE shorter density); stroke/contrast tweak in `v211-polish.css`.
+- **Review correlation:** `habitCompletionSpendInsight` + third line on monthly Money panel (needs ≥4 days with spend + completion variance; demo month still often only 2 logged days).
+- **Skeleton polish:** `LifeLedgerInteraction.paintWithSkeleton` + `skeletonMarkup`; `v212-skeleton.css`; journal **日度** feed shows skeleton while photos load; review heatmap/habit panels shimmer one frame on repaint; week insight `<strong>` pulse while stats recalc.
+- **PWA cache:** `v212-skeleton.css` in `sw.js` APP_SHELL.
+- **Tests:** +2 treemap truncate + habit completion insight → **265 pass**.
+- **Screenshots:** `ledger-treemap-de-light-1440.png`, `week-insights-light-1440.png`, capture refresh (5291).
 
 ## Half-done
 
-- fakecloud Pages dev smoke — blocked: no `functions/` or `schema.sql` in overnight clone; merge path covered by unit test.
-- Broader Goal 2: global skeleton on week/timeline loads.
+- fakecloud Pages dev smoke — still no `functions/` in overnight clone.
+- Habit×支出复盘文案在演示数据下常不出现（当月记录天数不足 4 天）。
 
 ## Next round priorities
 
-1. If functions tree available elsewhere, run `.overnight/fakecloud.sh` end-to-end PUT/GET with ledger payload.
-2. Habit/review skeleton placeholders on slow renders.
-3. Treemap label truncation i18n / contrast pass on small tiles.
+1. Pad demo logs across more November days so habit×spend insight visible in review screenshots.
+2. Timeline calendar mode skeleton while photo month loads (same pattern as feed).
+3. Optional: treemap label luminance class for pale accent tiles.
 
 ## Known bugs / gaps
 
-- Mobile floating nav dock may still partially overlap keypad on very short viewports (padding mitigated, not eliminated).
-- `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged, low risk.
+- Mobile floating nav dock may still partially overlap keypad on very short viewports.
+- `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged.
 - fakecloud script expects repo-root `functions/` + `schema.sql` (missing here).
 
 ## npm test
 
 ```
-263 pass, 0 fail (round 7)
+265 pass, 0 fail (round 8)
 ```
 
 ## Gate result
@@ -64,3 +56,9 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 7
 ℹ tests 263 ℹ pass 263 ℹ fail 0 
+
+## Driver gate after round 8
+_pending_
+
+## Driver gate after round 8
+ℹ tests 265 ℹ pass 265 ℹ fail 0 

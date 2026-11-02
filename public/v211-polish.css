@@ -93,13 +93,13 @@ html.motion-reduced .view.is-entering #ledgerView :is(.ledger-summary article, .
 }
 
 .ledger-treemap-label {
-  fill: rgba(255, 255, 255, 0.92);
-  font-size: 4.5px;
+  fill: rgba(255, 255, 255, 0.94);
+  font-size: 4.2px;
   font-weight: 650;
   pointer-events: none;
   paint-order: stroke fill;
-  stroke: rgba(0, 0, 0, 0.35);
-  stroke-width: 0.35px;
+  stroke: rgba(0, 0, 0, 0.42);
+  stroke-width: 0.4px;
 }
 
 html[data-theme="dark"] .ledger-treemap-label {

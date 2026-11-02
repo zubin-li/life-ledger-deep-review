@@ -12,12 +12,14 @@ All notable changes are documented here.
 - **Edit transaction** popover (opaque, body-level), **recurring templates** with create/edit/delete (undo), “Post now”, mobile **swipe-left to delete**, `updateTransaction` / `applyRecurringTemplate` / `upsertRecurringTemplate` in `ledger-core.js`.
 - Demo sample **pads early-month** expenses so November donut, heatmap, and Today card match summary; sample includes two recurring templates.
 - **Recurring:** income categories + weekly cadence; **`focusSpendInsight`** on monthly review; treemap cell labels; **`tests/ledger-cloud-merge.test.mjs`**.
+- **`habitCompletionSpendInsight`** on monthly review (habit completion vs spending); shared **`paintWithSkeleton`** / journal feed loading skeleton (`v212-skeleton.css`).
 
 ### Changed
 
 - Mood-vs-spend review insight uses testable `moodSpendComparison` in `ledger-core.js`; quick-entry field no longer wrapped in `<label>` (Add button stays outside).
 - Review **habit daily sparkline** column and weekday bar grow-in; Week/Timeline page enter stagger (`v211-polish.css`).
 - Mobile ledger page extra bottom padding for keypad; review best-streak headline styling.
+- Treemap labels use locale-aware truncation; review heatmap/habit panels show skeleton shimmer while repainting; week insight numbers pulse while recalculating.
 
 ## [2.1.0] - 2026-11-02
 

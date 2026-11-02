@@ -205,6 +205,27 @@ test("focusSpendInsight compares high vs low focus spend", () => {
   assert.ok(insight.lowFocusAvg > insight.highFocusAvg);
 });
 
+test("truncateTreemapLabel respects max chars and ellipsis", () => {
+  assert.equal(L.truncateTreemapLabel("Lebensmittel", 9), "Lebensmi…");
+  assert.equal(L.truncateTreemapLabel("咖啡", 6), "咖啡");
+  assert.equal(L.treemapLabelMaxChars(10, 10, "de"), 0);
+  assert.ok(L.treemapLabelMaxChars(20, 14, "de") >= 5);
+});
+
+test("habitCompletionSpendInsight compares high vs low completion spend", () => {
+  const rows = [
+    { completionPercent: 100, spendMinor: 500 },
+    { completionPercent: 90, spendMinor: 600 },
+    { completionPercent: 85, spendMinor: 550 },
+    { completionPercent: 20, spendMinor: 4000 },
+    { completionPercent: 10, spendMinor: 3500 },
+    { completionPercent: 0, spendMinor: 3200 },
+  ];
+  const insight = L.habitCompletionSpendInsight(rows);
+  assert.ok(insight);
+  assert.ok(insight.lowCompletionAvg > insight.highCompletionAvg);
+});
+
 test("monthlyTrendSeries returns six months", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;
