@@ -2030,7 +2030,7 @@ dependencies = [
 
 [[package]]
 name = "life-ledger-deep-review-desktop"
-version = "3.0.0"
+version = "3.0.1"
 dependencies = [
  "objc2",
  "objc2-app-kit",

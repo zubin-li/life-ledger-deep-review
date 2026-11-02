@@ -3239,6 +3239,8 @@ function conflictRecoveryStorageFallbackActive(record, provider, localStorageRef
 /* life-ledger-cloud-revision-end */
 const cloudRevisionTracker = createCloudRevisionTracker();
 let cloudPendingConflictResolvedOnLastGet = false;
+// A first-device seed (Today prefs, profile) found during a pull; uploaded once the pull has opened the gate.
+let cloudSeedPending = false;
 let cloudSyncRuntime = null;
 function initCloudSyncRuntime() {
   cloudSyncRuntime = createCloudSyncRuntime({
@@ -3525,6 +3527,12 @@ async function pullCloudStateOnce() {
       performMissingInit: () => pushCloudState({ force: true, allowDuringPull: true }),
     });
     if (result.outcome === "auth") markAuthExpired();
+    else if (result.outcome === "loaded" && cloudSeedPending && !cloudSyncConflictBlocksAutoPush()) {
+      // The gate is open now: mark the seed as a real local change so it is pushed against the pulled revision.
+      cloudSeedPending = false;
+      setSaveMode("cloud", tr("save.cloudSaved"));
+      saveState({ bumpUpdatedAt: true });
+    }
     else if (result.outcome === "loaded") {
       setSaveMode("cloud", tr("save.cloudSaved"));
       if (cloudPendingConflictResolvedOnLastGet) {
@@ -6182,6 +6190,11 @@ async function downloadExport(event) {
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
+// Backups never contain the cloud photo wall (its files live in R2, only the list is in the record), so a restore
+// or its Undo keeps the current list instead of silently emptying the wall on every device.
+function keepCloudWallMedia(wallMedia) {
+  if (cloudMode && isRecord(wallMedia) && !isRecord(state.wallMedia)) state.wallMedia = cloneData(wallMedia);
+}
 function importedPayload(raw) {
   const modern = raw?.format === BACKUP_FORMAT && isRecord(raw.data);
   if (modern && Number(raw.schemaVersion) > BACKUP_SCHEMA_VERSION) throw new Error("unsupported-backup-version");
@@ -6354,9 +6367,11 @@ async function restorePendingImport() {
   const suffix = window.LifeLedgerStorageSuffix || "";
   localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify(createRestoreSafetySnapshot(state, localStorage, { suffix })));
   const demoWasActive = isDemoWorkspaceActive();
+  const wallMedia = state.wallMedia;
   state = isComplete
     ? cloneData(pendingImport.data)
     : mergeBackupData(demoWasActive ? cleanStarterWorkspaceBase() : state, pendingImport.data);
+  keepCloudWallMedia(wallMedia);
   if (demoWasActive) {
     dismissDemoMetadataAfterRestore();
     stripDemoCalendarPhotos();
@@ -6396,7 +6411,9 @@ function undoLastRestore() {
     }
     const previous = importedPayload(legacyRawState ? safety : safety.state).data;
     const suffix = window.LifeLedgerStorageSuffix || "";
+    const wallMedia = state.wallMedia;
     state = previous;
+    keepCloudWallMedia(wallMedia);
     if (hasPreferences && restoreBackupPreferences(localStorage, safety.preferences, { suffix })) {
       syncBackupPreferencesToRuntime();
     }
@@ -8834,7 +8851,7 @@ function adoptCloudProfile(remote, options = {}) {
     return;
   }
   const local = deviceProfileCache || getDeviceProfile();
-  if (!state.profile && (local.name || local.avatar)) { state.profile = cloneData(local); saveState(options); }
+  if (!state.profile && (local.name || local.avatar)) { state.profile = cloneData(local); saveState(options); cloudSeedPending = true; }
 }
 function placeAvatar(img, frame) { const f = profileFrame(frame); img.style.objectPosition = `${f.x}% ${f.y}%`; img.style.transformOrigin = `${f.x}% ${f.y}%`; img.style.transform = f.zoom > 1 ? `scale(${f.zoom})` : ""; }
 function renderDeviceProfile() {
@@ -9234,7 +9251,7 @@ function applyCloudPrefs(options = {}) {
     // (user 10/28), so the Mac app never seeds: it waits for the browser's choices.
     if (window.__TAURI__) return;
     const seed = localPrefs({ seed: true });
-    if (Object.keys(seed).length) { state.prefs = seed; saveState(options); }
+    if (Object.keys(seed).length) { state.prefs = seed; saveState(options); cloudSeedPending = true; }
     return;
   }
   let changed = false;

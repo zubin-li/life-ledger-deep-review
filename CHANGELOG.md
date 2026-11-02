@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.7] - 2026-11-02
+
+Web 2.0.7 and Life Ledger for Mac 3.0.1. Audit remediation from PR #13, plus two fixes found while reviewing it.
+
 ### Added
 
 - Authenticated `GET /api/version` release metadata, canonical release constants, guarded Cloudflare deploy tooling (`deploy:preflight`, `deploy:cloudflare -- --confirm`, `deploy:verify`, `deploy:rollback-command`), and English/Chinese operator runbooks under `docs/cloudflare-release-runbook*.md`.
@@ -22,6 +26,8 @@ All notable changes are documented here.
 - Unified both habit deletion entry points behind one confirmation flow and added a one-shot Undo that restores the original habit position and exact historical completion arrays.
 - Kept native backup permissions restricted to the local Tauri window, preserved the connected desktop OAuth return marker, and aligned macOS workflow artifact paths with the actual `Life Ledger.app` bundle.
 - Corrected habit accent-color rendering in the macOS webview by applying literal catalog colors and emitting the expected input/change events.
+- Cloud edition: a browser that already had a custom Today layout, weather city or profile uploads them again after the first pull (the new first-pull gate had kept them local).
+- Cloud edition: a full backup restore and its Undo keep the photo wall; backups do not contain wall media, so the wall used to empty on every device.
 
 ## [2.0.6] - 2026-10-28
 
