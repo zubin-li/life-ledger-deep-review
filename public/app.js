@@ -2710,7 +2710,9 @@ function maybeApplyDemoWorkspace() {
   // The Mac app (?desktop=tauri-local) opens exactly like the local web edition (user 10/27): the three-month
   // sample is there on first launch; anything recorded before moves into the restorable backup, never deleted.
   const macLocal = desktopMode === "tauri-local";
-  const eligible = macLocal || api.isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured });
+  const eligible = macLocal
+    || api.isPreviewShowcaseEligible?.(previewName)
+    || api.isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured });
   // One-time reset of the local web edition (user 10/22): drop every older local record so the
   // three-month sample shows; afterwards "清除本机数据" in Settings lets anyone start blank.
   if (eligible && localStorage.getItem(LOCAL_EDITION_KEY) === "wipe") {
@@ -3047,6 +3049,11 @@ function mergeRemoteCloudPayload(remotePayload, seed, cloneDataFn, localLedger) 
   }
   return merged;
 }
+function shouldBackfillCloudLedger(remotePayload, localState) {
+  if (!validCloudApplicationPayload(remotePayload)) return false;
+  if (remotePayload.ledger !== undefined) return false;
+  return (localState?.ledger?.transactions?.length ?? 0) > 0;
+}
 function createConflictRecoveryPortableBackup(currentState, storage, {
   backupFormat,
   backupSchemaVersion,
@@ -3279,6 +3286,7 @@ const cloudRevisionTracker = createCloudRevisionTracker();
 let cloudPendingConflictResolvedOnLastGet = false;
 // A first-device seed (Today prefs, profile) found during a pull; uploaded once the pull has opened the gate.
 let cloudSeedPending = false;
+let cloudLedgerBackfillPending = false;
 let cloudSyncRuntime = null;
 function initCloudSyncRuntime() {
   cloudSyncRuntime = createCloudSyncRuntime({
@@ -3508,6 +3516,7 @@ async function fetchCloudRemoteOutcome() {
     renderDeviceProfile();
     applyCloudPrefs({ skipCloud: true, preserveUpdatedAt: true });
     authExpired = false;
+    if (shouldBackfillCloudLedger(remote?.payload, state)) cloudLedgerBackfillPending = true;
     return "loaded";
   }
   const response = await fetch(CLOUD_API, { headers: { accept: "application/json" } });
@@ -3551,6 +3560,7 @@ async function fetchCloudRemoteOutcome() {
   renderDeviceProfile();
   applyCloudPrefs({ skipCloud: true, preserveUpdatedAt: true });
   authExpired = false;
+  if (shouldBackfillCloudLedger(remote?.payload, state)) cloudLedgerBackfillPending = true;
   return "loaded";
 }
 async function pullCloudStateOnce() {
@@ -3576,6 +3586,10 @@ async function pullCloudStateOnce() {
     }
     else if (result.outcome === "loaded") {
       setSaveMode("cloud", tr("save.cloudSaved"));
+      if (cloudLedgerBackfillPending && !cloudSyncConflictBlocksAutoPush()) {
+        cloudLedgerBackfillPending = false;
+        saveState({ bumpUpdatedAt: true });
+      }
       if (cloudPendingConflictResolvedOnLastGet) {
         cloudSyncRuntime.afterPushSuccess();
         cloudPendingConflictResolvedOnLastGet = false;

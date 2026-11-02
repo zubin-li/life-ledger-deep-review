@@ -84,3 +84,25 @@ test("resolvePendingConflictOnRemoteGet passes backup ledger into merge", () => 
   assert.match(fn, /pending\?\.backup\?\.data\?\.ledger/);
   assert.match(fn, /mergeRemoteCloudPayload\([^)]*localLedger/);
 });
+
+test("shouldBackfillCloudLedger when remote payload omits ledger but local has transactions", () => {
+  const validSrc = extractFunctionSource("function validCloudApplicationPayload(");
+  const fnSrc = extractFunctionSource("function shouldBackfillCloudLedger(");
+  const sandbox = {};
+  vm.runInNewContext(`${validSrc}\n${fnSrc}`, sandbox);
+  const { shouldBackfillCloudLedger } = sandbox;
+  const remote = { habits: [], logs: {} };
+  assert.equal(shouldBackfillCloudLedger(remote, { ledger: { transactions: [{ id: "a" }] } }), true);
+  assert.equal(shouldBackfillCloudLedger({ habits: [], logs: {}, ledger: {} }, { ledger: { transactions: [{ id: "a" }] } }), false);
+  assert.equal(shouldBackfillCloudLedger(remote, { ledger: { transactions: [] } }), false);
+});
+
+test("pull after load backfills ledger to cloud when remote had none", () => {
+  assert.match(app, /cloudLedgerBackfillPending/);
+  assert.match(app, /shouldBackfillCloudLedger\(remote\?\.payload, state\)/);
+  assert.match(app, /cloudLedgerBackfillPending && !cloudSyncConflictBlocksAutoPush\(\)/);
+});
+
+test("preview showcase demo seeds in online mode", () => {
+  assert.match(app, /isPreviewShowcaseEligible\?\.\(previewName\)/);
+});

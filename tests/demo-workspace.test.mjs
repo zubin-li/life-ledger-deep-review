@@ -14,6 +14,7 @@ import {
   hasMeaningfulUserData,
   isDemoActive,
   isLocalOnlyEligible,
+  isPreviewShowcaseEligible,
   relocalizeDemoWorkspace,
   resolveDismissedKey,
   resolveStorageKey,
@@ -144,8 +145,14 @@ test("local-only eligibility and seed gating", () => {
   assert.equal(isLocalOnlyEligible({ deploymentMode: "local", cloudBaseConfigured: false }), true);
   assert.equal(isLocalOnlyEligible({ deploymentMode: "cloudflare", cloudBaseConfigured: false }), false);
   assert.equal(isLocalOnlyEligible({ deploymentMode: "local", cloudBaseConfigured: true }), false);
+  assert.equal(isPreviewShowcaseEligible(DEMO_PREVIEW_ID), true);
+  assert.equal(isPreviewShowcaseEligible("other"), false);
 
   const empty = { habits: starterHabits, logs: {}, reviews: {}, weeklyGoals: {}, focusSessions: [] };
+  assert.equal(
+    shouldSeedDemo({ eligible: isPreviewShowcaseEligible(DEMO_PREVIEW_ID), dismissed: false, storedRaw: null, state: empty }),
+    true,
+  );
   assert.equal(shouldSeedDemo({ eligible: true, dismissed: false, storedRaw: null, state: empty }), true);
   assert.equal(shouldSeedDemo({ eligible: false, dismissed: false, storedRaw: null, state: empty }), false);
   assert.equal(shouldSeedDemo({ eligible: true, dismissed: true, storedRaw: null, state: empty }), false);

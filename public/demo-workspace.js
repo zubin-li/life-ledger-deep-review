@@ -55,6 +55,11 @@ export function isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured }) {
   return deploymentMode === "local" || !deploymentMode;
 }
 
+/** Showcase URL (`?local-preview=demo-showcase-v1`) seeds fiction demo even in online editions. */
+export function isPreviewShowcaseEligible(previewParam) {
+  return previewParam === DEMO_PREVIEW_ID;
+}
+
 export function isDemoActive(state) {
   return Boolean(state?.meta?.demo?.version === DEMO_META_VERSION && state.meta.demo.active);
 }
@@ -813,6 +818,7 @@ if (typeof window !== "undefined") {
     resolveStorageKey,
     resolveDismissedKey,
     isLocalOnlyEligible,
+    isPreviewShowcaseEligible,
     isDemoActive,
     isStarterHabitSet,
     hasMeaningfulUserData,

@@ -27,6 +27,8 @@ All notable changes are documented here.
 - **Money (Goal 2):** quick-entry form success flash, new transaction row enter, submit button press (`v232-ledger-entry-feedback.css`).
 - **QA:** `npm test` skips `*.browser.test.mjs`; run `npm run test:browser` for Playwright suites locally or in CI.
 - **QA:** `fakecloud-conflict.browser.test.mjs` exercises stale CAS PUT → conflict recovery card on the Import tab, including Money merge preview (after seeding ledger on cloud payload).
+- **QA:** `fakecloud-preview-ledger.browser.test.mjs` — `?mode=cloudflare&local-preview=demo-showcase-v1` seeds fiction demo (incl. Money) and uploads ledger on first sync without manual API seeding.
+- **Cloud sync:** `?local-preview=demo-showcase-v1` now seeds the three-month fiction demo (including Money) in online editions; after pull, missing remote `ledger` triggers a one-time backfill push.
 - **QA:** `fakecloud.sh` copies the site into `/tmp/life-ledger-overnight-fakecloud` so local Pages dev does not inherit repo-root `wrangler.jsonc` D1 bindings (fixes empty `states` table / 500 on GET).
 
 ### Changed

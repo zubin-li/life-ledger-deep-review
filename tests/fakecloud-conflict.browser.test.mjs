@@ -130,6 +130,17 @@ test(
         });
         assert.equal(rowVisible, true);
         await page.waitForSelector("#conflictLedgerPreview .conflict-ledger-preview-kicker", { timeout: 8000 });
+
+        page.once("dialog", dialog => dialog.accept());
+        await page.click("#dismissConflictRecovery");
+        await page.waitForTimeout(400);
+        const cleared = await page.evaluate(key => !localStorage.getItem(key), SYNC_CONFLICT_KEY);
+        assert.equal(cleared, true);
+        const rowHidden = await page.evaluate(() => {
+          const row = document.getElementById("conflictRecoveryRow");
+          return !row || row.hidden;
+        });
+        assert.equal(rowHidden, true);
       } finally {
         await context.close();
         await browser.close();

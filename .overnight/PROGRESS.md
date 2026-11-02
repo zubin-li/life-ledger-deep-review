@@ -1,5 +1,42 @@
 # Overnight progress
 
+## Batch 4 · Round 9 — done
+
+- **REVIEW.md：** HIGH/MED（CloudBase ledger、多币种分类、预算去重）仍为 Round 1 已修；本轮未新增 Antigravity 项。
+- **Goal 1 — 在线预览 + 记账：** `demo-workspace.js` 新增 `isPreviewShowcaseEligible`；`maybeApplyDemoWorkspace` 在 `?local-preview=demo-showcase-v1` 时即使 `mode=cloudflare` 也会 seed 含 `ledger` 的三月虚构示例。`shouldBackfillCloudLedger` + `cloudLedgerBackfillPending`：远端 payload 无 `ledger` 字段但本机已有流水时，首次 pull 完成后 `saveState({ bumpUpdatedAt: true })` 触发 deferred push 回填云端。
+- **Goal 2 — 409 QA：** `fakecloud-conflict.browser.test.mjs` 增加 headless 点击 **移除** 冲突条（`dialog.accept`），断言 localStorage 记录清除且行隐藏。
+- **Goal 2 — QA：** 新测 `fakecloud-preview-ledger.browser.test.mjs`（5296 fakecloud + preview URL）— 无需手动 PUT，云端 `/api/state` 应含 demo 流水且 Today 支出卡片有金额。
+- **Goal 2 — 截图：** `capture-batch4-round9.mjs`（5295）→ Week 全完成 **zh · dark · 390**（`b4r9-week-all-done-zh-dark-390-*`，WebKit + Chromium）。
+- **文档：** CHANGELOG、`README` EN/ZH/DE 补充 preview 在线 seed + ledger 回填说明。
+- **测试：** `npm test` **325 pass, 0 fail**；`npm run test:browser` **7 pass, 0 fail**。
+
+## Half-done
+
+- （无）
+
+## Next（Round 10）
+
+- 最后一轮：REPORT/CHANGELOG 收束、可选 ledger 页 1440 截图补全、全量 `npm test` + `test:browser` 门禁复述。
+- 仍可选：极矮视口 dock/键盘重叠的 CSS 微调。
+
+## Known bugs / gaps
+
+- 极矮视口 dock/键盘：规则仍在 `v210` 的 v213 段。
+- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据。
+- `#longTermGoalsPane` 在 Week 内默认隐藏；「长期」主导航进入 `longrangeView`。
+- 非 preview URL 的纯 Cloudflare 首次访问仍不会自动 seed 记账（ intentional；真实用户从空账本开始）。
+
+## npm test
+
+```
+325 pass, 0 fail (batch 4 round 9, unit gate)
+7 pass, 0 fail (test:browser)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 4 · Round 8 — done
 
 - **REVIEW.md：** HIGH/MED（CloudBase ledger、多币种分类、预算去重）仍为 Round 1 已修；本轮未新增 Antigravity 项。
@@ -7,44 +44,6 @@
 - **Goal 2 — Import 标签：** `setBackupTab("import")` 现在会调用 `refreshConflictRecoveryVisibility()`，避免冲突卡片在 Import 面板隐藏时预览不刷新（`app.js`）。
 - **Goal 2 — 截图：** `capture-batch4-round8.mjs`（5297）→ Week 全完成 **de · dark · 390**、**Mac 壳 · de · 1440**、长期目标空状态 **de · dark · 390**（`b4r8-*`，WebKit + Chromium）。
 - **测试：** `npm test` **322 pass, 0 fail**；`npm run test:browser` **6 pass, 0 fail**（含新 fakecloud 冲突用例）。
-
-## Half-done
-
-- （无）
-
-## Next（Round 9+）
-
-- Cloudflare + `local-preview` 首次同步仍可能不含 `ledger`（demo 在 cloud 模式不 seed）；可考虑在 `mergeRemoteCloudPayload` 拉取后若本地 preview 含 ledger 则强制首轮 push，或文档说明。
-- 409 流程 UI：下载/ dismiss 按钮的 headless 点击（可选）。
-- Week 全完成横幅 **zh · dark** 对比图（可选）。
-
-## Known bugs / gaps
-
-- 极矮视口 dock/键盘：规则仍在 `v210` 的 v213 段。
-- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据。
-- `#longTermGoalsPane` 在 Week 内默认隐藏；「长期」主导航进入 `longrangeView`（截图脚本用 Week 内 pane 仅作 hairline 对比）。
-
-## npm test
-
-```
-322 pass, 0 fail (batch 4 round 8, unit gate)
-6 pass, 0 fail (test:browser)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
-
-## Batch 4 · Round 7 — done
-
-- **REVIEW.md：** HIGH/MED 三条仍为 Round 1 已修；本轮未改 sync/ledger 核心逻辑。
-- **Goal 2 — 关键修复：** `pages-art.js` + `pages-polish.css` 此前未写入 `index.html` / `sw.js`，Week 全完成横幅、日记/复盘/习惯空状态 hairline 增强实际未运行；已接入 PWA shell。
-- **Goal 2 — Week 全完成横幅：** `ll-week-all-done` 使用与长期目标空状态一致的卡片样式 + `ll-empty-enter`（`pages-art.js`、`v210.css` round 7）。
-- **Goal 2 — 复盘 chips（390）：** ≤520px 时预览文案左对齐、chips 左排，避免与右侧 preview 挤在一行。
-- **QA：** `tests/fakecloud-online.browser.test.mjs` — 本地 `fakecloud.sh` + `?mode=cloudflare` 冒烟（WebKit）；`tests/week-all-done-polish.test.mjs` 断言 wiring。
-- **测试：** `npm test` **322 pass, 0 fail**；`npm run test:browser` **5 pass, 0 fail**。
-- **文档：** `CHANGELOG [Unreleased]` Week 横幅、窄屏 chips、pages-art 接入、fakecloud 浏览器测试。
-- **截图：** `capture-batch4-round7.mjs`（5296）→ `b4r7-review-habit-chips-zh-light-390-*`、`b4r7-week-all-done-zh-light-390-*`（WebKit + Chromium）。
 
 ## Driver gate after round 1
 ℹ tests 313 ℹ pass 313 ℹ fail 0 
@@ -69,3 +68,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 8
 ℹ tests 322 ℹ pass 322 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 325 ℹ pass 325 ℹ fail 0 
