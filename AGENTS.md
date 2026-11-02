@@ -18,3 +18,9 @@
 # Web Today requirements
 
 - Before any Web Today change, read `/Users/ashan/Documents/Codex/ll-361-blank-fix/.hermes/requirements/REQUIREMENTS.md` (the single requirements ledger, every row cites the user's words). New user feedback is added there first; every delivery reports the whole table, not only the latest item.
+
+# Testing without disturbing the owner
+
+- Tests run silently. Use headless browsers (Playwright WebKit for the Mac app's engine), GitHub Actions, or an isolated app copy with its own bundle id (`*.updatertest`, `*.preview`) and its own data folder.
+- Never open visible windows, take keyboard focus or input-method state, or launch, quit, replace or reconfigure the owner's installed `Life Ledger.app` while testing. Installing or updating the owner's app happens only when they ask, and then the owner opens it.
+- Native AppKit/WebKit probes must not create on-screen or key windows; prefer Playwright WebKit with the Mac shell injected (`desktop/mac/shell.js` + `shell.css`) for Mac-only UI checks.
