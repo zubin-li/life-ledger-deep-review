@@ -383,6 +383,49 @@
     }, options);
   }
 
+  function updateTransaction(ledger, id, patch, options = {}) {
+    const base = normalize(ledger, options);
+    const index = base.transactions.findIndex(t => t.id === id);
+    if (index < 0) return null;
+    const prev = base.transactions[index];
+    const next = {
+      ...prev,
+      accountId: typeof patch.accountId === "string" ? patch.accountId : prev.accountId,
+      categoryId: typeof patch.categoryId === "string" ? patch.categoryId : prev.categoryId,
+      amountMinor: Number.isInteger(patch.amountMinor) ? patch.amountMinor : prev.amountMinor,
+      currency: typeof patch.currency === "string" ? patch.currency : prev.currency,
+      date: typeof patch.date === "string" && ISO_DATE.test(patch.date) ? patch.date : prev.date,
+      note: typeof patch.note === "string" ? patch.note.slice(0, 500) : prev.note,
+      id: prev.id,
+      createdAt: prev.createdAt,
+      updatedAt: Date.now(),
+    };
+    if (!validTransaction(next)) return null;
+    base.transactions[index] = next;
+    return { ledger: base, transaction: next };
+  }
+
+  function applyRecurringTemplate(ledger, recurringId, options = {}) {
+    const base = normalize(ledger, options);
+    const rec = base.recurring.find(r => r && r.id === recurringId);
+    if (!rec || !Number.isInteger(rec.amountMinor)) return null;
+    const today = options.today && ISO_DATE.test(options.today) ? options.today : "";
+    const ym = today ? today.slice(0, 7) : monthKey(new Date().toISOString().slice(0, 10));
+    const day = Math.min(28, Math.max(1, Number(rec.dayOfMonth) || 1));
+    const scheduled = `${ym}-${String(day).padStart(2, "0")}`;
+    const date = today || scheduled;
+    const accountId = rec.accountId || base.accounts.find(a => !a.archived)?.id;
+    if (!accountId || !rec.categoryId) return null;
+    return addTransaction(base, {
+      accountId,
+      categoryId: rec.categoryId,
+      amountMinor: rec.amountMinor,
+      currency: rec.currency || base.settings.defaultCurrency,
+      date,
+      note: rec.note || rec.label || "",
+    }, options);
+  }
+
   /** Compare average daily spend on great-mood vs low-mood days (mood values are canonical zh keys). */
   function moodSpendComparison(dailyRows, options = {}) {
     const greatMood = options.greatMood || "很好";
@@ -643,6 +686,109 @@
     }
     ledger = ensureDemoBudgets(ledger, monthKey(today));
     ledger = ensureDemoBudgets(ledger, shiftYm(monthKey(today), -1));
+    ledger = ensureDemoMonthActivity(ledger, now, lang, rng);
+    return ledger;
+  }
+
+  function isoFromDate(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+
+  function expenseCountInMonth(ledger, ym) {
+    return transactionsInMonth(ledger, ym).filter(tx => tx.amountMinor < 0).length;
+  }
+
+  function hasExpenseOn(ledger, iso) {
+    return ledger.transactions.some(tx => tx.date === iso && tx.amountMinor < 0);
+  }
+
+  /** Demo-only: early-month views still show donut, heatmap, and Today card spend. */
+  function ensureDemoMonthActivity(ledger, now, lang, rng) {
+    const today = isoFromDate(now);
+    const ym = monthKey(today);
+    const account = ledger.accounts[0]?.id;
+    if (!account) return ledger;
+    const groceries = categoryByEnglishName(ledger, "Groceries");
+    const dining = categoryByEnglishName(ledger, "Dining");
+    const transport = categoryByEnglishName(ledger, "Transport");
+    const housing = categoryByEnglishName(ledger, "Housing");
+    const dayNum = now.getDate();
+    const picks = [
+      { day: 1, cat: groceries, amountMinor: -(3800 + Math.round(rng() * 1200)), note: lang === "de" ? "REWE" : lang === "zh" ? "超市" : "Groceries" },
+      { day: Math.max(1, dayNum - 1), cat: dining, amountMinor: -(850 + Math.round(rng() * 900)), note: lang === "de" ? "Kaffee" : lang === "zh" ? "咖啡" : "Coffee" },
+      { day: dayNum, cat: transport, amountMinor: -(280 + Math.round(rng() * 420)), note: lang === "de" ? "BVG" : lang === "zh" ? "地铁" : "Transit" },
+    ];
+    picks.forEach(row => {
+      if (!row.cat || row.day > dayNum) return;
+      const iso = `${ym}-${String(row.day).padStart(2, "0")}`;
+      if (hasExpenseOn(ledger, iso)) return;
+      ({ ledger } = addTransaction(ledger, {
+        accountId: account,
+        categoryId: row.cat.id,
+        amountMinor: row.amountMinor,
+        currency: "EUR",
+        date: iso,
+        note: row.note,
+      }, { lang }));
+    });
+    const rentDay = Math.min(3, dayNum);
+    const rentIso = `${ym}-${String(rentDay).padStart(2, "0")}`;
+    if (housing && dayNum >= 1 && !ledger.transactions.some(tx => tx.date.startsWith(ym) && tx.categoryId === housing.id)) {
+      ({ ledger } = addTransaction(ledger, {
+        accountId: account,
+        categoryId: housing.id,
+        amountMinor: -95000,
+        currency: "EUR",
+        date: rentIso,
+        note: lang === "de" ? "Miete" : lang === "zh" ? "房租" : "Rent",
+      }, { lang }));
+    }
+    if (!hasExpenseOn(ledger, today) && dining) {
+      ({ ledger } = addTransaction(ledger, {
+        accountId: account,
+        categoryId: dining.id,
+        amountMinor: -(650 + Math.round(rng() * 400)),
+        currency: "EUR",
+        date: today,
+        note: lang === "de" ? "Mittag" : lang === "zh" ? "午餐" : "Lunch",
+      }, { lang }));
+    }
+    if (!ledger.recurring.length && housing && dining) {
+      ledger.recurring = [
+        {
+          id: createId(),
+          label: lang === "de" ? "Miete monatlich" : lang === "zh" ? "每月房租" : "Rent monthly",
+          accountId: account,
+          categoryId: housing.id,
+          amountMinor: -95000,
+          currency: "EUR",
+          dayOfMonth: 3,
+          cadence: "monthly",
+          note: lang === "de" ? "Miete" : lang === "zh" ? "房租" : "Rent",
+        },
+        {
+          id: createId(),
+          label: lang === "de" ? "Abonnement" : lang === "zh" ? "订阅" : "Subscriptions",
+          accountId: account,
+          categoryId: dining.id,
+          amountMinor: -1299,
+          currency: "EUR",
+          dayOfMonth: 15,
+          cadence: "monthly",
+          note: "Streaming",
+        },
+      ];
+    }
+    if (expenseCountInMonth(ledger, ym) < 2 && groceries) {
+      ({ ledger } = addTransaction(ledger, {
+        accountId: account,
+        categoryId: groceries.id,
+        amountMinor: -2400,
+        currency: "EUR",
+        date: today,
+        note: lang === "de" ? "Einkauf" : lang === "zh" ? "采购" : "Shop",
+      }, { lang }));
+    }
     return ledger;
   }
 
@@ -651,10 +797,13 @@
     emptyLedger,
     normalize,
     parseQuickEntry,
+    parseAmountToken,
     addTransaction,
     removeTransaction,
     restoreTransaction,
     duplicateTransaction,
+    updateTransaction,
+    applyRecurringTemplate,
     moodSpendComparison,
     monthSummary,
     monthKey,

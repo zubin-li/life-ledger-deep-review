@@ -555,7 +555,7 @@
     }
     if (note) note.textContent = todayMinor ? t("spendingToday") : t("spendingEmpty");
     if (monthSide) monthSide.textContent = ledger
-      ? `${t("spendingMonth")} · ${L.formatMoney(monthSummary.expenseMinor, ledger.settings.defaultCurrency, locale)}`
+      ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
       : "";
     c.classList.toggle("is-empty", !todayMinor);
   }

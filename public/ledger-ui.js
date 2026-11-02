@@ -152,11 +152,76 @@
         <span class="ledger-tx-note">${ctx.escape(tx.note || name)}</span>
         <span class="ledger-tx-amt ${tx.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(core().formatMoney(tx.amountMinor, tx.currency, ctx.locale?.()))}</span>
         <span class="ledger-tx-actions">
+          <button type="button" class="icon-button ledger-tx-edit" aria-label="${t("编辑", "Edit", "Bearbeiten")}">✎</button>
           <button type="button" class="icon-button ledger-tx-dup" aria-label="${t("复制", "Duplicate", "Duplizieren")}">⧉</button>
           <button type="button" class="icon-button ledger-tx-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
         </span>
       </li>`;
     }).join("")}</ul>`;
+  }
+
+  function renderRecurring(ledger) {
+    const rows = (ledger.recurring || []).filter(Boolean);
+    if (!rows.length) {
+      return `<p class="ledger-empty ledger-recurring-empty">${t("固定支出可在后续添加。", "Recurring templates will appear here.", "Wiederkehrende Buchungen erscheinen hier.")}</p>`;
+    }
+    return `<ul class="ledger-recurring-list">${rows.map(rec => {
+      const cat = ledger.categories.find(c => c.id === rec.categoryId);
+      const name = rec.label || (cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "");
+      const amt = core().formatMoney(rec.amountMinor, rec.currency || ledger.settings.defaultCurrency, ctx.locale?.());
+      return `<li class="ledger-recurring">
+        <span class="ledger-recurring-name">${ctx.escape(name)}</span>
+        <span class="ledger-recurring-meta">${t("每月", "Monthly", "Monatlich")} · ${ctx.escape(amt)}</span>
+        <button type="button" class="secondary-button ledger-recurring-apply" data-rec="${ctx.escape(rec.id)}">${t("记一笔", "Post now", "Buchen")}</button>
+      </li>`;
+    }).join("")}</ul>`;
+  }
+
+  function closeEditPopover() {
+    document.querySelector(".ledger-edit-popover")?.remove();
+  }
+
+  function openEditPopover(host, tx, ledger) {
+    closeEditPopover();
+    const cat = ledger.categories.find(c => c.id === tx.categoryId);
+    const catName = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+    const amountDisplay = (Math.abs(tx.amountMinor) / 100).toFixed(2).replace(".", ",");
+    const pop = document.createElement("div");
+    pop.className = "ledger-edit-popover";
+    pop.innerHTML = `
+      <form class="ledger-edit-form">
+        <header><strong>${t("编辑交易", "Edit entry", "Buchung bearbeiten")}</strong></header>
+        <p class="ledger-edit-cat">${ctx.escape(catName)}</p>
+        <label class="ledger-edit-field"><span>${t("金额", "Amount", "Betrag")}</span><input name="amount" inputmode="decimal" value="${ctx.escape(amountDisplay)}" /></label>
+        <label class="ledger-edit-field"><span>${t("日期", "Date", "Datum")}</span><input name="date" type="date" value="${ctx.escape(tx.date)}" /></label>
+        <label class="ledger-edit-field"><span>${t("备注", "Note", "Notiz")}</span><input name="note" value="${ctx.escape(tx.note || "")}" /></label>
+        <div class="ledger-edit-actions">
+          <button type="button" class="secondary-button" data-edit-cancel>${t("取消", "Cancel", "Abbrechen")}</button>
+          <button type="submit" class="primary-button">${t("保存", "Save", "Speichern")}</button>
+        </div>
+      </form>`;
+    document.body.appendChild(pop);
+    const form = pop.querySelector("form");
+    pop.querySelector("[data-edit-cancel]")?.addEventListener("click", closeEditPopover);
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const amountRaw = form.querySelector('[name="amount"]').value;
+      const parsed = core().parseQuickEntry(`${amountRaw} ${catName}`, ledger, { lang: ctx.lang?.(), today: tx.date });
+      let amountMinor = tx.amountMinor;
+      if (parsed.ok) amountMinor = parsed.draft.amountMinor;
+      else {
+        const token = core().parseAmountToken(amountRaw);
+        if (token != null) amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
+      }
+      const date = form.querySelector('[name="date"]').value || tx.date;
+      const note = form.querySelector('[name="note"]').value || "";
+      const result = core().updateTransaction(ledgerState(), tx.id, { amountMinor, date, note }, { lang: ctx.lang?.() });
+      if (!result) return;
+      commit(result.ledger);
+      closeEditPopover();
+      ctx.toast?.(t("已更新", "Entry updated", "Buchung aktualisiert"));
+      render();
+    });
   }
 
   function renderKeypad() {
@@ -227,6 +292,8 @@
         list.innerHTML = `${h ? h.outerHTML : ""}${renderList(ledgerState(), ym)}`;
         bindDelete(host, ledgerState());
         bindDuplicate(host);
+        bindEdit(host);
+        bindSwipeDelete(host);
       }
     });
     host.querySelector("[data-ledger-export]")?.addEventListener("click", () => {
@@ -257,7 +324,49 @@
     });
     bindDelete(host, ledger);
     bindDuplicate(host);
+    bindEdit(host);
+    bindRecurring(host);
+    bindSwipeDelete(host);
     bindKeypad(host);
+  }
+
+  function bindEdit(host) {
+    host.querySelectorAll(".ledger-tx-edit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.closest(".ledger-tx")?.dataset.id;
+        if (!id) return;
+        const tx = ledgerState().transactions.find(t => t.id === id);
+        if (!tx) return;
+        openEditPopover(host, tx, ledgerState());
+      });
+    });
+  }
+
+  function bindRecurring(host) {
+    host.querySelectorAll(".ledger-recurring-apply").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.rec;
+        if (!id) return;
+        const result = core().applyRecurringTemplate(ledgerState(), id, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
+        if (!result) return;
+        commit(result.ledger);
+        ctx.toast?.(t("已记一笔", "Entry posted", "Gebucht"));
+        render();
+      });
+    });
+  }
+
+  function bindSwipeDelete(host) {
+    host.querySelectorAll(".ledger-tx").forEach(row => {
+      let startX = 0;
+      row.addEventListener("touchstart", event => {
+        startX = event.touches[0]?.clientX || 0;
+      }, { passive: true });
+      row.addEventListener("touchend", event => {
+        const endX = event.changedTouches[0]?.clientX || 0;
+        if (startX - endX > 72) row.querySelector(".ledger-tx-del")?.click();
+      }, { passive: true });
+    });
   }
 
   function bindDuplicate(host) {
@@ -357,6 +466,10 @@
       <section class="ledger-budget-wrap">
         <h3>${t("预算进度", "Budget progress", "Budgetfortschritt")}</h3>
         ${renderBudgets(ledger, ym)}
+      </section>
+      <section class="ledger-recurring-wrap">
+        <h3>${t("固定支出", "Recurring", "Wiederkehrend")}</h3>
+        ${renderRecurring(ledger)}
       </section>
       <section class="ledger-list-wrap">
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>

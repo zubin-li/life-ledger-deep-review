@@ -1,37 +1,36 @@
 # Overnight progress
 
-## Round 3 — done
+## Round 4 — done
 
-- **ledger-core:** `duplicateTransaction`, `moodSpendComparison` (testable mood vs spend averages); tests +2 (253 total).
-- **ledger-ui:** touch amount keypad (coarse / ≤640px), duplicate action on rows, month summary `rollText`, quick-entry field no longer inside `<label>`.
-- **Goal 2 (start):** `public/v211-polish.css` — ledger page enter stagger, extra bottom safe-area, spending card press feedback, review ledger panel motion; Today spending amount roll-up.
-- **Review:** mood-vs-spend line uses `moodSpendComparison` instead of inline logic.
-- **Screenshots:** demo-seeded captures via `?lang=` — `.overnight/shots/ledger-chromium-light-1440.png`, `ledger-webkit-dark-de-390.png`, `today-spending-zh-390.png`, `review-ledger-light-1440.png`.
-- **CHANGELOG** `[Unreleased]` notes for above.
+- **Demo sample:** `ensureDemoMonthActivity` — early month (e.g. 2026-11-02) gets rent, groceries, transit, lunch; `recurring[]` seeds rent + subscription; donut/heatmap/Today card align with summary (seed 42 verified in screenshots).
+- **Ledger core:** `updateTransaction`, `applyRecurringTemplate`, exported `parseAmountToken`.
+- **Ledger UI:** edit popover (opaque, fixed, buttons not in nested label traps), recurring “记一笔/Post now”, swipe-left delete on touch rows, ✎ edit on each row.
+- **Goal 2:** Today `.tw-card` enter stagger; richer `.ledger-empty`; review `.rv-bar` width transition; Today month spend display uses `Math.abs(expenseMinor)`.
+- **Tests:** +3 (256 total): demo month padding, updateTransaction, applyRecurringTemplate.
+- **Screenshots:** re-captured `.overnight/shots/ledger-chromium-light-1440.png`, `today-spending-zh-390.png`, etc. (server 5291).
 
 ## Half-done
 
-- Demo sample still skews November toward income (expenses mostly in prior months in heatmap/trend) — charts vs summary mismatch in screenshots.
-- Recurring templates, treemap view, swipe-delete on mobile, broader Goal 2 (habits/mood charts, skeletons, page transitions elsewhere).
-- Mac shell screenshot pass not re-run this round.
+- Treemap category view, full recurring editor (create/edit cadence), Mac shell screenshot pass.
+- Broader Goal 2: skeleton loaders, habit/mood correlation charts beyond review bar, page transitions on week/timeline.
 
 ## Next round priorities
 
-1. Enrich `buildDemoSample` so current month has visible expenses (donut + Today card non-zero).
-2. Goal 2 sweep: empty states, habit review micro-charts, `is-entering` coverage on Today cards.
-3. Ledger: edit transaction inline, recurring entry stubs in UI.
-4. Optional Mac-window shot via `ll-mac-qa/habitpick-silent.mjs` pattern.
+1. Mac-window headless shot via `ll-mac-qa/habitpick-silent.mjs` pattern.
+2. Optional treemap toggle on ledger categories panel.
+3. Seed demo journal moods on spend days so mood-vs-spend panel appears in review screenshots.
+4. Skeleton placeholders for ledger uPlot / donut while render mounts.
 
 ## Known bugs / gaps
 
 - Mobile floating nav dock still overlaps ledger keypad area (pre-existing shell).
 - `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged, low risk.
-- Mood correlation only appears when both 很好 and 低落 days have spend in the month.
+- Today card “today” total includes all expenses on selected planning date (can be large if rent posted same day — expected for demo).
 
 ## npm test
 
 ```
-253 pass, 0 fail (round 3)
+256 pass, 0 fail (round 4)
 ```
 
 ## Gate result
@@ -46,3 +45,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 3
 ℹ tests 253 ℹ pass 253 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 256 ℹ pass 256 ℹ fail 0 

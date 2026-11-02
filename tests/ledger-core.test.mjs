@@ -86,6 +86,47 @@ test("buildDemoSample creates transactions and budgets", () => {
   assert.ok(Array.isArray(progress));
 });
 
+test("buildDemoSample fills current month expenses for early-month demo", () => {
+  const ledger = L.buildDemoSample({ now: new Date("2026-11-02T12:00:00"), lang: "en", contentSeed: 42 });
+  const summary = L.monthSummary(ledger, "2026-11");
+  assert.ok(summary.expenseMinor < 0);
+  assert.ok(L.spendingTodayMinor(ledger, "2026-11-02") > 0);
+  assert.ok(L.categoryBreakdown(ledger, "2026-11", "expense").length >= 1);
+  assert.ok(ledger.recurring.length >= 1);
+});
+
+test("updateTransaction patches amount and date", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  const { ledger: withTx, transaction } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -100, currency: "EUR", date: "2026-11-02", note: "a" });
+  const updated = L.updateTransaction(withTx, transaction.id, { amountMinor: -250, date: "2026-11-01", note: "b" });
+  assert.ok(updated);
+  assert.equal(updated.transaction.amountMinor, -250);
+  assert.equal(updated.transaction.date, "2026-11-01");
+  assert.equal(updated.transaction.note, "b");
+});
+
+test("applyRecurringTemplate posts using today date", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-1",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -999,
+    currency: "EUR",
+    dayOfMonth: 28,
+    cadence: "monthly",
+    label: "Test",
+  });
+  const result = L.applyRecurringTemplate(ledger, "rec-1", { lang: "en", today: "2026-11-02" });
+  assert.ok(result);
+  assert.equal(result.transaction.date, "2026-11-02");
+  assert.equal(result.transaction.amountMinor, -999);
+});
+
 test("monthlyTrendSeries returns six months", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

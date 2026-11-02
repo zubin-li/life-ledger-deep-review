@@ -102,3 +102,130 @@ html.motion-reduced .view.is-entering #ledgerView :is(.ledger-summary article, .
     flex-direction: column;
   }
 }
+
+.view.is-entering #todayView.tc-grid.active .tw-card {
+  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(2) { animation-delay: 35ms; }
+.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(3) { animation-delay: 70ms; }
+.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(4) { animation-delay: 105ms; }
+.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(n+5) { animation-delay: 140ms; }
+
+html.motion-reduced .view.is-entering #todayView.tc-grid.active .tw-card {
+  animation: none;
+}
+
+.ledger-empty {
+  padding: 0.75rem 0.5rem;
+  border-radius: 14px;
+  border: 1px dashed var(--hairline, rgba(0, 0, 0, 0.1));
+  text-align: center;
+}
+
+html[data-theme="dark"] .ledger-empty {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ledger-recurring-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ledger-recurring {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.2rem 0.75rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  border-radius: 14px;
+  background: var(--surface-elevated, rgba(255, 255, 255, 0.55));
+}
+
+html[data-theme="dark"] .ledger-recurring {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ledger-recurring-meta {
+  font-size: 0.82rem;
+  opacity: 0.75;
+}
+
+.ledger-recurring-apply {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+}
+
+.ledger-edit-popover {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(12, 16, 22, 0.42);
+}
+
+.ledger-edit-form {
+  width: min(100%, 360px);
+  padding: 1rem 1.1rem 1.1rem;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+  display: grid;
+  gap: 0.65rem;
+}
+
+html[data-theme="dark"] .ledger-edit-form {
+  background: #1e2630;
+  color: #edf2f7;
+}
+
+.ledger-edit-field {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.ledger-edit-field input {
+  padding: 0.5rem 0.65rem;
+  border-radius: 12px;
+  border: 1px solid var(--hairline, rgba(0, 0, 0, 0.12));
+  font-size: 1rem;
+}
+
+.ledger-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.ledger-edit-cat {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 0.88rem;
+}
+
+.view.is-entering #ledgerView .ledger-recurring-wrap {
+  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation-delay: 120ms;
+}
+
+#reviewView .rv-bar i {
+  transition: width 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html.motion-reduced #reviewView .rv-bar i {
+  transition: none;
+}
+
+@media (max-width: 640px) {
+  .ledger-tx.is-swipe-hint {
+    opacity: 0.92;
+  }
+}
