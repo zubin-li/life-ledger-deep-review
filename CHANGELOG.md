@@ -34,6 +34,9 @@ All notable changes are documented here.
 - **Assets:** consolidated overnight styles `v211`–`v232` into a single `v210.css` (fewer `<link>` tags and SW cache entries; REVIEW #4).
 - **Today (Goal 2):** sidebar active pill fades in; habit check adds a brief accent ring on the habits card (`v210.css` round 3 section).
 - **Habits (Goal 2):** library overview stat roll-up, page enter stagger, filter chip press, selected row glow, filter-empty hint card (`v210.css` round 4 section).
+- **Review (Goal 2):** collapsed **Detailed metrics** summary shows average habit completion and focus minutes; first-visit hint until expanded (`review-metrics-preview.js`, `v210.css` round 5).
+- **Week (Goal 2):** module cards stagger on page enter; calendar day empty cells use softer enter styling (`v210.css` round 5).
+- **Money (Goal 2):** ledger page enter animations target `#ledgerView.view.is-entering` (fixes inert stagger selectors).
 - **CI:** separate `browser` job runs `npm run test:browser` after installing Playwright; `playwright` is a devDependency with shared `tests/playwright-resolve.mjs`.
 - **Review:** heatmap-only legacy analytics path when the insight dashboard is active — no duplicate habit/weekday DOM in `#reviewHabitCompare` (`reviewUsesInsightPanels` in `app.js`).
 

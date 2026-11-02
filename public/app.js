@@ -5144,7 +5144,6 @@ function renderCalendar() {
 function renderReview() {
   const key = monthKey(cursor), year = cursor.getFullYear(), month = cursor.getMonth();
   $("#reviewTitle").textContent = tr("review.title", { year, month: month + 1, monthName: monthName(month) });
-  setText("#reviewDetailedSummary", tr("review.detailedSummary"));
   const days = new Date(year, month + 1, 0).getDate();
   const monthDates = Array.from({ length: days }, (_, i) => isoDate(new Date(year, month, i + 1, 12)));
   const todayKey = isoDate(new Date());
@@ -5157,6 +5156,7 @@ function renderReview() {
   renderReviewInspectorTable();
   renderInsightDashboard();
   const scoreHost = $("#scoreGrid");
+  const previewRates = [];
   scoreHost.innerHTML = habits.length ? habits.map((h, idx) => {
     const version = versionFor(h, monthDates[monthDates.length - 1]);
     const count = elapsedDates.filter(date => getLog(date).completed.includes(h.id)).length;
@@ -5164,12 +5164,14 @@ function renderReview() {
     if (version?.frequency === "daily") {
       const denominator = Math.max(1, elapsedDates.length);
       const rate = Math.round(count / denominator * 100);
+      previewRates.push(rate);
       return `<article class="score-card score-card--enter"${stagger} data-habit-id="${escapeHtml(h.id)}"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span class="score-rate">${rate}%</span></div><strong><span class="score-count">${count}</span><small> / ${denominator}</small></strong></article>`;
     }
     const groups = periodDateGroups(elapsedDates, version?.frequency);
     const target = periodTargetFor(version);
     const met = groups.filter(group => group.filter(date => getLog(date).completed.includes(h.id)).length >= target).length;
     const rate = Math.round(met / Math.max(1, groups.length) * 100);
+    previewRates.push(rate);
     return `<article class="score-card period-score-card score-card--enter"${stagger} data-habit-id="${escapeHtml(h.id)}"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span class="score-rate">${rate}%</span></div><strong><span class="score-count">${count}</span></strong><p>${tr("review.periodSummary", { met, periods: groups.length })}</p></article>`;
   }).join("") : hairlineEmptyMarkup(
     "./assets/hairline/empty-habits.svg",
@@ -5179,6 +5181,10 @@ function renderReview() {
   rollScoreGridValues(scoreHost);
   hydrateHairlineMounts(scoreHost);
   scoreHost.querySelector(".hairline-empty")?.classList.add("ll-empty", "ll-empty-enter");
+  const monthEnd = isoDate(new Date(year, month + 1, 0, 12));
+  const focusMinutes = focusSessionsBetween(`${key}-01`, monthEnd).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
+  const avgRate = window.LifeLedgerReviewMetricsPreview?.averageRate(previewRates);
+  updateReviewDetailedMetricsSummary(avgRate, focusMinutes);
   const barHost = $("#barChart");
   barHost.innerHTML = monthDates.map((d, i) => {
     const p = completionFor(d);
@@ -7054,6 +7060,14 @@ function bindEvents() {
   });
 
   // Week module collapse (from 858ede8 modules.js): body hides, chevron turns, choice is remembered.
+  const reviewMetricsDetails = $("#reviewDetailedMetrics");
+  if (reviewMetricsDetails && !reviewMetricsDetails.dataset.metricsBound) {
+    reviewMetricsDetails.dataset.metricsBound = "1";
+    reviewMetricsDetails.addEventListener("toggle", () => {
+      if (reviewMetricsDetails.open) localStorage.setItem(REVIEW_METRICS_OPENED_KEY, "1");
+      syncReviewDetailedMetricsHint();
+    });
+  }
   const weekCollapseKey = "life-ledger-week-collapsed";
   const applyWeekCollapse = (card, collapsed) => {
     card.classList.toggle("is-collapsed", collapsed);
@@ -7577,7 +7591,7 @@ function renderWeekCalendar() {
     const demo = !googleCalendar.connected && demoWorkspaceApi()?.isDemoActive(state);
     const events = googleCalendar.connected || demo ? calendarEventsForDate(key) : [];
     count += events.length;
-    return `<section class="week-calendar-day ${key === isoDate(new Date()) ? 'is-today' : ''}" role="listitem"><header><span>${escapeHtml(formatLocalizedDate(day,{weekday:'short'}))}</span><strong>${escapeHtml(formatLocalizedDate(day,{month:'short',day:'numeric'}))}</strong></header><div>${events.length ? events.map(event=>`<article class="week-calendar-event"><time>${escapeHtml(event.allDay ? languageText('全天','All day','Ganztägig') : [event.start,event.end].filter(Boolean).join('–'))}</time><strong>${escapeHtml(event.title || languageText('未命名日程','Untitled event','Unbenannter Termin'))}</strong>${event.calendarName ? `<small>${escapeHtml(event.calendarName)}</small>` : ''}</article>`).join('') : `<p class="week-calendar-empty">${escapeHtml(googleCalendar.connected ? loading ? languageText('读取中…','Loading…','Wird geladen…') : languageText('留一点空白','Room to breathe','Raum für dich') : '—')}</p>`}</div></section>`;
+    return `<section class="week-calendar-day ${key === isoDate(new Date()) ? 'is-today' : ''}" role="listitem"><header><span>${escapeHtml(formatLocalizedDate(day,{weekday:'short'}))}</span><strong>${escapeHtml(formatLocalizedDate(day,{month:'short',day:'numeric'}))}</strong></header><div>${events.length ? events.map(event=>`<article class="week-calendar-event"><time>${escapeHtml(event.allDay ? languageText('全天','All day','Ganztägig') : [event.start,event.end].filter(Boolean).join('–'))}</time><strong>${escapeHtml(event.title || languageText('未命名日程','Untitled event','Unbenannter Termin'))}</strong>${event.calendarName ? `<small>${escapeHtml(event.calendarName)}</small>` : ''}</article>`).join('') : `<p class="week-calendar-empty ll-empty-enter">${escapeHtml(googleCalendar.connected ? loading ? languageText('读取中…','Loading…','Wird geladen…') : languageText('留一点空白','Room to breathe','Raum für dich') : '—')}</p>`}</div></section>`;
   }).join('');
   const status = $('#weekCalendarStatus'), connect = $('#weekCalendarConnect');
   const demoCalendar = !googleCalendar.connected && demoWorkspaceApi()?.isDemoActive(state);
@@ -8098,6 +8112,26 @@ function rollHabitLibraryOverview() {
     if (prev && prev !== next) roll(el, next, prev);
     host.dataset[key] = next;
   });
+}
+
+const REVIEW_METRICS_OPENED_KEY = "life-ledger-review-metrics-opened";
+
+function updateReviewDetailedMetricsSummary(avgRate, focusMinutes) {
+  const details = $("#reviewDetailedMetrics");
+  const summary = $("#reviewDetailedSummary");
+  if (!details || !summary) return;
+  const previewApi = window.LifeLedgerReviewMetricsPreview;
+  const preview = previewApi?.formatPreview({ avgRate, focusMinutes, lang: currentLang }) || "";
+  summary.innerHTML = `<span class="review-detailed-summary-title">${escapeHtml(tr("review.detailedSummary"))}</span><span class="review-detailed-summary-preview">${escapeHtml(preview)}</span>`;
+  const opened = localStorage.getItem(REVIEW_METRICS_OPENED_KEY) === "1";
+  details.classList.toggle("is-metrics-hint", !opened && !details.open);
+}
+
+function syncReviewDetailedMetricsHint() {
+  const details = $("#reviewDetailedMetrics");
+  if (!details) return;
+  const opened = localStorage.getItem(REVIEW_METRICS_OPENED_KEY) === "1";
+  details.classList.toggle("is-metrics-hint", !opened && !details.open);
 }
 
 function rollScoreGridValues(grid) {

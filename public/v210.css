@@ -551,20 +551,20 @@ html[data-theme="dark"] .ledger-key {
   }
 }
 
-.view.is-entering #ledgerView .ledger-summary article,
-.view.is-entering #ledgerView .ledger-quick,
-.view.is-entering #ledgerView .ledger-panel,
-.view.is-entering #ledgerView .ledger-budget-wrap,
-.view.is-entering #ledgerView .ledger-list-wrap {
+#ledgerView.view.is-entering .ledger-summary article,
+#ledgerView.view.is-entering .ledger-quick,
+#ledgerView.view.is-entering .ledger-panel,
+#ledgerView.view.is-entering .ledger-budget-wrap,
+#ledgerView.view.is-entering .ledger-list-wrap {
   animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
 }
 
-.view.is-entering #ledgerView .ledger-summary article:nth-child(2) { animation-delay: 40ms; }
-.view.is-entering #ledgerView .ledger-summary article:nth-child(3) { animation-delay: 80ms; }
-.view.is-entering #ledgerView .ledger-panel:nth-child(2) { animation-delay: 60ms; }
-.view.is-entering #ledgerView .ledger-panel:nth-child(3) { animation-delay: 100ms; }
+#ledgerView.view.is-entering .ledger-summary article:nth-child(2) { animation-delay: 40ms; }
+#ledgerView.view.is-entering .ledger-summary article:nth-child(3) { animation-delay: 80ms; }
+#ledgerView.view.is-entering .ledger-panel:nth-child(2) { animation-delay: 60ms; }
+#ledgerView.view.is-entering .ledger-panel:nth-child(3) { animation-delay: 100ms; }
 
-html.motion-reduced .view.is-entering #ledgerView :is(.ledger-summary article, .ledger-panel) {
+html.motion-reduced #ledgerView.view.is-entering :is(.ledger-summary article, .ledger-panel) {
   animation: none;
 }
 
@@ -833,7 +833,7 @@ html[data-theme="dark"] .ledger-edit-form {
   font-size: 0.88rem;
 }
 
-.view.is-entering #ledgerView .ledger-recurring-wrap {
+#ledgerView.view.is-entering .ledger-recurring-wrap {
   animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
   animation-delay: 120ms;
 }
@@ -2730,5 +2730,114 @@ html.motion-reduced #habitLibraryFilters button:active:not(.active) {
 
   #habitLibraryFilters button:active:not(.active) {
     transform: none;
+  }
+}
+
+/* ========== batch 4 round 5 — review metrics discoverability + week modules ========== */
+#reviewDetailedMetrics > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  list-style: none;
+}
+
+#reviewDetailedMetrics > summary::-webkit-details-marker {
+  display: none;
+}
+
+#reviewDetailedMetrics > summary::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.55;
+  transition: transform 0.22s ease, opacity 0.16s ease;
+}
+
+#reviewDetailedMetrics[open] > summary::after {
+  transform: rotate(225deg);
+  opacity: 0.75;
+}
+
+.review-detailed-summary-title {
+  font-weight: 650;
+  color: var(--label, var(--ink));
+}
+
+.review-detailed-summary-preview {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: var(--text-secondary-ui, 0.8125rem/1.4 system-ui, sans-serif);
+  color: var(--secondaryLabel, var(--muted));
+  text-align: end;
+}
+
+#reviewDetailedMetrics.is-metrics-hint:not([open]) {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #65a9ff) 22%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #reviewDetailedMetrics.is-metrics-hint:not([open]) > summary {
+    animation: ll-metrics-hint 2.4s ease-in-out 2;
+  }
+}
+
+@keyframes ll-metrics-hint {
+  0%,
+  100% {
+    color: var(--secondaryLabel, var(--muted));
+  }
+  50% {
+    color: var(--label, var(--ink));
+  }
+}
+
+html.motion-reduced #reviewDetailedMetrics.is-metrics-hint:not([open]) > summary {
+  animation: none;
+}
+
+#weekView.view.is-entering .module-card[data-module] {
+  animation: ll-habit-enter 0.44s var(--ease-enter, ease) both;
+}
+
+#weekView.view.is-entering .module-card[data-module="review"] {
+  animation-delay: 0ms;
+}
+
+#weekView.view.is-entering .module-card[data-module="goals"] {
+  animation-delay: 55ms;
+}
+
+#weekView.view.is-entering .module-card[data-module="completed"] {
+  animation-delay: 110ms;
+}
+
+#weekView.view.is-entering .module-card[data-module="insights"] {
+  animation-delay: 165ms;
+}
+
+.week-calendar-empty.ll-empty-enter {
+  opacity: 0.72;
+  font-style: normal;
+  letter-spacing: 0.01em;
+}
+
+html.motion-reduced #weekView.view.is-entering .module-card[data-module] {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #reviewDetailedMetrics.is-metrics-hint:not([open]) > summary {
+    animation: none;
+  }
+
+  #weekView.view.is-entering .module-card[data-module] {
+    animation: none;
   }
 }
