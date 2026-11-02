@@ -237,9 +237,9 @@ See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/clou
 
 CloudBase is the recommended mainland-China path. It uses Tencent-hosted static files, email OTP authentication, and a creator-only document collection in **your own** CloudBase environment.
 
-### 6. Life Ledger for Mac 3.0
+### 6. Life Ledger for Mac 3.1
 
-Download `Life-Ledger-3.0.0-mac-arm64.zip` from the **[Mac 3.0.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** (Apple Silicon), unzip it and move **Life Ledger** to Applications. The app is not notarised: the first time, open **System Settings → Privacy & Security → Open Anyway**.
+Download `Life-Ledger-3.1.0-mac-arm64.zip` from the **[Mac 3.1.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.1.0)** (Apple Silicon), unzip it and move **Life Ledger** to Applications. The app is not notarised: the first time, open **System Settings → Privacy & Security → Open Anyway**.
 
 - **Local on this Mac**: no account, no setup; records stay on this Mac.
 - **Connected cloud**: your own deployment (option 4 above), signed in with an email code. Records, photos, your name and profile photo are the same on the Mac, in the browser and on your phone.

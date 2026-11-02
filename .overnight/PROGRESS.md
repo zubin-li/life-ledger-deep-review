@@ -1,39 +1,43 @@
 # Overnight progress
 
-## Round 14 — done (final)
+## Batch 2 · Round 1 — done
 
-- **终稿：** `CHANGELOG.md` 将 Round 5–13 的 Unreleased 条目并入 `[2.1.0]`，`Unreleased` 留空占位。
-- **验收：** 全量 Playwright 截图回归 21 场景重跑通过（`capture-regression.mjs`）；目视 `today-spending-quiet-zh-390.png` — 安静日文案、无语法 hint、`-€0.00` 正常。
-- **npm test：** 270/270 通过（本 round 未改产品代码）。
-- **REPORT.md** 更新为 Round 14 终稿（14 轮摘要、明日点击路径、已知 gap）。
-
-## Round 13 — done
-
-- **Today 支出 · 安静日 copy：** 账本已有流水但当日为零时，副文案改为 `spendingEmptyQuiet`（中/英/德），不再与「从未记账」共用 `spendingEmpty`；语法 hint 逻辑不变。
-- **测试：** `tests/today-spending-hint.test.mjs` +1 用例（quiet copy 契约）。
-- **文档：** README EN/ZH/DE、CHANGELOG Unreleased 一行。
-- **截图回归：** `capture-regression.mjs` 包装 `capture-ledger.mjs`；全量 21 张重拍通过；新增 `today-spending-quiet-zh-390.png`。
-- **npm test：** 270/270 通过。
+- **REVIEW.md：** Antigravity 审查为空（`status: failed`，无 HIGH/MED 条目），无可修复项。
+- **云同步：** `resolvePendingConflictOnRemoteGet` 在 remote 无 `ledger` 时传入冲突备份里的 `pending.backup.data.ledger`，与 409 adopt 行为一致。
+- **复盘洞察：** 月度 Money 面板增加 **心情 vs 当日支出** 散点图（`moodSpendScatter` / `renderMoodSpendScatterSvg`，`v216-mood-scatter.css`）；PWA `APP_SHELL` 已登记。
+- **文档：** README 三语 Mac 下载段落改为 **3.1.0**；`CHANGELOG` Unreleased 记录上述改动。
+- **截图：** `.overnight/shots/review-mood-scatter-light-1440.png`（Chromium 1440，演示数据）。
+- **npm test：** **272/272** 通过（+2：scatter 契约、pending GET merge 结构断言）。
 
 ## Half-done
 
-- （无 — 夜间 scope 在此 clone 内已收束。）
+- （无）
+
+## Next (round 2+)
+
+- 复盘：习惯完成度 vs 支出的迷你相关图（与散点同一视觉语言）。
+- 云冲突 UI：ledger 专用合并预览（仍仅 state JSON，不改 `functions/`）。
+- 手机记账 keypad vs 底部 dock：真机/更矮视口截图验证，必要时再调 `v213` padding。
+- fakecloud 仍缺 repo-root `functions/`（overnight clone 限制不变）。
 
 ## Known bugs / gaps
 
-- `mergeRemoteCloudPayload` conflict adopt edge case (local ledger) — unchanged.
+- 极矮视口 dock vs 键盘可能轻微重叠（未在本 round 改 CSS）。
 - fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
-- 极矮视口 dock vs 键盘仍可能轻微重叠（CSS padding 已加，未真机验证）。
 
 ## npm test
 
 ```
-270 pass, 0 fail (round 14)
+272 pass, 0 fail (batch 2 round 1)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Prior batch (rounds 1–14)
+
+终稿见 git 历史：`CHANGELOG [2.1.0]`、记账与 Goal 2 打磨、270 项测试、21 张回归截图。Last prior gate: round 14 — 270 pass, 0 fail.
 
 ## Driver gate after round 1
 ℹ tests 248 ℹ pass 248 ℹ fail 0 
@@ -76,3 +80,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 14
 ℹ tests 270 ℹ pass 270 ℹ fail 0 
+
+## Driver gate after round 1
+ℹ tests 272 ℹ pass 272 ℹ fail 0 

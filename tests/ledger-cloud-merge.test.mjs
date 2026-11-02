@@ -67,3 +67,9 @@ test("mergeRemoteCloudPayload adopts remote ledger when present", () => {
   assert.ok(merged.ledger);
   assert.equal(merged.ledger.version, 1);
 });
+
+test("resolvePendingConflictOnRemoteGet passes backup ledger into merge", () => {
+  const fn = extractFunctionSource("function resolvePendingConflictOnRemoteGet(");
+  assert.match(fn, /pending\?\.backup\?\.data\?\.ledger/);
+  assert.match(fn, /mergeRemoteCloudPayload\([^)]*localLedger/);
+});

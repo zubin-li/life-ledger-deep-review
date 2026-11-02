@@ -299,6 +299,22 @@ test("duplicateTransaction clones amount and category for today", () => {
   assert.equal(copy.date, "2026-11-02");
 });
 
+test("moodSpendScatter needs enough points and renders svg", () => {
+  const sparse = L.moodSpendScatter([{ mood: "很好", spendMinor: 100 }]);
+  assert.equal(sparse, null);
+  const rows = [
+    { date: "2026-11-01", mood: "很好", spendMinor: 1000 },
+    { date: "2026-11-02", mood: "很好", spendMinor: 2000 },
+    { date: "2026-11-03", mood: "低落", spendMinor: 5000 },
+  ];
+  const scatter = L.moodSpendScatter(rows);
+  assert.ok(scatter);
+  assert.equal(scatter.points.length, 3);
+  const svg = L.renderMoodSpendScatterSvg(scatter);
+  assert.match(svg, /review-mood-scatter-dot/);
+  assert.match(svg, /#34c759/);
+});
+
 test("moodSpendComparison averages great vs low mood days", () => {
   const rows = [
     { mood: "很好", spendMinor: 1000 },

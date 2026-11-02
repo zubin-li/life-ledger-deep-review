@@ -1,0 +1,85 @@
+/* Batch 2 — review mood vs spend scatter */
+
+.review-mood-scatter-wrap {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid color-mix(in srgb, var(--hairline) 70%, transparent);
+}
+
+.review-mood-scatter-caption {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.review-mood-scatter {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  color: var(--text);
+}
+
+.review-mood-scatter-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rvMoodDotIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--dot-i, 0) * 24ms);
+}
+
+@keyframes rvMoodDotIn {
+  from {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  to {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+}
+
+.review-mood-scatter-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.review-mood-scatter-legend-item[data-mood="很好"]::before {
+  background: #34c759;
+}
+
+.review-mood-scatter-legend-item[data-mood="平静"]::before {
+  background: #64d2ff;
+}
+
+.review-mood-scatter-legend-item[data-mood="低落"]::before {
+  background: #ff9f0a;
+}
+
+.review-mood-scatter-legend-item::before {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: 0.05em;
+}
+
+html.motion-reduced .review-mood-scatter-dot {
+  animation: none;
+  opacity: 0.82;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-mood-scatter-dot {
+    animation: none;
+    opacity: 0.82;
+    transform: none;
+  }
+}

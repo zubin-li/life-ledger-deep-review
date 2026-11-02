@@ -4,7 +4,13 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- **Review:** mood-vs-spend scatter chart in the monthly Money summary panel (`v216-mood-scatter.css`).
+
+### Fixed
+
+- **Cloud sync:** pending conflict resolution on GET now merges the conflict backup’s `ledger` when the remote payload omits it (same rule as immediate 409 adopt).
 
 ## [2.1.0] - 2026-11-02
 

@@ -256,7 +256,7 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 
 ### 6. Life Ledger Mac 版 3.0
 
-从 **[Mac 3.0.0 发布页](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** 下载 `Life-Ledger-3.0.0-mac-arm64.zip`（Apple 芯片），解压后把 **Life Ledger** 拖进"应用程序"。应用没有经过苹果公证，第一次打开时到 **系统设置 → 隐私与安全性 → 仍要打开**。
+从 **[Mac 3.1.0 发布页](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.1.0)** 下载 `Life-Ledger-3.1.0-mac-arm64.zip`（Apple 芯片），解压后把 **Life Ledger** 拖进"应用程序"。应用没有经过苹果公证，第一次打开时到 **系统设置 → 隐私与安全性 → 仍要打开**。
 
 - **本机模式**：不用账号、不用配置，记录只在这台 Mac 上。
 - **连接云端**：连接你自己的部署（上面第 4 种方式），用邮箱验证码登录。记录、照片、名称和头像在 Mac、浏览器和手机上都一样。

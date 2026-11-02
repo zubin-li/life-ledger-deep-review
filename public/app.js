@@ -3191,7 +3191,8 @@ function commitCloudConflictPlan(plan, storage, persist = writeSyncConflictRecor
 function resolvePendingConflictOnRemoteGet(remote, storage, seed, cloneDataFn, codecOptions, persist = writeSyncConflictRecord) {
   const pending = readSyncConflictRecord(storage, codecOptions);
   if (!syncConflictRecordPendingRemote(pending)) return null;
-  const adoptedState = mergeRemoteCloudPayload(remote?.payload, seed, cloneDataFn);
+  const localLedger = pending?.backup?.data?.ledger;
+  const adoptedState = mergeRemoteCloudPayload(remote?.payload, seed, cloneDataFn, localLedger);
   if (!adoptedState) return null;
   const cleared = encodeSyncConflictRecord({
     backup: pending.backup,
@@ -7983,8 +7984,26 @@ function renderReviewLedgerSummary() {
     };
   });
   const moodCompare = L.moodSpendComparison(dailyRows);
+  const moodScatter = L.moodSpendScatter(dailyRows);
   const focusCompare = L.focusSpendInsight(dailyRows);
   const habitCompare = L.habitCompletionSpendInsight(dailyRows);
+  let moodScatterBlock = "";
+  if (moodScatter) {
+    const scatterSvg = L.renderMoodSpendScatterSvg(moodScatter);
+    const legend = moodScatter.moodOrder.map(mood => {
+      const label = mood === "很好"
+        ? languageText("很好", "Good", "Gut")
+        : mood === "平静"
+          ? languageText("平静", "Calm", "Ruhig")
+          : languageText("低落", "Low", "Schwer");
+      return `<span class="review-mood-scatter-legend-item" data-mood="${escapeHtml(mood)}">${escapeHtml(label)}</span>`;
+    }).join("");
+    moodScatterBlock = `<div class="review-mood-scatter-wrap">
+      <p class="review-mood-scatter-caption">${escapeHtml(languageText("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben"))}</p>
+      ${scatterSvg}
+      <div class="review-mood-scatter-legend" aria-hidden="true">${legend}</div>
+    </div>`;
+  }
   let moodLine = "";
   if (moodCompare) {
     const { greatAvg, lowAvg } = moodCompare;
@@ -8019,7 +8038,7 @@ function renderReviewLedgerSummary() {
       <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
       <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
-    </div>${moodLine}${focusLine}${habitLine}</article>`;
+    </div>${moodScatterBlock}${moodLine}${focusLine}${habitLine}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 

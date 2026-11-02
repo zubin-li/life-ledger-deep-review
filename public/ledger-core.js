@@ -535,6 +535,55 @@
     return { greatAvg, lowAvg, greatDays, lowDays };
   }
 
+  const MOOD_SCATTER_ORDER = ["很好", "平静", "低落"];
+  const MOOD_SCATTER_COLORS = { 很好: "#34c759", 平静: "#64d2ff", 低落: "#ff9f0a" };
+
+  /** Daily mood vs spend points for a compact review scatter (needs ≥3 spending days with mood). */
+  function moodSpendScatter(dailyRows, options = {}) {
+    const moodOrder = options.moodOrder || MOOD_SCATTER_ORDER;
+    const minSpend = options.minSpendMinor || 1;
+    const points = [];
+    (dailyRows || []).forEach((row, index) => {
+      const spend = row?.spendMinor || 0;
+      if (spend < minSpend || !row?.mood) return;
+      const moodIndex = moodOrder.indexOf(row.mood);
+      if (moodIndex < 0) return;
+      points.push({
+        date: row.date,
+        mood: row.mood,
+        moodIndex,
+        spendMinor: spend,
+        jitter: ((index * 17 + spend) % 7) / 7 - 0.5,
+      });
+    });
+    if (points.length < 3) return null;
+    const maxSpend = Math.max(...points.map(p => p.spendMinor));
+    return { points, moodOrder, maxSpend };
+  }
+
+  function renderMoodSpendScatterSvg(scatter, options = {}) {
+    if (!scatter?.points?.length) return "";
+    const width = options.width || 280;
+    const height = options.height || 92;
+    const pad = { left: 10, right: 10, top: 10, bottom: 22 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+    const slots = scatter.moodOrder.length;
+    const maxSpend = Math.max(1, scatter.maxSpend);
+    const dots = scatter.points.map((p, i) => {
+      const xSlot = (p.moodIndex + 0.5) / slots;
+      const x = pad.left + xSlot * plotW + p.jitter * (plotW / slots) * 0.35;
+      const y = pad.top + plotH - (p.spendMinor / maxSpend) * plotH;
+      const color = MOOD_SCATTER_COLORS[p.mood] || "#888";
+      return `<circle class="review-mood-scatter-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" opacity="0.82" style="--dot-i:${i}"/>`;
+    }).join("");
+    const guides = scatter.moodOrder.map((mood, i) => {
+      const x = pad.left + ((i + 0.5) / slots) * plotW;
+      return `<line class="review-mood-scatter-guide" x1="${x.toFixed(1)}" y1="${pad.top}" x2="${x.toFixed(1)}" y2="${pad.top + plotH}" stroke="currentColor" stroke-opacity="0.08"/>`;
+    }).join("");
+    return `<svg class="review-mood-scatter" viewBox="0 0 ${width} ${height}" role="img" aria-hidden="true">${guides}${dots}</svg>`;
+  }
+
   function parseCssRgb(color) {
     const s = String(color || "").trim();
     let m = s.match(/^#([0-9a-f]{3,8})$/i);
@@ -1035,6 +1084,8 @@
     restoreRecurringTemplate,
     normalizeRecurringEntry,
     moodSpendComparison,
+    moodSpendScatter,
+    renderMoodSpendScatterSvg,
     focusSpendInsight,
     habitCompletionSpendInsight,
     truncateTreemapLabel,
