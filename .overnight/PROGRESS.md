@@ -1,14 +1,13 @@
 # Overnight progress
 
-## Round 10 — done
+## Round 11 — done
 
-- **记账首访引导：** 无交易时显示可关闭的 `ledger-onboarding`（hairline `week-insights-empty` + 三语文案 + localStorage `life-ledger-ledger-onboarding-dismissed`）；布局在快速录入 / 键盘 / 分类芯片之后。
-- **Today 支出卡片：** 无今日支出时显示 `tw-spend-hint`（中/英/德示例短句）。
-- **复盘习惯 sparkline：** `habitMonthSparkSvg` 为每格 `--spark-i` + `rv-habit-spark--enter` 动画；尊重 `motion-reduced` / `prefers-reduced-motion`。
-- **移动端键盘：** `v213-onboarding.css` 加大 ledger 页 `padding-bottom`、`keypad` scroll-margin 与 safe-area。
-- **PWA：** `v213-onboarding.css` 加入 `sw.js` APP_SHELL。
-- **截图：** `ledger-onboarding-zh-light-1440.png`、`review-sparks-light-1440.png`；capture 脚本支持 `emptyLedger`。
-- **测试：** **268 pass, 0 fail**（无新增用例；UI/ CSS 变更）。
+- **记账 onboarding 自动收起：** 首笔快速录入、CSV 导入、固定项「记一笔」成功后调用 `dismissOnboarding()`（localStorage + 280ms fade）；「知道了」共用同一逻辑。
+- **Goal 2 · 空状态：** 新样式 `v214-goals-journal.css` — 周目标 hairline 入场、空周时 inline 添加框一次 pulse、日记 timeline `memory-empty` 入场、长期目标 hairline（`pages-art.js`）。
+- **文档：** README EN/ZH/DE 记账 bullet 补 onboarding/Today 示例说明；CHANGELOG Unreleased 一行。
+- **PWA：** `v214-goals-journal.css` 进 `index.html` + `sw.js` APP_SHELL。
+- **截图：** `week-goals-empty-zh-light-1440.png`；capture 支持 `emptyWeekGoals`。
+- **测试：** **268 pass, 0 fail**（无新增用例）。
 
 ## Half-done
 
@@ -17,9 +16,9 @@
 
 ## Next round priorities
 
-1. 更多 Goal 2：Journal / goals 空状态 hairline 或 insights 微动效。
-2. 记账：首笔成功后自动 dismiss onboarding（可选）。
-3. README 三语补一句 onboarding / Today hint（若 release 前未写）。
+1. Goal 2：复盘/习惯/日记更多 insights 或 chart 动效（若时间允许）。
+2. 记账：首笔成功后 Today hint 是否也应随状态隐藏（目前仅 ledger onboarding 自动 dismiss）。
+3. 可选：Mac shell 截图补 week empty / journal empty。
 
 ## Known bugs / gaps
 
@@ -29,7 +28,7 @@
 ## npm test
 
 ```
-268 pass, 0 fail (round 10)
+268 pass, 0 fail (round 11)
 ```
 
 ## Gate result
@@ -67,4 +66,7 @@ _pending (driver appends after commit)_
 ℹ tests 268 ℹ pass 268 ℹ fail 0 
 
 ## Driver gate after round 10
+ℹ tests 268 ℹ pass 268 ℹ fail 0 
+
+## Driver gate after round 11
 ℹ tests 268 ℹ pass 268 ℹ fail 0 

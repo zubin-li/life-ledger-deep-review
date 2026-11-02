@@ -475,6 +475,19 @@
     }
   }
 
+  function dismissOnboarding(host) {
+    if (onboardingDismissed()) return;
+    try {
+      localStorage.setItem(ONBOARDING_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    const box = host?.querySelector?.("[data-ledger-onboarding]") || $("#ledgerView [data-ledger-onboarding]");
+    if (!box) return;
+    box.classList.add("is-dismissed");
+    root.setTimeout?.(() => box.remove(), 280);
+  }
+
   function renderOnboarding(ledger) {
     if (ledger.transactions.length || onboardingDismissed()) return "";
     return `<aside class="ledger-onboarding ll-empty" data-ledger-onboarding>
@@ -538,10 +551,12 @@
       }
       input.classList.remove("is-error");
       const { ledger: next } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
+      const firstEntry = !ledger.transactions.length && next.transactions.length;
       commit(next);
       input.value = "";
       input.classList.add("is-success");
       setTimeout(() => input.classList.remove("is-success"), 600);
+      if (firstEntry) dismissOnboarding(host);
       render();
     });
     host.querySelectorAll(".ledger-chip").forEach(chip => {
@@ -587,7 +602,9 @@
       const reader = new FileReader();
       reader.onload = () => {
         const result = core().importGermanBankCsv(String(reader.result || ""), ledgerState(), { lang: ctx.lang?.() });
+        const hadNone = !ledgerState().transactions.length;
         commit(result.ledger);
+        if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
         ctx.toast?.(t(`已导入 ${result.imported} 笔`, `Imported ${result.imported} entries`, `${result.imported} Buchungen importiert`));
         fileInput.value = "";
         render();
@@ -660,7 +677,9 @@
         if (!id) return;
         const result = core().applyRecurringTemplate(ledgerState(), id, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
         if (!result) return;
+        const hadNone = !ledgerState().transactions.length;
         commit(result.ledger);
+        if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
         ctx.toast?.(t("已记一笔", "Entry posted", "Gebucht"));
         render();
       });
@@ -793,10 +812,7 @@
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
         ${renderList(ledger, ym)}
       </section>`;
-    host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => {
-      try { localStorage.setItem(ONBOARDING_KEY, "1"); } catch { /* ignore */ }
-      host.querySelector("[data-ledger-onboarding]")?.remove();
-    });
+    host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));
     mountOnboardingArt(host);
     bindInteractions(host, ledger, ym);
     requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));

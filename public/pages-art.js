@@ -81,6 +81,17 @@
       empty.dataset.llEmpty = "1";
       prependArt(empty, "empty-week-goals", PALETTE.coral.solid);
     }
+    const goalHairline = root.querySelector("#weeklyGoalList .hairline-empty");
+    if (goalHairline && !goalHairline.dataset.llEnter) {
+      goalHairline.dataset.llEnter = "1";
+      goalHairline.classList.add("ll-empty-enter");
+    }
+    const ltEmpty = root.querySelector("#longTermGoalList .long-term-empty");
+    if (ltEmpty && !ltEmpty.dataset.llEmpty) {
+      ltEmpty.dataset.llEmpty = "1";
+      ltEmpty.classList.add("ll-empty", "ll-empty-enter");
+      prependArt(ltEmpty, "empty-week-goals", PALETTE.sage.solid);
+    }
     const list = root.querySelector("#weeklyGoalList");
     if (list) {
       const goals = list.querySelectorAll(".weekly-goal");
@@ -127,6 +138,10 @@
     if (!empty.dataset.llEmpty) {
       empty.dataset.llEmpty = "1";
       prependArt(empty, "empty-journal", PALETTE.sage.solid);
+    }
+    if (!empty.dataset.llEnter) {
+      empty.dataset.llEnter = "1";
+      empty.classList.add("ll-empty-enter");
     }
   }
 

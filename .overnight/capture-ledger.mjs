@@ -141,6 +141,20 @@ async function shot(browserType, name, opts) {
     await page.click('.nav-item[data-view="week"]');
     await page.waitForTimeout(400);
   }
+  if (opts.emptyWeekGoals) {
+    await page.evaluate(() => {
+      const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
+      if (!key) return;
+      let state;
+      try { state = JSON.parse(localStorage.getItem(key)); } catch { return; }
+      state.weeklyGoals = {};
+      state.longTermGoals = [];
+      localStorage.setItem(key, JSON.stringify(state));
+    });
+    await page.reload({ waitUntil: "networkidle" });
+    await page.click('.nav-item[data-view="week"]');
+    await page.waitForTimeout(600);
+  }
   await page.waitForTimeout(500);
   await page.screenshot({ path: join(outDir, `${name}.png`), fullPage: opts.fullPage !== false });
   await browser.close();
@@ -217,5 +231,13 @@ await shot(chromium, "review-sparks-light-1440", {
   theme: "light",
   view: "review",
   demoLedger: true,
+});
+await shot(chromium, "week-goals-empty-zh-light-1440", {
+  viewport: { width: 1440, height: 900 },
+  theme: "light",
+  lang: "zh",
+  demoLedger: true,
+  view: "week",
+  emptyWeekGoals: true,
 });
 console.log("screenshots saved");
