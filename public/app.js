@@ -5184,7 +5184,13 @@ function renderReview() {
   const monthEnd = isoDate(new Date(year, month + 1, 0, 12));
   const focusMinutes = focusSessionsBetween(`${key}-01`, monthEnd).reduce((sum, session) => sum + focusSessionMinutes(session), 0);
   const avgRate = window.LifeLedgerReviewMetricsPreview?.averageRate(previewRates);
-  updateReviewDetailedMetricsSummary(avgRate, focusMinutes);
+  const habitChipModels = habits.map((h, idx) => ({
+    rate: previewRates[idx],
+    label: displayHabitName(h),
+    color: (colors[h.color] || colors.sage).solid,
+  }));
+  const habitChips = window.LifeLedgerReviewMetricsPreview?.pickTopHabitScores(habitChipModels, 3) || [];
+  updateReviewDetailedMetricsSummary(avgRate, focusMinutes, habitChips);
   const barHost = $("#barChart");
   barHost.innerHTML = monthDates.map((d, i) => {
     const p = completionFor(d);
@@ -7670,7 +7676,10 @@ function renderWeekInsights() {
     const hasData = totalDone > 0 || weekFocusMinutes > 0;
     emptyArt.hidden = hasData;
     if (!hasData) {
+      emptyArt.classList.add("ll-empty-enter");
       window.LifeLedgerInteraction?.mountHairline(emptyArt, "./assets/hairline/week-insights-empty.svg");
+    } else {
+      emptyArt.classList.remove("ll-empty-enter");
     }
   }
   requestAnimationFrame(() => grid.classList.remove("week-insights--loading"));
@@ -8116,13 +8125,22 @@ function rollHabitLibraryOverview() {
 
 const REVIEW_METRICS_OPENED_KEY = "life-ledger-review-metrics-opened";
 
-function updateReviewDetailedMetricsSummary(avgRate, focusMinutes) {
+function reviewDetailedHabitChipsMarkup(chips) {
+  if (!chips?.length) return "";
+  const inner = chips.map(chip => {
+    const rate = Math.round(Number(chip.rate));
+    return `<span class="review-detailed-habit-chip" style="--chip-color:${escapeHtml(chip.color || "")}"><span class="review-detailed-habit-chip-rate">${escapeHtml(String(rate))}%</span><span class="review-detailed-habit-chip-name">${escapeHtml(chip.label || "")}</span></span>`;
+  }).join("");
+  return `<span class="review-detailed-summary-chips" aria-hidden="true">${inner}</span>`;
+}
+
+function updateReviewDetailedMetricsSummary(avgRate, focusMinutes, habitChips = []) {
   const details = $("#reviewDetailedMetrics");
   const summary = $("#reviewDetailedSummary");
   if (!details || !summary) return;
   const previewApi = window.LifeLedgerReviewMetricsPreview;
   const preview = previewApi?.formatPreview({ avgRate, focusMinutes, lang: currentLang }) || "";
-  summary.innerHTML = `<span class="review-detailed-summary-title">${escapeHtml(tr("review.detailedSummary"))}</span><span class="review-detailed-summary-preview">${escapeHtml(preview)}</span>`;
+  summary.innerHTML = `<span class="review-detailed-summary-title">${escapeHtml(tr("review.detailedSummary"))}</span><span class="review-detailed-summary-preview">${escapeHtml(preview)}</span>${reviewDetailedHabitChipsMarkup(habitChips)}`;
   const opened = localStorage.getItem(REVIEW_METRICS_OPENED_KEY) === "1";
   details.classList.toggle("is-metrics-hint", !opened && !details.open);
 }

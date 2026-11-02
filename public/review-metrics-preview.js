@@ -36,5 +36,14 @@
     return Math.round(sum / rates.length);
   }
 
-  window.LifeLedgerReviewMetricsPreview = { formatPreview, averageRate, langKey };
+  /** Top habit completion rates for collapsed summary chips (does not duplicate insight headline metrics). */
+  function pickTopHabitScores(entries, limit = 3) {
+    const cap = Math.max(1, Math.min(5, limit | 0));
+    return (entries || [])
+      .filter(e => e && Number.isFinite(e.rate) && String(e.label || "").trim())
+      .sort((a, b) => b.rate - a.rate || String(a.label).localeCompare(String(b.label)))
+      .slice(0, cap);
+  }
+
+  window.LifeLedgerReviewMetricsPreview = { formatPreview, averageRate, pickTopHabitScores, langKey };
 })();

@@ -20,10 +20,23 @@ test("formatPreview combines avg and focus in three languages", () => {
   assert.match(RMP.formatPreview({ lang: "en" }), /Habit scores/);
 });
 
+test("pickTopHabitScores returns top rates capped at limit", () => {
+  const rows = RMP.pickTopHabitScores([
+    { rate: 40, label: "A", color: "#000" },
+    { rate: 90, label: "B", color: "#111" },
+    { rate: 55, label: "C", color: "#222" },
+    { rate: 70, label: "D", color: "#333" },
+  ], 3);
+  assert.equal(rows.length, 3);
+  assert.equal(rows[0].label, "B");
+  assert.equal(rows[1].label, "D");
+});
+
 test("app wires review detailed summary preview", () => {
   const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   assert.match(app, /function updateReviewDetailedMetricsSummary\(/);
-  assert.match(app, /updateReviewDetailedMetricsSummary\(avgRate, focusMinutes\)/);
+  assert.match(app, /updateReviewDetailedMetricsSummary\(avgRate, focusMinutes, habitChips\)/);
+  assert.match(app, /reviewDetailedHabitChipsMarkup/);
   assert.match(app, /REVIEW_METRICS_OPENED_KEY/);
 });
 
@@ -33,4 +46,11 @@ test("v210 round 5 styles review summary and week modules", () => {
   assert.match(css, /\.review-detailed-summary-preview/);
   assert.match(css, /#ledgerView\.view\.is-entering \.ledger-summary article/);
   assert.match(css, /#weekView\.view\.is-entering \.module-card/);
+});
+
+test("v210 round 6 habit chips and week insights enter", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  assert.match(css, /batch 4 round 6 — review habit chips/);
+  assert.match(css, /\.review-detailed-habit-chip/);
+  assert.match(css, /#weekView\.view\.is-entering \.week-insight-card/);
 });
