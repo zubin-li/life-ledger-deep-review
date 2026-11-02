@@ -18,6 +18,7 @@
     "allow-show-alert",
     "allow-set-menu-language",
     "allow-switch-workspace",
+    "allow-check-for-updates",
     "allow-qa-probe"
   ]
 }

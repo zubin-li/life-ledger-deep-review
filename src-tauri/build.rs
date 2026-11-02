@@ -2,7 +2,7 @@
 // This matters for the cloud window: Tauri refuses all app commands to a remote page unless a capability names them.
 const COMMANDS: &[&str] = &[
     "open_local_window", "open_cloud_window", "forget_workspace", "open_setup_guide", "switch_workspace",
-    "save_backup_json", "open_backup_json", "save_backup_binary", "open_backup_file", "ask_confirm", "show_alert", "set_menu_language",
+    "save_backup_json", "open_backup_json", "save_backup_binary", "open_backup_file", "ask_confirm", "show_alert", "set_menu_language", "check_for_updates",
     "qa_probe", "qa_report", "qa_sign_out",
 ];
 

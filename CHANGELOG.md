@@ -4,6 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.8] - 2026-11-02
+
+Web 2.0.8 and Life Ledger for Mac 3.0.2.
+
+### Added
+
+- **Mac app: in-app updates.** The app checks for a new version at launch and once a day, and from **Life Ledger → Check for Updates…** or **Settings → Check for updates**. A native sheet shows what is new and asks before anything happens (**Update and Restart** / **Later**); records are not touched. Updates are verified with the app's own update signature (not Apple signing), served from the `mac-updates` release.
+
 ## [2.0.7] - 2026-11-02
 
 Web 2.0.7 and Life Ledger for Mac 3.0.1. Audit remediation from PR #13, plus two fixes found while reviewing it.

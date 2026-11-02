@@ -1,7 +1,7 @@
 {
   "$schema": "./gen/schemas/desktop-schema.json",
   "productName": "Life Ledger",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "identifier": "app.zubinli.lifeledger",
   "build": {
     "beforeDevCommand": "npm run desktop:prepare",
@@ -32,6 +32,15 @@
     ],
     "macOS": {
       "minimumSystemVersion": "12.0"
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDhFOEIzNDM5NkVFNkQ2QjQKUldTMDF1WnVPVFNManE4MDExWkJWYnVyRThOOUN2RXpUWnZMM2xQc3JVbGxsTENsTkhGc1AyWVcK",
+      "endpoints": [
+        "https://github.com/zubin-li/life-ledger-deep-review/releases/download/mac-updates/latest.json"
+      ]
     }
   }
 }

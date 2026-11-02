@@ -9115,6 +9115,14 @@ function initSettingsDialog() {
   if (version) setText("#settingsVersion", `Life Ledger ${version}`);
   // In the Mac app the line names the app's own version too (3.0 = the Mac app with the sync edition).
   void window.__TAURI__?.app?.getVersion?.().then(mac => setText("#settingsVersion", `Life Ledger for Mac ${mac} · ${languageText("页面", "page", "Seite")} ${version}`)).catch(() => {});
+  // Mac app: in-app updates (3.0.2+). The app also checks by itself at launch and once a day.
+  const checkUpdates = $("#settingsCheckUpdates");
+  if (checkUpdates && window.__TAURI__?.core?.invoke) {
+    checkUpdates.hidden = false;
+    const label = () => setText("#settingsCheckUpdates", languageText("检查更新", "Check for updates", "Nach Updates suchen"));
+    label(); dialog.addEventListener("toggle", label);
+    checkUpdates.addEventListener("click", () => { void window.__TAURI__.core.invoke("check_for_updates").catch(() => {}); });
+  }
   initModeSwitch(dialog);
   $("#settingsInstallApp").addEventListener("click", () => dialog.close(), true);
   $("#settingsLoadDemo").addEventListener("click", () => {

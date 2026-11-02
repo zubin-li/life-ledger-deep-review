@@ -292,6 +292,7 @@ fn menu_action_for_id(id: &str) -> Option<&'static str> {
 fn menu_label(lang: &str, key: &str) -> &'static str {
     let row: [&'static str; 3] = match key {
         "about" => ["关于 Life Ledger", "About Life Ledger", "Über Life Ledger"],
+        "check_updates" => ["检查更新…", "Check for Updates…", "Nach Updates suchen …"],
         "settings" => ["设置…", "Settings…", "Einstellungen …"],
         "services" => ["服务", "Services", "Dienste"],
         "hide" => ["隐藏 Life Ledger", "Hide Life Ledger", "Life Ledger ausblenden"],
@@ -356,6 +357,7 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
     )?;
     let app_menu = SubmenuBuilder::new(app, "Life Ledger")
         .item(&about)
+        .item(&item("check_updates", None)?)
         .separator()
         .item(&item("settings", Some("CmdOrCtrl+,"))?)
         .separator()
@@ -466,6 +468,17 @@ fn forget_workspace(app: AppHandle) -> Result<(), String> {
 
 #[cfg(all(feature = "qa", target_os = "macos"))]
 mod qa;
+mod updates;
+
+pub(crate) fn current_menu_language() -> String {
+    MENU_LANG.lock().unwrap().clone()
+}
+
+/// Menu / Settings → "Check for Updates…" (the sheet answers even when the app is up to date).
+#[tauri::command]
+fn check_for_updates(app: AppHandle) {
+    tauri::async_runtime::spawn(updates::check(app, true));
+}
 
 /// Mac glue injected into the app's own windows (local page and the user's cloud deployment).
 /// The web page never contains it; it only fits the unchanged web design into a Mac window.
@@ -636,6 +649,7 @@ fn grant_cloud_shell(app: &AppHandle, url: &Url) -> Result<(), String> {
         .permission("allow-show-alert")
         .permission("allow-set-menu-language")
         .permission("allow-switch-workspace")
+        .permission("allow-check-for-updates")
         .permission("core:app:allow-version");
     #[cfg(all(feature = "qa", target_os = "macos"))]
     let capability = capability.permission("allow-qa-probe").permission("allow-qa-report").permission("allow-qa-sign-out");
@@ -959,6 +973,7 @@ pub fn run() {
         show_alert,
         set_menu_language,
         open_setup_guide,
+        check_for_updates,
         qa::qa_probe,
         qa::qa_report,
         qa::qa_sign_out
@@ -976,13 +991,19 @@ pub fn run() {
             ask_confirm,
             show_alert,
             set_menu_language,
-            open_setup_guide
+            open_setup_guide,
+            check_for_updates
         ]);
     builder
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             let menu = build_app_menu(app.handle(), "en")?;
             app.set_menu(menu)?;
             app.on_menu_event(|app, event| {
+                if event.id().as_ref() == "check_updates" {
+                    check_for_updates(app.clone());
+                    return;
+                }
                 if let Some(action) = menu_action_for_id(event.id().as_ref()) {
                     emit_menu_action(app, action);
                 }
@@ -1020,6 +1041,7 @@ pub fn run() {
                     }
                 }
             }
+            updates::schedule(app.handle().clone());
             Ok(())
         })
         .build(tauri::generate_context!())
