@@ -26,6 +26,7 @@ test("today keeps focus controls inline and reports minutes rather than sessions
   assert.doesNotMatch(index, /id="focusTodaySessions"/);
   assert.match(app, /focus\.todaySummary/);
   assert.match(app, /function setDailyToolPage\(/);
+  assert.match(app, /const nextPage = page === "focus" \? "focus" : "journal"/);
   assert.match(app, /syncDailyToolPageFromScroll/);
   assert.doesNotMatch(app, /focus\.sessionOrdinal/);
   assert.match(app, /defaultTopic/);

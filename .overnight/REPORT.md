@@ -1,10 +1,25 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 1 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 2 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 1）改动
+## 本轮（Batch 5 · Round 2）改动
+
+| 项目 | 说明 |
+|------|------|
+| **入场动效 bug** | 侧栏切换时 `is-entering` 加在 `#todayView` 等自身上，但 CSS 写成「祖先 `.view.is-entering` 里的 `#todayView`」，长期/日记/Today 卡片 stagger 实际未播放；已改为 `#todayView.view.is-entering …`。 |
+| **Today Focus 回归** | `setDailyToolPage` 曾把 `nextPage` 写死为 `journal`，Focus 面板无法切换；已恢复。Today → Focus 标签 → 开始计时，内联环在运行时有轻微 breathe。 |
+| **Today 动效** | 回到 Today 时 hero / mood / daily-tool / calendar 依次 `pageCardIn`。 |
+| **记账浏览器测** | 编辑 popover 填 `not-a-number` → 红框，流水金额不变（`ledger-edit-amount.browser.test.mjs`）。 |
+| **CI 竞态** | `today-spending` 静态服改端口 **5291**，与 fakecloud **5296** 并行时不再互抢。 |
+| **截图** | `b5r2-today-zh-light-1440-mac-*`（Mac 壳）、`b5r2-focus-de-dark-390-*`、`b5r2-journal-en-light-1440-*`。重拍：`node .overnight/capture-batch5-round2.mjs`（5295）。 |
+
+**验收提示：** 侧栏先点「本周」再点「今日」，hero 与日记区应有轻微依次入场；Today 顶栏 **Focus** 可切到计时页；记账编辑金额填乱码不会保存。
+
+---
+
+## 上一轮（Batch 5 · Round 1）
 
 | 项目 | 说明 |
 |------|------|
@@ -92,6 +107,7 @@ Headless 壳注入见 `.overnight/shots/b4r8-week-all-done-mac-de-light-1440-*` 
 | R9 | zh · Week 全完成 · dark 390 | `b4r9-*` |
 | **R10** | **记账 1440 zh/de + 矮视口 keypad** | **`b4r10-*`** |
 | **B5 R1** | **长期页 zh 1440 / de dark 390** | **`b5r1-longrange-*`** |
+| **B5 R2** | **Mac Today zh、Focus de 390、Journal en 1440** | **`b5r2-*`** |
 
 更早 Batch 3 截图：`b3r1`–`b3r10`、以及 `capture-ledger.mjs` 产出的 `ledger-*` 系列。
 
@@ -116,6 +132,13 @@ Headless 壳注入见 `.overnight/shots/b4r8-week-all-done-mac-de-light-1440-*` 
 - 并行跑多个 fakecloud / browser 测时偶发端口竞态（单独 `npm run test:browser` 稳定）。
 
 ---
+
+## npm test（Batch 5 Round 2 实测）
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **329 pass, 0 fail** |
+| `npm run test:browser` | **8 pass, 0 fail**（含记账编辑校验；跑前若 fakecloud 超时可先 `pkill -f wrangler`） |
 
 ## npm test（Batch 5 Round 1 实测）
 

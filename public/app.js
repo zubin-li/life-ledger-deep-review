@@ -4746,8 +4746,8 @@ function isFutureDate(date) {
   return date > isoDate(new Date());
 }
 
-function updateDailyToolControls() {
-  dailyToolPage = "journal";
+function updateDailyToolControls(page) {
+  if (page === "focus" || page === "journal") dailyToolPage = page;
   const card = $(".daily-tool-card");
   if (card) card.dataset.toolPage = dailyToolPage;
   $$('[data-daily-tool]').forEach(button => {
@@ -4769,7 +4769,7 @@ function updateDailyToolControls() {
 }
 
 function setDailyToolPage(page, options = {}) {
-  const nextPage = "journal";
+  const nextPage = page === "focus" ? "focus" : "journal";
   updateDailyToolControls(nextPage);
   const viewport = $("#dailyToolViewport");
   if (!viewport) return;
@@ -6897,7 +6897,12 @@ function renderFocusTimer(snapshot) {
   $("#focusSkipBreak").hidden = !isBreak;
   setText("#focusPrimary", readyBreak ? tr("focus.startBreak") : running ? tr("focus.pause") : paused ? tr("focus.resume") : tr("focus.start"));
   $("#focusPrimary").disabled = isBreak && !readyBreak && !running && !paused;
-  $("#focusInlineTimer")?.style.setProperty("--focus-inline-progress", progress);
+  const inlineTimer = $("#focusInlineTimer");
+  inlineTimer?.style.setProperty("--focus-inline-progress", progress);
+  inlineTimer?.classList.toggle("is-active", Boolean(snapshot));
+  inlineTimer?.classList.toggle("is-running", Boolean(running));
+  inlineTimer?.classList.toggle("is-paused", Boolean(paused));
+  inlineTimer?.classList.toggle("is-break", Boolean(isBreak));
   setText("#focusInlineTime", formatFocusTime(remaining));
   setText("#focusInlinePhase", isBreak ? tr("focus.phaseBreak") : tr("focus.phaseFocus"));
   setText("#focusInlineLabel", snapshot?.label || state.focusSettings?.defaultTopic || tr("focus.untitled"));

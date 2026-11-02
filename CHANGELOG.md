@@ -52,8 +52,12 @@ All notable changes are documented here.
 - **Maintainability:** documented CSS slice layout in `.overnight/CSS-LAYERS.md`; removed duplicate `isoFromDate` in `ledger-core.js`; `.overnight/scratch/` gitignored and deleted from the tree.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`); Batch 4 Round 10 extends clearance for ≤640px and ≤480px height.
 
+- **Goal 2 (Batch 5 R2):** Today hero / daily-tool / calendar enter stagger; inline focus ring breathe while timer runs; Playwright regression for invalid edit amounts; Mac shell Today screenshot (`b5r2-*`).
+
 ### Fixed
 
+- **Page motion:** `is-entering` stagger selectors now attach to `#todayView`, `#timelineView`, and `#longrangeView` themselves (was a no-op descendant selector); long-range enter animation actually plays.
+- **Today focus tab:** `setDailyToolPage` / `updateDailyToolControls` no longer hard-code journal — the Focus timer panel is reachable again on Today.
 - **Money (CSV export):** export includes explicit `currency` column (and `amount` header) so EUR/CNY rows are not mislabeled as `amount_eur` (Antigravity review).
 - **Money (edit):** invalid amount in the edit popover shows `.is-error` instead of silently keeping the old amount.
 - **Assets:** `pages-polish.css` loads before `v210.css` again so consolidated 2.1 polish wins the cascade (Antigravity review).

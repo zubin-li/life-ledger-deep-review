@@ -630,16 +630,37 @@ html.motion-reduced #reviewView .review-insight-block .review-insight-value {
   }
 }
 
-.view.is-entering #todayView.tc-grid.active .tw-card {
+#todayView.view.is-entering.tc-grid .tw-card {
   animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
 }
 
-.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(2) { animation-delay: 35ms; }
-.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(3) { animation-delay: 70ms; }
-.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(4) { animation-delay: 105ms; }
-.view.is-entering #todayView.tc-grid.active .tw-card:nth-child(n+5) { animation-delay: 140ms; }
+#todayView.view.is-entering.tc-grid .tw-card:nth-child(2) { animation-delay: 35ms; }
+#todayView.view.is-entering.tc-grid .tw-card:nth-child(3) { animation-delay: 70ms; }
+#todayView.view.is-entering.tc-grid .tw-card:nth-child(4) { animation-delay: 105ms; }
+#todayView.view.is-entering.tc-grid .tw-card:nth-child(n+5) { animation-delay: 140ms; }
 
-html.motion-reduced .view.is-entering #todayView.tc-grid.active .tw-card {
+html.motion-reduced #todayView.view.is-entering.tc-grid .tw-card {
+  animation: none;
+}
+
+/* Batch 5 round 2 — Today hero + daily tool enter stagger */
+#todayView.view.is-entering .hero-grid > :is(.hero-card, .mood-card) {
+  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#todayView.view.is-entering .hero-grid > .mood-card {
+  animation-delay: 45ms;
+}
+
+#todayView.view.is-entering .daily-tool-card,
+#todayView.view.is-entering .calendar-embedded {
+  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+#todayView.view.is-entering .daily-tool-card { animation-delay: 70ms; }
+#todayView.view.is-entering .calendar-embedded { animation-delay: 105ms; }
+
+html.motion-reduced #todayView.view.is-entering :is(.hero-grid > *, .daily-tool-card, .calendar-embedded) {
   animation: none;
 }
 
@@ -756,38 +777,31 @@ html.motion-reduced #reviewView .rv-weekdays--enter .insight-weekday-track i {
   animation: none;
 }
 
-.view.is-entering #timelineView :is(.journal-mode-switch, #journalFeedPane, .timeline-layout, .journal-feed-heading) {
+#timelineView.view.is-entering :is(.journal-mode-switch, #journalFeedPane, .timeline-layout, .journal-feed-heading) {
   animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
 }
 
-.view.is-entering #timelineView #journalFeedPane { animation-delay: 40ms; }
-.view.is-entering #timelineView .timeline-layout { animation-delay: 80ms; }
+#timelineView.view.is-entering #journalFeedPane { animation-delay: 40ms; }
+#timelineView.view.is-entering .timeline-layout { animation-delay: 80ms; }
 
-html.motion-reduced .view.is-entering #timelineView :is(.journal-mode-switch, #journalFeedPane, .timeline-layout) {
+html.motion-reduced #timelineView.view.is-entering :is(.journal-mode-switch, #journalFeedPane, .timeline-layout) {
   animation: none;
 }
 
-.view.is-entering #weekView .module-card {
+/* Batch 5 round 1 — long-range workspace enter stagger (fixed selector: class on #longrangeView itself) */
+#longrangeView.view.is-entering .horizon-pin,
+#longrangeView.view.is-entering .horizon-heading,
+#longrangeView.view.is-entering .horizon-phase-board,
+#longrangeView.view.is-entering .horizon-section {
   animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
 }
 
-.view.is-entering #weekView .module-card:nth-child(2) { animation-delay: 45ms; }
-.view.is-entering #weekView .module-card:nth-child(3) { animation-delay: 90ms; }
+#longrangeView.view.is-entering .horizon-heading { animation-delay: 35ms; }
+#longrangeView.view.is-entering .horizon-phase-board { animation-delay: 70ms; }
+#longrangeView.view.is-entering .horizon-section:nth-of-type(1) { animation-delay: 105ms; }
+#longrangeView.view.is-entering .horizon-section.horizon-ongoing { animation-delay: 140ms; }
 
-/* Batch 5 round 1 — long-range workspace enter stagger */
-.view.is-entering #longrangeView .horizon-pin,
-.view.is-entering #longrangeView .horizon-heading,
-.view.is-entering #longrangeView .horizon-phase-board,
-.view.is-entering #longrangeView .horizon-section {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-}
-
-.view.is-entering #longrangeView .horizon-heading { animation-delay: 35ms; }
-.view.is-entering #longrangeView .horizon-phase-board { animation-delay: 70ms; }
-.view.is-entering #longrangeView .horizon-section:nth-of-type(1) { animation-delay: 105ms; }
-.view.is-entering #longrangeView .horizon-section.horizon-ongoing { animation-delay: 140ms; }
-
-html.motion-reduced .view.is-entering #longrangeView :is(.horizon-pin, .horizon-heading, .horizon-phase-board, .horizon-section) {
+html.motion-reduced #longrangeView.view.is-entering :is(.horizon-pin, .horizon-heading, .horizon-phase-board, .horizon-section) {
   animation: none;
 }
 
@@ -2115,6 +2129,53 @@ html.motion-reduced #journalFeed .journal-feed-entry {
   #journalFeed .journal-feed-entry:hover .feed-paper {
     transform: translateY(-2px);
     box-shadow: 0 14px 36px color-mix(in srgb, var(--desk-text) 7%, transparent);
+  }
+}
+
+/* Batch 5 round 2 — inline focus ring breathe while running */
+@media (prefers-reduced-motion: no-preference) {
+  .focus-inline-timer.is-active.is-running .focus-inline-ring {
+    animation: llFocusRingBreathe 2.4s ease-in-out infinite;
+  }
+
+  .focus-inline-timer.is-active.is-break.is-running .focus-inline-ring {
+    animation: llFocusRingBreatheBreak 2.8s ease-in-out infinite;
+  }
+}
+
+@keyframes llFocusRingBreathe {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.06);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes llFocusRingBreatheBreak {
+  0%,
+  100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(12deg) brightness(1.04);
+  }
+}
+
+.focus-inline-timer.is-paused .focus-inline-copy strong {
+  opacity: 0.72;
+}
+
+html.motion-reduced .focus-inline-timer.is-active .focus-inline-ring {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-inline-timer.is-active .focus-inline-ring {
+    animation: none !important;
   }
 }
 
