@@ -26,11 +26,11 @@
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=2.0.9" />
-    <link rel="stylesheet" href="./pages-858.css?v=2.0.9" />
-    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.9" />
-    <link rel="stylesheet" href="./today-cards.css?v=2.0.9" />
-    <link rel="stylesheet" href="./v202.css?v=2.0.9" />
+    <link rel="stylesheet" href="./styles.css?v=2.0.10" />
+    <link rel="stylesheet" href="./pages-858.css?v=2.0.10" />
+    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.10" />
+    <link rel="stylesheet" href="./today-cards.css?v=2.0.10" />
+    <link rel="stylesheet" href="./v202.css?v=2.0.10" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -622,8 +622,8 @@
                   <legend class="inspector-heading" id="habitInspectorBasicsLegend">Basics</legend>
                   <label class="habit-form-row"><span id="habitInspectorNameLabel">Name</span><input name="name" required placeholder="e.g. Reading" /></label>
                   <label class="habit-form-row"><span id="habitInspectorNoteLabel">Note</span><textarea name="note" maxlength="500" rows="2"></textarea></label>
-                  <label class="habit-form-row icon-picker-field"><span id="habitInspectorIconLabel">Icon</span><input name="icon" type="hidden" value="target" /><button class="icon-picker-trigger" id="inspectorIconPickerTrigger" type="button"><span id="inspectorIconPickerPreview"></span><span id="inspectorIconPickerName">Target</span></button><div class="icon-picker-popover" id="inspectorIconPickerPopover" hidden></div></label>
-                  <label class="habit-form-row color-picker-field"><span id="habitInspectorColorLabel">Color</span><input name="color" type="hidden" value="sage" /><div class="color-swatch-row" id="inspectorColorSwatches"></div></label>
+                  <div role="group" aria-labelledby="habitInspectorIconLabel" class="habit-form-row icon-picker-field"><span id="habitInspectorIconLabel">Icon</span><input name="icon" type="hidden" value="target" /><button class="icon-picker-trigger" id="inspectorIconPickerTrigger" type="button"><span id="inspectorIconPickerPreview"></span><span id="inspectorIconPickerName">Target</span></button><div class="icon-picker-popover" id="inspectorIconPickerPopover" hidden></div></div>
+                  <div role="group" aria-labelledby="habitInspectorColorLabel" class="habit-form-row color-picker-field"><span id="habitInspectorColorLabel">Color</span><input name="color" type="hidden" value="sage" /><div class="color-swatch-row" id="inspectorColorSwatches"></div></div>
                 </fieldset>
                 <fieldset class="habit-inspector-group">
                   <legend class="inspector-heading" id="habitInspectorTrackingLegend">Tracking</legend>
@@ -769,8 +769,8 @@
         <div class="form-grid">
           <label class="full"><span id="habitNameLabel">习惯名称</span><input name="name" required placeholder="例如：阅读" /></label>
           <label class="full"><span id="habitNoteLabel">备注（可选）</span><textarea name="note" maxlength="500" rows="3" placeholder="这项习惯具体意味着什么？"></textarea></label>
-          <label class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="iconPickerPopover"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" role="dialog" aria-label="选择图标" hidden></div></label>
-          <label class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="colorPickerPopover"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" role="dialog" aria-label="选择强调色" hidden></div></label>
+          <div role="group" aria-labelledby="habitIconLabel" class="icon-picker-field"><span id="habitIconLabel">图标</span><input name="icon" type="hidden" required value="target" /><button class="icon-picker-trigger" id="iconPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="iconPickerPopover"><span id="iconPickerPreview"></span><span id="iconPickerName">目标</span><b>⌄</b></button><div class="icon-picker-popover" id="iconPickerPopover" role="dialog" aria-label="选择图标" hidden></div></div>
+          <div role="group" aria-labelledby="habitColorLabel" class="color-picker-field"><span id="habitColorLabel">强调色</span><input name="color" type="hidden" value="sage" /><button class="color-picker-trigger" id="colorPickerTrigger" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="colorPickerPopover"><i id="colorPickerPreview" aria-hidden="true"></i><span id="colorPickerName">鼠尾草绿</span><b>⌄</b></button><div class="color-picker-popover" id="colorPickerPopover" role="dialog" aria-label="选择强调色" hidden></div></div>
           <fieldset class="full tracking-mode-choice">
             <legend id="habitTrackingModeLabel">打卡方式</legend>
             <label><input name="trackingMode" type="radio" value="check" checked /><span><strong id="habitTrackingCheckLabel">简单打卡</strong><small id="habitTrackingCheckHelp">完成或未完成，不需要数值。</small></span></label>
@@ -1095,23 +1095,23 @@
     </div>
     <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="./deployment-mode.js?v=2.0.9"></script>
-    <script src="./_init_tcb-env.js?v=2.0.9"></script>
-    <script src="./cloudbase-sync.js?v=2.0.9"></script>
-    <script src="./focus-timer.js?v=2.0.9"></script>
-    <script src="./voice-checkin.js?v=2.0.9"></script>
-    <script src="./photo-memories.js?v=2.0.9"></script>
-    <script src="./media-backup.js?v=2.0.9"></script>
+    <script src="./deployment-mode.js?v=2.0.10"></script>
+    <script src="./_init_tcb-env.js?v=2.0.10"></script>
+    <script src="./cloudbase-sync.js?v=2.0.10"></script>
+    <script src="./focus-timer.js?v=2.0.10"></script>
+    <script src="./voice-checkin.js?v=2.0.10"></script>
+    <script src="./photo-memories.js?v=2.0.10"></script>
+    <script src="./media-backup.js?v=2.0.10"></script>
     <script type="module" src="./demo-workspace.js?v=demo10"></script>
-    <script src="./habit-analytics.js?v=2.0.9"></script>
-    <script src="./interaction.js?v=2.0.9"></script>
-    <script src="./long-range.js?v=2.0.9"></script>
-    <script src="./app.js?v=2.0.9"></script>
+    <script src="./habit-analytics.js?v=2.0.10"></script>
+    <script src="./interaction.js?v=2.0.10"></script>
+    <script src="./long-range.js?v=2.0.10"></script>
+    <script src="./app.js?v=2.0.10"></script>
     <script src="./vendor/sortable.min.js"></script>
-    <script src="./hairline.js?v=2.0.9"></script>
-    <script src="./vendor/widget-ui.js?v=2.0.9"></script>
-    <script src="./today-widgets.js?v=2.0.9"></script>
-    <script src="./weather-widget.js?v=2.0.9"></script>
-    <script src="./today-cards.js?v=2.0.9"></script>
+    <script src="./hairline.js?v=2.0.10"></script>
+    <script src="./vendor/widget-ui.js?v=2.0.10"></script>
+    <script src="./today-widgets.js?v=2.0.10"></script>
+    <script src="./weather-widget.js?v=2.0.10"></script>
+    <script src="./today-cards.js?v=2.0.10"></script>
   </body>
 </html>

@@ -1,2 +1,2 @@
-修复应用签名：签名现在覆盖整个应用，从网页下载的安装包不会再被 macOS 误判为“已损坏”。这也是第一次通过应用内更新送达。
-The app's signature now covers the whole app, so a downloaded copy is no longer reported as damaged. This is the first update delivered inside the app.
+修复习惯设置：强调色可以正常更换，不会再跳回第一个颜色；图标选择框不再透出下面的内容，可以正常点选。
+Habit settings: the accent colour keeps the colour you choose, and the icon picker is solid and clickable again.

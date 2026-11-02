@@ -1,6 +1,6 @@
 /** Canonical release constants for Worker, tooling, and drift tests. Keep in sync with package.json and migrations. */
 export const APP_NAME = "life-ledger-deep-review";
-export const APP_VERSION = "2.0.9";
+export const APP_VERSION = "2.0.10";
 export const D1_SCHEMA_REVISION = 6;
 export const BACKUP_SCHEMA_VERSION = 3;
 export const SYNC_PROTOCOL_VERSION = 2;

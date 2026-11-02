@@ -87,3 +87,16 @@ test("habit inspector swatch click updates hidden input and emits input/change",
   assert.equal(context.input.value, "coral");
   assert.deepEqual(context.events, ["input", "change"]);
 });
+
+test("icon and colour pickers are not wrapped in <label> (a label forwards every click to its first button)", () => {
+  const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+  const wrapped = [...html.matchAll(/<label\b[^>]*class="[^"]*(?:icon|color)-picker-field/g)];
+  assert.equal(wrapped.length, 0, "a picker inside <label> makes WebKit re-click the first swatch/icon after every choice");
+  assert.equal([...html.matchAll(/role="group"[^>]*class="[^"]*(?:icon|color)-picker-field/g)].length, 4);
+});
+
+test("open pickers are opaque and lifted above the following form sections", () => {
+  const css = readFileSync(new URL("../public/v202.css", import.meta.url), "utf8") + readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
+  assert.match(css, /:is\(\.icon-picker-popover, \.color-picker-popover\) \{ background: #fff; \}/);
+  assert.match(css, /\.habit-inspector-group:has\(\.icon-picker-popover:not\(\[hidden\]\)\)/);
+});

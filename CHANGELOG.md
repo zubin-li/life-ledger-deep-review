@@ -4,6 +4,15 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.10] - 2026-11-02
+
+Web 2.0.10 and Life Ledger for Mac 3.0.4.
+
+### Fixed
+
+- **Habit accent colour can be changed again.** The colour swatches and the icon picker sat inside a `<label>`. Apple WebKit (Safari and the Mac app) forwards a click inside a label to the label's first button once the clicked swatch has been re-drawn, so every choice snapped back to the first colour. The pickers are now plain groups (`role="group"`, still named by their caption). Also affects the colour choice in the **New habit** dialog.
+- **Icon picker is readable.** The icon panel was translucent and the next form section painted over it, so labels, colours and the tracking switch showed through the icons and caught clicks. Pickers are now opaque, and an open picker lifts its section above the ones below.
+
 ## [2.0.9] - 2026-11-02
 
 Life Ledger for Mac 3.0.3 (web unchanged apart from the version).

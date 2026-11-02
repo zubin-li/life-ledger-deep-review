@@ -368,7 +368,7 @@ dialog form > header, dialog form > footer { padding: 23px 26px; display: flex; 
 dialog form > header { border-bottom: 1px solid var(--line); }
 dialog h2 { margin: 5px 0 0; font: 600 23px "Noto Serif SC"; }
 .form-grid { padding: 25px 26px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-grid label { color: var(--muted); font-size: 10px; }
+.form-grid :is(label, .icon-picker-field, .color-picker-field) { color: var(--muted); font-size: 10px; }
 .form-grid label.full { grid-column: 1 / -1; }
 .form-grid input, .form-grid select, .form-grid textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px; background: rgba(255,255,255,.55); margin-top: 6px; outline: none; }
 .form-grid textarea { min-height: 72px; resize: vertical; font: 11px/1.55 var(--font-body); }
@@ -798,6 +798,8 @@ body { transition: color 240ms ease, background-color 320ms ease; }
 .icon-picker-trigger b { color: var(--muted); font-size: 10px; }
 .icon-picker-popover { position: absolute; z-index: 10; top: calc(100% + 7px); left: 0; width: min(390px, 82vw); padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; border: 1px solid var(--line); border-radius: 19px; background: color-mix(in srgb, var(--paper) 88%, transparent); box-shadow: 0 22px 55px rgba(29,29,31,.18); backdrop-filter: blur(28px) saturate(150%); }
 .icon-picker-popover[hidden] { display: none; }
+/* an open picker lifts its whole form section above the sections after it (they are stacking contexts) */
+.habit-inspector-group:has(.icon-picker-popover:not([hidden])), .form-grid > :has(> .icon-picker-popover:not([hidden]), > .color-picker-popover:not([hidden])) { z-index: 5; }
 .icon-choice { min-width: 0; padding: 10px 5px; display: grid; place-items: center; gap: 5px; border: 1px solid transparent; border-radius: 13px; background: transparent; color: var(--muted); cursor: pointer; }
 .icon-choice span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 8px; white-space: nowrap; }
 .icon-choice.selected { color: var(--ink); border-color: var(--line); background: var(--card); box-shadow: 0 7px 18px rgba(29,29,31,.07); }
