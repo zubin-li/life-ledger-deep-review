@@ -5944,6 +5944,7 @@ function setBackupTab(tab = "export") {
   });
   $$('[data-backup-panel]').forEach(panel => { panel.hidden = panel.dataset.backupPanel !== selected; });
   $("#exportConfirm").hidden = selected !== "export";
+  if (selected === "import") refreshConflictRecoveryVisibility();
 }
 function syncConflictRecordOptions() {
   return { backupFormat: BACKUP_FORMAT, backupSchemaVersion: BACKUP_SCHEMA_VERSION };

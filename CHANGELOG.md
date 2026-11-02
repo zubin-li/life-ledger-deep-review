@@ -26,7 +26,7 @@ All notable changes are documented here.
 - **Review:** monthly Money stat columns, scatter dots, and insight lines restagger when changing review months (`v231-review-ledger-retarget.css`; `LifeLedgerInteraction.retarget` on `#reviewLedgerSummary`).
 - **Money (Goal 2):** quick-entry form success flash, new transaction row enter, submit button press (`v232-ledger-entry-feedback.css`).
 - **QA:** `npm test` skips `*.browser.test.mjs`; run `npm run test:browser` for Playwright suites locally or in CI.
-- **QA:** `fakecloud-online.browser.test.mjs` smoke-tests Cloudflare mode against `.overnight/fakecloud.sh` (run via `npm run test:browser`).
+- **QA:** `fakecloud-conflict.browser.test.mjs` exercises stale CAS PUT → conflict recovery card on the Import tab, including Money merge preview (after seeding ledger on cloud payload).
 - **QA:** `fakecloud.sh` copies the site into `/tmp/life-ledger-overnight-fakecloud` so local Pages dev does not inherit repo-root `wrangler.jsonc` D1 bindings (fixes empty `states` table / 500 on GET).
 
 ### Changed
@@ -38,6 +38,7 @@ All notable changes are documented here.
 - **Review (Goal 2):** collapsed **Detailed metrics** also shows up to three top habit completion chips (colour + %); hidden when expanded to avoid duplicating the score grid (`v210.css` round 6).
 - **Week (Goal 2):** module cards stagger on page enter; calendar day empty cells use softer enter styling (`v210.css` round 5).
 - **Week (Goal 2):** insights stat cards stagger after modules; empty insights hairline uses shared enter motion (`v210.css` round 6).
+- **Import & export:** switching to the **Import** backup tab refreshes conflict recovery visibility and the Money merge preview (so the card is not stale while the panel was hidden).
 - **Week (Goal 2):** when every weekly goal is checked off, the celebration banner matches long-term empty styling and `ll-empty-enter` motion (`pages-art.js`, `v210.css` round 7).
 - **Review (Goal 2):** collapsed habit chips align cleanly on viewports ≤520px (`v210.css` round 7).
 - **Money (Goal 2):** ledger page enter animations target `#ledgerView.view.is-entering` (fixes inert stagger selectors).

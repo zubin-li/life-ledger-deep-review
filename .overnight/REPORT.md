@@ -1,40 +1,39 @@
-# Life Ledger 夜间构建总报告（Batch 4 · Round 7）
+# Life Ledger 夜间构建总报告（Batch 4 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；明早请在本地浏览器验收。
 
 ---
 
-## 本轮（Batch 4 · Round 7）改动
+## 本轮（Batch 4 · Round 8）改动
 
 | 项目 | 说明 |
 |------|------|
-| **pages-art 接入（重要）** | `public/pages-art.js` 与 `pages-polish.css` 一直存在但未进 `index.html` / Service Worker，导致 Week「全部完成」插画横幅、各页 hairline 空状态增强从未执行。本轮已加载。 |
-| **Week · 本周目标全勾选** | 列表底部出现带 `week-all-done` 插画的庆祝条，样式与长期目标空状态一致，带 `ll-empty-enter` 淡入。 |
-| **复盘 · 390 宽** | 折叠「详细指标」行：平均率/专注预览与 habit chips 在窄屏左对齐换行，不再挤在右侧。 |
-| **fakecloud 冒烟** | 新浏览器测试：5298 起 `.overnight/fakecloud.sh`，`?mode=cloudflare` 首屏加载且冲突恢复行保持隐藏。 |
-| **测试** | 单元 **322 pass**；浏览器 **5 pass**（含 fakecloud）。 |
+| **409 冲突 · 浏览器回归** | 新测 `fakecloud-conflict.browser.test.mjs`：`.overnight/fakecloud.sh` + `?mode=cloudflare&local-preview=demo-showcase-v1`，先 PUT 补齐云端 `ledger`，再模拟「远端已更新 + 本机 stale PUT」→ **设置 → 导入与导出 → 导入** 页应出现冲突恢复条与 **Money merge preview**。 |
+| **Import 标签刷新** | 切到备份「导入」标签时会重新跑 `refreshConflictRecoveryVisibility()`，避免冲突预览在面板隐藏时仍是空（`public/app.js`）。 |
+| **截图补全** | Week 全完成横幅：**de · dark · 390**；Mac 注入壳 **de · 1440**；Week 内长期目标空状态 hairline：**de · dark · 390**。 |
+| **测试** | 单元 **322 pass**；浏览器 **6 pass**（+1 冲突流程）。 |
 
 ### 明早可试
 
-1. **本周** → 把本周目标全部勾完 → 列表下方应出现「本周目标已全部完成 · n / n」+ 太阳/check 插画（见截图）。
-2. **复盘** → 手机宽度（390）看「详细指标」折叠行 → chips 应在预览文字下方左对齐排列。
-3. **日记 / 习惯 / 复盘空状态** → 若清空数据，应能看到 `pages-art` 注入的 hairline 插画（此前版本没有）。
-4. **在线版本地替身（可选）：** `bash .overnight/fakecloud.sh 5298` → 打开 `http://127.0.0.1:5298/index.html?mode=cloudflare`。
+1. **在线版本地替身：** `bash .overnight/fakecloud.sh 5298` → 打开 Cloudflare 模式；改数据后可用另一标签页改 `/api/state` 制造 revision 差，再看导入页的冲突卡片（与自动化测试同思路）。
+2. **Week · de · 深色 · 手机宽：** 本周目标全勾完 → 列表底庆祝条（见 `b4r8-week-all-done-de-dark-390-*.png`）。
+3. **Mac 窗口感：** 同场景在注入 `desktop/mac/shell.js` 下的 1440 截图（`b4r8-week-all-done-mac-de-light-1440-*.png`）。
 
 ---
 
-## 截图（Batch 4 Round 7）
+## 截图（Batch 4 Round 8）
 
 | 场景 | 文件 |
 |------|------|
-| 中文 · 复盘详细指标 + chips · 390 light | `b4r7-review-habit-chips-zh-light-390-chromium.png` / `-webkit.png` |
-| 中文 · Week 目标全完成横幅 · 390 light | `b4r7-week-all-done-zh-light-390-chromium.png` / `-webkit.png` |
+| de · Week 全完成 · 390 dark | `b4r8-week-all-done-de-dark-390-chromium.png` / `-webkit.png` |
+| de · Week 全完成 · Mac 壳 1440 light | `b4r8-week-all-done-mac-de-light-1440-chromium.png` / `-webkit.png` |
+| de · 长期目标空状态 · 390 dark | `b4r8-long-term-empty-de-dark-390-chromium.png` / `-webkit.png` |
 
-Round 1–6 截图仍见 `b4r1-*` … `b4r6-*`。重拍：`node .overnight/capture-batch4-round7.mjs`。
+Round 1–7 截图仍见 `b4r1-*` … `b4r7-*`。重拍：`node .overnight/capture-batch4-round8.mjs`（5297）。
 
 ---
 
-## 历史（Batch 4 Round 1–6）
+## 历史（Batch 4 Round 1–7）
 
 - Round 1：Antigravity REVIEW 三条 HIGH/MED（CloudBase ledger、多币种分类、预算去重）。
 - Round 2：`npm test` / `test:browser` 拆分；记账录入成功动画。
@@ -42,25 +41,26 @@ Round 1–6 截图仍见 `b4r1-*` … `b4r6-*`。重拍：`node .overnight/captu
 - Round 4：习惯库抛光 + CI browser job。
 - Round 5：复盘 summary 预览 + Week module stagger + ledger 进入选择器修复。
 - Round 6：复盘 habit chips + Week insights enter。
+- Round 7：`pages-art` 接入 shell；Week 横幅 + 窄屏 chips + fakecloud 冒烟。
 
 ---
 
 ## 已知问题 / 未做
 
-- fakecloud 未跑完整 409 冲突恢复 UI 流程（仅首屏 + 无冲突行）。
+- Cloudflare 模式下 demo 工作区不会像 `?mode=local` 那样自动 seed 带 `ledger` 的样例；首轮纯云端同步可能无记账数据（测试里用 PUT 显式补齐）。
+- 409 的「下载保留副本 / 移除」按钮尚未做 headless 点击覆盖。
 - 极矮视口键盘与底栏可能重叠。
-- Week 全完成横幅尚未单独截 dark/de/Mac 壳。
 
 ---
 
 ## npm test
 
-**322 pass, 0 fail**（`npm test`，Batch 4 Round 7 实测）。  
-**5 pass, 0 fail**（`npm run test:browser`）。
+**322 pass, 0 fail**（`npm test`，Batch 4 Round 8 实测）。  
+**6 pass, 0 fail**（`npm run test:browser`）。
 
 ---
 
 ## 文档与版本
 
-- `CHANGELOG.md`：`[Unreleased]` 含 pages-art 接入、Week 横幅、窄屏 chips、fakecloud 测试。
+- `CHANGELOG.md`：`[Unreleased]` 含 fakecloud 冲突测试、Import 标签刷新。
 - 版本号仍为 **2.1.0** / Mac **3.1.0**。

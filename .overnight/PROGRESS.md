@@ -1,5 +1,40 @@
 # Overnight progress
 
+## Batch 4 · Round 8 — done
+
+- **REVIEW.md：** HIGH/MED（CloudBase ledger、多币种分类、预算去重）仍为 Round 1 已修；本轮未新增 Antigravity 项。
+- **Goal 2 — 409 冲突 QA：** 新增 `tests/fakecloud-conflict.browser.test.mjs` — fakecloud 上先为云端 payload 注入 demo ledger，再模拟远端 CAS 前进 + 本机习惯勾选触发 409；经 **设置 → 导入与导出 → 导入** 页可见冲突恢复条与 **Money merge preview**。
+- **Goal 2 — Import 标签：** `setBackupTab("import")` 现在会调用 `refreshConflictRecoveryVisibility()`，避免冲突卡片在 Import 面板隐藏时预览不刷新（`app.js`）。
+- **Goal 2 — 截图：** `capture-batch4-round8.mjs`（5297）→ Week 全完成 **de · dark · 390**、**Mac 壳 · de · 1440**、长期目标空状态 **de · dark · 390**（`b4r8-*`，WebKit + Chromium）。
+- **测试：** `npm test` **322 pass, 0 fail**；`npm run test:browser` **6 pass, 0 fail**（含新 fakecloud 冲突用例）。
+
+## Half-done
+
+- （无）
+
+## Next（Round 9+）
+
+- Cloudflare + `local-preview` 首次同步仍可能不含 `ledger`（demo 在 cloud 模式不 seed）；可考虑在 `mergeRemoteCloudPayload` 拉取后若本地 preview 含 ledger 则强制首轮 push，或文档说明。
+- 409 流程 UI：下载/ dismiss 按钮的 headless 点击（可选）。
+- Week 全完成横幅 **zh · dark** 对比图（可选）。
+
+## Known bugs / gaps
+
+- 极矮视口 dock/键盘：规则仍在 `v210` 的 v213 段。
+- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据。
+- `#longTermGoalsPane` 在 Week 内默认隐藏；「长期」主导航进入 `longrangeView`（截图脚本用 Week 内 pane 仅作 hairline 对比）。
+
+## npm test
+
+```
+322 pass, 0 fail (batch 4 round 8, unit gate)
+6 pass, 0 fail (test:browser)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 4 · Round 7 — done
 
 - **REVIEW.md：** HIGH/MED 三条仍为 Round 1 已修；本轮未改 sync/ledger 核心逻辑。
@@ -10,42 +45,6 @@
 - **测试：** `npm test` **322 pass, 0 fail**；`npm run test:browser` **5 pass, 0 fail**。
 - **文档：** `CHANGELOG [Unreleased]` Week 横幅、窄屏 chips、pages-art 接入、fakecloud 浏览器测试。
 - **截图：** `capture-batch4-round7.mjs`（5296）→ `b4r7-review-habit-chips-zh-light-390-*`、`b4r7-week-all-done-zh-light-390-*`（WebKit + Chromium）。
-
-## Half-done
-
-- （无）
-
-## Next（Round 8+）
-
-- 409 冲突恢复面板在 fakecloud 下的完整 UI 交互（双端改 state 触发 409）仍可选。
-- Mac shell 注入下再截一张 Week 全完成横幅（`habitpick-silent.mjs` 模式）。
-- 长期目标空状态与 Week 横幅在 dark/de 语言各补一张对比图（可选）。
-
-## Known bugs / gaps
-
-- 极矮视口 dock/键盘：规则仍在 `v210` 的 v213 段。
-- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据。
-- fakecloud 仅测首屏同步 + 冲突行隐藏，未测冲突解决全流程。
-
-## npm test
-
-```
-322 pass, 0 fail (batch 4 round 7, unit gate)
-5 pass, 0 fail (test:browser)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
-
-## Batch 4 · Round 6 — done
-
-- **REVIEW.md（只读）：** HIGH CloudBase `mergeRemoteCloudPayload`、MED 多币种 `categoryBreakdown`、MED 预算 `(month,categoryId)` 去重 — 代码与测试已在 Round 1 落地；本轮未改逻辑，仅确认仍绿。
-- **Goal 2 — 复盘习惯分数速览：** 折叠「详细指标」summary 在平均率/专注预览下方显示最多 3 个 habit chip（色条 + 完成率）；展开后隐藏 chips，避免与 `#scoreGrid` 重复。`review-metrics-preview.js` 新增 `pickTopHabitScores`；`app.js` 的 `reviewDetailedHabitChipsMarkup`。
-- **Goal 2 — Week insights：** 空 insights hairline 加 `ll-empty-enter`；进入 Week 页时四个 insight 统计卡 module stagger 之后依次 enter（`v210.css` round 6）。
-- **测试：** `tests/review-metrics-preview.test.mjs` 扩展；`npm test` **321 pass, 0 fail**；`npm run test:browser` **4 pass, 0 fail**。
-- **文档：** `CHANGELOG [Unreleased] Changed` 复盘 chips + Week insights。
-- **截图：** `capture-batch4-round6.mjs`（5294，curl 就绪探测）→ `b4r6-review-habit-chips-*`、`b4r6-week-full-de-dark-390-*`（WebKit + Chromium）。
 
 ## Driver gate after round 1
 ℹ tests 313 ℹ pass 313 ℹ fail 0 
@@ -66,4 +65,7 @@ _pending (driver appends after commit)_
 ℹ tests 321 ℹ pass 321 ℹ fail 0 
 
 ## Driver gate after round 7
+ℹ tests 322 ℹ pass 322 ℹ fail 0 
+
+## Driver gate after round 8
 ℹ tests 322 ℹ pass 322 ℹ fail 0 
