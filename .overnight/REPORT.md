@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 3 · Round 6）
+# Life Ledger 夜间构建报告（Batch 3 · Round 7）
 
-本 round 处理 **Antigravity REVIEW** 核对、**记账/Today 空状态动效**，并补齐 **预算进度** 的默认货币过滤。
+本 round **收敛复盘页双轨渲染**，并为 **记账预算进度条** 加上换月 stagger 动效。
 
 ---
 
@@ -8,54 +8,53 @@
 
 | 项目 | 说明 |
 |------|------|
-| **REVIEW 修复状态** | 备份含 `ledger`、收入快捷录入/编辑、德 CSV 引号、默认货币汇总、Today 负零 — 已在 CHANGELOG Unreleased「Fixed」中；代码与 `backup-ledger.test.mjs` / `ledger-core.test.mjs` 一致。 |
-| **`v228-ledger-empty-enter.css`** | 记账 onboarding、各 `ledger-empty`、donut 空态、Today 支出卡（空账本）的 `llEmptyReveal`；尊重 `prefers-reduced-motion`。 |
-| **`budgetProgress`** | 非默认货币支出不再计入预算条。 |
-| **测试** | +1 → **302 pass, 0 fail**。 |
+| **`reviewUsesInsightPanels`** | 有 `dailySummary` 时，`renderReviewTrendChart` 只更新热力图；`#reviewHabitCompare`  exclusively 由 `renderInsightDashboard` 填充（习惯表 + `.rv-weekdays`），避免先画 legacy `analytics-bars` 再被覆盖的浪费与节奏条 selector 混乱。 |
+| **`v229-ledger-budget-bars.css`** | 预算 `--p` 条在 `.ledger-budget-list.is-retargeting` 下 stagger 展开；`animateLedgerBudgetFills` 在 `review-bars.js`。 |
+| **测试** | +1 → **303 pass, 0 fail**。 |
 
 ---
 
 ## 明早怎么验（约 2 分钟）
 
-1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`
-2. 设置里 **清除示例** 或首次 dismiss demo 后打开 **记账** — 应见 onboarding 卡片与「暂无支出分类 / 暂无趋势数据」。
-3. **今日** 支出卡：无账本时德/中文案 + 语法提示（`Z. B.: 12,50 Kaffee`）。
-4. `npm test` → **302 pass, 0 fail**
+1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`，打开 `?mode=local&local-preview=demo-showcase-v1`
+2. **复盘** → 展开习惯对比区，应见 **星期柱**（`.rv-weekdays`），换月时柱高与百分比仍有 v227 脉冲（非 legacy 横条列表）。
+3. **记账** → **预算进度**，点月份 ‹ ›，进度条应从 0 长到当前比例（减少 motion 时无动画）。
+4. `npm test` → **303 pass, 0 fail**
 
 ---
 
-## 截图（Batch 3 Round 6）
+## 截图（Batch 3 Round 7）
 
 | 场景 | 文件 |
 |------|------|
-| 中文 · 空账本 + onboarding · 1440 light | `b3r6-ledger-empty-zh-light-1440-chromium.png` / `-webkit.png` |
-| 德文 · Today 支出空态 · 390 light | `b3r6-today-spend-empty-de-light-390-chromium.png` / `-webkit.png` |
+| 中文 · 复盘星期柱 · 1440 light | `b3r7-review-weekday-zh-light-1440-chromium.png` / `-webkit.png` |
+| 德文 · 预算区 · 390 dark | `b3r7-ledger-budget-de-dark-390-chromium.png` / `-webkit.png` |
 
-重拍：`.overnight/capture-batch3-round6.mjs`（端口 **5297**；init 须写 `life-ledger-local-edition=2026-10-sample-v6` + `life-ledger-demo-dismissed-v1=1`，否则会再次载入三个月样例）。
+重拍：`.overnight/capture-batch3-round7.mjs`（端口 **5296**）。
 
 ---
 
 ## 已知问题
 
 - fakecloud 仍缺 `functions/`。
-- 复盘 habit/weekday 仍有两套 DOM 路径（见 Round 5 说明）。
+- Round 5 截图脚本仍指向 `.analytics-bars` weekday 面板；当前 UI 以 `.rv-weekdays` 为准（Round 7 脚本已修正）。
 
 ---
 
 ## 试过但未做
 
-- 合并 `renderInsightDashboard` / `paintReviewAnalyticsPanels`。
-- mood×习惯×支出 新关联卡片（复盘已有 scatter + insight 文案）。
+- 删除未使用的 `renderHabitBars` / `renderWeekdayBars`（仍作为无 `dailySummary` 时的 fallback）。
+- fakecloud stub 拷贝。
 
 ---
 
 ## npm test
 
-**302 pass, 0 fail**（Batch 3 Round 6，实测）。
+**303 pass, 0 fail**（Batch 3 Round 7，实测）。
 
 ---
 
 ## 下次可做
 
-- 复盘渲染路径合并；fakecloud stub。
-- 记账月切换时 budget 条 stagger（与 v227 复盘条类似）。
+- 记账分类 donut / 日支出热力图换月 stagger。
+- 在线版 fakecloud 最小 `functions/` 替身（只读 state，不碰 migrations）。

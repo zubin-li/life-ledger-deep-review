@@ -8437,6 +8437,10 @@ function countLabel(count) {
   return `${value} 次`;
 }
 
+function reviewUsesInsightPanels() {
+  return Boolean(analyticsApi()?.dailySummary);
+}
+
 function paintReviewAnalyticsPanels(dates, points) {
   const paint = window.LifeLedgerInteraction?.paintWithSkeleton;
   const heatmap = $("#reviewHeatmap");
@@ -8446,7 +8450,7 @@ function paintReviewAnalyticsPanels(dates, points) {
     if (paint) paint(heatmap, body, { skeletonClass: "ll-skeleton ll-skeleton--heatmap" });
     else body();
   }
-  if (compare) {
+  if (compare && !reviewUsesInsightPanels()) {
     const html = `${renderHabitBars(dates)}${renderWeekdayBars(points)}`;
     const body = () => { compare.innerHTML = html; };
     if (paint) paint(compare, body, { skeletonClass: "ll-skeleton ll-skeleton--habit-bars" });
@@ -8464,7 +8468,12 @@ function renderReviewTrendChart() {
     const heatmap = $("#reviewHeatmap");
     const compare = $("#reviewHabitCompare");
     if (heatmap) heatmap.innerHTML = "";
-    if (compare) compare.innerHTML = "";
+    if (compare && !reviewUsesInsightPanels()) compare.innerHTML = "";
+    return;
+  }
+  if (reviewUsesInsightPanels()) {
+    const points = dates.map(date => ({ date, value: completionFor(date) }));
+    paintReviewAnalyticsPanels(dates, points);
     return;
   }
   if (!current.completed) {

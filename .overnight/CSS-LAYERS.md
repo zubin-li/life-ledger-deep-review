@@ -1,4 +1,4 @@
-# CSS layering (v210–v228)
+# CSS layering (v210–v229)
 
 Overnight Goal 2 work landed in **small, last-loaded stylesheets** instead of one megabyte `v210.css` merge:
 
@@ -16,6 +16,7 @@ Overnight Goal 2 work landed in **small, last-loaded stylesheets** instead of on
 | `v226-review-score-donut.css` | SVG donut ring, score-grid enter/roll, spark grow polish |
 | `v227-review-bars-weekday.css` | Review month bar-chart retarget, weekday + focus bars, empty enter |
 | `v228-ledger-empty-enter.css` | Ledger + Today spending empty-state enter motion |
+| `v229-ledger-budget-bars.css` | Budget progress bar stagger on month change |
 
 **Why not one file:** easier round-by-round diffs, parallel overnight batches, and PWA cache bust per feature slice. `index.html` + `sw.js` list order = cascade order (always append new files **last**).
 

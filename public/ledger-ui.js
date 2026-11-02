@@ -217,7 +217,7 @@
         "Tippe auf „Budget setzen“, um ein Monatslimit für eine Ausgabenkategorie festzulegen.",
       )}</p>`;
     }
-    return `<ul class="ledger-budget-list">${rows.map(row => {
+    return `<ul class="ledger-budget-list is-retargeting">${rows.map(row => {
       const cat = ledger.categories.find(c => c.id === row.categoryId);
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
       const pct = Math.min(100, Math.round(row.ratio * 100));
@@ -930,6 +930,9 @@
     requestAnimationFrame(() => {
       const viz = host.querySelector(".ledger-category-viz");
       if (viz && !viz.classList.contains("is-ready")) viz.classList.add("is-ready");
+      const budgetList = host.querySelector(".ledger-budget-list.is-retargeting");
+      root.LifeLedgerReviewBars?.animateLedgerBudgetFills(budgetList);
+      root.LifeLedgerInteraction?.retarget?.(budgetList);
     });
     const roll = root.LifeLedgerInteraction?.rollText;
     if (roll) {

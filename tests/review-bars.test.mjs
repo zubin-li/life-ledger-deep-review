@@ -29,3 +29,22 @@ test("rollPanelTextValues rolls when stored value changes", () => {
   assert.equal(rolled.length, 1);
   assert.deepEqual(rolled[0], { next: "81%", prev: "72%" });
 });
+
+test("animateLedgerBudgetFills resets --p then restores target", () => {
+  let pValue = "0.65";
+  const bar = {
+    style: {
+      getPropertyValue(k) {
+        return k === "--p" ? pValue : "";
+      },
+      setProperty(k, v) {
+        if (k === "--p") pValue = v;
+      },
+      transition: "",
+    },
+  };
+  const scope = { querySelectorAll: () => [bar] };
+  root.requestAnimationFrame = cb => cb();
+  RB.animateLedgerBudgetFills(scope);
+  assert.equal(pValue, "0.65");
+});
