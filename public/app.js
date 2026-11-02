@@ -4335,6 +4335,27 @@ function pulseWeekWorkspaceMotion() {
   });
 }
 
+function pulseModalDialog(dialog) {
+  if (!dialog || document.documentElement.classList.contains("motion-reduced")) return;
+  dialog.classList.remove("is-modal-enter");
+  void dialog.offsetWidth;
+  dialog.classList.add("is-modal-enter");
+  setTimeout(() => dialog.classList.remove("is-modal-enter"), 520);
+}
+
+let lastBackupTab = "";
+
+function pulseBackupTabSwitch(selected) {
+  const panel = $(`[data-backup-panel="${selected}"]`);
+  window.LifeLedgerInteraction?.retarget?.(panel);
+  const tabs = $(".backup-tabs");
+  if (!tabs || document.documentElement.classList.contains("motion-reduced")) return;
+  tabs.classList.remove("is-tab-switch");
+  void tabs.offsetWidth;
+  tabs.classList.add("is-tab-switch");
+  setTimeout(() => tabs.classList.remove("is-tab-switch"), 440);
+}
+
 function pulseShellNav(view) {
   if (!lastShownView || view === lastShownView) return;
   const title = $("#viewTitle");
@@ -4354,11 +4375,15 @@ function pulseShellNav(view) {
 }
 
 function spotlightReviewScatterSection(section) {
-  if (!section || document.documentElement.classList.contains("motion-reduced")) return;
-  section.classList.remove("is-scatter-spotlight");
+  if (!section) return;
+  const reduced = document.documentElement.classList.contains("motion-reduced");
+  section.classList.remove("is-scatter-spotlight", "is-scatter-spotlight-static");
   void section.offsetWidth;
-  section.classList.add("is-scatter-spotlight");
-  setTimeout(() => section.classList.remove("is-scatter-spotlight"), 720);
+  section.classList.add(reduced ? "is-scatter-spotlight-static" : "is-scatter-spotlight");
+  setTimeout(
+    () => section.classList.remove(reduced ? "is-scatter-spotlight-static" : "is-scatter-spotlight"),
+    reduced ? 1400 : 720,
+  );
 }
 
 function applyGoalHorizon() {
@@ -5993,6 +6018,8 @@ function updateExportFields() {
 }
 function setBackupTab(tab = "export") {
   const selected = tab === "import" ? "import" : "export";
+  if (lastBackupTab && lastBackupTab !== selected) pulseBackupTabSwitch(selected);
+  lastBackupTab = selected;
   $$('[data-backup-tab]').forEach(button => {
     const active = button.dataset.backupTab === selected;
     button.classList.toggle("active", active);
@@ -6103,8 +6130,10 @@ function openBackupDialog() {
   clearImportSelection();
   $("#undoRestore").hidden = !localStorage.getItem(RESTORE_SAFETY_KEY);
   $("#mediaBackupOption").hidden = !photosEnabled;
+  lastBackupTab = "";
   setBackupTab("export");
   refreshConflictRecoveryVisibility();
+  pulseModalDialog($("#exportDialog"));
   $("#exportDialog").showModal();
 }
 function syncExportButtonPlacement() {
@@ -8530,7 +8559,7 @@ function renderReviewLedgerSummary() {
       <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
       <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
       <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
-    </div>${jumpNav}${scatterSection}${insightSection}</article>`;
+    </div>${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
   const roll = globalThis.LifeLedgerInteraction?.rollText;
   const statKeys = ["reviewStatSpend", "reviewStatIncome", "reviewStatNet"];
@@ -8554,6 +8583,10 @@ function renderReviewLedgerSummary() {
       });
       const target = document.getElementById(id);
       spotlightReviewScatterSection(target);
+      if (motionReduced) {
+        const live = host.querySelector(".review-scatter-live");
+        if (live) live.textContent = btn.textContent.trim();
+      }
       target?.scrollIntoView({ behavior: motionReduced ? "auto" : "smooth", block: "nearest" });
       target?.focus?.({ preventScroll: true });
     });
@@ -9882,6 +9915,7 @@ function initSettingsDialog() {
       : !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
     $("#settingsRestoreLocal").hidden = !(localOnly || macLocal) || !localStorage.getItem(LOCAL_BACKUP_KEY);
     $("#settingsClearLocal").hidden = !(localOnly || macLocal);
+    pulseModalDialog(dialog);
     dialog.showModal();
   });
   $("#settingsBackup").addEventListener("click", () => { dialog.close(); openBackupDialog(); });

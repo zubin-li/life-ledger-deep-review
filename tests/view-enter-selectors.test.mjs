@@ -54,6 +54,18 @@ test("Batch 5 round 8 shell nav, week modules, ledger month, scatter spotlight",
   assert.match(ledgerUi, /pulseLedgerMonthMotion/);
 });
 
+test("Batch 5 round 9 settings backup dialog motion and Today hero rhythm", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 5 round 9 — settings \/ backup dialogs, Today rhythm, scatter a11y/);
+  assert.match(css, /#todayView\.tc-grid\.active:not\(\.tc-editing\) > \.tc-top/);
+  assert.match(css, /\.is-modal-enter/);
+  assert.match(css, /\.is-scatter-spotlight-static/);
+  assert.match(app, /pulseModalDialog/);
+  assert.match(app, /pulseBackupTabSwitch/);
+  assert.match(app, /review-scatter-live/);
+});
+
 test("short viewport ledger keypad docks fixed while quick field focused", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   assert.match(css, /Batch 5 round 3 — dock keypad/);

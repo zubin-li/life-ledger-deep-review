@@ -3563,3 +3563,70 @@ html.motion-reduced :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .
     animation: none !important;
   }
 }
+
+/* Batch 5 round 9 — settings / backup dialogs, Today rhythm, scatter a11y */
+
+#todayView.tc-grid > .tc-top.hero-grid {
+  gap: clamp(16px, 1.85vw, 22px);
+}
+
+#todayView.tc-grid.active:not(.tc-editing) > .tc-top {
+  margin-bottom: max(4px, calc(var(--tc-gap, 20px) * 0.14));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.settings-dialog, .export-dialog).is-modal-enter {
+    animation: modalSheetEnter 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  :is(.settings-dialog, .export-dialog).is-modal-enter::backdrop {
+    animation: modalBackdropIn 0.36s ease both;
+  }
+
+  .export-dialog [data-backup-panel].is-retargeting {
+    animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  .backup-tabs.is-tab-switch button.active {
+    animation: navItemLand 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+@keyframes modalSheetEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.988);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes modalBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+:is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight-static {
+  outline: 2px solid color-mix(in srgb, var(--desk-accent, #167dce) 55%, transparent);
+  outline-offset: 3px;
+}
+
+html.motion-reduced :is(.settings-dialog, .export-dialog).is-modal-enter,
+html.motion-reduced .export-dialog [data-backup-panel].is-retargeting,
+html.motion-reduced .backup-tabs.is-tab-switch button.active {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.settings-dialog, .export-dialog).is-modal-enter,
+  .export-dialog [data-backup-panel].is-retargeting,
+  .backup-tabs.is-tab-switch button.active {
+    animation: none !important;
+  }
+}

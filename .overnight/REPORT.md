@@ -1,10 +1,24 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 8 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 9 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 8）改动
+## 本轮（Batch 5 · Round 9）改动
+
+| 项目 | 说明 |
+|------|------|
+| **设置 / 备份** | 顶栏 **设置** 或 **导入与导出**：对话框轻微上滑入场；在备份对话框内 **导出 ↔ 导入** 切换时，当前面板再次入场。 |
+| **Today 顶行** | hero 与 mood 之间间距略增，顶行与下方卡片网格多留一点呼吸感。 |
+| **复盘 scatter** | 系统开启「减少动态效果」时，jump chip 仍用静态外框高亮目标区块，并通过 `aria-live` 读出区块名。 |
+| **测试** | 单元 **335 pass**；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b5r9-*`。重拍：`node .overnight/capture-batch5-round9.mjs`（端口 **5292**）。 |
+
+**验收提示：** 点 **设置** 看对话框是否轻弹；**设置 → 导入与导出** 再点 **导入** tab；**今日** 顶行 hero/mood 间距是否更匀；复盘（demo 有记账数据时）在 reduced-motion 下点 scatter chip 应仍有外框且屏幕阅读器可感知切换。
+
+---
+
+## 上一轮（Batch 5 · Round 8）改动
 
 | 项目 | 说明 |
 |------|------|
