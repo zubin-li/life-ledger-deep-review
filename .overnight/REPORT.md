@@ -1,6 +1,6 @@
-# Life Ledger 夜间构建报告（Batch 3 · Round 3）
+# Life Ledger 夜间构建报告（Batch 3 · Round 4）
 
-本 round 在 r2 的 Today/日记打磨之上，补 **复盘与 Today 数字 roll-up**、**习惯卡片按压反馈**、**记账圆环对比度/入场**，并更新三语 README。
+本 round 解决 **WebKit headless 记账圆环空白**，并打磨 **复盘 score-grid** 与习惯 spark 动画。
 
 ---
 
@@ -8,53 +8,57 @@
 
 | 项目 | 说明 |
 |------|------|
-| **复盘指标 roll** | 月度复盘顶栏四格中的完成率、专注小时、有记录天数在换月时用 `LifeLedgerInteraction.rollText`（`.insight-metric-roll`）。 |
-| **Review insights roll** | 旧 insight 条带里完成率、当前 streak、最佳 streak 同步 roll。 |
-| **Today hero** | 习惯完成数 `<b>` 在勾选变化时 roll，仍保留 number-pop。 |
-| **v225 CSS** | 习惯卡片 press/完成光晕；记账 donut 外环 + ready 入场动画。 |
-| **README** | EN/ZH/DE 功能列表增加 timeline 日度 **reflection streak** 一句。 |
-| **测试** | **299 pass, 0 fail**（与 r2 相同，无新增测试文件）。 |
+| **SVG 分类圆环** | 不再用 `conic-gradient` div；`ledger-core` 导出 `breakdownDonutSlices` + `annularSectorPath`，`ledger-ui` 渲染 `<svg class="ledger-donut-svg">`。WebKit 截图与真机一致。 |
+| **复盘 score-grid** | 每个习惯卡片带 `score-rate` / `score-count`，换月 `rollText`；`score-card--enter` 交错入场；无习惯时 hairline 空状态（三语）。 |
+| **Spark 动画** | `v226`：`rv-spark-grow`（与 v213 延迟变量 `--spark-i` 配合）。 |
+| **测试** | `ledger-core.test.mjs` +1 → **300 pass, 0 fail**。 |
 
 ---
 
 ## 明早怎么验（约 3 分钟）
 
 1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1`
-2. **复盘** — 用月份 `< >` 切换，看顶栏百分比与小时数是否短动画滚动（系统若开「减少动态效果」则直接跳变）。
-3. **今日** — 勾选/取消习惯，看 hero 里完成数字是否 roll + 轻 pop。
-4. **记账** — 打开分类圆环，切换月份或刷新，圆环应有轻微缩放入场（非 reduced-motion）。
-5. `npm test` → **299 pass, 0 fail**
+2. **记账** — 打开「Finanzen/记账」，分类 **Ring** 应看到彩色圆环（非空环）。
+3. **复盘** — 展开底部 **「详细指标 / Detailed metrics」**，看 score 卡片；用标题栏 ‹ › 换月，观察百分比与完成数是否 roll。
+4. `npm test` → **300 pass, 0 fail**
 
 ---
 
-## 截图（Batch 3 Round 3）
+## 截图（Batch 3 Round 4）
 
 | 场景 | 文件 |
 |------|------|
-| 德文 · 记账（scroll + is-ready）· 1440 light | `b3r3-ledger-donut-de-light-1440-chromium.png` / `-webkit.png` |
-| 中文 · 复盘指标 · 1440 light | `b3r3-review-metrics-zh-light-1440-chromium.png` / `-webkit.png` |
+| 德文 · 记账 SVG 圆环 · 1440 light | `b3r4-ledger-donut-de-light-1440-chromium.png` / `-webkit.png` |
+| 中文 · score-grid（展开详细指标）· 1440 light | `b3r4-review-score-zh-light-1440-chromium.png` / `-webkit.png` |
 
-重拍：`.overnight/capture-batch3-round3.mjs`（端口 **5297**）。
+重拍：`.overnight/capture-batch3-round4.mjs`（端口 **5298**）。
 
-**说明：** WebKit headless 下 donut 仍可能拍成淡环（与 r2 相同），真浏览器里 conic-gradient 正常；下轮可改 element 截图或 treemap 对照。
+**对比：** Round 3 WebKit donut 几乎空心；Round 4 同一引擎已填色（见上表 webkit 文件）。
 
 ---
 
 ## 已知问题
 
 - fakecloud 仍缺 `functions/`。
+- score-grid 仍在折叠的 `#reviewDetailedMetrics` 内 — 需点「详细指标」才见（历史布局，未改默认展开）。
 - Demo streak / 样例数据数字偏大属预期。
-- 记账 donut WebKit 截图对比度 — 见上。
+
+---
+
+## 试过但未做
+
+- 默认展开「详细指标」details（避免打扰习惯用户，留待产品决定）。
+- treemap 模式单独截图（SVG 圆环已足够验证 WebKit）。
 
 ---
 
 ## npm test
 
-**299 pass, 0 fail**（Batch 3 Round 3，实测）。
+**300 pass, 0 fail**（Batch 3 Round 4，实测）。
 
 ---
 
 ## 下次可做
 
-- 复盘 score-grid 数字 roll；习惯 spark 入场统一。
-- donut 截图稳定性；Goal 2 空状态一轮。
+- 复盘 bar-chart / weekday 柱动画；空状态 `ll-empty-enter` 再统一。
+- fakecloud 或 stub `functions/` 供在线版本地验收。

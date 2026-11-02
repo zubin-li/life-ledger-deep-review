@@ -1,5 +1,41 @@
 # Overnight progress
 
+## Batch 3 · Round 4 — done
+
+- **Goal 2 — 记账 donut（WebKit 截图）：** `conic-gradient` div 改为 SVG 环扇区（`ledger-core`：`breakdownDonutSlices` / `annularSectorPath`；`ledger-ui` `renderDonut`）。Headless WebKit/Chromium 圆环可见（见 `b3r4-ledger-donut-*`）。
+- **Goal 2 — 复盘 score-grid：** 换月时 `.score-rate` / `.score-count` roll；卡片 `--score-i` 交错入场；无习惯时 hairline 空状态；`rollScoreGridValues`。
+- **Goal 2 — 习惯 spark：** `v226` 中 `rv-spark-grow` 动画（尊重 reduced-motion）。
+- **样式：** `v226-review-score-donut.css`；`index.html` + `sw.js`；`CSS-LAYERS.md` + CHANGELOG Unreleased。
+- **测试：** +1（donut 切片/路径）→ **300/300**。
+- **截图：** `capture-batch3-round4.mjs`（5298）→ `b3r4-ledger-donut-de-light-1440-*`、`b3r4-review-score-zh-light-1440-*`（score 需展开 `#reviewDetailedMetrics`）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Goal 2：复盘 weekday 柱、bar-chart 节奏条动画；更多空状态与 `ll-empty-enter` 对齐。
+- fakecloud 仍缺 repo-root `functions/`。
+- 可考虑让「详细指标」details 在 demo/首次复盘时默认展开（未做）。
+
+## Known bugs / gaps
+
+- fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
+- 极矮视口 dock/键盘：已加 padding，真机若仍重叠可再调 `v213` 数值。
+- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据而非 bug。
+- score-grid 在折叠的「详细指标」内，用户需点开 summary 才见（既有结构）。
+
+## npm test
+
+```
+300 pass, 0 fail (batch 3 round 4)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 3 · Round 3 — done
 
 - **Goal 2 — 数字 roll-up：**
@@ -12,33 +48,6 @@
 - **文档：** README EN/ZH/DE 各补一句 timeline **reflection streak**；CHANGELOG Unreleased 记 roll + v225。
 - **截图：** `capture-batch3-round3.mjs`（5297）→ scroll + `is-ready` 等待；`b3r3-ledger-donut-*`、`b3r3-review-metrics-zh-*`（Chromium + WebKit）。
 - **测试：** **299/299**（无新增用例；行为为 UI 层）。
-
-## Half-done
-
-- （无）
-
-## Next
-
-- WebKit 记账 donut 截图仍偏淡/空心（与 r2 同类）；可试 element screenshot 或 treemap 模式对照。
-- Goal 2：复盘 score-grid、习惯 spark 条动画；空状态再统一一轮。
-- fakecloud 仍缺 repo-root `functions/`。
-
-## Known bugs / gaps
-
-- fakecloud script expects repo-root `functions/` + `schema.sql` (missing in overnight clone).
-- 极矮视口 dock/键盘：已加 padding，真机若仍重叠可再调 `v213` 数值。
-- Journal streak 在 demo 全量日志上数字会很大（74 天），属样例数据而非 bug。
-- WebKit `conic-gradient` donut 在 headless 截图里对比度低（运行时一般可见）。
-
-## npm test
-
-```
-299 pass, 0 fail (batch 3 round 3)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
 
 ## Batch 3 · Round 2 — done
 
@@ -73,3 +82,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 3
 ℹ tests 299 ℹ pass 299 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 300 ℹ pass 300 ℹ fail 0 

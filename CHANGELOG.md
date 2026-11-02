@@ -17,10 +17,12 @@ All notable changes are documented here.
 - **Review:** focus-time-vs-spend scatter beside mood/habit charts (`v218-focus-scatter.css`); demo workspace aligns focus minutes with spend for insights.
 - **Import & export:** read-only **Money merge preview** on the sync-conflict recovery card (`v217-conflict-ledger.css`).
 - **Review:** mood-vs-spend scatter chart in the monthly Money summary panel (`v216-mood-scatter.css`).
+- **Ledger charts:** SVG annular donut for category breakdown (reliable in WebKit/headless; `breakdownDonutSlices` / `annularSectorPath`).
+- **Review score grid:** completion rate/count roll on month change, staggered card enter, hairline empty when no habits (`v226-review-score-donut.css`).
 
 ### Changed
 
-- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`.
+- **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v226`.
 - **Maintainability:** documented CSS slice layout in `.overnight/CSS-LAYERS.md`; removed duplicate `isoFromDate` in `ledger-core.js`; `.overnight/scratch/` gitignored and deleted from the tree.
 - **Money (mobile):** extra bottom padding on very short viewports so the amount keypad clears the tab bar (`v213-onboarding.css`).
 

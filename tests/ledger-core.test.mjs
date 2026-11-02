@@ -131,6 +131,19 @@ test("buildDemoSample fills current month expenses for early-month demo", () => 
   assert.ok(ledger.recurring.length >= 1);
 });
 
+test("breakdownDonutSlices covers full circle and annularSectorPath is valid SVG", () => {
+  const breakdown = [
+    { categoryId: "a", amountMinor: 2500 },
+    { categoryId: "b", amountMinor: 7500 },
+  ];
+  const slices = L.breakdownDonutSlices(breakdown);
+  assert.equal(slices.length, 2);
+  assert.equal(Math.round(slices.at(-1).endAngle), 360);
+  const path = L.annularSectorPath(50, 50, 30, 48, 0, 90);
+  assert.match(path, /^M [\d.]+ [\d.]+ A /);
+  assert.ok(path.endsWith("Z"));
+});
+
 test("updateTransaction patches amount and date", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

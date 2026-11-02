@@ -768,6 +768,42 @@
     return `${raw.slice(0, limit - 1)}…`;
   }
 
+  function polarPoint(cx, cy, r, deg) {
+    const rad = ((deg - 90) * Math.PI) / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  /** SVG annular sector for donut charts (angles in degrees, clockwise from 12 o'clock). */
+  function annularSectorPath(cx, cy, rInner, rOuter, startDeg, endDeg) {
+    if (endDeg - startDeg <= 0) return "";
+    let end = endDeg;
+    if (end - startDeg >= 360) end = startDeg + 359.999;
+    const p0 = polarPoint(cx, cy, rOuter, startDeg);
+    const p1 = polarPoint(cx, cy, rOuter, end);
+    const p2 = polarPoint(cx, cy, rInner, end);
+    const p3 = polarPoint(cx, cy, rInner, startDeg);
+    const large = end - startDeg > 180 ? 1 : 0;
+    return [
+      `M ${p0.x.toFixed(3)} ${p0.y.toFixed(3)}`,
+      `A ${rOuter} ${rOuter} 0 ${large} 1 ${p1.x.toFixed(3)} ${p1.y.toFixed(3)}`,
+      `L ${p2.x.toFixed(3)} ${p2.y.toFixed(3)}`,
+      `A ${rInner} ${rInner} 0 ${large} 0 ${p3.x.toFixed(3)} ${p3.y.toFixed(3)}`,
+      "Z",
+    ].join(" ");
+  }
+
+  function breakdownDonutSlices(breakdown, maxSlices = 6) {
+    const total = (breakdown || []).reduce((s, row) => s + row.amountMinor, 0);
+    if (!total) return [];
+    let angle = 0;
+    return breakdown.slice(0, maxSlices).map(row => {
+      const sweep = (row.amountMinor / total) * 360;
+      const startAngle = angle;
+      angle += sweep;
+      return { categoryId: row.categoryId, startAngle, endAngle: angle, amountMinor: row.amountMinor };
+    });
+  }
+
   /** Map treemap cell size (0–100 viewBox units) to a readable label length. */
   function treemapLabelMaxChars(cellW, cellH, lang) {
     const side = Math.min(Number(cellW) || 0, Number(cellH) || 0);
@@ -1368,6 +1404,8 @@
     habitCompletionSpendInsight,
     truncateTreemapLabel,
     treemapLabelMaxChars,
+    annularSectorPath,
+    breakdownDonutSlices,
     parseCssRgb,
     relativeLuminance,
     isLightAccentColor,

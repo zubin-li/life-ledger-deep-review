@@ -5153,20 +5153,28 @@ function renderReview() {
   renderReviewTrendChart();
   renderReviewInspectorTable();
   renderInsightDashboard();
-  $("#scoreGrid").innerHTML = habits.map(h => {
+  const scoreHost = $("#scoreGrid");
+  scoreHost.innerHTML = habits.length ? habits.map((h, idx) => {
     const version = versionFor(h, monthDates[monthDates.length - 1]);
     const count = elapsedDates.filter(date => getLog(date).completed.includes(h.id)).length;
+    const stagger = ` style="--score-i:${idx}"`;
     if (version?.frequency === "daily") {
       const denominator = Math.max(1, elapsedDates.length);
       const rate = Math.round(count / denominator * 100);
-      return `<article class="score-card"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span>${rate}%</span></div><strong>${count}<small> / ${denominator}</small></strong></article>`;
+      return `<article class="score-card score-card--enter"${stagger} data-habit-id="${escapeHtml(h.id)}"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span class="score-rate">${rate}%</span></div><strong><span class="score-count">${count}</span><small> / ${denominator}</small></strong></article>`;
     }
     const groups = periodDateGroups(elapsedDates, version?.frequency);
     const target = periodTargetFor(version);
     const met = groups.filter(group => group.filter(date => getLog(date).completed.includes(h.id)).length >= target).length;
     const rate = Math.round(met / Math.max(1, groups.length) * 100);
-    return `<article class="score-card period-score-card"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span>${rate}%</span></div><strong>${count}</strong><p>${tr("review.periodSummary", { met, periods: groups.length })}</p></article>`;
-  }).join("");
+    return `<article class="score-card period-score-card score-card--enter"${stagger} data-habit-id="${escapeHtml(h.id)}"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span class="score-rate">${rate}%</span></div><strong><span class="score-count">${count}</span></strong><p>${tr("review.periodSummary", { met, periods: groups.length })}</p></article>`;
+  }).join("") : hairlineEmptyMarkup(
+    "./assets/hairline/empty-habits.svg",
+    languageText("还没有习惯分数", "No habit scores yet", "Noch keine Gewohnheitswerte"),
+    languageText("在习惯页添加日常习惯后，这里会显示本月完成率。", "Add daily habits on the Habits page to see completion rates here.", "Lege Gewohnheiten an — hier erscheinen die Monatsquoten."),
+  );
+  rollScoreGridValues(scoreHost);
+  hydrateHairlineMounts(scoreHost);
   $("#barChart").innerHTML = monthDates.map((d, i) => {
     const p = completionFor(d);
     return `<i class="bar ${p >= 75 ? "high" : ""}" title="${tr("calendar.dayPercent", { day: i + 1, month: month + 1, percent: p })}" style="height:${Math.max(3, p)}%;animation-delay:${Math.min(i * 12, 250)}ms"></i>`;
@@ -8065,6 +8073,27 @@ function rollInsightMetricValues(container, selector, storageKey) {
     const prev = container.dataset[key] || "";
     if (prev && prev !== next) roll(el, next, prev);
     container.dataset[key] = next;
+  });
+}
+
+function rollScoreGridValues(grid) {
+  const roll = globalThis.LifeLedgerInteraction?.rollText;
+  if (!roll || !grid) return;
+  grid.querySelectorAll(".score-card[data-habit-id]").forEach(card => {
+    const rateEl = card.querySelector(".score-rate");
+    const countEl = card.querySelector(".score-count");
+    if (rateEl) {
+      const next = rateEl.textContent.trim();
+      const prev = card.dataset.prevRate || "";
+      if (prev && prev !== next) roll(rateEl, next, prev);
+      card.dataset.prevRate = next;
+    }
+    if (countEl) {
+      const next = countEl.textContent.trim();
+      const prev = card.dataset.prevCount || "";
+      if (prev && prev !== next) roll(countEl, next, prev);
+      card.dataset.prevCount = next;
+    }
   });
 }
 

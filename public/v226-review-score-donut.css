@@ -1,0 +1,84 @@
+/* Goal 2 batch 3 r4: SVG donut ring, review score-grid roll + enter, spark polish */
+
+.ledger-donut-svg {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text-primary, #1d1d1f) 10%, transparent);
+}
+
+html[data-theme="dark"] .ledger-donut-svg {
+  box-shadow: 0 0 0 1px color-mix(in srgb, #fff 12%, transparent);
+}
+
+.ledger-donut-hole {
+  fill: var(--surface-page, #f5f5f0);
+}
+
+html[data-theme="dark"] .ledger-donut-hole {
+  fill: var(--surface-page, #121214);
+}
+
+.ledger-category-viz.is-ready .ledger-donut-svg {
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ledger-category-viz.is-ready .ledger-donut-svg {
+    animation: ledger-donut-reveal 480ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #reviewView .score-card--enter {
+    animation: score-card-enter 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--score-i, 0) * 45ms);
+  }
+
+  #reviewView .rv-habit-spark--enter rect {
+    transform-origin: center bottom;
+    animation: rv-spark-grow 360ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--spark-i, 0) * 12ms);
+  }
+}
+
+@keyframes score-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rv-spark-grow {
+  from {
+    opacity: 0.35;
+    transform: scaleY(0.4);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+html.motion-reduced .ledger-category-viz.is-ready .ledger-donut-svg,
+html.motion-reduced #reviewView .score-card--enter,
+html.motion-reduced #reviewView .rv-habit-spark--enter rect {
+  animation: none;
+}
+
+#reviewView .score-rate.roll-host,
+#reviewView .score-count.roll-host {
+  display: inline-block;
+  min-width: 0.35em;
+}
+
+#reviewView .score-grid .ll-empty {
+  grid-column: 1 / -1;
+}

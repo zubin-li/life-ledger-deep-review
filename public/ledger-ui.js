@@ -163,16 +163,14 @@
   function renderDonut(breakdown, ledger) {
     const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
     if (!total) return `<div class="ledger-donut ledger-donut--empty">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
-    let angle = 0;
-    const stops = breakdown.slice(0, 6).map(row => {
-      const cat = ledger.categories.find(c => c.id === row.categoryId);
-      const pct = row.amountMinor / total;
-      const start = angle;
-      angle += pct * 360;
-      const color = `var(--accent-${cat?.color || "sage"}, var(--accent-sage))`;
-      return `${color} ${start.toFixed(2)}deg ${angle.toFixed(2)}deg`;
-    }).join(", ");
-    return `<div class="ledger-donut" style="background:conic-gradient(${stops})" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}"></div>`;
+    const slices = core().breakdownDonutSlices(breakdown, 6);
+    const paths = slices.map(slice => {
+      const cat = ledger.categories.find(c => c.id === slice.categoryId);
+      const fill = accentFill(cat?.color);
+      const d = core().annularSectorPath(50, 50, 30, 48, slice.startAngle, slice.endAngle);
+      return `<path d="${d}" fill="${ctx.escape(fill)}"><title>${ctx.escape(cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "")}</title></path>`;
+    }).join("");
+    return `<svg class="ledger-donut ledger-donut-svg" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}"><g class="ledger-donut-segments">${paths}</g><circle class="ledger-donut-hole" cx="50" cy="50" r="30" fill="var(--surface-page, #f5f5f0)"/></svg>`;
   }
 
   function renderHeatmap(ledger, ym) {
