@@ -1,12 +1,10 @@
-import { existsSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import assert from "node:assert/strict";
+import { hasPlaywright, playwrightRoot } from "./playwright-resolve.mjs";
 
-const playwrightRoot = "/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright";
-const hasPlaywright = existsSync(join(playwrightRoot, "index.mjs"));
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const port = 5296;
 const base = `http://127.0.0.1:${port}/index.html?mode=local`;

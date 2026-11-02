@@ -2637,3 +2637,98 @@ html.motion-reduced .ledger-quick .primary-button:active:not(:disabled) {
     box-shadow: none;
   }
 }
+
+/* ========== batch 4 round 4 — habit library polish ========== */
+@keyframes ll-habit-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.view.is-entering #habitLibraryOverview article,
+.view.is-entering .habit-library-tools,
+.view.is-entering .habit-settings-table {
+  animation: ll-habit-enter 0.42s var(--ease-enter, ease) both;
+}
+
+.view.is-entering #habitLibraryOverview article:nth-child(2) {
+  animation-delay: 45ms;
+}
+
+.view.is-entering #habitLibraryOverview article:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.view.is-entering .habit-library-tools {
+  animation-delay: 70ms;
+}
+
+.view.is-entering .habit-settings-table {
+  animation-delay: 110ms;
+}
+
+#habitLibraryFilters button {
+  transition:
+    transform 120ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+#habitLibraryFilters button:active:not(.active) {
+  transform: scale(0.96);
+}
+
+#habitLibraryFilters button.active {
+  box-shadow: 0 0 0 1px color-mix(in srgb, #65a9ff 35%, transparent);
+}
+
+#habitLibraryOverview .habit-overview-stat.roll-host {
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-workspace] .habit-settings-row {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.22s ease,
+    background-color 0.2s ease;
+}
+
+html[data-workspace] .habit-settings-row.selected {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent, var(--w-solid, #3d9b78)) 42%, transparent),
+    0 10px 28px color-mix(in srgb, var(--accent, var(--w-solid, #3d9b78)) 12%, transparent);
+}
+
+.habit-filter-empty.ll-hint-card {
+  margin: 8px 0 0;
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1px dashed var(--separator, var(--line));
+  background: color-mix(in srgb, var(--surface-2, var(--paper-deep)) 88%, transparent);
+  color: var(--secondaryLabel, var(--muted));
+  font: var(--text-secondary-ui, 0.875rem/1.45 system-ui, sans-serif);
+  text-align: center;
+}
+
+html.motion-reduced .view.is-entering :is(#habitLibraryOverview article, .habit-library-tools, .habit-settings-table),
+html.motion-reduced #habitLibraryFilters button:active:not(.active) {
+  animation: none !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view.is-entering :is(#habitLibraryOverview article, .habit-library-tools, .habit-settings-table) {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  #habitLibraryFilters button:active:not(.active) {
+    transform: none;
+  }
+}

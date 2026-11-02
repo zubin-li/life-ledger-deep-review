@@ -5472,7 +5472,8 @@ function renderHabitSettings() {
     [languageText('启用中','Active','Aktiv'),activeCount,languageText('按自己的节奏','At your own pace','Im eigenen Tempo')],
     [languageText('每天的习惯','Daily habits','Tägliche Gewohnheiten'),daily,languageText('让小事稳定发生','Make small things steady','Kleines beständig tun')],
     [languageText('周期习惯','Periodic habits','Periodische Gewohnheiten'),periodic,languageText('按周或按月安排','Weekly or monthly','Wöchentlich oder monatlich')],
-  ].map(([label,value,note])=>`<article><span>${escapeHtml(label)}</span><strong>${value}</strong><small>${escapeHtml(note)}</small></article>`).join('');
+  ].map(([label,value,note])=>`<article><span>${escapeHtml(label)}</span><strong class="habit-overview-stat">${value}</strong><small>${escapeHtml(note)}</small></article>`).join('');
+  rollHabitLibraryOverview();
   const labels={all:languageText('全部','All','Alle'),active:languageText('启用中','Active','Aktiv'),paused:languageText('已暂停','Paused','Pausiert')};
   $$('#habitLibraryFilters button').forEach(b=>{b.textContent=labels[b.dataset.habitFilter];b.classList.toggle('active',b.dataset.habitFilter===habitLibraryFilter);b.setAttribute('aria-pressed',String(b.dataset.habitFilter===habitLibraryFilter));});
   $('#habitLibraryFilters').setAttribute('aria-label',languageText('筛选习惯','Filter habits','Gewohnheiten filtern'));
@@ -5486,6 +5487,7 @@ function renderHabitSettings() {
   if (!state.habits.length) {
     $("#habitSettingsList").innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-habits.svg", tr("habits.emptyTitle"), tr("habits.emptyHelp"));
     hydrateHairlineMounts($("#habitsView"));
+    $("#habitSettingsList").querySelector(".hairline-empty")?.classList.add("ll-empty", "ll-empty-enter");
     return;
   }
   const visible=state.habits.filter(h=>(habitLibraryFilter==='all'||(habitLibraryFilter==='active'?h.active:!h.active)) && displayHabitName(h).toLocaleLowerCase().includes(habitLibrarySearch.toLocaleLowerCase()));
@@ -5503,7 +5505,7 @@ function renderHabitSettings() {
       <span class="habit-settings-target">${escapeHtml(trackingModeFor(v) === "measured" ? target : "")}</span>
       <label class="habit-enabled-switch"><input class="desktop-switch habit-enabled-toggle" type="checkbox" role="switch" data-id="${h.id}" ${h.active ? "checked" : ""} aria-label="${escapeHtml(displayHabitName(h))}" /><span class="sr-only">${escapeHtml(h.active ? tr("habits.active") : tr("habits.inactive"))}</span></label>
     </article>`;
-  }).join("") || `<p class="habit-filter-empty">${escapeHtml(languageText('没有匹配的习惯。试试其他筛选。','No matching habits. Try another filter.','Keine passende Gewohnheit. Einen anderen Filter versuchen.'))}</p>`;
+  }).join("") || `<p class="habit-filter-empty ll-hint-card" role="status">${escapeHtml(languageText('没有匹配的习惯。试试其他筛选。','No matching habits. Try another filter.','Keine passende Gewohnheit. Einen anderen Filter versuchen.'))}</p>`;
   $$(".habit-settings-main").forEach(button => button.addEventListener("click", () => {
     selectedHabitSettingsId = button.dataset.id;
     populateHabitInspectorForm(selectedHabitSettingsId);
@@ -8082,6 +8084,19 @@ function rollInsightMetricValues(container, selector, storageKey) {
     const prev = container.dataset[key] || "";
     if (prev && prev !== next) roll(el, next, prev);
     container.dataset[key] = next;
+  });
+}
+
+function rollHabitLibraryOverview() {
+  const roll = globalThis.LifeLedgerInteraction?.rollText;
+  const host = $("#habitLibraryOverview");
+  if (!roll || !host) return;
+  host.querySelectorAll(".habit-overview-stat").forEach((el, index) => {
+    const next = el.textContent.trim();
+    const key = `stat-${index}`;
+    const prev = host.dataset[key] || "";
+    if (prev && prev !== next) roll(el, next, prev);
+    host.dataset[key] = next;
   });
 }
 

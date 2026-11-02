@@ -33,6 +33,8 @@ All notable changes are documented here.
 
 - **Assets:** consolidated overnight styles `v211`–`v232` into a single `v210.css` (fewer `<link>` tags and SW cache entries; REVIEW #4).
 - **Today (Goal 2):** sidebar active pill fades in; habit check adds a brief accent ring on the habits card (`v210.css` round 3 section).
+- **Habits (Goal 2):** library overview stat roll-up, page enter stagger, filter chip press, selected row glow, filter-empty hint card (`v210.css` round 4 section).
+- **CI:** separate `browser` job runs `npm run test:browser` after installing Playwright; `playwright` is a devDependency with shared `tests/playwright-resolve.mjs`.
 - **Review:** heatmap-only legacy analytics path when the insight dashboard is active — no duplicate habit/weekday DOM in `#reviewHabitCompare` (`reviewUsesInsightPanels` in `app.js`).
 
 - **Docs:** README EN/ZH/DE mention timeline **reflection streak**; `.overnight/CSS-LAYERS.md` documents `v225`–`v230`.
