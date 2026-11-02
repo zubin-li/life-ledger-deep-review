@@ -6,7 +6,7 @@
   if (!view) return;
   const $ = (s, r = document) => r.querySelector(s);
   const T = {
-    zh: { weather: "天气", weatherK: "WEATHER", rhythm: "近期节律", rhythmK: "LAST 7 DAYS", heatmap: "习惯热力图", heatmapK: "HABIT RHYTHM", wall: "照片墙", wallK: "PHOTO WALL", photos: "照片记忆", photosK: "MEMORY", focus: "专注", focusK: "FOCUS", freq: "频率记录", freqK: "BY FREQUENCY",
+    zh: { weather: "天气", weatherK: "WEATHER", rhythm: "近期节律", rhythmK: "LAST 7 DAYS", heatmap: "习惯热力图", heatmapK: "HABIT RHYTHM", wall: "照片墙", wallK: "PHOTO WALL", photos: "照片记忆", photosK: "MEMORY", focus: "专注", focusK: "FOCUS", freq: "频率记录", freqK: "BY FREQUENCY", spending: "今日支出", spendingK: "TODAY",
       chooseCity: "选择城市后显示当地天气。", setCity: "设置地点", city: "城市", search: "搜索", noCity: "未找到匹配的城市。", loading: "正在加载……", unavailable: "刷新失败，请检查网络后重试。", cached: "已保存的预报 · 离线", updated: "更新于",
       clear: "晴", cloud: "多云", rain: "下雨", snow: "下雪", storm: "雷雨", rainSoon: "预计降雨", snowSoon: "预计降雪", noRain: "未来 24 小时暂未预报降水", hour: "预报时间",
       rhythmAvg: "7 天完成率", tomorrow: "明天", tomorrowCount: "{n} 个基础目标", less: "少", more: "多", palette: "配色", green: "翡翠绿", blue: "海洋蓝", spectrum: "红到蓝",
@@ -15,7 +15,8 @@
       focusToday: "今日专注", min: "分钟",
       heat26: "近 26 周", heatRate: "完成率", heatFull: "满分天", heatBest: "最长连续", days: "天", focusArt: "专注", wallAddHint: "放一张你喜欢的照片", photosLocalTitle: "这一天的照片", freqEmptyTitle: "还没有频率目标", weatherEmptyTitle: "今天的天气",
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
-      wallEmptyShort: "在卡片设置里放入照片", wallMedia: "照片与视频", wallAuto: "自动轮播", wallFit: "显示方式", fill: "铺满", fit: "完整显示", wallFocus: "点或拖动预览，选择显示的位置", wallTip: "左右滑动或点两侧切换" },
+      wallEmptyShort: "在卡片设置里放入照片", wallMedia: "照片与视频", wallAuto: "自动轮播", wallFit: "显示方式", fill: "铺满", fit: "完整显示", wallFocus: "点或拖动预览，选择显示的位置", wallTip: "左右滑动或点两侧切换",
+      spendingEmpty: "今天还没有支出记录。", spendingToday: "今日支出", openLedger: "打开记账", spendingMonth: "本月累计" },
     en: { weather: "Weather", weatherK: "WEATHER", rhythm: "Recent rhythm", rhythmK: "LAST 7 DAYS", heatmap: "Habit heatmap", heatmapK: "HABIT RHYTHM", wall: "Photo wall", wallK: "PHOTO WALL", photos: "Photo memories", photosK: "MEMORY", focus: "Focus", focusK: "FOCUS", freq: "By frequency", freqK: "WEEKLY · MONTHLY",
       chooseCity: "Choose a city to show its weather.", setCity: "Set location", city: "City", search: "Search", noCity: "No matching city found.", loading: "Loading…", unavailable: "Could not refresh. Check your connection.", cached: "Saved forecast · offline", updated: "Updated",
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
@@ -25,7 +26,8 @@
       focusToday: "Focused today", min: "min",
       heat26: "Last 26 weeks", heatRate: "Done", heatFull: "Full days", heatBest: "Best streak", days: "d", focusArt: "Focus", wallAddHint: "Put a photo you love here", photosLocalTitle: "Photos of this day", freqEmptyTitle: "No frequency goals yet", weatherEmptyTitle: "Today's weather",
       freqEmpty: "No weekly or monthly habits yet. Set a habit's frequency to weekly or monthly in Adjust goals.", freqWeek: "This week {done}/{target}", freqMonth: "This month {done}/{target}", freqPick: "Habit shown",
-      wallEmptyShort: "Add photos in card settings", wallMedia: "Photos and videos", wallAuto: "Auto-play", wallFit: "Display", fill: "Fill", fit: "Fit", wallFocus: "Tap or drag the preview to choose what shows", wallTip: "Swipe or tap the sides to switch" },
+      wallEmptyShort: "Add photos in card settings", wallMedia: "Photos and videos", wallAuto: "Auto-play", wallFit: "Display", fill: "Fill", fit: "Fit", wallFocus: "Tap or drag the preview to choose what shows", wallTip: "Swipe or tap the sides to switch",
+      spendingEmpty: "No spending logged today yet.", spendingToday: "Spending today", openLedger: "Open Money", spendingMonth: "This month" },
     de: { weather: "Wetter", weatherK: "WETTER", rhythm: "Letzte Tage", rhythmK: "7 TAGE", heatmap: "Gewohnheits-Heatmap", heatmapK: "RHYTHMUS", wall: "Fotowand", wallK: "FOTOWAND", photos: "Fotoerinnerungen", photosK: "ERINNERUNG", focus: "Fokus", focusK: "FOKUS", freq: "Nach Häufigkeit", freqK: "WOCHE · MONAT",
       chooseCity: "Wähle eine Stadt für die Wettervorhersage.", setCity: "Ort wählen", city: "Stadt", search: "Suchen", noCity: "Keine passende Stadt gefunden.", loading: "Wird geladen …", unavailable: "Aktualisierung fehlgeschlagen. Verbindung prüfen.", cached: "Gespeicherte Prognose · offline", updated: "Aktualisiert",
       clear: "Klar", cloud: "Bewölkt", rain: "Regen", snow: "Schnee", storm: "Gewitter", rainSoon: "Regen erwartet", snowSoon: "Schnee erwartet", noRain: "Kein Niederschlag in den nächsten 24 Stunden", hour: "Vorhersagezeit",
@@ -35,7 +37,8 @@
       focusToday: "Heute fokussiert", min: "Min.",
       heat26: "Letzte 26 Wochen", heatRate: "Erledigt", heatFull: "Volle Tage", heatBest: "Beste Serie", days: "T.", focusArt: "Fokus", wallAddHint: "Lege ein Lieblingsfoto hierher", photosLocalTitle: "Fotos dieses Tages", freqEmptyTitle: "Noch keine Häufigkeitsziele", weatherEmptyTitle: "Wetter heute",
       freqEmpty: "Noch keine wöchentlichen oder monatlichen Ziele. Stelle die Häufigkeit in „Ziele anpassen“ auf wöchentlich / monatlich.", freqWeek: "Diese Woche {done}/{target}", freqMonth: "Diesen Monat {done}/{target}", freqPick: "Angezeigtes Ziel",
-      wallEmptyShort: "Fotos in den Karteneinstellungen hinzufügen", wallMedia: "Fotos und Videos", wallAuto: "Automatisch wechseln", wallFit: "Darstellung", fill: "Füllen", fit: "Ganz zeigen", wallFocus: "Tippe oder ziehe in der Vorschau, um den Ausschnitt zu wählen", wallTip: "Wischen oder seitlich tippen zum Wechseln" },
+      wallEmptyShort: "Fotos in den Karteneinstellungen hinzufügen", wallMedia: "Fotos und Videos", wallAuto: "Automatisch wechseln", wallFit: "Darstellung", fill: "Füllen", fit: "Ganz zeigen", wallFocus: "Tippe oder ziehe in der Vorschau, um den Ausschnitt zu wählen", wallTip: "Wischen oder seitlich tippen zum Wechseln",
+      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingToday: "Ausgaben heute", openLedger: "Finanzen öffnen", spendingMonth: "Diesen Monat" },
   };
   const lang = () => (T[currentLang] ? currentLang : "en");
   const t = (k, v = {}) => String(T[lang()][k] ?? T.en[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n] ?? "");
@@ -53,6 +56,7 @@
     rhythm: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
     heatmap: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     focus: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+    spending: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
     photos: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
     freq: '<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="m9 15 2 2 4-4"/>',
     mood: '<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>',
@@ -63,7 +67,7 @@
   };
   const svg = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
   const chipHtml = id => `<span class="ll-chip" aria-hidden="true">${svg(ICON[id])}</span>`;
-  const tone = { weather: "blue", rhythm: "sage", heatmap: "sage", focus: "violet", photos: "amber", freq: "coral", mood: "amber", habits: "sage", calendar: "blue", dayplan: "cyan", tools: "violet" };
+  const tone = { weather: "blue", rhythm: "sage", heatmap: "sage", focus: "violet", photos: "amber", freq: "coral", spending: "coral", mood: "amber", habits: "sage", calendar: "blue", dayplan: "cyan", tools: "violet" };
   const paint = (el, name) => { const c = colors[name] || colors.sage; el.style.setProperty("--w-solid", c.solid); el.style.setProperty("--w-soft", c.soft); };
   // One card shell, styled by the original .daily-goals-card; chip + kicker + serif title like every card.
   function shell(id, side = "", body = "") {
@@ -99,6 +103,7 @@
     freq: shell("freq", `<span class="tw-side tw-freq-month"></span>`, `<div class="tw-freq-info"><div class="tw-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><b class="tw-freq-count"></b></div><div class="tw-freq-tabs" role="tablist"></div></div><div class="tw-heat-box"><div class="tw-heat-weekdays" aria-hidden="true"></div><div class="tw-freq-grid tw-heat-grid"></div></div>`),
     photos: shell("photos", `<button type="button" class="text-button tw-open-day" data-tw="openDay"></button>`, `<div class="tw-photo-list"></div><p class="tw-caption tw-photo-note"></p>`),
     focus: shell("focus", "", `<div class="tw-art tw-focus-art"></div><div class="tw-focus-main"><div class="tw-ring tw-focus-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><strong></strong></div><div class="tw-focus-meta"><span class="tw-focus-topic"></span><p class="tw-caption tw-focus-today"></p><button type="button" class="primary-button tw-focus-start"></button></div></div>`),
+    spending: shell("spending", `<strong class="tw-side tw-spend-month"></strong>`, `<div class="tw-spend-main"><strong class="tw-spend-today"></strong><p class="tw-caption tw-spend-note"></p><button type="button" class="text-button tw-spend-open" data-tw="openLedger"></button></div>`),
   };
   // Hero gets the weather chip (weather-widget.js fills #heroWeather).
   const chip = document.createElement("span");
@@ -527,6 +532,27 @@
   const focusSrc = $("#focusInlineTimer");
   if (focusSrc) new MutationObserver(() => { if (shown("focus")) focus(); }).observe(focusSrc, { subtree: true, characterData: true, childList: true });
 
+  function spending() {
+    const c = cards.spending;
+    const L = window.LifeLedgerLedger;
+    const ledger = state.ledger ? L?.normalize(state.ledger, { lang: currentLang }) : L?.normalize(null, { lang: currentLang });
+    const today = selectedPlanningDate;
+    const ym = today.slice(0, 7);
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "de-DE");
+    const todayMinor = ledger ? L.spendingTodayMinor(ledger, today) : 0;
+    const monthSummary = ledger ? L.monthSummary(ledger, ym) : { expenseMinor: 0 };
+    const todayEl = $(".tw-spend-today", c);
+    const note = $(".tw-spend-note", c);
+    const monthSide = $(".tw-spend-month", c);
+    if (todayEl) todayEl.textContent = ledger ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : "—";
+    if (note) note.textContent = todayMinor ? t("spendingToday") : t("spendingEmpty");
+    if (monthSide) monthSide.textContent = ledger
+      ? `${t("spendingMonth")} · ${L.formatMoney(monthSummary.expenseMinor, ledger.settings.defaultCurrency, locale)}`
+      : "";
+    c.classList.toggle("is-empty", !todayMinor);
+  }
+  $(".tw-spend-open", cards.spending).addEventListener("click", () => switchToView?.("ledger"));
+
   // Mount every hairline placeholder (data-art) inside a card once; hairline.js caches the SVGs.
   function arts(scope) { scope.querySelectorAll(".tw-art[data-art]").forEach(n => window.LifeLedgerHairline?.mount(n, n.dataset.art)); }
   function labels() {
@@ -541,6 +567,7 @@
     if (shown("heatmap")) heatmap();
     if (shown("photos")) void photos();
     if (shown("focus")) focus();
+    if (shown("spending")) spending();
     if (shown("freq")) freq();
     drawWeather(); void loadWeather();
     loadWall();
@@ -567,6 +594,7 @@
     ...Object.entries(walls).map(([id, w]) => ({ id, el: cards[id], sizes: ["L", "S", "M", "X"], hidden: true, settings: w.wallSettings, onShow: w.loadWall })),
     { id: "photos", el: cards.photos, sizes: ["M", "L"], hidden: true, onShow: photos },
     { id: "focus", el: cards.focus, sizes: ["S", "M"], hidden: false, onShow: focus },
+    { id: "spending", el: cards.spending, sizes: ["S", "M"], hidden: false, onShow: spending },
   ];
   // Another device changed the city or a card choice (cloud edition): read them again and redraw.
   function reload() {

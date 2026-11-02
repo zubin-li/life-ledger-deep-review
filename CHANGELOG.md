@@ -4,9 +4,21 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-02
+
+Web 2.1.0 and Life Ledger for Mac 3.1.0.
+
 ### Added
 
-- **Bookkeeping (记账) — foundation:** `state.ledger` data model, quick entry parsing, German CSV import/export helpers, sidebar **Money / 记账 / Finanzen** page with month summary, category donut, daily heatmap, undoable delete. Cloud merge and v3 backup carry `ledger`. Version remains 2.0.10 until the full 2.1.0 release.
+- **Bookkeeping (记账):** `state.ledger` with quick entry, category donut, daily heatmap, uPlot spending trend, budget progress, search/filter, German CSV import/export, undoable delete. Sidebar **Money / 记账 / Finanzen** in all editions.
+- **Today card — Spending today:** day and month totals with link to the ledger page.
+- **Monthly review:** spending summary panel and optional mood-vs-spend average comparison when both exist.
+- **Sample workspace:** fictional demo includes ~90 days of EUR transactions and category budgets.
+- **Goal 2 (partial):** ledger page toolbar, budget bars, review panel styling, card micro-layout (`v210.css`).
+
+### Changed
+
+- Release metadata, PWA cache, and asset `?v=` markers aligned to **2.1.0** / Mac **3.1.0**.
 
 ## [2.0.10] - 2026-11-02
 

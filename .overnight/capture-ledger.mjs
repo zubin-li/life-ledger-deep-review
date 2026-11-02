@@ -14,7 +14,7 @@ async function shot(browserType, name, opts) {
   await page.goto(base, { waitUntil: "networkidle" });
   if (opts.lang) {
     await page.evaluate(l => {
-      localStorage.setItem("life-ledger-lang", l);
+      localStorage.setItem("life-ledger-language", l);
       location.reload();
     }, opts.lang);
     await page.waitForLoadState("networkidle");

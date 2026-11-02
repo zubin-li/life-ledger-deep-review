@@ -242,3 +242,125 @@ html[data-theme="dark"] .ledger-tx {
     grid-row: 1 / span 2;
   }
 }
+
+.ledger-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ledger-filter {
+  flex: 1 1 160px;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--hairline, rgba(0, 0, 0, 0.08));
+  font-size: 0.9rem;
+}
+
+.ledger-panels--wide {
+  grid-template-columns: minmax(120px, 140px) 1fr minmax(140px, 1fr);
+}
+
+.ledger-trend {
+  min-height: 120px;
+  width: 100%;
+}
+
+.ledger-budget-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ledger-budget {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.ledger-budget-bar {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-sage, #3a8f7a) 15%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.ledger-budget-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--p, 0) * 100%);
+  background: var(--accent-sage, #3a8f7a);
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+.ledger-budget.is-over .ledger-budget-bar::after {
+  background: var(--danger-text, #c44);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-budget-bar::after {
+    transition: none;
+  }
+}
+
+.review-ledger-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.review-ledger-stats small {
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.65;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.review-ledger-stats strong {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+}
+
+.review-ledger-mood {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+  opacity: 0.85;
+}
+
+.tw-spend-main {
+  display: grid;
+  gap: 0.35rem;
+  align-content: center;
+  height: 100%;
+}
+
+.tw-spend-today {
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.tw-card.tw-spending.is-empty .tw-spend-today {
+  opacity: 0.45;
+}
+
+@media (max-width: 640px) {
+  .ledger-panels--wide {
+    grid-template-columns: 1fr;
+  }
+  .review-ledger-stats {
+    grid-template-columns: 1fr;
+  }
+}

@@ -78,6 +78,33 @@ test("remove and restore transaction", () => {
   assert.equal(back.transactions.length, 1);
 });
 
+test("buildDemoSample creates transactions and budgets", () => {
+  const ledger = L.buildDemoSample({ now: new Date("2026-11-02T12:00:00"), lang: "en", contentSeed: 123 });
+  assert.ok(ledger.transactions.length > 10);
+  assert.ok(ledger.budgets.length >= 1);
+  const progress = L.budgetProgress(ledger, "2026-11");
+  assert.ok(Array.isArray(progress));
+});
+
+test("monthlyTrendSeries returns six months", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -100, currency: "EUR", date: "2026-11-02", note: "x" }));
+  const series = L.monthlyTrendSeries(ledger, "2026-11", 6);
+  assert.equal(series.length, 6);
+  assert.equal(series.at(-1).ym, "2026-11");
+});
+
+test("filterTransactions matches note", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -500, currency: "EUR", date: "2026-11-02", note: "coffee shop" }));
+  const rows = L.filterTransactions(ledger, "2026-11", "coffee");
+  assert.equal(rows.length, 1);
+});
+
 test("spendingTodayMinor sums expenses only", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

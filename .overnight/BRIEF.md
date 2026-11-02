@@ -84,3 +84,8 @@ buttons inside `<label>`), (b) translucent popovers covered by later stacking co
 ## End of the night
 Keep `.overnight/REPORT.md` up to date (in Chinese, for the owner): what is new, where to click, before/after
 screenshots (paths), what you tried and rejected, known issues, and ideas for next time.
+
+## Review loop
+If `.overnight/REVIEW.md` exists, it is Antigravity's read-only review of the previous batch. Start the round by fixing
+every HIGH and MED finding that you can reproduce (note in PROGRESS.md which ones you fixed, which you could not
+reproduce and why), then continue with new work.

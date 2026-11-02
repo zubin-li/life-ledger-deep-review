@@ -39,7 +39,7 @@ done
 
 [ "$OK_ROUNDS" -gt 0 ] || { log "no successful round - skipping review"; exit 1; }
 log "review: antigravity read-only"
-node "$AR" --brief .overnight/REVIEW-BRIEF.md --cd "$W" --model gemini-4-argon-high --read-only --timeout 40m --out-dir "$L/review" > "$L/review.out" 2>&1
+node "$AR" --brief .overnight/REVIEW-BRIEF.md --cd "$W" --model gemini-3.8-flash-high --read-only --timeout 40m --out-dir "$L/review" > "$L/review.out" 2>&1
 python3 - "$L/review/result.json" "$W/.overnight/REVIEW.md" <<'EOF'
 import json, sys
 try: d = json.load(open(sys.argv[1]))

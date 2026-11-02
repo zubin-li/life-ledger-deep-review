@@ -2,6 +2,8 @@
   const core = () => root.LifeLedgerLedger;
   let ctx = null;
   let viewMonth = "";
+  let listFilter = "";
+  let trendPlot = null;
 
   const $ = (s, r = document) => r.querySelector(s);
   const t = (zh, en, de) => ctx.text(zh, en, de);
@@ -24,15 +26,53 @@
   }
 
   function shiftMonth(ym, delta) {
-    const [y, m] = ym.split("-").map(Number);
-    const d = new Date(y, m - 1 + delta, 1, 12);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    return core().shiftYm(ym, delta);
   }
 
   function monthLabel(ym) {
     const [y, m] = ym.split("-").map(Number);
     const d = new Date(y, m - 1, 1, 12);
     return ctx.monthName(d);
+  }
+
+  function destroyTrendPlot() {
+    trendPlot?.destroy?.();
+    trendPlot = null;
+  }
+
+  function renderTrend(host, ledger, ym) {
+    destroyTrendPlot();
+    if (!host) return;
+    const uPlot = root.LifeLedgerWidgetUI?.uPlot;
+    const series = core().monthlyTrendSeries(ledger, ym, 6);
+    const hasData = series.some(row => row.expenseMinor > 0 || row.incomeMinor > 0);
+    if (!hasData || !uPlot) {
+      host.innerHTML = `<p class="ledger-empty">${t("暂无趋势数据", "Add entries to see the trend.", "Noch keine Trenddaten.")}</p>`;
+      return;
+    }
+    host.innerHTML = "";
+    const width = Math.max(200, Math.floor(host.clientWidth || 280));
+    const height = 120;
+    const dark = document.documentElement.dataset.theme === "dark";
+    const ink = dark ? "#9eafbe" : "#738495";
+    const grid = dark ? "rgba(200,220,235,.09)" : "rgba(60,90,120,.09)";
+    const accent = dark ? "#7fd4b0" : "#2d7a62";
+    const labels = series.map(row => row.ym.slice(5));
+    trendPlot = new uPlot({
+      width,
+      height,
+      pxAlign: 1,
+      padding: [8, 8, 0, 0],
+      legend: { show: false },
+      select: { show: false },
+      cursor: { show: false },
+      scales: { x: { time: false }, y: { auto: true } },
+      series: [{}, { label: "€", stroke: accent, width: 2, points: { show: false } }],
+      axes: [
+        { stroke: ink, font: "10px -apple-system, system-ui", size: 18, grid: { stroke: grid, width: 1 }, ticks: { show: false } },
+        { stroke: ink, font: "10px -apple-system, system-ui", size: 28, space: 22, grid: { show: false }, ticks: { show: false }, values: (_u, vals) => vals.map(v => `${Math.round(v / 100)}`) },
+      ],
+    }, [labels, series.map(row => row.expenseMinor)], host);
   }
 
   function renderDonut(breakdown, ledger) {
@@ -56,7 +96,7 @@
     const days = new Date(y, m, 0).getDate();
     const max = Math.max(1, ...map.values());
     let cells = "";
-    for (let day = 1; day <= days; day++) {
+    for (let day = 1; day <= days; day += 1) {
       const iso = `${ym}-${String(day).padStart(2, "0")}`;
       const val = map.get(iso) || 0;
       const level = val ? Math.min(4, Math.ceil((val / max) * 4)) : 0;
@@ -77,10 +117,31 @@
     }).join("");
   }
 
-  function renderList(ledger, ym) {
-    const rows = core().transactionsInMonth(ledger, ym).sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
+  function renderBudgets(ledger, ym) {
+    const rows = core().budgetProgress(ledger, ym);
     if (!rows.length) {
-      return `<p class="ledger-empty">${t("这个月还没有记录。试试输入「12,50 咖啡」。", "Nothing this month yet. Try \"12.50 coffee\".", "Noch nichts in diesem Monat. Probiere „12,50 Kaffee“.")}</p>`;
+      return `<p class="ledger-empty ledger-budget-empty">${t("可在后续版本设置分类预算。", "Category budgets appear when set.", "Kategoriebudgets erscheinen hier.")}</p>`;
+    }
+    return `<ul class="ledger-budget-list">${rows.map(row => {
+      const cat = ledger.categories.find(c => c.id === row.categoryId);
+      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+      const pct = Math.min(100, Math.round(row.ratio * 100));
+      const over = row.ratio > 1;
+      return `<li class="ledger-budget${over ? " is-over" : ""}">
+        <span class="ledger-budget-name">${ctx.escape(name)}</span>
+        <span class="ledger-budget-amt">${ctx.escape(core().formatMoney(row.spentMinor, row.currency, ctx.locale?.()))} / ${ctx.escape(core().formatMoney(row.limitMinor, row.currency, ctx.locale?.()))}</span>
+        <span class="ledger-budget-bar" style="--p:${pct / 100}"></span>
+      </li>`;
+    }).join("")}</ul>`;
+  }
+
+  function renderList(ledger, ym) {
+    const rows = core().filterTransactions(ledger, ym, listFilter)
+      .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
+    if (!rows.length) {
+      return `<p class="ledger-empty">${listFilter
+        ? t("没有匹配的交易。", "No matching entries.", "Keine passenden Buchungen.")
+        : t("这个月还没有记录。试试输入「12,50 咖啡」。", "Nothing this month yet. Try \"12.50 coffee\".", "Noch nichts in diesem Monat. Probiere „12,50 Kaffee“.")}</p>`;
     }
     return `<ul class="ledger-tx-list">${rows.map(tx => {
       const cat = ledger.categories.find(c => c.id === tx.categoryId);
@@ -124,6 +185,45 @@
     });
     host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, -1); render(); });
     host.querySelector("[data-ledger-next]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, 1); render(); });
+    host.querySelector("#ledgerFilter")?.addEventListener("input", e => {
+      listFilter = e.target.value;
+      const list = host.querySelector(".ledger-list-wrap");
+      if (list) {
+        const h = list.querySelector("h3");
+        list.innerHTML = `${h ? h.outerHTML : ""}${renderList(ledgerState(), ym)}`;
+        bindDelete(host, ledgerState());
+      }
+    });
+    host.querySelector("[data-ledger-export]")?.addEventListener("click", () => {
+      const csv = core().exportTransactionsCsv(ledgerState(), ym);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `life-ledger-${ym}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      ctx.toast?.(t("已导出 CSV", "CSV exported", "CSV exportiert"));
+    });
+    const fileInput = host.querySelector("#ledgerCsvFile");
+    host.querySelector("[data-ledger-import]")?.addEventListener("click", () => fileInput?.click());
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = core().importGermanBankCsv(String(reader.result || ""), ledgerState(), { lang: ctx.lang?.() });
+        commit(result.ledger);
+        ctx.toast?.(t(`已导入 ${result.imported} 笔`, `Imported ${result.imported} entries`, `${result.imported} Buchungen importiert`));
+        fileInput.value = "";
+        render();
+      };
+      reader.readAsText(file);
+    });
+    bindDelete(host, ledger);
+  }
+
+  function bindDelete(host, ledger) {
     host.querySelectorAll(".ledger-tx-del").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.closest(".ledger-tx")?.dataset.id;
@@ -138,6 +238,7 @@
             onAction: () => {
               const restored = core().restoreTransaction(ctx.state().ledger, snap.removed, snap.index);
               commit(restored);
+              render();
             },
           },
         );
@@ -149,6 +250,7 @@
   function render() {
     const host = $("#ledgerView .ledger-page");
     if (!host || !ctx) return;
+    destroyTrendPlot();
     const ledger = ledgerState();
     if (!viewMonth) viewMonth = ymFromDate(ctx.iso(new Date()));
     const ym = viewMonth;
@@ -180,21 +282,36 @@
         <button type="submit" class="primary-button">${t("添加", "Add", "Hinzufügen")}</button>
       </form>
       <div class="ledger-chips">${renderChips(ledger)}</div>
-      <div class="ledger-panels">
+      <div class="ledger-toolbar">
+        <input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" />
+        <button type="button" class="secondary-button" data-ledger-import>${t("导入 CSV", "Import CSV", "CSV importieren")}</button>
+        <button type="button" class="secondary-button" data-ledger-export>${t("导出 CSV", "Export CSV", "CSV exportieren")}</button>
+        <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
+      </div>
+      <div class="ledger-panels ledger-panels--wide">
         <section class="ledger-panel">
           <h3>${t("分类", "Categories", "Kategorien")}</h3>
           ${renderDonut(breakdown, ledger)}
         </section>
         <section class="ledger-panel">
+          <h3>${t("支出趋势", "Spending trend", "Ausgabentrend")}</h3>
+          <div class="ledger-trend" id="ledgerTrendPlot"></div>
+        </section>
+        <section class="ledger-panel ledger-panel--heat">
           <h3>${t("每日支出", "Daily spend", "Tägliche Ausgaben")}</h3>
           ${renderHeatmap(ledger, ym)}
         </section>
       </div>
+      <section class="ledger-budget-wrap">
+        <h3>${t("预算进度", "Budget progress", "Budgetfortschritt")}</h3>
+        ${renderBudgets(ledger, ym)}
+      </section>
       <section class="ledger-list-wrap">
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
         ${renderList(ledger, ym)}
       </section>`;
     bindInteractions(host, ledger, ym);
+    requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));
   }
 
   root.LifeLedgerLedgerUI = {

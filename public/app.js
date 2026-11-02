@@ -2727,6 +2727,13 @@ function maybeApplyDemoWorkspace() {
     lang: currentLang,
     seedHabits: cloneData(seed.habits),
   });
+  if (window.LifeLedgerLedger?.buildDemoSample) {
+    demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
+      now: new Date(),
+      lang: currentLang,
+      contentSeed: demoState.meta?.demo?.contentSeed,
+    });
+  }
   state = { ...cloneData(seed), ...demoState };
   saveState();
 }
@@ -3142,7 +3149,7 @@ function planCloudStateConflict({
     remoteRevision: conflictBody?.revision,
     detectedAt: Date.now(),
   });
-  const adopted = mergeRemoteCloudPayload(conflictBody?.payload, seed, cloneDataFn);
+  const adopted = mergeRemoteCloudPayload(conflictBody?.payload, seed, cloneDataFn, losingState?.ledger);
   if (!adopted) {
     return {
       kind: "malformed",
@@ -5084,6 +5091,7 @@ function renderReview() {
   const habits = activeHabits(monthDates[monthDates.length - 1]);
   setInsightView(insightView);
   renderReviewInsights();
+  renderReviewLedgerSummary();
   renderReviewTrendChart();
   renderReviewInspectorTable();
   renderInsightDashboard();
@@ -7907,6 +7915,58 @@ function renderReviewInsights() {
   const rate = container.querySelector(".review-insight-value");
   if (rate) LifeLedgerInteraction?.rollText(rate, nextRate, previousRate);
   container.dataset.rateValue = nextRate;
+}
+
+function renderReviewLedgerSummary() {
+  const host = $("#reviewLedgerSummary");
+  const L = globalThis.LifeLedgerLedger;
+  if (!host || !L) return;
+  const ym = monthKey(cursor);
+  const ledger = state.ledger ? L.normalize(state.ledger, { lang: currentLang }) : null;
+  if (!ledger?.transactions?.length) {
+    host.hidden = true;
+    host.innerHTML = "";
+    return;
+  }
+  host.hidden = false;
+  const summary = L.monthSummary(ledger, ym);
+  const locale = i18n[currentLang]?.locale || "de-DE";
+  const cur = ledger.settings.defaultCurrency;
+  const dates = reviewMonthDates(cursor);
+  const moodGreat = "很好";
+  const moodLow = "低落";
+  let greatSpend = 0;
+  let greatDays = 0;
+  let lowSpend = 0;
+  let lowDays = 0;
+  dates.forEach(date => {
+    const spend = L.spendingTodayMinor(ledger, date);
+    if (!spend) return;
+    const mood = getLog(date).mood;
+    if (mood === moodGreat) { greatSpend += spend; greatDays += 1; }
+    if (mood === moodLow) { lowSpend += spend; lowDays += 1; }
+  });
+  let moodLine = "";
+  if (greatDays && lowDays) {
+    const greatAvg = Math.round(greatSpend / greatDays);
+    const lowAvg = Math.round(lowSpend / lowDays);
+    if (greatAvg !== lowAvg) {
+      moodLine = `<p class="review-ledger-mood">${escapeHtml(languageText(
+        `心情较好日平均支出 ${L.formatMoney(-greatAvg, cur, locale)}，较低落日 ${L.formatMoney(-lowAvg, cur, locale)}。`,
+        `On great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
+        `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
+      ))}</p>`;
+    }
+  }
+  host.innerHTML = `<article class="panel review-ledger-panel">
+    <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
+    <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
+    <div class="review-ledger-stats">
+      <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(L.formatMoney(summary.expenseMinor, cur, locale))}</strong></span>
+      <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(L.formatMoney(summary.incomeMinor, cur, locale))}</strong></span>
+      <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(L.formatMoney(summary.netMinor, cur, locale))}</strong></span>
+    </div>${moodLine}</article>`;
+  host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
 }
 
 function analyticsApi() {

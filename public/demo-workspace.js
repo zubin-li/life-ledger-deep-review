@@ -75,6 +75,7 @@ export function hasMeaningfulUserData(state) {
   if (Object.values(state.weeklyGoals || {}).some(goals => Array.isArray(goals) && goals.length)) return true;
   if ((state.longTermGoals || []).length) return true;
   if ((state.focusSessions || []).length) return true;
+  if ((state.ledger?.transactions || []).length) return true;
   return false;
 }
 

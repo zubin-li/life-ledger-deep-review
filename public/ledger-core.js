@@ -446,6 +446,170 @@
       .reduce((sum, tx) => sum + Math.abs(tx.amountMinor), 0);
   }
 
+  function shiftYm(ym, delta) {
+    const [y, m] = ym.split("-").map(Number);
+    const d = new Date(y, m - 1 + delta, 1, 12);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  }
+
+  function budgetProgress(ledger, ym) {
+    const base = normalize(ledger);
+    const spentByCat = new Map();
+    transactionsInMonth(base, ym).forEach(tx => {
+      if (tx.amountMinor >= 0) return;
+      spentByCat.set(tx.categoryId, (spentByCat.get(tx.categoryId) || 0) + Math.abs(tx.amountMinor));
+    });
+    return base.budgets
+      .filter(b => b.month === ym && b.limitMinor > 0)
+      .map(b => {
+        const spentMinor = spentByCat.get(b.categoryId) || 0;
+        return {
+          ...b,
+          spentMinor,
+          ratio: b.limitMinor > 0 ? spentMinor / b.limitMinor : 0,
+        };
+      })
+      .sort((a, b) => b.ratio - a.ratio);
+  }
+
+  function monthlyTrendSeries(ledger, endYm, months = 6) {
+    const base = normalize(ledger);
+    const out = [];
+    let ym = endYm;
+    for (let i = 0; i < months; i += 1) {
+      const summary = monthSummary(base, ym);
+      out.unshift({
+        ym,
+        expenseMinor: Math.abs(summary.expenseMinor),
+        incomeMinor: summary.incomeMinor,
+        netMinor: summary.netMinor,
+      });
+      ym = shiftYm(ym, -1);
+    }
+    return out;
+  }
+
+  function filterTransactions(ledger, ym, query) {
+    const q = String(query || "").trim().toLowerCase();
+    const rows = transactionsInMonth(normalize(ledger), ym);
+    if (!q) return rows;
+    return rows.filter(tx => {
+      const cat = ledger.categories.find(c => c.id === tx.categoryId);
+      const hay = [
+        tx.note,
+        cat?.name,
+        cat?.nameZh,
+        cat?.nameDe,
+        String(Math.abs(tx.amountMinor) / 100),
+      ].filter(Boolean).join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  function mulberry32(seed) {
+    let value = seed >>> 0;
+    return () => {
+      value += 0x6d2b79f5;
+      let t = value;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function categoryByEnglishName(ledger, enName, kind = "expense") {
+    const def = kind === "income"
+      ? DEFAULT_INCOME_CATEGORIES.find(c => c.name === enName)
+      : DEFAULT_EXPENSE_CATEGORIES.find(c => c.name === enName);
+    if (!def) return ledger.categories.find(c => c.kind === kind && !c.archived);
+    return ledger.categories.find(c => c.kind === kind && !c.archived && (c.name === def.name || c.nameZh === def.zh || c.nameDe === def.de))
+      || ledger.categories.find(c => c.kind === kind && !c.archived);
+  }
+
+  function ensureDemoBudgets(ledger, ym) {
+    const base = normalize(ledger);
+    if (base.budgets.some(b => b.month === ym)) return base;
+    const dining = categoryByEnglishName(base, "Dining");
+    const groceries = categoryByEnglishName(base, "Groceries");
+    const transport = categoryByEnglishName(base, "Transport");
+    const cur = base.settings.defaultCurrency;
+    [
+      { categoryId: groceries?.id, limitMinor: 35000 },
+      { categoryId: dining?.id, limitMinor: 18000 },
+      { categoryId: transport?.id, limitMinor: 12000 },
+    ].filter(row => row.categoryId).forEach(row => {
+      base.budgets.push({
+        id: createId(),
+        categoryId: row.categoryId,
+        month: ym,
+        limitMinor: row.limitMinor,
+        currency: cur,
+      });
+    });
+    return base;
+  }
+
+  function buildDemoSample(options = {}) {
+    const now = options.now instanceof Date ? options.now : new Date(options.now || Date.now());
+    const lang = options.lang || "en";
+    const rng = mulberry32((options.contentSeed ?? 0x6d656d6f) ^ 0x1ed6e9);
+    let ledger = normalize(null, { lang });
+    const account = ledger.accounts[0]?.id;
+    if (!account) return ledger;
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const salaryCat = categoryByEnglishName(ledger, "Salary", "income");
+    const groceries = categoryByEnglishName(ledger, "Groceries");
+    const dining = categoryByEnglishName(ledger, "Dining");
+    const transport = categoryByEnglishName(ledger, "Transport");
+    const housing = categoryByEnglishName(ledger, "Housing");
+    const shopping = categoryByEnglishName(ledger, "Shopping");
+    const expenseCats = [groceries, dining, transport, shopping].filter(Boolean);
+    for (let offset = 89; offset >= 0; offset -= 1) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - offset);
+      d.setHours(12, 0, 0, 0);
+      const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      if (iso > today) continue;
+      const day = d.getDate();
+      if (day === 1 && salaryCat) {
+        ({ ledger } = addTransaction(ledger, {
+          accountId: account,
+          categoryId: salaryCat.id,
+          amountMinor: 285000 + Math.round(rng() * 40000),
+          currency: "EUR",
+          date: iso,
+          note: lang === "de" ? "Gehalt" : lang === "zh" ? "工资" : "Salary",
+        }, { lang }));
+      }
+      if (day === 3 && housing) {
+        ({ ledger } = addTransaction(ledger, {
+          accountId: account,
+          categoryId: housing.id,
+          amountMinor: -95000,
+          currency: "EUR",
+          date: iso,
+          note: lang === "de" ? "Miete" : lang === "zh" ? "房租" : "Rent",
+        }, { lang }));
+      }
+      const weekday = d.getDay();
+      if (weekday !== 0 && weekday !== 6 && rng() < 0.55 && expenseCats.length) {
+        const cat = expenseCats[Math.floor(rng() * expenseCats.length)];
+        const cents = -(400 + Math.round(rng() * 4200));
+        ({ ledger } = addTransaction(ledger, {
+          accountId: account,
+          categoryId: cat.id,
+          amountMinor: cents,
+          currency: "EUR",
+          date: iso,
+          note: cat.name,
+        }, { lang }));
+      }
+    }
+    ledger = ensureDemoBudgets(ledger, monthKey(today));
+    ledger = ensureDemoBudgets(ledger, shiftYm(monthKey(today), -1));
+    return ledger;
+  }
+
   root.LifeLedgerLedger = {
     LEDGER_VERSION,
     emptyLedger,
@@ -464,6 +628,11 @@
     importGermanBankCsv,
     exportTransactionsCsv,
     spendingTodayMinor,
+    budgetProgress,
+    monthlyTrendSeries,
+    filterTransactions,
+    shiftYm,
+    buildDemoSample,
     createId,
   };
 })(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : global);
