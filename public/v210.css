@@ -3027,6 +3027,65 @@ html.motion-reduced .review-ledger-insights.is-retargeting :is(
   }
 }
 
+/* Batch 6 round 6 — inspector habit scores (data) + budget demo mood */
+
+#inspectorReviewTable .inspector-stat-list--live {
+  padding: 0.35rem 0 0.15rem;
+}
+
+#inspectorReviewTable .inspector-stat-list--live article {
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--separator) 88%, transparent);
+  background: color-mix(in srgb, var(--desk-canvas) 78%, transparent);
+  border-bottom: none;
+}
+
+.inspector-stat-list--live.inspector-stat-list--enter article {
+  animation: inspectorStatEnter 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--ins-i, 0) * 42ms);
+}
+
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(n) {
+  --ins-i: 0;
+}
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(1) { --ins-i: 0; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(2) { --ins-i: 1; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(3) { --ins-i: 2; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(4) { --ins-i: 3; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(5) { --ins-i: 4; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(6) { --ins-i: 5; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(7) { --ins-i: 6; }
+.inspector-stat-list--live.inspector-stat-list--enter article:nth-child(8) { --ins-i: 7; }
+
+@keyframes inspectorStatEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inspector-review-focus:has(.inspector-review-focus-title) {
+  margin-top: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in srgb, var(--separator) 70%, transparent);
+}
+
+html.motion-reduced .inspector-stat-list--live.inspector-stat-list--enter article {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inspector-stat-list--live.inspector-stat-list--enter article {
+    animation: none !important;
+  }
+}
+
 
 /* ========== merged from v232-ledger-entry-feedback.css ========== */
 /* Goal 2 batch 4 r2: quick-entry success + new transaction row enter */

@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-01-today-v6.png" width="100%" alt="Life Ledger 2.0 今日卡片工作台" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-08-ledger-v21.png" width="100%" alt="Life Ledger 2.1 记账：月览、分类与快速录入" />
 </p>
 
 <p align="center">

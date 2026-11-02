@@ -1,12 +1,28 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 5）
+# Life Ledger 夜间构建总报告（Batch 6 · Round 6）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 6 Round 5：** 预算心情侧写扩展（低落更少 / 很好·平静）；复盘 **每日完成率** 折线与 inspector 空状态统一 hairline。
+**Batch 6 Round 6：** showcase 预算心情第二句可稳定出现；README 顶图换记账；复盘 inspector 习惯分行卡片化（DOM 暂隐藏）。
 
 ---
 
-## 本轮（Batch 6 · Round 5）改动
+## 本轮（Batch 6 · Round 6）改动
+
+| 项目 | 说明 |
+|------|------|
+| **Demo 预算洞察** | `alignDemoMoodWithBudgetOverspend` 在超支分类有支出的日子写入「很好/平静」，其它支出日偏「低落」，便于看到 Budget 行第二句（ calm/good 占比）。 |
+| **Inspector** | 有数据时习惯统计为圆角卡片 + 入场交错（`inspector-stat-list--live`）；当前复盘页 CSS 仍隐藏 `review-score-table`，主验收请看 Money 区。 |
+| **README** | 英/中/德首屏 hero 改为 `08-ledger-v21` 桌面图。 |
+| **测试** | 单元 **348 pass**（+1）；浏览器 **8 pass**。 |
+| **截图** | `.overnight/shots/b6r6-review-budget-positive-*`（含 `.review-ledger-insight-delta`）。重拍：`node .overnight/capture-batch6-round6.mjs`（**5298**）。 |
+
+**去哪点：** `?local-preview=demo-showcase-v1` → **复盘** → **Money** 区 **Budget** 行（应含第二句心情对比）；README 打开即见记账 hero。
+
+**已知遗留：** inspector 卡片样式在现行布局中不可见；Today 侧栏缩略图仍为 v6 小图（Product tour 里另有 ledger 图）。
+
+---
+
+## 上一轮（Batch 6 · Round 5）改动
 
 | 项目 | 说明 |
 |------|------|

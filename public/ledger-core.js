@@ -1451,6 +1451,42 @@
     return logs;
   }
 
+  /**
+   * Demo-only: on days that spent in over-budget categories, bias mood toward 很好/平静 so Review
+   * budget insight can show the positive-mood follow-up sentence (after alignDemoBudgetOverspendForReview).
+   */
+  function alignDemoMoodWithBudgetOverspend(logs, ledger, now = new Date()) {
+    if (!logs || !ledger?.transactions?.length) return logs;
+    const anchor = now instanceof Date ? now : new Date(now);
+    const today = isoDateFromDate(anchor);
+    const ym = monthKey(today);
+    const base = normalize(ledger);
+    const overs = budgetOverspendList(base, ym);
+    if (!overs.length) return logs;
+    const hotDates = datesWithCategorySpend(base, ym, new Set(overs.map(o => o.categoryId)));
+    if (hotDates.size < 2) return logs;
+    const spendByDate = new Map();
+    base.transactions.forEach(tx => {
+      if (!tx.date.startsWith(ym) || tx.date > today || tx.amountMinor >= 0) return;
+      if (!txInReportingCurrency(base, tx)) return;
+      spendByDate.set(tx.date, (spendByDate.get(tx.date) || 0) + Math.abs(tx.amountMinor));
+    });
+    const otherSpendDates = [...spendByDate.keys()].filter(date => !hotDates.has(date));
+    if (otherSpendDates.length < 2) return logs;
+    let flip = 0;
+    hotDates.forEach(date => {
+      if (!logs[date] || !spendByDate.has(date)) return;
+      logs[date] = { ...logs[date], mood: flip % 2 === 0 ? "很好" : "平静" };
+      flip += 1;
+    });
+    otherSpendDates.forEach((date, index) => {
+      if (!logs[date]) return;
+      const mood = index % 3 === 0 ? "平静" : "低落";
+      logs[date] = { ...logs[date], mood };
+    });
+    return logs;
+  }
+
   /** Demo-only: tag lowest-spend days as 很好 and highest as 低落 so review mood vs spend insights render. */
   function alignDemoMoodWithSpend(logs, ledger, now = new Date()) {
     if (!logs || !ledger?.transactions?.length) return logs;
@@ -1624,6 +1660,7 @@
     shiftYm,
     buildDemoSample,
     alignDemoMoodWithSpend,
+    alignDemoMoodWithBudgetOverspend,
     alignDemoFocusWithSpend,
     mergeLedgerForBackup,
     scopeLedgerForBackup,

@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-01-today-v6.png" width="100%" alt="Life Ledger 2.0 – Heute als Karten-Arbeitsbereich" />
+  <img src="docs/images/demo-preview/de-desktop/de-08-ledger-v21.png" width="100%" alt="Life Ledger 2.1 Finanzen: Monatsüberblick, Kategorien und Schnellerfassung" />
 </p>
 
 <p align="center">

@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-01-today-v6.png" width="100%" alt="Life Ledger 2.0 Today card workspace" />
+  <img src="docs/images/demo-preview/en-desktop/en-08-ledger-v21.png" width="100%" alt="Life Ledger 2.1 Money: month overview, categories, and quick entry" />
 </p>
 
 <p align="center">

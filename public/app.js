@@ -2751,6 +2751,7 @@ function maybeApplyDemoWorkspace() {
     });
     const habitIds = (demoState.habits || []).map(h => h.id);
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoMoodWithBudgetOverspend?.(demoState.logs, demoState.ledger, demoAnchor);
     window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
     demoState.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
       demoState.focusSessions,
@@ -8984,11 +8985,14 @@ function renderReviewInspectorTable() {
     return;
   }
   const habits = activeHabits(dates[dates.length - 1]);
-  table.innerHTML = `<div class="inspector-stat-list">${habits.map(habit => {
+  table.innerHTML = `<div class="inspector-stat-list inspector-stat-list--live">${habits.map(habit => {
     const stats = habitWindowStats(habit, dates);
     if (!stats.eligible) return "";
     return `<article><strong>${escapeHtml(displayHabitName(habit))}</strong><span>${stats.completed}/${stats.eligible} · ${formatRate(stats)}</span><span>${escapeHtml(tr("review.streakLabel"))} ${stats.streaks.current} · ${escapeHtml(tr("review.bestStreakLabel"))} ${stats.streaks.best}</span></article>`;
   }).join("")}</div>`;
+  requestAnimationFrame(() => {
+    table.querySelector(".inspector-stat-list--live")?.classList.add("inspector-stat-list--enter");
+  });
   const focusPanel = $("#inspectorReviewFocus");
   if (focusPanel) {
     const sessions = focusSessionsBetween(dates[0], dates[dates.length - 1]);
@@ -10134,6 +10138,7 @@ async function loadMacSample() {
     });
     const habitIds = (demoState.habits || []).map(h => h.id);
     window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoMoodWithBudgetOverspend?.(demoState.logs, demoState.ledger, demoAnchor);
     window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
     demoState.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
       demoState.focusSessions,

@@ -585,6 +585,28 @@ test("alignDemoMoodWithSpend tags high and low spend days for review insights", 
   assert.ok(cmp.lowAvg > cmp.greatAvg);
 });
 
+test("alignDemoMoodWithBudgetOverspend surfaces positive mood on over-budget category days", () => {
+  const now = new Date("2026-11-18T12:00:00");
+  const today = "2026-11-18";
+  const ledger = L.buildDemoSample({ now, lang: "en", contentSeed: 42 });
+  const ym = "2026-11";
+  const logs = {};
+  ledger.transactions.forEach(tx => {
+    if (!tx.date.startsWith(ym) || tx.date > today || tx.amountMinor >= 0) return;
+    if (!logs[tx.date]) logs[tx.date] = { completed: [], mood: "平静", moodReason: "", note: "" };
+  });
+  L.alignDemoMoodWithSpend(logs, ledger, now);
+  L.alignDemoMoodWithBudgetOverspend(logs, ledger, now);
+  const dailyRows = Object.keys(logs).sort().map(date => ({
+    date,
+    mood: logs[date].mood,
+    spendMinor: L.spendingTodayMinor(ledger, date),
+  }));
+  const insight = L.moodOverspendCategoryInsight(ledger, ym, dailyRows);
+  assert.ok(insight);
+  assert.ok(insight.positiveHotRate > insight.positiveOtherRate + 0.08);
+});
+
 test("parseQuickEntry treats salary category as income without plus sign", () => {
   const ledger = L.normalize(null, { lang: "zh" });
   const parsed = L.parseQuickEntry("2000 工资", ledger, { lang: "zh", today: "2026-11-02" });
