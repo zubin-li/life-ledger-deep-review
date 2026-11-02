@@ -8277,7 +8277,7 @@ function renderReviewLedgerSummary() {
       `On great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
       `An sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
     );
-    moodLine = `<p class="review-ledger-mood"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("心情", "Mood", "Stimmung"))}</span><span class="review-ledger-insight-body">${escapeHtml(moodBody)}</span></p>`;
+    moodLine = `<p class="review-ledger-mood" style="--insight-i:0"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("心情", "Mood", "Stimmung"))}</span><span class="review-ledger-insight-body">${escapeHtml(moodBody)}</span></p>`;
   }
   let focusLine = "";
   if (focusCompare) {
@@ -8287,7 +8287,7 @@ function renderReviewLedgerSummary() {
       `On your most focused days you spent ${L.formatMoney(-highFocusAvg, cur, locale)} on average vs ${L.formatMoney(-lowFocusAvg, cur, locale)} when focus was lighter.`,
       `An fokussierten Tagen im Schnitt ${L.formatMoney(-highFocusAvg, cur, locale)} Ausgaben, an ruhigeren ${L.formatMoney(-lowFocusAvg, cur, locale)}.`,
     );
-    focusLine = `<p class="review-ledger-focus"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span><span class="review-ledger-insight-body">${escapeHtml(focusBody)}</span></p>`;
+    focusLine = `<p class="review-ledger-focus" style="--insight-i:1"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("专注", "Focus", "Fokus"))}</span><span class="review-ledger-insight-body">${escapeHtml(focusBody)}</span></p>`;
   }
   let habitLine = "";
   if (habitCompare) {
@@ -8297,15 +8297,15 @@ function renderReviewLedgerSummary() {
       `On days you completed more habits you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
       `An Tagen mit hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
     );
-    habitLine = `<p class="review-ledger-habits"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}</span></p>`;
+    habitLine = `<p class="review-ledger-habits" style="--insight-i:2"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}</span></p>`;
   }
   const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
   const scatterSection = scatterParts.length
-    ? `<div class="review-scatter-grid">${scatterParts.join("")}</div>`
+    ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}</div>`
     : "";
   const insightParts = [moodLine, habitLine, focusLine].filter(Boolean);
   const insightSection = insightParts.length
-    ? `<div class="review-ledger-insights" id="review-ledger-insights" tabindex="-1">${insightParts.join("")}</div>`
+    ? `<div class="review-ledger-insights is-retargeting" id="review-ledger-insights" tabindex="-1">${insightParts.join("")}</div>`
     : "";
   const spendText = L.formatMoney(summary.expenseMinor, cur, locale);
   const incomeText = L.formatMoney(summary.incomeMinor, cur, locale);
@@ -8322,10 +8322,10 @@ function renderReviewLedgerSummary() {
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
-    <div class="review-ledger-stats">
-      <span><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
-      <span><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
-      <span><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
+    <div class="review-ledger-stats is-retargeting">
+      <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
+      <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
+      <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
     </div>${jumpNav}${scatterSection}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
   const roll = globalThis.LifeLedgerInteraction?.rollText;
@@ -8354,6 +8354,12 @@ function renderReviewLedgerSummary() {
     });
   });
   bindReviewScatterJumpSpy(host);
+  requestAnimationFrame(() => {
+    const retarget = globalThis.LifeLedgerInteraction?.retarget;
+    retarget?.(host.querySelector(".review-ledger-stats.is-retargeting"));
+    retarget?.(host.querySelector(".review-scatter-grid.is-retargeting"));
+    retarget?.(host.querySelector(".review-ledger-insights.is-retargeting"));
+  });
 }
 
 function analyticsApi() {

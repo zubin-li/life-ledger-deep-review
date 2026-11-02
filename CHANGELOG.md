@@ -23,6 +23,8 @@ All notable changes are documented here.
 - **Money & Today empty states:** ledger onboarding, list/budget/recurring/donut/trend placeholders and Today spending card use shared `ll-empty-enter` motion (`v228-ledger-empty-enter.css`).
 - **Money:** budget progress bars grow with stagger when switching months (`v229-ledger-budget-bars.css`; `LifeLedgerReviewBars.animateLedgerBudgetFills`).
 - **Money:** category donut / treemap cells and daily spend heatmap stagger when switching months (`v230-ledger-chart-retarget.css`; `LifeLedgerInteraction.retarget` on chart scopes).
+- **Review:** monthly Money stat columns, scatter dots, and insight lines restagger when changing review months (`v231-review-ledger-retarget.css`; `LifeLedgerInteraction.retarget` on `#reviewLedgerSummary`).
+- **QA:** `.overnight/fakecloud-stub/` mirrors minimal `/api/state` + D1 `revision` schema when repo-root `functions/` is absent; `fakecloud.sh` uses it automatically.
 
 ### Changed
 

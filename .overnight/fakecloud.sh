@@ -8,7 +8,13 @@ DIR="${ROOT}/.overnight/scratch/fakecloud"
 rm -rf "$DIR"
 mkdir -p "$DIR"
 rsync -a "$ROOT/public/" "$DIR/"
-rsync -a "$ROOT/functions" "$ROOT/schema.sql" "$DIR/"
+STUB="${ROOT}/.overnight/fakecloud-stub"
+if [ -d "$ROOT/functions" ] && [ -f "$ROOT/schema.sql" ]; then
+  rsync -a "$ROOT/functions" "$ROOT/schema.sql" "$DIR/"
+else
+  rsync -a "$STUB/functions/" "$DIR/functions/"
+  cp "$STUB/schema-qa.sql" "$DIR/schema.sql"
+fi
 printf 'window.LIFE_LEDGER_DEPLOYMENT_MODE = window.LIFE_LEDGER_DEPLOYMENT_MODE || "cloudflare";\n' > "$DIR/deployment-mode.js"
 cat > "$DIR/wrangler.toml" <<'EOF'
 name = "life-ledger-overnight-qa"
