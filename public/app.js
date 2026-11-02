@@ -7768,10 +7768,12 @@ async function renderJournalFeed(version) {
   const mode = journalMode, month = $('#journalMonthFilter').value;
   const host = $('#journalFeed');
   const feedNeedsAsync = mode === 'timeline';
-  if (feedNeedsAsync && host) {
+  if (host) {
     host.classList.remove('ll-paint-host--ready');
-    host.innerHTML = window.LifeLedgerInteraction?.skeletonMarkup?.('ll-skeleton ll-skeleton--feed')
-      || '<div class="ll-skeleton ll-skeleton--feed" aria-hidden="true"></div>';
+    if (feedNeedsAsync) {
+      host.innerHTML = window.LifeLedgerInteraction?.skeletonMarkup?.('ll-skeleton ll-skeleton--feed')
+        || '<div class="ll-skeleton ll-skeleton--feed" aria-hidden="true"></div>';
+    }
   }
   const words = mode === 'weeks' ? languageText('周度','Weekly','Wöchentlich') : mode === 'months' ? languageText('月度','Monthly','Monatlich') : languageText('日度','Daily','Täglich');
   $('#journalFeedKicker').textContent = languageText('留下来的，都是生活','LIFE, IN YOUR OWN WORDS','DAS LEBEN, IN EIGENEN WORTEN');
@@ -8028,6 +8030,7 @@ function wireTimelineDetail(container, date) {
 function renderJournalPhotoLibrary(photos) {
   const host = $("#journalPhotoLibrary");
   if (!host) return;
+  host.classList.remove("journal-library--ready");
   if (!photos.length) {
     host.innerHTML = hairlineEmptyMarkup(
       "./assets/hairline/empty-photos.svg",
@@ -8035,6 +8038,7 @@ function renderJournalPhotoLibrary(photos) {
       languageText("这个月还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos this month yet. Add one from a day and it will appear here by month.", "Diesen Monat gibt es noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."),
     );
     hydrateHairlineMounts(host);
+    requestAnimationFrame(() => host.classList.add("journal-library--ready"));
     return;
   }
   const groups = new Map();
@@ -8051,6 +8055,7 @@ function renderJournalPhotoLibrary(photos) {
     selectedTimelineDate = button.dataset.date;
     openDrawer(selectedTimelineDate);
   }));
+  requestAnimationFrame(() => host.classList.add("journal-library--ready"));
 }
 
 function renderJournalComposer() {
@@ -8859,6 +8864,7 @@ function renderLedger() {
 }
 
 function setJournalMode(mode) {
+  const previousMode = journalMode;
   const previousRects = journalMode === "photos" || mode === "photos"
     ? captureSiblingRects(".journal-photo-library img, .timeline-entry-list img", node => node.src)
     : null;
@@ -8877,11 +8883,21 @@ function setJournalMode(mode) {
   if (journalMode === "photos") timelineFilter = "photos";
   else if (timelineFilter === "photos") timelineFilter = "all";
   $$("[data-timeline-filter]").forEach(button => button.classList.toggle("active", button.dataset.timelineFilter === timelineFilter));
+  const feedModes = ["weeks", "months", "timeline"];
+  const feedModeChanged = feedModes.includes(previousMode) && feedModes.includes(journalMode) && previousMode !== journalMode;
+  const feedPane = $("#journalFeedPane");
+  if (feedModeChanged && feedPane) feedPane.classList.add("is-mode-entering");
   if ($("#timelineView")?.classList.contains("active")) {
-    void renderTimeline();
+    void renderTimeline().then(() => {
+      if (feedModeChanged && feedPane) {
+        requestAnimationFrame(() => feedPane.classList.remove("is-mode-entering"));
+      }
+    });
     requestAnimationFrame(() => {
       if (previousRects?.size) playFlipFromMap(previousRects, ".journal-photo-library img, .timeline-entry-list img", node => node.src);
     });
+  } else if (feedModeChanged && feedPane) {
+    feedPane.classList.remove("is-mode-entering");
   }
 }
 

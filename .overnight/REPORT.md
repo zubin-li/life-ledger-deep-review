@@ -1,10 +1,24 @@
-# Life Ledger 夜间构建总报告（Batch 5 · Round 4 起）
+# Life Ledger 夜间构建总报告（Batch 5 · Round 5 起）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
 ---
 
-## 本轮（Batch 5 · Round 4）改动
+## 本轮（Batch 5 · Round 5）改动
+
+| 项目 | 说明 |
+|------|------|
+| **时间轴 feed 切换** | 侧栏 **时间轴** → 点 **周度 / 月度 / 日度**：列表行应再次轻微入场；页头标题区在切换时有 `pageCardIn`。 |
+| **Photos 模式** | 同一页点 **照片记忆**：按月分组的缩略图网格 stagger 入场（仍保留照片 FLIP）。 |
+| **Today 照片墙** | 有内容的墙卡片底部轻微暗角，层次更清晰。 |
+| **测试** | 单元 **332 pass**；浏览器 **8 pass**。 |
+| **截图** | `b5r5-photos-*`、`b5r5-feed-weeks-*`、`b5r5-today-wall-*`。重拍：`node .overnight/capture-batch5-round5.mjs`（5297）。 |
+
+**验收提示：** 时间轴在日/周/月三种 feed 间来回点，列表不应「死贴」在页面上；切到 **照片记忆** 应看到网格依次出现；Today demo 第一面非空照片墙底部有 vignette。
+
+---
+
+## 上一轮（Batch 5 · Round 4）改动
 
 | 项目 | 说明 |
 |------|------|
@@ -135,6 +149,7 @@ Headless 壳注入见 `.overnight/shots/b4r8-week-all-done-mac-de-light-1440-*` 
 | **R10** | **记账 1440 zh/de + 矮视口 keypad** | **`b4r10-*`** |
 | **B5 R1** | **长期页 zh 1440 / de dark 390** | **`b5r1-longrange-*`** |
 | **B5 R2** | **Mac Today zh、Focus de 390、Journal en 1440** | **`b5r2-*`** |
+| **B5 R5** | **时间轴 Photos 网格、周度 feed、Today 墙 vignette** | **`b5r5-*`** |
 
 更早 Batch 3 截图：`b3r1`–`b3r10`、以及 `capture-ledger.mjs` 产出的 `ledger-*` 系列。
 

@@ -869,6 +869,94 @@ html.motion-reduced #weekView.view.is-entering :is(.week-page-header, #weekCalen
   }
 }
 
+/* Batch 5 round 5 — timeline feed mode switch + photo library enter + Today wall frame */
+#journalFeedPane.is-mode-entering .journal-feed-heading {
+  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #journalPhotoLibrary.journal-library--ready .journal-library-month {
+    animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(2) {
+    animation-delay: 35ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(n + 3) {
+    animation-delay: 70ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card {
+    animation: llPhotoTileIn 0.38s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(2) {
+    animation-delay: 22ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(3) {
+    animation-delay: 44ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(4) {
+    animation-delay: 66ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(n + 5) {
+    animation-delay: 88ms;
+  }
+}
+
+@keyframes llPhotoTileIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html.motion-reduced #journalFeedPane.is-mode-entering .journal-feed-heading,
+html.motion-reduced #journalPhotoLibrary.journal-library--ready :is(.journal-library-month, .journal-library-card) {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #journalFeedPane.is-mode-entering .journal-feed-heading,
+  #journalPhotoLibrary.journal-library--ready :is(.journal-library-month, .journal-library-card) {
+    animation: none !important;
+  }
+}
+
+@media (hover: hover) {
+  .journal-library-card img {
+    transition: transform 220ms var(--ease-enter, ease), box-shadow 220ms ease;
+  }
+
+  .journal-library-card:hover img {
+    transform: scale(1.02);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--desk-text, #111) 12%, transparent);
+  }
+}
+
+.tc-grid .tw-card.tw-wall:not(.is-empty) .tw-wall-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 -36px 52px -22px rgba(0, 0, 0, 0.32);
+}
+
+.tc-grid .tw-card.tw-wall:not(.is-empty) :is(.tw-wall-dots, .tw-wall-nav) {
+  z-index: 2;
+}
+
 html[data-theme="dark"] .ledger-recurring {
   background: rgba(255, 255, 255, 0.05);
 }

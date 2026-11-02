@@ -26,6 +26,7 @@ All notable changes are documented here.
 - **Review:** monthly Money stat columns, scatter dots, and insight lines restagger when changing review months (`v231-review-ledger-retarget.css`; `LifeLedgerInteraction.retarget` on `#reviewLedgerSummary`).
 - **Money (Goal 2):** quick-entry form success flash, new transaction row enter, submit button press (`v232-ledger-entry-feedback.css`).
 - **Long-range (Goal 2):** horizon workspace sections stagger on page enter (`v210.css` batch 5 round 1).
+- **Timeline (Goal 2):** switching daily / weekly / monthly feed replays row enter; photo library tiles stagger on Photos mode; Today photo wall gets a subtle bottom vignette (`v210.css` batch 5 round 5).
 - **QA:** `npm test` skips `*.browser.test.mjs`; run `npm run test:browser` for Playwright suites locally or in CI.
 - **QA:** `fakecloud-conflict.browser.test.mjs` exercises stale CAS PUT → conflict recovery card on the Import tab, including Money merge preview (after seeding ledger on cloud payload).
 - **QA:** `fakecloud-preview-ledger.browser.test.mjs` — `?mode=cloudflare&local-preview=demo-showcase-v1` seeds fiction demo (incl. Money) and uploads ledger on first sync without manual API seeding.
