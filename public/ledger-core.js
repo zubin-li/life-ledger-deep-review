@@ -332,9 +332,11 @@
   }
 
   function categoryBreakdown(ledger, ym, kind = "expense") {
+    const base = normalize(ledger);
     const totals = new Map();
-    transactionsInMonth(ledger, ym).forEach(tx => {
-      const cat = ledger.categories.find(c => c.id === tx.categoryId);
+    transactionsInMonth(base, ym).forEach(tx => {
+      if (!txInReportingCurrency(base, tx)) return;
+      const cat = base.categories.find(c => c.id === tx.categoryId);
       if (!cat || cat.kind !== kind) return;
       const mag = kind === "expense" ? Math.abs(Math.min(0, tx.amountMinor)) : Math.max(0, tx.amountMinor);
       if (!mag) return;
@@ -1303,6 +1305,13 @@
     return [...map.values()];
   }
 
+  function mergeBudgetsByMonthCategory(left, right) {
+    const map = new Map();
+    (left || []).filter(Boolean).forEach(b => map.set(`${b.month}:${b.categoryId}`, { ...b }));
+    (right || []).filter(Boolean).forEach(b => map.set(`${b.month}:${b.categoryId}`, { ...b }));
+    return [...map.values()];
+  }
+
   function mergeLedgerForBackup(current, incoming, options = {}) {
     if (!incoming && !current) return undefined;
     const base = normalize(current || null, options);
@@ -1317,7 +1326,7 @@
         const byDate = String(a.date).localeCompare(String(b.date));
         return byDate || String(a.id).localeCompare(String(b.id));
       }),
-      budgets: mergeById(base.budgets, add.budgets),
+      budgets: mergeBudgetsByMonthCategory(base.budgets, add.budgets),
       recurring: mergeById(base.recurring, add.recurring),
     };
   }

@@ -3497,9 +3497,12 @@ async function fetchCloudRemoteOutcome() {
       return "missing";
     }
     if (remote?.payload && (remote.payload.meta?.updatedAt || 0) > (state.meta?.updatedAt || 0)) {
-      state = { ...cloneData(seed), ...remote.payload, dailyGoals: remote.payload.dailyGoals || {}, weeklyGoals: remote.payload.weeklyGoals || {}, longTermGoals: remote.payload.longTermGoals || [], weeklyOutputs: remote.payload.weeklyOutputs || {}, weeklyReviews: remote.payload.weeklyReviews || {} };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      renderAll();
+      const merged = mergeRemoteCloudPayload(remote.payload, seed, cloneData, state.ledger);
+      if (merged) {
+        state = merged;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderAll();
+      }
     }
     adoptCloudProfile(remote?.payload, { skipCloud: true, preserveUpdatedAt: true });
     renderDeviceProfile();

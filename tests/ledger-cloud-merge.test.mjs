@@ -68,6 +68,17 @@ test("mergeRemoteCloudPayload adopts remote ledger when present", () => {
   assert.equal(merged.ledger.version, 1);
 });
 
+test("fetchCloudRemoteOutcome CloudBase branch uses mergeRemoteCloudPayload", () => {
+  const fn = extractFunctionSource("async function fetchCloudRemoteOutcome(");
+  const start = fn.indexOf('if (cloudProvider === "cloudbase")');
+  assert.ok(start >= 0);
+  const end = fn.indexOf('const response = await fetch(CLOUD_API', start);
+  assert.ok(end > start);
+  const block = fn.slice(start, end);
+  assert.match(block, /mergeRemoteCloudPayload\(/);
+  assert.doesNotMatch(block, /\{\s*\.\.\.cloneData\(seed\),\s*\.\.\.remote\.payload/);
+});
+
 test("resolvePendingConflictOnRemoteGet passes backup ledger into merge", () => {
   const fn = extractFunctionSource("function resolvePendingConflictOnRemoteGet(");
   assert.match(fn, /pending\?\.backup\?\.data\?\.ledger/);

@@ -41,6 +41,9 @@ All notable changes are documented here.
 - **Today spending card:** `ledgerHasEntries` is evaluated before the empty-state copy runs, fixing a temporal-dead-zone crash when the card renders on days with no spend.
 - **Language:** stored `life-ledger-language` now applies on first paint when the user has not opted out (`language-preference-set` ≠ `false`), matching backup restore and fixing Playwright / deep-link cases where UI strings stayed English while localized data did not.
 - **Cloud sync:** pending conflict resolution on GET now merges the conflict backup’s `ledger` when the remote payload omits it (same rule as immediate 409 adopt).
+- **Cloud sync (Batch 4 / Antigravity review):** Tencent **CloudBase** pull now uses `mergeRemoteCloudPayload`, so a pre-2.1.0 remote without `ledger` no longer wipes local bookkeeping on sync.
+- **Money charts:** category donut/treemap breakdown counts only the ledger’s default reporting currency (CNY/EUR no longer summed 1:1).
+- **Money backup merge:** importing a backup deduplicates monthly category budgets by `(month, categoryId)` instead of UUID alone, avoiding duplicate budget bars.
 
 ## [2.1.0] - 2026-11-02
 

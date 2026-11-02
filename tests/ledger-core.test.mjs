@@ -488,6 +488,38 @@ test("monthSummary and spendingToday ignore non-default currency", () => {
   assert.equal(L.spendingTodayMinor(ledger, "2026-11-02"), 10000);
 });
 
+test("categoryBreakdown ignores non-default currency", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const exp = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -10000, currency: "EUR", date: "2026-11-02", note: "eur" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: exp, amountMinor: -50000, currency: "CNY", date: "2026-11-02", note: "cny" }));
+  const rows = L.categoryBreakdown(ledger, "2026-11", "expense");
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].amountMinor, 10000);
+});
+
+test("mergeLedgerForBackup deduplicates budgets by month and category", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger = L.upsertCategoryBudget(ledger, { categoryId: cat, month: "2026-11", amountText: "100", currency: "EUR" }, { lang: "en" }).ledger;
+  const baseBudget = ledger.budgets[0];
+  const incoming = L.normalize(null, { lang: "en" });
+  incoming.budgets.push({
+    id: "other-budget-id",
+    categoryId: cat,
+    month: "2026-11",
+    limitMinor: 20000,
+    currency: "EUR",
+    createdAt: 1,
+    updatedAt: 2,
+  });
+  const merged = L.mergeLedgerForBackup(ledger, incoming, { lang: "en" });
+  assert.equal(merged.budgets.length, 1);
+  assert.equal(merged.budgets[0].limitMinor, 20000);
+  assert.equal(merged.budgets[0].id, "other-budget-id");
+});
+
 test("budgetProgress ignores non-default currency spend", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;
