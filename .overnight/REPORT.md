@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 7）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 7：** Today **今日支出** 增加 **较昨日** 对比 caption；单元 **371**、浏览器 **17** 全绿。
+**Batch 8 Round 8：** **本周 · 数据洞察** 的 **专注时长** 格增加 **日记/事件天数** 与 **较上周同期** 天数对比；单元 **373**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 7）— Today vs 昨日
+## 本轮（Batch 8 · Round 8）— 本周日记天数
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | `journalEntryDaysInRange`：区间内 `log.note` 或 `log.moodReason` 非空（与时间轴 feed 一致）；`alignedWeekJournalCompare` 把 Mon–today 窗口平移 7 天比天数。 |
+| **UI** | `#weekJournalHint` 在 **专注时长** 金额下，如「2 天写了日记或事件 · 与上周同期相同」。 |
+| **测试** | `week-insights-journal.test.mjs`；`npm test` **373**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r8-*`（`node .overnight/capture-batch8-round8.mjs`，端口 **5298**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **本周** → 滚到 **数据洞察** → **专注时长** 格见小字 caption（`b8r8-week-journal-hint-zh-light-1440-chromium.png`）。
+2. 德语深色手机：`b8r8-week-journal-hint-de-dark-390-webkit.png`。
+3. 本周没有任何日记/事件记录时 caption 隐藏；仅有日记天也会让洞察空状态插画消失。
+
+**已知：** demo 上周同期日记天数可能与本周相同，caption 会显示「相同」；reduced-motion CSS 大合并仍留 2.2。
+
+---
+
+## 上一轮（Batch 8 · Round 7）— Today vs 昨日
 
 | 项目 | 说明 |
 |------|------|

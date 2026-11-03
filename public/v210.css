@@ -4374,6 +4374,21 @@ html[data-theme="dark"] button.week-insight-card.week-insight-card--ledger .week
   color: var(--text-secondary, rgba(235, 235, 245, 0.62));
 }
 
+#weekView .week-insight-card .week-insight-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary, rgba(60, 60, 67, 0.68));
+  opacity: 0.92;
+}
+
+html[data-theme="dark"] #weekView .week-insight-card .week-insight-hint {
+  color: var(--text-secondary, rgba(235, 235, 245, 0.62));
+}
+
 html.motion-reduced button.week-insight-card.week-insight-card--ledger:not(:disabled):active {
   transform: none;
 }

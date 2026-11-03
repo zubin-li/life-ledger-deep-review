@@ -284,6 +284,16 @@ const i18n = {
 ,
 "spendingNewPeriod": "较上周同期有新增支出"
 ,
+"journalDaysOne": "1 天写了日记或事件"
+,
+"journalDaysMany": "{n} 天写了日记或事件"
+,
+"journalSamePeriod": "与上周同期相同"
+,
+"journalMorePeriod": "较上周同期 +{n} 天"
+,
+"journalLessPeriod": "较上周同期 −{n} 天"
+,
 "habitsProgress": "{done}/{total} 个习惯"
 ,
 "goalsTitleProgress": "本周目标 · {done} / {total}"
@@ -945,6 +955,16 @@ const i18n = {
 ,
 "spendingNewPeriod": "New spend vs same days last week"
 ,
+"journalDaysOne": "1 day with journal or events"
+,
+"journalDaysMany": "{n} days with journal or events"
+,
+"journalSamePeriod": "Same as same days last week"
+,
+"journalMorePeriod": "+{n} days vs same days last week"
+,
+"journalLessPeriod": "−{n} days vs same days last week"
+,
 "habitsProgress": "{done}/{total} habits"
 ,
 "goalsTitleProgress": "Weekly goals · {done} of {total}"
@@ -1605,6 +1625,16 @@ const i18n = {
 "spendingLessPeriod": "−{pct} % gg. Vorwoche (gleicher Zeitraum)"
 ,
 "spendingNewPeriod": "Neue Ausgaben gg. Vorwoche (gleicher Zeitraum)"
+,
+"journalDaysOne": "1 Tag mit Tagebuch oder Ereignissen"
+,
+"journalDaysMany": "{n} Tage mit Tagebuch oder Ereignissen"
+,
+"journalSamePeriod": "Wie Vorwoche (gleicher Zeitraum)"
+,
+"journalMorePeriod": "+{n} Tage gg. Vorwoche (gleicher Zeitraum)"
+,
+"journalLessPeriod": "−{n} Tage gg. Vorwoche (gleicher Zeitraum)"
 ,
 "habitsProgress": "{done}/{total} Gewohnheiten"
 ,
@@ -7812,6 +7842,39 @@ function dateLocale() {
   return currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
 }
 
+/** Days in [startIso, endIso] with journal note or mood reason (matches timeline feed). */
+function journalEntryDaysInRange(startIso, endIso) {
+  if (!startIso || !endIso || startIso > endIso) return 0;
+  let count = 0;
+  const cursor = parseDate(startIso);
+  const end = parseDate(endIso);
+  while (cursor <= end) {
+    const key = isoDate(cursor);
+    const log = getLog(key);
+    if (String(log.note || "").trim() || String(log.moodReason || "").trim()) count += 1;
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return count;
+}
+
+function alignedWeekJournalCompare(startDay, rangeEnd) {
+  const current = journalEntryDaysInRange(startDay, rangeEnd);
+  const prevStart = isoDate(parseDate(startDay));
+  const prevEnd = isoDate(parseDate(rangeEnd));
+  const ps = parseDate(prevStart);
+  ps.setDate(ps.getDate() - 7);
+  const pe = parseDate(prevEnd);
+  pe.setDate(pe.getDate() - 7);
+  const previous = journalEntryDaysInRange(isoDate(ps), isoDate(pe));
+  if (current === previous) return { direction: "same", current, previous, deltaDays: 0 };
+  return {
+    direction: current > previous ? "up" : "down",
+    current,
+    previous,
+    deltaDays: Math.abs(current - previous),
+  };
+}
+
 function renderWeekInsights() {
   const grid = $("#weekInsightsGrid");
   if (!grid) return;
@@ -7868,6 +7931,29 @@ function renderWeekInsights() {
   let weekSpendDisplay = "—";
   let spendHint = "";
   const rangeEnd = endDay > todayKey ? todayKey : endDay;
+  let journalDays = 0;
+  let journalHint = "";
+  if (startDay <= rangeEnd) {
+    journalDays = journalEntryDaysInRange(startDay, rangeEnd);
+    if (journalDays > 0) {
+      const base = journalDays === 1 ? tr("week.journalDaysOne") : tr("week.journalDaysMany", { n: journalDays });
+      const jcmp = alignedWeekJournalCompare(startDay, rangeEnd);
+      let delta = "";
+      if (jcmp.direction === "same") {
+        delta = tr("week.journalSamePeriod");
+      } else if (jcmp.direction === "up") {
+        delta = tr("week.journalMorePeriod", { n: jcmp.deltaDays });
+      } else {
+        delta = tr("week.journalLessPeriod", { n: jcmp.deltaDays });
+      }
+      journalHint = delta ? `${base} · ${delta}` : base;
+    }
+  }
+  const journalHintEl = $("#weekJournalHint");
+  if (journalHintEl) {
+    journalHintEl.textContent = journalHint;
+    journalHintEl.hidden = !journalHint;
+  }
   if (state.ledger && L && startDay <= rangeEnd) {
     const ledger = L.normalize(state.ledger, { lang: currentLang });
     if (ledger.transactions.length) {
@@ -7914,7 +8000,7 @@ function renderWeekInsights() {
 
   const emptyArt = $("#weekInsightsEmptyArt");
   if (emptyArt) {
-    const hasData = totalDone > 0 || weekFocusMinutes > 0 || weekExpenseTotal > 0;
+    const hasData = totalDone > 0 || weekFocusMinutes > 0 || weekExpenseTotal > 0 || journalDays > 0;
     emptyArt.hidden = hasData;
     if (!hasData) {
       emptyArt.classList.add("ll-empty-enter");
