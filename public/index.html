@@ -23,6 +23,9 @@
         document.documentElement.dataset.theme = dark ? "dark" : "light";
         const font = localStorage.getItem("life-ledger-font");
         if (font === "rounded" || font === "serif") document.documentElement.dataset.font = font;
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("motion-reduced");
+        }
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />

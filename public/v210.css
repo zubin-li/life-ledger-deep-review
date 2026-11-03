@@ -120,12 +120,6 @@ html[data-theme="dark"] .ledger-quick input {
   transform: scale(0.97);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-chip:active {
-    transform: none;
-  }
-}
-
 .ledger-panels {
   display: grid;
   grid-template-columns: 140px 1fr;
@@ -244,7 +238,6 @@ html[data-theme="dark"] .ledger-chart-mode.is-active {
 .ledger-trend:not(.ledger-trend--ready) .ledger-empty {
   opacity: 0;
 }
-
 
 .ledger-heat-grid {
   display: grid;
@@ -424,12 +417,6 @@ html[data-theme="dark"] .ledger-tx {
   background: var(--danger-text, #c44);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-budget-bar::after {
-    transition: none;
-  }
-}
-
 .review-ledger-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -516,7 +503,6 @@ html[data-theme="dark"] .review-ledger-stats .review-ledger-spend-hint {
   }
 }
 
-
 /* ========== merged from v211-polish.css ========== */
 /* Overnight 2.1 polish — load last */
 .ledger-page {
@@ -587,12 +573,6 @@ html[data-theme="dark"] .ledger-key {
 .ledger-key-sign {
   grid-column: span 4;
   font-size: 0.95rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-key:active {
-    transform: none;
-  }
 }
 
 #ledgerView.view.is-entering .ledger-summary article,
@@ -901,13 +881,6 @@ html.motion-reduced #weekView.view.is-entering :is(.week-page-header, #weekCalen
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #habitsView.view.is-entering :is(.habits-view-header, .habit-reminder-card, #habitLibraryOverview article, .habit-library-tools, .habit-settings-table),
-  #weekView.view.is-entering :is(.week-page-header, #weekCalendar .week-calendar-day) {
-    animation: none;
-  }
-}
-
 /* Batch 5 round 5 — timeline feed mode switch + photo library enter + Today wall frame */
 #journalFeedPane.is-mode-entering .journal-feed-heading {
   animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
@@ -962,13 +935,6 @@ html.motion-reduced #weekView.view.is-entering :is(.week-page-header, #weekCalen
 html.motion-reduced #journalFeedPane.is-mode-entering .journal-feed-heading,
 html.motion-reduced #journalPhotoLibrary.journal-library--ready :is(.journal-library-month, .journal-library-card) {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #journalFeedPane.is-mode-entering .journal-feed-heading,
-  #journalPhotoLibrary.journal-library--ready :is(.journal-library-month, .journal-library-card) {
-    animation: none !important;
-  }
 }
 
 @media (hover: hover) {
@@ -1136,20 +1102,6 @@ html.motion-reduced :is(
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #journalFeedPane.is-filter-entering .journal-feed-heading,
-  #journalFeed[data-feed-motion="append"] .journal-feed-entry,
-  #timelineView.is-calendar-entering .calendar-day,
-  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row,
-  .journal-composer-status[data-pending] {
-    animation: none !important;
-  }
-
-  #journalFeedPane.is-filter-entering .journal-feed-filter select {
-    transform: none;
-  }
-}
-
 html[data-theme="dark"] .ledger-recurring {
   background: rgba(255, 255, 255, 0.05);
 }
@@ -1233,7 +1185,6 @@ html.motion-reduced #reviewView .rv-bar i {
   }
 }
 
-
 /* ========== merged from v212-skeleton.css ========== */
 /* Page skeleton placeholders — load last */
 
@@ -1292,14 +1243,6 @@ html.motion-reduced #reviewView .rv-bar i {
   100% { background-position: -100% 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ll-skeleton,
-  .ledger-skeleton {
-    animation: none;
-    opacity: 0.35;
-  }
-}
-
 .week-insights-grid.week-insights--loading strong {
   color: transparent;
   user-select: none;
@@ -1327,7 +1270,6 @@ html.motion-reduced .week-insights-grid.week-insights--loading strong {
   fill: rgba(255, 255, 255, 0.78);
   stroke: rgba(0, 0, 0, 0.5);
 }
-
 
 /* ========== merged from v213-onboarding.css ========== */
 /* Round 10 — onboarding hints, sparkline motion, mobile ledger keypad clearance */
@@ -1516,13 +1458,6 @@ html.motion-reduced .ledger-quick.is-success-flash button[type="submit"] {
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-quick.is-success-flash button[type="submit"] {
-    animation: none;
-  }
-}
-
-
 /* ========== merged from v214-goals-journal.css ========== */
 /* Goal 2 — empty states & inline hints (journal / week goals / long-term) */
 
@@ -1605,19 +1540,6 @@ html.motion-reduced .ledger-onboarding.is-dismissed {
   transform: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ll-empty-enter,
-  .weekly-goals-section.is-empty .hairline-empty,
-  .feed-empty .hairline-empty,
-  #timelineView .memory-empty.ll-polished,
-  .weekly-goals-section.is-empty #weeklyGoalForm::after,
-  .ledger-onboarding.is-dismissed {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-
 /* ========== merged from v215-review-trend.css ========== */
 /* Round 12 — review trend line draw + insight block stagger */
 
@@ -1682,20 +1604,6 @@ html.motion-reduced .insight-plot-line.insight-plot-line--draw {
   transition: none;
   stroke-dashoffset: 0 !important;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  #reviewInsights .review-insight-block,
-  .insight-plot-dots.insight-plot-dots--draw circle {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  .insight-plot-line.insight-plot-line--draw {
-    transition: none;
-    stroke-dashoffset: 0 !important;
-  }
-}
-
 
 /* ========== merged from v216-mood-scatter.css ========== */
 /* Batch 2 — review mood vs spend scatter */
@@ -1776,15 +1684,6 @@ html.motion-reduced .review-mood-scatter-dot {
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .review-mood-scatter-dot {
-    animation: none;
-    opacity: 0.82;
-    transform: none;
-  }
-}
-
-
 /* ========== merged from v217-habit-scatter.css ========== */
 /* Batch 2 round 2 — review habit completion vs spend scatter */
 
@@ -1860,15 +1759,6 @@ html.motion-reduced .review-habit-scatter-dot {
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .review-habit-scatter-dot {
-    animation: none;
-    opacity: 0.82;
-    transform: none;
-  }
-}
-
-
 /* ========== merged from v217-conflict-ledger.css ========== */
 /* Batch 2 round 2 — ledger stats in sync conflict recovery card */
 
@@ -1925,7 +1815,6 @@ html.motion-reduced .review-habit-scatter-dot {
     grid-template-columns: 1fr;
   }
 }
-
 
 /* ========== merged from v218-focus-scatter.css ========== */
 /* Batch 2 round 3 — review focus time vs spend scatter */
@@ -2002,15 +1891,6 @@ html.motion-reduced .review-focus-scatter-dot {
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .review-focus-scatter-dot {
-    animation: none;
-    opacity: 0.82;
-    transform: none;
-  }
-}
-
-
 /* ========== merged from v219-review-scatter-grid.css ========== */
 /* Batch 2 round 4 — review mood/habit/focus scatter grid + insight stack */
 
@@ -2080,7 +1960,6 @@ html.motion-reduced .review-focus-scatter-dot {
     gap: 0.5rem 1rem;
   }
 }
-
 
 /* ========== merged from v220-review-mobile.css ========== */
 /* Batch 2 round 5 — review scatter mobile rhythm + insight kickers + conflict preview legibility */
@@ -2181,7 +2060,6 @@ html.motion-reduced .review-focus-scatter-dot {
   }
 }
 
-
 /* ========== merged from v221-review-scatter-jump.css ========== */
 /* Batch 2 round 6 — mobile jump chips for review scatter sections + scroll targets */
 
@@ -2236,17 +2114,6 @@ html.motion-reduced .review-focus-scatter-dot {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .review-scatter-jump-chip {
-    transition: none;
-  }
-
-  .review-scatter-jump-chip:active {
-    transform: none;
-  }
-}
-
-
 /* ========== merged from v222-review-jump-spy.css ========== */
 /* Batch 2 round 7 — scroll-spy active state for review jump chips */
 
@@ -2263,13 +2130,6 @@ html.motion-reduced .review-focus-scatter-dot {
     border-color: color-mix(in srgb, var(--accent, #0a84ff) 45%, var(--hairline));
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .review-scatter-jump-chip.is-active {
-    box-shadow: none;
-  }
-}
-
 
 /* ========== merged from v223-ledger-budget-ui.css ========== */
 /* Budget set/edit UI — v2.1.0 */
@@ -2312,13 +2172,6 @@ html.motion-reduced .review-focus-scatter-dot {
   opacity: 0.72;
   cursor: default;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-budget-bar::after {
-    transition: none;
-  }
-}
-
 
 /* ========== merged from v224-today-journal-hero.css ========== */
 /* Goal 2 — Today hero daypart ambience + journal composer / feed polish */
@@ -2418,12 +2271,6 @@ html.motion-reduced .progress-orbit .progress-orbit-ring {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .progress-orbit .progress-orbit-ring {
-    animation: none !important;
-  }
-}
-
 html[data-workspace] .journal-composer {
   border-radius: 14px;
   padding: 2px;
@@ -2491,16 +2338,6 @@ html.motion-reduced #journalFeed .journal-feed-entry {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #journalFeed .journal-feed-entry {
-    animation: none !important;
-  }
-
-  .hero-card::before {
-    transition: none;
-  }
-}
-
 @media (hover: hover) {
   #journalFeed .feed-paper {
     transition: transform 200ms var(--ease-enter, ease), box-shadow 200ms ease;
@@ -2552,13 +2389,6 @@ html.motion-reduced #journalFeed .journal-feed-entry {
 html.motion-reduced .focus-inline-timer.is-active .focus-inline-ring {
   animation: none !important;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .focus-inline-timer.is-active .focus-inline-ring {
-    animation: none !important;
-  }
-}
-
 
 /* ========== merged from v225-roll-habit-ledger.css ========== */
 /* Goal 2 batch 3 r3: metric roll hosts, habit press, ledger donut reveal */
@@ -2622,7 +2452,6 @@ html[data-theme="dark"] .ledger-category-viz .ledger-donut:not(.ledger-donut--em
 .score-card strong.roll-host {
   display: inline-block;
 }
-
 
 /* ========== merged from v226-review-score-donut.css ========== */
 /* Goal 2 batch 3 r4: SVG donut ring, review score-grid roll + enter, spark polish */
@@ -2710,7 +2539,6 @@ html.motion-reduced #reviewView .rv-habit-spark--enter rect {
   grid-column: 1 / -1;
 }
 
-
 /* ========== merged from v227-review-bars-weekday.css ========== */
 /* Goal 2 batch 3 r5: review rhythm bars, weekday retarget, empty enter */
 
@@ -2788,17 +2616,6 @@ html.motion-reduced #reviewView .period-dashboard-empty.ll-empty-enter {
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #reviewView .bar-chart.is-retargeting .bar,
-  #reviewView .rv-weekdays.is-retargeting .insight-weekday-track i,
-  .focus-review-chart.is-retargeting .focus-review-day i,
-  #reviewView .score-grid .hairline-empty.ll-empty-enter,
-  #reviewView .period-dashboard-empty.ll-empty-enter {
-    animation: none;
-  }
-}
-
-
 /* ========== merged from v228-ledger-empty-enter.css ========== */
 /* Goal 2 — ledger + Today spending empty enter (v2.1.0) */
 
@@ -2825,20 +2642,6 @@ html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint 
   transform: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-onboarding.ll-empty-enter,
-  .ledger-empty.ll-empty-enter,
-  .ledger-donut--empty.ll-empty-enter,
-  .ledger-recurring-empty.ll-empty-enter,
-  .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-main,
-  .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-
 /* ========== merged from v229-ledger-budget-bars.css ========== */
 /* Ledger budget progress — month-change bar grow (v2.1.0) */
 
@@ -2851,14 +2654,6 @@ html.motion-reduced .ledger-budget-list.is-retargeting .ledger-budget-bar::after
   transition: none;
   transition-delay: 0ms;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-budget-list.is-retargeting .ledger-budget-bar::after {
-    transition: none;
-    transition-delay: 0ms;
-  }
-}
-
 
 /* ========== merged from v230-ledger-chart-retarget.css ========== */
 /* Ledger category donut / treemap / daily heat — month-change stagger (v2.1.0) */
@@ -2916,17 +2711,6 @@ html.motion-reduced .ledger-treemap.is-retargeting rect {
   transform: none;
   opacity: unset;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-heat-grid.is-retargeting .ledger-heat,
-  .ledger-donut-segments.is-retargeting path,
-  .ledger-treemap.is-retargeting rect {
-    animation: none;
-    transform: none;
-    opacity: unset;
-  }
-}
-
 
 /* ========== merged from v231-review-ledger-retarget.css ========== */
 /* Goal 2 batch 3 r9: review Money panel stats + scatter retarget on month change */
@@ -3009,26 +2793,6 @@ html.motion-reduced .review-ledger-insights.is-retargeting :is(
   transform: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .review-ledger-stats.is-retargeting > span,
-  .review-scatter-grid.is-retargeting :is(
-    .review-mood-scatter-dot,
-    .review-habit-scatter-dot,
-    .review-focus-scatter-dot
-  ),
-  .review-ledger-insights.is-retargeting :is(
-    .review-ledger-mood,
-    .review-ledger-habits,
-    .review-ledger-focus,
-    .review-ledger-budget
-  ) {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-
 /* Batch 6 round 4 — habit compare hairline empty + 4-up insight grid */
 
 .insight-habit-panel .hairline-empty {
@@ -3103,13 +2867,6 @@ html.motion-reduced .inspector-stat-list--live.inspector-stat-list--enter articl
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .inspector-stat-list--live.inspector-stat-list--enter article {
-    animation: none !important;
-  }
-}
-
-
 /* ========== merged from v232-ledger-entry-feedback.css ========== */
 /* Goal 2 batch 4 r2: quick-entry success + new transaction row enter */
 
@@ -3143,18 +2900,6 @@ html.motion-reduced .ledger-quick .primary-button:active:not(:disabled) {
   opacity: 1 !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-tx.is-enter {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .ledger-quick .primary-button:active:not(:disabled) {
-    transform: none;
-  }
-}
-
 /* ========== batch 4 round 3 — nav + habit check polish ========== */
 .nav-item::before {
   position: absolute;
@@ -3180,25 +2925,6 @@ html.motion-reduced .ledger-quick .primary-button:active:not(:disabled) {
     0 0 0 1px color-mix(in srgb, var(--accent, #3d9b78) 35%, transparent),
     0 12px 28px color-mix(in srgb, var(--accent, #3d9b78) 18%, transparent);
   transition: box-shadow 0.28s ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nav-item::before {
-    transition: none;
-  }
-
-  .nav-item:not(.active)::before {
-    opacity: 0;
-    transform: translateY(-50%);
-  }
-
-  .nav-item.active::before {
-    transform: translateY(-50%);
-  }
-
-  .tc-grid > [data-card="habits"] .habit-card.just-checked:not(.future-locked) {
-    box-shadow: none;
-  }
 }
 
 /* ========== batch 4 round 4 — habit library polish ========== */
@@ -3262,12 +2988,6 @@ html[data-workspace] .habit-settings-row.selected {
 html.motion-reduced #habitLibraryFilters button:active:not(.active) {
   animation: none !important;
   transform: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #habitLibraryFilters button:active:not(.active) {
-    transform: none;
-  }
 }
 
 /* ========== batch 4 round 5 — review metrics discoverability + week modules ========== */
@@ -3369,16 +3089,6 @@ html.motion-reduced #weekView.view.is-entering .module-card[data-module] {
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #reviewDetailedMetrics.is-metrics-hint:not([open]) > summary {
-    animation: none;
-  }
-
-  #weekView.view.is-entering .module-card[data-module] {
-    animation: none;
-  }
-}
-
 /* ========== batch 4 round 6 — review habit chips + week insights polish ========== */
 .review-detailed-summary-chips {
   flex: 1 1 100%;
@@ -3439,13 +3149,6 @@ html.motion-reduced #weekView.view.is-entering .week-insight-card {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #weekView .week-insights-empty.ll-empty-enter,
-  #weekView.view.is-entering .week-insight-card {
-    animation: none !important;
-  }
-}
-
 /* ========== batch 4 round 7 — review chips narrow + week all-done banner ========== */
 @media (max-width: 520px) {
   #reviewDetailedMetrics > summary {
@@ -3504,12 +3207,6 @@ html.motion-reduced #weekView.view.is-entering .week-insight-card {
 
 html.motion-reduced #weeklyGoalList .ll-week-all-done.ll-empty-enter {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #weeklyGoalList .ll-week-all-done.ll-empty-enter {
-    animation: none !important;
-  }
 }
 
 /* Batch 5 round 7 — review month/metric motion, periodic chart retarget, Today edit saved */
@@ -3607,17 +3304,6 @@ html.motion-reduced .tc-bar .tc-done.tc-done--pulse {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #reviewTitle.is-retargeting > span,
-  #reviewInsights .rv-metrics.is-retargeting > article,
-  #reviewView .review-habit-compare.is-retargeting :is(.rv-bar i, tbody tr),
-  #weeklyResistance .analytics-chart.is-retargeting :is(.analytics-bar, .analytics-line, .analytics-point),
-  .tc-bar.is-saved,
-  .tc-bar .tc-done.tc-done--pulse {
-    animation: none !important;
-  }
-}
-
 /* Batch 5 round 8 — shell nav, week modules, ledger month, scatter spotlight */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -3690,17 +3376,6 @@ html.motion-reduced :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #viewTitle.is-view-switch,
-  .nav-item.is-landing,
-  #weekView.view.is-entering .module-card,
-  #weekView :is(.week-page-header, .module-card).is-retargeting,
-  #ledgerView :is(.ledger-header h2, .ledger-summary > article).is-retargeting,
-  :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight {
-    animation: none !important;
-  }
-}
-
 /* Batch 5 round 9 — settings / backup dialogs, Today rhythm, scatter a11y */
 
 #todayView.tc-grid > .tc-top.hero-grid {
@@ -3760,14 +3435,6 @@ html.motion-reduced .backup-tabs.is-tab-switch button.active {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :is(.settings-dialog, .export-dialog).is-modal-enter,
-  .export-dialog [data-backup-panel].is-retargeting,
-  .backup-tabs.is-tab-switch button.active {
-    animation: none !important;
-  }
-}
-
 /* Batch 6 R1 — foreign-currency summary hint (Antigravity review) */
 .ledger-fx-hint {
   margin: 0.35rem 0 0;
@@ -3820,12 +3487,6 @@ html[data-theme="dark"] .ledger-fx-hint {
 
 html.motion-reduced .review-period-habits-list--live.review-period-habits-list--enter > article {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .review-period-habits-list--live.review-period-habits-list--enter > article {
-    animation: none !important;
-  }
 }
 
 /* Today hero — soft retarget when browsing other days */
@@ -3957,12 +3618,6 @@ html.motion-reduced .ledger-import-popover .ledger-import-confirm {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-import-popover .ledger-import-confirm {
-    animation: none !important;
-  }
-}
-
 /* Batch 7 R4 — habit score inspector on unified monthly review (desk layout) */
 
 html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table,
@@ -4020,13 +3675,6 @@ html:not([data-workspace]) #reviewView > .review-score-table:not([open]) #inspec
   html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary::after,
   html:not([data-workspace]) #reviewView > .review-score-table > summary::after {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary::after,
-  html:not([data-workspace]) #reviewView > .review-score-table > summary::after {
-    transition: none;
   }
 }
 
@@ -4127,12 +3775,6 @@ html.motion-reduced button.tw-spend-mood-pill:not([hidden]):hover {
   box-shadow: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .tw-card.tw-spending .tw-spend-mood-pill {
-    animation: none;
-  }
-}
-
 /* Batch 7 r7 — recurring due banner + Today month roll */
 .ledger-recurring-due {
   display: flex;
@@ -4215,21 +3857,6 @@ html.motion-reduced .tw-card.tw-spending .tw-spend-recurring-pill {
   box-shadow: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-recurring-due.ll-insight-enter {
-    animation: none;
-  }
-
-  button.tw-spend-recurring-pill:not([hidden]):hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  .tw-card.tw-spending .tw-spend-recurring-pill {
-    animation: none;
-  }
-}
-
 /* Batch 7 r9 — Review Money recurring due strip */
 .review-ledger-recurring-due {
   display: flex;
@@ -4261,12 +3888,6 @@ html[data-theme="dark"] .review-ledger-recurring-due {
 
 html[data-theme="dark"] .review-ledger-recurring-due-copy {
   color: var(--text-primary, #f5f5f7);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .review-ledger-recurring-due.ll-insight-enter {
-    animation: none;
-  }
 }
 
 /* Batch 8 round 3 — Today spending card polish */
@@ -4338,12 +3959,6 @@ html[data-theme="dark"] .tw-spend-top-cat {
 
 html.motion-reduced .tw-card.tw-spending .tw-spend-top-cat {
   animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tw-card.tw-spending .tw-spend-top-cat {
-    animation: none;
-  }
 }
 
 .tw-card.tw-spending.is-empty.has-ledger-history .tw-spend-note {
@@ -4440,12 +4055,6 @@ html.motion-reduced button.week-insight-card.week-insight-card--ledger:not(:disa
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  button.week-insight-card.week-insight-card--ledger:not(:disabled):active {
-    transform: none;
-  }
-}
-
 /* Batch 8 round 7 — Today spending vs yesterday caption */
 .tw-card.tw-spending .tw-spend-compare {
   display: block;
@@ -4518,21 +4127,6 @@ html.motion-reduced .habit-filter-empty.ll-hint-card.ll-empty-enter {
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .habit-filter-empty.ll-hint-card.ll-empty-enter {
-    animation: none;
-  }
-
-  #journalFeed.ll-paint-host--stale {
-    transition: none;
-  }
-
-  #journalFeed.ll-paint-host--stale .ll-stale-veil .ll-skeleton--feed-stale {
-    animation: none;
-    opacity: 0.35;
-  }
-}
-
 html.motion-reduced #weekView .week-insight-value.roll-host {
   display: inline;
 }
@@ -4593,13 +4187,6 @@ html.motion-reduced #weekView .week-insight-value.roll-host {
 html.motion-reduced .today-insight-hint:not([hidden]),
 html.motion-reduced .today-habit-spend-hint:not([hidden]) {
   animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .today-insight-hint:not([hidden]),
-  .today-habit-spend-hint:not([hidden]) {
-    animation: none;
-  }
 }
 
 /* Batch 10 r2 — long-range empty polish + sidebar nav rhythm */
@@ -4683,13 +4270,6 @@ html.motion-reduced .today-habit-spend-hint:not([hidden]) {
 html.motion-reduced #longrangeView .horizon-phase-empty.ll-polished,
 html.motion-reduced #longrangeView .horizon-quiet-empty.ll-polished .hairline-empty {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #longrangeView .horizon-phase-empty.ll-polished,
-  #longrangeView .horizon-quiet-empty.ll-polished .hairline-empty {
-    animation: none !important;
-  }
 }
 
 .main-nav .nav-item[data-view="timeline"],
@@ -4823,13 +4403,6 @@ html.motion-reduced #habitsView .habit-filter-quiet.ll-polished .hairline-empty 
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #habitsView .habit-library-empty.ll-polished,
-  #habitsView .habit-filter-quiet.ll-polished .hairline-empty {
-    animation: none !important;
-  }
-}
-
 .hero-card[data-viewing-today="true"] .hero-copy h2 {
   letter-spacing: -0.018em;
   line-height: 1.26;
@@ -4870,12 +4443,6 @@ html.motion-reduced #habitsView .habit-filter-quiet.ll-polished .hairline-empty 
 
 html.motion-reduced #todayView.view.is-entering .hero-card[data-viewing-today="true"] :is(.hero-copy > *, .progress-orbit) {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #todayView.view.is-entering .hero-card[data-viewing-today="true"] :is(.hero-copy > *, .progress-orbit) {
-    animation: none !important;
-  }
 }
 
 /* Batch 10 r4 — journal feed empty polish + Today grid rhythm */
@@ -4962,13 +4529,6 @@ html.motion-reduced #journalFeed .journal-feed-filter-quiet.ll-polished .hairlin
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #journalFeed .feed-empty.ll-polished,
-  #journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty {
-    animation: none !important;
-  }
-}
-
 #todayView.tc-grid.active:not(.tc-editing) {
   --tc-gap: clamp(14px, 1.65vw, 22px);
 }
@@ -4993,16 +4553,6 @@ html.motion-reduced #journalFeed .journal-feed-filter-quiet.ll-polished .hairlin
 
 html.motion-reduced #todayView.view.is-entering.tc-grid > .tc-card {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #todayView.view.is-entering.tc-grid > .tc-card {
-    animation: none !important;
-  }
-
-  #todayView.tc-grid.active:not(.tc-editing) > .tc-card {
-    transition: none;
-  }
 }
 
 /* Batch 10 r5 — week goals / review reflection empty CTAs */
@@ -5128,17 +4678,6 @@ html.motion-reduced #reviewView .review-reflection-empty.ll-polished {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #weekView .weekly-goals-empty.ll-polished,
-  #weekView .long-term-goals-empty.ll-polished,
-  #weekView .week-review-empty-hint.ll-polished,
-  #reviewView .review-score-empty.ll-polished,
-  #reviewView .review-inspector-empty.ll-polished,
-  #reviewView .review-reflection-empty.ll-polished {
-    animation: none !important;
-  }
-}
-
 /* Batch 10 r6 — Today widget library onboarding + review scatter empty */
 .tc-onboard-hint {
   position: fixed;
@@ -5207,12 +4746,6 @@ html.motion-reduced .tc-onboard-hint.is-dismissed {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .tc-onboard-hint.is-dismissed {
-    transition: none;
-  }
-}
-
 @media (max-width: 859px) {
   .tc-onboard-hint {
     right: 16px;
@@ -5257,12 +4790,6 @@ html.motion-reduced #reviewView .review-scatter-empty.ll-polished {
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #reviewView .review-scatter-empty.ll-polished {
-    animation: none !important;
-  }
-}
-
 /* Batch 10 r7 — Today edit done success (bar pulse + edit toggle flash) */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -5285,12 +4812,6 @@ html.motion-reduced #reviewView .review-scatter-empty.ll-polished {
 
 html.motion-reduced .tc-edit-toggle.tc-edit-saved-flash {
   animation: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tc-edit-toggle.tc-edit-saved-flash {
-    animation: none !important;
-  }
 }
 
 /* Batch 10 r8 — timeline calendar / sidebar list empty CTAs */
@@ -5366,12 +4887,6 @@ html.motion-reduced :is(.timeline-list-empty, .journal-calendar-empty).ll-polish
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :is(.timeline-list-empty, .journal-calendar-empty).ll-polished {
-    animation: none !important;
-  }
-}
-
 /* Batch 11 r3 — Today spend insight hints read as soft chips */
 .today-insight-hint:not([hidden]) {
   padding: 0.55rem 0.75rem 0.6rem;
@@ -5391,12 +4906,6 @@ html[data-theme="dark"] .today-insight-hint:not([hidden]) {
 
 html.motion-reduced .today-mood-spend-hint:not([hidden]) {
   animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .today-mood-spend-hint:not([hidden]) {
-    animation: none;
-  }
 }
 
 /* Batch 11 r5 — Review scatter empty checklist + primary CTA */
@@ -5453,16 +4962,6 @@ html.motion-reduced #reviewView .review-scatter-empty-step {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #reviewView .review-scatter-empty-step {
-    transition: none;
-  }
-
-  #reviewView .review-scatter-empty-step:active {
-    transform: none;
-  }
-}
-
 #reviewView .review-scatter-empty-cta {
   margin-top: 4px;
   min-width: 9.5rem;
@@ -5470,12 +4969,6 @@ html.motion-reduced #reviewView .review-scatter-empty-step {
 
 html.motion-reduced #reviewView .review-scatter-empty-step {
   animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #reviewView .review-scatter-empty-step {
-    animation: none;
-  }
 }
 
 html[data-theme="dark"] #reviewView .review-scatter-empty-step {
@@ -5506,13 +4999,6 @@ html[data-theme="dark"] #reviewView .review-scatter-empty-step {
 html.motion-reduced .habit-streak-grid i.done {
   animation: none;
   transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .habit-streak-grid i.done {
-    animation: none;
-    transform: none;
-  }
 }
 
 /* Batch 11 r8 — journal timeline streak + mood×spend insight chips */
@@ -5552,12 +5038,6 @@ html.motion-reduced :is(.journal-feed-streak, .journal-feed-spend-insight, .week
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :is(.journal-feed-streak, .journal-feed-spend-insight, .week-page-spend-insight) {
-    animation: none;
-  }
-}
-
 /* Batch 11 r9 — Week header habit×spend insight (same chip family as timeline) */
 
 .week-page-spend-insight {
@@ -5571,12 +5051,6 @@ html.motion-reduced :is(.journal-feed-streak, .journal-feed-spend-insight, .week
 
 html.motion-reduced #weekView .week-page-spend-insight:not([hidden]) {
   animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #weekView .week-page-spend-insight:not([hidden]) {
-    animation: none;
-  }
 }
 
 /* Batch 12 r1 — Money page mood/habit mini scatter correlations */
@@ -5670,16 +5144,6 @@ html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-insights {
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #ledgerView.view.is-entering .ledger-wellness-insights {
-    animation: none;
-  }
-
-  .ledger-wellness-link {
-    transition: none;
-  }
-}
-
 @media (max-width: 520px) {
   .ledger-wellness-insights {
     padding: 1rem 0.85rem;
@@ -5741,12 +5205,6 @@ html.motion-reduced #ledgerView .ledger-wellness-empty.review-scatter-empty.ll-p
   animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #ledgerView .ledger-wellness-empty.review-scatter-empty.ll-polished {
-    animation: none !important;
-  }
-}
-
 #ledgerView .ledger-wellness-empty .review-scatter-empty-steps {
   display: flex;
   flex-wrap: wrap;
@@ -5798,17 +5256,6 @@ html.motion-reduced #ledgerView .ledger-wellness-empty.review-scatter-empty.ll-p
 html.motion-reduced #ledgerView .ledger-wellness-empty .review-scatter-empty-step {
   transition: none;
   animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #ledgerView .ledger-wellness-empty .review-scatter-empty-step {
-    transition: none;
-    animation: none;
-  }
-
-  #ledgerView .ledger-wellness-empty .review-scatter-empty-step:active {
-    transform: none;
-  }
 }
 
 #ledgerView .ledger-wellness-empty .ledger-wellness-empty-cta {
@@ -5878,12 +5325,6 @@ html.motion-reduced #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wra
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wrap, .ledger-recurring-empty-wrap).ll-polished {
-    animation: none;
-  }
-}
-
 #ledgerView.view.is-entering .ledger-list-empty.ll-polished {
   animation-delay: 100ms;
 }
@@ -5927,12 +5368,6 @@ html[data-theme="dark"] .ledger-treemap .ledger-cat-seg.is-selected {
 
 html.motion-reduced .ledger-cat-seg {
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-cat-seg {
-    transition: none;
-  }
 }
 
 /* ========== Batch 12 r6 — Money filtered list subtotal strip ========== */
@@ -6010,12 +5445,6 @@ html.motion-reduced .ledger-list-filter-sum.ll-insight-enter {
   animation: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-list-filter-sum.ll-insight-enter {
-    animation: none;
-  }
-}
-
 /* ========== Batch 12 r8 — Today spending card → Money day filter + list spotlight ========== */
 
 button.tw-spend-today {
@@ -6069,16 +5498,6 @@ html.motion-reduced button.tw-spend-today {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-list-wrap.is-spotlight {
-    animation: none;
-  }
-
-  button.tw-spend-today {
-    transition: none;
-  }
-}
-
 /* ========== Batch 12 r9 — Review Money stats open ledger month ========== */
 
 button.review-ledger-stat-btn {
@@ -6115,12 +5534,6 @@ html.motion-reduced button.review-ledger-stat-btn {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  button.review-ledger-stat-btn {
-    transition: none;
-  }
-}
-
 /* Batch 13 r1 — Money first-entry sample + onboarding actions */
 .ledger-onboarding-actions {
   display: flex;
@@ -6132,12 +5545,6 @@ html.motion-reduced button.review-ledger-stat-btn {
 
 .ledger-onboarding-sample {
   flex-shrink: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-onboarding-sample {
-    transition: none;
-  }
 }
 
 /* Batch 13 r2 — journal autosave pulse + mood pick feedback */
@@ -6156,14 +5563,6 @@ html.motion-reduced #homeJournalSave.is-saved,
 html.motion-reduced .mood-options button.just-picked {
   transform: none;
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #homeJournalSave.is-saved,
-  .mood-options button.just-picked {
-    transform: none;
-    transition: none;
-  }
 }
 
 /* Batch 13 r3 — CSV import preview table, drag-drop, list pulse */
@@ -6265,12 +5664,6 @@ html.motion-reduced .ledger-list-wrap.is-import-pulse {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-list-wrap.is-import-pulse {
-    transition: none;
-  }
-}
-
 /* Batch 13 r4 — habit check pulse, progress orbit bump, weekly goal toggle */
 .tc-grid > [data-card="habits"] .habit-card.just-unchecked:not(.future-locked) {
   filter: brightness(0.96);
@@ -6307,18 +5700,6 @@ html.motion-reduced .tc-grid > [data-card="habits"] .habit-card.just-unchecked:n
   transform: none;
   filter: none;
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #progressOrbit.is-progress-bump,
-  #progressOrbit.is-progress-bump .progress-orbit-ring,
-  .weekly-goal.just-toggled .weekly-goal-check,
-  .tc-grid > [data-card="habits"] .habit-card.just-unchecked:not(.future-locked) {
-    transform: none;
-    filter: none;
-    transition: none;
-    box-shadow: none;
-  }
 }
 
 /* Batch 13 r5 — all habits celebration ↔ orbit; review Money stat press */
@@ -6359,18 +5740,6 @@ html.motion-reduced button.review-ledger-stat-btn.is-stat-press {
   filter: none;
   box-shadow: none;
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #progressOrbit.is-all-complete-orbit,
-  #progressOrbit.is-all-complete-orbit .progress-orbit-ring,
-  .tc-grid > [data-card="habits"].is-all-complete,
-  button.review-ledger-stat-btn.is-stat-press {
-    transform: none;
-    filter: none;
-    box-shadow: none;
-    transition: none;
-  }
 }
 
 /* Batch 13 r6 — global M shortcut hints; review open press; long-press edit row */
@@ -6427,15 +5796,6 @@ html.motion-reduced button.text-button[data-open-ledger].is-stat-press {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-tx.is-long-press-hint,
-  button.review-ledger-recurring-open.is-stat-press,
-  button.text-button[data-open-ledger].is-stat-press {
-    transform: none;
-    transition: none;
-  }
-}
-
 /* Batch 13 r7 — review scatter jump chip press; Mac View → Money (⌘7) */
 button.review-scatter-jump-chip.is-jump-press {
   transform: scale(0.94);
@@ -6452,14 +5812,6 @@ html.motion-reduced button.review-scatter-jump-chip.is-jump-press {
   transform: none;
   box-shadow: none;
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  button.review-scatter-jump-chip.is-jump-press {
-    transform: none;
-    box-shadow: none;
-    transition: none;
-  }
 }
 
 /* Batch 13 r8 — sidebar nav press + ledger quick category chip press */
@@ -6496,16 +5848,6 @@ button.ledger-tx-cat-chip.is-chip-press {
   transition: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .nav-item.is-nav-press,
-  button.ledger-chip.is-chip-press,
-button.ledger-tx-cat-chip.is-chip-press {
-    transform: none;
-    box-shadow: none;
-    transition: none;
-  }
-}
-
 /* Batch 13 r9 — Today spending open + ledger chart mode / heatmap day press */
 
 button.tw-spend-today.is-spend-press,
@@ -6539,18 +5881,6 @@ html.motion-reduced button.ledger-heat.is-heat-press {
   box-shadow: none;
   opacity: 1;
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  button.tw-spend-today.is-spend-press,
-  button.tw-spend-open.is-spend-press,
-  button.ledger-chart-mode.is-mode-press,
-  button.ledger-heat.is-heat-press {
-    transform: none;
-    box-shadow: none;
-    opacity: 1;
-    transition: none;
-  }
 }
 
 /* Owner feedback pass r1 — daily ledger layout */
@@ -6783,8 +6113,178 @@ html.motion-reduced .ledger-tx.is-enter {
   animation: none;
 }
 
+/* Owner feedback pass r2 — Today quick-entry sheet */
+.today-ledger-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 12050;
+  display: grid;
+  place-items: end center;
+  padding: 12px 12px calc(12px + var(--mobile-nav-safe-bottom, 0px));
+  pointer-events: none;
+}
+
+.today-ledger-sheet:not([hidden]) {
+  pointer-events: auto;
+}
+
+.today-ledger-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 16, 22, 0.42);
+  opacity: 0;
+  transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.today-ledger-sheet-panel {
+  position: relative;
+  width: min(100%, 420px);
+  padding: 16px 18px 18px;
+  border-radius: 20px;
+  background: var(--surface-2, var(--card));
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+}
+
+.today-ledger-sheet.is-open .today-ledger-sheet-backdrop {
+  opacity: 1;
+}
+
+.today-ledger-sheet.is-open .today-ledger-sheet-panel {
+  transform: none;
+  opacity: 1;
+}
+
+.today-ledger-sheet.is-closing .today-ledger-sheet-backdrop {
+  opacity: 0;
+}
+
+.today-ledger-sheet.is-closing .today-ledger-sheet-panel {
+  transform: translateY(8px);
+  opacity: 0;
+  transition-duration: 0.18s;
+}
+
+.today-ledger-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.today-ledger-sheet-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.today-ledger-sheet-total {
+  margin: 0 0 12px;
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.today-ledger-sheet-form {
+  display: grid;
+  gap: 10px;
+}
+
+.today-ledger-sheet-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.today-ledger-sheet-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.85rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  font-size: 1.05rem;
+}
+
+.today-ledger-sheet-cat {
+  flex-shrink: 0;
+  max-width: 38%;
+}
+
+.today-ledger-sheet-recent-label {
+  display: block;
+  margin: 14px 0 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  opacity: 0.65;
+}
+
+.today-ledger-sheet-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.today-ledger-sheet-list li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.today-ledger-sheet-row-amt {
+  font-variant-numeric: tabular-nums;
+}
+
+.today-ledger-sheet-full {
+  margin-top: 12px;
+  justify-self: start;
+}
+
+.today-ledger-sheet-panel.is-saved {
+  animation: tlsSavedPulse 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes tlsSavedPulse {
+  0%,
+  100% {
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  }
+  50% {
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18), 0 0 0 2px color-mix(in srgb, var(--accent-sage, #3a8f7a) 35%, transparent);
+  }
+}
+
+html.motion-reduced .today-ledger-sheet-panel,
+html.motion-reduced .today-ledger-sheet-backdrop {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media (min-width: 720px) {
+  .today-ledger-sheet {
+    place-items: center;
+    padding: 24px;
+  }
+
+  .today-ledger-sheet-panel {
+    transform: translateY(8px) scale(0.98);
+  }
+
+  .today-ledger-sheet.is-open .today-ledger-sheet-panel {
+    transform: none;
+  }
+}
+
+/* motion: system reduce fallback — html.motion-reduced set in index.html */
 @media (prefers-reduced-motion: reduce) {
-  .ledger-tx.is-enter {
-    animation: none;
+  html:not(.motion-reduced) * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

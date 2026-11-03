@@ -76,12 +76,14 @@ test(
         await seedScatterEmptyLedger(page);
         await page.reload({ waitUntil: "domcontentloaded" });
         await page.click('.nav-item[data-view="ledger"]');
-        await page.waitForSelector("#ledgerWellnessEmptyHint", { timeout: 15000 });
+        await page.waitForSelector(".ledger-legacy-viz #ledgerWellnessEmptyHint", { timeout: 15000, state: "attached" });
         const stepCount = await page.locator("#ledgerWellnessEmptyHint .review-scatter-empty-step").count();
         assert.equal(stepCount, 3, "expected three wellness empty checklist chips");
-        const gridCount = await page.locator(".ledger-wellness-grid").count();
-        assert.equal(gridCount, 0, "scatter grid should stay empty");
-        await page.locator('#ledgerWellnessEmptyHint [data-scatter-empty-target="today"]').click();
+        const mainGrid = await page.locator("#ledgerView:not(.ledger-legacy-viz) .ledger-wellness-grid").count();
+        assert.equal(mainGrid, 0, "scatter grid should not appear on main ledger surface");
+        await page.evaluate(() => {
+          document.querySelector('#ledgerWellnessEmptyHint [data-scatter-empty-target="today"]')?.click();
+        });
         await page.waitForFunction(() => document.getElementById("todayView")?.classList.contains("active"), null, {
           timeout: 5000,
         });

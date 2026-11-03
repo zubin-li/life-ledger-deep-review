@@ -1326,6 +1326,41 @@
     </div>`;
   }
 
+  function submitQuickEntry(host, rawText, anchorDay, options = {}) {
+    const ledger = ledgerState();
+    const input = options.inputEl;
+    const form = options.formEl;
+    const parsed = core().parseQuickEntry(rawText, ledger, { lang: ctx.lang?.(), today: anchorDay || ctx.iso(new Date()) });
+    if (!parsed.ok) {
+      if (input) {
+        input.classList.add("is-error");
+        input.setAttribute("aria-invalid", "true");
+      }
+      return { ok: false };
+    }
+    if (input) {
+      input.classList.remove("is-error");
+      input.removeAttribute("aria-invalid");
+    }
+    const { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
+    const firstEntry = !ledger.transactions.length && next.transactions.length;
+    lastHighlightTxId = transaction.id;
+    commit(next);
+    if (input) {
+      input.value = "";
+      input.classList.add("is-success");
+      setTimeout(() => input.classList.remove("is-success"), 600);
+    }
+    if (form) {
+      form.classList.add("is-success-flash");
+      setTimeout(() => form.classList.remove("is-success-flash"), 600);
+    }
+    if (firstEntry && host) dismissOnboarding(host);
+    if (options.render !== false) render();
+    root.LifeLedgerTodayWidgets?.reload?.();
+    return { ok: true, transaction };
+  }
+
   function bindKeypad(host) {
     const input = host.querySelector("#ledgerQuickForm input[name=quick]");
     const pad = host.querySelector(".ledger-keypad");
@@ -1353,25 +1388,8 @@
     form?.addEventListener("submit", event => {
       event.preventDefault();
       const input = form.querySelector("input[name=quick]");
-      const parsed = core().parseQuickEntry(input.value, ledger, { lang: ctx.lang?.(), today: viewDay || ctx.iso(new Date()) });
-      if (!parsed.ok) {
-        input.classList.add("is-error");
-        input.setAttribute("aria-invalid", "true");
-        return;
-      }
-      input.classList.remove("is-error");
-      input.removeAttribute("aria-invalid");
-      const { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
-      const firstEntry = !ledger.transactions.length && next.transactions.length;
-      lastHighlightTxId = transaction.id;
-      commit(next);
-      input.value = "";
-      input.classList.add("is-success");
-      setTimeout(() => input.classList.remove("is-success"), 600);
-      form.classList.add("is-success-flash");
-      setTimeout(() => form.classList.remove("is-success-flash"), 600);
-      if (firstEntry) dismissOnboarding(host);
-      render();
+      const result = submitQuickEntry(host, input.value, viewDay || ctx.iso(new Date()), { inputEl: input, formEl: form });
+      if (!result.ok) return;
     });
     host.querySelectorAll(".ledger-chip").forEach(chip => {
       chip.addEventListener("click", () => {
@@ -1891,14 +1909,13 @@
       ${fxHint}
       ${renderSubscriptionList(ledger)}
       ${renderRecurringPendingBanner(ledger, ym)}
-      ${renderWellnessInsights(ledger, ym)}
       <section class="ledger-list-wrap panel">
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
         ${renderDayFilterChip(ym)}
         ${renderCategoryFilterChip(ledger)}
         ${renderList(ledger, ym)}
       </section>
-      <div class="ledger-legacy-viz" hidden aria-hidden="true">${renderBudgets(ledger, ym)}<div class="ledger-chips">${renderChips(ledger)}</div><div class="ledger-chart-toggle" role="group"><button type="button" class="ledger-chart-mode is-active" data-chart-mode="donut">Donut</button><button type="button" class="ledger-chart-mode" data-chart-mode="treemap">Tree</button></div></div>`;
+      <div class="ledger-legacy-viz" hidden aria-hidden="true">${renderWellnessInsights(ledger, ym)}${renderBudgets(ledger, ym)}<div class="ledger-chips">${renderChips(ledger)}</div><div class="ledger-chart-toggle" role="group"><button type="button" class="ledger-chart-mode is-active" data-chart-mode="donut">Donut</button><button type="button" class="ledger-chart-mode" data-chart-mode="treemap">Tree</button></div></div>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));
     host.querySelector("[data-ledger-sample-entry]")?.addEventListener("click", () => {
       if (postSampleEntry(host, ledgerState())) render();
@@ -2007,5 +2024,9 @@
     openToDay,
     openToMonth,
     focusQuickEntry,
+    quickAdd(text, anchorDay, options) {
+      if (!ctx) return { ok: false };
+      return submitQuickEntry(null, text, anchorDay, { ...options, render: options?.render !== false });
+    },
   };
 })(typeof window !== "undefined" ? window : global);

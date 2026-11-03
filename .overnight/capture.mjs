@@ -25,9 +25,11 @@ const base = `http://127.0.0.1:${port}/index.html?mode=local&local-preview=demo-
 const SHOTS = [
   { id: "today", view: "today", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "today", view: "today", lang: "de", theme: "dark", w: 390, h: 844, browser: "webkit" },
+  { id: "week", view: "week", lang: "zh", theme: "light", w: 1440, h: 900, browser: "webkit" },
+  { id: "longrange", view: "longrange", lang: "en", theme: "light", w: 1440, h: 900, browser: "chromium" },
+  { id: "timeline", view: "timeline", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "ledger", view: "ledger", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "ledger", view: "ledger", lang: "de", theme: "dark", w: 390, h: 844, browser: "webkit" },
-  { id: "week", view: "week", lang: "zh", theme: "light", w: 1440, h: 900, browser: "webkit" },
   { id: "review", view: "review", lang: "zh", theme: "light", w: 390, h: 844, browser: "chromium" },
   { id: "habits", view: "habits", lang: "de", theme: "light", w: 1440, h: 900, browser: "chromium" },
 ];
@@ -38,6 +40,8 @@ async function gotoView(page, view) {
   await page.waitForSelector(`#${view}View.active`);
   if (view === "ledger") await page.waitForSelector(".ledger-day-nav");
   else if (view === "today") await page.waitForSelector(".tc-grid");
+  else if (view === "longrange") await page.waitForSelector("#longrangeView.active");
+  else if (view === "timeline") await page.waitForSelector("#journalFeedPane");
   await page.waitForTimeout(200);
 }
 

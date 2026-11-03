@@ -1,3 +1,45 @@
+# Life Ledger — 主人反馈 pass（Round 2 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **Today 快速记账** | **今日支出** 点 **金额** → 底部/居中 **记一笔** 浮层：一行录入、自动 **分类 chip**、当日合计、最近 3 笔；**完整统计** 仍进记账页 |
+| **记账页** | 主屏去掉 **本月关联洞察**（散点进 hidden legacy，复盘仍完整） |
+| **动效** | `.overnight/MOTION-RESEARCH.md`；`v210.css` 减约 **500** 行（合并 reduced-motion） |
+| **API** | `LifeLedgerLedgerUI.quickAdd(text, date)` 供 Today 与记账页共用 |
+
+## 怎么点（3 分钟）
+
+1. `cd public && python3 -m http.server 5292 --bind 127.0.0.1`
+2. Demo → **今日** → **今日支出** 点 **−950 €** → 试 `12,50 咖啡` → Enter
+3. 点 **完整统计** / 侧栏 **记账** → 周/月 + 圆环 + 订阅 + 交易列表
+4. 重拍：`node .overnight/capture.mjs --port 5292 --prefix fb-r2`
+
+## 截图（Round 2）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r2-today-zh-light-1440-chromium.png` | 今日 + 侧栏顺序 |
+| `fb-r2-ledger-zh-light-1440-chromium.png` | 记账统计页 |
+| `fb-r2-timeline-zh-light-1440-chromium.png` | 时间轴 |
+| `fb-r2-longrange-en-light-1440-chromium.png` | 长期 |
+| `fb-r2-ledger-de-dark-390-webkit.png` | 手机德文深色 |
+
+## 测试
+
+| 命令 | Round 2 |
+|------|---------|
+| `npm test` | **423** pass |
+| `npm run test:browser` | **72** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
+
 # Life Ledger — 主人反馈 pass（Round 1 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。规格：每日记账 + 自动统计、界面更简、侧栏 **时间轴 → 记账 → 复盘**。

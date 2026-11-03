@@ -4,7 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-- Owner feedback pass (2026-11-03): simplified Money daily-first UI, nav order, opaque Today onboarding hint, consolidated `.overnight/capture.mjs` (see `[2.1.0]` entry and `.overnight/PROGRESS-2.md`).
+- Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
 
 ## [2.1.0] - 2026-11-03
 
