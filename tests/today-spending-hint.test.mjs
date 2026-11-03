@@ -39,3 +39,9 @@ test("Today spending recurring pill uses pending templates for current month", (
   assert.match(widgets, /spendingRecurringOne/);
   assert.match(widgets, /switchToView\("ledger"\)/);
 });
+
+test("Today spending card shows top category chip when today has expenses", () => {
+  assert.match(widgets, /tw-spend-top-cat/);
+  assert.match(widgets, /spendingTodayDetail/);
+  assert.match(widgets, /spendingTodayCountMany/);
+});

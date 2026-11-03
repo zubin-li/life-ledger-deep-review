@@ -4205,3 +4205,111 @@ html[data-theme="dark"] .review-ledger-recurring-due-copy {
     animation: none;
   }
 }
+
+/* Batch 8 round 3 — Today spending card polish */
+.tw-spend-top-cat {
+  display: inline-flex;
+  align-items: center;
+  max-width: min(100%, 9.5rem);
+  padding: 2px 9px;
+  border-radius: 999px;
+  font: 600 0.6875rem/1.35 var(--font-body);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid color-mix(in srgb, var(--text-primary, #1d1d1f) 10%, transparent);
+  background: color-mix(in srgb, var(--card, #fff) 90%, transparent);
+  color: var(--secondaryLabel, #6e6e73);
+}
+
+.tw-spend-top-cat[data-color="sage"] {
+  color: #3d6b55;
+  border-color: color-mix(in srgb, var(--sage, #00ad7c) 35%, transparent);
+  background: color-mix(in srgb, var(--sage, #00ad7c) 14%, var(--card, #fff));
+}
+
+.tw-spend-top-cat[data-color="amber"] {
+  color: #9b6c1d;
+  border-color: color-mix(in srgb, #c9922a 35%, transparent);
+  background: color-mix(in srgb, #fff5d9 55%, var(--card, #fff));
+}
+
+.tw-spend-top-cat[data-color="blue"],
+.tw-spend-top-cat[data-color="cyan"] {
+  color: #2a5f8f;
+  border-color: color-mix(in srgb, var(--blue, #258fe5) 32%, transparent);
+  background: color-mix(in srgb, var(--blue, #258fe5) 12%, var(--card, #fff));
+}
+
+.tw-spend-top-cat[data-color="coral"],
+.tw-spend-top-cat[data-color="violet"] {
+  color: #6b4a7a;
+  border-color: color-mix(in srgb, #9b59b6 28%, transparent);
+  background: color-mix(in srgb, #f3eaf8 50%, var(--card, #fff));
+}
+
+html[data-theme="dark"] .tw-spend-top-cat {
+  background: color-mix(in srgb, var(--card, #1c1c1e) 88%, #fff 12%);
+  border-color: color-mix(in srgb, var(--line, #3a3a3c) 80%, transparent);
+}
+
+.tw-card.tw-spending.is-empty:not(.has-ledger-history) .tw-spend-month:empty::before {
+  content: "€";
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 650;
+  opacity: 0.22;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.tw-card.tw-spending.is-empty:not(.has-ledger-history) .tw-spend-spark {
+  min-height: 0;
+  margin: 0;
+}
+
+.tw-card.tw-spending:not(.is-empty) .tw-spend-top-cat:not([hidden]) {
+  animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
+html.motion-reduced .tw-card.tw-spending .tw-spend-top-cat {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-card.tw-spending .tw-spend-top-cat {
+    animation: none;
+  }
+}
+
+.tw-card.tw-spending.is-empty.has-ledger-history .tw-spend-note {
+  opacity: 0.82;
+}
+
+.tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading h3 {
+  display: none;
+}
+
+.tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading {
+  align-items: flex-start;
+  gap: 2px 8px;
+}
+
+.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-month {
+  flex: 1 1 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-today {
+  font-size: clamp(1.15rem, 6.5vw, 1.42rem);
+  line-height: 1.15;
+}
+
+.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-head {
+  gap: 6px 8px;
+}

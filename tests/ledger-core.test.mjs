@@ -543,6 +543,20 @@ test("spendingTodayMinor sums expenses only", () => {
   assert.equal(L.spendingTodayMinor(ledger, "2026-11-02"), 300);
 });
 
+test("spendingTodayDetail picks top category and counts expenses", () => {
+  let ledger = L.normalize(null, { lang: "zh" });
+  const account = ledger.accounts[0].id;
+  const dining = ledger.categories.find(c => c.defaultSlug === "dining").id;
+  const groceries = ledger.categories.find(c => c.defaultSlug === "groceries").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: dining, amountMinor: -450, currency: "EUR", date: "2026-11-02", note: "coffee" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: groceries, amountMinor: -1200, currency: "EUR", date: "2026-11-02", note: "market" }));
+  const detail = L.spendingTodayDetail(ledger, "2026-11-02", { lang: "zh" });
+  assert.equal(detail.totalMinor, 1650);
+  assert.equal(detail.expenseCount, 2);
+  assert.equal(detail.topCategory?.name, "日用");
+  assert.equal(detail.topCategory?.amountMinor, 1200);
+});
+
 test("duplicateTransaction clones amount and category for today", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

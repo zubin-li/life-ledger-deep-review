@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- **Today — Spending today:** when today has expenses, the card shows the largest category chip and an entry count in the caption; brand-new ledgers get a subtle € side marker on empty days; German recurring pills use occurrence wording (**offene Posten**).
+
 ### Fixed
 
 - **Weekly recurring pending:** fixed templates stay on the due list until each ISO week in the calendar month has a matching entry (legacy rows without `recurringId` only clear their week); **Post all pending** books every past occurrence in the month for weekly cadence.

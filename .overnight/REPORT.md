@@ -1,12 +1,32 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 2）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 3）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 2：** 固定待记三处 UI 改为按「未记笔数」计数（周固定显示剩余周次）；单元 **361**、浏览器 **17** 全绿。
+**Batch 8 Round 3：** Today **今日支出**卡抛光（分类 chip、笔数、空账本侧栏、小屏排版）；单元 **363**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 2）— 待记笔数
+## 本轮（Batch 8 · Round 3）— Today 支出卡抛光
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | 新 helper `spendingTodayDetail`：当日支出总额、笔数、金额最大的分类（供 Today 卡与后续洞察复用）。 |
+| **UI** | 有当日支出时显示彩色 **分类 chip**（如 demo 的「住房」）+ caption「今日支出 · N 笔」；全新账本不再显示误导性的「本月累计 · €0.00」；S 号卡隐藏重复标题、本月累计单独一行，避免与 −950 € 叠字。 |
+| **i18n** | 德语固定待记胶囊改为 **1 offener Posten / N offene Posten**（与「笔数」语义一致）。 |
+| **测试** | `ledger-core.test.mjs`、`today-spending-hint.test.mjs` 各 +1；`npm test` **363**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r3-*`（`node .overnight/capture-batch8-round3.mjs`，端口 **5293**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **今日** → 滚到 **今日支出** → 见大额 + **住房** chip +「1 笔固定待记」+「今日支出 · 1 笔」（`b8r3-today-spending-topcat-zh-light-1440-chromium.png`）。
+2. 清空 ledger 的 local 模式 → 仅见 €0、语法 hint、无「本月累计」（`b8r3-today-spending-empty-zh-light-390-chromium.png`）。
+3. 德语深色手机：「1 offener Posten」（`b8r3-today-spending-de-dark-390-webkit.png`）。
+
+**已知：** reduced-motion CSS 大合并仍留 2.2；Cloudflare 首次不 seed 记账。
+
+---
+
+## 上一轮（Batch 8 · Round 2）— 待记笔数
 
 | 项目 | 说明 |
 |------|------|

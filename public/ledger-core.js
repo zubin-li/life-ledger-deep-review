@@ -1259,10 +1259,40 @@
   }
 
   function spendingTodayMinor(ledger, isoDate) {
-    const base = normalize(ledger);
-    return base.transactions
-      .filter(tx => tx.date === isoDate && tx.amountMinor < 0 && txInReportingCurrency(base, tx))
-      .reduce((sum, tx) => sum + Math.abs(tx.amountMinor), 0);
+    return spendingTodayDetail(ledger, isoDate).totalMinor;
+  }
+
+  function spendingTodayDetail(ledger, isoDate, options = {}) {
+    const base = normalize(ledger, options);
+    const lang = options.lang || "en";
+    const txs = base.transactions.filter(
+      tx => tx.date === isoDate && tx.amountMinor < 0 && txInReportingCurrency(base, tx),
+    );
+    const byCat = new Map();
+    txs.forEach(tx => {
+      byCat.set(tx.categoryId, (byCat.get(tx.categoryId) || 0) + Math.abs(tx.amountMinor));
+    });
+    let topCategoryId = null;
+    let topAmount = 0;
+    byCat.forEach((amountMinor, categoryId) => {
+      if (amountMinor > topAmount) {
+        topAmount = amountMinor;
+        topCategoryId = categoryId;
+      }
+    });
+    const topCat = topCategoryId ? base.categories.find(c => c.id === topCategoryId) : null;
+    return {
+      totalMinor: txs.reduce((sum, tx) => sum + Math.abs(tx.amountMinor), 0),
+      expenseCount: txs.length,
+      topCategory: topCat
+        ? {
+            categoryId: topCat.id,
+            amountMinor: topAmount,
+            color: topCat.color,
+            name: localizedCategoryName(topCat, lang),
+          }
+        : null,
+    };
   }
 
   /** Last N calendar days ending at endIso (inclusive), reporting-currency expenses only. */
@@ -1940,6 +1970,7 @@
     previewGermanBankCsv,
     exportTransactionsCsv,
     spendingTodayMinor,
+    spendingTodayDetail,
     dailyExpenseSeries,
     renderMiniSpendSparklineSvg,
     repairDefaultCategoryNames,
