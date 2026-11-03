@@ -2,10 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-test("journal feed repaint clears ready before every mode render", () => {
+test("journal feed async repaint clears ready only when not keeping stale feed", () => {
   const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
-  assert.match(app, /if \(host\) \{\s*host\.classList\.remove\('ll-paint-host--ready'\)/s);
-  assert.doesNotMatch(app, /if \(feedNeedsAsync && host\) \{\s*host\.classList\.remove\('ll-paint-host--ready'\)/s);
+  const block = app.slice(app.indexOf("async function renderJournalFeed"), app.indexOf("function journalTextMarkup"));
+  assert.match(block, /keepStaleJournalFeed/);
+  assert.match(block, /if \(feedNeedsAsync\)/);
+  assert.doesNotMatch(block, /host\.classList\.remove\('ll-paint-host--ready'\);\s*\n\s*if \(feedNeedsAsync\)/);
 });
 
 test("setJournalMode marks feed pane when switching weeks, months, or daily feed", () => {

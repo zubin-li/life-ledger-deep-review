@@ -5726,7 +5726,7 @@ function renderHabitSettings() {
       <span class="habit-settings-target">${escapeHtml(trackingModeFor(v) === "measured" ? target : "")}</span>
       <label class="habit-enabled-switch"><input class="desktop-switch habit-enabled-toggle" type="checkbox" role="switch" data-id="${h.id}" ${h.active ? "checked" : ""} aria-label="${escapeHtml(displayHabitName(h))}" /><span class="sr-only">${escapeHtml(h.active ? tr("habits.active") : tr("habits.inactive"))}</span></label>
     </article>`;
-  }).join("") || `<p class="habit-filter-empty ll-hint-card" role="status">${escapeHtml(languageText('没有匹配的习惯。试试其他筛选。','No matching habits. Try another filter.','Keine passende Gewohnheit. Einen anderen Filter versuchen.'))}</p>`;
+  }).join("") || `<p class="habit-filter-empty ll-hint-card ll-empty-enter" role="status">${escapeHtml(languageText('没有匹配的习惯。试试其他筛选。','No matching habits. Try another filter.','Keine passende Gewohnheit. Einen anderen Filter versuchen.'))}</p>`;
   $$(".habit-settings-main").forEach(button => button.addEventListener("click", () => {
     selectedHabitSettingsId = button.dataset.id;
     populateHabitInspectorForm(selectedHabitSettingsId);
@@ -8192,11 +8192,20 @@ async function renderJournalFeed(version) {
   const mode = journalMode, month = $('#journalMonthFilter').value;
   const host = $('#journalFeed');
   const feedNeedsAsync = mode === 'timeline';
+  let keepStaleJournalFeed = false;
   if (host) {
-    host.classList.remove('ll-paint-host--ready');
+    keepStaleJournalFeed = feedNeedsAsync
+      && host.classList.contains('ll-paint-host--ready')
+      && Boolean(host.querySelector('.journal-feed-entry, .feed-empty'))
+      && journalFeedFilterEntering;
+    host.classList.remove('ll-paint-host--stale');
     if (feedNeedsAsync) {
-      host.innerHTML = window.LifeLedgerInteraction?.skeletonMarkup?.('ll-skeleton ll-skeleton--feed')
-        || '<div class="ll-skeleton ll-skeleton--feed" aria-hidden="true"></div>';
+      if (keepStaleJournalFeed) host.classList.add('ll-paint-host--stale');
+      else {
+        host.classList.remove('ll-paint-host--ready');
+        host.innerHTML = window.LifeLedgerInteraction?.skeletonMarkup?.('ll-skeleton ll-skeleton--feed')
+          || '<div class="ll-skeleton ll-skeleton--feed" aria-hidden="true"></div>';
+      }
     }
   }
   const words = mode === 'weeks' ? languageText('周度','Weekly','Wöchentlich') : mode === 'months' ? languageText('月度','Monthly','Monatlich') : languageText('日度','Daily','Täglich');
@@ -9593,6 +9602,8 @@ function renderInsightDashboard() {
   }).join('');
   const weekday = model.weekdays.map((r, i) => `<div class="rv-weekday"><span>${escapeHtml(i18n[currentLang].calendar.weekdays[i])}</span><div class="insight-weekday-track" aria-hidden="true"><i style="height:${r.percent || 0}%"></i></div><strong>${r.eligible ? `${r.percent}%` : '—'}</strong></div>`).join('');
   $('#reviewHabitCompare').innerHTML = `<section class="insight-habit-panel rv-panel"><header><h3>${escapeHtml(T('每个习惯','Habit by habit','Gewohnheit für Gewohnheit'))}</h3><p>${escapeHtml(T('完成率 = 完成次数 ÷ 这个月按计划应做的次数；右列是和上个月相比的百分点。','Completion = times done ÷ times planned this month; the last column is the change vs last month in percentage points.','Quote = erledigt ÷ in diesem Monat geplant; rechts die Änderung zum Vormonat in Prozentpunkten.'))}</p></header>${rows ? `<table class="rv-table rv-table--sparks"><thead><tr><th>${escapeHtml(T('习惯','Habit','Gewohnheit'))}</th><th>${escapeHtml(T('每日','Daily','Täglich'))}</th><th>${escapeHtml(T('完成 / 应做','Done / planned','Erledigt / geplant'))}</th><th>${escapeHtml(T('完成率','Rate','Quote'))}</th><th>${escapeHtml(T('比上月（百分点）','vs last month (pp)','zum Vormonat (Pp.)'))}</th></tr></thead><tbody>${rows}</tbody></table>` : hairlineEmptyMarkup("./assets/hairline/empty-insights.svg", tr("review.insufficient"), languageText("这个月还没有足够的习惯数据。先坚持打卡几天再来看对比。", "Not enough habit data this month yet. Check in for a few days to see comparisons.", "Noch zu wenig Gewohnheitsdaten in diesem Monat. Halte ein paar Tage durch, dann siehst du Vergleiche."))}</section><section class="insight-weekday-panel rv-panel"><header><h3>${escapeHtml(T('一周里哪天最稳','Your steadiest weekday','Dein stärkster Wochentag'))}</h3><p>${escapeHtml(T('这个月每个星期几的平均完成率。','Average completion per weekday this month.','Durchschnitt je Wochentag in diesem Monat.'))}</p></header><div class="rv-weekdays rv-weekdays--enter">${weekday}</div></section>`;
+  hydrateHairlineMounts($("#reviewHabitCompare"));
+  $("#reviewHabitCompare")?.querySelector(".insight-habit-panel .hairline-empty")?.classList.add("ll-empty");
   const end = dates.at(-1);
   const periodic = activeHabits(end).filter(h => !countsTowardDaily(h, end) && ['weekly', 'monthly'].includes(versionFor(h, end)?.frequency)).map(h => {
     const v = versionFor(h, end), start = v.frequency === 'monthly' ? dates[0] : isoDate(weekDatesFromKey(isoWeekKey(parseDate(end))).monday);

@@ -14,4 +14,20 @@ test("v210 styles habit library entrance and filters", () => {
   assert.match(css, /batch 4 round 4 — habit library polish/);
   assert.match(css, /\.view\.is-entering #habitLibraryOverview article/);
   assert.match(css, /\.habit-filter-empty\.ll-hint-card/);
+  assert.match(css, /Batch 9 r6 — journal filter stale feed/i);
+});
+
+test("review habit compare hydrates hairline empty state", () => {
+  const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(app, /hydrateHairlineMounts\(\$\("#reviewHabitCompare"\)\)/);
+  assert.match(app, /\.insight-habit-panel \.hairline-empty"\)\?\.classList\.add\("ll-empty"\)/);
+});
+
+test("journal feed avoids clearing ready on sync re-render", () => {
+  const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const block = app.slice(app.indexOf("async function renderJournalFeed"), app.indexOf("function journalTextMarkup"));
+  assert.match(block, /keepStaleJournalFeed/);
+  assert.match(block, /ll-paint-host--stale/);
+  assert.match(block, /if \(feedNeedsAsync\)/);
+  assert.doesNotMatch(block, /host\.classList\.remove\('ll-paint-host--ready'\);\s*\n\s*if \(feedNeedsAsync\)/);
 });

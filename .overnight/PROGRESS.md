@@ -1,14 +1,13 @@
 # Overnight progress
 
-## Batch 9 · Round 5 — done
+## Batch 9 · Round 6 — done
 
-- **REVIEW.md：** 无新 HIGH/MED（Round 1–4 修复保持）。
-- **Goal 2 polish：** `#journalFeed` 增加 **`ll-paint-host`**（时间轴异步读照片时 skeleton）；feed / 日历列表 / 复盘 inspector 空状态补 **`ll-empty`** + `v210.css` 间距；`fakecloud-online` 烟测 **`localStorage.clear()` + 等 cloud** 消除并行 flake。
-- **fakecloud 烟测：** `fakecloud-preview-ledger.browser.test.mjs` 扩展 **复盘** `#reviewLedgerSpendHint`（无四位数 +%、含较上月同期类文案）。
-- **浏览器回归：** 新 `journal-feed-paint.browser.test.mjs`（paint host ready、无残留 skeleton）。
-- **截图：** `node .overnight/capture-batch9-round5.mjs`（**5295**）→ `b9r5-journal-feed-*`、`b9r5-review-inspector-empty-*`。
-- **文档：** CHANGELOG `[Unreleased]` Changed + QA 三条。
-- **测试：** `npm test` **379**；`npm run test:browser` **21**（+1 journal paint；fakecloud-online 稳定化）。
+- **REVIEW.md：** 无新 HIGH/MED（Round 1–5 修复保持）。
+- **Goal 2 polish：** `renderJournalFeed` — 周/月同步筛选不再摘掉 **`ll-paint-host--ready`**（消除空白闪一下）；日度筛选改 **`ll-paint-host--stale`** 保留旧 feed 直至照片拉完。复盘 **`#reviewHabitCompare`** hairline 空态 **`hydrateHairlineMounts` + `ll-empty`**；习惯筛选无匹配 **`ll-empty-enter`**；`v210.css` Batch 9 r6 样式。
+- **回归：** `journal-mode-switch.test.mjs` 更新 async ready 语义；`habit-library-polish.test.mjs` +3；新 **`journal-feed-filter.browser.test.mjs`**。
+- **截图：** `node .overnight/capture-batch9-round6.mjs`（**5296**）→ `b9r6-habit-filter-empty-*`、`b9r6-review-habit-empty-*`。
+- **文档：** CHANGELOG `[Unreleased]` Changed + QA 一条。
+- **测试：** `npm test` **381**；`npm run test:browser` **22**（+1 journal filter）。
 - **未做：** `v210.css` reduced-motion 单表合并仍 **2.2**。
 
 ## Half-done
@@ -17,7 +16,7 @@
 
 ## Next
 
-- Batch 9 Round 6：习惯页空状态 / 复盘 habit compare 空态动效；或 journal 筛选切换 skeleton 闪一下；reduced-motion 合并仍 2.2。
+- Batch 9 Round 7：日度 feed 筛选 stale 叠层可选 skeleton；Today/习惯更多关联洞察；或 reduced-motion 合并仍 2.2。
 
 ## Known bugs / gaps
 
@@ -30,23 +29,23 @@
 ## npm test
 
 ```
-379 pass, 0 fail (batch 9 round 5, unit gate)
-21 pass, 0 fail (test:browser, batch 9 round 5)
+381 pass, 0 fail (batch 9 round 6, unit gate)
+22 pass, 0 fail (test:browser, batch 9 round 6)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
 
-## Batch 9 · Round 4 — done
+## Batch 9 · Round 5 — done
 
-- **REVIEW.md：** 无新 HIGH/MED（Round 1–3 修复保持）。
-- **Goal 2 polish：** `rollWeekInsightValues()` — 切换工作区周时 **完成率 / 支出 / 连续 / 专注** 数字 roll（`#weekView .week-insight-value.roll-host`）。
-- **fakecloud 烟测：** `fakecloud-preview-ledger.browser.test.mjs` 同步 demo 后进入 **本周**，断言 `#weekSpendingHint` 无四位数 +%、含「较上周同期」类文案。
-- **浏览器回归：** `spend-compare-mac-shell.browser.test.mjs` +1（Week 切换触发 roll-host）。
-- **截图：** `node .overnight/capture-batch9-round4.mjs`（**5294**）→ `b9r4-week-insights-roll-*`（insights 区需向下滚动可见）。
-- **文档：** CHANGELOG `[Unreleased]` Changed + QA 两条。
-- **测试：** `npm test` **379**；`npm run test:browser` **20**（+1）。
+- **REVIEW.md：** 无新 HIGH/MED（Round 1–4 修复保持）。
+- **Goal 2 polish：** `#journalFeed` 增加 **`ll-paint-host`**（时间轴异步读照片时 skeleton）；feed / 日历列表 / 复盘 inspector 空状态补 **`ll-empty`** + `v210.css` 间距；`fakecloud-online` 烟测 **`localStorage.clear()` + 等 cloud** 消除并行 flake。
+- **fakecloud 烟测：** `fakecloud-preview-ledger.browser.test.mjs` 扩展 **复盘** `#reviewLedgerSpendHint`（无四位数 +%、含较上月同期类文案）。
+- **浏览器回归：** 新 `journal-feed-paint.browser.test.mjs`（paint host ready、无残留 skeleton）。
+- **截图：** `node .overnight/capture-batch9-round5.mjs`（**5295**）→ `b9r5-journal-feed-*`、`b9r5-review-inspector-empty-*`。
+- **文档：** CHANGELOG `[Unreleased]` Changed + QA 三条。
+- **测试：** `npm test` **379**；`npm run test:browser` **21**（+1 journal paint；fakecloud-online 稳定化）。
 - **未做：** `v210.css` reduced-motion 单表合并仍 **2.2**。
 
 ## Driver gate after round 1
@@ -63,3 +62,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 5
 ℹ tests 379 ℹ pass 379 ℹ fail 0 
+
+## Driver gate after round 6
+ℹ tests 381 ℹ pass 381 ℹ fail 0 

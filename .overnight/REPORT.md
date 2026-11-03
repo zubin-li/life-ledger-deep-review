@@ -1,12 +1,32 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 5）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 6）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 5：** 时间轴 feed skeleton 宿主 + 空状态 polish + fakecloud 复盘支出 hint 烟测；单元 **379**、浏览器 **21** 全绿。
+**Batch 9 Round 6：** 时间轴筛选不闪屏 + 习惯/复盘 habit 空态 polish；单元 **381**、浏览器 **22** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 5）— 时间轴 skeleton 与空状态
+## 本轮（Batch 9 · Round 6）— 筛选闪屏与空状态
+
+| 项目 | 说明 |
+|------|------|
+| **时间轴 feed** | 周/月模式换月份不再摘掉 **`ready`**（同步重绘无 skeleton 空白）；日度模式换月保留旧条目并加 **`ll-paint-host--stale`** 直至照片加载完。 |
+| **习惯 / 复盘** | 筛选无匹配 **`ll-empty-enter`**；复盘 **每个习惯** hairline 空态 **`hydrateHairlineMounts` + `ll-empty`**（`v210.css` Batch 9 r6）。 |
+| **测试** | `npm test` **381**；`npm run test:browser` **22**（+1 `journal-feed-filter`）。 |
+| **截图** | `.overnight/shots/b9r6-habit-filter-empty-*`、`.overnight/shots/b9r6-review-habit-empty-*`（`node .overnight/capture-batch9-round6.mjs`，端口 **5296**）。 |
+
+**怎么验：**
+
+1. Demo → **时间轴**（默认周度）→ 连换 **定位月份**：列表应连续可见、不整页闪白（对比 Round 5 截图）。
+2. **习惯设置** → 搜索 **`zzz-no-match`** → 虚线提示卡居中轻入（见 `b9r6-habit-filter-empty-zh-light-1440-chromium.png`）。
+3. **复盘** → 习惯对比区若数据不足，hairline 空插画居中（见 `b9r6-review-habit-empty-*`）。
+4. `npm run test:browser` 应 **22** 条全过。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；对比基线 ≥ €15 时仍 **+999%** 封顶。
+
+---
+
+## 上一轮（Batch 9 · Round 5）— 时间轴 skeleton 与空状态
 
 | 项目 | 说明 |
 |------|------|

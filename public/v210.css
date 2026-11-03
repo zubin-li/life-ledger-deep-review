@@ -4440,6 +4440,47 @@ html[data-theme="dark"] .tw-card.tw-spending .tw-spend-compare {
   margin-inline: auto;
 }
 
+/* Batch 9 r6 — journal filter stale feed + habit / review habit empty */
+#journalFeed.ll-paint-host--stale {
+  opacity: 0.82;
+  transition: opacity 180ms ease;
+}
+
+html.motion-reduced #journalFeed.ll-paint-host--stale {
+  opacity: 0.92;
+  transition: none;
+}
+
+#habitsView #habitSettingsList .hairline-empty.ll-empty {
+  max-width: 28rem;
+  margin: 0.5rem auto 0;
+  padding: 20px 12px 8px;
+}
+
+#reviewView .insight-habit-panel .hairline-empty.ll-empty {
+  max-width: 26rem;
+  margin-inline: auto;
+  padding: 18px 12px 6px;
+}
+
+.habit-filter-empty.ll-hint-card.ll-empty-enter {
+  animation: llEmptyReveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.motion-reduced .habit-filter-empty.ll-hint-card.ll-empty-enter {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .habit-filter-empty.ll-hint-card.ll-empty-enter {
+    animation: none;
+  }
+
+  #journalFeed.ll-paint-host--stale {
+    transition: none;
+  }
+}
+
 html.motion-reduced #weekView .week-insight-value.roll-host {
   display: inline;
 }
