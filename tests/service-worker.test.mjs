@@ -146,6 +146,8 @@ test("service worker bypasses API, Cloudflare Access, and unrelated same-origin 
   assert.equal(dispatchFetch(new Request(`${origin}/random/download.bin`)), 0);
 
   assert.equal(dispatchFetch(new Request(`${origin}/app.js?v=2.0.6`)), 1);
+  assert.equal(dispatchFetch(new Request(`${origin}/ledger-core.js?v=2.1.0`)), 1);
+  assert.equal(dispatchFetch(new Request(`${origin}/ledger-ui.js?v=2.1.0`)), 1);
   assert.equal(dispatchFetch(new Request(`${origin}/assets/hairline/empty-journal.svg`)), 1);
   assert.equal(dispatchFetch(new Request(`${origin}/life-ledger-deep-review/vendor/heic2any.min.js?v=0.0.4`)), 1);
   assert.equal(dispatchFetch(new Request(`${origin}/life-ledger-deep-review/assets/demo-memories/run-park.jpg`)), 1);

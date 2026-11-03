@@ -1,3 +1,31 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 1）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 启动：** 处理 Antigravity 对 Batch 10 终稿的复审（`REVIEW.md`），优先修复离线 PWA 与 CSV 金额解析。
+
+---
+
+## 本轮（Batch 11 · Round 1）— REVIEW 修复
+
+| 项目 | 说明 |
+|------|------|
+| **HIGH** | 离线 PWA：`ledger-core.js` / `ledger-ui.js` 已加入 `NETWORK_FIRST_SUFFIXES`，与 `APP_SHELL` 预缓存一致，避免断网后 `LifeLedgerLedger` 未定义。 |
+| **MED** | 德银 CSV：`parseGermanAmount` 不再对纯点小数（如 `12.50-`）误删 `.` 导致金额放大 100 倍。 |
+| **LOW** | `formatMoney(-0)` 显示为 `0,00 €` 而非 `-0,00 €`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍留 **2.2**（REVIEW LOW #4）。 |
+| **测试** | `npm test` **391**（+2）；单跑 `tests/ledger-csv-import-confirm.browser.test.mjs` 通过。 |
+
+**怎么验离线脚本（可选）：** DevTools → Application → Service Workers → 勾选 Offline → 刷新已安装 PWA → 打开侧栏 **记账** 应正常渲染（此前可能白屏/控制台 ReferenceError）。
+
+**明天早上怎么快速验（功能面与 Batch 10 相同）：**
+
+1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1` → `index.html?mode=local&local-preview=demo-showcase-v1` → **记账**、**复盘** Money、**今日** 支出卡。
+2. 对照 `.overnight/shots/b10r10-release-*.png`。
+3. 全量：`npm test` + `npm run test:browser`（勿与 capture 并行）。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 10 · Round 10 · 终轮收工）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

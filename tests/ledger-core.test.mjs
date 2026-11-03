@@ -1109,6 +1109,20 @@ test("importGermanBankCsv parses trailing-minus amounts in short rows", () => {
   assert.equal(ledger.transactions[0].amountMinor, -1250);
 });
 
+test("importGermanBankCsv parses dot-decimal amounts without comma", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+02.11.2026;PayPal;12.50-`;
+  const { imported, ledger } = L.importGermanBankCsv(csv, null, { lang: "de" });
+  assert.equal(imported, 1);
+  assert.equal(ledger.transactions[0].amountMinor, -1250);
+});
+
+test("formatMoney does not show negative zero", () => {
+  const formatted = L.formatMoney(-0, "EUR", "de-DE");
+  assert.doesNotMatch(formatted, /^-/);
+  assert.match(formatted, /0,00/);
+});
+
 test("custom category is not treated as default when only nameZh collides", () => {
   const raw = {
     version: 1,

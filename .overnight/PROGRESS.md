@@ -1,11 +1,10 @@
 # Overnight progress
 
-## Batch 10 · Round 10 — done（终轮 10/10）
+## Batch 11 · Round 1 — done
 
-- **REVIEW.md：** 无 HIGH/MED；LOW #1 已修复（`syncBackupPreferencesToRuntime` 仅 `explicitLang !== "false"`）；LOW #2 `v210.css` reduced-motion 物理合并仍 **2.2**；LOW #3 极端增幅金额文案为 intentional。
-- **终轮 QA：** `npm test` **389** pass；`npm run test:browser` **39** pass（~113s）；复跑 `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `b10r10-release-*` 六张截图；抽检 Today 洞察/支出卡片、de 深色 390 记账页布局正常。
-- **发布状态：** Web **2.1.0** / Mac **3.1.0**；`CHANGELOG [2.1.0]` + 空 `[Unreleased]`；`.overnight/ROUND10-CHECKLIST.md` 全勾选；`.overnight/REPORT.md` 终稿已更新。
-- **Batch 10 收工：** 记账（Goal 1）+ 抛光（Goal 2）交付完毕；下一迭代见 PROGRESS「Known bugs」与 owner 反馈。
+- **REVIEW.md（Batch 10 终稿复审）：** **HIGH #1** 已修复 — `public/sw.js` 的 `NETWORK_FIRST_SUFFIXES` 追加 `"/ledger-core.js"`、`"/ledger-ui.js"`；`tests/service-worker.test.mjs` 断言离线 PWA 会 intercept 这两份脚本。**MED #2** 已修复 — `parseGermanAmount` 与 `parseAmountToken` 一致，仅在有 `,` 与 `.` 并存时去掉千分位 `.`；`tests/ledger-core.test.mjs` 覆盖 `12.50-` 行。**LOW #3** 已修复 — `formatMoney` 归一化 `-0`。**LOW #4** CSS 物理合并仍 **2.2**（未动）。**INFO #5** 浏览器套件在本环境可跑（本轮 `ledger-csv-import-confirm.browser.test.mjs` 通过）。
+- **文档：** `CHANGELOG [Unreleased]` 三条 Fixed。
+- **测试：** `npm test` **391** pass / 0 fail；单跑 CSV 确认 browser test 1 pass。
 
 ## Half-done
 
@@ -13,9 +12,8 @@
 
 ## Next
 
-- **Owner 本地验收**（见 `.overnight/REPORT.md` 顶部「明天早上怎么快速验」）。
-- **2.2 候选：** `v210.css` reduced-motion 物理合并；Cloudflare 首次 seed 策略若需调整再议。
-- capture **5291** 与 `npm run test:browser` 勿并行。
+- Batch 11 若继续：Goal 2 小抛光或 2.2 候选（`v210.css` reduced-motion 合并）；全量 `npm run test:browser`（39 套件，勿与 capture 5291 并行）。
+- Owner 验收路径不变（见 `.overnight/REPORT.md`）。
 
 ## Known bugs / gaps
 
@@ -30,31 +28,22 @@
 ## npm test
 
 ```
-389 pass, 0 fail (batch 10 round 10, unit gate)
-39 pass, 0 fail (test:browser serial, batch 10 round 10, ~113s)
+391 pass, 0 fail (batch 11 round 1, unit gate)
+1 pass, 0 fail (ledger-csv-import-confirm.browser.test.mjs spot check)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
 
-## Batch 10 · Round 8 — done
+---
 
-- **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Goal 2 抛光 — 时间轴日历 / 侧栏空态：** `timelineMonthEntryBasis` 区分「空月」与「仅选中占位日」；**日历** 空月 `#journalCalendarEmptyArt` 用 `ll-polished` + **`#timelineCalendarEmptyWriteToday`**（修复与隐藏侧栏按钮重复 `id` 导致 CTA 无效）；侧栏 `#timelineEntryList` 空月 / 筛选无匹配分别 **写今日复盘** / **search-empty** quiet 条；`wireJournalFeedEmptyActions` 一次绑定三个 CTA id。
-- **回归：** `tests/timeline-calendar-empty.browser.test.mjs`（Chromium + WebKit，**5284**）；`habit-library-polish.test.mjs` 更新 AST（含 `timelineMonthEntryBasis`）。
-- **截图：** `node .overnight/capture-batch10-round8.mjs`（**5296**）→ `b10r8-timeline-calendar-empty-*`（4 张）、`b10r8-ledger-mac-shell-zh-light-1440-chromium.png`。
-- **文档：** README **EN/ZH/DE** 时间轴日历空月 CTA；`CHANGELOG [Unreleased]` 同上。
+## Batch 10 · Round 10 — done（终轮 10/10）
 
-## Batch 10 · Round 7 — done
-
-- **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Bugfix — 复盘散点空态：** `renderReviewLedgerSummary` 误用 `summary.expenseMinor > 0`（支出为负 minor）；改为 **`expenseMinor < 0`**，空态与 CTA 才会出现。
-- **Goal 2 抛光 — Today 编辑完成动效：** `today-cards.js` — `pulseEditSaved` 使用 CSS 已有的 **`is-saved`**（原 `tc-saved` 从未匹配）；退出编辑时 **720ms** 内保持工具栏可见以播放 bar 动画；**`tc-edit-saved-flash`** 在右下角 **编辑卡片** 按钮上。
-- **回归：** `tests/review-scatter-empty.browser.test.mjs`（Chromium + WebKit，**5286**）；`tests/today-cards-edit-saved.browser.test.mjs`（**5285**）；`habit-library-polish.test.mjs` +AST。
-- **截图：** `node .overnight/capture-batch10-round7.mjs`（**5296**）→ `b10r7-review-scatter-empty-*`（4 张）、`b10r7-today-edit-saved-*`（1 张）。
-- **文档：** README **EN/ZH/DE** Today **Done** 成功动效；`CHANGELOG [Unreleased]` 散点空态 gate + 动效修复。
-- **测试：** `npm test` **389**；`npm run test:browser` **37**（+2，串行 ~109s）。
+- **REVIEW.md：** 无 HIGH/MED；LOW #1 已修复（`syncBackupPreferencesToRuntime` 仅 `explicitLang !== "false"`）；LOW #2 `v210.css` reduced-motion 物理合并仍 **2.2**；LOW #3 极端增幅金额文案为 intentional。
+- **终轮 QA：** `npm test` **389** pass；`npm run test:browser` **39** pass（~113s）；复跑 `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `b10r10-release-*` 六张截图；抽检 Today 洞察/支出卡片、de 深色 390 记账页布局正常。
+- **发布状态：** Web **2.1.0** / Mac **3.1.0**；`CHANGELOG [2.1.0]` + 空 `[Unreleased]`；`.overnight/ROUND10-CHECKLIST.md` 全勾选；`.overnight/REPORT.md` 终稿已更新。
+- **Batch 10 收工：** 记账（Goal 1）+ 抛光（Goal 2）交付完毕；下一迭代见 PROGRESS「Known bugs」与 owner 反馈。
 
 ## Driver gate after round 1
 ℹ tests 384 ℹ pass 384 ℹ fail 0 
@@ -85,3 +74,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 10
 ℹ tests 389 ℹ pass 389 ℹ fail 0 
+
+## Driver gate after round 1
+ℹ tests 391 ℹ pass 391 ℹ fail 0 

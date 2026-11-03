@@ -552,7 +552,8 @@
 
   function formatMoney(minor, currency, locale) {
     const loc = locale || "de-DE";
-    return new Intl.NumberFormat(loc, { style: "currency", currency: currency || "EUR" }).format(minor / 100);
+    const val = minor === 0 || Object.is(minor, -0) ? 0 : minor / 100;
+    return new Intl.NumberFormat(loc, { style: "currency", currency: currency || "EUR" }).format(val);
   }
 
   function addTransaction(ledger, draft, options = {}) {
@@ -1337,7 +1338,10 @@
     } else if (s.endsWith("+")) {
       s = s.slice(0, -1);
     }
-    s = s.replace(/\./g, "").replace(",", ".");
+    if (s.includes(",") && s.includes(".")) {
+      if (s.lastIndexOf(",") > s.lastIndexOf(".")) s = s.replace(/\./g, "").replace(",", ".");
+      else s = s.replace(/,/g, "");
+    } else if (s.includes(",")) s = s.replace(",", ".");
     const n = Number(s);
     if (!Number.isFinite(n)) return null;
     return sign * Math.round(n * 100);

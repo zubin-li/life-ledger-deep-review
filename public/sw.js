@@ -139,6 +139,8 @@ const NETWORK_FIRST_SUFFIXES = [
   "/interaction.js",
   "/long-range.js",
   "/habit-analytics.js",
+  "/ledger-core.js",
+  "/ledger-ui.js",
 ];
 
 function shouldBypassFetch(url, request) {
