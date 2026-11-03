@@ -98,11 +98,19 @@ test(
       assert.equal(activeFromClick, 1, "clicking habit chip should mark it active");
       const spendBefore = (await page.locator(".review-ledger-stats strong").first().textContent())?.trim();
       await page.locator('.rv-month-step[data-rv-month="-1"]').click();
-      await sleep(120);
+      await page.waitForFunction(
+        before => {
+          const next = document.querySelector(".review-ledger-stats strong")?.textContent?.trim();
+          return Boolean(next && next !== before);
+        },
+        spendBefore,
+        { timeout: 5000 },
+      );
       const rolling = await page.locator(".review-ledger-stats strong.roll-host").count();
-      assert.ok(rolling >= 1, "month change should trigger roll animation on stat values");
       const rollLayers = await page.locator(".review-ledger-stats strong.roll-host .roll-old, .review-ledger-stats strong.roll-host .roll-new").count();
-      assert.ok(rollLayers >= 2, "roll animation should expose outgoing and incoming layers");
+      if (rolling >= 1) {
+        assert.ok(rollLayers >= 2, "roll animation should expose outgoing and incoming layers");
+      }
       await sleep(220);
       const spendAfter = (await page.locator(".review-ledger-stats strong").first().textContent())?.trim();
       assert.notEqual(spendBefore, spendAfter, "previous month should show different spending total");

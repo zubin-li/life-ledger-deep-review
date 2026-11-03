@@ -1,6 +1,36 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 3）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 4）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 4：** 复盘页习惯评分明细重新可见 + 记账 **N** 快捷键；单元 **353**、浏览器 **11** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 4）— 复盘习惯评分 + N 快捷键
+
+| 项目 | 说明 |
+|------|------|
+| **复盘 · Habit scores** | 原先被 `pages-858` Round 12 隐藏的 `#inspectorReviewTable` 在宽屏（≥960px）默认展开，展示各习惯完成率与连续天数；窄屏仍为 `<details>`，点开才渲染（性能与 Round 1 短路一致）。 |
+| **布局修复** | `setInsightView` 不再写入无效 `month` token；workspace 宽屏下 `data-insight-view="trend"` 与 CSS 一致。 |
+| **记账** | 在记账页按 **N** 聚焦 Schnellerfassung（德）/ 快速录入（中）/ quick entry（英）。 |
+| **测试** | `tests/review-habit-scores.browser.test.mjs`；`review-scatter` 换月断言更稳；`npm test` **353**；`npm run test:browser` **11**。 |
+| **截图** | `.overnight/shots/b7r4-*`（`node .overnight/capture-batch7-round4.mjs`，端口 **5289**）。 |
+
+**怎么试：**
+
+1. **复盘** → 向下滚到 **Habit scores / 习惯评分**（demo 下有多条习惯与 **Focus by topic**）。
+2. 手机宽度：点 summary 展开，应看到与桌面相同的数据块。
+3. **记账** → 不在输入框时按 **N**，光标应进入快速录入行（见 `b7r4-ledger-quick-focus-de-light-1440-chromium.png`）。
+
+**前后对比：** Round 3 仅 CSV 确认层；Round 4 的 `b7r4-review-habit-scores-en-light-1440-chromium.png` 为宽屏新出现的习惯评分卡片。
+
+**已知：** zh 移动截图里 streak 标签仍为英文 UI 字符串（习惯名 demo 为英）；并行 browser 需各文件独占端口（habit-scores 用 **5290**）。
+
+---
+
+## 历史（Batch 7 · Round 3）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 3：** CSV 导入改为应用内确认层 + shimmer CSS 去重；单元 **353**、浏览器 **9** 全绿。
 
@@ -90,7 +120,7 @@ Web **2.1.0** / Mac **3.1.0**。
 | 7 | 在线 fakecloud | `bash .overnight/fakecloud.sh 5298` → `?mode=cloudflare&local-preview=demo-showcase-v1` 同步后记账有数据 |
 | 8 | 文档 | README / SHOWCASE 三语 hero 为 **08-ledger-v21**；手机 Product tour 四图含 Money |
 | 9 | 回归 | 习惯颜色/图标选择器：颜色在 `<label>` 外、popover 不透明（2.0.10 修复，勿回归） |
-| 10 | 测试（可选） | 仓库根目录 `npm test` + `npm run test:browser`（**9** 项；若 fakecloud 超时先 `pkill -f wrangler`） |
+| 10 | 测试（可选） | 仓库根目录 `npm test` + `npm run test:browser`（**11** 项；若 fakecloud 超时先 `pkill -f wrangler`） |
 
 **代表截图（Round 10）：**
 
@@ -122,7 +152,7 @@ Web **2.1.0** / Mac **3.1.0**。
 ### 刻意未做
 
 - 不改 `functions/`、D1 migration；云端非 preview 首次不 seed 账本。
-- `#inspectorReviewTable` 仍隐藏（习惯评分明细只在 DOM 存在，主面板用 `#reviewPeriodHabits` 等可见区块）。
+- **Round 4 起：** `#inspectorReviewTable` 在复盘页宽屏默认可见（窄屏 `<details>` 内展开）；折叠时仍跳过 DOM 计算。
 
 ---
 

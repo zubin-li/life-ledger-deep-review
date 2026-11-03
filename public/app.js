@@ -7123,6 +7123,11 @@ function bindEvents() {
   }));
 
   $$("#insightViewSwitch [data-insight-view]").forEach(button => button.addEventListener("click", () => setInsightView(button.dataset.insightView)));
+  const reviewScoreDetails = $(".review-score-table");
+  if (reviewScoreDetails && !reviewScoreDetails.dataset.toggleBound) {
+    reviewScoreDetails.dataset.toggleBound = "1";
+    reviewScoreDetails.addEventListener("toggle", () => renderReviewInspectorTable());
+  }
 
   $("#journalComposerSave")?.addEventListener("click", () => {
     const field = $("#journalQuickNote");
@@ -7654,6 +7659,8 @@ function bindEvents() {
     syncMobileToolbar();
     autoGrowTextarea($("#weeklyOutputText"));
     setDailyToolPage(dailyToolPage, { smooth: false });
+    syncReviewScoreDetailsOpen();
+    if ($("#reviewView")?.classList.contains("active")) renderReviewInspectorTable();
   }, { passive: true });
   document.addEventListener("pointerdown", event => {
     if (!$("#habitDialog").open || event.target.closest(".icon-picker-field, .color-picker-field")) return;
@@ -8185,12 +8192,27 @@ function renderJournalComposer() {
   if (status && !status.dataset.pending) status.textContent = languageText("已保存", "Saved", "Gespeichert");
 }
 
-function setInsightView(view) {
-  insightView = "month"; // one monthly page; the old tabs (overview/calendar/habits/table) are retired (user 10/22)
-  const review = $("#reviewView");
-  if (review) review.dataset.insightView = insightView;
+function syncReviewScoreDetailsOpen() {
   const table = $(".review-score-table");
-  if (table) table.open = insightView === "table";
+  if (!table) return;
+  if (window.matchMedia("(min-width: 960px)").matches) {
+    table.open = true;
+    return;
+  }
+  if (document.documentElement.hasAttribute("data-workspace") && insightView === "table") {
+    table.open = true;
+    return;
+  }
+  table.open = false;
+}
+
+function setInsightView(view) {
+  if (view) insightView = view;
+  const review = $("#reviewView");
+  const deskUnified = !document.documentElement.dataset.workspace;
+  const layoutView = deskUnified ? "trend" : insightView;
+  if (review) review.dataset.insightView = layoutView;
+  syncReviewScoreDetailsOpen();
   $$("#insightViewSwitch [data-insight-view]").forEach(button => {
     const active = button.dataset.insightView === insightView;
     button.classList.toggle("active", active);

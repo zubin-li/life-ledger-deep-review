@@ -3899,3 +3899,70 @@ html.motion-reduced .ledger-import-popover .ledger-import-confirm {
     animation: none !important;
   }
 }
+
+/* Batch 7 R4 — habit score inspector on unified monthly review (desk layout) */
+
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table,
+html:not([data-workspace]) #reviewView > .review-score-table {
+  display: block !important;
+  margin: 0;
+  padding: 22px 24px;
+  border: 1px solid var(--desk-border, var(--line));
+  border-radius: 26px;
+  background: var(--desk-card, var(--card));
+}
+
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary,
+html:not([data-workspace]) #reviewView > .review-score-table > summary {
+  font: 600 15px/1.35 var(--font-body, system-ui);
+  color: var(--desk-text, var(--label));
+  list-style: none;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary::-webkit-details-marker,
+html:not([data-workspace]) #reviewView > .review-score-table > summary::-webkit-details-marker {
+  display: none;
+}
+
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary::after,
+html:not([data-workspace]) #reviewView > .review-score-table > summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 200ms var(--ease-enter, ease);
+}
+
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table[open] > summary::after,
+html:not([data-workspace]) #reviewView > .review-score-table[open] > summary::after {
+  transform: rotate(-135deg);
+}
+
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table:not([open]) #inspectorReviewTable,
+html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table:not([open]) #inspectorReviewFocus,
+html:not([data-workspace]) #reviewView > .review-score-table:not([open]) #inspectorReviewTable,
+html:not([data-workspace]) #reviewView > .review-score-table:not([open]) #inspectorReviewFocus {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary::after,
+  html:not([data-workspace]) #reviewView > .review-score-table > summary::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-workspace] #reviewView[data-insight-view="trend"] > .review-score-table > summary::after,
+  html:not([data-workspace]) #reviewView > .review-score-table > summary::after {
+    transition: none;
+  }
+}

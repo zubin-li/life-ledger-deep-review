@@ -6,7 +6,8 @@ All notable changes are documented here.
 
 ### Changed
 
-- **Money (ledger):** CSV import shows an in-app confirm sheet (importable/skipped counts, opaque overlay, Esc/backdrop cancel) before writing; toast includes skipped rows when relevant.
+- **Review:** habit score inspector (`#inspectorReviewTable`) is visible again on the unified monthly review page — expanded by default from 960px width, collapsible on narrow screens; opening the panel renders live streak stats (fix `setInsightView` using `trend` layout instead of retired `month` token).
+- **Money (ledger):** desktop **N** focuses the quick-entry field (with **/** search and **← / →** month keys).
 - **Money (ledger):** desktop shortcuts — **← / →** change month (when not typing), **/** focuses transaction search; month nav tooltip documents keys.
 - **Styles (`v210.css`):** removed duplicate review habit-spark `@keyframes` block (REVIEW #4 partial; spark motion uses unified `rv-spark-grow`); ledger skeleton shimmer reuses `ll-shimmer` with merged reduced-motion rules.
 

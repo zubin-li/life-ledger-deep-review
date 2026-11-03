@@ -40,6 +40,15 @@
         }
         return;
       }
+      if ((event.key === "n" || event.key === "N") && !typing) {
+        const quick = $("#ledgerQuickInput");
+        if (quick) {
+          event.preventDefault();
+          quick.focus();
+          quick.select?.();
+        }
+        return;
+      }
       if (typing) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       const ym = viewMonth || ymFromDate(ctx?.iso(new Date()) || "");
@@ -1025,7 +1034,7 @@
           <span class="kicker">${t("记账", "Money", "Geld")}</span>
           <h2>${ctx.escape(monthLabel(ym))}</h2>
         </div>
-        <div class="ledger-month-nav" title="${t("← → 切换月份，/ 搜索交易", "← → change month, / search", "← → Monat, / Suche")}">
+        <div class="ledger-month-nav" title="${t("← → 切换月份，/ 搜索，N 快速录入", "← → change month, / search, N quick entry", "← → Monat, / Suche, N Schnellerfassung")}">
           <button type="button" class="icon-button" data-ledger-prev aria-label="${t("上个月", "Previous month", "Vorheriger Monat")}">‹</button>
           <button type="button" class="icon-button" data-ledger-next aria-label="${t("下个月", "Next month", "Nächster Monat")}">›</button>
         </div>
