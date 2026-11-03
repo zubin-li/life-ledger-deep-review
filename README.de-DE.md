@@ -103,6 +103,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 
 - Tägliche Gewohnheiten mit anpassbaren Zielen und Gültigkeitsdatum
 - Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen; in der **Tages**-Ansicht der Zeitleiste erscheint ein **Reflexions-Streak**, wenn an aufeinanderfolgenden Tagen Tagebuch oder Stimmungsgründe erfasst wurden
+- **Heute-Quer-Einblicke (Demo-Showcase):** Unter **Grundlagen** optional ein rollierender **30-Tage**-Vergleich der Ausgaben an Tagen mit hoher vs. niedriger Gewohnheits-Erfüllung plus Link zum **Rückblick**; unter **Stimmung** bessere vs. niedrigere Stimmungstage mit Link zum Stimmung-vs.-Ausgaben-Streudiagramm (gleiche Datenbasis wie im Rückblick)
 - Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
 - Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen; **Diese Woche · Einblicke** zeigt als fünfte Kachel **Ausgaben diese Woche** (Mo–heute, öffnet Finanzen) mit Hinweis **gg. Vorwoche (gleicher Zeitraum)**; die **Fokuszeit**-Kachel nennt Tage mit Tagebuch oder Ereignissen und den Vergleich **gg. Vorwoche (gleicher Zeitraum)** in Tagen; die **Abschlussrate**-Kachel vergleicht Gewohnheits-Abschluss in Prozentpunkten **gg. Vorwoche (gleicher Zeitraum)**
 - Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen; unter **Monatsausgaben** zeigt die Ausgaben-Zahl einen Hinweis **gg. Vormonat (gleicher Zeitraum)**

@@ -19,7 +19,7 @@ All notable changes are documented here.
 
 ### QA
 
-- Playwright **`spend-compare-mac-shell.browser.test.mjs`:** locks Today **amount caption** when yesterday’s baseline is under €15, Mac shell **Week / Review** spend hints without four-digit +% inflation, and **Week insights** metric roll when changing workspace week.
+- Playwright **`spend-compare-mac-shell.browser.test.mjs`:** locks Today **amount caption** when yesterday’s baseline is under €15, Mac shell **Week / Review / Today** spend hints without four-digit +% inflation (Today includes demo **habit + mood** insight lines), and **Week insights** metric roll when changing workspace week.
 - **`fakecloud-preview-ledger.browser.test.mjs`:** after demo cloud sync, **本周** spend hint stays readable (no four-digit +%); **复盘** `#reviewLedgerSpendHint` same check.
 - **`journal-feed-paint.browser.test.mjs`:** timeline feed paint host reaches **ready** without leaving skeleton markup.
 - **`journal-feed-filter.browser.test.mjs`:** weekly timeline month filter stays **ready** without feed skeleton; daily filter clears **stale** veil when ready.

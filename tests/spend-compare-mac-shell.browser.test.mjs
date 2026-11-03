@@ -152,6 +152,15 @@ test(
       await page.waitForSelector("#reviewLedgerSpendHint:not([hidden])", { timeout: 15000 });
       const reviewHint = await page.locator("#reviewLedgerSpendHint").textContent();
       assert.doesNotMatch(reviewHint || "", /\+\d{4,}%/);
+
+      await page.locator('.nav-item[data-view="today"]').click();
+      await page.waitForTimeout(350);
+      await page.waitForSelector("#todayHabitSpendHint:not([hidden])", { timeout: 15000 });
+      await page.waitForSelector("#todayMoodSpendHint:not([hidden])", { timeout: 15000 });
+      const habitText = await page.locator("#todayHabitSpendHint").textContent();
+      const moodText = await page.locator("#todayMoodSpendHint").textContent();
+      assert.match(habitText || "", /近 30 天/);
+      assert.match(moodText || "", /心情较好日/);
     } finally {
       await context.close();
       await browser.close();

@@ -103,6 +103,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 
 - Daily habits with adjustable targets and effective dates
 - Read-only daily calendar, mood, journal, and event notes; **Daily** timeline mode shows a consecutive **reflection streak** when journal notes or mood reasons land on back-to-back days
+- **Today cross-insights (demo showcase):** **Daily foundations** can show a rolling **30-day** average spend on high- vs low-habit-completion days with a link to **Review**; **Mood** shows better- vs lower-mood day averages with a link to the mood-vs-spend scatter (same data family as Review scatters)
 - AI-assisted voice-to-journal reflection with editable review before saving
 - Weekly goals, checklist behavior, outputs, and archived notes; **Week — Insights** includes a fifth **week spending** tile (Mon–today, opens Money) with a same-days-last-week comparison hint; the **focus time** tile captions journal/event days vs the same span last week; the **completion rate** tile captions habit completion in percentage points vs the same span last week
 - Monthly review with habit comparisons and line/bar charts; **Money** summary spending stat includes a same-days-last-month comparison hint

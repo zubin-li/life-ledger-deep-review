@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 8）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 9）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 8：** Today 心情×支出洞察 + demo 心情对齐窗口 + 浏览器回归；单元 **384**、浏览器 **24** 全绿。
+**Batch 9 Round 9：** README 三语 Today 洞察说明 + Mac 壳 Today hint 回归与截图；单元 **384**、浏览器 **24** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 8）— Today 心情×支出洞察
+## 本轮（Batch 9 · Round 9）— 文档与 Mac 壳 Today
+
+| 项目 | 说明 |
+|------|------|
+| **README** | EN / ZH / DE 在「主要功能」增加 **Today 习惯×支出 / 心情×支出** 近 30 天 demo 洞察一句（链回复盘散点）。 |
+| **Mac 壳回归** | `spend-compare-mac-shell.browser.test.mjs` 在 demo 下断言 **Today** 两行洞察文案可见。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **24**（用例内容扩展，条数不变）。 |
+| **截图** | `.overnight/shots/b9r9-mac-today-*`（`node .overnight/capture-batch9-round9.mjs`，端口 **5298**，WebKit + Mac shell，zh/de × light/dark）。 |
+
+**怎么验：**
+
+1. 打开 demo（`?local-preview=demo-showcase-v1`）→ **今日**：心情卡与基础目标标题下各有一行洞察 + 复盘链接（浏览器见 Round 8 截图；Mac 窗口见 `b9r9-mac-today-insights-zh-light-1440-webkit.png`）。
+2. README 三语搜索「30 天」或「30-day」应能看到新 bullet。
+3. `npm run test:browser` 应 **24** 条全过。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；旧 demo 缓存可能缺心情 hint。
+
+---
+
+## 上一轮（Batch 9 · Round 8）— Today 心情×支出洞察
 
 | 项目 | 说明 |
 |------|------|
