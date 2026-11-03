@@ -2,6 +2,71 @@
 
 Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight` (isolated)
 
+## Round 7 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **C4 天气** | 重写 `.overnight/weather-headless-compare.mjs`（preview 存储后缀、双 context、端口 **5299**）；`.overnight/weather-headless-compare.json`：**HEAD** 与 **v2.0.10** 冷启动均无网络 → 空详情；离线 cache → **11°**（行为一致，**非回归**） |
+| **C5 CSS** | `--ll-anim-enter-*` token（`.overnight/consolidate-v210-css.mjs`）；**6336** 行、−428 B（仍远高于 ~3250 目标） |
+| **文档** | CHANGELOG Unreleased r7 + **2.1.0** Money views **donut-only** 说明 |
+| **截图** | `fb-r7-*`（5297）WebKit + Chromium |
+| **QA** | 释放 **5298** 僵尸 python 后 browser 全绿 |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | 需合并 `@media (prefers-reduced-motion)` / 删除 legacy 隐藏块 CSS |
+| **C6** | 未重跑 `compare-v2010.mjs`（r6 矩阵仍有效） |
+
+### Known bugs / limits
+
+- Headless **无 Open-Meteo** 时天气卡片空白（与 v2.0.10 相同；有合法 offline cache 可渲染）。
+- fakecloud 测试占 **5298**；天气脚本改用 **5299**，避免 python 僵尸占端口导致 browser flake。
+
+### Evidence (六个已知问题 · r7)
+
+1. **C1** — `fb-r7-today-zh-light-1440-chromium.png` 引导卡实色底（`.tc-onboard-hint` `--card`）；sheet 场景见 r6 `fb-r6-today-sheet`
+2. **C2** — `fb-r7-ledger-zh-light-1440-chromium.png` 顶栏单标题「记账」
+3. **C3** — `fb-r7-today-zh-light-1440-chromium.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — `.overnight/weather-headless-compare.json`（HEAD ≡ v2.0.10）
+5. **C5** — **6336** 行；`capture.mjs` + consolidate/weather/prune 脚本
+6. **C6** — `fb-r7-week/ledger/review/habits` 目视无破版（未像素 diff）
+
+### Self-review (Round 7)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | enter 动画改 token，keyframes 未增；VT/FLIP 未动 | OK |
+| ui-ux-pro-max | 记账页 donut+日条符合 spec；5298 端口冲突已文档化 | **Done** 天气脚本 port 5299 + finally kill |
+| design-dna | fb-r7 ledger/week 与 panel 族一致 | OK |
+| Rauno / Linear | 无 layout 动画新增 | OK |
+| Screenshots | fb-r7 矩阵目视（天气空=无网） | OK |
+| Tests | **433** unit + **72** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- v210.css 下一刀：`prefers-reduced-motion` 合并（勿删 Batch 注释）
+- fakecloud 与 overnight 脚本端口表写入 `.overnight/CSS-LAYERS.md` 或 BRIEF 脚注
+
+### `npm test` (round 7 gate · final)
+
+```
+433 pass, 0 fail (unit)
+72 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css `prefers-reduced-motion` 结构性合并
+2. `compare-v2010.mjs` 轻量回归 + Mac 壳 fb-r7-mac
+3. 引导卡 390 真机不透明抽检
+
+---
+
 ## Round 6 (2026-11-03)
 
 ### Done
@@ -225,5 +290,8 @@ desktop:check 0 fail
 ## Driver gate after sprint 6
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
-## Driver gate after sprint 6
+## Driver gate after sprint 7
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 72 ℹ pass 72 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 7
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

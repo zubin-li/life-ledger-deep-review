@@ -1,3 +1,43 @@
+# Life Ledger — 主人反馈 pass（Round 7 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **C4 天气 headless** | 修正探测脚本（`local-preview` 的 localStorage 后缀、合法 cache 结构）；**HEAD 与 v2.0.10 行为一致**：无网冷启动空白，写入 offline cache 后显示 **11°** → `.overnight/weather-headless-compare.json` |
+| **CSS token** | `v210.css` 增加 `--ll-anim-enter-*`，合并重复 `pageCardIn` 声明（`.overnight/consolidate-v210-css.mjs`） |
+| **文档** | CHANGELOG **2.1.0** 标明主界面 **仅 donut**（treemap 已在 owner pass 移除） |
+| **端口** | 天气脚本改用 **5299**，避免与 fakecloud（5298）冲突 |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **今日** → 天气需网络或曾选城市+缓存；headless 无网时空白属预期
+3. **记账** → 周/月、donut、订阅、折叠列表
+4. 天气对照：`node .overnight/weather-headless-compare.mjs`
+5. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r7`
+
+## 截图（Round 7）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r7-today-zh-light-1440-chromium.png` | 今日 + 侧栏顺序 |
+| `fb-r7-ledger-zh-light-1440-chromium.png` | 记账统计（单标题） |
+| `fb-r7-today-sheet-zh-light-390-webkit.png` | Today 记一笔 sheet |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **72** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 6 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

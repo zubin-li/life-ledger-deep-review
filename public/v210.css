@@ -1,3 +1,13 @@
+/* Owner pass — shared enter tokens (r7) */
+:root {
+  --ll-anim-enter-38: pageCardIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  --ll-anim-enter-40: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  --ll-anim-enter-42: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  --ll-anim-enter-44: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  --ll-anim-enter-46: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  --ll-anim-enter-50: pageCardIn 0.5s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+}
+
 /* Bookkeeping page — loaded after v202.css */
 .ledger-page {
   display: grid;
@@ -497,7 +507,7 @@ html[data-theme="dark"] .ledger-key {
 #ledgerView.view.is-entering .ledger-quick,
 #ledgerView.view.is-entering .ledger-panel,
 #ledgerView.view.is-entering .ledger-list-wrap {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-46);
 }
 
 #ledgerView.view.is-entering .ledger-summary article:nth-child(2) { animation-delay: 40ms; }
@@ -537,7 +547,7 @@ html.motion-reduced #reviewView .review-insight-block .review-insight-value {
 }
 
 .review-ledger-panel {
-  animation: pageCardIn 0.5s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-50);
 }
 
 @media (max-width: 640px) {
@@ -552,7 +562,7 @@ html.motion-reduced #reviewView .review-insight-block .review-insight-value {
 }
 
 #todayView.view.is-entering.tc-grid .tw-card {
-  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-44);
 }
 
 #todayView.view.is-entering.tc-grid .tw-card:nth-child(2) { animation-delay: 35ms; }
@@ -566,7 +576,7 @@ html.motion-reduced #todayView.view.is-entering.tc-grid .tw-card {
 
 /* Batch 5 round 2 — Today hero + daily tool enter stagger */
 #todayView.view.is-entering .hero-grid > :is(.hero-card, .mood-card) {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-46);
 }
 
 #todayView.view.is-entering .hero-grid > .mood-card {
@@ -575,7 +585,7 @@ html.motion-reduced #todayView.view.is-entering.tc-grid .tw-card {
 
 #todayView.view.is-entering .daily-tool-card,
 #todayView.view.is-entering .calendar-embedded {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-46);
 }
 
 #todayView.view.is-entering .daily-tool-card { animation-delay: 70ms; }
@@ -699,7 +709,7 @@ html.motion-reduced #reviewView .rv-weekdays--enter .insight-weekday-track i {
 }
 
 #timelineView.view.is-entering :is(.journal-mode-switch, #journalFeedPane, .timeline-layout, .journal-feed-heading) {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-46);
 }
 
 #timelineView.view.is-entering #journalFeedPane { animation-delay: 40ms; }
@@ -714,7 +724,7 @@ html.motion-reduced #timelineView.view.is-entering :is(.journal-mode-switch, #jo
 #longrangeView.view.is-entering .horizon-heading,
 #longrangeView.view.is-entering .horizon-phase-board,
 #longrangeView.view.is-entering .horizon-section {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-46);
 }
 
 #longrangeView.view.is-entering .horizon-heading { animation-delay: 35ms; }
@@ -732,7 +742,7 @@ html.motion-reduced #longrangeView.view.is-entering :is(.horizon-pin, .horizon-h
 #reviewView.view.is-entering #reviewTrendChart,
 #reviewView.view.is-entering #reviewLedgerSummary:not([hidden]),
 #reviewView.view.is-entering .review-narrative {
-  animation: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-46);
 }
 
 #reviewView.view.is-entering #reviewInsights .insight-metrics > article:nth-child(1) { animation-delay: 35ms; }
@@ -752,7 +762,7 @@ html.motion-reduced #reviewView.view.is-entering :is(.review-intro, #reviewInsig
 #habitsView.view.is-entering #habitLibraryOverview article,
 #habitsView.view.is-entering .habit-library-tools,
 #habitsView.view.is-entering .habit-settings-table {
-  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-44);
 }
 
 #habitsView.view.is-entering .habit-reminder-card { animation-delay: 35ms; }
@@ -763,11 +773,11 @@ html.motion-reduced #reviewView.view.is-entering :is(.review-intro, #reviewInsig
 #habitsView.view.is-entering .habit-settings-table { animation-delay: 165ms; }
 
 #weekView.view.is-entering .week-page-header {
-  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-44);
 }
 
 #weekView.view.is-entering #weekCalendar .week-calendar-day {
-  animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-42);
 }
 
 #weekView.view.is-entering #weekCalendar .week-calendar-day:nth-child(1) { animation-delay: 200ms; }
@@ -785,12 +795,12 @@ html.motion-reduced #weekView.view.is-entering :is(.week-page-header, #weekCalen
 
 /* Batch 5 round 5 — timeline feed mode switch + photo library enter + Today wall frame */
 #journalFeedPane.is-mode-entering .journal-feed-heading {
-  animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-44);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   #journalPhotoLibrary.journal-library--ready .journal-library-month {
-    animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-42);
   }
 
   #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(2) {
@@ -866,7 +876,7 @@ html.motion-reduced #journalPhotoLibrary.journal-library--ready :is(.journal-lib
 
 /* Batch 5 round 6 — calendar enter, feed filter/load-more, timeline list filter, composer polish */
 #journalFeedPane.is-filter-entering .journal-feed-heading {
-  animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  animation: var(--ll-anim-enter-40);
 }
 
 #journalFeedPane.is-filter-entering .journal-feed-filter select {
@@ -3090,11 +3100,11 @@ html.motion-reduced #weeklyGoalList .ll-week-all-done.ll-empty-enter {
 
 @media (prefers-reduced-motion: no-preference) {
   #reviewTitle.is-retargeting > span {
-    animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-42);
   }
 
   #reviewInsights .rv-metrics.is-retargeting > article {
-    animation: pageCardIn 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-42);
   }
 
   #reviewInsights .rv-metrics.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
@@ -3185,7 +3195,7 @@ html.motion-reduced .tc-bar .tc-done.tc-done--pulse {
 
 @media (prefers-reduced-motion: no-preference) {
   #viewTitle.is-view-switch {
-    animation: pageCardIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-38);
   }
 
   .nav-item.is-landing {
@@ -3205,22 +3215,22 @@ html.motion-reduced .tc-bar .tc-done.tc-done--pulse {
   }
 
   #weekView.view.is-entering .module-card {
-    animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-44);
     animation-delay: calc(420ms + var(--module-i, 0) * 45ms);
   }
 
   #weekView .week-page-header.is-retargeting,
   #weekView .module-card.is-retargeting {
-    animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-40);
     animation-delay: calc(var(--module-i, 0) * 40ms);
   }
 
   #ledgerView .ledger-header h2.is-retargeting {
-    animation: pageCardIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-38);
   }
 
   #ledgerView .ledger-summary.is-retargeting > article {
-    animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-40);
   }
 
   #ledgerView .ledger-summary.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
@@ -3273,7 +3283,7 @@ html.motion-reduced :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .
   }
 
   .export-dialog [data-backup-panel].is-retargeting {
-    animation: pageCardIn 0.4s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation: var(--ll-anim-enter-40);
   }
 
   .backup-tabs.is-tab-switch button.active {
