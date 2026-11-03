@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 2）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 3）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 2：** 支出对比文案（小基数金额句、+999% 封顶）+ demo 习惯名随语言写入；单元 **379**、浏览器 **17** 全绿。
+**Batch 9 Round 3：** Today 小基数金额 caption 截图 + Mac 壳 Week/Review 支出 hint 浏览器回归；单元 **379**、浏览器 **19** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 2）— 对比文案与 demo 习惯名
+## 本轮（Batch 9 · Round 3）— 金额 caption 与 Mac 壳 hint 回归
+
+| 项目 | 说明 |
+|------|------|
+| **Today 金额句** | 昨日支出 **< €15**、今日更高时，**今日支出** 卡显示 **较昨日多 €47.00**（非 +1600%）；见 `b9r3-today-spend-amount-caption-zh-light-1440-chromium.png`。 |
+| **Mac 壳** | WebKit 注入 `desktop/mac/shell.js` + `shell.css`，demo **本周** 支出 tile **+999%** 封顶、**复盘** **+26%** 正常；见 `b9r3-mac-week-spend-hint-*` / `b9r3-mac-review-spend-hint-*`。 |
+| **测试** | 新 `tests/spend-compare-mac-shell.browser.test.mjs`（2 条）；`npm test` **379**；`npm run test:browser` **19**。 |
+| **截图** | `.overnight/shots/b9r3-*`（`node .overnight/capture-batch9-round3.mjs`，端口 **5294**）。 |
+
+**怎么验：**
+
+1. 本地 `?mode=local`：昨天 **−€3**、今天 **−€50** → **今日支出** 卡 **较昨日多 €47.00**（截图同上）。
+2. Demo + Mac 窗口或 Round 3 截图：**本周** 数据洞察 **较上周同期 +999%**（非四位数）；**复盘** 本月支出 **+26%**。
+3. CI 本地：`npm run test:browser` 应含 **Mac shell demo week and review spending hints** 用例。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；对比基线 ≥ €15 时大额跳升仍 **+999%** 封顶。
+
+---
+
+## 上一轮（Batch 9 · Round 2）— 对比文案与 demo 习惯名
 
 | 项目 | 说明 |
 |------|------|

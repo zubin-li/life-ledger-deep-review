@@ -13,6 +13,10 @@ All notable changes are documented here.
 - **Spending compare copy:** Increases cap at **+999%**; when the prior period baseline is under **€15**, captions show a **money delta** (e.g. demo coffee → rent reads **较昨日多 €947…** instead of +2000%).
 - **Demo habits:** Fictional sample data stores starter habit names in the active UI language (zh/de/en) while custom renames stay untouched.
 
+### QA
+
+- Playwright **`spend-compare-mac-shell.browser.test.mjs`:** locks Today **amount caption** when yesterday’s baseline is under €15, and Mac shell **Week / Review** spend hints without four-digit +% inflation.
+
 ## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
