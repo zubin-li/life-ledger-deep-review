@@ -137,6 +137,12 @@ test("service worker activation claims clients without reloading them", async ()
   assert.doesNotMatch(swSource, /client\.navigate/);
 });
 
+test("NETWORK_FIRST_SUFFIXES includes ledger scripts for offline PWA", () => {
+  const suffixes = parseStringArray(swSource, "NETWORK_FIRST_SUFFIXES");
+  assert.ok(suffixes.includes("/ledger-core.js"), "ledger-core.js must be network-first managed");
+  assert.ok(suffixes.includes("/ledger-ui.js"), "ledger-ui.js must be network-first managed");
+});
+
 test("service worker bypasses API, Cloudflare Access, and unrelated same-origin paths", () => {
   const { dispatchFetch } = loadWorkerHandlers();
   const origin = "https://life.example";

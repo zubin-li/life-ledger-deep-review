@@ -1,3 +1,29 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 2）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 2：** 在 Round 1 REVIEW 修复之上补 QA 与小幅 a11y，并复跑全量 Playwright。
+
+---
+
+## 本轮（Batch 11 · Round 2）— QA + 快速录入 a11y
+
+| 项目 | 说明 |
+|------|------|
+| **单元测试** | `npm test` **392**（+1：`NETWORK_FIRST_SUFFIXES` 显式断言 ledger 脚本）。 |
+| **浏览器** | `npm run test:browser` **40** 套件全绿；新增 `ledger-quick-entry.browser.test.mjs`（空账本 WebKit 390，提交 `-4,20 午餐` → 列表 `is-enter` 行）。 |
+| **a11y** | 快速录入解析失败时 `#ledgerQuickInput` 带 `aria-invalid`（视觉 `is-error` 不变）。 |
+| **截图** | `.overnight/shots/b11r2-ledger-quick-entry-zh-light-390-webkit.png`（录入后交易行）、`b11r2-ledger-demo-de-dark-1440-chromium.png`（demo 深色桌面）。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**。 |
+
+**怎么验（可选）：**
+
+1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1` → `?mode=local` → 侧栏 **记账** → 输入 `-3,50 测试` → **添加**，应出现高亮进入动画的交易行。
+2. 故意输入乱码 → 输入框红框且 VoiceOver/审查元素可见 `aria-invalid="true"`。
+3. 全量：`npm test` + `npm run test:browser`。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 1）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

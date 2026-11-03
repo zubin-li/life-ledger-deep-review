@@ -774,9 +774,11 @@
       const parsed = core().parseQuickEntry(input.value, ledger, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
       if (!parsed.ok) {
         input.classList.add("is-error");
+        input.setAttribute("aria-invalid", "true");
         return;
       }
       input.classList.remove("is-error");
+      input.removeAttribute("aria-invalid");
       const { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
       const firstEntry = !ledger.transactions.length && next.transactions.length;
       lastHighlightTxId = transaction.id;

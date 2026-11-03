@@ -4,9 +4,13 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+- **QA (Batch 11):** Playwright regression for ledger quick-entry success flash; explicit service-worker test that `NETWORK_FIRST_SUFFIXES` lists ledger scripts.
+
 ### Fixed
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.
 - **CSV import:** German bank amounts with dot decimals only (e.g. `12.50`) no longer inflate 100×; `formatMoney` no longer prints `-0,00 €` for negative zero.
+- **Quick entry:** invalid parse sets `aria-invalid` on the input for screen readers (visual `is-error` unchanged).
 
 ## [2.1.0] - 2026-11-03
 
