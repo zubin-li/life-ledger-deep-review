@@ -249,7 +249,7 @@ html[data-theme="dark"] .tw-weather .weather-rain-hint { color: #7cc4f5; }
 
 /* ---- edit mode ---- */
 /* Entry point floats bottom-right on Today only, so the original toolbar keeps its width. */
-.tc-edit-toggle { position: fixed; z-index: 55; right: 28px; bottom: 26px; display: none; align-items: center; gap: 7px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--card) 88%, transparent); backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3); box-shadow: 0 12px 34px rgba(16, 35, 29, .1); color: var(--ink); font-size: 13px; }
+.tc-edit-toggle { position: fixed; z-index: 55; right: 28px; bottom: 26px; display: none; align-items: center; gap: 7px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--ll-surface-float, var(--card)); box-shadow: 0 12px 34px rgba(16, 35, 29, .1); color: var(--ink); font-size: 13px; }
 html.tc-on body:has(#todayView.active) .tc-edit-toggle { display: inline-flex; }
 html.tc-on body:has(#todayView.tc-editing) .tc-edit-toggle { display: none; }
 /* Never above the day drawer; dialogs live in the top layer anyway. */
@@ -265,7 +265,7 @@ html.tc-on body:has(.day-drawer.open) :is(.tc-edit-toggle, .tc-bar) { display: n
 .tc-editing > .tc-card > .tc-controls {
   position: absolute; z-index: 6; top: -17px; right: 14px; display: flex; align-items: center; gap: 2px;
   padding: 2px 4px 2px 10px; border: 1px solid var(--line); border-radius: 999px;
-  background: color-mix(in srgb, var(--card) 88%, transparent); backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  background: var(--ll-surface-float, var(--card));
   box-shadow: 0 10px 30px rgba(16, 35, 29, .1); font-size: 12px; color: var(--ink); cursor: default;
 }
 .tc-editing > .tc-card[data-size="S"] > .tc-controls .tc-name { display: none; }
@@ -285,7 +285,7 @@ html.tc-on body:has(.day-drawer.open) :is(.tc-edit-toggle, .tc-bar) { display: n
   position: fixed; z-index: 60; left: 50%; bottom: 26px; transform: translateX(-50%);
   display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 20px; max-width: calc(100vw - 32px);
   border: 1px solid var(--line); border-radius: 999px;
-  background: color-mix(in srgb, var(--card) 90%, transparent); backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  background: var(--ll-surface-float, var(--card));
   box-shadow: 0 22px 60px rgba(16, 35, 29, .16); animation: tcBarIn 260ms cubic-bezier(.2, .8, .2, 1);
 }
 .tc-bar[hidden] { display: none; }

@@ -1929,40 +1929,12 @@ html.motion-reduced .review-focus-scatter-dot {
 }
 
 /* ========== merged from v223-ledger-budget-ui.css ========== */
-/* Budget set/edit UI — v2.1.0 */
-
-.ledger-budget-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.5rem;
-}
-
-.ledger-budget-head h3 {
-  margin: 0;
-}
-
-.ledger-budget {
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto auto;
-}
-
-.ledger-budget-actions {
-  display: inline-flex;
-  gap: 0.15rem;
-  align-items: center;
-}
+/* Budget set/edit UI — v2.1.0 (popover menu only) */
 
 .ledger-budget-form-month {
   margin: 0;
   font-size: 0.82rem;
   opacity: 0.72;
-}
-
-.ledger-budget-empty {
-  margin-top: 0.25rem;
 }
 
 .ledger-edit-field select[disabled] {
@@ -2315,10 +2287,10 @@ html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint 
 }
 
 /* ========== merged from v229-ledger-budget-bars.css ========== */
-/* Ledger budget progress — month-change bar grow (v2.1.0) */
+/* Ledger budget progress — month-change bar grow (v2.1.0); inline list removed, popover-only. */
 
-html.motion-reduced /* ========== merged from v230-ledger-chart-retarget.css ========== */
-/* Ledger category donut / treemap / daily heat — month-change stagger (v2.1.0) */
+/* ========== merged from v230-ledger-chart-retarget.css ========== */
+/* Ledger category donut / daily heat — month-change stagger (v2.1.0) */
 
 @keyframes ledger-heat-cell-in {
   to {
@@ -2333,11 +2305,14 @@ html.motion-reduced /* ========== merged from v230-ledger-chart-retarget.css ===
   }
 }
 
+html.motion-reduced .ledger-heat-grid.is-retargeting .ledger-heat,
+html.motion-reduced .ledger-donut-segments.is-retargeting path {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
-html.motion-reduced .ledger-heat-grid.is-retargeting .ledger-heat,
-html.motion-reduced .ledger-donut-segments.is-retargeting path,
-html.motion-reduced/* ========== merged from v231-review-ledger-retarget.css ========== */
+/* ========== merged from v231-review-ledger-retarget.css ========== */
 /* Goal 2 batch 3 r9: review Money panel stats + scatter retarget on month change */
 
 @keyframes rvLedgerStatIn {

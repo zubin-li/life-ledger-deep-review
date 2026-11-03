@@ -132,3 +132,40 @@ test(
     }
   },
 );
+
+test(
+  "Today card edit toggle uses opaque float surface (C1)",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-language", "zh");
+        localStorage.setItem("life-ledger-today-cards-onboarding-dismissed", "1");
+        localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+      });
+      await page.goto(base, { waitUntil: "domcontentloaded" });
+      await page.click('.nav-item[data-view="today"]');
+      await page.waitForSelector(".tc-edit-toggle", { state: "visible", timeout: 15000 });
+      const styles = await page.evaluate(() => {
+        const el = document.querySelector(".tc-edit-toggle");
+        const cs = getComputedStyle(el);
+        const m = cs.backgroundColor.match(/rgba?\(([^)]+)\)/);
+        let alpha = 1;
+        if (m) {
+          const parts = m[1].split(",").map(s => s.trim());
+          if (parts.length === 4) alpha = Number.parseFloat(parts[3]);
+        }
+        return { alpha, backdropFilter: cs.backdropFilter || cs.webkitBackdropFilter };
+      });
+      assert.ok(styles.alpha >= 0.99, `edit toggle alpha ${styles.alpha}`);
+      assert.equal(styles.backdropFilter, "none");
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);

@@ -1,3 +1,45 @@
+# Life Ledger — 主人反馈 pass（Round 11 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **C5 CSS 修复 + 瘦身** | 修复 **v229/v230/v231** 合并损坏（多余 `}`、注释嵌进选择器，导致 reduced-motion 下 donut/日条规则失效）；删除已无 DOM 的 **ledger-budget 列表**样式 → **6018** 行；脚本 `.overnight/fix-v230-css-corruption.mjs` |
+| **C1 浮层** | 今日 **编辑卡片** 按钮、编辑模式 **tc-bar** / 卡片顶栏 pill 改为实色 **`--ll-surface-float`**（去掉半透明玻璃）；新增 browser 测试 |
+| **C6** | 重跑 **`compare-v2010.mjs`**（worktree 临时挂载后移除）→ `.overnight/diff-v2010.json` |
+| **性能** | 侧栏切换 trace：最长 long task **67ms**（复盘散点），CLS **0** |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **今日** → 右下角 **编辑卡片**（实色 pill，不再透底）
+3. **记账** → 周/月、donut、折叠列表（与 r10 相同）
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r11`
+
+## 截图（Round 11）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r11-ledger-zh-light-1440-chromium.png` | 记账统计 **C2** |
+| `fb-r11-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r11-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡 |
+| `fb-r11-today-sheet-zh-light-390-webkit.png` | Today 记一笔 sheet |
+| `fb-r11-week-zh-light-1440-webkit.png` | 本周对照 |
+| `fb-r11-mac-today-sheet-zh-light-1440-webkit.png` | Mac 壳 sheet |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **75** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 10 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

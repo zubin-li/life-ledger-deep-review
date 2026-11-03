@@ -1,4 +1,68 @@
 
+## Round 11 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **C5 CSS** | 修复 **v230** 合并损坏（stray `}`、broken `html.motion-reduced` 选择器）；删 inline **ledger-budget** 死规则 → **6018** 行（−25）；`.overnight/fix-v230-css-corruption.mjs` |
+| **C1 浮层** | `today-cards.css`：**tc-edit-toggle** / **tc-bar** / 编辑 pill → **`--ll-surface-float`**；browser 测试「edit toggle opaque」 |
+| **C6** | `compare-v2010.mjs` + 临时 worktree → `diff-v2010.json`（64–81% = 2.1 功能面） |
+| **验证** | `fb-r11-*`（5297）WebKit + Chromium + Mac sheet；`perf-nav-trace.json` **maxLongTaskMs 67**（review scatter），**CLS 0** |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6018** 行，仍远高于 ~3250；需 v2.2 拆文件或删更多 legacy batch |
+| **D3** | 复盘切换 67ms long task 可 lazy scatter（非阻塞） |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面（r11 重跑 confirm）。
+
+### Evidence (六个已知问题 · r11)
+
+1. **C1** — `fb-r11-today-onboard-zh-light-390-webkit.png` + onboard/edit-toggle browser 测试
+2. **C2** — `fb-r11-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r11-today-zh-light-1440-chromium.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — r7 `weather-headless-compare.json`；`fb-r11-today-zh-light-1440` 天气区空（无网）
+5. **C5** — **6018** 行；`capture.mjs` + fix/prune 脚本族
+6. **C6** — `diff-v2010.json` + `fb-r11-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 11)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | v230 修复恢复 reduced-motion 下 donut/heat 静态；无 layout 动画新增 | **Fixed** 损坏 merge |
+| ui-ux-pro-max | tc-bar/edit 实色 ≥44px touch；ledger/week panel 一致（fb-r11） | **Fixed** C1 编辑浮层 |
+| design-dna | 侧栏顺序、单标题、donut+日条符合 spec | OK |
+| Rauno / Linear | perf 67ms 仅 review scatter；VT/FLIP 未动 | OK（可后续 lazy） |
+| Screenshots | ledger/today/week/review 1440+390 目视 | OK（天气空=环境） |
+| Tests | **433** unit + **75** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- `tc-dialog` / 组件库面板仍可能用 `--card` 玻璃（非阻塞）
+- v210.css 下一刀：合并重复 enter/stagger 或 2.2 分文件
+
+### `npm test` (round 11 gate · final)
+
+```
+433 pass, 0 fail (unit)
+75 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 结构性瘦身或 2.2 分文件
+2. tc-dialog / settings 实色 audit 收尾
+3. Review scatter lazy init 降 long task
+
+---
+
 ## Round 10 (2026-11-03)
 
 ### Done
@@ -436,5 +500,11 @@ desktop:check 0 fail
 ## Driver gate after sprint 10
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 74 ℹ pass 74 ℹ fail 0 ℹ desktop:check 0 fail
 
+## Driver gate after sprint 11
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 75 ℹ pass 75 ℹ fail 0 ℹ desktop:check 0 fail
+
 ## Driver gate after sprint 10
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 11
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

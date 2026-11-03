@@ -1,36 +1,38 @@
 {
-  "capturedAt": "2026-11-03T10:11:50.778Z",
+  "capturedAt": "2026-11-03T10:24:05.004Z",
   "port": 5297,
   "samples": [
     {
       "view": "week",
-      "ms": 611,
+      "ms": 588,
       "longTasks": [],
       "cls": 0,
       "active": true
     },
     {
       "view": "ledger",
-      "ms": 599,
+      "ms": 597,
       "longTasks": [],
       "cls": 0,
       "active": true
     },
     {
       "view": "review",
-      "ms": 621,
-      "longTasks": [],
+      "ms": 619,
+      "longTasks": [
+        67
+      ],
       "cls": 0,
       "active": true
     },
     {
       "view": "today",
-      "ms": 565,
+      "ms": 634,
       "longTasks": [],
       "cls": 0,
       "active": true
     }
   ],
-  "maxLongTaskMs": 0,
+  "maxLongTaskMs": 67,
   "maxCls": 0
 }
