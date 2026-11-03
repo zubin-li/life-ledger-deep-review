@@ -224,3 +224,13 @@ test("Batch 13 r4 — habit check pulse + weekly goal toggle polish", () => {
   assert.match(app, /function pulseProgressOrbit\(/);
   assert.match(app, /function pulseWeeklyGoalRow\(/);
 });
+
+test("Batch 13 r5 — all habits celebration + review stat press", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r5 — all habits celebration/);
+  assert.match(app, /function pulseAllCompleteOrbit\(/);
+  assert.match(app, /function pulseReviewLedgerStatBtn\(/);
+  assert.match(css, /is-all-complete-orbit/);
+  assert.match(css, /is-stat-press/);
+});

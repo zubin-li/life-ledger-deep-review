@@ -1,3 +1,24 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 5
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 · 习惯全完成** | 最后一项计入习惯勾选时，原有全屏 **celebration** 现同步触发更强 **进度环**（`is-all-complete-orbit`）与 **习惯 Today 卡** 描边高亮（`is-all-complete`），与单次勾选的 `is-progress-bump` 区分。 |
+| **Goal 2 · 复盘 Money** | 月度摘要 **支出 / 收入 / 结余** 可点击数字在跳转记账前播放 **`is-stat-press`** 按压反馈（`pulseReviewLedgerStatBtn`）。 |
+| **实现** | `app.js` `pulseAllCompleteOrbit` / `pulseHabitsAllCompleteCard` / `pulseReviewLedgerStatBtn`；`v210.css` Batch 13 r5。 |
+| **测试** | `npm test` **413**；`npm run test:browser` **63**（+2 全完成庆祝 / 复盘 stat）。 |
+
+## 验收
+
+1. **今日** → 依次勾选所有计入完成度的习惯 → 出现庆祝文案，进度环与习惯卡同步高亮（动效约 1.9s；静态截图见 `b13r5-habit-all-complete-zh-light-1440-webkit.png`，此时为 **7/7** 完成态）。
+2. **复盘** → **Money** 面板点任一金额 → 按钮短暂缩放后再进入记账（`b13r5-review-stat-press-de-dark-390-chromium.png` 为跳转后的 de 深色记账页）。
+3. 重拍：`node .overnight/capture-batch13-round5.mjs`（端口 **5298**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 4
 
 Web **2.1.0**、Mac **3.1.0**。

@@ -6318,3 +6318,55 @@ html.motion-reduced .tc-grid > [data-card="habits"] .habit-card.just-unchecked:n
     box-shadow: none;
   }
 }
+
+/* Batch 13 r5 — all habits celebration ↔ orbit; review Money stat press */
+#progressOrbit.is-all-complete-orbit {
+  transform: scale(1.1);
+  transition: transform 0.55s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+#progressOrbit.is-all-complete-orbit .progress-orbit-ring {
+  filter: brightness(1.14) saturate(1.08);
+  box-shadow: 0 0 0 4px color-mix(in srgb, #a8c5b1 28%, transparent);
+  transition: filter 0.55s ease, box-shadow 0.55s ease;
+}
+
+.tc-grid > [data-card="habits"].is-all-complete {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #a8c5b1 42%, transparent),
+    0 12px 40px color-mix(in srgb, #46705a 12%, transparent);
+  transition: box-shadow 0.45s var(--ease-enter, ease);
+}
+
+html[data-theme="dark"] .tc-grid > [data-card="habits"].is-all-complete {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #b8dfc6 32%, transparent),
+    0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+button.review-ledger-stat-btn.is-stat-press {
+  transform: scale(0.97);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 12%, var(--card, #fff));
+  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease;
+}
+
+html.motion-reduced #progressOrbit.is-all-complete-orbit,
+html.motion-reduced .tc-grid > [data-card="habits"].is-all-complete,
+html.motion-reduced button.review-ledger-stat-btn.is-stat-press {
+  transform: none;
+  filter: none;
+  box-shadow: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #progressOrbit.is-all-complete-orbit,
+  #progressOrbit.is-all-complete-orbit .progress-orbit-ring,
+  .tc-grid > [data-card="habits"].is-all-complete,
+  button.review-ledger-stat-btn.is-stat-press {
+    transform: none;
+    filter: none;
+    box-shadow: none;
+    transition: none;
+  }
+}

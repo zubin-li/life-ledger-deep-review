@@ -6173,14 +6173,45 @@ function updateHabitFormPreview() {
   previewNote.hidden = !version.note;
 }
 
+function pulseAllCompleteOrbit() {
+  const orbit = $("#progressOrbit");
+  if (!orbit || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  orbit.classList.remove("is-all-complete-orbit", "is-progress-bump");
+  void orbit.offsetWidth;
+  orbit.classList.add("is-all-complete-orbit");
+  clearTimeout(pulseAllCompleteOrbit.timer);
+  pulseAllCompleteOrbit.timer = setTimeout(() => orbit.classList.remove("is-all-complete-orbit"), 1900);
+}
+
+function pulseHabitsAllCompleteCard() {
+  const card = document.querySelector('[data-card="habits"]');
+  if (!card || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  card.classList.remove("is-all-complete");
+  void card.offsetWidth;
+  card.classList.add("is-all-complete");
+  clearTimeout(pulseHabitsAllCompleteCard.timer);
+  pulseHabitsAllCompleteCard.timer = setTimeout(() => card.classList.remove("is-all-complete"), 1900);
+}
+
 function showCelebration() {
   const celebration = $("#celebration");
   if (!celebration || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  pulseAllCompleteOrbit();
+  pulseHabitsAllCompleteCard();
   celebration.classList.remove("show");
   void celebration.offsetWidth;
   celebration.classList.add("show");
   clearTimeout(showCelebration.timer);
   showCelebration.timer = setTimeout(() => celebration.classList.remove("show"), 1900);
+}
+
+function pulseReviewLedgerStatBtn(btn) {
+  if (!btn || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  btn.classList.remove("is-stat-press");
+  void btn.offsetWidth;
+  btn.classList.add("is-stat-press");
+  clearTimeout(pulseReviewLedgerStatBtn.timer);
+  pulseReviewLedgerStatBtn.timer = setTimeout(() => btn.classList.remove("is-stat-press"), 420);
 }
 
 function openDrawer(date) {
@@ -9721,7 +9752,10 @@ function renderReviewLedgerSummary() {
     </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${scatterEmptyBlock}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => openLedgerForReviewMonth(ym));
   host.querySelectorAll("[data-open-ledger-month]").forEach(btn => {
-    btn.addEventListener("click", () => openLedgerForReviewMonth(ym));
+    btn.addEventListener("click", () => {
+      pulseReviewLedgerStatBtn(btn);
+      openLedgerForReviewMonth(ym);
+    });
   });
   host.querySelector("[data-open-ledger-recurring]")?.addEventListener("click", () => {
     window.LifeLedgerLedgerUI?.openToMonth?.(ym, { scrollToList: false, pulseMonth: true });
