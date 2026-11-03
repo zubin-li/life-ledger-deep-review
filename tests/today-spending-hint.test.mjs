@@ -45,3 +45,9 @@ test("Today spending card shows top category chip when today has expenses", () =
   assert.match(widgets, /spendingTodayDetail/);
   assert.match(widgets, /spendingTodayCountMany/);
 });
+
+test("Today spending card compares today vs yesterday when ledger has history", () => {
+  assert.match(widgets, /tw-spend-compare/);
+  assert.match(widgets, /alignedDaySpendCompare/);
+  assert.match(widgets, /spendingMoreDay/);
+});

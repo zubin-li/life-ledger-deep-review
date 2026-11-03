@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 6）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 7）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 6：** 复盘 **本月支出摘要** 增加 **较上月同期** 对比 caption；单元 **369**、浏览器 **17** 全绿。
+**Batch 8 Round 7：** Today **今日支出** 增加 **较昨日** 对比 caption；单元 **371**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 6）— 复盘 vs 上月同期
+## 本轮（Batch 8 · Round 7）— Today vs 昨日
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | `alignedDaySpendCompare`：默认货币当日支出 vs 前一自然日；复用 `spendInsightDeltaPercent`。 |
+| **UI** | `.tw-spend-compare` 在「今日支出 · N 笔」下方；demo 上如「较昨日 +2113%」（昨日咖啡、当日房租）。 |
+| **测试** | `ledger-core.test.mjs`、`today-spending-hint.test.mjs`；`npm test` **371**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r7-*`（`node .overnight/capture-batch8-round7.mjs`，端口 **5297**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **今日** → 滚到 **今日支出** → caption 下见 **较昨日**（`b8r7-today-spend-yesterday-zh-light-1440-chromium.png`）。
+2. 英文手机：`b8r7-today-spend-yesterday-en-light-390-webkit.png`。
+3. 当天无支出、昨天有支出时显示「较昨日无新支出」。
+
+**已知：** demo 昨日基数小，百分比可能很夸张；reduced-motion CSS 大合并仍留 2.2。
+
+---
+
+## 上一轮（Batch 8 · Round 6）— 复盘 vs 上月同期
 
 | 项目 | 说明 |
 |------|------|

@@ -469,6 +469,36 @@
     };
   }
 
+  /** Compare default-currency expenses on isoDate vs the previous calendar day. */
+  function alignedDaySpendCompare(ledger, isoDate) {
+    if (!ISO_DATE.test(isoDate)) return null;
+    const prev = shiftIsoDate(isoDate, -1);
+    const curExp = Math.abs(rangeSummary(ledger, isoDate, isoDate).expenseMinor);
+    const prevExp = Math.abs(rangeSummary(ledger, prev, prev).expenseMinor);
+    if (curExp === 0 && prevExp === 0) return null;
+    if (curExp === prevExp) {
+      return {
+        direction: "same",
+        currentExpenseMinor: curExp,
+        previousExpenseMinor: prevExp,
+        deltaMinor: 0,
+        deltaPercent: 0,
+      };
+    }
+    const direction = curExp > prevExp ? "up" : "down";
+    const deltaMinor = curExp - prevExp;
+    const deltaPercent = prevExp > 0 && curExp > 0
+      ? spendInsightDeltaPercent(Math.max(curExp, prevExp), Math.min(curExp, prevExp))
+      : null;
+    return {
+      direction,
+      currentExpenseMinor: curExp,
+      previousExpenseMinor: prevExp,
+      deltaMinor,
+      deltaPercent,
+    };
+  }
+
   function dailySpendHeatmap(ledger, ym) {
     const base = normalize(ledger);
     const map = new Map();
@@ -2077,6 +2107,7 @@
     rangeSummary,
     alignedWeekSpendCompare,
     alignedMonthSpendCompare,
+    alignedDaySpendCompare,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

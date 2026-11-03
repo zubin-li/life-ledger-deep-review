@@ -4383,3 +4383,23 @@ html.motion-reduced button.week-insight-card.week-insight-card--ledger:not(:disa
     transform: none;
   }
 }
+
+/* Batch 8 round 7 — Today spending vs yesterday caption */
+.tw-card.tw-spending .tw-spend-compare {
+  display: block;
+  margin: 2px 0 0;
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary, rgba(60, 60, 67, 0.68));
+  opacity: 0.92;
+}
+
+html[data-theme="dark"] .tw-card.tw-spending .tw-spend-compare {
+  color: var(--text-secondary, rgba(235, 235, 245, 0.62));
+}
+
+.tw-card.tw-spending.is-empty .tw-spend-compare[hidden] {
+  display: none;
+}
