@@ -1,4 +1,73 @@
 
+## Round 10 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **C5 CSS** | `prune-ledger-view-dead-css.mjs` 删 **#ledgerView** wellness 空态 / budget-empty 死规则 → **6042** 行（−99）；保留 Batch 12 r3 注释供测试 |
+| **D3 动效** | Today 记一笔 sheet 今日合计 **`rollText`**（与支出卡片一致） |
+| **验证** | `fb-r10-*`（5297）WebKit + Chromium + Mac sheet；`perf-nav-trace.json` **maxLongTaskMs 0**, **CLS 0** |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6042** 行，仍远高于 ~3250；需 v2.2 拆文件或删更多 legacy batch |
+| **D3** | 全站数字 roll-up 已覆盖 ledger + Today 卡/sheet；其它页 KPI 可选 |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面（未重跑 compare）。
+
+### Evidence (六个已知问题 · r10)
+
+1. **C1** — `fb-r10-today-onboard-zh-light-390-webkit.png` + `today-cards-onboard.browser.test.mjs`（实色 `--ll-surface-float`）
+2. **C2** — `fb-r10-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r10-today-zh-light-1440-chromium.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — r7 `weather-headless-compare.json`；`fb-r10-today-zh-light-1440` 天气区空（无网）
+5. **C5** — **6042** 行；单 `capture.mjs` + prune 脚本族
+6. **C6** — `fb-r10-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 10)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | sheet 合计 roll 200ms transform/opacity；无 layout 动画新增 | OK |
+| ui-ux-pro-max | 记账页 panel 族与 week 一致（fb-r10）；touch 目标未改 | OK |
+| design-dna | 侧栏顺序、单标题、donut+日条符合 spec | OK |
+| Rauno / Linear | 导航 perf 无 long task；VT 未动 | OK |
+| Screenshots | ledger/today/week/review 1440+390 目视 | OK（天气空=环境） |
+| Tests | **433** unit + **74** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- `tc-bar` / `tc-edit-toggle` 仍半透玻璃（非 C1 浮层类；可改 `--ll-surface-float`）
+- v210.css 下一刀：合并重复 enter/stagger 或拆文件
+
+### `npm test` (round 10 gate · final)
+
+```
+433 pass, 0 fail (unit)
+74 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 结构性瘦身或 2.2 分文件
+2. `compare-v2010.mjs` 轻量回归
+3. 组件库 dialog / tc-bar 实色 audit
+
+---
+
+## Round 9 (2026-11-03) — summary
+
+Removed **ledger-legacy-viz** DOM; opaque float audit (settings, popovers); **6140** lines CSS; **433+74** tests green. Details: `.overnight/REPORT.md` Round 9 block.
+
+---
+
 ## Round 8 (2026-11-03)
 
 ### Done
@@ -362,4 +431,10 @@ desktop:check 0 fail
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
 ## Driver gate after sprint 9
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 10
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 74 ℹ pass 74 ℹ fail 0 ℹ desktop:check 0 fail
+
+## Driver gate after sprint 10
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

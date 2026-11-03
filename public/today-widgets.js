@@ -802,7 +802,14 @@
       const locale = currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
       const detail = ledger ? L.spendingTodayDetail(ledger, selectedPlanningDate, { lang: currentLang }) : { totalMinor: 0 };
       const cur = ledger?.settings?.defaultCurrency || "EUR";
-      totalEl.textContent = `${t("spendingToday")} · ${L.formatMoney(detail.totalMinor ? -detail.totalMinor : 0, cur, locale)}`;
+      const totalText = `${t("spendingToday")} · ${L.formatMoney(detail.totalMinor ? -detail.totalMinor : 0, cur, locale)}`;
+      const prevTotal = totalEl.dataset.rollValue || "";
+      if (window.LifeLedgerInteraction?.rollText && prevTotal && prevTotal !== totalText) {
+        window.LifeLedgerInteraction.rollText(totalEl, totalText, prevTotal);
+      } else {
+        totalEl.textContent = totalText;
+        totalEl.dataset.rollValue = totalText;
+      }
       refreshRecent();
       refreshCatChip();
     }

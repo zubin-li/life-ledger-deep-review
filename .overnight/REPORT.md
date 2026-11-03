@@ -1,3 +1,44 @@
+# Life Ledger — 主人反馈 pass（Round 10 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **C5 CSS 再瘦身** | 删除已无 DOM 的 **#ledgerView** wellness 散点空态样式（约 **99** 行）→ **6042** 行；脚本 `.overnight/prune-ledger-view-dead-css.mjs` |
+| **D3 动效** | 今日 **记一笔 sheet** 保存后，顶部「今日支出」合计与卡片一样 **数字滚动**（`rollText`） |
+| **性能** | 侧栏切换 trace：**long task 0ms**，CLS **0**（`.overnight/perf-nav-trace.json`） |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **今日** → 点 **今日支出** 数字 → sheet 里记一笔 → 看合计是否顺滑滚动
+3. **记账** → 周/月、donut、折叠交易（与 r9 相同，更干净 CSS）
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r10`
+
+## 截图（Round 10）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r10-ledger-zh-light-1440-chromium.png` | 记账统计 **C2** |
+| `fb-r10-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r10-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡 |
+| `fb-r10-today-sheet-zh-light-390-webkit.png` | Today 记一笔 sheet |
+| `fb-r10-week-zh-light-1440-webkit.png` | 本周对照 |
+| `fb-r10-mac-today-sheet-zh-light-1440-webkit.png` | Mac 壳 sheet |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **74** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 9 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。
