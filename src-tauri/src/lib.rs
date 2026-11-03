@@ -279,6 +279,7 @@ fn menu_action_for_id(id: &str) -> Option<&'static str> {
         "view_longrange" => Some("view:longrange"),
         "view_timeline" => Some("view:timeline"),
         "view_review" => Some("view:review"),
+        "view_ledger" => Some("view:ledger"),
         "view_habits" => Some("view:habits"),
         "sidebar_toggle" => Some("sidebar:toggle"),
         "date_today" => Some("date:today"),
@@ -319,6 +320,7 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "view_longrange" => ["长期", "Horizon", "Horizont"],
         "view_timeline" => ["时间线", "Timeline", "Zeitleiste"],
         "view_review" => ["复盘", "Review", "Rückblick"],
+        "view_ledger" => ["记账", "Money", "Geld"],
         "view_habits" => ["习惯设置", "Habits", "Gewohnheiten"],
         "sidebar_toggle" => ["显示或隐藏边栏", "Show or Hide Sidebar", "Seitenleiste ein-/ausblenden"],
         "date_today" => ["回到今天", "Go to Today", "Zu heute"],
@@ -398,6 +400,7 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
         .item(&item("view_longrange", Some("CmdOrCtrl+3"))?)
         .item(&item("view_timeline", Some("CmdOrCtrl+4"))?)
         .item(&item("view_review", Some("CmdOrCtrl+5"))?)
+        .item(&item("view_ledger", Some("CmdOrCtrl+7"))?)
         .item(&item("view_habits", Some("CmdOrCtrl+6"))?)
         .separator()
         .item(&item("date_today", Some("CmdOrCtrl+T"))?)
@@ -1223,6 +1226,7 @@ mod tests {
         assert_eq!(menu_action_for_id("view_today"), Some("view:today"));
         assert_eq!(menu_action_for_id("sidebar_toggle"), Some("sidebar:toggle"));
         assert_eq!(menu_action_for_id("view_longrange"), Some("view:longrange"));
+        assert_eq!(menu_action_for_id("view_ledger"), Some("view:ledger"));
         assert_eq!(menu_action_for_id("export_backup"), Some("export"));
         assert_eq!(menu_action_for_id("unknown_item"), None);
     }

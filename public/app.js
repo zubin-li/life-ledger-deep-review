@@ -6214,6 +6214,15 @@ function pulseReviewLedgerStatBtn(btn) {
   pulseReviewLedgerStatBtn.timer = setTimeout(() => btn.classList.remove("is-stat-press"), 420);
 }
 
+function pulseReviewScatterJumpChip(btn) {
+  if (!btn || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  btn.classList.remove("is-jump-press");
+  void btn.offsetWidth;
+  btn.classList.add("is-jump-press");
+  clearTimeout(pulseReviewScatterJumpChip.timer);
+  pulseReviewScatterJumpChip.timer = setTimeout(() => btn.classList.remove("is-jump-press"), 420);
+}
+
 function isGenericTypingTarget(target) {
   if (!target || !(target instanceof Element)) return false;
   if (target.isContentEditable) return true;
@@ -9811,6 +9820,7 @@ function renderReviewLedgerSummary() {
   const motionReduced = document.documentElement.classList.contains("motion-reduced");
   host.querySelectorAll("[data-review-scatter-jump]").forEach(btn => {
     btn.addEventListener("click", () => {
+      pulseReviewScatterJumpChip(btn);
       const id = btn.getAttribute("data-review-scatter-jump");
       host._reviewJumpHoldId = id;
       host._reviewJumpHoldUntil = performance.now() + 650;

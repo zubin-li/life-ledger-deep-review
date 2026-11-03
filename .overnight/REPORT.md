@@ -1,3 +1,25 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 7
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 · 复盘 jump chips** | 手机宽 **Money** 摘要下 **心情 / 习惯 / 专注 / 洞察** 跳转 chip 点击时 **`is-jump-press`** 按压反馈，再滚动到对应散点/洞察块。 |
+| **Goal 1 · Mac 菜单** | **显示 → 记账**（德 **Geld**）**⌘7** 进入侧边栏 **Money** 页；README 三语注明 **⌘7** 与全局 **M**（快速录入聚焦）。 |
+| **实现** | `app.js` `pulseReviewScatterJumpChip`；`src-tauri/lib.rs` `view_ledger`；`v210.css` Batch 13 r7。 |
+| **测试** | `npm test` **415**；`npm run test:browser` **67**（+1 jump chip press）。 |
+
+## 验收
+
+1. **复盘** → 390 宽（或真机）→ 点 **习惯** chip → 短暂高亮 + 滚到习惯×支出图（`b13r7-review-jump-press-zh-light-390-chromium.png`）。
+2. de 深色同场景（`b13r7-review-jump-press-de-dark-390-webkit.png`）。
+3. **Mac**：菜单 **View → Money ⌘7**；任意视图 **M** → 记账 + 光标在快速录入（r6 行为不变）。
+4. 重拍：`node .overnight/capture-batch13-round7.mjs`（端口 **5291**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 6
 
 Web **2.1.0**、Mac **3.1.0**。

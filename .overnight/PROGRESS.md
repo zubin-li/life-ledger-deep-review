@@ -1,5 +1,49 @@
 # Overnight progress
 
+## Batch 13 · Round 7 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 6120 行 CSS，避免回归）。
+- **Goal 2：** 复盘 **Money** 区 **jump chips**（心情/习惯/专注/洞察，**≤959px**）点击前 **`is-jump-press`**（`pulseReviewScatterJumpChip`）。
+- **Goal 1 / Mac：** 原生菜单 **显示 → 记账/Geld**（**⌘7** → `view:ledger`）；README EN/ZH/DE 补充 **⌘7** 与全局 **M** 说明。
+- **QA：** `view-enter-selectors` Batch 13 r7；`review-scatter-jump-press.browser`（WebKit 390）；Rust `menu_action_for_id` **view_ledger**。
+- **文档：** CHANGELOG `[Unreleased]` r7；README Mac 快捷键三语。
+- **截图：** `node .overnight/capture-batch13-round7.mjs`（**5291**）→ `b13r7-review-jump-press-zh-light-390-chromium.png`、`b13r7-review-jump-press-de-dark-390-webkit.png`。
+- **QA：** `npm test` **415** pass / 0 fail；`npm run test:browser` **67** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 8+：`v210.css` reduced-motion 物理合并（2.2）；其它页面 micro-interaction 或 insight 小步。
+- 主人验收：**复盘** 手机宽 → 点 **习惯/心情** jump chip → 短暂按压高亮再滚动（`b13r7-review-jump-press-*`）；Mac **显示 → 记账 ⌘7**；任意页 **M** 仍进记账快速录入。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+415 pass, 0 fail (batch 13 round 7, unit gate)
+67 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 6 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
@@ -350,3 +394,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 6
 ℹ tests 414 ℹ pass 414 ℹ fail 0 
+
+## Driver gate after round 7
+ℹ tests 415 ℹ pass 415 ℹ fail 0 

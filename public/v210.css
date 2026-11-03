@@ -6433,3 +6433,29 @@ html.motion-reduced button.text-button[data-open-ledger].is-stat-press {
     transition: none;
   }
 }
+
+/* Batch 13 r7 — review scatter jump chip press; Mac View → Money (⌘7) */
+button.review-scatter-jump-chip.is-jump-press {
+  transform: scale(0.94);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 14%, var(--card, #fff));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--desk-accent, #167dce) 22%, transparent);
+  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, box-shadow 0.22s ease;
+}
+
+html[data-theme="dark"] button.review-scatter-jump-chip.is-jump-press {
+  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 16%, var(--card, #1a1d22));
+}
+
+html.motion-reduced button.review-scatter-jump-chip.is-jump-press {
+  transform: none;
+  box-shadow: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.review-scatter-jump-chip.is-jump-press {
+    transform: none;
+    box-shadow: none;
+    transition: none;
+  }
+}

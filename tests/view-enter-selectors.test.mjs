@@ -248,3 +248,14 @@ test("Batch 13 r6 — global M shortcut, kbd hints, long-press edit, review open
   assert.match(css, /is-long-press-hint/);
   assert.match(css, /button\.text-button\[data-open-ledger\]\.is-stat-press/);
 });
+
+test("Batch 13 r7 — scatter jump chip press + Mac View Money menu", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const libRs = fs.readFileSync(new URL("../src-tauri/src/lib.rs", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r7 — review scatter jump chip press/);
+  assert.match(app, /function pulseReviewScatterJumpChip\(/);
+  assert.match(css, /is-jump-press/);
+  assert.match(libRs, /item\("view_ledger", Some\("CmdOrCtrl\+7"\)/);
+  assert.match(libRs, /"view_ledger" => Some\("view:ledger"\)/);
+});

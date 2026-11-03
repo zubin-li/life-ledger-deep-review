@@ -253,6 +253,8 @@ Download `Life-Ledger-3.1.0-mac-arm64.zip` from the **[Mac 3.1.0 release](https:
 
 Change mode any time in **Settings → Data → Switch to sync mode / Switch to local mode** (also in the browser editions). Five-minute guide: [Mac online edition](docs/macos-cloud.md). Build notes: [docs/macos-desktop.md](docs/macos-desktop.md).
 
+**Keyboard:** the menu bar **View** menu includes **Money** (**⌘7**); from any page press **M** to open **Money** and focus quick entry (same as the web local edition).
+
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 
 The repository includes:
