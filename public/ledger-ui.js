@@ -15,6 +15,7 @@
   let ledgerShortcutBound = false;
   let ledgerCsvDropBound = false;
   let ledgerImportPulse = false;
+  let ledgerChartModePulse = false;
 
   function pulseLedgerCategoryChip(chip) {
     if (!chip || document.documentElement.classList.contains("motion-reduced")) return;
@@ -23,6 +24,24 @@
     chip.classList.add("is-chip-press");
     clearTimeout(pulseLedgerCategoryChip.timer);
     pulseLedgerCategoryChip.timer = setTimeout(() => chip.classList.remove("is-chip-press"), 420);
+  }
+
+  function pulseLedgerChartMode(btn) {
+    if (!btn || document.documentElement.classList.contains("motion-reduced")) return;
+    btn.classList.remove("is-mode-press");
+    void btn.offsetWidth;
+    btn.classList.add("is-mode-press");
+    clearTimeout(pulseLedgerChartMode.timer);
+    pulseLedgerChartMode.timer = setTimeout(() => btn.classList.remove("is-mode-press"), 420);
+  }
+
+  function pulseLedgerHeatDay(cell) {
+    if (!cell || document.documentElement.classList.contains("motion-reduced")) return;
+    cell.classList.remove("is-heat-press");
+    void cell.offsetWidth;
+    cell.classList.add("is-heat-press");
+    clearTimeout(pulseLedgerHeatDay.timer);
+    pulseLedgerHeatDay.timer = setTimeout(() => cell.classList.remove("is-heat-press"), 420);
   }
 
   function isLedgerTypingTarget(target) {
@@ -1256,6 +1275,7 @@
     host.querySelectorAll("[data-chart-mode]").forEach(btn => {
       btn.addEventListener("click", () => {
         categoryChartMode = btn.dataset.chartMode || "donut";
+        ledgerChartModePulse = true;
         render();
       });
     });
@@ -1276,6 +1296,7 @@
     }
     host.querySelectorAll("[data-ledger-day]").forEach(btn => {
       btn.addEventListener("click", () => {
+        pulseLedgerHeatDay(btn);
         const day = btn.getAttribute("data-ledger-day");
         listDayFilter = listDayFilter === day ? "" : day;
         syncHeatSelection(host);
@@ -1785,6 +1806,12 @@
           || matchMedia("(prefers-reduced-motion: reduce)").matches;
         setTimeout(() => wrap.classList.remove("is-import-pulse"), reduced ? 0 : 900);
       }
+    }
+    if (ledgerChartModePulse) {
+      ledgerChartModePulse = false;
+      requestAnimationFrame(() => {
+        pulseLedgerChartMode(host.querySelector(".ledger-chart-mode.is-active"));
+      });
     }
   }
 

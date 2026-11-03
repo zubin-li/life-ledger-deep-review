@@ -13,6 +13,7 @@ All notable changes are documented here.
 - **Polish (Batch 13 r6):** **M** opens **Money** from any page and focuses quick entry; desktop **keyboard hint** row on the ledger page; touch **long-press** a transaction row to edit; **Review → Open Money** / recurring banner buttons share **is-stat-press** feedback.
 - **Polish (Batch 13 r7):** **Review → Money** chart **jump chips** get **is-jump-press** tap feedback before scrolling; **Mac** **View → Money** (**⌘7**) matches the sidebar page (web still uses **M** for quick entry).
 - **Polish (Batch 13 r8):** Sidebar **nav items** get **is-nav-press** on page switch; **Money** quick-entry **category chips** get **is-chip-press** when filling the amount field.
+- **Polish (Batch 13 r9):** **Today → Spending today** amount and **Open Money** buttons get **is-spend-press** before navigation; **Money** **donut/treemap** toggles and **daily spend heatmap** cells get brief **is-mode-press** / **is-heat-press** feedback.
 - **QA (Batch 13 r1):** Unit test for large absolute spend deltas; Playwright sample-entry onboarding (Chromium); structural Batch 13 r1 selectors.
 - **QA (Batch 13 r2):** Playwright journal autosave pulse (WebKit) + mood pick (Chromium); structural Batch 13 r2 selectors.
 - **QA (Batch 13 r3):** Unit test for CSV preview samples; Playwright import preview rows; structural Batch 13 r3 selectors.
@@ -21,6 +22,7 @@ All notable changes are documented here.
 - **QA (Batch 13 r6):** Playwright global **M** shortcut, long-press edit, review header open press; structural Batch 13 r6 selectors.
 - **QA (Batch 13 r7):** Playwright review scatter jump chip press; structural Batch 13 r7 selectors + Mac menu **view_ledger** mapping.
 - **QA (Batch 13 r8):** Playwright sidebar nav press + ledger category chip press; structural Batch 13 r8 selectors.
+- **QA (Batch 13 r9):** Playwright Today spending press + ledger chart/heat press; structural Batch 13 r9 selectors.
 - **Polish (Batch 12 r10 · final):** Overnight Batch 12 closed with release screenshot set `capture-batch12-round10.mjs` (Today→Money day filter, Review→Money month, filtered list strip, de 390 / Mac shell **Money**); **407** unit + **56** browser tests at gate.
 - **Polish (Batch 12 r9):** **Review** monthly **Money** summary — tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month (clears day/category filters; month summary retarget animation).
 - **QA (Batch 12 r9):** Structural tests for `openToMonth` / `openLedgerForReviewMonth`; Playwright Review stat → Money month (WebKit).

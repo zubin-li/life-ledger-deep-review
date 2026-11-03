@@ -270,3 +270,16 @@ test("Batch 13 r8 — sidebar nav press + ledger category chip press", () => {
   assert.match(css, /is-nav-press/);
   assert.match(css, /is-chip-press/);
 });
+
+test("Batch 13 r9 — Today spending open + ledger chart / heat press", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const todayWidgets = fs.readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r9 — Today spending open/);
+  assert.match(todayWidgets, /function pulseTodaySpendControl\(/);
+  assert.match(ledgerUi, /function pulseLedgerChartMode\(/);
+  assert.match(ledgerUi, /function pulseLedgerHeatDay\(/);
+  assert.match(css, /is-spend-press/);
+  assert.match(css, /is-mode-press/);
+  assert.match(css, /is-heat-press/);
+});

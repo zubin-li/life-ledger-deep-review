@@ -690,7 +690,16 @@
     if (showSpendEmptyEnter) c.dataset.spendEmptyEnter = "1";
     else delete c.dataset.spendEmptyEnter;
   }
-  function openLedgerForPlanningDay() {
+  function pulseTodaySpendControl(btn) {
+    if (!btn || document.documentElement.classList.contains("motion-reduced")) return;
+    btn.classList.remove("is-spend-press");
+    void btn.offsetWidth;
+    btn.classList.add("is-spend-press");
+    clearTimeout(pulseTodaySpendControl.timer);
+    pulseTodaySpendControl.timer = setTimeout(() => btn.classList.remove("is-spend-press"), 420);
+  }
+  function openLedgerForPlanningDay(event) {
+    pulseTodaySpendControl(event?.currentTarget);
     if (typeof switchToView !== "function") return;
     window.LifeLedgerLedgerUI?.openToDay?.(selectedPlanningDate);
     switchToView("ledger");

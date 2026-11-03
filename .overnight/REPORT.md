@@ -1,3 +1,24 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 9
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 · Today 支出卡** | 点 **今日支出** 金额或 **打开记账** 时 **`is-spend-press`** 按压反馈，再跳转 **记账** 当日筛选（r12 行为不变）。 |
+| **Goal 2 · 记账图表** | **圆环 / 树图** 切换后 active 按钮 **`is-mode-press`**；**每日支出** 热力格点击 **`is-heat-press`**（筛选/滚列表逻辑不变）。 |
+| **实现** | `today-widgets.js` `pulseTodaySpendControl`；`ledger-ui.js` `pulseLedgerChartMode` / `pulseLedgerHeatDay`；`v210.css` Batch 13 r9。 |
+| **测试** | `npm test` **417**；`npm run test:browser` **71**（+2 Today/ledger press）。 |
+
+## 验收
+
+1. **1440 浅色 zh** → **Today** 滚到 **今日支出** 卡 → 点金额见短暂缩放（截图用 staged press：`b13r9-spend-press-zh-light-1440-chromium.png`）；真机点击会立刻进 **记账**。
+2. **390 深色 de** → **Finanzen** → **Tägliche Ausgaben** 点一格 → 外圈高亮（`b13r9-ledger-heat-press-de-dark-390-webkit.png`）。
+3. 重拍：`node .overnight/capture-batch13-round9.mjs`（端口 **5293**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 8
 
 Web **2.1.0**、Mac **3.1.0**。

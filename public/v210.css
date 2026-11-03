@@ -6499,3 +6499,50 @@ html.motion-reduced button.ledger-chip.is-chip-press {
     transition: none;
   }
 }
+
+/* Batch 13 r9 — Today spending open + ledger chart mode / heatmap day press */
+
+button.tw-spend-today.is-spend-press,
+button.tw-spend-open.is-spend-press {
+  transform: scale(0.96);
+  opacity: 0.92;
+  transition: transform 0.22s var(--ease-enter, ease), opacity 0.22s ease;
+}
+
+button.ledger-chart-mode.is-mode-press {
+  transform: scale(0.94);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--desk-accent, #3a8f7a) 45%, transparent);
+  transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
+}
+
+button.ledger-heat.is-heat-press {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #3a8f7a) 38%, transparent);
+  transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
+}
+
+html[data-theme="dark"] button.ledger-heat.is-heat-press {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #6eb3ff) 42%, transparent);
+}
+
+html.motion-reduced button.tw-spend-today.is-spend-press,
+html.motion-reduced button.tw-spend-open.is-spend-press,
+html.motion-reduced button.ledger-chart-mode.is-mode-press,
+html.motion-reduced button.ledger-heat.is-heat-press {
+  transform: none;
+  box-shadow: none;
+  opacity: 1;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.tw-spend-today.is-spend-press,
+  button.tw-spend-open.is-spend-press,
+  button.ledger-chart-mode.is-mode-press,
+  button.ledger-heat.is-heat-press {
+    transform: none;
+    box-shadow: none;
+    opacity: 1;
+    transition: none;
+  }
+}
