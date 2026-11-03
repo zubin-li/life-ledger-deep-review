@@ -9606,36 +9606,23 @@ function buildReviewScatterChartBlocks(payload) {
   return { scatterParts };
 }
 
-function renderReviewLedgerSummary() {
-  const host = $("#reviewLedgerSummary");
-  const L = globalThis.LifeLedgerLedger;
-  if (!host || !L) return;
-  const ym = monthKey(cursor);
-  const ledger = state.ledger ? L.normalize(state.ledger, { lang: currentLang }) : null;
-  if (!ledger?.transactions?.length) {
-    cancelReviewScatterHydrate(host);
-    disconnectReviewScatterJumpSpy(host);
-    host.hidden = true;
-    host.innerHTML = "";
-    return;
-  }
-  cancelReviewScatterHydrate(host);
-  const reviewScatterGen = (Number(host.dataset.reviewScatterGen) || 0) + 1;
-  host.dataset.reviewScatterGen = String(reviewScatterGen);
-  host.hidden = false;
-  const summary = L.monthSummary(ledger, ym);
-  const locale = i18n[currentLang]?.locale || "de-DE";
-  const cur = ledger.settings.defaultCurrency;
-  const dailyRows = buildLedgerMonthDailyRows(ym) || [];
-  const moodCompare = L.moodSpendComparison(dailyRows);
-  const moodScatter = L.moodSpendScatter(dailyRows);
-  const habitScatter = L.habitCompletionSpendScatter(dailyRows);
-  const focusScatter = L.focusSpendScatter(dailyRows);
-  const focusCompare = L.focusSpendInsight(dailyRows);
-  const habitCompare = L.habitCompletionSpendInsight(dailyRows);
-  const scatterRenderOpts = { lang: currentLang, locale, currency: cur };
-  const scatterChartPayload = () => ({ moodScatter, habitScatter, focusScatter, scatterRenderOpts, L });
-  const scatterHasCharts = !!(moodScatter || habitScatter || focusScatter);
+function runWhenIdle(fn, { timeout = 120 } = {}) {
+  if (typeof requestIdleCallback === "function") requestIdleCallback(() => fn(), { timeout });
+  else requestAnimationFrame(() => requestAnimationFrame(() => fn()));
+}
+
+function buildReviewLedgerInsightLines({
+  moodCompare,
+  focusCompare,
+  habitCompare,
+  overs,
+  ledger,
+  ym,
+  dailyRows,
+  L,
+  locale,
+  cur,
+}) {
   let moodLine = "";
   if (moodCompare) {
     const { greatAvg, lowAvg } = moodCompare;
@@ -9688,7 +9675,6 @@ function renderReviewLedgerSummary() {
     habitLine = `<p class="review-ledger-habits" style="--insight-i:2"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("习惯", "Habits", "Gewohnheiten"))}</span><span class="review-ledger-insight-body">${escapeHtml(habitBody)}${habitDeltaHtml}</span></p>`;
   }
   let budgetLine = "";
-  const overs = L.budgetOverspendList(ledger, ym);
   if (overs.length) {
     const totalOver = overs.reduce((sum, row) => sum + row.overMinor, 0);
     const worst = overs[0];
@@ -9765,6 +9751,54 @@ function renderReviewLedgerSummary() {
     }
     budgetLine = `<p class="review-ledger-budget" style="--insight-i:3"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("预算", "Budget", "Budget"))}</span><span class="review-ledger-insight-body">${escapeHtml(budgetBody)}${moodBudgetHtml}</span></p>`;
   }
+  return [moodLine, habitLine, focusLine, budgetLine].filter(Boolean);
+}
+
+function applyReviewLedgerInsights(host, gen, buildLines) {
+  if (host.dataset.reviewScatterGen !== String(gen)) return;
+  const el = host.querySelector("#review-ledger-insights.is-insights-pending");
+  if (!el) return;
+  const insightParts = buildLines();
+  el.classList.remove("is-insights-pending");
+  el.removeAttribute("aria-busy");
+  el.innerHTML = insightParts.join("");
+  requestAnimationFrame(() => {
+    globalThis.LifeLedgerInteraction?.retarget?.(el);
+  });
+}
+
+function renderReviewLedgerSummary() {
+  const host = $("#reviewLedgerSummary");
+  const L = globalThis.LifeLedgerLedger;
+  if (!host || !L) return;
+  const ym = monthKey(cursor);
+  const ledger = state.ledger ? L.normalize(state.ledger, { lang: currentLang }) : null;
+  if (!ledger?.transactions?.length) {
+    cancelReviewScatterHydrate(host);
+    disconnectReviewScatterJumpSpy(host);
+    host.hidden = true;
+    host.innerHTML = "";
+    return;
+  }
+  cancelReviewScatterHydrate(host);
+  const reviewScatterGen = (Number(host.dataset.reviewScatterGen) || 0) + 1;
+  host.dataset.reviewScatterGen = String(reviewScatterGen);
+  host.hidden = false;
+  const summary = L.monthSummary(ledger, ym);
+  const locale = i18n[currentLang]?.locale || "de-DE";
+  const cur = ledger.settings.defaultCurrency;
+  const dailyRows = buildLedgerMonthDailyRows(ym) || [];
+  const moodCompare = L.moodSpendComparison(dailyRows);
+  const moodScatter = L.moodSpendScatter(dailyRows);
+  const habitScatter = L.habitCompletionSpendScatter(dailyRows);
+  const focusScatter = L.focusSpendScatter(dailyRows);
+  const focusCompare = L.focusSpendInsight(dailyRows);
+  const habitCompare = L.habitCompletionSpendInsight(dailyRows);
+  const scatterRenderOpts = { lang: currentLang, locale, currency: cur };
+  const scatterChartPayload = () => ({ moodScatter, habitScatter, focusScatter, scatterRenderOpts, L });
+  const scatterHasCharts = !!(moodScatter || habitScatter || focusScatter);
+  const overs = L.budgetOverspendList(ledger, ym);
+  const hasInsightContent = !!(moodCompare || focusCompare || habitCompare || overs.length);
   const scatterSection = scatterHasCharts
     ? `<div class="review-scatter-grid is-retargeting is-scatter-pending" aria-busy="true"><div class="review-scatter-pending-skeleton ll-skeleton" aria-hidden="true"></div></div>`
     : "";
@@ -9789,9 +9823,8 @@ function renderReviewLedgerSummary() {
       languageText("连续记录心情、习惯完成与支出后，心情 / 习惯 / 专注与支出的对照图会自动出现。", "Log mood, habit completion, and spending on more days and mood, habit, and focus vs spend charts will appear.", "Erfasse an mehr Tagen Stimmung, Gewohnheiten und Ausgaben — dann erscheinen die Vergleichsdiagramme."),
     )}<ul class="review-scatter-empty-steps" aria-label="${escapeHtml(languageText("还需要的数据", "Still needed", "Noch nötig"))}">${scatterSteps}</ul><button type="button" class="primary-button review-scatter-empty-cta" id="reviewScatterEmptyToday">${escapeHtml(scatterEmptyCta)}</button></div>`;
   }
-  const insightParts = [moodLine, habitLine, focusLine, budgetLine].filter(Boolean);
-  const insightSection = insightParts.length
-    ? `<div class="review-ledger-insights is-retargeting" id="review-ledger-insights" tabindex="-1">${insightParts.join("")}</div>`
+  const insightSection = hasInsightContent
+    ? `<div class="review-ledger-insights is-retargeting is-insights-pending" id="review-ledger-insights" tabindex="-1" aria-busy="true"><div class="review-insights-pending-skeleton ll-skeleton" aria-hidden="true"></div></div>`
     : "";
   const spendText = L.formatMoney(summary.expenseMinor, cur, locale);
   const incomeText = L.formatMoney(summary.incomeMinor, cur, locale);
@@ -9842,7 +9875,7 @@ function renderReviewLedgerSummary() {
   if (moodScatter) jumpChips.push(jumpLabel("review-scatter-mood", languageText("心情", "Mood", "Stimmung")));
   if (habitScatter) jumpChips.push(jumpLabel("review-scatter-habit", languageText("习惯", "Habits", "Gewohnheiten")));
   if (focusScatter) jumpChips.push(jumpLabel("review-scatter-focus", languageText("专注", "Focus", "Fokus")));
-  if (insightParts.length) jumpChips.push(jumpLabel("review-ledger-insights", languageText("洞察", "Insights", "Einblicke")));
+  if (hasInsightContent) jumpChips.push(jumpLabel("review-ledger-insights", languageText("洞察", "Insights", "Einblicke")));
   const jumpNav = jumpChips.length >= 2
     ? `<nav class="review-scatter-jump" aria-label="${escapeHtml(languageText("本月相关图表", "Monthly chart sections", "Monatsdiagramme"))}">${jumpChips.join("")}</nav>`
     : "";
@@ -9908,10 +9941,30 @@ function renderReviewLedgerSummary() {
     });
   });
   if (scatterHasCharts) {
-    scheduleReviewScatterHydrate(host, reviewScatterGen, scatterChartPayload);
+    runWhenIdle(() => {
+      if (host.dataset.reviewScatterGen !== String(reviewScatterGen)) return;
+      scheduleReviewScatterHydrate(host, reviewScatterGen, scatterChartPayload);
+    }, { timeout: 100 });
   } else {
     bindReviewScatterDotTips(host);
     bindReviewScatterJumpSpy(host);
+  }
+  if (hasInsightContent) {
+    const insightCtx = {
+      moodCompare,
+      focusCompare,
+      habitCompare,
+      overs,
+      ledger,
+      ym,
+      dailyRows,
+      L,
+      locale,
+      cur,
+    };
+    runWhenIdle(() => {
+      applyReviewLedgerInsights(host, reviewScatterGen, () => buildReviewLedgerInsightLines(insightCtx));
+    }, { timeout: 120 });
   }
   const scatterEmptyHint = host.querySelector("#reviewScatterEmptyHint");
   if (scatterEmptyHint) {
@@ -9930,7 +9983,7 @@ function renderReviewLedgerSummary() {
     retarget?.(host.querySelector(".review-ledger-stats.is-retargeting"));
     const grid = host.querySelector(".review-scatter-grid.is-retargeting:not(.is-scatter-pending)");
     retarget?.(grid);
-    retarget?.(host.querySelector(".review-ledger-insights.is-retargeting"));
+    retarget?.(host.querySelector(".review-ledger-insights.is-retargeting:not(.is-insights-pending)"));
   });
 }
 

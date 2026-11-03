@@ -1713,6 +1713,17 @@ html.motion-reduced .review-scatter-pending-skeleton {
   opacity: 0.35;
 }
 
+.review-insights-pending-skeleton {
+  width: 100%;
+  min-height: 4.5rem;
+  border-radius: var(--radius-lg, 16px);
+}
+
+html.motion-reduced .review-insights-pending-skeleton {
+  animation: none;
+  opacity: 0.35;
+}
+
 .review-scatter-grid .review-mood-scatter-wrap,
 .review-scatter-grid .review-habit-scatter-wrap,
 .review-scatter-grid .review-focus-scatter-wrap {

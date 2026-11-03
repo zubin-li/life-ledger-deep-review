@@ -29,7 +29,7 @@ cursor_round() {  # $1 = tag, $2 = extra instruction
 }
 
 while busy; do sleep 30; done   # let the round that is already running finish
-commit "batch 20 round 1 (cursor $MODEL)" "$(gate b20r1)"
+commit "sprint 15 (cursor $MODEL, wrap-up)" "$(gate s15)"
 
 ROUND=(
 "SELF-REVIEW IS PART OF EVERY ROUND (no external reviewer until the very end). Before you finish this round, review your own
@@ -57,5 +57,5 @@ open(sys.argv[2], "w").write(f"# Antigravity final review\n\nstatus: {d.get('sta
 EOF
 commit "final antigravity review notes" "(review only)"
 
-cursor_round final "FINAL ROUND. 1) Read .overnight/REVIEW.md (Antigravity's final review) and fix every HIGH and MED finding you can reproduce; note any you could not reproduce and why. 2) Then write .overnight/CHANGES-zh.md for the owner, in plain Chinese, no code: everything that changed since tag v2.0.10, grouped as 新功能 / 记账 / 动效与交互 / 配图 / 细节打磨 / 修复的问题 / 已知限制. For each item: what the owner sees and where to click (page + element). Be specific and complete (use git log v2.0.10.. and git diff v2.0.10 --stat to make sure nothing is missing), but do not invent anything that is not in the code. 3) npm test must be green."
+cursor_round final "FINAL ROUND. 1) Read .overnight/REVIEW.md (Antigravity's final review) and fix every HIGH and MED finding you can reproduce; note any you could not reproduce and why. 2) Then write .overnight/CHANGES-zh.md for the owner, in plain Chinese, no code: everything that changed since tag v2.0.10, grouped as 新功能 / 记账 / 动效与交互 / 配图 / 细节打磨 / 修复的问题 / 已知限制. For each item: what the owner sees and where to click (page + element). Be specific and complete (use git log v2.0.10.. and git diff v2.0.10 --stat to make sure nothing is missing), but do not invent anything that is not in the code. 3) Also finish C5 if at all possible (public/v210.css: delete dead and duplicate rules for removed UI so it is well under half of 6,500 lines); if you cannot finish it, list it under 已知限制 with the real line count. 4) npm test must be green."
 log "sprint finished: $(git log --oneline | head -1)"

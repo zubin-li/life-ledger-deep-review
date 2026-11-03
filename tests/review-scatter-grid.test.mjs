@@ -7,7 +7,10 @@ test("review money panel uses scatter grid and insight stack markup", () => {
   assert.match(app, /class="review-scatter-grid is-retargeting(?: is-scatter-pending)?"/);
   assert.match(app, /reviewScatterChartBlockJobs/);
   assert.match(app, /insertAdjacentHTML\("beforeend"/);
-  assert.match(app, /class="review-ledger-insights is-retargeting"/);
+  assert.match(app, /class="review-ledger-insights is-retargeting(?: is-insights-pending)?"/);
+  assert.match(app, /buildReviewLedgerInsightLines/);
+  assert.match(app, /runWhenIdle/);
+  assert.match(app, /applyReviewLedgerInsights/);
   assert.match(app, /class="review-ledger-insight-kicker"/);
   assert.match(app, /class="review-scatter-jump"/);
   assert.match(app, /id="review-scatter-mood"/);
@@ -18,7 +21,7 @@ test("review money panel uses scatter grid and insight stack markup", () => {
   assert.match(css, /review-ledger-insight-kicker/);
   assert.match(css, /review-scatter-jump-chip/);
   assert.match(css, /scroll-margin-top/);
-  assert.match(css, /review-scatter-jump-chip\.is-active/);
+  assert.match(css, /review-insights-pending-skeleton/);
   assert.match(app, /bindReviewScatterJumpSpy/);
   assert.match(app, /IntersectionObserver/);
 });

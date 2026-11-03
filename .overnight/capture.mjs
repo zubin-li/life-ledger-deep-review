@@ -46,6 +46,18 @@ async function gotoView(page, view) {
   else if (view === "today") await page.waitForSelector(".tc-grid");
   else if (view === "longrange") await page.waitForSelector("#longrangeView.active");
   else if (view === "timeline") await page.waitForSelector("#journalFeedPane");
+  else if (view === "review") {
+    await page.waitForFunction(
+      () => {
+        const host = document.getElementById("reviewLedgerSummary");
+        if (!host || host.hidden) return true;
+        const scatter = host.querySelector(".review-scatter-grid.is-scatter-pending");
+        const insights = host.querySelector("#review-ledger-insights.is-insights-pending");
+        return !scatter && !insights;
+      },
+      { timeout: 15000 },
+    ).catch(() => {});
+  }
   await page.waitForTimeout(450);
 }
 

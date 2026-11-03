@@ -1,3 +1,43 @@
+# Life Ledger — 主人反馈 pass（Round 16 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **D3 复盘性能** | Money 区 **洞察文案** 改在 **`requestIdleCallback`** 填充（先 skeleton，不阻塞首帧）；散点 hydrate 同样 idle 起步 |
+| **capture** | 复盘页会等到 **散点 + 洞察** hydrate 后再截图 |
+| **验证** | **`fb-r16-*`**（5297）+ **`fb-r16-mac-*`**（5296）；perf **CLS 0**；long task 复盘 **~62 ms**（首帧 SVG，见 PROGRESS） |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **复盘** → 先见统计与 jump chip → 洞察区 skeleton 一闪后出文案 → 散点逐帧出现
+3. Mac 侧栏：**时间轴 → 记账 → 复盘**
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r16`；Mac：`node .overnight/capture-mac.mjs --port 5296 --prefix fb-r16`
+
+## 截图（Round 16）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r16-ledger-zh-light-1440-chromium.png` | 记账 **C2** 单标题 + 周/月统计 |
+| `fb-r16-today-zh-light-1440-chromium.png` | 侧栏 **C3**（见 today 1440 矩阵） |
+| `fb-r16-today-onboard-zh-light-390-webkit.png` | **C1**（browser 断言实色 ≥0.99） |
+| `fb-r16-review-zh-light-390-chromium.png` | 复盘 Money 摘要 |
+| `fb-r16-mac-ledger-nav-zh-light-1440-webkit.png` | Mac 侧栏顺序 |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **434** pass |
+| `npm run test:browser` | **76** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 15 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

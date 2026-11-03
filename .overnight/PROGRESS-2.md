@@ -1,5 +1,69 @@
 
 
+## Round 16 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **D3 perf** | **`buildReviewLedgerInsightLines`** + **`applyReviewLedgerInsights`** on **`requestIdleCallback`** (`is-insights-pending` skeleton); scatter **`scheduleReviewScatterHydrate`** idle-deferred; **`runWhenIdle`** helper |
+| **capture** | Review shot waits until scatter + insights not pending |
+| **CSS** | **`.review-insights-pending-skeleton`** → **6042** lines |
+| **验证** | **`fb-r16-*`**（5297）+ **`fb-r16-mac-*`**（5296）；`perf-nav-trace.json` **maxLongTaskMs 62**（review SVG），**CLS 0** |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6042** 行；2.2 拆文件 / 归档（非 bulk merge） |
+| **D3 perf** | 复盘切换仍 **~62 ms** long task（首帧散点 SVG）→ worker 切片或更小 SVG path |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面（r14 `diff-v2010.json`）。
+
+### Evidence (六个已知问题 · r16)
+
+1. **C1** — `fb-r16-today-onboard-zh-light-390-webkit.png` + browser alpha 测试（r13）；截图 AI 描述「半透明」与 computed 不符
+2. **C2** — `fb-r16-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r16-mac-ledger-nav-zh-light-1440-webkit.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — r7 `weather-headless-compare.json`
+5. **C5** — **6042** 行；单 `capture.mjs` + `capture-mac.mjs`
+6. **C6** — `fb-r16-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 16)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | 洞察/散点 idle 分片；skeleton + `aria-busy`；retarget 仅在 hydrate 后 | **OK** |
+| ui-ux-pro-max | ledger/review panel 族一致（fb-r16）；jump chip 在 shell 首帧可用 | OK |
+| design-dna | 侧栏顺序、单标题、donut+日条符合 spec | OK |
+| Rauno / Linear | perf 仍 **62 ms**（SVG）；无 layout 动画新增 | **Note** 下轮 SVG 切片 |
+| Screenshots | fb-r16 矩阵 1440+390 zh/de light/dark 目视 | OK |
+| Tests | **434** unit + **76** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- v210.css 2.2 分文件（CSS-LAYERS.md）
+- Review 首帧 SVG long task → 0ms（Web Worker 或 path 简化）
+
+### `npm test` (round 16 gate · final)
+
+```
+434 pass, 0 fail (unit)
+76 pass, 0 fail (browser)
+desktop:check 0 fail
+perf-nav-trace: maxLongTaskMs 62, CLS 0
+```
+
+### Next round priority
+
+1. Scatter SVG 生成切片 / Worker（目标 long task **0**）
+2. v210.css 2.2 拆文件
+3. `compare-v2010.mjs` 轻量回归
+
+---
 
 ## Round 15 (2026-11-03)
 
