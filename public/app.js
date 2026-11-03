@@ -9798,6 +9798,8 @@ function renderLongRange() {
     date:value=>formatLocalizedDate(parseDate(value),{year:'numeric',month:'short',day:'numeric'}),
     icon:renderIcon,status:value=>tr(`longTerm.${value}`),changed:()=>renderWeeklyWorkspace(),
     openMonth:key=>{syncJournalMonthOptions();$('#journalMonthFilter').value=key;setJournalMode('months');switchToView('timeline');},
+    hairlineEmpty: hairlineEmptyMarkup,
+    hydrateHairline: scope => hydrateHairlineMounts(scope || document),
   });
 }
 

@@ -19,6 +19,8 @@ const HAIRLINE_ASSETS = [
   "./assets/hairline/focus-idle.svg",
   "./assets/hairline/focus-paused.svg",
   "./assets/hairline/focus-streak.svg",
+  "./assets/hairline/horizon-phase-empty.svg",
+  "./assets/hairline/horizon-plans-quiet.svg",
   "./assets/hairline/insights-first-week.svg",
   "./assets/hairline/journal-calendar-empty.svg",
   "./assets/hairline/journal-no-reflection.svg",

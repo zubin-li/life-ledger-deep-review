@@ -8,6 +8,7 @@ All notable changes are documented here.
 
 - **Spending compare copy:** when the prior period baseline is **≥ €15** but spend rose by more than **500%**, captions show a **money delta** (e.g. €20 → €500 reads **较昨日多 480,00 €** instead of **+999%**).
 - **Backup restore:** removed redundant explicit-language branch in `syncBackupPreferencesToRuntime` (same behaviour as cold start).
+- **Long-range (Horizon):** empty phase and plan grids use hairline art, enter animation, and **Start your first phase** CTA; sidebar adds subtle dividers before Timeline and Money.
 
 ## [2.1.0] - 2026-11-03
 

@@ -1,12 +1,32 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 1）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 2）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 已 10/10 终稿。** Batch 10 启动：本轮处理 Antigravity 终审 LOW 项并改进支出对比文案。
+**Batch 9 已 10/10 终稿。** Batch 10 进行中。
 
 ---
 
-## 本轮（Batch 10 · Round 1）— 支出对比与 REVIEW 清理
+## 本轮（Batch 10 · Round 2）— 长期页空态 + 侧栏节奏
+
+| 项目 | 说明 |
+|------|------|
+| **长期（Horizon）** | 无阶段时用 hairline 山旗插画 + **开始第一个阶段**；阶段计划 / 长期事项空网格用横向 quiet 插画条（`long-range.js` + `v210.css`）。 |
+| **侧栏** | **时间轴**、**记账** 导航项上方轻分隔，区分「计划 / 记忆 / 工具」三组。 |
+| **文档** | README 三语写明支出对比在 **>500%** 且基线 ≥€15 时显示 **金额差**（与 Round 1 行为一致）。 |
+| **截图** | `.overnight/shots/b10r2-longrange-empty-zh-light-1440-chromium.png` 等（`node .overnight/capture-batch10-round2.mjs`，端口 **5293**）。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **27**（+2 `longrange-empty`）。 |
+
+**怎么验：**
+
+1. 本地空数据或清空 `planning.phases` → 侧栏 **长期** → 见插画空态与黑色 **开始第一个阶段**（点开后为「新阶段」对话框）。
+2. 侧栏 **时间轴** / **记账** 上方应有细线分隔（桌面宽侧栏最明显）。
+3. 全量：`npm test` + `npm run test:browser`（跑 browser 前勿占用 **5291–5299**；fakecloud 用 **5298**）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；browser 套件与 fakecloud 并行偶发需重跑。
+
+---
+
+## 上一轮（Batch 10 · Round 1）— 支出对比与 REVIEW 清理
 
 | 项目 | 说明 |
 |------|------|
