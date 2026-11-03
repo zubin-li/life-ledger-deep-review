@@ -1,3 +1,42 @@
+# Life Ledger — 主人反馈 pass（Round 15 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **D3 复盘散点** | 三个散点图 **分帧插入**（每帧一张 SVG），加载完成前保持 skeleton + **`aria-busy`**，jump chip 与 browser 测试不再抢跑 |
+| **Mac 壳** | **`fb-r15-mac-today-sheet-*`**、**`fb-r15-mac-ledger-nav-*`** |
+| **验证** | **`fb-r15-*`**（5297）；perf **CLS 0**；long task 复盘仍偶发 **~65 ms**（见 PROGRESS half-done） |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **复盘** → 等散点 skeleton 消失 → 点 **习惯 / 心情** chip → 区块 spotlight
+3. Mac 侧栏顺序：**时间轴 → 记账 → 复盘**
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r15`；Mac：`node .overnight/capture-mac.mjs --port 5296 --prefix fb-r15-mac`
+
+## 截图（Round 15）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r15-ledger-zh-light-1440-chromium.png` | 记账 **C2** 单标题 + 周/月统计 |
+| `fb-r15-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r15-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡（browser 断言实色） |
+| `fb-r15-review-zh-light-390-chromium.png` | 复盘 Money 摘要 + 底栏顺序 |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **434** pass |
+| `npm run test:browser` | **76** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 14 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

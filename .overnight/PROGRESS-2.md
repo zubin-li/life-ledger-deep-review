@@ -1,6 +1,70 @@
 
 
 
+## Round 15 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **D3 perf / scatter** | **`reviewScatterChartBlockJobs`** + per-frame **`insertAdjacentHTML`**; pending / **`aria-busy`** until all charts mounted (jump chip + browser test stable) |
+| **Mac QA** | **`fb-r15-mac-today-sheet-*`**, **`fb-r15-mac-ledger-nav-*`**（5296） |
+| **验证** | **`fb-r15-*`**（5297）WebKit + Chromium；`perf-nav-trace.json` **CLS 0**；long task **0–65 ms**（复盘 SVG，见 half-done） |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6031** 行；2.2 拆文件 / 归档（`prune-ledger-legacy-css` 会增大文件，已 revert） |
+| **D3 perf** | 复盘切换仍偶发 **~65 ms** long task（首帧 SVG + `renderReviewLedgerSummary` 同步洞察文案）→ idle 分片或 lazy scatter |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面（r14 `diff-v2010.json`）。
+
+### Evidence (六个已知问题 · r15)
+
+1. **C1** — `fb-r15-today-onboard-zh-light-390-webkit.png` + browser alpha 测试（r13）；截图 AI 描述「半透明」与 computed 不符
+2. **C2** — `fb-r15-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r15-today-zh-light-1440-chromium.png` + `fb-r15-mac-ledger-nav-*` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — r7 `weather-headless-compare.json`
+5. **C5** — **6031** 行；单 `capture.mjs` + `capture-mac.mjs`
+6. **C6** — `fb-r15-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 15)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | 散点分帧仅 DOM 追加；pending 至全部完成；transform/opacity retarget 未改 | **OK** |
+| ui-ux-pro-max | ledger/review panel 族一致（fb-r15）；onboard 以 browser ≥0.99 alpha 为准 | OK |
+| design-dna | 侧栏顺序、单标题、donut+日条符合 spec | OK |
+| Rauno / Linear | perf 仍偶发 65 ms（SVG）；VT/FLIP 未回归 | **Note** 下轮 idle/lazy scatter |
+| Screenshots | fb-r15 矩阵 1440+390 zh/de light/dark 目视 | OK |
+| Tests | **434** unit + **76** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- v210.css 2.2 分文件（CSS-LAYERS.md）
+- Review `renderReviewLedgerSummary` 洞察 HTML 延后到 idle（降 main-thread 块）
+
+### `npm test` (round 15 gate · final)
+
+```
+434 pass, 0 fail (unit)
+76 pass, 0 fail (browser)
+desktop:check 0 fail
+perf-nav-trace: maxLongTaskMs 65 (also saw 0 on earlier run), CLS 0
+```
+
+### Next round priority
+
+1. Lazy / idle scatter + 洞察 shell 先绘后填
+2. v210.css 2.2 拆文件（勿 bulk `:is()` 合并 reduced）
+3. `compare-v2010.mjs` 轻量回归
+
+---
+
 ## Round 14 (2026-11-03)
 
 ### Done
@@ -723,4 +787,7 @@ desktop:check 0 fail
 ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 76 ℹ pass 76 ℹ fail 0 ℹ desktop:check 0 fail
 
 ## Driver gate after sprint 14
+ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 15
 ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

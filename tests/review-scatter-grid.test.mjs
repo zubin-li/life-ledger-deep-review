@@ -5,6 +5,8 @@ import assert from "node:assert/strict";
 test("review money panel uses scatter grid and insight stack markup", () => {
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   assert.match(app, /class="review-scatter-grid is-retargeting(?: is-scatter-pending)?"/);
+  assert.match(app, /reviewScatterChartBlockJobs/);
+  assert.match(app, /insertAdjacentHTML\("beforeend"/);
   assert.match(app, /class="review-ledger-insights is-retargeting"/);
   assert.match(app, /class="review-ledger-insight-kicker"/);
   assert.match(app, /class="review-scatter-jump"/);

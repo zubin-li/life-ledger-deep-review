@@ -9513,19 +9513,62 @@ function cancelReviewScatterHydrate(host) {
   if (host) host._reviewScatterHydrateGen = null;
 }
 
+function reviewScatterChartBlockJobs({ moodScatter, habitScatter, focusScatter, scatterRenderOpts, L }) {
+  const jobs = [];
+  if (moodScatter) {
+    jobs.push(() => {
+      const scatterSvg = L.renderMoodSpendScatterSvg(moodScatter, scatterRenderOpts);
+      const legend = moodScatter.moodOrder.map(mood => {
+        const label = mood === "很好"
+          ? languageText("很好", "Good", "Gut")
+          : mood === "平静"
+            ? languageText("平静", "Calm", "Ruhig")
+            : languageText("低落", "Low", "Schwer");
+        return `<span class="review-mood-scatter-legend-item" data-mood="${escapeHtml(mood)}">${escapeHtml(label)}</span>`;
+      }).join("");
+      return `<div class="review-mood-scatter-wrap" id="review-scatter-mood" tabindex="-1">
+      <p class="review-mood-scatter-caption">${escapeHtml(languageText("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben"))}</p>
+      ${scatterSvg}
+      <div class="review-mood-scatter-legend" aria-hidden="true">${legend}</div>
+    </div>`;
+    });
+  }
+  if (habitScatter) {
+    jobs.push(() => {
+      const habitSvg = L.renderHabitCompletionSpendScatterSvg(habitScatter, scatterRenderOpts);
+      const habitLegend = [
+        { band: "high", label: languageText("习惯完成高", "High habit completion", "Hohe Gewohnheitsquote") },
+        { band: "low", label: languageText("习惯完成低", "Low habit completion", "Niedrige Gewohnheitsquote") },
+      ].map(({ band, label }) => `<span class="review-habit-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
+      return `<div class="review-habit-scatter-wrap" id="review-scatter-habit" tabindex="-1">
+      <p class="review-habit-scatter-caption">${escapeHtml(languageText("习惯完成度与当日支出", "Habit completion vs daily spending", "Gewohnheitsquote und Tagesausgaben"))}</p>
+      ${habitSvg}
+      <div class="review-habit-scatter-legend" aria-hidden="true">${habitLegend}</div>
+    </div>`;
+    });
+  }
+  if (focusScatter) {
+    jobs.push(() => {
+      const focusSvg = L.renderFocusSpendScatterSvg(focusScatter, scatterRenderOpts);
+      const focusLegend = [
+        { band: "high", label: languageText("专注较多", "More focus time", "Mehr Fokuszeit") },
+        { band: "low", label: languageText("专注较少", "Less focus time", "Weniger Fokuszeit") },
+      ].map(({ band, label }) => `<span class="review-focus-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
+      return `<div class="review-focus-scatter-wrap" id="review-scatter-focus" tabindex="-1">
+      <p class="review-focus-scatter-caption">${escapeHtml(languageText("专注时长与当日支出", "Focus time vs daily spending", "Fokuszeit und Tagesausgaben"))}</p>
+      ${focusSvg}
+      <div class="review-focus-scatter-legend" aria-hidden="true">${focusLegend}</div>
+    </div>`;
+    });
+  }
+  return jobs;
+}
+
 function scheduleReviewScatterHydrate(host, gen, buildPayload) {
   cancelReviewScatterHydrate(host);
   host._reviewScatterHydrateGen = gen;
-  const run = () => {
-    if (host._reviewScatterHydrateGen !== gen) return;
-    host._reviewScatterHydrateGen = null;
-    if (host.dataset.reviewScatterGen !== String(gen)) return;
-    const grid = host.querySelector(".review-scatter-grid.is-scatter-pending");
-    if (!grid) return;
-    const { scatterParts } = buildReviewScatterChartBlocks(buildPayload());
-    grid.classList.remove("is-scatter-pending");
-    grid.removeAttribute("aria-busy");
-    grid.innerHTML = `${scatterParts.join("")}<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div>`;
+  const scatterTipMarkup = '<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div>';
+  const finishScatterHydrate = grid => {
     bindReviewScatterDotTips(host);
     bindReviewScatterJumpSpy(host);
     requestAnimationFrame(() => {
@@ -9533,54 +9576,33 @@ function scheduleReviewScatterHydrate(host, gen, buildPayload) {
       tryFocusPendingReviewScatter();
     });
   };
-  requestAnimationFrame(() => requestAnimationFrame(run));
+  const step = (jobIndex = 0, gridRef = null, jobsRef = null) => {
+    if (host._reviewScatterHydrateGen !== gen) return;
+    if (host.dataset.reviewScatterGen !== String(gen)) return;
+    let grid = gridRef;
+    if (!grid) {
+      grid = host.querySelector(".review-scatter-grid.is-scatter-pending");
+      if (!grid) return;
+    }
+    const jobs = jobsRef || reviewScatterChartBlockJobs(buildPayload());
+    if (jobIndex === 0) {
+      grid.innerHTML = scatterTipMarkup;
+    }
+    if (jobIndex >= jobs.length) {
+      grid.classList.remove("is-scatter-pending");
+      grid.removeAttribute("aria-busy");
+      host._reviewScatterHydrateGen = null;
+      finishScatterHydrate(grid);
+      return;
+    }
+    grid.insertAdjacentHTML("beforeend", jobs[jobIndex]());
+    requestAnimationFrame(() => step(jobIndex + 1, grid, jobs));
+  };
+  requestAnimationFrame(() => requestAnimationFrame(() => step(0)));
 }
 
-function buildReviewScatterChartBlocks({ moodScatter, habitScatter, focusScatter, scatterRenderOpts, L }) {
-  let moodScatterBlock = "";
-  if (moodScatter) {
-    const scatterSvg = L.renderMoodSpendScatterSvg(moodScatter, scatterRenderOpts);
-    const legend = moodScatter.moodOrder.map(mood => {
-      const label = mood === "很好"
-        ? languageText("很好", "Good", "Gut")
-        : mood === "平静"
-          ? languageText("平静", "Calm", "Ruhig")
-          : languageText("低落", "Low", "Schwer");
-      return `<span class="review-mood-scatter-legend-item" data-mood="${escapeHtml(mood)}">${escapeHtml(label)}</span>`;
-    }).join("");
-    moodScatterBlock = `<div class="review-mood-scatter-wrap" id="review-scatter-mood" tabindex="-1">
-      <p class="review-mood-scatter-caption">${escapeHtml(languageText("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben"))}</p>
-      ${scatterSvg}
-      <div class="review-mood-scatter-legend" aria-hidden="true">${legend}</div>
-    </div>`;
-  }
-  let habitScatterBlock = "";
-  if (habitScatter) {
-    const habitSvg = L.renderHabitCompletionSpendScatterSvg(habitScatter, scatterRenderOpts);
-    const habitLegend = [
-      { band: "high", label: languageText("习惯完成高", "High habit completion", "Hohe Gewohnheitsquote") },
-      { band: "low", label: languageText("习惯完成低", "Low habit completion", "Niedrige Gewohnheitsquote") },
-    ].map(({ band, label }) => `<span class="review-habit-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
-    habitScatterBlock = `<div class="review-habit-scatter-wrap" id="review-scatter-habit" tabindex="-1">
-      <p class="review-habit-scatter-caption">${escapeHtml(languageText("习惯完成度与当日支出", "Habit completion vs daily spending", "Gewohnheitsquote und Tagesausgaben"))}</p>
-      ${habitSvg}
-      <div class="review-habit-scatter-legend" aria-hidden="true">${habitLegend}</div>
-    </div>`;
-  }
-  let focusScatterBlock = "";
-  if (focusScatter) {
-    const focusSvg = L.renderFocusSpendScatterSvg(focusScatter, scatterRenderOpts);
-    const focusLegend = [
-      { band: "high", label: languageText("专注较多", "More focus time", "Mehr Fokuszeit") },
-      { band: "low", label: languageText("专注较少", "Less focus time", "Weniger Fokuszeit") },
-    ].map(({ band, label }) => `<span class="review-focus-scatter-legend-item" data-band="${band}">${escapeHtml(label)}</span>`).join("");
-    focusScatterBlock = `<div class="review-focus-scatter-wrap" id="review-scatter-focus" tabindex="-1">
-      <p class="review-focus-scatter-caption">${escapeHtml(languageText("专注时长与当日支出", "Focus time vs daily spending", "Fokuszeit und Tagesausgaben"))}</p>
-      ${focusSvg}
-      <div class="review-focus-scatter-legend" aria-hidden="true">${focusLegend}</div>
-    </div>`;
-  }
-  const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
+function buildReviewScatterChartBlocks(payload) {
+  const scatterParts = reviewScatterChartBlockJobs(payload).map(job => job());
   return { scatterParts };
 }
 
