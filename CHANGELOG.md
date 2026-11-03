@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- **Spending compare copy:** when the prior period baseline is **≥ €15** but spend rose by more than **500%**, captions show a **money delta** (e.g. €20 → €500 reads **较昨日多 480,00 €** instead of **+999%**).
+- **Backup restore:** removed redundant explicit-language branch in `syncBackupPreferencesToRuntime` (same behaviour as cold start).
+
 ## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.

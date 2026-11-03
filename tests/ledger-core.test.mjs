@@ -138,6 +138,15 @@ test("preferSpendCompareAmountCaption when baseline under €15", () => {
     false,
   );
   assert.equal(
+    L.preferSpendCompareAmountCaption({
+      direction: "up",
+      previousExpenseMinor: 2000,
+      deltaMinor: -48000,
+      deltaPercent: 2400,
+    }),
+    true,
+  );
+  assert.equal(
     L.preferSpendCompareAmountCaption({ direction: "down", previousExpenseMinor: 100, deltaMinor: 50 }),
     false,
   );

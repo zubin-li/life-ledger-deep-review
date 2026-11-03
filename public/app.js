@@ -6791,13 +6791,11 @@ function mergeBackupData(current, incoming) {
 function syncBackupPreferencesToRuntime() {
   const storedLang = localStorage.getItem(LANGUAGE_KEY);
   const explicitLang = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
-  currentLang = explicitLang === "true" && supportedLanguages.includes(storedLang)
+  currentLang = explicitLang !== "false" && supportedLanguages.includes(storedLang)
     ? storedLang
-    : explicitLang !== "false" && supportedLanguages.includes(storedLang)
-      ? storedLang
-      : supportedLanguages.includes(requestedLanguage)
-        ? requestedLanguage
-        : "en";
+    : supportedLanguages.includes(requestedLanguage)
+      ? requestedLanguage
+      : "en";
   voiceReflection?.setLanguage?.(currentLang);
   photoMemories?.setLanguage?.(currentLang);
   const storedTheme = localStorage.getItem(THEME_KEY);

@@ -395,6 +395,8 @@
 
   /** When the prior period baseline is tiny, a money delta reads better than +900%. */
   const SPEND_COMPARE_AMOUNT_BASELINE_MINOR = 1500;
+  /** When the percent jump is huge, show €/¥ delta instead of a capped +999%. */
+  const SPEND_COMPARE_EXTREME_PERCENT = 500;
 
   function displaySpendDeltaPercent(deltaPercent, direction) {
     if (deltaPercent == null) return null;
@@ -405,8 +407,13 @@
   function preferSpendCompareAmountCaption(cmp) {
     if (!cmp || cmp.direction !== "up") return false;
     const prev = Math.abs(Number(cmp.previousExpenseMinor)) || 0;
-    if (prev <= 0 || prev >= SPEND_COMPARE_AMOUNT_BASELINE_MINOR) return false;
-    return Math.abs(Number(cmp.deltaMinor)) > 0;
+    if (prev <= 0) return false;
+    const delta = Math.abs(Number(cmp.deltaMinor)) || 0;
+    if (delta <= 0) return false;
+    if (prev < SPEND_COMPARE_AMOUNT_BASELINE_MINOR) return true;
+    const pct = Number(cmp.deltaPercent);
+    if (Number.isFinite(pct) && pct > SPEND_COMPARE_EXTREME_PERCENT) return true;
+    return false;
   }
 
   /** Compare default-currency expenses for [start,end] vs the same span shifted back 7 days. */
@@ -2135,6 +2142,7 @@
     displaySpendDeltaPercent,
     preferSpendCompareAmountCaption,
     SPEND_COMPARE_AMOUNT_BASELINE_MINOR,
+    SPEND_COMPARE_EXTREME_PERCENT,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

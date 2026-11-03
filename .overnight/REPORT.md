@@ -1,3 +1,31 @@
+# Life Ledger 夜间构建总报告（Batch 10 · Round 1）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 9 已 10/10 终稿。** Batch 10 启动：本轮处理 Antigravity 终审 LOW 项并改进支出对比文案。
+
+---
+
+## 本轮（Batch 10 · Round 1）— 支出对比与 REVIEW 清理
+
+| 项目 | 说明 |
+|------|------|
+| **REVIEW** | LOW #1 备份恢复语言分支简化；LOW #3 极大增幅（>500%）改 **金额差** 而非 **+999%**；LOW #2 CSS 合并仍留 **2.2**。 |
+| **行为** | 例：昨日 €20、今日 €500 → Today 卡显示 **较昨日多 €480.00**（见截图）。小基线（<€15）逻辑不变。 |
+| **截图** | `.overnight/shots/b10r1-today-spend-amount-delta-zh-light-1440-chromium.png`、`*-dark-*`（`node .overnight/capture-batch10-round1.mjs`，端口 **5292**）。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **25**（+1 极端 surge）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → 在记账里造「昨日小额、今日大额」→ **今日** 支出卡对比行应为 **较昨日多 … €**，不应出现 **999%**。
+2. 全量：`npm test` + `npm run test:browser`。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；+80%～+500% 仍用百分比句。
+
+---
+
+## Batch 9 · Round 10 · 终稿（归档）
+
 # Life Ledger 夜间构建总报告（Batch 9 · Round 10 · 终稿）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
