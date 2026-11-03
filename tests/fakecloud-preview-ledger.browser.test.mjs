@@ -80,6 +80,15 @@ test(
         const reviewHint = await page.locator("#reviewLedgerSpendHint").textContent();
         assert.doesNotMatch(reviewHint || "", /\+\d{4,}%/);
         assert.match(reviewHint || "", /较上月同期|与上月同期相近|较上月/);
+
+        await page.locator('.nav-item[data-view="ledger"]').click();
+        await page.waitForSelector("#ledgerView.view.active", { timeout: 45_000 });
+        await page.waitForSelector("#ledgerQuickInput", { timeout: 45_000 });
+        const ledgerTxRows = await page.locator(".ledger-tx").count();
+        assert.ok(ledgerTxRows > 3, `expected demo ledger rows on cloud UI, got ${ledgerTxRows}`);
+        const summaryExpense = await page.locator('[data-ledger-sum="expense"]').textContent();
+        assert.ok(summaryExpense && summaryExpense.trim().length > 2, "ledger month expense summary should render");
+        await page.waitForSelector(".ledger-category-viz, .ledger-donut", { timeout: 45_000 });
       } finally {
         await context.close();
         await browser.close();

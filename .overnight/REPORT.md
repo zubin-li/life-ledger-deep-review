@@ -1,3 +1,31 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 4）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 4：** fakecloud 端到端打开记账页；离线 PWA 缓存脚本回归；快速录入提交钮成功微动效。
+
+---
+
+## 本轮（Batch 11 · Round 4）— fakecloud 记账 + 离线 PWA QA
+
+| 项目 | 说明 |
+|------|------|
+| **fakecloud** | 扩展 `fakecloud-preview-ledger.browser.test.mjs`：云端 demo 同步后进入侧栏 **记账**，断言交易列表、月支出摘要、分类图表容器。 |
+| **离线 PWA** | 新套件 `ledger-offline-pwa.browser.test.mjs`：先在线灌缓存，再 DevTools 式 offline 刷新，确认 `LifeLedgerLedger` 与 demo 交易仍可显示（覆盖 REVIEW #1 场景）。 |
+| **Goal 2** | 快速录入成功后「添加/Hinzufügen」按钮短暂 scale pop（`ledgerQuickSubmitPop`，尊重 reduced-motion）。 |
+| **单元测试** | `npm test` **393**（无新增单元项）。 |
+| **浏览器** | `npm run test:browser` **41**（+1 离线 PWA）。 |
+| **截图** | `.overnight/shots/b11r4-ledger-charts-zh-light-1440-chromium.png`（demo 月视图 donut/热力/趋势）、`b11r4-ledger-quick-success-de-dark-390-webkit.png`（de 深色录入后高亮交易行）。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**；Mac shell × fakecloud 组合 smoke 留下轮。 |
+
+**怎么验（可选）：**
+
+1. **离线：** `cd public && python3 -m http.server 5291 --bind 127.0.0.1` → 打开 demo → 等 SW 就绪 → DevTools **Offline** → 刷新 → **记账** 应完整（非 ReferenceError）。
+2. **fakecloud：** `bash .overnight/fakecloud.sh 5296` → `?mode=cloudflare&local-preview=demo-showcase-v1` → 等云同步后点 **记账**。
+3. 全量：`npm test` + `npm run test:browser`（约 2 分钟）。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 3）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

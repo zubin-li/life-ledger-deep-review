@@ -1475,6 +1475,30 @@ html.motion-reduced .ledger-quick.is-success-flash #ledgerQuickInput {
   animation: none;
 }
 
+.ledger-quick.is-success-flash button[type="submit"] {
+  animation: ledgerQuickSubmitPop 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes ledgerQuickSubmitPop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(0.94);
+  }
+}
+
+html.motion-reduced .ledger-quick.is-success-flash button[type="submit"] {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-quick.is-success-flash button[type="submit"] {
+    animation: none;
+  }
+}
+
 
 /* ========== merged from v214-goals-journal.css ========== */
 /* Goal 2 — empty states & inline hints (journal / week goals / long-term) */
