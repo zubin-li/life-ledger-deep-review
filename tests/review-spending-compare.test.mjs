@@ -8,5 +8,7 @@ test("review ledger summary compares month spending to previous month", () => {
   assert.match(app, /alignedMonthSpendCompare/);
   assert.match(app, /reviewLedgerSpendHint/);
   assert.match(app, /review\.spendingMoreMonth/);
+  assert.match(app, /review\.spendingMoreMonthAmount/);
+  assert.match(app, /temporalSpendCompareHint/);
   assert.match(app, /review\.spendingSameMonth/);
 });

@@ -1,12 +1,34 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 1）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 2）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 启动：** Antigravity 审查 MED #1（支出下降对比 % 分母错误）已修；单元 **376**、浏览器 **17** 全绿。
+**Batch 9 Round 2：** 支出对比文案（小基数金额句、+999% 封顶）+ demo 习惯名随语言写入；单元 **379**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 1）— 支出对比 % 基线
+## 本轮（Batch 9 · Round 2）— 对比文案与 demo 习惯名
+
+| 项目 | 说明 |
+|------|------|
+| **增幅封顶** | 支出**上升**时 caption 的 ±% 最高 **999%**（如 demo 本周 **较上周同期 +999%**，不再 +1249%）。 |
+| **小基数** | 对比期支出 **< €15** 且今日/本周/本月更高时，改显示 **金额差**（如「较昨日多 €947…」），见 `preferSpendCompareAmountCaption`。 |
+| **下降** | 仍相对对比期精确 −%（Round 1 基线修复不变）。 |
+| **Demo 习惯** | `buildDemoWorkspace` / `relocalizeDemoWorkspace` 把 starter 习惯 `name` 写成 zh/de/en；习惯设置列表见 **运动**（`b9r2-habits-zh-light-1440-chromium.png`）。 |
+| **测试** | `npm test` **379**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b9r2-*`（`node .overnight/capture-batch9-round2.mjs`，端口 **5293**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **本周** → 数据洞察 **本周支出** 下应为 **+999%** 或金额句，而非四位数 +%（`b9r2-week-spend-hint-zh-light-1440-chromium.png`）。
+2. **习惯设置**（中文）→ 列表首项 **运动**，非 Exercise（同上 habits 截图）。
+3. **复盘** → 本月支出摘要 → **较上月同期 +26%** 量级正常（`b9r2-review-spend-hint-zh-dark-390-webkit.png`）。
+4. 自建：昨天 **−3 €**、今天 **−50 €** → **今日支出** 卡应显示 **较昨日多 €47…** 而非 +1600%。
+
+**已知：** 对比基线 ≥ €15 时大额跳升仍显示 +999% 封顶；reduced-motion CSS 大合并留 2.2；Cloudflare 首次不 seed 账本。
+
+---
+
+## 上一轮（Batch 9 · Round 1）— 支出对比 % 基线
 
 | 项目 | 说明 |
 |------|------|

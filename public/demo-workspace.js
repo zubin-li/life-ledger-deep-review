@@ -13,6 +13,52 @@ const STARTER_HABIT_IDS = [
   "exercise", "reading", "sleep2330", "hydration", "meditation", "deepwork", "language", "strength",
 ];
 
+const DEMO_HABIT_DISPLAY_NAMES = {
+  en: {
+    exercise: "Exercise",
+    reading: "Reading",
+    sleep2330: "Sleep before 23:30",
+    hydration: "Drink enough water",
+    meditation: "Meditation",
+    deepwork: "Deep work",
+    language: "Language learning",
+    strength: "Strength training",
+  },
+  zh: {
+    exercise: "运动",
+    reading: "阅读",
+    sleep2330: "23:30 前睡",
+    hydration: "饮水",
+    meditation: "冥想",
+    deepwork: "深度工作",
+    language: "语言学习",
+    strength: "力量训练",
+  },
+  de: {
+    exercise: "Bewegung",
+    reading: "Lesen",
+    sleep2330: "Vor 23:30 Uhr schlafen",
+    hydration: "Genug Wasser trinken",
+    meditation: "Meditation",
+    deepwork: "Deep Work",
+    language: "Sprachen lernen",
+    strength: "Krafttraining",
+  },
+};
+
+function applyDemoHabitDisplayNames(habits, lang) {
+  if (!Array.isArray(habits)) return;
+  const table = DEMO_HABIT_DISPLAY_NAMES[lang] || DEMO_HABIT_DISPLAY_NAMES.en;
+  const canonical = new Set(
+    ["en", "zh", "de"].flatMap(l => Object.values(DEMO_HABIT_DISPLAY_NAMES[l] || {})),
+  );
+  habits.forEach(habit => {
+    const label = table[habit.id];
+    if (!label) return;
+    if (!habit.name || canonical.has(habit.name)) habit.name = label;
+  });
+}
+
 export const DEMO_MEMORY_ASSETS = [
   // AI-generated photos for the fictional sample workspace.
   { id: "analyst-desk", file: "analyst-desk.jpg", width: 960, height: 720 },
@@ -698,6 +744,7 @@ export function buildDemoWorkspace({
 
   const habits = seedHabits ? JSON.parse(JSON.stringify(seedHabits)) : [];
   const habitNotes = pack.habitNotes || {};
+  applyDemoHabitDisplayNames(habits, lang);
   habits.forEach(habit => {
     (habit.versions || []).forEach(version => {
       if (!version.effectiveDate || version.effectiveDate > start) version.effectiveDate = start;

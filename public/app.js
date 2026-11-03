@@ -280,6 +280,8 @@ const i18n = {
 ,
 "spendingMorePeriod": "较上周同期 +{pct}%"
 ,
+"spendingMorePeriodAmount": "较上周同期多 {amount}"
+,
 "spendingLessPeriod": "较上周同期 −{pct}%"
 ,
 "spendingNewPeriod": "较上周同期有新增支出"
@@ -460,6 +462,8 @@ const i18n = {
 "spendingSameMonth": "与上月同期相近"
 ,
 "spendingMoreMonth": "较上月同期 +{pct}%"
+,
+"spendingMoreMonthAmount": "较上月同期多 {amount}"
 ,
 "spendingLessMonth": "较上月同期 −{pct}%"
 ,
@@ -957,6 +961,8 @@ const i18n = {
 ,
 "spendingMorePeriod": "+{pct}% vs same days last week"
 ,
+"spendingMorePeriodAmount": "+{amount} vs same days last week"
+,
 "spendingLessPeriod": "−{pct}% vs same days last week"
 ,
 "spendingNewPeriod": "New spend vs same days last week"
@@ -1137,6 +1143,8 @@ const i18n = {
 "spendingSameMonth": "About the same vs last month (same days)"
 ,
 "spendingMoreMonth": "+{pct}% vs same days last month"
+,
+"spendingMoreMonthAmount": "+{amount} vs same days last month"
 ,
 "spendingLessMonth": "−{pct}% vs same days last month"
 ,
@@ -1634,6 +1642,8 @@ const i18n = {
 ,
 "spendingMorePeriod": "+{pct} % gg. Vorwoche (gleicher Zeitraum)"
 ,
+"spendingMorePeriodAmount": "+{amount} gg. Vorwoche (gleicher Zeitraum)"
+,
 "spendingLessPeriod": "−{pct} % gg. Vorwoche (gleicher Zeitraum)"
 ,
 "spendingNewPeriod": "Neue Ausgaben gg. Vorwoche (gleicher Zeitraum)"
@@ -1814,6 +1824,8 @@ const i18n = {
 "spendingSameMonth": "Ungefähr wie im Vormonat (gleicher Zeitraum)"
 ,
 "spendingMoreMonth": "+{pct} % gg. Vormonat (gleicher Zeitraum)"
+,
+"spendingMoreMonthAmount": "+{amount} gg. Vormonat (gleicher Zeitraum)"
 ,
 "spendingLessMonth": "−{pct} % gg. Vormonat (gleicher Zeitraum)"
 ,
@@ -7858,6 +7870,30 @@ function dateLocale() {
   return currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
 }
 
+/** Shared caption for Today / Week / Review temporal spend compare rows. */
+function temporalSpendCompareHint(cmp, keys) {
+  const L = globalThis.LifeLedgerLedger;
+  if (!cmp || !keys) return "";
+  if (cmp.direction === "same") return tr(keys.same);
+  if (cmp.direction === "down") {
+    if (cmp.deltaPercent != null) return tr(keys.less, { pct: cmp.deltaPercent });
+    return "";
+  }
+  if (cmp.direction === "up") {
+    if (L?.preferSpendCompareAmountCaption?.(cmp) && state.ledger && keys.moreAmount) {
+      const ledger = L.normalize(state.ledger, { lang: currentLang });
+      const locale = i18n[currentLang]?.locale || "de-DE";
+      const amount = L.formatMoney(Math.abs(cmp.deltaMinor), ledger.settings.defaultCurrency, locale);
+      return tr(keys.moreAmount, { amount });
+    }
+    const pct = L?.displaySpendDeltaPercent?.(cmp.deltaPercent, "up");
+    if (pct != null) return tr(keys.more, { pct });
+    return tr(keys.new);
+  }
+  if (cmp.currentExpenseMinor === 0 && cmp.previousExpenseMinor > 0 && keys.zero) return tr(keys.zero);
+  return "";
+}
+
 /** Days in [startIso, endIso] with journal note or mood reason (matches timeline feed). */
 function journalEntryDaysInRange(startIso, endIso) {
   if (!startIso || !endIso || startIso > endIso) return 0;
@@ -8036,17 +8072,13 @@ function renderWeekInsights() {
         ? L.formatMoney(-weekExpenseTotal, cur, locale)
         : L.formatMoney(0, cur, locale);
       const cmp = L.alignedWeekSpendCompare(ledger, startDay, rangeEnd);
-      if (cmp) {
-        if (cmp.direction === "same") {
-          spendHint = tr("week.spendingSamePeriod");
-        } else if (cmp.direction === "up") {
-          spendHint = cmp.deltaPercent != null
-            ? tr("week.spendingMorePeriod", { pct: cmp.deltaPercent })
-            : tr("week.spendingNewPeriod");
-        } else if (cmp.deltaPercent != null) {
-          spendHint = tr("week.spendingLessPeriod", { pct: cmp.deltaPercent });
-        }
-      }
+      spendHint = temporalSpendCompareHint(cmp, {
+        same: "week.spendingSamePeriod",
+        less: "week.spendingLessPeriod",
+        more: "week.spendingMorePeriod",
+        moreAmount: "week.spendingMorePeriodAmount",
+        new: "week.spendingNewPeriod",
+      });
     }
   }
   setText("#weekSpendingValue", weekSpendDisplay);
@@ -9063,17 +9095,13 @@ function renderReviewLedgerSummary() {
   const todayIso = effectiveDemoTodayIso();
   let spendHint = "";
   const spendCmp = L.alignedMonthSpendCompare(ledger, ym, todayIso);
-  if (spendCmp) {
-    if (spendCmp.direction === "same") {
-      spendHint = tr("review.spendingSameMonth");
-    } else if (spendCmp.direction === "up") {
-      spendHint = spendCmp.deltaPercent != null
-        ? tr("review.spendingMoreMonth", { pct: spendCmp.deltaPercent })
-        : tr("review.spendingNewMonth");
-    } else if (spendCmp.deltaPercent != null) {
-      spendHint = tr("review.spendingLessMonth", { pct: spendCmp.deltaPercent });
-    }
-  }
+  spendHint = temporalSpendCompareHint(spendCmp, {
+    same: "review.spendingSameMonth",
+    less: "review.spendingLessMonth",
+    more: "review.spendingMoreMonth",
+    moreAmount: "review.spendingMoreMonthAmount",
+    new: "review.spendingNewMonth",
+  });
   const reviewIsCurrentMonth = ym === monthKey(parseDate(todayIso));
   let recurringDueBlock = "";
   if (reviewIsCurrentMonth) {

@@ -393,6 +393,22 @@
     return Math.round(Math.abs(cur - prev) / prev * 100);
   }
 
+  /** When the prior period baseline is tiny, a money delta reads better than +900%. */
+  const SPEND_COMPARE_AMOUNT_BASELINE_MINOR = 1500;
+
+  function displaySpendDeltaPercent(deltaPercent, direction) {
+    if (deltaPercent == null) return null;
+    if (direction === "down") return deltaPercent;
+    return Math.min(Math.round(deltaPercent), 999);
+  }
+
+  function preferSpendCompareAmountCaption(cmp) {
+    if (!cmp || cmp.direction !== "up") return false;
+    const prev = Math.abs(Number(cmp.previousExpenseMinor)) || 0;
+    if (prev <= 0 || prev >= SPEND_COMPARE_AMOUNT_BASELINE_MINOR) return false;
+    return Math.abs(Number(cmp.deltaMinor)) > 0;
+  }
+
   /** Compare default-currency expenses for [start,end] vs the same span shifted back 7 days. */
   function alignedWeekSpendCompare(ledger, startIso, endIso) {
     if (!ISO_DATE.test(startIso) || !ISO_DATE.test(endIso)) return null;
@@ -2111,6 +2127,9 @@
     alignedMonthSpendCompare,
     alignedDaySpendCompare,
     temporalSpendChangePercent,
+    displaySpendDeltaPercent,
+    preferSpendCompareAmountCaption,
+    SPEND_COMPARE_AMOUNT_BASELINE_MINOR,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

@@ -112,6 +112,37 @@ test("temporalSpendChangePercent divides by baseline not current", () => {
   assert.equal(L.temporalSpendChangePercent(0, 100), null);
 });
 
+test("displaySpendDeltaPercent caps increases only", () => {
+  assert.equal(L.displaySpendDeltaPercent(2113, "up"), 999);
+  assert.equal(L.displaySpendDeltaPercent(90, "down"), 90);
+  assert.equal(L.displaySpendDeltaPercent(null, "up"), null);
+});
+
+test("preferSpendCompareAmountCaption when baseline under €15", () => {
+  assert.equal(
+    L.preferSpendCompareAmountCaption({
+      direction: "up",
+      previousExpenseMinor: 350,
+      deltaMinor: -94700,
+      deltaPercent: 27000,
+    }),
+    true,
+  );
+  assert.equal(
+    L.preferSpendCompareAmountCaption({
+      direction: "up",
+      previousExpenseMinor: 20000,
+      deltaMinor: -5000,
+      deltaPercent: 25,
+    }),
+    false,
+  );
+  assert.equal(
+    L.preferSpendCompareAmountCaption({ direction: "down", previousExpenseMinor: 100, deltaMinor: 50 }),
+    false,
+  );
+});
+
 test("importGermanBankCsv parses semicolon rows", () => {
   const csv = `Datum;Verwendungszweck;Betrag
 01.11.2026;REWE;-12,50

@@ -218,6 +218,17 @@ test("relocalization keeps demo active and changes prose", () => {
   assert.notEqual(zh.logs[sampleDate]?.note, demo.logs[sampleDate]?.note);
 });
 
+test("demo workspace localizes starter habit names per lang", () => {
+  const starter = build("en").habits;
+  const zh = buildDemoWorkspace({ now: FIXED_NOW, lang: "zh", seedHabits: starter });
+  const exercise = zh.habits.find(h => h.id === "exercise");
+  assert.equal(exercise?.name, "运动");
+  const de = buildDemoWorkspace({ now: FIXED_NOW, lang: "de", seedHabits: starter });
+  assert.equal(de.habits.find(h => h.id === "reading")?.name, "Lesen");
+  const relocalized = relocalizeDemoWorkspace(build("en"), "de");
+  assert.equal(relocalized.habits.find(h => h.id === "meditation")?.name, "Meditation");
+});
+
 test("localized notice copy exists for en, zh, and de", () => {
   for (const lang of ["en", "zh", "de"]) {
     const copy = demoNoticeCopy(lang);

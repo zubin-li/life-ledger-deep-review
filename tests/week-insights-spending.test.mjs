@@ -17,6 +17,7 @@ test("week insights grid includes spending tile wired to Money", () => {
   assert.match(app, /switchToView\("ledger"\)/);
   assert.match(app, /week\.spending/);
   assert.match(app, /week\.spendingMorePeriod/);
+  assert.match(app, /week\.spendingMorePeriodAmount/);
   assert.match(ledgerUi, /setViewMonth\(ym\)/);
 });
 
