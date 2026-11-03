@@ -122,3 +122,15 @@ test("Batch 12 r4 — Money section polished empties", () => {
   assert.match(ledgerUi, /ledgerListEmptyQuick/);
   assert.match(ledgerUi, /focusLedgerQuickEntry/);
 });
+
+test("Batch 12 r5 — Money category chart filters list", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 12 r5 — Money category chart filters transaction list/);
+  assert.match(css, /\.ledger-cat-seg/);
+  assert.match(ledgerUi, /bindCategoryVizFilter/);
+  assert.match(ledgerUi, /listCategoryFilter/);
+  assert.match(ledgerUi, /ledger-category-filter-chip/);
+  assert.match(core, /function filterTransactions\(ledger, ym, query, dayIso, categoryId\)/);
+});

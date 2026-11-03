@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 12 r5):** **Money** donut/treemap segments filter the **Transactions** list (keyboard + clearable category chip); empty category filter shows **Clear category filter**.
+- **QA (Batch 12 r5):** Unit test for category-scoped `filterTransactions`; Playwright donut segment → list filter.
 - **Polish (Batch 12 r4):** **Money** transaction list, budget, and recurring sections use hairline empty art with primary CTAs (**Start typing**, **Set budget**, **Add recurring**); search/day filter empties reuse the search hairline with **Clear search** when needed.
 - **QA (Batch 12 r4):** Playwright **Money** month-empty CTA focuses quick entry; budget empty opens popover.
 - **Polish (Batch 12 r3):** **Money** **This month’s correlations** shows the same three-step empty checklist as **Review** when the month has spending but not enough mood/habit days for mini scatter charts (pills jump to **Today**, **Habits**, or **Money**).

@@ -5684,7 +5684,8 @@ html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-insights {
 }
 
 /* Batch 12 round 2 — heatmap day filter + ledger scatter tips */
-.ledger-day-filter-chip {
+.ledger-day-filter-chip,
+.ledger-category-filter-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -5886,4 +5887,47 @@ html.motion-reduced #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wra
 
 #ledgerView .ledger-recurring-empty-wrap {
   margin-top: 8px;
+}
+
+/* ========== Batch 12 r5 — Money category chart filters transaction list ========== */
+
+.ledger-category-filter-chip {
+  margin-left: 0.35rem;
+}
+
+.ledger-cat-seg {
+  cursor: pointer;
+  outline: none;
+  pointer-events: auto;
+  transition: filter 0.18s ease, stroke 0.18s ease;
+}
+
+.ledger-cat-seg:focus-visible {
+  outline: 2px solid var(--accent, #5fbd9f);
+  outline-offset: 2px;
+}
+
+.ledger-donut-segments .ledger-cat-seg.is-selected {
+  filter: brightness(1.1) saturate(1.05);
+  stroke: var(--surface-page, #f5f5f0);
+  stroke-width: 1.75px;
+}
+
+.ledger-treemap .ledger-cat-seg.is-selected {
+  stroke: var(--text, #1a1f1c);
+  stroke-width: 1.4px;
+}
+
+html[data-theme="dark"] .ledger-treemap .ledger-cat-seg.is-selected {
+  stroke: var(--surface-page, #0f1210);
+}
+
+html.motion-reduced .ledger-cat-seg {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-cat-seg {
+    transition: none;
+  }
 }

@@ -1,3 +1,28 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 5
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 / 记账** | **分类** 圆环与树图区块可点选，筛选下方 **交易** 列表；列表上方显示可清除的 **分类 chip**（与热力图日期 chip 同款样式）。 |
+| **逻辑** | `filterTransactions` 增加 `categoryId` 参数；换月时同时清除日期与分类筛选。 |
+| **测试** | `npm test` **400**；`npm run test:browser` **52**（+1 `ledger-category-filter`）。 |
+
+## 怎么验
+
+1. Demo → **记账** → 点 **分类** 圆环任一扇区 → 列表应只剩该分类交易，出现「住房」等 chip（见 `b12r5-ledger-category-filter-zh-light-1440-chromium.png`）。
+2. 再点同一扇区或 chip 上 **×** → 恢复整月列表。
+3. 切换到 **树图** 后矩形同样可筛选。
+4. 重拍：`node .overnight/capture-batch12-round5.mjs`（端口 **5291**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 4
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

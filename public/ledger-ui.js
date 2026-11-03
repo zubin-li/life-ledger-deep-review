@@ -5,6 +5,7 @@
   let ledgerMonthPulse = false;
   let listFilter = "";
   let listDayFilter = "";
+  let listCategoryFilter = "";
   let trendPlot = null;
   let categoryChartMode = "donut";
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
@@ -194,6 +195,13 @@
     ];
   }
 
+  function categorySegAttrs(categoryId, label, styleExtra) {
+    const selected = listCategoryFilter === categoryId ? " is-selected" : "";
+    const pressed = listCategoryFilter === categoryId ? "true" : "false";
+    const aria = t(`筛选「${label}」交易`, `Filter “${label}” entries`, `Buchungen „${label}“ filtern`);
+    return `class="ledger-cat-seg${selected}" data-ledger-category="${ctx.escape(categoryId)}" tabindex="0" role="button" aria-label="${ctx.escape(aria)}" aria-pressed="${pressed}"${styleExtra ? ` style="${styleExtra}"` : ""}`;
+  }
+
   function renderTreemap(breakdown, ledger) {
     const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
     if (!total) return `<div class="ledger-donut ledger-donut--empty ll-empty-enter">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
@@ -202,6 +210,7 @@
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
       const color = accentFill(cat?.color);
       return {
+        categoryId: row.categoryId,
         value: row.amountMinor,
         color,
         label: name,
@@ -216,7 +225,8 @@
       const label = short
         ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label${cell.lightFill ? " ledger-treemap-label--dim" : ""}">${ctx.escape(short)}</text>`
         : "";
-      return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1" style="--cell-i:${index}"><title>${ctx.escape(cell.label)}</title></rect>${label}`;
+      const style = `--cell-i:${index}`;
+      return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1" ${categorySegAttrs(cell.categoryId, cell.label, style)}><title>${ctx.escape(cell.label)}</title></rect>${label}`;
     }).join("");
     return `<svg class="ledger-treemap is-retargeting" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}">${rects}</svg>`;
   }
@@ -237,8 +247,9 @@
     const paths = slices.map((slice, index) => {
       const cat = ledger.categories.find(c => c.id === slice.categoryId);
       const fill = accentFill(cat?.color);
+      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
       const d = core().annularSectorPath(50, 50, 30, 48, slice.startAngle, slice.endAngle);
-      return `<path d="${d}" fill="${ctx.escape(fill)}" style="--seg-i:${index}"><title>${ctx.escape(cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "")}</title></path>`;
+      return `<path d="${d}" fill="${ctx.escape(fill)}" ${categorySegAttrs(slice.categoryId, name, `--seg-i:${index}`)}><title>${ctx.escape(name)}</title></path>`;
     }).join("");
     return `<svg class="ledger-donut ledger-donut-svg" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}"><g class="ledger-donut-segments is-retargeting">${paths}</g><circle class="ledger-donut-hole" cx="50" cy="50" r="30" fill="var(--surface-page, #f5f5f0)"/></svg>`;
   }
@@ -456,7 +467,7 @@
   }
 
   function renderList(ledger, ym) {
-    const rows = core().filterTransactions(ledger, ym, listFilter, listDayFilter)
+    const rows = core().filterTransactions(ledger, ym, listFilter, listDayFilter, listCategoryFilter)
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
     if (!rows.length) {
       if (listDayFilter) {
@@ -465,6 +476,16 @@
           "./assets/hairline/search-empty.svg",
           t("这一天没有交易", "No entries this day", "Keine Buchungen an diesem Tag"),
           t("试试选其他日期，或清除日期筛选。", "Pick another day or clear the date filter.", "Wähle einen anderen Tag oder hebe den Datumsfilter auf."),
+        );
+      }
+      if (listCategoryFilter) {
+        const cta = `<button type="button" class="secondary-button" id="ledgerListEmptyClearCategory">${t("清除分类筛选", "Clear category filter", "Kategoriefilter aufheben")}</button>`;
+        return ledgerPolishedEmpty(
+          "ledger-list-empty ledger-list-empty--category",
+          "./assets/hairline/search-empty.svg",
+          t("这个分类本月没有交易", "No entries in this category", "Keine Buchungen in dieser Kategorie"),
+          t("试试其他分类，或清除分类筛选。", "Pick another category or clear the filter.", "Andere Kategorie wählen oder Filter aufheben."),
+          cta,
         );
       }
       if (listFilter) {
@@ -925,8 +946,20 @@
         input.focus();
       });
     });
-    host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, -1); ledgerMonthPulse = true; render(); });
-    host.querySelector("[data-ledger-next]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, 1); ledgerMonthPulse = true; render(); });
+    host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => {
+      viewMonth = shiftMonth(ym, -1);
+      listDayFilter = "";
+      listCategoryFilter = "";
+      ledgerMonthPulse = true;
+      render();
+    });
+    host.querySelector("[data-ledger-next]")?.addEventListener("click", () => {
+      viewMonth = shiftMonth(ym, 1);
+      listDayFilter = "";
+      listCategoryFilter = "";
+      ledgerMonthPulse = true;
+      render();
+    });
     host.querySelectorAll("[data-ledger-review-scatter]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-ledger-review-scatter");
@@ -1029,7 +1062,31 @@
         }
       });
     });
+    bindCategoryVizFilter(host, ym);
     bindLedgerPolishedEmpties(host, ym);
+  }
+
+  function bindCategoryVizFilter(host, ym) {
+    host.querySelectorAll("[data-ledger-category]").forEach(el => {
+      const activate = () => {
+        const id = el.getAttribute("data-ledger-category");
+        if (!id) return;
+        listCategoryFilter = listCategoryFilter === id ? "" : id;
+        syncCategorySelection(host);
+        refreshLedgerList(host, ledgerState(), ym);
+        if (listCategoryFilter) {
+          const reduced = root.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+          host.querySelector(".ledger-list-wrap")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+        }
+      };
+      el.addEventListener("click", () => activate());
+      el.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          activate();
+        }
+      });
+    });
   }
 
   function bindLedgerPolishedEmpties(host, ym) {
@@ -1042,6 +1099,11 @@
       listFilter = "";
       const filterInput = host.querySelector("#ledgerFilter");
       if (filterInput) filterInput.value = "";
+      refreshLedgerList(host, ledgerState(), ym);
+    });
+    host.querySelector("#ledgerListEmptyClearCategory")?.addEventListener("click", () => {
+      listCategoryFilter = "";
+      syncCategorySelection(host);
       refreshLedgerList(host, ledgerState(), ym);
     });
     host.querySelector("#ledgerBudgetEmptyAdd")?.addEventListener("click", () => {
@@ -1207,6 +1269,22 @@
     }
   }
 
+  function renderCategoryFilterChip(ledger) {
+    if (!listCategoryFilter) return "";
+    const cat = ledger.categories.find(c => c.id === listCategoryFilter);
+    const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : t("分类", "Category", "Kategorie");
+    return `<button type="button" class="ledger-category-filter-chip" data-ledger-clear-category aria-label="${t(`清除 ${name} 筛选`, `Clear ${name} filter`, `Filter ${name} aufheben`)}"><span>${ctx.escape(name)}</span><span class="ledger-day-filter-x" aria-hidden="true">×</span></button>`;
+  }
+
+  function syncCategorySelection(host) {
+    host.querySelectorAll("[data-ledger-category]").forEach(el => {
+      const id = el.getAttribute("data-ledger-category");
+      const on = id === listCategoryFilter;
+      el.classList.toggle("is-selected", on);
+      el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
   function renderDayFilterChip(ym) {
     if (!listDayFilter || !listDayFilter.startsWith(`${ym}-`)) return "";
     const [y, m, d] = listDayFilter.split("-").map(Number);
@@ -1227,7 +1305,7 @@
     const list = host.querySelector(".ledger-list-wrap");
     if (!list) return;
     const h3 = list.querySelector("h3");
-    list.innerHTML = `${h3 ? h3.outerHTML : ""}${renderDayFilterChip(ym)}${renderList(ledger, ym)}`;
+    list.innerHTML = `${h3 ? h3.outerHTML : ""}${renderDayFilterChip(ym)}${renderCategoryFilterChip(ledger)}${renderList(ledger, ym)}`;
     bindDelete(host, ledger);
     bindDuplicate(host);
     bindEdit(host);
@@ -1236,6 +1314,11 @@
     list.querySelector("[data-ledger-clear-day]")?.addEventListener("click", () => {
       listDayFilter = "";
       syncHeatSelection(host);
+      refreshLedgerList(host, ledgerState(), ym);
+    });
+    list.querySelector("[data-ledger-clear-category]")?.addEventListener("click", () => {
+      listCategoryFilter = "";
+      syncCategorySelection(host);
       refreshLedgerList(host, ledgerState(), ym);
     });
   }
@@ -1353,6 +1436,7 @@
       <section class="ledger-list-wrap">
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
         ${renderDayFilterChip(ym)}
+        ${renderCategoryFilterChip(ledger)}
         ${renderList(ledger, ym)}
       </section>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));

@@ -1675,11 +1675,13 @@
     return out;
   }
 
-  function filterTransactions(ledger, ym, query, dayIso) {
+  function filterTransactions(ledger, ym, query, dayIso, categoryId) {
     const q = String(query || "").trim().toLowerCase();
     let rows = transactionsInMonth(normalize(ledger), ym);
     const day = String(dayIso || "").trim();
     if (day) rows = rows.filter(tx => tx.date === day);
+    const catId = String(categoryId || "").trim();
+    if (catId) rows = rows.filter(tx => tx.categoryId === catId);
     if (!q) return rows;
     return rows.filter(tx => {
       const cat = ledger.categories.find(c => c.id === tx.categoryId);

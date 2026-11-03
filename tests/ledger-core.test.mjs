@@ -652,6 +652,19 @@ test("filterTransactions can scope to a single day", () => {
   assert.equal(day2[0].note, "a");
 });
 
+test("filterTransactions can scope to a category", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cats = ledger.categories.filter(c => c.kind === "expense");
+  const food = cats[0].id;
+  const transport = cats[1]?.id || cats[0].id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: food, amountMinor: -500, currency: "EUR", date: "2026-11-02", note: "food" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: transport, amountMinor: -900, currency: "EUR", date: "2026-11-02", note: "ride" }));
+  const foodOnly = L.filterTransactions(ledger, "2026-11", "", "", food);
+  assert.equal(foodOnly.length, 1);
+  assert.equal(foodOnly[0].note, "food");
+});
+
 test("spendingTodayMinor sums expenses only", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;
