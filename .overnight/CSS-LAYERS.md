@@ -14,6 +14,6 @@ New overnight CSS should append to **`v210.css`** (with a dated section comment)
 
 Section markers inside `v210.css` retain `/* ========== merged from v2xx-….css ========== */` comments for grep and tests.
 
-**Deferred (REVIEW #4):** scattered `@media (prefers-reduced-motion: no-preference)` blocks were merged in owner pass r8 (`.overnight/merge-no-preference-motion.mjs`); `html.motion-reduced` hooks remain inline where needed.
+**Deferred (REVIEW #4):** scattered `@media (prefers-reduced-motion: no-preference)` blocks were merged in owner pass r8 (`.overnight/merge-no-preference-motion.mjs`); `html.motion-reduced` hooks remain inline where needed. Bulk `:is()` merge of `html.motion-reduced` rules (r13 experiment) **increases** byte size — do not use.
 
 **Headless ports (5291–5299, never 5290):** fakecloud / browser tests **5298**; weather compare **5299**; overnight capture **5297** typical.

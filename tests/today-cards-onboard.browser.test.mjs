@@ -166,6 +166,19 @@ test(
       });
       assert.ok(styles.alpha >= 0.99, `tc-library dialog alpha ${styles.alpha}`);
       assert.equal(styles.backdropFilter, "none");
+      const inputStyles = await page.evaluate(() => {
+        const input = document.querySelector("#tcLibrary .tc-extra input, #tcLibrary input[type='text']");
+        if (!input) return null;
+        const cs = getComputedStyle(input);
+        const m = cs.backgroundColor.match(/rgba?\(([^)]+)\)/);
+        let alpha = 1;
+        if (m) {
+          const parts = m[1].split(",").map(s => s.trim());
+          if (parts.length === 4) alpha = Number.parseFloat(parts[3]);
+        }
+        return { alpha };
+      });
+      if (inputStyles) assert.ok(inputStyles.alpha >= 0.94, `tc-library input alpha ${inputStyles.alpha}`);
     } finally {
       await browser.close();
       server.kill("SIGTERM");

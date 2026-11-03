@@ -49,6 +49,14 @@ html[data-theme="dark"] dialog.tc-dialog {
   background: var(--ll-surface-float, #1e2630);
 }
 
+.tc-dialog .tc-extra input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+  background: color-mix(in srgb, var(--ll-surface-float, #fff) 94%, var(--hairline, #ccc));
+}
+
+html[data-theme="dark"] .tc-dialog .tc-extra input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+  background: color-mix(in srgb, var(--ll-surface-float, #1e2630) 92%, var(--hairline, #3a4038));
+}
+
 /* Bookkeeping page — loaded after v202.css */
 .ledger-page {
   display: grid;
@@ -278,12 +286,6 @@ html.motion-reduced .ledger-heat.is-selected {
 
 html[data-theme="dark"] .ledger-tx {
   background: rgba(255, 255, 255, 0.04);
-}
-
-.ledger-tx-date {
-  font-size: 0.78rem;
-  opacity: 0.7;
-  font-variant-numeric: tabular-nums;
 }
 
 .ledger-tx-amt {
@@ -976,24 +978,12 @@ html[data-theme="dark"] .ledger-edit-form {
   margin-top: 0.25rem;
 }
 
-.ledger-edit-cat {
-  margin: 0;
-  opacity: 0.8;
-  font-size: 0.88rem;
-}
-
 #reviewView .rv-bar i {
   transition: width 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 html.motion-reduced #reviewView .rv-bar i {
   transition: none;
-}
-
-@media (max-width: 640px) {
-  .ledger-tx.is-swipe-hint {
-    opacity: 0.92;
-  }
 }
 
 /* ========== merged from v212-skeleton.css ========== */
@@ -5124,8 +5114,7 @@ html.motion-reduced .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
 }
 
 .ledger-stats-compare,
-.ledger-sub-total,
-.ledger-quiet {
+.ledger-sub-total {
   margin: 0 0 10px;
   font-size: 12.5px;
   color: var(--secondaryLabel, var(--muted));

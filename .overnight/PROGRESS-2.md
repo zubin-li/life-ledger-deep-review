@@ -1,4 +1,69 @@
 
+
+## Round 13 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **C5 CSS** | 删 dead ledger 规则（`.ledger-tx-date`、`.ledger-edit-cat`、`.ledger-tx.is-swipe-hint`、`.ledger-quiet`）→ **6031** 行（−11）；尝试 `:is()` 合并 `html.motion-reduced` 反而增大文件，已放弃 |
+| **C1 细节** | `v210.css` 覆盖 **`.tc-dialog .tc-extra input`** 实色底；library dialog browser 测试可选断言 input alpha |
+| **Mac QA** | `capture-mac.mjs` 支持 `--only` + **ledger-nav** 场景 → `fb-r13-mac-*` |
+| **验证** | `fb-r13-*`（5297）+ Mac（5296）；`perf-nav-trace.json` **maxLongTaskMs 0**, **CLS 0** |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6031** 行，仍远高于 ~3250；需 2.2 拆文件或更大 legacy 批删（非 `:is()` 合并 reduced） |
+| **C6** | 未重跑 `compare-v2010.mjs`（r11 `diff-v2010.json` 仍有效） |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面。
+
+### Evidence (六个已知问题 · r13)
+
+1. **C1** — `fb-r13-today-onboard-zh-light-390-webkit.png` + browser「onboard opaque」+ tc-dialog input override
+2. **C2** — `fb-r13-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r13-today-zh-light-1440-chromium.png` + `fb-r13-mac-ledger-nav-zh-light-1440-webkit.png`
+4. **C4** — r7 `weather-headless-compare.json`
+5. **C5** — **6031** 行；单 `capture.mjs` + `capture-mac.mjs`
+6. **C6** — `fb-r13-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 13)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | 无新 layout 动画；perf long task **0** | OK |
+| ui-ux-pro-max | 引导卡 computed alpha ≥ 0.99（WebKit 390）；截图 AI 描述「半透明」与实测不符 | **OK**（以 browser 为准） |
+| design-dna | ledger/week 同 panel 族；Mac 侧栏顺序正确 | OK |
+| Rauno / Linear | tc-dialog 字段实色；touch 目标未改 | **Fixed** input 底 |
+| Screenshots | fb-r13 矩阵 1440+390 zh/de light/dark 目视 | OK |
+| Tests | **433** unit + **76** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- v210.css 下一刀：2.2 分文件（勿用 bulk `:is()` 合并 reduced — 体积反增）
+- `compare-v2010.mjs` 轻量回归
+
+### `npm test` (round 13 gate · final)
+
+```
+433 pass, 0 fail (unit)
+76 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 2.2 分文件或按 merged-from-v2xx 归档
+2. `compare-v2010.mjs` 回归
+3. 全站 KPI roll-up audit（week 已有 `rollWeekInsightValues`）
+
+---
+
 ## Round 12 (2026-11-03)
 
 ### Done
@@ -570,6 +635,9 @@ desktop:check 0 fail
 ## Driver gate after sprint 12
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 76 ℹ pass 76 ℹ fail 0 ℹ desktop:check 0 fail
 
+## Driver gate after sprint 13
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 76 ℹ pass 76 ℹ fail 0 ℹ desktop:check 0 fail
+
 ## Driver gate after sprint 10
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
@@ -577,4 +645,7 @@ desktop:check 0 fail
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
 ## Driver gate after sprint 12
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 13
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

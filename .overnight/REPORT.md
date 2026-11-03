@@ -1,3 +1,43 @@
+# Life Ledger — 主人反馈 pass（Round 13 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **C5 CSS** | 删除已无 DOM 的记账样式（`.ledger-tx-date`、`.ledger-edit-cat`、swipe-hint、`.ledger-quiet`）→ **6031** 行 |
+| **C1 细节** | Today **卡片设置** 对话框内输入框实色底（`--ll-surface-float` 覆盖 `today-cards.css` 玻璃 `--card`） |
+| **Mac 壳** | `capture-mac.mjs` 增加 **ledger-nav**；`fb-r13-mac-today-sheet-*`、`fb-r13-mac-ledger-nav-*` |
+| **验证** | `fb-r13-*`（5297/5296）WebKit + Chromium；perf **maxLongTaskMs 0**, **CLS 0** |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **今日** → 引导卡「打开组件库」→ 对话框与字段均为实色
+3. **记账** → 侧栏顺序：时间轴 → 记账 → 复盘（Mac 菜单同序）
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r13`；Mac：`node .overnight/capture-mac.mjs --port 5296 --prefix fb-r13-mac`
+
+## 截图（Round 13）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r13-ledger-zh-light-1440-chromium.png` | 记账统计 **C2** 单标题 |
+| `fb-r13-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r13-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡（browser alpha ≥ 0.99） |
+| `fb-r13-mac-ledger-nav-zh-light-1440-webkit.png` | Mac 壳侧栏 **C3** |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **76** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 12 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。
