@@ -1241,7 +1241,7 @@
     bindEdit(host);
     bindRecurring(host, ym);
     bindBudget(host, ym);
-    bindSwipeDelete(host);
+    bindTouchRowGestures(host);
     bindKeypad(host);
     host.querySelectorAll("[data-chart-mode]").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -1446,20 +1446,58 @@
     });
   }
 
-  function bindSwipeDelete(host) {
+  function bindTouchRowGestures(host) {
     host.querySelectorAll(".ledger-tx").forEach(row => {
       let startX = 0;
       let startY = 0;
-      row.addEventListener("touchstart", event => {
-        startX = event.touches[0]?.clientX || 0;
-        startY = event.touches[0]?.clientY || 0;
-      }, { passive: true });
-      row.addEventListener("touchend", event => {
-        const endX = event.changedTouches[0]?.clientX || 0;
-        const endY = event.changedTouches[0]?.clientY || 0;
-        if (Math.abs(startY - endY) < 35 && startX - endX > 72) row.querySelector(".ledger-tx-del")?.click();
-      }, { passive: true });
+      let longTimer = null;
+      let longFired = false;
+      let activePointer = null;
+      const cancelLong = () => {
+        if (longTimer) clearTimeout(longTimer);
+        longTimer = null;
+      };
+      const beginPress = (clientX, clientY, pointerId) => {
+        longFired = false;
+        cancelLong();
+        startX = clientX;
+        startY = clientY;
+        activePointer = pointerId;
+        longTimer = setTimeout(() => {
+          longFired = true;
+          cancelLong();
+          row.classList.add("is-long-press-hint");
+          row.querySelector(".ledger-tx-edit")?.click();
+          setTimeout(() => row.classList.remove("is-long-press-hint"), 420);
+        }, 520);
+      };
+      row.addEventListener("pointerdown", event => {
+        if (event.pointerType === "mouse") return;
+        beginPress(event.clientX, event.clientY, event.pointerId);
+      });
+      row.addEventListener("pointermove", event => {
+        if (activePointer === null || event.pointerId !== activePointer) return;
+        if (Math.abs(event.clientX - startX) > 12 || Math.abs(event.clientY - startY) > 12) cancelLong();
+      });
+      row.addEventListener("pointerup", event => {
+        if (activePointer === null || event.pointerId !== activePointer) return;
+        cancelLong();
+        activePointer = null;
+        if (longFired) return;
+        if (Math.abs(startY - event.clientY) < 35 && startX - event.clientX > 72) row.querySelector(".ledger-tx-del")?.click();
+      });
+      row.addEventListener("pointercancel", () => {
+        cancelLong();
+        activePointer = null;
+      });
     });
+  }
+
+  function focusQuickEntry() {
+    const input = $("#ledgerQuickInput");
+    if (!input) return;
+    input.focus();
+    input.select?.();
   }
 
   function bindDuplicate(host) {
@@ -1529,7 +1567,7 @@
     bindDelete(host, ledger);
     bindDuplicate(host);
     bindEdit(host);
-    bindSwipeDelete(host);
+    bindTouchRowGestures(host);
     bindLedgerPolishedEmpties(host, ym);
     list.querySelector("[data-ledger-clear-day]")?.addEventListener("click", () => {
       listDayFilter = "";
@@ -1604,11 +1642,12 @@
           <span class="kicker">${t("记账", "Money", "Geld")}</span>
           <h2>${ctx.escape(monthLabel(ym))}</h2>
         </div>
-        <div class="ledger-month-nav" title="${t("← → 切换月份，/ 搜索，N 快速录入", "← → change month, / search, N quick entry", "← → Monat, / Suche, N Schnellerfassung")}">
+        <div class="ledger-month-nav" title="${t("M 任意页打开 · ← → 月份 · / 搜索 · N 录入", "M opens Money anywhere · ← → month · / search · N entry", "M öffnet Finanzen · ← → Monat · / Suche · N Erfassung")}">
           <button type="button" class="icon-button" data-ledger-prev aria-label="${t("上个月", "Previous month", "Vorheriger Monat")}">‹</button>
           <button type="button" class="icon-button" data-ledger-next aria-label="${t("下个月", "Next month", "Nächster Monat")}">›</button>
         </div>
       </header>
+      <p class="ledger-kbd-hints" aria-hidden="true"><kbd>M</kbd> ${t("打开", "Open", "Öffnen")} · <kbd>N</kbd> ${t("录入", "Entry", "Erfassung")} · <kbd>/</kbd> ${t("搜索", "Search", "Suche")} · <kbd>←</kbd><kbd>→</kbd> ${t("月份", "Month", "Monat")}</p>
       <div class="ledger-summary">
         <article><small>${t("收入", "Income", "Einnahmen")}</small><strong data-ledger-sum="income">${ctx.escape(core().formatMoney(summary.incomeMinor, cur, ctx.locale?.()))}</strong></article>
         <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, ctx.locale?.()))}</strong></article>
@@ -1773,5 +1812,6 @@
     },
     openToDay,
     openToMonth,
+    focusQuickEntry,
   };
 })(typeof window !== "undefined" ? window : global);

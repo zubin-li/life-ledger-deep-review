@@ -6214,6 +6214,39 @@ function pulseReviewLedgerStatBtn(btn) {
   pulseReviewLedgerStatBtn.timer = setTimeout(() => btn.classList.remove("is-stat-press"), 420);
 }
 
+function isGenericTypingTarget(target) {
+  if (!target || !(target instanceof Element)) return false;
+  if (target.isContentEditable) return true;
+  const tag = target.tagName;
+  if (tag === "TEXTAREA" || tag === "SELECT") return true;
+  if (tag === "INPUT") {
+    const type = (target.getAttribute("type") || "text").toLowerCase();
+    return type !== "button" && type !== "submit" && type !== "reset" && type !== "checkbox" && type !== "radio";
+  }
+  return false;
+}
+
+function shouldIgnoreGlobalKeyboardShortcut() {
+  if (document.querySelector("dialog[open], .day-drawer.open")) return true;
+  if (document.querySelector(".ledger-edit-popover, .ledger-recurring-popover, .ledger-import-popover")) return true;
+  return false;
+}
+
+let globalKeyboardShortcutBound = false;
+function bindGlobalKeyboardShortcuts() {
+  if (globalKeyboardShortcutBound) return;
+  globalKeyboardShortcutBound = true;
+  document.addEventListener("keydown", event => {
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    if (shouldIgnoreGlobalKeyboardShortcut()) return;
+    if ((event.key === "m" || event.key === "M") && !isGenericTypingTarget(event.target)) {
+      event.preventDefault();
+      switchToView("ledger");
+      requestAnimationFrame(() => requestAnimationFrame(() => window.LifeLedgerLedgerUI?.focusQuickEntry?.()));
+    }
+  });
+}
+
 function openDrawer(date) {
   selectedDate = date; renderDrawer();
   $("#dayDrawer").classList.add("open"); $("#drawerBackdrop").classList.add("open");
@@ -8107,6 +8140,7 @@ function bindEvents() {
     }
     closeDrawer();
   }, true);
+  bindGlobalKeyboardShortcuts();
 }
 
 let weekCalendarReadError = false;
@@ -9750,14 +9784,18 @@ function renderReviewLedgerSummary() {
       <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small>${statBtn(incomeText, openMonthLabel)}</span>
       <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small>${statBtn(netText, openMonthLabel)}</span>
     </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${scatterEmptyBlock}${insightSection}</article>`;
-  host.querySelector("[data-open-ledger]")?.addEventListener("click", () => openLedgerForReviewMonth(ym));
+  host.querySelector("[data-open-ledger]")?.addEventListener("click", event => {
+    pulseReviewLedgerStatBtn(event.currentTarget);
+    openLedgerForReviewMonth(ym);
+  });
   host.querySelectorAll("[data-open-ledger-month]").forEach(btn => {
     btn.addEventListener("click", () => {
       pulseReviewLedgerStatBtn(btn);
       openLedgerForReviewMonth(ym);
     });
   });
-  host.querySelector("[data-open-ledger-recurring]")?.addEventListener("click", () => {
+  host.querySelector("[data-open-ledger-recurring]")?.addEventListener("click", event => {
+    pulseReviewLedgerStatBtn(event.currentTarget);
     window.LifeLedgerLedgerUI?.openToMonth?.(ym, { scrollToList: false, pulseMonth: true });
     switchToView("ledger");
     requestAnimationFrame(() => requestAnimationFrame(scrollToLedgerRecurringDue));

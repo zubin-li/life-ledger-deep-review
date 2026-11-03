@@ -10,11 +10,13 @@ All notable changes are documented here.
 - **Polish (Batch 13 r3):** **Money** CSV import confirm shows a **scrollable preview table** (date, memo, amount); drag-and-drop **.csv** onto the ledger view; transaction list **outline pulse** after a successful import.
 - **Polish (Batch 13 r4):** **Today** habit check/uncheck plays **just-checked / just-unchecked** card feedback with a **progress orbit** bump on complete; **Week** weekly goal toggles get a brief **just-toggled** check animation before re-render.
 - **Polish (Batch 13 r5):** When every scored habit for today is done, the existing **celebration overlay** now also drives a stronger **progress-orbit** pulse and a short **habits card** highlight; **Review → Money** stat buttons get **is-stat-press** feedback before opening the ledger month.
+- **Polish (Batch 13 r6):** **M** opens **Money** from any page and focuses quick entry; desktop **keyboard hint** row on the ledger page; touch **long-press** a transaction row to edit; **Review → Open Money** / recurring banner buttons share **is-stat-press** feedback.
 - **QA (Batch 13 r1):** Unit test for large absolute spend deltas; Playwright sample-entry onboarding (Chromium); structural Batch 13 r1 selectors.
 - **QA (Batch 13 r2):** Playwright journal autosave pulse (WebKit) + mood pick (Chromium); structural Batch 13 r2 selectors.
 - **QA (Batch 13 r3):** Unit test for CSV preview samples; Playwright import preview rows; structural Batch 13 r3 selectors.
 - **QA (Batch 13 r4):** Playwright habit check pulse + weekly goal toggle (WebKit/Chromium); structural Batch 13 r4 selectors.
 - **QA (Batch 13 r5):** Playwright all-habits celebration + orbit/card classes; review stat press; structural Batch 13 r5 selectors.
+- **QA (Batch 13 r6):** Playwright global **M** shortcut, long-press edit, review header open press; structural Batch 13 r6 selectors.
 - **Polish (Batch 12 r10 · final):** Overnight Batch 12 closed with release screenshot set `capture-batch12-round10.mjs` (Today→Money day filter, Review→Money month, filtered list strip, de 390 / Mac shell **Money**); **407** unit + **56** browser tests at gate.
 - **Polish (Batch 12 r9):** **Review** monthly **Money** summary — tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month (clears day/category filters; month summary retarget animation).
 - **QA (Batch 12 r9):** Structural tests for `openToMonth` / `openLedgerForReviewMonth`; Playwright Review stat → Money month (WebKit).

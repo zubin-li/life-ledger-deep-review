@@ -234,3 +234,17 @@ test("Batch 13 r5 — all habits celebration + review stat press", () => {
   assert.match(css, /is-all-complete-orbit/);
   assert.match(css, /is-stat-press/);
 });
+
+test("Batch 13 r6 — global M shortcut, kbd hints, long-press edit, review open press", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r6 — global M shortcut hints/);
+  assert.match(app, /function bindGlobalKeyboardShortcuts\(/);
+  assert.match(app, /LifeLedgerLedgerUI\?\.focusQuickEntry/);
+  assert.match(ledgerUi, /function bindTouchRowGestures\(/);
+  assert.match(ledgerUi, /function focusQuickEntry\(/);
+  assert.match(ledgerUi, /ledger-kbd-hints/);
+  assert.match(css, /is-long-press-hint/);
+  assert.match(css, /button\.text-button\[data-open-ledger\]\.is-stat-press/);
+});

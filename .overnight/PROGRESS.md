@@ -1,5 +1,48 @@
 # Overnight progress
 
+## Batch 13 · Round 6 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 1 / 键盘：** 任意页 **M** → **记账** + 聚焦 `#ledgerQuickInput`（`bindGlobalKeyboardShortcuts` / `LifeLedgerLedgerUI.focusQuickEntry`）；桌面 **ledger-kbd-hints**（M/N///←→）；触控 **长按** 交易行 → 编辑（Pointer Events，保留左滑删除）。
+- **Goal 2：** 复盘 **打开记账** / **待记 recurring** 按钮复用 **`is-stat-press`**（`pulseReviewLedgerStatBtn`）。
+- **QA：** `view-enter-selectors` Batch 13 r6；`global-ledger-shortcut.browser`；`ledger-long-press-edit.browser`；`review-open-press.browser`。
+- **文档：** CHANGELOG `[Unreleased]` r6。
+- **截图：** `node .overnight/capture-batch13-round6.mjs`（**5299**）→ `b13r6-ledger-kbd-hints-en-light-1440-chromium.png`、`b13r6-global-m-review-de-dark-390-webkit.png`。
+- **QA：** `npm test` **414** pass / 0 fail；`npm run test:browser` **66** pass / 0 fail（首轮 `fakecloud-conflict` 偶发超时，单测重跑通过）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 7+：`v210.css` reduced-motion 物理合并（2.2）；复盘 scatter jump chip 按压；Mac 菜单 **Money** 快捷键说明等。
+- 主人验收：**任意页** 按 **M** → 记账且光标在快速录入（`b13r6-global-m-*`）；**记账** 桌面见 **M/N///←→** 提示（`b13r6-ledger-kbd-hints-*`）；手机 **长按** 一笔 → 编辑弹层。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+414 pass, 0 fail (batch 13 round 6, unit gate)
+66 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 5 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
@@ -304,3 +347,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 5
 ℹ tests 413 ℹ pass 413 ℹ fail 0 
+
+## Driver gate after round 6
+ℹ tests 414 ℹ pass 414 ℹ fail 0 

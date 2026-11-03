@@ -1,3 +1,26 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 6
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 1 · 键盘 / 触控** | 任意视图按 **M** 打开 **记账** 并聚焦 **快速录入**（对话框/抽屉/弹层打开时不触发）；桌面 **Money** 页标题下显示 **M / N / / / ←→** 快捷键条；交易行 **长按**（Pointer，非鼠标）打开 **编辑**，左滑删除保留。 |
+| **Goal 2 · 复盘** | **打开记账** 文字按钮与 **待记 recurring** 横幅按钮在跳转前播放与金额按钮相同的 **`is-stat-press`**。 |
+| **实现** | `app.js` `bindGlobalKeyboardShortcuts`；`ledger-ui.js` `focusQuickEntry` / `bindTouchRowGestures`；`v210.css` Batch 13 r6。 |
+| **测试** | `npm test` **414**；`npm run test:browser` **66**（+3：全局 M、长按编辑、复盘打开按压）。 |
+
+## 验收
+
+1. **今日**（或任意页）→ 键盘 **M** → 进入 **记账**，光标在快速录入框（`b13r6-global-m-review-de-dark-390-webkit.png` 为 de 深色 390 宽示例）。
+2. **记账** 桌面宽度 → 月份标题下见灰色 **M · N · / · ← →** 提示（`b13r6-ledger-kbd-hints-en-light-1440-chromium.png`）。
+3. 手机宽度 → **长按** 列表中一笔 → 出现编辑弹层（Playwright `ledger-long-press-edit.browser`）。
+4. **复盘** → 点右上角 **Open Money / 打开记账** → 短暂按压高亮再跳转（`review-open-press.browser`）。
+5. 重拍：`node .overnight/capture-batch13-round6.mjs`（端口 **5299**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 5
 
 Web **2.1.0**、Mac **3.1.0**。

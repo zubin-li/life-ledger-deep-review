@@ -6370,3 +6370,66 @@ html.motion-reduced button.review-ledger-stat-btn.is-stat-press {
     transition: none;
   }
 }
+
+/* Batch 13 r6 — global M shortcut hints; review open press; long-press edit row */
+html[data-workspace] .ledger-kbd-hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  margin: -0.35rem 0 0.85rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--ink-muted, #6b7280) 88%, transparent);
+}
+
+.ledger-kbd-hints {
+  display: none;
+}
+
+.ledger-kbd-hints kbd {
+  display: inline-flex;
+  min-width: 1.35em;
+  justify-content: center;
+  padding: 0.12em 0.38em;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 0.92em;
+  line-height: 1.2;
+  background: color-mix(in srgb, var(--card, #fff) 72%, var(--ink-muted, #888) 8%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink-muted, #888) 22%, transparent);
+}
+
+html[data-theme="dark"] .ledger-kbd-hints kbd {
+  background: color-mix(in srgb, var(--card, #1c1c1e) 80%, #fff 6%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 14%, transparent);
+}
+
+button.review-ledger-recurring-open.is-stat-press,
+button.text-button[data-open-ledger].is-stat-press {
+  transform: scale(0.97);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 10%, transparent);
+  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease;
+}
+
+.ledger-tx.is-long-press-hint {
+  transform: scale(0.985);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 8%, var(--card, #fff));
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+html.motion-reduced .ledger-tx.is-long-press-hint,
+html.motion-reduced button.review-ledger-recurring-open.is-stat-press,
+html.motion-reduced button.text-button[data-open-ledger].is-stat-press {
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-tx.is-long-press-hint,
+  button.review-ledger-recurring-open.is-stat-press,
+  button.text-button[data-open-ledger].is-stat-press {
+    transform: none;
+    transition: none;
+  }
+}
