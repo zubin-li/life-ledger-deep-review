@@ -4653,10 +4653,8 @@ async function renderTimeline() {
   photos.forEach(photo => calendarPhotosByDate.set(photo.date, [...(calendarPhotosByDate.get(photo.date) || []), photo]));
   calendarPhotoLoadedMonths.add(photoMonthKey);
   const photoDates = new Set(photos.map(photo => photo.date));
-  const entries = timelineEntriesForMonth(timelineCursor);
-  photoDates.forEach(date => {
-    if (!entries.some(entry => entry.date === date)) entries.push({ date, log: getLog(date) });
-  });
+  const monthEntryBasis = timelineMonthEntryBasis(timelineCursor, photos);
+  const entries = [...monthEntryBasis];
   if (selectedTimelineDate && !entries.some(entry => entry.date === selectedTimelineDate)) {
     entries.push({ date: selectedTimelineDate, log: getLog(selectedTimelineDate) });
   }
@@ -4668,7 +4666,7 @@ async function renderTimeline() {
   }
   renderJournalCalendar();
   setJournalCalendarPaintLoading(false);
-  renderTimelineEntryList(visibleEntries);
+  renderTimelineEntryList(visibleEntries, monthEntryBasis);
   renderJournalPhotoLibrary(photos);
   renderJournalComposer();
   void renderTimelineDetail();
@@ -4676,11 +4674,20 @@ async function renderTimeline() {
   const calendarEmptyArt = $("#journalCalendarEmptyArt");
   if (calendarEmptyArt) {
     const isCalendarMode = journalMode === "calendar";
-    const isEmpty = entries.length === 0;
+    const isEmpty = monthEntryBasis.length === 0;
     const shouldShow = isCalendarMode && isEmpty;
     calendarEmptyArt.hidden = !shouldShow;
+    calendarEmptyArt.setAttribute("aria-hidden", String(!shouldShow));
     if (shouldShow) {
-      window.LifeLedgerInteraction?.mountHairline(calendarEmptyArt, "./assets/hairline/journal-calendar-empty.svg");
+      const cta = languageText("去写今日复盘", "Write today's reflection", "Heutige Reflexion schreiben");
+      calendarEmptyArt.className = "journal-calendar-empty ll-polished";
+      calendarEmptyArt.innerHTML = `${hairlineEmptyMarkup("./assets/hairline/journal-calendar-empty.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"))}<button type="button" class="primary-button" id="timelineCalendarEmptyWriteToday">${escapeHtml(cta)}</button>`;
+      hydrateHairlineMounts(calendarEmptyArt);
+      calendarEmptyArt.querySelector(".hairline-empty")?.classList.add("ll-empty");
+      wireJournalFeedEmptyActions();
+    } else {
+      calendarEmptyArt.className = "journal-calendar-empty hairline-mount is-empty";
+      calendarEmptyArt.innerHTML = "";
     }
   }
   timelineRendering = false;
@@ -7389,7 +7396,8 @@ function bindEvents() {
       }
       selectedTimelineDate = date;
       if ($("#timelineView")?.classList.contains("active")) {
-        renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
+        const monthEntries = timelineEntriesForMonth(timelineCursor);
+        renderTimelineEntryList(applyTimelineFilter(monthEntries), monthEntries);
         void renderTimelineDetail();
       }
     });
@@ -7412,7 +7420,8 @@ function bindEvents() {
       }
       selectedTimelineDate = date;
       if ($("#timelineView")?.classList.contains("active")) {
-        renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
+        const monthEntries = timelineEntriesForMonth(timelineCursor);
+        renderTimelineEntryList(applyTimelineFilter(monthEntries), monthEntries);
         void renderTimelineDetail();
       }
     }, 280);
@@ -8346,10 +8355,16 @@ function journalFeedEmptyMarkup(mode, month) {
 }
 
 function wireJournalFeedEmptyActions() {
-  $("#journalEmptyWriteToday")?.addEventListener("click", () => {
+  const goTodayJournal = () => {
     switchToView("today");
     setDailyToolPage("journal", { smooth: false });
     requestAnimationFrame(() => $("#dayNote")?.focus({ preventScroll: true }));
+  };
+  ["journalEmptyWriteToday", "timelineEmptyWriteToday", "timelineCalendarEmptyWriteToday"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (!btn || btn.dataset.emptyCtaWired === "1") return;
+    btn.dataset.emptyCtaWired = "1";
+    btn.addEventListener("click", goTodayJournal);
   });
   $("#journalEmptyOpenWeek")?.addEventListener("click", () => switchToView("week"));
   $("#journalEmptyOpenReview")?.addEventListener("click", () => {
@@ -8587,24 +8602,45 @@ function timelineEntriesForMonth(monthDate) {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
+function timelineMonthEntryBasis(monthDate, photosInMonth = []) {
+  const basis = timelineEntriesForMonth(monthDate);
+  const seen = new Set(basis.map(entry => entry.date));
+  photosInMonth.forEach(photo => {
+    if (!photo?.date || seen.has(photo.date)) return;
+    seen.add(photo.date);
+    basis.push({ date: photo.date, log: getLog(photo.date) });
+  });
+  return basis;
+}
+
 function applyTimelineFilter(entries) {
   if (timelineFilter === "photos") return entries.filter(entry => (calendarPhotosByDate.get(entry.date) || []).length);
   if (timelineFilter === "notes") return entries.filter(entry => String(entry.log.note || "").trim());
   return entries;
 }
 
-function renderTimelineEntryList(entries = []) {
+function renderTimelineEntryList(visibleEntries = [], monthEntries = visibleEntries) {
   const container = $("#timelineEntryList");
   if (!container) return;
   const listEntering = timelineListEntering;
   if (listEntering) timelineListEntering = false;
-  if (!entries.length) {
-    container.innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"));
+  if (!monthEntries.length) {
+    const cta = languageText("去写今日复盘", "Write today's reflection", "Heutige Reflexion schreiben");
+    container.innerHTML = `<div class="timeline-list-empty ll-polished">${hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"))}<button type="button" class="primary-button" id="timelineEmptyWriteToday">${escapeHtml(cta)}</button></div>`;
+    hydrateHairlineMounts(container);
+    container.querySelector(".hairline-empty")?.classList.add("ll-empty");
+    wireJournalFeedEmptyActions();
+    return;
+  }
+  if (!visibleEntries.length) {
+    const title = languageText("没有符合筛选的条目", "Nothing matches this filter", "Keine Einträge für diesen Filter");
+    const help = languageText("试试「全部」或换一个月。", "Try All or another month.", "„Alle“ wählen oder einen anderen Monat.");
+    container.innerHTML = `<div class="timeline-filter-quiet ll-polished" role="status">${hairlineEmptyMarkup("./assets/hairline/search-empty.svg", title, help)}</div>`;
     hydrateHairlineMounts(container);
     container.querySelector(".hairline-empty")?.classList.add("ll-empty");
     return;
   }
-  container.innerHTML = entries.map(entry => {
+  container.innerHTML = visibleEntries.map(entry => {
     const label = timelineDateLabel(entry.date);
     const noteLines = String(entry.log.note || "").trim().split("\n").filter(Boolean);
     const excerpt = noteLines.slice(0, 2).join(" ");
@@ -8621,7 +8657,8 @@ function renderTimelineEntryList(entries = []) {
   }).join("");
   container.querySelectorAll(".timeline-entry-row").forEach(button => button.addEventListener("click", () => {
     selectedTimelineDate = button.dataset.date;
-    renderTimelineEntryList(entries);
+    const monthEntries = timelineEntriesForMonth(timelineCursor);
+    renderTimelineEntryList(applyTimelineFilter(monthEntries), monthEntries);
     renderTimelineDetail();
     $$("#timelineView .calendar-day").forEach(day => day.classList.toggle("selected", day.dataset.date === selectedTimelineDate));
   }));
@@ -8717,7 +8754,10 @@ async function renderTimelineDetail() {
 // Timeline day detail is editable in place (user 10/21): habits toggle, mood, note autosave, full drawer.
 function wireTimelineDetail(container, date) {
   const pop = el => { el.classList.remove("tl-pop"); void el.offsetWidth; el.classList.add("tl-pop"); };
-  const refreshList = () => renderTimelineEntryList(applyTimelineFilter(timelineEntriesForMonth(timelineCursor)));
+  const refreshList = () => {
+    const monthEntries = timelineEntriesForMonth(timelineCursor);
+    renderTimelineEntryList(applyTimelineFilter(monthEntries), monthEntries);
+  };
   container.querySelectorAll("[data-tl-habit]").forEach(button => button.addEventListener("click", () => {
     const id = button.dataset.tlHabit, log = getLog(date), on = !log.completed.includes(id);
     state.logs[date] = { ...log, completed: on ? [...log.completed, id] : log.completed.filter(x => x !== id) };

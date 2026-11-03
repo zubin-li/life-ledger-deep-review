@@ -38,7 +38,8 @@ test("journal feed empty markup wires CTAs", () => {
   assert.match(app, /function journalFeedEmptyMarkup\(/);
   assert.match(app, /function wireJournalFeedEmptyActions\(/);
   assert.match(app, /journal-feed-filter-quiet ll-polished/);
-  assert.match(app, /#journalEmptyWriteToday/);
+  assert.match(app, /id="journalEmptyWriteToday"/);
+  assert.match(app, /timelineCalendarEmptyWriteToday/);
   assert.match(app, /journal-feed-pane--empty/);
 });
 
@@ -69,9 +70,15 @@ test("today cards onboarding and review scatter empty polish", () => {
   assert.match(app, /reviewScatterEmptyHint/);
   assert.match(app, /summary\.expenseMinor < 0/);
   assert.match(app, /#reviewScatterEmptyToday/);
+  assert.match(app, /timelineEmptyWriteToday/);
+  assert.match(app, /timelineCalendarEmptyWriteToday/);
+  assert.match(app, /journal-calendar-empty ll-polished/);
+  assert.match(app, /timeline-filter-quiet ll-polished/);
+  assert.match(app, /function timelineMonthEntryBasis\(/);
   const css = readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   assert.match(css, /Batch 10 r6 — Today widget library onboarding/i);
   assert.match(css, /Batch 10 r7 — Today edit done success/i);
+  assert.match(css, /Batch 10 r8 — timeline calendar/i);
   assert.match(css, /\.tc-onboard-hint/);
   assert.match(css, /\.review-scatter-empty\.ll-polished/);
 });

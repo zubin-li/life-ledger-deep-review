@@ -1,4 +1,4 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 7）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
@@ -6,7 +6,27 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 ---
 
-## 本轮（Batch 10 · Round 7）— 散点空态 bugfix + Today「完成」动效
+## 本轮（Batch 10 · Round 8）— 时间轴日历空月 CTA + 重复 id 修复
+
+| 项目 | 说明 |
+|------|------|
+| **时间轴 · 日历** | 空月（无日志、无当月照片）时 `#journalCalendarEmptyArt` 显示 hairline 空态 + **去写今日复盘**；侧栏列表空月同 CTA；筛选无匹配时 **search-empty** quiet 条。 |
+| **Bugfix** | 侧栏与日历 overlay 曾共用 `id="journalEmptyWriteToday"`，事件绑在隐藏节点上，日历按钮无效；已拆为 `timelineEmptyWriteToday` / `timelineCalendarEmptyWriteToday`，空月判定用 `timelineMonthEntryBasis`（不含「仅选中今天」占位）。 |
+| **Mac 壳** | 截图验证 demo 记账页在注入 `shell.js` 下的窗口 chrome：`b10r8-ledger-mac-shell-zh-light-1440-chromium.png`。 |
+| **截图** | `.overnight/shots/b10r8-timeline-calendar-empty-*.png` 等（`node .overnight/capture-batch10-round8.mjs`，**5296**）。 |
+| **测试** | `npm test` **389**；`npm run test:browser` **39**（+2 `timeline-calendar-empty`，端口 **5284**）。 |
+
+**怎么验：**
+
+1. 本地档清 `logs`（或 `meta.demo.active = false`）→ **时间轴** → **日历** → 见空态与 **去写今日复盘**，点击应到 Today 日记区并聚焦 `#dayNote`。
+2. 有笔记无照片时，在侧栏（若可见）切 **Photos** 筛选 → quiet 条「没有符合筛选的条目」。
+3. 全量：`npm test` + `npm run test:browser`（勿与 **5296** capture 并行）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；日历模式默认隐藏侧栏筛选 UI。
+
+---
+
+## 上一轮（Batch 10 · Round 7）— 散点空态 bugfix + Today「完成」动效
 
 | 项目 | 说明 |
 |------|------|

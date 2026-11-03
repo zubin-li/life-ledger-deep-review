@@ -5243,3 +5243,82 @@ html.motion-reduced .tc-edit-toggle.tc-edit-saved-flash {
     animation: none !important;
   }
 }
+
+/* Batch 10 r8 — timeline calendar / sidebar list empty CTAs */
+
+.timeline-list-empty.ll-polished,
+.journal-calendar-empty.ll-polished {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 360px;
+  margin: 20px auto 28px;
+  padding: 22px 20px 20px;
+  text-align: center;
+  border: 1px dashed color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--sheet) 92%, var(--bg));
+}
+
+.timeline-list-empty.ll-polished .hairline-empty,
+.journal-calendar-empty.ll-polished .hairline-empty {
+  max-width: none;
+  margin: 0;
+}
+
+.timeline-list-empty.ll-polished .hairline-mount,
+.journal-calendar-empty.ll-polished .hairline-mount {
+  max-width: 180px;
+  margin: 0 auto 4px;
+}
+
+.timeline-list-empty.ll-polished .primary-button,
+.journal-calendar-empty.ll-polished .primary-button {
+  margin-top: 4px;
+}
+
+.timeline-filter-quiet.ll-polished {
+  margin: 12px 0 8px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--sheet) 90%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+
+.timeline-filter-quiet.ll-polished .hairline-empty {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  align-items: center;
+  text-align: left;
+}
+
+.timeline-filter-quiet.ll-polished .hairline-mount {
+  grid-row: 1 / span 2;
+  width: 52px;
+  max-width: 52px;
+  margin: 0;
+}
+
+#timelineView[data-journal-layout="calendar"] .journal-calendar-empty.ll-polished {
+  max-width: 420px;
+  margin: 8px auto 32px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-list-empty.ll-polished,
+  .journal-calendar-empty.ll-polished {
+    animation: llEmptyEnter 520ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+html.motion-reduced :is(.timeline-list-empty, .journal-calendar-empty).ll-polished {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.timeline-list-empty, .journal-calendar-empty).ll-polished {
+    animation: none !important;
+  }
+}
