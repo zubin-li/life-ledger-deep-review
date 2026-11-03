@@ -1,5 +1,45 @@
 # Overnight progress
 
+## Batch 13 · Round 10 — done (final)
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（终轮未动 6120 行 CSS）。
+- **收尾：** `CHANGELOG [Unreleased]` → 已并入 **`[2.1.0]`**（含 Batch 11–13 条目）；`.overnight/REPORT.md` **Batch 13 全夜总览**；`capture-batch13-round10.mjs`（**5294**）→ `b13r10-release-*`（5 张，已目视 Today→记账日 chip 截图）。
+- **QA：** `npm test` **417** pass / 0 fail；`npm run test:browser` **71** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- 主人本地验收（见 REPORT 全夜总览 **5 分钟**清单）。
+- **2.2：** `v210.css` reduced-motion 物理合并（REVIEW #1）；可选中等环比文案（REVIEW #2）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+417 pass, 0 fail (batch 13 round 10, unit gate)
+71 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 9 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 CSS 合并块）。
@@ -488,4 +528,7 @@ _pending (driver appends after commit)_
 ℹ tests 416 ℹ pass 416 ℹ fail 0 
 
 ## Driver gate after round 9
+ℹ tests 417 ℹ pass 417 ℹ fail 0 
+
+## Driver gate after round 10
 ℹ tests 417 ℹ pass 417 ℹ fail 0 

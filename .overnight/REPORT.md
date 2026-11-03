@@ -1,3 +1,87 @@
+# Life Ledger 夜间构建 — 全夜总览（Batch 13 · Round 10 收尾）
+
+Web **2.1.0**、Mac **3.1.0**。隔离仓库：`/Users/ashan/Documents/Codex/ll-overnight`（无 remote，未部署）。
+
+## 交付摘要
+
+| 目标 | 内容 |
+|------|------|
+| **Goal 1 · 记账** | 见 Batch 3–11 首发与 `CHANGELOG [2.1.0]`；Batch 12–13 深化筛选/CSV/键盘/示例流水 onboarding。设计 `.overnight/LEDGER-DESIGN.md`，第三方 `THIRD_PARTY_NOTICES.md`。 |
+| **Goal 2 · 抛光（Batch 13）** | 日记 autosave / 心情按压；习惯与周目标 toggle；全习惯庆祝 + 复盘 Money 按压；全局 **M**、长按编辑、Mac **⌘7**；侧栏 nav、分类 chip、Today 支出、图表/热力格按压反馈。 |
+| **QA** | `npm test` **417** pass；`npm run test:browser` **71** pass。Antigravity **REVIEW.md**：无 HIGH/MED。 |
+
+## 主人明天建议验收（5 分钟）
+
+1. 终端：`cd public && python3 -m http.server 8080 --bind 127.0.0.1`，打开 `http://127.0.0.1:8080/index.html?mode=local&local-preview=demo-showcase-v1`。
+2. **今日** → 点 **今日支出** 大数字 → **记账** 带 **11月3日** chip（`b13r10-release-today-ledger-day-zh-light-1440-chromium.png`）。
+3. **复盘** → **本月支出** 点数字 → **记账** 同月、无日期 chip（`b13r10-release-review-ledger-month-zh-light-1440-chromium.png`）。
+4. **记账** → 点 **每日支出** 热力格 → 筛选 + 高亮（`b13r10-release-ledger-heat-zh-light-1440-chromium.png`）。
+5. 快速录入：`12,50 咖啡`；任意页 **M** 聚焦录入；手机 **长按** 一笔 → 编辑。
+6. 深色 de / Mac 窗：`b13r10-release-ledger-de-dark-390-webkit.png`、`b13r10-release-ledger-mac-en-light-1440-webkit.png`。
+
+重拍发布集：`node .overnight/capture-batch13-round10.mjs`（端口 **5294**）。
+
+## Batch 13 十轮一览
+
+| 轮 | 主题 |
+|----|------|
+| R1 | 空账本 onboarding + **记一笔示例**；环比 **≥ €100** 显示金额 |
+| R2 | 日记 autosave 脉冲；心情 **just-picked**；支出环比 roll-up |
+| R3 | CSV 预览表 + 拖放导入 + 列表 import 脉冲 |
+| R4 | 习惯勾选 / 进度环；周目标 **just-toggled** |
+| R5 | 全习惯庆祝 + orbit/卡高亮；复盘 Money **is-stat-press** |
+| R6 | 全局 **M**、桌面快捷键条、长按编辑 |
+| R7 | 复盘 jump chip 按压；Mac **显示 → 记账 ⌘7** |
+| R8 | 侧栏 **is-nav-press**；分类 chip **is-chip-press** |
+| R9 | Today 支出 **is-spend-press**；圆环/热力 **is-mode/heat-press** |
+| **R10** | **CHANGELOG 并入 2.1.0 + 发布截图 `b13r10-release-*`** |
+
+更早 Batch 3–12 见下方各轮 REPORT 与 `CHANGELOG [2.1.0]`。
+
+## 截图索引（Batch 13 发布）
+
+| 前缀 | 场景 |
+|------|------|
+| `b13r1`–`b13r3` | onboarding、日记/心情、CSV 预览 |
+| `b13r4`–`b13r6` | 习惯/周目标、庆祝、全局 M |
+| `b13r7`–`b13r9` | jump chip、nav/chip、Today/热力按压 |
+| **`b13r10-release-*`** | **发布集：Today/Review/热力/de390/Mac** |
+
+目录：`.overnight/shots/`。Batch 12 发布集：`b12r10-release-*`。
+
+## 已知限制（ intentional / 留 2.2）
+
+- 纯 Cloudflare **首次**访问不自动 seed 虚构流水（可用 **记一笔示例**）。
+- `v210.css` 内分散的 `prefers-reduced-motion` **未**物理合并（REVIEW #1 → **2.2**）。
+- 支出环比：中等增幅（差额 **< €100**）仍 **+N%**。
+- Demo 旧缓存偶需 `?demo-reset=1`；复盘 jump chips 仅 **≤959px**。
+
+## 测试（Batch 13 Round 10 实测）
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **417 pass, 0 fail** |
+| `npm run test:browser` | **71 pass, 0 fail** |
+
+---
+
+# Life Ledger 夜间构建 — Batch 13 · Round 10
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **收尾** | `[Unreleased]` 并入 **2.1.0**；全夜总览（见上文）；`capture-batch13-round10.mjs` → **`b13r10-release-*`**（5294）。 |
+| **文档** | `CHANGELOG` Batch 13 r10 final；`PROGRESS` 标记 Batch 13 完成。 |
+
+## 怎么验
+
+见全夜总览 **主人明天建议验收**；重拍：`node .overnight/capture-batch13-round10.mjs`。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 9
 
 Web **2.1.0**、Mac **3.1.0**。
