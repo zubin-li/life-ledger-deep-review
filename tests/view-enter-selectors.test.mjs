@@ -182,3 +182,13 @@ test("Batch 12 r9 — Review Money stats open ledger month", () => {
   assert.match(app, /review-ledger-stat-btn/);
   assert.match(app, /data-open-ledger-month/);
 });
+
+test("Batch 13 r1 — Money sample entry onboarding", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r1 — Money first-entry sample/);
+  assert.match(ledgerUi, /data-ledger-sample-entry/);
+  assert.match(ledgerUi, /function postSampleEntry\(/);
+  assert.match(core, /SPEND_COMPARE_AMOUNT_DELTA_MINOR/);
+});

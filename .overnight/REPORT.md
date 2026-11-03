@@ -1,3 +1,23 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 1
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **REVIEW** | 无 HIGH/MED；#3 支出环比在差额 **≥ €100** 时优先显示金额；#4 空账本 onboarding 增加 **记一笔示例**（toast 撤销）并说明默认分类已就绪。 |
+| **记账** | `SPEND_COMPARE_AMOUNT_DELTA_MINOR`；`postSampleEntry` / `data-ledger-sample-entry`。 |
+| **测试** | `npm test` **408**；`npm run test:browser` **57**（+1 `ledger-sample-entry`）。 |
+
+## 验收
+
+1. 本地空 `state.ledger`（或 `LifeLedgerLedger.emptyLedger()`）→ **记账** → 虚线 onboarding 内 **记一笔示例**（见 `b13r1-ledger-onboarding-zh-light-1440-chromium.png`）。
+2. 点示例后应出现 **-3,50** 一类交易、onboarding 消失、可 **撤销**（见 `b13r1-ledger-sample-de-dark-390-webkit.png`）。
+3. 重拍：`node .overnight/capture-batch13-round1.mjs`（端口 **5292**）。
+
+---
+
 # Life Ledger 夜间构建 — 全夜总览（Batch 12 · Round 10 收尾）
 
 Web **2.1.0**、Mac **3.1.0**。隔离仓库：`/Users/ashan/Documents/Codex/ll-overnight`（无 remote，未部署）。

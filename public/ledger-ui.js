@@ -930,18 +930,52 @@
     root.setTimeout?.(() => box.remove(), 280);
   }
 
+  function sampleQuickEntryLine() {
+    const code = String(ctx.lang?.() || "en").slice(0, 2);
+    if (code === "zh") return "-3,50 餐饮";
+    if (code === "de") return "-3,50 Kaffee";
+    return "-3.50 coffee";
+  }
+
+  function postSampleEntry(host, ledger) {
+    const parsed = core().parseQuickEntry(sampleQuickEntryLine(), ledger, {
+      lang: ctx.lang?.(),
+      today: ctx.iso(new Date()),
+    });
+    if (!parsed.ok) return false;
+    const { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
+    const snapTx = { ...transaction };
+    const snapIndex = next.transactions.findIndex(tx => tx.id === transaction.id);
+    lastHighlightTxId = transaction.id;
+    commit(next);
+    dismissOnboarding(host);
+    ctx.toast?.(
+      t("已记一笔示例（可撤销）", "Sample entry added (undo)", "Beispielbuchung (rückgängig)"),
+      {
+        actionLabel: t("撤销", "Undo", "Rückgängig"),
+        onAction: () => {
+          const restored = core().restoreTransaction(ctx.state().ledger, snapTx, snapIndex);
+          commit(restored);
+          render();
+        },
+      },
+    );
+    return true;
+  }
+
   function renderOnboarding(ledger) {
     if (ledger.transactions.length || onboardingDismissed()) return "";
+    const sampleBtn = `<button type="button" class="secondary-button ledger-onboarding-sample" data-ledger-sample-entry>${t("记一笔示例", "Add sample entry", "Beispiel buchen")}</button>`;
     return `<aside class="ledger-onboarding ll-empty ll-empty-enter" data-ledger-onboarding>
       <div class="ll-art" data-art="week-insights-empty"></div>
       <div class="ledger-onboarding-copy">
         <strong>${t("从这里记第一笔", "Log your first entry here", "Hier die erste Buchung erfassen")}</strong>
         <p>${t(
-          "在上方输入框试试：12,50 咖啡、-45 Miete gestern、+2000 工资。分类芯片可一键填入名称。",
-          "Use the quick field above: 12.50 coffee, -45 rent yesterday, +2000 salary. Category chips fill names for you.",
-          "Im Feld oben z. B.: 12,50 Kaffee · -45 Miete gestern · +2000 Gehalt. Kategorien-Chips füllen Namen ein.",
+          "默认分类已就绪。在上方输入框试试：12,50 咖啡、-45 Miete gestern、+2000 工资；或先记一笔示例熟悉流程。",
+          "Starter categories are ready. Use quick entry — e.g. 12.50 coffee, -45 rent yesterday, +2000 salary — or add a sample entry below.",
+          "Standardkategorien sind da. Schnellerfassung oben — z. B. 12,50 Kaffee · -45 Miete gestern · +2000 Gehalt — oder unten eine Beispielbuchung.",
         )}</p>
-        <button type="button" class="text-button" data-ledger-hint-dismiss>${t("知道了", "Got it", "Verstanden")}</button>
+        <div class="ledger-onboarding-actions">${sampleBtn}<button type="button" class="text-button" data-ledger-hint-dismiss>${t("知道了", "Got it", "Verstanden")}</button></div>
       </div>
     </aside>`;
   }
@@ -1527,6 +1561,9 @@
         ${renderList(ledger, ym)}
       </section>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));
+    host.querySelector("[data-ledger-sample-entry]")?.addEventListener("click", () => {
+      if (postSampleEntry(host, ledgerState())) render();
+    });
     mountOnboardingArt(host);
     bindInteractions(host, ledger, ym);
     requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));

@@ -414,6 +414,8 @@
   const SPEND_COMPARE_AMOUNT_BASELINE_MINOR = 1500;
   /** When the percent jump is huge, show €/¥ delta instead of a capped +999%. */
   const SPEND_COMPARE_EXTREME_PERCENT = 500;
+  /** When the absolute jump is large, show currency instead of an abstract +N%. */
+  const SPEND_COMPARE_AMOUNT_DELTA_MINOR = 10000;
 
   function displaySpendDeltaPercent(deltaPercent, direction) {
     if (deltaPercent == null) return null;
@@ -428,6 +430,7 @@
     const delta = Math.abs(Number(cmp.deltaMinor)) || 0;
     if (delta <= 0) return false;
     if (prev < SPEND_COMPARE_AMOUNT_BASELINE_MINOR) return true;
+    if (delta >= SPEND_COMPARE_AMOUNT_DELTA_MINOR) return true;
     const pct = Number(cmp.deltaPercent);
     if (Number.isFinite(pct) && pct > SPEND_COMPARE_EXTREME_PERCENT) return true;
     return false;

@@ -1,5 +1,48 @@
 # Overnight progress
 
+## Batch 13 · Round 1 — done
+
+- **REVIEW.md：** 无 HIGH/MED；#1 浏览器套件本机 **57** pass；#2 reduced-motion 合并仍留 **2.2**；#3 部分采纳（绝对差额 **≥ €100** 也显示金额）；#4 部分采纳（空账本 onboarding **记一笔示例** + 撤销，说明默认分类已就绪）。
+- **Goal 1 / 记账：** `preferSpendCompareAmountCaption` 增加 `SPEND_COMPARE_AMOUNT_DELTA_MINOR`（10000）；onboarding 文案 + `postSampleEntry` / `data-ledger-sample-entry`（toast 撤销）。
+- **Goal 2：** `v210.css` Batch 13 r1（`.ledger-onboarding-actions`）。
+- **QA：** `view-enter-selectors` Batch 13 r1；`ledger-core` €100 差额用例；`ledger-sample-entry.browser`（Chromium 1440）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r1。
+- **截图：** `node .overnight/capture-batch13-round1.mjs`（**5292**）→ `b13r1-ledger-onboarding-zh-light-1440-chromium.png`、`b13r1-ledger-sample-de-dark-390-webkit.png`。
+- **QA：** `npm test` **408** pass / 0 fail；`npm run test:browser` **57** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 2+：`v210.css` reduced-motion 物理合并（2.2）；习惯/日记其它 micro-interaction；或 Today 环比文案也统一 **≥ €100** 金额规则（若产品要一致）。
+- 主人验收：清 `life-ledger-v1` 或空 `ledger` → **记账** → 见 onboarding **记一笔示例**（`b13r1-ledger-onboarding-zh-light-1440-chromium.png`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+408 pass, 0 fail (batch 13 round 1, unit gate)
+57 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 12 · Round 10 — done (final)
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件已在本仓库实测全绿（**56**）。
@@ -49,102 +92,6 @@ _pending (driver appends after commit)_
 - **截图：** `node .overnight/capture-batch12-round9.mjs`（**5295**）→ `b12r9-review-spend-ledger-month-*`。
 - **QA：** `npm test` **407** pass / 0 fail；`npm run test:browser` **56** pass / 0 fail。
 
-## Batch 12 · Round 8 — done
-
-- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（55）。
-- **Goal 2 / Today ↔ 记账：** **今日支出** 卡点击 **当日金额** 或 **打开记账** → `LifeLedgerLedgerUI.openToDay`（所选 Today 日期、热力格选中、日期 chip、交易列表 scroll + 短暂 spotlight）。
-- **实现：** `ledger-ui.js` `openToDay` / `pendingListFocus`；`today-widgets.js` 金额改为 `button.tw-spend-today`；`v210.css` Batch 12 r8。
-- **QA：** `view-enter-selectors` Batch 12 r8；`today-spending-hint`；`today-spending-ledger-day.browser`（Chromium 1440）。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r8。
-- **截图：** `node .overnight/capture-batch12-round8.mjs`（**5294**）→ `b12r8-today-spend-ledger-day-*`。
-- **QA：** `npm test` **406** pass / 0 fail；`npm run test:browser` **55** pass / 0 fail。
-
-## Half-done
-
-- （无）
-
-## Next
-
-- Batch 12 Round 9–10：`v210.css` reduced-motion 物理合并（2.2）；习惯/复盘其它 micro-interaction；`.overnight/REPORT.md` 总览收尾。
-- Owner 验收：Demo → **今日** → 点 **今日支出** 大数字 → **记账** 应见当日 chip + 筛选列表（见 `b12r8-today-spend-ledger-day-zh-light-1440-chromium.png`）。
-
-## Known bugs / gaps
-
-- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
-- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
-- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
-- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
-- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
-- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
-- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
-- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
-
-## npm test
-
-```
-406 pass, 0 fail (batch 12 round 8, unit gate)
-55 pass, 0 fail (npm run test:browser, full suite)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
-
----
-
-## Batch 12 · Round 7 — done
-
-- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（54）。
-- **Goal 2 / 记账 UX：** 筛选结果同时含 **收入与支出** 时，合计条显示 **收入 · 支出 · 净** 分列（单色筛选仍只显示笔数 · 合计）；**Escape** 清除当前列表筛选（搜索/日期/分类；弹层打开时仍先关弹层；快速录入框内不触发）。
-- **逻辑：** `renderListFilterSummary` 扩展；`bindLedgerShortcuts` 增加 Escape → `clearAllListFilters`。
-- **QA：** `view-enter-selectors` Batch 12 r7；`ledger-core` 混合日 `summarizeTransactions`；`ledger-escape-filters.browser`（WebKit 390，混合日 split + Escape）。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r7。
-- **截图：** `node .overnight/capture-batch12-round7.mjs`（**5297**）→ `b12r7-ledger-split-sum-*`。
-- **QA：** `npm test` **404** pass / 0 fail；`npm run test:browser` **54** pass / 0 fail。
-
-## Half-done
-
-- （无）
-
-## Next
-
-- Batch 12 Round 8+：`v210.css` reduced-motion 物理合并（2.2）；习惯/复盘/Today 其它 micro-interaction；或 `.overnight/REPORT.md` 总览收尾。
-- Owner 验收：Demo → **记账** → 点有 **工资+支出** 同一天的热力格 → 应见 **收入/支出/净** 分列（见 `b12r7-ledger-split-sum-zh-light-1440-chromium.png`）；再按 **Esc** → 日期 chip 与合计条消失。
-
-## Known bugs / gaps
-
-- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
-- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
-- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
-- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
-- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
-- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
-- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
-- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
-
-## npm test
-
-```
-404 pass, 0 fail (batch 12 round 7, unit gate)
-54 pass, 0 fail (npm run test:browser, full suite)
-```
-
-## Gate result
-
-_pending (driver appends after commit)_
-
----
-
-## Batch 12 · Round 6 — done
-
-- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿。
-- **Goal 2 / 记账 UX：** 交易列表在 **搜索 / 日期 / 分类** 任一筛选且有结果时显示 **笔数 · 合计** 条；**两个及以上** 筛选时出现 **清除全部筛选**；日+分类无匹配时专用空态 + 清除按钮；合计金额支持 `rollText`。
-- **逻辑：** `summarizeTransactions`（`ledger-core.js`）；`renderListFilterSummary` / `clearAllListFilters`（`ledger-ui.js`）。
-- **QA：** `view-enter-selectors` Batch 12 r6；`ledger-filter-summary.browser`（Chromium，热力日 + 圆环分类 → 小计或 combo 空态 → 清除全部）。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r6。
-- **截图：** `node .overnight/capture-batch12-round6.mjs`（**5292**）→ `b12r6-ledger-filter-sum-*`（深色合计对比度已微调）。
-- **QA：** `npm test` **402** pass / 0 fail；`npm run test:browser` **53** pass / 0 fail。
-
 ## Driver gate after round 1
 ℹ tests 395 ℹ pass 395 ℹ fail 0 
 
@@ -174,3 +121,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 10
 ℹ tests 407 ℹ pass 407 ℹ fail 0 
+
+## Driver gate after round 1
+ℹ tests 408 ℹ pass 408 ℹ fail 0 

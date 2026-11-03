@@ -6118,3 +6118,22 @@ html.motion-reduced button.review-ledger-stat-btn {
     transition: none;
   }
 }
+
+/* Batch 13 r1 — Money first-entry sample + onboarding actions */
+.ledger-onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 4px;
+}
+
+.ledger-onboarding-sample {
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-onboarding-sample {
+    transition: none;
+  }
+}

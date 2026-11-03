@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 13 r1):** **Money** first-visit onboarding explains that starter categories are ready and offers **Add sample entry** (toast undo); spending compare hints show **currency** when the week/month delta is **≥ €100** (not only tiny baselines or +500% jumps).
+- **QA (Batch 13 r1):** Unit test for large absolute spend deltas; Playwright sample-entry onboarding (Chromium); structural Batch 13 r1 selectors.
 - **Polish (Batch 12 r10 · final):** Overnight Batch 12 closed with release screenshot set `capture-batch12-round10.mjs` (Today→Money day filter, Review→Money month, filtered list strip, de 390 / Mac shell **Money**); **407** unit + **56** browser tests at gate.
 - **Polish (Batch 12 r9):** **Review** monthly **Money** summary — tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month (clears day/category filters; month summary retarget animation).
 - **QA (Batch 12 r9):** Structural tests for `openToMonth` / `openLedgerForReviewMonth`; Playwright Review stat → Money month (WebKit).
