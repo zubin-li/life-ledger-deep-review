@@ -56,6 +56,16 @@ test("importGermanBankCsv parses semicolon rows", () => {
   assert.equal(ledger.transactions[1].amountMinor, 250000);
 });
 
+test("importGermanBankCsv keeps column index when cells are empty (;;)", () => {
+  const csv = `Buchungstag;Wertstellung;Buchungstext;Verwendungszweck;Glaeubiger ID;Mandatsreferenz;Kundenreferenz;Betrag;Waehrung
+01.11.2026;;Umsatz;REWE;;;;-12,50;EUR`;
+  const { imported, skipped, ledger } = L.importGermanBankCsv(csv, null, { lang: "de" });
+  assert.equal(skipped, 0);
+  assert.equal(imported, 1);
+  assert.equal(ledger.transactions[0].amountMinor, -1250);
+  assert.match(ledger.transactions[0].note, /REWE/);
+});
+
 test("exportTransactionsCsv includes amount and currency per row", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;
@@ -80,6 +90,24 @@ test("exportTransactionsCsv includes amount and currency per row", () => {
   assert.match(csv, /^date;note;category;amount;currency/);
   assert.match(csv, /02\.11\.2026;"gift";.*;-88,00;CNY/);
   assert.match(csv, /01\.11\.2026;"coffee";.*;-12,50;EUR/);
+});
+
+test("exportTransactionsCsv uses localized category names", () => {
+  let ledger = L.normalize(null, { lang: "de" });
+  const account = ledger.accounts[0].id;
+  const expenseCat = ledger.categories.find(c => c.kind === "expense");
+  ({ ledger } = L.addTransaction(ledger, {
+    accountId: account,
+    categoryId: expenseCat.id,
+    amountMinor: -500,
+    currency: "EUR",
+    date: "2026-11-03",
+    note: "test",
+  }));
+  const csvDe = L.exportTransactionsCsv(ledger, "2026-11", { lang: "de" });
+  assert.match(csvDe, new RegExp(`"${expenseCat.nameDe.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
+  const csvEn = L.exportTransactionsCsv(ledger, "2026-11", { lang: "en" });
+  assert.match(csvEn, new RegExp(`"${expenseCat.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
 });
 
 test("backup round-trip preserves ledger via JSON clone", () => {

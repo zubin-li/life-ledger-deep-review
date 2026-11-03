@@ -1011,9 +1011,23 @@
   }
 
   function splitGermanCsvLine(line) {
-    const parts = String(line || "").match(/(?:[^;"]+|"[^"]*")+/g);
-    if (!parts) return [];
-    return parts.map(cell => cell.replace(/^"|"$/g, "").replace(/""/g, '"').trim());
+    const cols = [];
+    let cur = "";
+    let inQ = false;
+    const text = String(line || "");
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === '"') {
+        inQ = !inQ;
+      } else if (ch === ";" && !inQ) {
+        cols.push(cur);
+        cur = "";
+      } else {
+        cur += ch;
+      }
+    }
+    cols.push(cur);
+    return cols.map(c => c.replace(/^"|"$/g, "").replace(/""/g, '"').trim());
   }
 
   function parseGermanAmount(value) {
@@ -1040,7 +1054,8 @@
     const defaultExpense = base.categories.find(c => c.kind === "expense" && !c.archived);
     let imported = 0;
     let skipped = 0;
-    const start = lines[0].toLowerCase().includes("datum") ? 1 : 0;
+    const head = lines[0].toLowerCase();
+    const start = head.includes("datum") || head.includes("buchungstag") || head.startsWith("buchung") ? 1 : 0;
     for (let i = start; i < lines.length; i++) {
       const cols = splitGermanCsvLine(lines[i]);
       if (cols.length < 3) { skipped++; continue; }
@@ -1075,15 +1090,17 @@
     return { ledger: base, imported, skipped };
   }
 
-  function exportTransactionsCsv(ledger, ym) {
-    const base = normalize(ledger);
+  function exportTransactionsCsv(ledger, ym, options = {}) {
+    const lang = options.lang || "en";
+    const base = normalize(ledger, options);
     const rows = transactionsInMonth(base, ym);
     const header = "date;note;category;amount;currency\n";
     const body = rows.map(tx => {
       const cat = base.categories.find(c => c.id === tx.categoryId);
       const amount = (tx.amountMinor / 100).toFixed(2).replace(".", ",");
       const currency = tx.currency || base.settings.defaultCurrency || "EUR";
-      return `${tx.date.split("-").reverse().join(".")};"${tx.note.replace(/"/g, "'")}";"${cat?.name || ""}";${amount};${currency}`;
+      const catLabel = cat ? localizedCategoryName(cat, lang) : "";
+      return `${tx.date.split("-").reverse().join(".")};"${tx.note.replace(/"/g, "'")}";"${catLabel.replace(/"/g, "'")}";${amount};${currency}`;
     }).join("\n");
     return header + body;
   }

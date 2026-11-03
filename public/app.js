@@ -9085,8 +9085,19 @@ function renderCompactValues(points) {
 function renderReviewInspectorTable() {
   const table = $("#inspectorReviewTable");
   if (!table || !analyticsApi()) return;
+  const tableVisible = table.offsetParent !== null;
   const dates = analyticsDates();
   const current = slotTotals(dates);
+  if (!tableVisible) {
+    const focusPanelHidden = $("#inspectorReviewFocus");
+    if (focusPanelHidden && focusPanelHidden.offsetParent !== null) {
+      const sessions = focusSessionsBetween(dates[0], dates[dates.length - 1]);
+      const byTopic = focusTopics(sessions);
+      const rows = byTopic.slice(0, 4).map(([label, minutes]) => `<span>${escapeHtml(label)} · ${Math.round(minutes)} ${escapeHtml(tr("focus.reviewUnit"))}</span>`).join("");
+      focusPanelHidden.innerHTML = rows ? `<h4 class="inspector-review-focus-title">${escapeHtml(tr("review.focusByTopic"))}</h4>${rows}` : "";
+    }
+    return;
+  }
   if (!current.eligible) {
     table.innerHTML = hairlineEmptyMarkup(
       "./assets/hairline/empty-insights.svg",

@@ -4,6 +4,12 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Ledger CSV import:** semicolon tokenizer preserves empty cells (`;;`) so Sparkasse-style exports keep the Betrag column index; header rows with `Buchungstag` are skipped like `Datum`.
+- **Ledger CSV export:** category column uses the active UI language (`localizedCategoryName`).
+- **Review:** habit score inspector skips DOM work while `#inspectorReviewTable` is not displayed (collapsed/hidden score panel).
+
 ### Changed
 
 - **Review Money scatter:** keyboard roving focus on scatter dots (Tab, arrows, Home/End) with the same tip as hover; `aria-live` readout (`v210.css` Batch 6 R9).

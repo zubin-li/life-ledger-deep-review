@@ -1,5 +1,41 @@
 # Overnight progress
 
+## Batch 7 · Round 1 — done
+
+- **REVIEW.md（Antigravity）：** 修复 **MED #1** 德式 CSV `;;` 空列导致 Betrag 列错位；**LOW #2** 导出分类名随 UI 语言；**LOW #3** `#inspectorReviewTable` 不可见时跳过习惯统计 DOM；**LOW #4** CSS 合并留待专门 refactor；**INFO #5** 本轮本地 `npm run test:browser` **8 pass**。
+- **CSV 导入：** `splitGermanCsvLine` 改为引号感知分词；表头识别增加 `Buchungstag` / `buchung*`。
+- **测试：** 单元 **352 pass**（+2：空列导入、本地化导出）；浏览器 **8 pass**。
+- **验收截图：** `node .overnight/capture-batch7-round1.mjs`（**5295**）→ `b7r1-ledger-import-de-light-1440-chromium.png`、`b7r1-ledger-import-zh-dark-390-webkit.png`（目视 OK：CSV 导入/导出按钮与三卡图表）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- 真实 Cloudflare 环境用副本验证 ledger CAS 同步一次。
+- 若希望复盘页展示 inspector 习惯明细表，需解除隐藏并设计宽屏布局。
+- `v210.css` 重复 `@keyframes` / reduced-motion 块合并（REVIEW LOW #4）。
+- `[Unreleased]` 条目可在 stable 发版时并入 `[2.1.0]` 或下一版本。
+
+## Known bugs / gaps
+
+- 并行 fakecloud / 未清 wrangler 时 browser 套件可能超时（清进程后 8 pass）。
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- showcase 演示数据经 demo align 函数塑造洞察；真实用户数据不受影响。
+- Demo 下 Journal reflection streak 数字偏大（历史已知）。
+
+## npm test
+
+```
+352 pass, 0 fail (batch 7 round 1, unit gate)
+8 pass, 0 fail (test:browser, round 1)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 6 · Round 10 — done（十轮收束）
 
 - **文档：** `REPORT.md` 重写顶部「明早验收清单」与 Batch 6 交付摘要；`CHANGELOG` [Unreleased] 补充散点键盘 roving 说明。
@@ -89,3 +125,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 10
 ℹ tests 350 ℹ pass 350 ℹ fail 0 
+
+## Driver gate after round 1
+ℹ tests 352 ℹ pass 352 ℹ fail 0 

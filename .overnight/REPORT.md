@@ -1,6 +1,28 @@
-# Life Ledger 夜间构建总报告（Batch 6 · Round 10 · 收束）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 1）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 启动：** 按 Antigravity `REVIEW.md` 修 CSV 与复盘 inspector 性能；单元 **352**、浏览器 **8** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 1）— 审查修复
+
+| 项目 | 说明 |
+|------|------|
+| **德式 CSV 空列** | Sparkasse 等导出中 `;;` 不再丢列，Betrag 仍读第 8 列；表头含 `Buchungstag` 会跳过首行。 |
+| **CSV 导出语言** | 分类列用当前界面语言（如 de → Lebensmittel）。 |
+| **复盘 inspector** | `#inspectorReviewTable` 在折叠/隐藏时不跑习惯卡片 HTML。 |
+| **测试** | +2 单元用例；`npm test` **352**；`npm run test:browser` **8**。 |
+| **截图** | `.overnight/shots/b7r1-ledger-import-*`（重拍：`node .overnight/capture-batch7-round1.mjs`，端口 **5295**）。 |
+
+**建议自测 CSV：** 从银行导出含空 IBAN/BIC 列的 `;` 文件 → **记账 → CSV importieren / 导入 CSV**，行数应与 Betrag 列一致。
+
+---
+
+## 历史（Batch 6 · Round 10 · 收束）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 6 十轮结束：** 记账首发 + 全站 Goal 2 抛光 + Antigravity 审查项已修；单元 **350**、浏览器 **8** 全绿。
 

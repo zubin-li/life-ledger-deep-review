@@ -690,7 +690,7 @@
       }
     });
     host.querySelector("[data-ledger-export]")?.addEventListener("click", () => {
-      const csv = core().exportTransactionsCsv(ledgerState(), ym);
+      const csv = core().exportTransactionsCsv(ledgerState(), ym, { lang: ctx.lang?.() });
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
