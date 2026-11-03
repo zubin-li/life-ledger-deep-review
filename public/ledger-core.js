@@ -418,6 +418,57 @@
     };
   }
 
+  function ymLastDayIso(ym) {
+    if (!/^\d{4}-\d{2}$/.test(ym)) return "";
+    const [y, m] = ym.split("-").map(Number);
+    const days = new Date(y, m, 0).getDate();
+    return `${ym}-${String(days).padStart(2, "0")}`;
+  }
+
+  /** Compare default-currency expenses for ym through todayIso (or full month) vs the same day span in the previous month. */
+  function alignedMonthSpendCompare(ledger, ym, todayIso) {
+    if (!/^\d{4}-\d{2}$/.test(ym)) return null;
+    const today = todayIso && ISO_DATE.test(todayIso) ? todayIso : null;
+    const start = `${ym}-01`;
+    const monthEnd = ymLastDayIso(ym);
+    if (!monthEnd) return null;
+    let end = monthEnd;
+    if (today && monthKey(today) === ym && today >= start && today <= monthEnd) {
+      end = today;
+    }
+    const endDay = Number(end.slice(8, 10));
+    const prevYm = shiftYm(ym, -1);
+    const prevStart = `${prevYm}-01`;
+    const prevMonthEnd = ymLastDayIso(prevYm);
+    if (!prevMonthEnd) return null;
+    const prevEndDay = Math.min(endDay, Number(prevMonthEnd.slice(8, 10)));
+    const prevEnd = `${prevYm}-${String(prevEndDay).padStart(2, "0")}`;
+    const curExp = Math.abs(rangeSummary(ledger, start, end).expenseMinor);
+    const prevExp = Math.abs(rangeSummary(ledger, prevStart, prevEnd).expenseMinor);
+    if (curExp === 0 && prevExp === 0) return null;
+    if (curExp === prevExp) {
+      return {
+        direction: "same",
+        currentExpenseMinor: curExp,
+        previousExpenseMinor: prevExp,
+        deltaMinor: 0,
+        deltaPercent: 0,
+      };
+    }
+    const direction = curExp > prevExp ? "up" : "down";
+    const deltaMinor = curExp - prevExp;
+    const deltaPercent = prevExp > 0 && curExp > 0
+      ? spendInsightDeltaPercent(Math.max(curExp, prevExp), Math.min(curExp, prevExp))
+      : null;
+    return {
+      direction,
+      currentExpenseMinor: curExp,
+      previousExpenseMinor: prevExp,
+      deltaMinor,
+      deltaPercent,
+    };
+  }
+
   function dailySpendHeatmap(ledger, ym) {
     const base = normalize(ledger);
     const map = new Map();
@@ -2025,6 +2076,7 @@
     monthSummary,
     rangeSummary,
     alignedWeekSpendCompare,
+    alignedMonthSpendCompare,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

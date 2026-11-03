@@ -8,6 +8,7 @@ All notable changes are documented here.
 
 - **Today — Spending today:** when today has expenses, the card shows the largest category chip and an entry count in the caption; brand-new ledgers get a subtle € side marker on empty days; German recurring pills use occurrence wording (**offene Posten**).
 - **Week — Insights:** fifth tile shows **week spending** (Mon–today for the selected week, reporting currency); tap opens **Money** on that week’s month; a caption compares the same weekday span to **last week** (+/−% or “about the same”).
+- **Review — Money summary:** spending stat includes a caption comparing the same calendar days to **last month** (+/−% or “about the same”).
 
 ### Fixed
 

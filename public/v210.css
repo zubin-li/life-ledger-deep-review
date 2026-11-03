@@ -428,6 +428,22 @@ html[data-theme="dark"] .ledger-tx {
   font-size: 1.05rem;
 }
 
+.review-ledger-stats .review-ledger-spend-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  opacity: 0.92;
+  color: var(--text-secondary, rgba(60, 60, 67, 0.68));
+}
+
+html[data-theme="dark"] .review-ledger-stats .review-ledger-spend-hint {
+  color: var(--text-secondary, rgba(235, 235, 245, 0.62));
+}
+
 .review-ledger-mood {
   margin: 0.75rem 0 0;
   font-size: 0.88rem;

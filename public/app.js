@@ -440,6 +440,14 @@ const i18n = {
 "insightsEmpty": "本月数据尚不足以生成摘要。"
 ,
 "detailedSummary": "详细指标"
+,
+"spendingSameMonth": "与上月同期相近"
+,
+"spendingMoreMonth": "较上月同期 +{pct}%"
+,
+"spendingLessMonth": "较上月同期 −{pct}%"
+,
+"spendingNewMonth": "较上月同期有新增支出"
 },
     habits: {
       kicker: "HABIT SYSTEM",
@@ -1093,6 +1101,14 @@ const i18n = {
 "insightsEmpty": "Not enough data yet for a summary."
 ,
 "detailedSummary": "Detailed metrics"
+,
+"spendingSameMonth": "About the same vs last month (same days)"
+,
+"spendingMoreMonth": "+{pct}% vs same days last month"
+,
+"spendingLessMonth": "−{pct}% vs same days last month"
+,
+"spendingNewMonth": "New spending vs same days last month"
 },
     habits: {
       kicker: "HABIT SYSTEM",
@@ -1746,6 +1762,14 @@ const i18n = {
 "insightsEmpty": "Noch nicht genug Daten für eine Zusammenfassung."
 ,
 "detailedSummary": "Detaillierte Kennzahlen"
+,
+"spendingSameMonth": "Ungefähr wie im Vormonat (gleicher Zeitraum)"
+,
+"spendingMoreMonth": "+{pct} % gg. Vormonat (gleicher Zeitraum)"
+,
+"spendingLessMonth": "−{pct} % gg. Vormonat (gleicher Zeitraum)"
+,
+"spendingNewMonth": "Neue Ausgaben gg. Vormonat (gleicher Zeitraum)"
 },
     habits: {
       kicker: "GEWOHNHEITSSYSTEM",
@@ -8879,7 +8903,21 @@ function renderReviewLedgerSummary() {
   const spendText = L.formatMoney(summary.expenseMinor, cur, locale);
   const incomeText = L.formatMoney(summary.incomeMinor, cur, locale);
   const netText = L.formatMoney(summary.netMinor, cur, locale);
-  const reviewIsCurrentMonth = ym === monthKey(parseDate(effectiveDemoTodayIso()));
+  const todayIso = effectiveDemoTodayIso();
+  let spendHint = "";
+  const spendCmp = L.alignedMonthSpendCompare(ledger, ym, todayIso);
+  if (spendCmp) {
+    if (spendCmp.direction === "same") {
+      spendHint = tr("review.spendingSameMonth");
+    } else if (spendCmp.direction === "up") {
+      spendHint = spendCmp.deltaPercent != null
+        ? tr("review.spendingMoreMonth", { pct: spendCmp.deltaPercent })
+        : tr("review.spendingNewMonth");
+    } else if (spendCmp.deltaPercent != null) {
+      spendHint = tr("review.spendingLessMonth", { pct: spendCmp.deltaPercent });
+    }
+  }
+  const reviewIsCurrentMonth = ym === monthKey(parseDate(todayIso));
   let recurringDueBlock = "";
   if (reviewIsCurrentMonth) {
     const pending = L.recurringPendingForMonth(ledger, ym, { lang: currentLang });
@@ -8923,7 +8961,7 @@ function renderReviewLedgerSummary() {
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
     <div class="review-ledger-stats is-retargeting">
-      <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
+      <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong><small class="review-ledger-spend-hint" id="reviewLedgerSpendHint"${spendHint ? "" : " hidden"}>${escapeHtml(spendHint)}</small></span>
       <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
       <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
     </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;

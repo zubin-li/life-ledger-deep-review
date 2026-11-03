@@ -69,6 +69,19 @@ test("alignedWeekSpendCompare matches same weekday span shifted back 7 days", ()
   assert.equal(cmp.deltaPercent, 200);
 });
 
+test("alignedMonthSpendCompare matches same calendar days in the previous month", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const expenseCat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: expenseCat, amountMinor: -100, currency: "EUR", date: "2026-10-03", note: "prev" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: expenseCat, amountMinor: -400, currency: "EUR", date: "2026-11-01", note: "cur" }));
+  const cmp = L.alignedMonthSpendCompare(ledger, "2026-11", "2026-11-03");
+  assert.equal(cmp.direction, "up");
+  assert.equal(cmp.previousExpenseMinor, 100);
+  assert.equal(cmp.currentExpenseMinor, 400);
+  assert.equal(cmp.deltaPercent, 300);
+});
+
 test("importGermanBankCsv parses semicolon rows", () => {
   const csv = `Datum;Verwendungszweck;Betrag
 01.11.2026;REWE;-12,50

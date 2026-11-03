@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 5）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 6）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 5：** **本周支出** 磁贴增加 **较上周同期** 对比 caption；单元 **367**、浏览器 **17** 全绿。
+**Batch 8 Round 6：** 复盘 **本月支出摘要** 增加 **较上月同期** 对比 caption；单元 **369**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 5）— 本周支出 vs 上周同期
+## 本轮（Batch 8 · Round 6）— 复盘 vs 上月同期
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | `alignedMonthSpendCompare`：把「1 日至 min(今天, 月末)」与上月相同日历日区间比默认货币支出；复用 `spendInsightDeltaPercent`。 |
+| **UI** | `#reviewLedgerSpendHint` 在支出 stat 下方；demo 上如「较上月同期 +26%」。 |
+| **测试** | `ledger-core.test.mjs`、`review-spending-compare.test.mjs`；`npm test` **369**；`npm run test:browser` **17**（fakecloud 偶发需清端口重跑）。 |
+| **截图** | `.overnight/shots/b8r6-*`（`node .overnight/capture-batch8-round6.mjs`，端口 **5296**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **复盘** → 滚到 **本月支出摘要** → 支出数字下见对比行（`b8r6-review-spend-hint-zh-light-1440-chromium.png`）。
+2. 德语深色手机：`b8r6-review-spend-hint-de-dark-390-webkit.png`。
+3. 切换复盘月份：已结束月份用整月 vs 整上月；当前月用「到今天」对齐。
+
+**已知：** demo 样本上月基数小，百分比可能很夸张；reduced-motion CSS 大合并仍留 2.2。
+
+---
+
+## 上一轮（Batch 8 · Round 5）— 本周支出 vs 上周同期
 
 | 项目 | 说明 |
 |------|------|
