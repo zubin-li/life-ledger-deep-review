@@ -681,6 +681,21 @@ test("summarizeTransactions totals filtered rows in reporting currency", () => {
   assert.equal(sum.netMinor, -800);
 });
 
+test("summarizeTransactions day scope can mix income and expense", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const food = ledger.categories.filter(c => c.kind === "expense")[0].id;
+  const inc = ledger.categories.find(c => c.kind === "income").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: food, amountMinor: -500, currency: "EUR", date: "2026-11-02", note: "food" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: inc, amountMinor: 2000, currency: "EUR", date: "2026-11-02", note: "tip" }));
+  const rows = L.filterTransactions(ledger, "2026-11", "", "2026-11-02", "");
+  const sum = L.summarizeTransactions(ledger, rows);
+  assert.equal(sum.count, 2);
+  assert.equal(sum.incomeMinor, 2000);
+  assert.equal(sum.expenseMinor, -500);
+  assert.equal(sum.netMinor, 1500);
+});
+
 test("spendingTodayMinor sums expenses only", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 12 r7):** **Money** filtered list subtotal shows **Income** and **Expenses** separately when the filtered set mixes both, then **Net**; **Escape** clears active list filters (search/day/category) when no popover is open (still clears from the search field).
+- **QA (Batch 12 r7):** Unit test for mixed-day `summarizeTransactions`; Playwright mixed-day split strip + Escape clears day filter (WebKit 390).
 - **Polish (Batch 12 r6):** **Money** filtered **Transactions** list shows an entry count and net total strip; **Clear all filters** appears when two or more filters are active (search, day, category); day+category empty combo has a dedicated empty state.
 - **QA (Batch 12 r6):** Unit test for `summarizeTransactions`; Playwright day+category filters → subtotal or combo empty → clear all.
 - **Polish (Batch 12 r5):** **Money** donut/treemap segments filter the **Transactions** list (keyboard + clearable category chip); empty category filter shows **Clear category filter**.

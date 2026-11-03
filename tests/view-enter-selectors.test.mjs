@@ -146,3 +146,13 @@ test("Batch 12 r6 — Money filtered list subtotal strip", () => {
   assert.match(ledgerUi, /data-ledger-clear-all-filters/);
   assert.match(core, /function summarizeTransactions\(ledger, transactions\)/);
 });
+
+test("Batch 12 r7 — Money Escape clears filters and split subtotal", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /\.ledger-list-filter-sum-split/);
+  assert.match(css, /\.ledger-list-filter-sum-in/);
+  assert.match(ledgerUi, /ledger-list-filter-sum-split/);
+  assert.match(ledgerUi, /event\.key === "Escape"/);
+  assert.match(ledgerUi, /listFiltersActive\(\)/);
+});

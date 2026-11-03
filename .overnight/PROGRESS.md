@@ -1,14 +1,14 @@
 # Overnight progress
 
-## Batch 12 · Round 6 — done
+## Batch 12 · Round 7 — done
 
-- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿。
-- **Goal 2 / 记账 UX：** 交易列表在 **搜索 / 日期 / 分类** 任一筛选且有结果时显示 **笔数 · 合计** 条；**两个及以上** 筛选时出现 **清除全部筛选**；日+分类无匹配时专用空态 + 清除按钮；合计金额支持 `rollText`。
-- **逻辑：** `summarizeTransactions`（`ledger-core.js`）；`renderListFilterSummary` / `clearAllListFilters`（`ledger-ui.js`）。
-- **QA：** `view-enter-selectors` Batch 12 r6；`ledger-filter-summary.browser`（Chromium，热力日 + 圆环分类 → 小计或 combo 空态 → 清除全部）。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r6。
-- **截图：** `node .overnight/capture-batch12-round6.mjs`（**5292**）→ `b12r6-ledger-filter-sum-*`（深色合计对比度已微调）。
-- **QA：** `npm test` **402** pass / 0 fail；`npm run test:browser` **53** pass / 0 fail。
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（54）。
+- **Goal 2 / 记账 UX：** 筛选结果同时含 **收入与支出** 时，合计条显示 **收入 · 支出 · 净** 分列（单色筛选仍只显示笔数 · 合计）；**Escape** 清除当前列表筛选（搜索/日期/分类；弹层打开时仍先关弹层；快速录入框内不触发）。
+- **逻辑：** `renderListFilterSummary` 扩展；`bindLedgerShortcuts` 增加 Escape → `clearAllListFilters`。
+- **QA：** `view-enter-selectors` Batch 12 r7；`ledger-core` 混合日 `summarizeTransactions`；`ledger-escape-filters.browser`（WebKit 390，混合日 split + Escape）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r7。
+- **截图：** `node .overnight/capture-batch12-round7.mjs`（**5297**）→ `b12r7-ledger-split-sum-*`。
+- **QA：** `npm test` **404** pass / 0 fail；`npm run test:browser` **54** pass / 0 fail。
 
 ## Half-done
 
@@ -16,8 +16,8 @@
 
 ## Next
 
-- Batch 12 Round 7+：`v210.css` reduced-motion 物理合并（2.2）；或其它 Goal 2（习惯/复盘图表动效、Today 其它 micro-interaction 等）。
-- Owner 验收：Demo → **记账** → 点热力格 **再** 点圆环扇区 → 应见「N 笔 · 合计」与 **清除全部筛选**（见 `b12r6-ledger-filter-sum-zh-light-1440-chromium.png`）。
+- Batch 12 Round 8+：`v210.css` reduced-motion 物理合并（2.2）；习惯/复盘/Today 其它 micro-interaction；或 `.overnight/REPORT.md` 总览收尾。
+- Owner 验收：Demo → **记账** → 点有 **工资+支出** 同一天的热力格 → 应见 **收入/支出/净** 分列（见 `b12r7-ledger-split-sum-zh-light-1440-chromium.png`）；再按 **Esc** → 日期 chip 与合计条消失。
 
 ## Known bugs / gaps
 
@@ -33,8 +33,8 @@
 ## npm test
 
 ```
-402 pass, 0 fail (batch 12 round 6, unit gate)
-53 pass, 0 fail (npm run test:browser, full suite)
+404 pass, 0 fail (batch 12 round 7, unit gate)
+54 pass, 0 fail (npm run test:browser, full suite)
 ```
 
 ## Gate result
@@ -43,15 +43,15 @@ _pending (driver appends after commit)_
 
 ---
 
-## Batch 12 · Round 5 — done
+## Batch 12 · Round 6 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿。
-- **Goal 2 / 记账 UX：** **分类** 圆环/树图扇区可点选，筛选下方 **交易** 列表；可清除的 **分类 chip**（与日期 chip 并列）；空分类筛选显示 **清除分类筛选**；换月清除日/分类筛选。
-- **逻辑：** `filterTransactions(..., categoryId)`；`ledger-ui` 中 `listCategoryFilter` / `bindCategoryVizFilter` / SVG `ledger-cat-seg`（键盘 Enter/Space）。
-- **QA：** `view-enter-selectors` Batch 12 r5；`ledger-category-filter.browser`（Chromium，SVG `dispatchEvent` 点击）；`ledger-core` 分类 scope 单测。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r5。
-- **截图：** `node .overnight/capture-batch12-round5.mjs`（**5291**）→ `b12r5-ledger-category-filter-*`。
-- **QA：** `npm test` **400** pass / 0 fail；`npm run test:browser` **52** pass / 0 fail。
+- **Goal 2 / 记账 UX：** 交易列表在 **搜索 / 日期 / 分类** 任一筛选且有结果时显示 **笔数 · 合计** 条；**两个及以上** 筛选时出现 **清除全部筛选**；日+分类无匹配时专用空态 + 清除按钮；合计金额支持 `rollText`。
+- **逻辑：** `summarizeTransactions`（`ledger-core.js`）；`renderListFilterSummary` / `clearAllListFilters`（`ledger-ui.js`）。
+- **QA：** `view-enter-selectors` Batch 12 r6；`ledger-filter-summary.browser`（Chromium，热力日 + 圆环分类 → 小计或 combo 空态 → 清除全部）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r6。
+- **截图：** `node .overnight/capture-batch12-round6.mjs`（**5292**）→ `b12r6-ledger-filter-sum-*`（深色合计对比度已微调）。
+- **QA：** `npm test` **402** pass / 0 fail；`npm run test:browser` **53** pass / 0 fail。
 
 ## Driver gate after round 1
 ℹ tests 395 ℹ pass 395 ℹ fail 0 
@@ -70,3 +70,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 6
 ℹ tests 402 ℹ pass 402 ℹ fail 0 
+
+## Driver gate after round 7
+ℹ tests 404 ℹ pass 404 ℹ fail 0 

@@ -51,6 +51,15 @@
         }
         return;
       }
+      if (event.key === "Escape") {
+        if (typing && event.target?.id !== "ledgerFilter") return;
+        if (!listFiltersActive()) return;
+        const host = $("#ledgerView .ledger-page");
+        if (!host) return;
+        event.preventDefault();
+        clearAllListFilters(host, viewMonth || ymFromDate(ctx?.iso(new Date()) || ""));
+        return;
+      }
       if (typing) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       const ym = viewMonth || ymFromDate(ctx?.iso(new Date()) || "");
@@ -497,12 +506,21 @@
     const countLabel = sum.count === 1
       ? t("1 笔", "1 entry", "1 Buchung")
       : t(`${sum.count} 笔`, `${sum.count} entries`, `${sum.count} Buchungen`);
+    const hasIncome = sum.incomeMinor > 0;
+    const hasExpense = sum.expenseMinor < 0;
+    const showSplit = hasIncome && hasExpense;
     const net = core().formatMoney(sum.netMinor, cur, locale);
+    const netText = showSplit
+      ? `${t("净", "Net", "Saldo")} ${net}`
+      : net;
+    const splitMarkup = showSplit
+      ? `<span class="ledger-list-filter-sum-split"><span class="ledger-list-filter-sum-in">${ctx.escape(t("收入", "Income", "Einnahmen"))} ${ctx.escape(core().formatMoney(sum.incomeMinor, cur, locale))}</span><span class="ledger-list-filter-sum-sep" aria-hidden="true">·</span><span class="ledger-list-filter-sum-out">${ctx.escape(t("支出", "Expenses", "Ausgaben"))} ${ctx.escape(core().formatMoney(sum.expenseMinor, cur, locale))}</span><span class="ledger-list-filter-sum-sep" aria-hidden="true">·</span></span>`
+      : "";
     const clearAll = activeListFilterCount() >= 2
       ? `<button type="button" class="text-button ledger-filter-clear-all" data-ledger-clear-all-filters>${t("清除全部筛选", "Clear all filters", "Alle Filter aufheben")}</button>`
       : "";
     return `<div class="ledger-list-filter-sum ll-insight-enter" role="status">
-      <span class="ledger-list-filter-sum-copy"><span class="ledger-list-filter-sum-count">${ctx.escape(countLabel)}</span><span class="ledger-list-filter-sum-sep" aria-hidden="true">·</span><strong class="ledger-list-filter-sum-net">${ctx.escape(net)}</strong></span>
+      <span class="ledger-list-filter-sum-copy"><span class="ledger-list-filter-sum-count">${ctx.escape(countLabel)}</span><span class="ledger-list-filter-sum-sep" aria-hidden="true">·</span>${splitMarkup}<strong class="ledger-list-filter-sum-net">${ctx.escape(netText)}</strong></span>
       ${clearAll}
     </div>`;
   }

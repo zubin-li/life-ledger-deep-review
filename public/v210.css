@@ -5974,6 +5974,30 @@ html[data-theme="dark"] .ledger-list-filter-sum-net {
   font-variant-numeric: tabular-nums;
 }
 
+.ledger-list-filter-sum-split {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.ledger-list-filter-sum-in {
+  color: color-mix(in srgb, var(--accent-sage, #3a8f7a) 72%, var(--text-secondary, #5a6560));
+}
+
+.ledger-list-filter-sum-out {
+  color: color-mix(in srgb, var(--accent-coral, #c45c4a) 55%, var(--text-secondary, #5a6560));
+}
+
+html[data-theme="dark"] .ledger-list-filter-sum-in {
+  color: color-mix(in srgb, var(--accent-sage, #6bc4a8) 80%, var(--text-secondary, #9eafbe));
+}
+
+html[data-theme="dark"] .ledger-list-filter-sum-out {
+  color: color-mix(in srgb, var(--accent-coral, #e08a7a) 70%, var(--text-secondary, #9eafbe));
+}
+
 .ledger-filter-clear-all {
   font-size: 0.8125rem;
   flex-shrink: 0;

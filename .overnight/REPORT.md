@@ -1,3 +1,27 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 7
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 / 记账** | 筛选列表在 **同一天既有收入又有支出** 时，合计条分列 **收入 · 支出 · 净**；**Esc** 一键清除搜索/日期/分类筛选（弹层优先）。 |
+| **测试** | `npm test` **404**；`npm run test:browser` **54**（+1 `ledger-escape-filters`）。 |
+
+## 怎么验
+
+1. Demo → **记账** → 点 **11 月 1 日**（或任意同时有工资与支出的热力格）→ 列表上方应见 `2 笔 · 收入 … · 支出 … · 净 …`（见 `b12r7-ledger-split-sum-zh-light-1440-chromium.png`）。
+2. 按 **Esc**（或 Mac 上 **⎋**）→ 日期 chip 与合计条消失，恢复整月列表。
+3. 在 **交易搜索** 框内按 **Esc** → 同样清除所有筛选。
+4. 重拍：`node .overnight/capture-batch12-round7.mjs`（端口 **5297**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 6
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
