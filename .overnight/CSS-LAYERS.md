@@ -13,3 +13,5 @@ Load order in `index.html`:
 New overnight CSS should append to **`v210.css`** (with a dated section comment) unless a change is large enough to warrant a post-release split in 2.2.
 
 Section markers inside `v210.css` retain `/* ========== merged from v2xx-….css ========== */` comments for grep and tests.
+
+**Deferred (REVIEW #4):** ~60 scattered `@media (prefers-reduced-motion)` blocks remain; a single consolidated table is safe only after 2.1.0 ship — use `html.motion-reduced` hooks where added in Batch 7.

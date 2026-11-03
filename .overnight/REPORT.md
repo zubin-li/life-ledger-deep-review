@@ -1,4 +1,38 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 9）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 10 · 收官）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 10（最后一轮）：** CHANGELOG 发版整理、全量 QA、验收截图；单元 **358**、浏览器 **17** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 10）— 发版整理与回归
+
+| 项目 | 说明 |
+|------|------|
+| **CHANGELOG** | `[Unreleased]` 不再重复堆叠；`[2.1.0]` 一条读完记账 + Goal 2 + Batch 7（固定待记：记账横幅 / Today 胶囊 / 复盘条）+ 主要修复。 |
+| **CSS 文档** | `CSS-LAYERS.md` 记录 reduced-motion 大合并留到 2.2（REVIEW #4）。 |
+| **QA** | 全量 `npm run test:browser`；`npm test` **358**。 |
+| **截图** | `.overnight/shots/b7r10-ship-*`（`node .overnight/capture-batch7-round10.mjs`，端口 **5290**）。 |
+
+**明早 5 分钟验收路径：**
+
+1. `public/index.html?mode=local&local-preview=demo-showcase-v1` → **今日**（支出 + 心情 + 固定待记胶囊）→ **记账**（待记横幅、图表）→ **复盘**（Money 摘要 + 散点 + 固定待记条）。对照 `b7r10-ship-today-spending-zh-light-1440-chromium.png`、`b7r10-ship-ledger-month-zh-light-1440-chromium.png`、`b7r10-ship-review-money-zh-light-1440-chromium.png`。
+2. 德语深色手机：`b7r10-ship-ledger-recurring-de-dark-390-webkit.png`。
+3. 在线假云（可选）：`.overnight/fakecloud.sh` 后跑 fakecloud 相关 browser 套件。
+
+**本夜交付摘要（Goal 1 + Goal 2）：**
+
+- **记账：** `state.ledger` 全链路（本地 / CAS / 备份 / demo / 撤销）；快录、图表、预算、CSV、Today 卡、复盘洞察与散点。
+- **固定待记：** 三屏联动（Money / Today / Review），`recurringId` + 启发式去重。
+- **动效与空状态：** 合并 `v210.css`、多页 enter/roll/retarget；WebKit label / 不透明 popover 约束已遵守。
+- **刻意未做：** `v210.css` reduced-motion 物理合并；更精确的固定项匹配。
+
+**Antigravity REVIEW：** MED CSV 空列等已在先前批次修复；LOW #4 CSS 合并记为 2.2 技术债。
+
+---
+
+## 历史（Batch 7 · Round 9）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
