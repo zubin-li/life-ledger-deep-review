@@ -4,6 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Owner feedback pass r6 (2026-11-03): removed dead **treemap / chart-toggle** UI and CSS (~95 lines); **v210.css** 6421→6326; `.overnight/prune-ledger-treemap-css.mjs` + `.overnight/perf-nav-trace.mjs`; **compare-v2010** matrix refreshed; nav perf trace (max long task 58ms, CLS 0).
 - Owner feedback pass r5 (2026-11-03): **View Transitions API** for sidebar page switches (`withViewTransition`, directional cross-fade); section **hairline marks** on Review / Timeline / Habits headers; scatter deep-link spotlight after `renderReview`; capture settle wait 450ms.
 - Owner feedback pass r4 (2026-11-03): **FLIP** day-group expand on **Money** transaction list (`captureFlip`); dead ledger enter CSS trimmed; **habits-library-quiet** hairline asset; `pressBump` + subscription empty state (see r3 for stats cross-fade).
 - Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
@@ -16,7 +17,7 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 
 - **Bookkeeping (记账):** `state.ledger` (accounts, categories with icon/colour, transactions, budgets, recurring templates) in integer minor units + ISO currency; local save, cloud CAS payload, backup v3, demo sample, undoable delete. Sidebar **Money / 记账 / Finanzen** in all editions.
 - **Quick entry:** natural-language field (`12,50 咖啡`, `-45 Miete gestern`, …), touch amount keypad, category chips, edit/duplicate/swipe-delete, opaque edit popover, recurring create/edit/delete with “Post now” and **Post all pending** (optional `recurringId` on generated rows).
-- **Money views:** month overview, donut/treemap toggle (SVG annular + treemap), daily spend heatmap, uPlot trend, budget progress bars, search/filter, German CSV import/export (`;`, decimal comma, DD.MM.YYYY) with import confirm sheet.
+- **Money views:** month overview, category **donut** (SVG), daily spend strip in month view, budget progress bars, search/filter, German CSV import/export (`;`, decimal comma, DD.MM.YYYY) with import confirm sheet.
 - **Today — Spending today:** day/month totals with roll-up animation, 7-day mini sparkline, link to Money; mood pill (opens Review scatter), recurring **pending** pill (opens ledger due banner); first-visit syntax hint; quieter copy when history exists but today is zero.
 - **Monthly review — Money panel:** spending summary; mood-, habit-, and focus-vs-spend scatters with hover/focus readout and keyboard roving; budget overspend list with optional mood correlation; habit spark `<title>` tooltips; wide three-column scatter grid; mobile jump chips + scroll-spy; collapsed **Detailed metrics** preview chips.
 - **Integrations:** recurring-due accent on **Money** (current month), **Today** card, and **Review** summary (current review month only); ledger save refreshes Today widgets.

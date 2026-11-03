@@ -3,7 +3,7 @@
   display: grid;
   gap: 1.25rem;
   max-width: 920px;
-  padding-bottom: 2rem;
+  padding-bottom: calc(2rem + var(--mobile-nav-safe-bottom, 0px));
 }
 
 .ledger-header {
@@ -150,35 +150,7 @@ html[data-theme="dark"] .ledger-quick input {
   margin: 0;
 }
 
-.ledger-chart-toggle {
-  display: inline-flex;
-  gap: 2px;
-  padding: 2px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--hairline, rgba(0, 0, 0, 0.08)) 40%, transparent);
-}
-
-.ledger-chart-mode {
-  border: 0;
-  background: transparent;
-  font-size: 0.68rem;
-  padding: 0.2rem 0.45rem;
-  border-radius: 999px;
-  cursor: pointer;
-  opacity: 0.72;
-}
-
-.ledger-chart-mode.is-active {
-  background: var(--surface-elevated, #fff);
-  opacity: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-html[data-theme="dark"] .ledger-chart-mode.is-active {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.ledger-category-viz {
+html[data-theme="dark"] .ledger-category-viz {
   position: relative;
   min-height: 120px;
   display: grid;
@@ -197,13 +169,6 @@ html[data-theme="dark"] .ledger-chart-mode.is-active {
 
 .ledger-category-viz.is-ready .ledger-skeleton--donut {
   display: none;
-}
-
-.ledger-treemap {
-  width: 120px;
-  height: 120px;
-  border-radius: 12px;
-  overflow: hidden;
 }
 
 .ledger-skeleton {
@@ -461,9 +426,6 @@ html[data-theme="dark"] .review-ledger-stats .review-ledger-spend-hint {
 
 /* ========== merged from v211-polish.css ========== */
 /* Overnight 2.1 polish — load last */
-.ledger-page {
-  padding-bottom: calc(2rem + var(--mobile-nav-safe-bottom, 0px));
-}
 
 @media (max-width: 640px) {
   .ledger-view .ledger-page,
@@ -547,22 +509,7 @@ html.motion-reduced #ledgerView.view.is-entering :is(.ledger-summary article, .l
   animation: none;
 }
 
-.ledger-treemap-label {
-  fill: rgba(255, 255, 255, 0.94);
-  font-size: 4.2px;
-  font-weight: 650;
-  pointer-events: none;
-  paint-order: stroke fill;
-  stroke: rgba(0, 0, 0, 0.42);
-  stroke-width: 0.4px;
-}
-
-html[data-theme="dark"] .ledger-treemap-label {
-  fill: rgba(255, 255, 255, 0.88);
-  stroke: rgba(0, 0, 0, 0.55);
-}
-
-#reviewView .review-insight-block:nth-child(3) .review-insight-value {
+html[data-theme="dark"] #reviewView .review-insight-block:nth-child(3) .review-insight-value {
   background: linear-gradient(120deg, var(--ink), color-mix(in srgb, var(--sage) 40%, var(--ink)));
   -webkit-background-clip: text;
   background-clip: text;
@@ -1238,11 +1185,6 @@ html.motion-reduced .week-insights-grid.week-insights--loading strong {
   margin: 0.35rem 0 0;
   font-size: var(--text-secondary, 0.92rem);
   opacity: 0.88;
-}
-
-.ledger-treemap-label--dim {
-  fill: rgba(255, 255, 255, 0.78);
-  stroke: rgba(0, 0, 0, 0.5);
 }
 
 /* ========== merged from v213-onboarding.css ========== */
@@ -2628,17 +2570,7 @@ html.motion-reduced .ledger-budget-list.is-retargeting .ledger-budget-bar::after
     opacity: 0.35;
     animation: ledger-donut-seg-in 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: calc(var(--seg-i, 0) * 38ms);
-  }
-
-  .ledger-treemap.is-retargeting rect {
-    transform-box: fill-box;
-    transform-origin: center;
-    transform: scale(0.6);
-    opacity: 0.4;
-    animation: ledger-treemap-cell-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--cell-i, 0) * 32ms);
-  }
-}
+  }}
 
 @keyframes ledger-heat-cell-in {
   to {
@@ -2653,22 +2585,11 @@ html.motion-reduced .ledger-budget-list.is-retargeting .ledger-budget-bar::after
   }
 }
 
-@keyframes ledger-treemap-cell-in {
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 html.motion-reduced .ledger-heat-grid.is-retargeting .ledger-heat,
 html.motion-reduced .ledger-donut-segments.is-retargeting path,
-html.motion-reduced .ledger-treemap.is-retargeting rect {
-  animation: none;
-  transform: none;
-  opacity: unset;
-}
-
-/* ========== merged from v231-review-ledger-retarget.css ========== */
+html.motion-reduced/* ========== merged from v231-review-ledger-retarget.css ========== */
 /* Goal 2 batch 3 r9: review Money panel stats + scatter retarget on month change */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -5320,16 +5241,7 @@ html.motion-reduced #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wra
   stroke-width: 1.75px;
 }
 
-.ledger-treemap .ledger-cat-seg.is-selected {
-  stroke: var(--text, #1a1f1c);
-  stroke-width: 1.4px;
-}
-
-html[data-theme="dark"] .ledger-treemap .ledger-cat-seg.is-selected {
-  stroke: var(--surface-page, #0f1210);
-}
-
-html.motion-reduced .ledger-cat-seg {
+html[data-theme="dark"] html.motion-reduced .ledger-cat-seg {
   transition: none;
 }
 
@@ -5699,7 +5611,6 @@ button.ledger-chip:is(.ll-press-bump, .is-chip-press),
 button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press),
 button.tw-spend-today:is(.ll-press-bump, .is-spend-press),
 button.tw-spend-open:is(.ll-press-bump, .is-spend-press),
-button.ledger-chart-mode:is(.ll-press-bump, .is-mode-press),
 button.ledger-heat:is(.ll-press-bump, .is-heat-press),
 .ledger-tx:is(.ll-press-bump, .is-long-press-hint) {
   transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease, border-color 0.22s ease;
@@ -5755,11 +5666,6 @@ button.tw-spend-open:is(.ll-press-bump, .is-spend-press) {
   opacity: 0.92;
 }
 
-button.ledger-chart-mode:is(.ll-press-bump, .is-mode-press) {
-  transform: scale(0.94);
-  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--desk-accent, #3a8f7a) 45%, transparent);
-}
-
 button.ledger-heat:is(.ll-press-bump, .is-heat-press) {
   transform: scale(1.12);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #3a8f7a) 38%, transparent);
@@ -5781,7 +5687,6 @@ html.motion-reduced :is(
   .is-nav-press,
   .is-chip-press,
   .is-spend-press,
-  .is-mode-press,
   .is-heat-press,
   .is-long-press-hint
 ) {

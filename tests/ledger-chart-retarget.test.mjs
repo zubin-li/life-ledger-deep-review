@@ -14,9 +14,8 @@ test("ledger month charts use is-retargeting hooks for stagger CSS", () => {
   assert.match(ui, /retarget\?\.\(host\.querySelector\("\.ledger-daily-strip \.ledger-heat-grid\.is-retargeting"\)\)/);
 });
 
-test("v210 ledger chart retarget rules cover heat, donut, treemap", () => {
+test("v210 ledger chart retarget rules cover heat and donut", () => {
   assert.match(css, /\.ledger-heat-grid\.is-retargeting/);
   assert.match(css, /\.ledger-donut-segments\.is-retargeting/);
-  assert.match(css, /\.ledger-treemap\.is-retargeting/);
   assert.match(css, /prefers-reduced-motion: reduce/);
 });

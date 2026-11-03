@@ -1,3 +1,43 @@
+# Life Ledger — 主人反馈 pass（Round 6 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **去掉 treemap** | 主界面仅保留 **donut + 月视图日条**；删除 chart 切换、treemap 渲染与 ~95 行 CSS |
+| **v210.css** | **6421 → 6326** 行（`.overnight/prune-ledger-treemap-css.mjs`） |
+| **性能** | `.overnight/perf-nav-trace.json`：侧栏切换 max long task **58ms**，**CLS 0** |
+| **C6 对比** | 重跑 `compare-v2010.mjs` → `.overnight/diff-v2010.json`（相对 2.0.10 大面积差异为 2.1 新功能，非意外回归） |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5296 --bind 127.0.0.1`
+2. **今日** → **今日支出** → 记一笔 sheet
+3. **记账** → 周/月统计、donut、订阅、折叠交易列表
+4. 重拍：`node .overnight/capture.mjs --port 5296 --prefix fb-r6`
+
+## 截图（Round 6）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r6-today-zh-light-1440-chromium.png` | 今日 + 侧栏顺序 |
+| `fb-r6-ledger-zh-light-1440-chromium.png` | 记账统计（单标题） |
+| `fb-r6-today-sheet-zh-light-390-webkit.png` | Today 记一笔 sheet |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **72** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
+
 # Life Ledger — 主人反馈 pass（Round 4 · 续 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

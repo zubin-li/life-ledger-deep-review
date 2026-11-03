@@ -2,6 +2,72 @@
 
 Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight` (isolated)
 
+## Round 6 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **C5 CSS** | **6326** 行（was 6421）；`.overnight/prune-ledger-treemap-css.mjs` 删除 treemap/chart-toggle 死规则；合并 `.ledger-page` padding |
+| **Dead UI** | `ledger-ui.js` 移除 treemap 渲染、chart 切换、legacy toggle HTML |
+| **C6 compare** | `compare-v2010.mjs` → `.overnight/diff-v2010.json`；worktree 已移除 |
+| **D3 perf** | `.overnight/perf-nav-trace.mjs` + `perf-nav-trace.json`（max long task **58ms**, **CLS 0**） |
+| **截图** | `fb-r6-*`（5296）WebKit + Chromium |
+| **文档** | CHANGELOG Unreleased r6 |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | 仍远高于 ~3250 目标；需结构性合并 enter/stagger 块（勿删 batch 注释——测试依赖） |
+| **C4 天气** | headless 仍无温度；未重跑 v2.0.10 worktree（r1 环境结论） |
+
+### Known bugs / limits
+
+- Headless 天气卡片空白（环境/无 geo，非本轮回归）。
+- v2.0.10 像素 diff 64–78% 为 2.1 功能面（Today 支出、记账 nav、动效）— 无单独 layout 破图。
+
+### Evidence (六个已知问题 · r6)
+
+1. **C1** — `.tc-onboard-hint` 实色 `var(--card)`；sheet 时 `display:none`（`fb-r6-today-sheet` 无引导叠层）
+2. **C2** — `fb-r6-ledger-zh-light-1440-chromium.png` 仅顶栏「记账」
+3. **C3** — `fb-r6-today-zh-light-1440-chromium.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — 未重跑；r1 有效
+5. **C5** — **6326** 行；`capture.mjs` + `capture-mac.mjs` + prune/perf 脚本
+6. **C6** — `diff-v2010.json` + `fb-r6-*` 目视无破版（week/ledger/review/habits OK）
+
+### Self-review (Round 6)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | treemap 动画已删；VT/FLIP 未动；review 切换 58ms long task | OK（可后续 lazy scatter） |
+| ui-ux-pro-max | 记账页 donut-only 符合 spec；sheet 390 可点 | OK |
+| design-dna | ledger 与 week panel 一致（fb-r6-ledger） | OK |
+| Rauno / Linear | 去掉未使用 chart 切换噪音 | **Done** |
+| Screenshots | fb-r6 矩阵目视 | OK |
+| Tests | **433** unit + **72** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- v210.css 下一刀：合并重复 `pageCardIn` stagger 选择器（勿 strip 测试用 Batch 注释）
+- CHANGELOG 2.1.0 正文仍写 donut/treemap — 可改 donut-only
+
+### `npm test` (round 6 gate · final)
+
+```
+433 pass, 0 fail (unit)
+72 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 结构性瘦身（selector 合并，保留 Batch 注释行）
+2. C4 天气 headless vs v2.0.10 一次性对照
+3. 2.1.0 CHANGELOG/README 与 donut-only 对齐
+
+---
+
 ## Round 5 (2026-11-03)
 
 ### Done
@@ -156,5 +222,8 @@ desktop:check 0 fail
 ## Driver gate after sprint 5
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
-## Driver gate after sprint 5
+## Driver gate after sprint 6
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 6
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

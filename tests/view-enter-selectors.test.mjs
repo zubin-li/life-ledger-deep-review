@@ -239,7 +239,7 @@ test("Batch 13 r6 — global M shortcut, kbd hints, long-press edit, review open
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
-  assert.match(css, /Batch 13 r6 — global M shortcut hints/);
+  assert.match(css, /\.ledger-kbd-hints--menu/);
   assert.match(app, /function bindGlobalKeyboardShortcuts\(/);
   assert.match(app, /LifeLedgerLedgerUI\?\.focusQuickEntry/);
   assert.match(ledgerUi, /function bindTouchRowGestures\(/);
@@ -274,15 +274,13 @@ test("Batch 13 r8 — sidebar nav press + ledger category chip press", () => {
   assert.match(css, /\.ll-press-bump/);
 });
 
-test("Batch 13 r9 — Today spending open + ledger chart / heat press", () => {
+test("Batch 13 r9 — Today spending open + ledger heat press", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
   const todayWidgets = fs.readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
   assert.match(todayWidgets, /pressBump\?\.\(btn, "is-spend-press"\)/);
-  assert.match(ledgerUi, /pressBump\?\.\(btn, "is-mode-press"\)/);
   assert.match(ledgerUi, /pressBump\?\.\(cell, "is-heat-press"\)/);
   assert.match(css, /is-spend-press/);
-  assert.match(css, /is-mode-press/);
   assert.match(css, /is-heat-press/);
 });
 

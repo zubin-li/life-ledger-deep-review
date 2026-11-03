@@ -7,7 +7,6 @@
   let listDayFilter = "";
   let pendingListFocus = false;
   let listCategoryFilter = "";
-  let categoryChartMode = "donut";
   let viewDay = "";
   let statsScope = "month";
   let ledgerMenuOpen = false;
@@ -18,14 +17,9 @@
   let ledgerCsvDropBound = false;
   let ledgerImportPulse = false;
   let ledgerStatsScopePulse = false;
-  let ledgerChartModePulse = false;
 
   function pulseLedgerCategoryChip(chip) {
     root.LifeLedgerInteraction?.pressBump?.(chip, "is-chip-press");
-  }
-
-  function pulseLedgerChartMode(btn) {
-    root.LifeLedgerInteraction?.pressBump?.(btn, "is-mode-press");
   }
 
   function pulseLedgerHeatDay(cell) {
@@ -276,72 +270,11 @@
     return getComputedStyle(root).getPropertyValue("--accent-sage").trim() || "#3a8f7a";
   }
 
-  function layoutTreemapCells(items, x, y, w, h, horizontal) {
-    if (!items.length) return [];
-    if (items.length === 1) {
-      return [{ ...items[0], x, y, w, h }];
-    }
-    const total = items.reduce((s, row) => s + row.value, 0);
-    let acc = 0;
-    let split = 0;
-    for (let i = 0; i < items.length - 1; i += 1) {
-      acc += items[i].value;
-      const ratio = acc / total;
-      if (ratio >= 0.45) { split = i + 1; break; }
-      split = i + 1;
-    }
-    const left = items.slice(0, split);
-    const right = items.slice(split);
-    const leftTotal = left.reduce((s, row) => s + row.value, 0);
-    const slice = horizontal
-      ? { lw: w * (leftTotal / total), rw: w - w * (leftTotal / total) }
-      : { lh: h * (leftTotal / total), rh: h - h * (leftTotal / total) };
-    if (horizontal) {
-      return [
-        ...layoutTreemapCells(left, x, y, slice.lw, h, !horizontal),
-        ...layoutTreemapCells(right, x + slice.lw, y, slice.rw, h, !horizontal),
-      ];
-    }
-    return [
-      ...layoutTreemapCells(left, x, y, w, slice.lh, !horizontal),
-      ...layoutTreemapCells(right, x, y + slice.lh, w, slice.rh, !horizontal),
-    ];
-  }
-
   function categorySegAttrs(categoryId, label, styleExtra) {
     const selected = listCategoryFilter === categoryId ? " is-selected" : "";
     const pressed = listCategoryFilter === categoryId ? "true" : "false";
     const aria = t(`筛选「${label}」交易`, `Filter “${label}” entries`, `Buchungen „${label}“ filtern`);
     return `class="ledger-cat-seg${selected}" data-ledger-category="${ctx.escape(categoryId)}" tabindex="0" role="button" aria-label="${ctx.escape(aria)}" aria-pressed="${pressed}"${styleExtra ? ` style="${styleExtra}"` : ""}`;
-  }
-
-  function renderTreemap(breakdown, ledger) {
-    const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
-    if (!total) return `<div class="ledger-donut ledger-donut--empty ll-empty-enter">${t("暂无支出分类", "No spending yet", "Noch keine Ausgaben")}</div>`;
-    const items = breakdown.slice(0, 8).map(row => {
-      const cat = ledger.categories.find(c => c.id === row.categoryId);
-      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
-      const color = accentFill(cat?.color);
-      return {
-        categoryId: row.categoryId,
-        value: row.amountMinor,
-        color,
-        label: name,
-        lightFill: core().isLightAccentColor(color),
-      };
-    });
-    const cells = layoutTreemapCells(items, 0, 0, 100, 100, true);
-    const lang = ctx.lang?.() || "en";
-    const rects = cells.map((cell, index) => {
-      const maxChars = core().treemapLabelMaxChars(cell.w, cell.h, lang);
-      const short = maxChars ? core().truncateTreemapLabel(cell.label, maxChars) : "";
-      const label = short
-        ? `<text x="${(cell.x + cell.w / 2).toFixed(2)}" y="${(cell.y + cell.h / 2).toFixed(2)}" text-anchor="middle" dominant-baseline="middle" class="ledger-treemap-label${cell.lightFill ? " ledger-treemap-label--dim" : ""}">${ctx.escape(short)}</text>`
-        : "";
-      const style = `--cell-i:${index}`;
-      return `<rect x="${cell.x.toFixed(2)}" y="${cell.y.toFixed(2)}" width="${Math.max(0.5, cell.w).toFixed(2)}" height="${Math.max(0.5, cell.h).toFixed(2)}" fill="${cell.color}" rx="1" ${categorySegAttrs(cell.categoryId, cell.label, style)}><title>${ctx.escape(cell.label)}</title></rect>${label}`;
-    }).join("");
-    return `<svg class="ledger-treemap is-retargeting" viewBox="0 0 100 100" role="img" aria-label="${t("分类占比", "Category split", "Kategorien")}">${rects}</svg>`;
   }
 
   function renderCategoryViz(breakdown, ledger) {
@@ -1440,13 +1373,6 @@
     bindBudget(host, ym);
     bindTouchRowGestures(host);
     bindKeypad(host);
-    host.querySelectorAll("[data-chart-mode]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        categoryChartMode = btn.dataset.chartMode || "donut";
-        ledgerChartModePulse = true;
-        render();
-      });
-    });
     ctx.bindScatterDotTips?.(host);
     const wellnessEmpty = host.querySelector("#ledgerWellnessEmptyHint");
     if (wellnessEmpty) {
@@ -1872,7 +1798,7 @@
         ${renderCategoryFilterChip(ledger)}
         ${renderList(ledger, ym)}
       </section>
-      <div class="ledger-legacy-viz" hidden aria-hidden="true">${renderWellnessInsights(ledger, ym)}${renderBudgets(ledger, ym)}<div class="ledger-chips">${renderChips(ledger)}</div><div class="ledger-chart-toggle" role="group"><button type="button" class="ledger-chart-mode is-active" data-chart-mode="donut">Donut</button><button type="button" class="ledger-chart-mode" data-chart-mode="treemap">Tree</button></div></div>`;
+      <div class="ledger-legacy-viz" hidden aria-hidden="true">${renderWellnessInsights(ledger, ym)}${renderBudgets(ledger, ym)}<div class="ledger-chips">${renderChips(ledger)}</div></div>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));
     host.querySelector("[data-ledger-sample-entry]")?.addEventListener("click", () => {
       if (postSampleEntry(host, ledgerState())) render();
@@ -1940,12 +1866,6 @@
           || matchMedia("(prefers-reduced-motion: reduce)").matches;
         setTimeout(() => wrap.classList.remove("is-import-pulse"), reduced ? 0 : 900);
       }
-    }
-    if (ledgerChartModePulse) {
-      ledgerChartModePulse = false;
-      requestAnimationFrame(() => {
-        pulseLedgerChartMode(host.querySelector(".ledger-chart-mode.is-active"));
-      });
     }
   }
 
