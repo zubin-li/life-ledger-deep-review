@@ -488,6 +488,38 @@
     return `${y}-${m}-${day}`;
   }
 
+  function weekNumberIso(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const day = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - day);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function isoWeekKeyFromDate(date) {
+    return `${date.getFullYear()}-W${String(weekNumberIso(date)).padStart(2, "0")}`;
+  }
+
+  function isoWeekKeyFromIso(iso) {
+    if (!ISO_DATE.test(iso)) return "";
+    const [y, m, day] = iso.split("-").map(Number);
+    return isoWeekKeyFromDate(new Date(y, m - 1, day, 12));
+  }
+
+  /** Calendar dates in ym whose weekday matches a weekly template (0=Sun … 6=Sat). */
+  function weeklyOccurrenceDatesInMonth(rec, ym) {
+    if (!/^\d{4}-\d{2}$/.test(ym || "") || rec?.cadence !== "weekly") return [];
+    const [y, m] = ym.split("-").map(Number);
+    const wd = Number.isInteger(rec.weekday) ? rec.weekday : 1;
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const out = [];
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const dt = new Date(y, m - 1, d, 12);
+      if (dt.getDay() === wd) out.push(isoDateFromDate(dt));
+    }
+    return out;
+  }
+
   /** Latest date on or before referenceIso whose weekday matches (0=Sun … 6=Sat). */
   function nearestWeekdayIso(weekday, referenceIso) {
     const ref = referenceIso && ISO_DATE.test(referenceIso)
@@ -565,13 +597,34 @@
     }, options);
   }
 
+  function transactionFulfillsRecurringOccurrence(tx, rec, occurrenceIso) {
+    if (!tx || !rec || !ISO_DATE.test(occurrenceIso)) return false;
+    if (typeof tx.date !== "string" || !ISO_DATE.test(tx.date)) return false;
+    if (isoWeekKeyFromIso(tx.date) !== isoWeekKeyFromIso(occurrenceIso)) return false;
+    if (typeof tx.recurringId === "string" && tx.recurringId === rec.id) return true;
+    return tx.categoryId === rec.categoryId && tx.amountMinor === rec.amountMinor;
+  }
+
   function transactionFulfillsRecurring(tx, rec, ym) {
     if (!tx || !rec || typeof tx.date !== "string" || !tx.date.startsWith(ym)) return false;
+    if (rec.cadence === "weekly") {
+      return weeklyOccurrenceDatesInMonth(rec, ym).some(
+        occ => transactionFulfillsRecurringOccurrence(tx, rec, occ),
+      );
+    }
     if (typeof tx.recurringId === "string" && tx.recurringId === rec.id) return true;
     return tx.categoryId === rec.categoryId && tx.amountMinor === rec.amountMinor;
   }
 
   function recurringPostedInMonth(ledger, rec, ym, options = {}) {
+    if (rec.cadence === "weekly") {
+      const dates = weeklyOccurrenceDatesInMonth(rec, ym);
+      if (!dates.length) return true;
+      const base = normalize(ledger, options);
+      return dates.every(occ => base.transactions.some(
+        tx => transactionFulfillsRecurringOccurrence(tx, rec, occ),
+      ));
+    }
     const base = normalize(ledger, options);
     return base.transactions.some(tx => transactionFulfillsRecurring(tx, rec, ym));
   }
@@ -583,12 +636,33 @@
   }
 
   function applyAllRecurringPending(ledger, ym, options = {}) {
-    const pending = recurringPendingForMonth(ledger, ym, options);
-    if (!pending.length) return null;
+    if (!/^\d{4}-\d{2}$/.test(ym || "")) return null;
     let current = normalize(ledger, options);
     const transactions = [];
     const today = options.today && ISO_DATE.test(options.today) ? options.today : "";
-    pending.forEach(rec => {
+    (current.recurring || []).forEach(rec => {
+      if (!rec?.id || recurringPostedInMonth(current, rec, ym, options)) return;
+      if (rec.cadence === "weekly") {
+        weeklyOccurrenceDatesInMonth(rec, ym).forEach(occ => {
+          if (today && occ > today) return;
+          if (current.transactions.some(tx => transactionFulfillsRecurringOccurrence(tx, rec, occ))) return;
+          const accountId = rec.accountId || current.accounts.find(a => !a.archived)?.id;
+          if (!accountId || !rec.categoryId) return;
+          const posted = addTransaction(current, {
+            accountId,
+            categoryId: rec.categoryId,
+            amountMinor: rec.amountMinor,
+            currency: rec.currency || current.settings.defaultCurrency,
+            date: occ,
+            note: rec.note || rec.label || "",
+            recurringId: rec.id,
+          }, options);
+          if (!posted) return;
+          current = posted.ledger;
+          transactions.push(posted.transaction);
+        });
+        return;
+      }
       const result = applyRecurringTemplate(current, rec.id, { ...options, today: today || undefined });
       if (!result) return;
       current = result.ledger;

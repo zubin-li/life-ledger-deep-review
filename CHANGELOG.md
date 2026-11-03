@@ -4,7 +4,9 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-Nothing yet.
+### Fixed
+
+- **Weekly recurring pending:** fixed templates stay on the due list until each ISO week in the calendar month has a matching entry (legacy rows without `recurringId` only clear their week); **Post all pending** books every past occurrence in the month for weekly cadence.
 
 ## [2.1.0] - 2026-11-02
 

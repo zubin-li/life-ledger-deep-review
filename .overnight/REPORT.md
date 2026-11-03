@@ -1,4 +1,29 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 10 · 收官）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 1）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 8 Round 1：** Antigravity REVIEW **LOW #2**（周固定待记）已修；单元 **360**、浏览器 **17** 全绿。
+
+---
+
+## 本轮（Batch 8 · Round 1）— 周固定项待记
+
+| 项目 | 说明 |
+|------|------|
+| **问题** | 周 cadence 固定项：记一笔同分类同金额后，整月待记横幅/Today 胶囊/复盘条会误消失（REVIEW #2）。 |
+| **修复** | 按 **ISO 周** 判断每笔是否满足该周发生日；**全部记入账** 对 weekly 补记当月所有已过去的 weekday 发生日。 |
+| **测试** | `ledger-core.test.mjs` +2；`npm test` **360**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r1-ledger-recurring-*`（`node .overnight/capture-batch8-round1.mjs`，端口 **5291**）。 |
+
+**怎么验：** Demo `?mode=local&local-preview=demo-showcase-v1` → **记账** → 见「本月尚未记：订阅」横幅（对照 `b8r1-ledger-recurring-zh-light-1440-chromium.png`）。若自建 **weekly** 固定项，记第一周后横幅应仍在，直到当月各周都记齐或点 **全部记入账**。
+
+**已知：** UI 仍显示「1 项待记」而非「剩 N 周」；CSS reduced-motion 大合并仍留 2.2。
+
+---
+
+## 上一批收官（Batch 7 · Round 10）
+
+### Batch 7 · Round 10 · 收官
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 

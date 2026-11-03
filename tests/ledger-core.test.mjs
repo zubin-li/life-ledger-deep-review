@@ -371,6 +371,60 @@ test("weekly recurring applies on nearest weekday", () => {
   assert.equal(L.nearestWeekdayIso(0, "2026-11-05"), "2026-11-01");
 });
 
+test("weekly recurring stays pending until each ISO week in month is posted", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-weekly-gym",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -1200,
+    currency: "EUR",
+    cadence: "weekly",
+    weekday: 1,
+    label: "Gym",
+  });
+  const ym = "2026-11";
+  assert.equal(L.recurringPendingForMonth(ledger, ym).length, 1);
+  const first = L.applyRecurringTemplate(ledger, "rec-weekly-gym", { lang: "en", today: "2026-11-03" });
+  assert.ok(first);
+  assert.equal(first.transaction.date, "2026-11-03");
+  let pending = L.recurringPendingForMonth(first.ledger, ym);
+  assert.equal(pending.length, 1, "one Monday posted; other Mondays in November still open");
+  const bulk = L.applyAllRecurringPending(first.ledger, ym, { lang: "en", today: "2026-11-30" });
+  assert.ok(bulk);
+  assert.ok(bulk.transactions.length >= 3);
+  pending = L.recurringPendingForMonth(bulk.ledger, ym);
+  assert.equal(pending.length, 0);
+});
+
+test("weekly legacy manual row only clears matching ISO week", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-w-legacy",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -500,
+    currency: "EUR",
+    cadence: "weekly",
+    weekday: 0,
+    label: "Weekly",
+  });
+  ({ ledger } = L.addTransaction(ledger, {
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -500,
+    currency: "EUR",
+    date: "2026-11-01",
+    note: "manual",
+  }, { lang: "en" }));
+  const pending = L.recurringPendingForMonth(ledger, "2026-11");
+  assert.equal(pending.length, 1);
+});
+
 test("focusSpendInsight compares high vs low focus spend", () => {
   const rows = [
     { focusMinutes: 120, spendMinor: 1000 },
