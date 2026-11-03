@@ -4,17 +4,6 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-### Changed
-
-- **Spending compare copy:** when the prior period baseline is **≥ €15** but spend rose by more than **500%**, captions show a **money delta** (e.g. €20 → €500 reads **较昨日多 480,00 €** instead of **+999%**).
-- **Backup restore:** removed redundant explicit-language branch in `syncBackupPreferencesToRuntime` (same behaviour as cold start).
-- **Long-range (Horizon):** empty phase and plan grids use hairline art, enter animation, and **Start your first phase** CTA; sidebar adds subtle dividers before Timeline and Money.
-- **Habits library:** zero-habit empty state uses centered hairline art with **Add your first habit** CTA (filters and stats hidden until the first habit exists); filter/search miss shows horizontal **search-empty** quiet card; Today hero quote block gets a short copy stagger on enter (today only).
-- **Timeline journal feed:** empty daily/weekly/monthly lists use polished hairline art with primary CTAs (**Write today's reflection**, **Open this week**, **Open monthly review**); month filter with no rows shows a quiet **search-empty** strip; Today card grid gets tighter gap rhythm and a light desktop hover lift (respects reduced motion).
-- **Week & Review empty states:** empty weekly goals, blank weekly reflection, and long-term goals on the Week page use hairline art with **Add your first weekly goal**, **Start weekly reflection**, and **Add a long-term goal** CTAs; Review shows matching CTAs for empty habit scores, metrics, inspector table, and blank monthly reflection (**Add habits**, **Check in on Today**, **Start writing**).
-- **Today widget library:** first visit to Today shows a dismissible hint above **Edit cards** (widget library shortcut); entering edit mode dismisses it. **Today — Edit cards:** tapping **Done** after reordering plays a short success pulse on the edit bar and **Edit cards** button (respects reduced motion). **Review — Money:** when the month has spending but scatter charts need more mood/habit/focus days, a quiet empty card points to **Log on Today** (fixed gate on negative `expenseMinor`). **Timeline — Calendar:** empty month shows hairline art with **Write today's reflection**; sidebar entry list adds the same CTA or a filter-miss quiet strip.
-- **QA:** Playwright suite runs serially (`--test-concurrency=1`) and deconflicts static-server ports (`habits-empty` / `review-scatter`) to avoid flaky parallel collisions with fakecloud.
-
 ## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
@@ -46,6 +35,14 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Journal / review empty states:** timeline feed uses **`ll-paint-host`** skeleton while photos load; feed / calendar list / review inspector empties get consistent **`ll-empty`** styling.
 - **Journal filter / habits empty:** weekly/monthly feed filters no longer flash skeleton; daily filter keeps prior feed visible while photos reload; habit filter miss + review habit compare empty use **`ll-empty`** polish.
 - **Today insights:** rolling 30-day **习惯完成度 × 支出** caption under foundations (link to Review); **心情 × 支出** caption under the mood card (link to Review mood scatter); daily journal filter adds **stale shimmer veil** and clears **`ll-paint-host--stale`** when photos finish.
+- **Spending compare copy:** when the prior period baseline is **≥ €15** but spend rose by more than **500%**, captions show a **money delta** (e.g. €20 → €500 reads **较昨日多 480,00 €** instead of **+999%**).
+- **Backup restore:** removed redundant explicit-language branch in `syncBackupPreferencesToRuntime` (same behaviour as cold start).
+- **Long-range (Horizon):** empty phase and plan grids use hairline art, enter animation, and **Start your first phase** CTA; sidebar adds subtle dividers before Timeline and Money.
+- **Habits library:** zero-habit empty state uses centered hairline art with **Add your first habit** CTA (filters and stats hidden until the first habit exists); filter/search miss shows horizontal **search-empty** quiet card; Today hero quote block gets a short copy stagger on enter (today only).
+- **Timeline journal feed:** empty daily/weekly/monthly lists use polished hairline art with primary CTAs (**Write today's reflection**, **Open this week**, **Open monthly review**); month filter with no rows shows a quiet **search-empty** strip; Today card grid gets tighter gap rhythm and a light desktop hover lift (respects reduced motion).
+- **Week & Review empty states:** empty weekly goals, blank weekly reflection, and long-term goals on the Week page use hairline art with **Add your first weekly goal**, **Start weekly reflection**, and **Add a long-term goal** CTAs; Review shows matching CTAs for empty habit scores, metrics, inspector table, and blank monthly reflection (**Add habits**, **Check in on Today**, **Start writing**).
+- **Today widget library:** first visit to Today shows a dismissible hint above **Edit cards** (widget library shortcut); entering edit mode dismisses it. **Today — Edit cards:** tapping **Done** after reordering plays a short success pulse on the edit bar and **Edit cards** button (respects reduced motion). **Review — Money:** when the month has spending but scatter charts need more mood/habit/focus days, a quiet empty card points to **Log on Today** (fixed gate on negative `expenseMinor`). **Timeline — Calendar:** empty month shows hairline art with **Write today's reflection**; sidebar entry list adds the same CTA or a filter-miss quiet strip (unique CTA ids so calendar buttons work when the sidebar is hidden).
+- **QA:** Playwright suite runs serially (`--test-concurrency=1`) with deconflicted static-server ports; **389** unit + **39** browser checks at release.
 
 ### Fixed
 
@@ -67,7 +64,9 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **`today-habit-spend-hint.test.mjs`:** Today foundations habit × spend insight wiring + journal stale veil cleanup.
 - **`today-habit-spend-hint.browser.test.mjs`:** demo Today **habit + mood** spend hints visible and review links work (Chromium + WebKit).
 - **`fakecloud-online.browser.test.mjs`:** clears storage and waits for **cloud** save mode before asserting conflict UI stays hidden (parallel suite stability).
-- **Suite size:** `npm test` **384** unit checks; `npm run test:browser` **24** Playwright cases (Chromium + WebKit, dedicated **529x** ports).
+- **Review — Money scatter empty:** empty-state gate used `expenseMinor > 0` but expenses are negative minor units; corrected to **`expenseMinor < 0`** so the CTA appears when data is thin.
+- **Timeline — Calendar CTA:** calendar and sidebar empty buttons no longer share one `id`; calendar **Write today's reflection** works when the sidebar is hidden.
+- **Suite size:** `npm test` **389** unit checks; `npm run test:browser` **39** Playwright cases (Chromium + WebKit, serial **529x** ports).
 
 ## [2.0.10] - 2026-11-02
 

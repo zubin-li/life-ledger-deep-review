@@ -1,12 +1,11 @@
 # Overnight progress
 
-## Batch 10 · Round 8 — done
+## Batch 10 · Round 9 — done
 
-- **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Goal 2 抛光 — 时间轴日历 / 侧栏空态：** `timelineMonthEntryBasis` 区分「空月」与「仅选中占位日」；**日历** 空月 `#journalCalendarEmptyArt` 用 `ll-polished` + **`#timelineCalendarEmptyWriteToday`**（修复与隐藏侧栏按钮重复 `id` 导致 CTA 无效）；侧栏 `#timelineEntryList` 空月 / 筛选无匹配分别 **写今日复盘** / **search-empty** quiet 条；`wireJournalFeedEmptyActions` 一次绑定三个 CTA id。
-- **回归：** `tests/timeline-calendar-empty.browser.test.mjs`（Chromium + WebKit，**5284**）；`habit-library-polish.test.mjs` 更新 AST（含 `timelineMonthEntryBasis`）。
-- **截图：** `node .overnight/capture-batch10-round8.mjs`（**5296**）→ `b10r8-timeline-calendar-empty-*`（4 张）、`b10r8-ledger-mac-shell-zh-light-1440-chromium.png`。
-- **文档：** README **EN/ZH/DE** 时间轴日历空月 CTA；`CHANGELOG [Unreleased]` 同上。
+- **REVIEW.md：** 仍无 HIGH/MED；LOW #1（`syncBackupPreferencesToRuntime` 冗余分支）已在先前 round 修复；LOW #2 reduced-motion 大合并仍 **2.2**；LOW #3 大额增幅金额文案已在 Unreleased/2.1.0 记录。
+- **发布整理：** `CHANGELOG [Unreleased]` → 并入 **[2.1.0]**；`.github/releases/v2.1.0.md` 更新 Batch 10 抛光与 QA 计数；`.overnight/ROUND10-CHECKLIST.md` 终轮项全部勾选。
+- **终轮截图：** `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `b10r10-release-*`（6 张：Today 洞察/支出、ledger zh、review Money、ledger de-dark-390 webkit、Mac shell ledger en webkit）。
+- **视觉抽检：** Today 洞察区、Mac 壳 Money 页截图正常（组件库 onboarding 在 demo 预览仍可见属预期，capture 未强制 dismiss 以便展示抛光）。
 
 ## Half-done
 
@@ -14,8 +13,8 @@
 
 ## Next
 
-- Batch 10 Round 9：终轮 checklist（`ROUND10-CHECKLIST.md`）、全量 capture、REPORT 终稿；**2.2** reduced-motion 物理合并（低优先级）。
-- capture **5296** 与 browser 套件勿并行。
+- **Round 10（缓冲）：** 可选 `v210.css` reduced-motion 物理合并；或 owner 验收反馈后再开 2.2。
+- capture **5291** 与 browser 套件勿并行。
 
 ## Known bugs / gaps
 
@@ -30,13 +29,21 @@
 ## npm test
 
 ```
-389 pass, 0 fail (batch 10 round 8, unit gate)
-39 pass, 0 fail (test:browser serial, batch 10 round 8)
+389 pass, 0 fail (batch 10 round 9, unit gate)
+39 pass, 0 fail (test:browser serial, batch 10 round 9, ~115s)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 10 · Round 8 — done
+
+- **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
+- **Goal 2 抛光 — 时间轴日历 / 侧栏空态：** `timelineMonthEntryBasis` 区分「空月」与「仅选中占位日」；**日历** 空月 `#journalCalendarEmptyArt` 用 `ll-polished` + **`#timelineCalendarEmptyWriteToday`**（修复与隐藏侧栏按钮重复 `id` 导致 CTA 无效）；侧栏 `#timelineEntryList` 空月 / 筛选无匹配分别 **写今日复盘** / **search-empty** quiet 条；`wireJournalFeedEmptyActions` 一次绑定三个 CTA id。
+- **回归：** `tests/timeline-calendar-empty.browser.test.mjs`（Chromium + WebKit，**5284**）；`habit-library-polish.test.mjs` 更新 AST（含 `timelineMonthEntryBasis`）。
+- **截图：** `node .overnight/capture-batch10-round8.mjs`（**5296**）→ `b10r8-timeline-calendar-empty-*`（4 张）、`b10r8-ledger-mac-shell-zh-light-1440-chromium.png`。
+- **文档：** README **EN/ZH/DE** 时间轴日历空月 CTA；`CHANGELOG [Unreleased]` 同上。
 
 ## Batch 10 · Round 7 — done
 
@@ -70,4 +77,7 @@ _pending (driver appends after commit)_
 ℹ tests 389 ℹ pass 389 ℹ fail 0 
 
 ## Driver gate after round 8
+ℹ tests 389 ℹ pass 389 ℹ fail 0 
+
+## Driver gate after round 9
 ℹ tests 389 ℹ pass 389 ℹ fail 0 

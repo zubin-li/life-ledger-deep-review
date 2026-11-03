@@ -1,12 +1,32 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 8）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 9 · 发布整理）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 已 10/10 终稿。** Batch 10 进行中。
+**Batch 9 已 10/10 终稿。** **Batch 10** 记账 + 抛光已就绪；本轮完成 CHANGELOG 合并、终轮截图与 QA 复跑。
 
 ---
 
-## 本轮（Batch 10 · Round 8）— 时间轴日历空月 CTA + 重复 id 修复
+## 本轮（Batch 10 · Round 9）— 发布整理 + 终轮截图
+
+| 项目 | 说明 |
+|------|------|
+| **CHANGELOG** | `[Unreleased]` 中 Batch 10 抛光条目并入 **[2.1.0]**；`[Unreleased]` 现为空。 |
+| **GitHub Release 文案** | `.github/releases/v2.1.0.md` 补充 Batch 10 空态/动效与 **389 + 39** 测试规模。 |
+| **清单** | `.overnight/ROUND10-CHECKLIST.md`（Batch 10 终轮项已全部勾选）。 |
+| **截图** | `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `b10r10-release-*`（Today 洞察/支出、记账 zh、复盘 Money、de 深色移动、Mac 壳 en 记账）。 |
+| **测试** | `npm test` **389**；`npm run test:browser` **39**（串行 ~115s）。 |
+
+**明天早上怎么快速验：**
+
+1. `python3 -m http.server 5291 --bind 127.0.0.1`（cwd `public/`）→ 打开 `index.html?mode=local&local-preview=demo-showcase-v1` → 侧栏 **记账**、**复盘** Money、**今日** 支出卡片与习惯/心情 hint。
+2. 对照 `.overnight/shots/b10r10-release-*.png` 与 Round 4–8 的 `b10r4`…`b10r8` 空态/动效截图。
+3. 全量：`npm test` + `npm run test:browser`（勿与 **5291** capture 并行）。
+
+**仍已知（非阻塞）：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 物理合并留 **2.2**；demo 缓存未 reset 时 Today 心情×支出 hint 可能缺失；日历模式侧栏筛选条默认隐藏。
+
+---
+
+## 上一轮（Batch 10 · Round 8）— 时间轴日历空月 CTA + 重复 id 修复
 
 | 项目 | 说明 |
 |------|------|
