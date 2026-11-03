@@ -4,7 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-- Owner feedback pass r3 (2026-11-03): ledger **周/月** stats cross-fade + segment glide; `/` opens **⋯** search; dead trend chart JS removed; **v210.css** parse fix + dead layout rules (−507 lines vs r2); Today onboarding **z-index 12000**; mobile ledger edit sheet layout; `.overnight/compare-v2010.mjs` + `diff-v2010.json`; fakecloud browser test port **5298**; Today sheet **aria-label** zh/en/de.
+- Owner feedback pass r4 (2026-11-03): **FLIP** day-group expand on **Money** transaction list (`captureFlip`); dead ledger enter CSS trimmed; **habits-library-quiet** hairline asset; `pressBump` + subscription empty state (see r3 for stats cross-fade).
 - Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
 
 ## [2.1.0] - 2026-11-03
@@ -72,7 +72,7 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 
 ### Changed
 
-- **Owner feedback (2026-11-03):** Today **Spending today** amount opens a quick-entry sheet (full stats on **Money**); `LifeLedgerInteraction.pressBump` centralises tap feedback; monthly **Subscriptions** empty state uses hairline art + **Add subscription** CTA.
+- **Owner feedback (2026-11-03):** Today **Spending today** amount opens a quick-entry sheet (full stats on **Money**); transaction list **day groups FLIP** when expanding another day; `LifeLedgerInteraction.captureFlip` + `pressBump`; monthly **Subscriptions** empty hairline + **Add subscription** CTA.
 - Mood-vs-spend logic lives in testable `ledger-core.js` helpers; quick-entry field is not wrapped in `<label>` (Add stays outside; WebKit-safe pickers elsewhere).
 - **Money desktop shortcuts:** **N** quick entry, **/** search, **← / →** month (Mac menu month step includes Money).
 - Timeline calendar photo skeleton; mobile ledger keypad clearance; week insight pulse; README EN/ZH/DE showcase adds Money (`08-ledger-v21`) desktop/mobile rows; `.overnight/CSS-LAYERS.md` documents CSS slices.

@@ -202,6 +202,47 @@
     });
   }
 
+  /** FLIP list reflow — call before DOM swap, invoke returned fn with the new container. */
+  function captureFlip(container, itemSelector, keyFromNode) {
+    if (!container?.querySelectorAll) return () => {};
+    const reduced = motionTravelDisabled();
+    const before = new Map();
+    if (!reduced) {
+      container.querySelectorAll(itemSelector).forEach(node => {
+        const key = keyFromNode ? keyFromNode(node) : node;
+        if (key != null && key !== "") before.set(String(key), node.getBoundingClientRect());
+      });
+    }
+    return nextContainer => {
+      const host = nextContainer || container;
+      if (!host?.querySelectorAll || reduced || !before.size) return;
+      requestAnimationFrame(() => {
+        host.querySelectorAll(itemSelector).forEach(node => {
+          const key = keyFromNode ? keyFromNode(node) : node;
+          const prev = before.get(String(key));
+          if (!prev) return;
+          const next = node.getBoundingClientRect();
+          const invert = flipDelta(prev, next);
+          if (!invert.x && !invert.y) return;
+          node.classList.add("ll-flip-play");
+          node.style.transform = `translate(${invert.x}px, ${invert.y}px)`;
+          node.style.transition = "transform 0s";
+          requestAnimationFrame(() => {
+            node.style.transition = "transform 380ms cubic-bezier(0.22, 1, 0.36, 1)";
+            node.style.transform = "";
+          });
+          const cleanup = () => {
+            node.style.transition = "";
+            node.style.transform = "";
+            node.classList.remove("ll-flip-play");
+          };
+          node.addEventListener("transitionend", cleanup, { once: true });
+          root.setTimeout?.(cleanup, 440);
+        });
+      });
+    };
+  }
+
   function hairlineSvgChecks(source) {
     const svg = String(source || "");
     const errors = [];
@@ -726,6 +767,7 @@
     submitStateStep,
     flipSiblingsPlan,
     flipSharedRects,
+    captureFlip,
     hairlineSvgChecks,
     mountHairline,
     openAnchoredPopover,

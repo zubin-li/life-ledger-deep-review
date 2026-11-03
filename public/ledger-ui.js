@@ -1383,10 +1383,17 @@
       btn.addEventListener("click", () => {
         const day = btn.getAttribute("data-ledger-expand-day");
         if (!day) return;
+        const listRoot = host.querySelector(".ledger-tx-list--grouped");
+        const finishFlip = root.LifeLedgerInteraction?.captureFlip?.(
+          listRoot,
+          ".ledger-day-group",
+          node => node.getAttribute("data-ledger-day-group"),
+        );
         viewDay = day;
         listDayFilter = "";
         viewMonth = day.slice(0, 7);
         render();
+        finishFlip?.(host.querySelector(".ledger-tx-list--grouped"));
       });
     });
     host.querySelectorAll("[data-ledger-review-scatter]").forEach(btn => {

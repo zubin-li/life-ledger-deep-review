@@ -31,6 +31,7 @@ const HAIRLINE_ASSETS = [
   "./assets/hairline/today-quick-ledger.svg",
   "./assets/hairline/ledger-recurring-empty.svg",
   "./assets/hairline/ledger-subscriptions-empty.svg",
+  "./assets/hairline/habits-library-quiet.svg",
   "./assets/hairline/offline-local.svg",
   "./assets/hairline/photos-day-empty.svg",
   "./assets/hairline/search-empty.svg",

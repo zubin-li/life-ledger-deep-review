@@ -1,3 +1,44 @@
+# Life Ledger — 主人反馈 pass（Round 4 · 续 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **日分组 FLIP** | 记账页点某一天展开列表时，其它日期行 **FLIP 位移**（`captureFlip`） |
+| **C1 引导卡** | 「今日页可按你的习惯排列…」改为 **实色卡片**；打开 **记一笔 sheet** 时自动隐藏，避免叠在弹层上 |
+| **CSS 小清理** | 去掉无效 enter 选择器；**6278** 行（仍待大幅瘦身） |
+| **配图** | `habits-library-quiet.svg` 已进 PWA 缓存 |
+| **文档** | README 三语 + CHANGELOG 补充 FLIP / 引导卡 |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5296 --bind 127.0.0.1`
+2. **今日** → 点 **今日支出** → 记一笔（引导卡应消失）
+3. **记账** → 交易列表点 **折叠的日期行** → 看分组 FLIP
+4. 重拍：`node .overnight/capture.mjs --port 5296 --prefix fb-r4b`
+
+## 截图（Round 4 续）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r4b-ledger-zh-light-1440-chromium.png` | 记账统计页 |
+| `fb-r4b-today-sheet-zh-light-390-webkit.png` | Today 记一笔（无引导穿透） |
+| `fb-r4b-week-zh-light-1440-webkit.png` | 本周 |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **429** pass |
+| `npm run test:browser` | **72** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
+
 # Life Ledger — 主人反馈 pass（Round 4 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。
