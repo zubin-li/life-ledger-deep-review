@@ -377,6 +377,47 @@
     };
   }
 
+  function shiftIsoDate(iso, days) {
+    if (!ISO_DATE.test(iso)) return iso;
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, m - 1, d, 12);
+    dt.setDate(dt.getDate() + days);
+    return isoDateFromDate(dt);
+  }
+
+  /** Compare default-currency expenses for [start,end] vs the same span shifted back 7 days. */
+  function alignedWeekSpendCompare(ledger, startIso, endIso) {
+    if (!ISO_DATE.test(startIso) || !ISO_DATE.test(endIso)) return null;
+    const start = startIso <= endIso ? startIso : endIso;
+    const end = startIso <= endIso ? endIso : startIso;
+    const curExp = Math.abs(rangeSummary(ledger, start, end).expenseMinor);
+    const prevStart = shiftIsoDate(start, -7);
+    const prevEnd = shiftIsoDate(end, -7);
+    const prevExp = Math.abs(rangeSummary(ledger, prevStart, prevEnd).expenseMinor);
+    if (curExp === 0 && prevExp === 0) return null;
+    if (curExp === prevExp) {
+      return {
+        direction: "same",
+        currentExpenseMinor: curExp,
+        previousExpenseMinor: prevExp,
+        deltaMinor: 0,
+        deltaPercent: 0,
+      };
+    }
+    const direction = curExp > prevExp ? "up" : "down";
+    const deltaMinor = curExp - prevExp;
+    const deltaPercent = prevExp > 0 && curExp > 0
+      ? spendInsightDeltaPercent(Math.max(curExp, prevExp), Math.min(curExp, prevExp))
+      : null;
+    return {
+      direction,
+      currentExpenseMinor: curExp,
+      previousExpenseMinor: prevExp,
+      deltaMinor,
+      deltaPercent,
+    };
+  }
+
   function dailySpendHeatmap(ledger, ym) {
     const base = normalize(ledger);
     const map = new Map();
@@ -1983,6 +2024,7 @@
     nearestWeekdayIso,
     monthSummary,
     rangeSummary,
+    alignedWeekSpendCompare,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

@@ -276,6 +276,14 @@ const i18n = {
 ,
 "openMoney": "打开记账，查看本周所在月份"
 ,
+"spendingSamePeriod": "与上周同期相近"
+,
+"spendingMorePeriod": "较上周同期 +{pct}%"
+,
+"spendingLessPeriod": "较上周同期 −{pct}%"
+,
+"spendingNewPeriod": "较上周同期有新增支出"
+,
 "habitsProgress": "{done}/{total} 个习惯"
 ,
 "goalsTitleProgress": "本周目标 · {done} / {total}"
@@ -921,6 +929,14 @@ const i18n = {
 ,
 "openMoney": "Open Money for this week’s month"
 ,
+"spendingSamePeriod": "About the same as last week (same days)"
+,
+"spendingMorePeriod": "+{pct}% vs same days last week"
+,
+"spendingLessPeriod": "−{pct}% vs same days last week"
+,
+"spendingNewPeriod": "New spend vs same days last week"
+,
 "habitsProgress": "{done}/{total} habits"
 ,
 "goalsTitleProgress": "Weekly goals · {done} of {total}"
@@ -1565,6 +1581,14 @@ const i18n = {
 "spending": "Ausgaben diese Woche"
 ,
 "openMoney": "Finanzen für den Monat dieser Woche öffnen"
+,
+"spendingSamePeriod": "Wie in der Vorwoche (gleicher Zeitraum)"
+,
+"spendingMorePeriod": "+{pct} % gg. Vorwoche (gleicher Zeitraum)"
+,
+"spendingLessPeriod": "−{pct} % gg. Vorwoche (gleicher Zeitraum)"
+,
+"spendingNewPeriod": "Neue Ausgaben gg. Vorwoche (gleicher Zeitraum)"
 ,
 "habitsProgress": "{done}/{total} Gewohnheiten"
 ,
@@ -7818,6 +7842,7 @@ function renderWeekInsights() {
   const L = globalThis.LifeLedgerLedger;
   let weekExpenseTotal = 0;
   let weekSpendDisplay = "—";
+  let spendHint = "";
   const rangeEnd = endDay > todayKey ? todayKey : endDay;
   if (state.ledger && L && startDay <= rangeEnd) {
     const ledger = L.normalize(state.ledger, { lang: currentLang });
@@ -7829,6 +7854,18 @@ function renderWeekInsights() {
       weekSpendDisplay = weekExpenseTotal
         ? L.formatMoney(-weekExpenseTotal, cur, locale)
         : L.formatMoney(0, cur, locale);
+      const cmp = L.alignedWeekSpendCompare(ledger, startDay, rangeEnd);
+      if (cmp) {
+        if (cmp.direction === "same") {
+          spendHint = tr("week.spendingSamePeriod");
+        } else if (cmp.direction === "up") {
+          spendHint = cmp.deltaPercent != null
+            ? tr("week.spendingMorePeriod", { pct: cmp.deltaPercent })
+            : tr("week.spendingNewPeriod");
+        } else if (cmp.deltaPercent != null) {
+          spendHint = tr("week.spendingLessPeriod", { pct: cmp.deltaPercent });
+        }
+      }
     }
   }
   setText("#weekSpendingValue", weekSpendDisplay);
@@ -7838,6 +7875,11 @@ function renderWeekInsights() {
     spendCard.disabled = !canOpen;
     spendCard.setAttribute("aria-disabled", canOpen ? "false" : "true");
     setAria("#weekSpendingCard", tr("week.openMoney"));
+  }
+  const spendHintEl = $("#weekSpendingHint");
+  if (spendHintEl) {
+    spendHintEl.textContent = spendHint;
+    spendHintEl.hidden = !spendHint;
   }
 
   setText("#weekRateLabel", tr("week.completionRate"));

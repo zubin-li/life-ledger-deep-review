@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 4）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 5）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 4：** **本周 · 数据洞察** 增加 **本周支出** 磁贴并链到记账；单元 **366**、浏览器 **17** 全绿。
+**Batch 8 Round 5：** **本周支出** 磁贴增加 **较上周同期** 对比 caption；单元 **367**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 4）— 本周支出洞察
+## 本轮（Batch 8 · Round 5）— 本周支出 vs 上周同期
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | `alignedWeekSpendCompare`：把「周一至 min(周日,今天)」整段平移 7 天，比默认货币支出；复用 `spendInsightDeltaPercent` 算升降幅。 |
+| **UI** | `#weekSpendingHint` 小字：如 demo 上「较上周同期 +1249%」/ *+1249% vs same days last week*；无对比数据时隐藏。 |
+| **测试** | `ledger-core.test.mjs`、`week-insights-spending.test.mjs`；`npm test` **367**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r5-*`（`node .overnight/capture-batch8-round5.mjs`，端口 **5295**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **本周** → 滚到 **数据洞察** → 第五格金额下见对比行（`b8r5-week-spending-hint-zh-light-1440-chromium.png`）。
+2. 切换语言：英文手机截图见 `b8r5-week-spending-hint-en-light-390-webkit.png`。
+3. 上周同期无支出、本周有支出时显示「较上周同期有新增支出」（非 demo 场景可自建数据验证）。
+
+**已知：** demo 样本上周基数小，百分比可能很夸张（数学正确）；reduced-motion CSS 大合并仍留 2.2。
+
+---
+
+## 上一轮（Batch 8 · Round 4）— 本周支出洞察
 
 | 项目 | 说明 |
 |------|------|

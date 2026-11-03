@@ -9,11 +9,14 @@ const ledgerUi = readFileSync(new URL("../public/ledger-ui.js", import.meta.url)
 test("week insights grid includes spending tile wired to Money", () => {
   assert.match(html, /id="weekSpendingCard"/);
   assert.match(html, /id="weekSpendingValue"/);
+  assert.match(html, /id="weekSpendingHint"/);
   assert.match(app, /rangeSummary/);
+  assert.match(app, /alignedWeekSpendCompare/);
   assert.match(app, /setViewMonth/);
   assert.match(app, /weekSpendingCard/);
   assert.match(app, /switchToView\("ledger"\)/);
   assert.match(app, /week\.spending/);
+  assert.match(app, /week\.spendingMorePeriod/);
   assert.match(ledgerUi, /setViewMonth\(ym\)/);
 });
 
