@@ -63,11 +63,15 @@ test("today cards onboarding and review scatter empty polish", () => {
   assert.match(cards, /life-ledger-today-cards-onboarding-dismissed/);
   assert.match(cards, /function syncOnboard\(/);
   assert.match(cards, /data-tc-onboard-library/);
+  assert.match(cards, /bar\.classList\.add\("is-saved"\)/);
+  assert.match(cards, /tc-edit-saved-flash/);
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   assert.match(app, /reviewScatterEmptyHint/);
+  assert.match(app, /summary\.expenseMinor < 0/);
   assert.match(app, /#reviewScatterEmptyToday/);
   const css = readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   assert.match(css, /Batch 10 r6 — Today widget library onboarding/i);
+  assert.match(css, /Batch 10 r7 — Today edit done success/i);
   assert.match(css, /\.tc-onboard-hint/);
   assert.match(css, /\.review-scatter-empty\.ll-polished/);
 });

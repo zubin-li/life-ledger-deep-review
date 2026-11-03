@@ -1,4 +1,4 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 6）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 7）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
@@ -6,7 +6,26 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 ---
 
-## 本轮（Batch 10 · Round 6）— Today 组件库引导 + 复盘散点空态
+## 本轮（Batch 10 · Round 7）— 散点空态 bugfix + Today「完成」动效
+
+| 项目 | 说明 |
+|------|------|
+| **Bugfix** | 复盘 Money 散点空态误判断 `expenseMinor > 0`；账本支出为负 minor，已改为 **`expenseMinor < 0`**，否则空态永不出现（Round 6 文案/UI 已写好但未触发）。 |
+| **Today 编辑** | 点 **完成** 后：工具栏 **`is-saved`** 脉冲（修复 JS 曾写 `tc-saved` 与 CSS 不一致）；bar 在 720ms 内保持可见；右下角 **编辑卡片** 按钮 **`tc-edit-saved-flash`**。 |
+| **截图** | `.overnight/shots/b10r7-review-scatter-empty-zh-light-1440-chromium.png`、`.overnight/shots/b10r7-today-edit-saved-zh-light-1440-chromium.png` 等（`node .overnight/capture-batch10-round7.mjs`，**5296**）。 |
+| **测试** | `npm test` **389**；`npm run test:browser` **37**（+2 `review-scatter-empty` / `today-cards-edit-saved`，端口 **5286** / **5285**）。 |
+
+**怎么验：**
+
+1. 本地档：`meta.demo.active = false`，仅 1 笔本月支出、清空多数 `logs` / 习惯 / 专注 → **复盘** → Money 区见 **散点图还需要一点数据** 与 **去 Today 记录**（与截图 seed 相同思路）。
+2. **今日** → **编辑卡片** → 拖动一张卡片 → **完成** → 应看到工具栏轻抬 + **完成** 按钮光晕，随后 bar 收起、**编辑卡片** 按钮边框/阴影闪一下（非 reduced-motion）。
+3. 全量：`npm test` + `npm run test:browser`（勿与 **5296** capture 并行）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；demo 日度 feed 可能仍有仅照片行。
+
+---
+
+## 上一轮（Batch 10 · Round 6）— Today 组件库引导 + 复盘散点空态
 
 | 项目 | 说明 |
 |------|------|

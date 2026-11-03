@@ -5213,3 +5213,33 @@ html.motion-reduced #reviewView .review-scatter-empty.ll-polished {
     animation: none !important;
   }
 }
+
+/* Batch 10 r7 — Today edit done success (bar pulse + edit toggle flash) */
+
+@media (prefers-reduced-motion: no-preference) {
+  html.tc-on .tc-edit-toggle.tc-edit-saved-flash {
+    animation: tcEditSavedFlash 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+@keyframes tcEditSavedFlash {
+  0%, 100% {
+    box-shadow: 0 12px 34px rgba(16, 35, 29, .1);
+    border-color: var(--line);
+  }
+
+  45% {
+    box-shadow: 0 14px 38px color-mix(in srgb, var(--accent) 22%, rgba(16, 35, 29, .12));
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  }
+}
+
+html.motion-reduced .tc-edit-toggle.tc-edit-saved-flash {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-edit-toggle.tc-edit-saved-flash {
+    animation: none !important;
+  }
+}

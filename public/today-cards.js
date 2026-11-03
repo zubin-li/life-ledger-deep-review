@@ -293,13 +293,21 @@
 
   function setEditing(on, { focus = true, saved = false } = {}) {
     if (editing === on) return;
-    if (!on && editing && saved) pulseEditSaved();
+    const wasEditing = editing;
+    if (!on && wasEditing && saved) pulseEditSaved();
     if (on) dismissOnboard();
     editing = on;
     view.classList.toggle("tc-editing", on);
     // Card content is inert while editing: no clicks, no tab stops, only the card controls.
     for (const el of Object.values(els)) for (const k of el.children) if (!k.classList.contains("tc-controls")) k.inert = on;
-    bar.hidden = !on;
+    if (!on && wasEditing && saved) {
+      bar.hidden = false;
+      setTimeout(() => {
+        if (!editing) bar.hidden = true;
+      }, 720);
+    } else {
+      bar.hidden = !on;
+    }
     toggle.setAttribute("aria-pressed", String(on));
     if (!on) { if (sheet.open) sheet.close(); if (lib.open) lib.close(); }
     if (on && window.Sortable && !sortable) {
@@ -333,13 +341,16 @@
   const flash = el => { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("tc-new"); void el.offsetWidth; el.classList.add("tc-new"); setTimeout(() => el.classList.remove("tc-new"), 1600); };
 
   const pulseEditSaved = () => {
-    bar.classList.remove("tc-saved");
+    bar.classList.remove("is-saved");
+    toggle.classList.remove("tc-edit-saved-flash");
     void bar.offsetWidth;
-    bar.classList.add("tc-saved");
+    bar.classList.add("is-saved");
     bar.querySelector(".tc-done")?.classList.add("tc-done--pulse");
+    toggle.classList.add("tc-edit-saved-flash");
     setTimeout(() => {
-      bar.classList.remove("tc-saved");
+      bar.classList.remove("is-saved");
       bar.querySelector(".tc-done")?.classList.remove("tc-done--pulse");
+      toggle.classList.remove("tc-edit-saved-flash");
     }, 720);
   };
 

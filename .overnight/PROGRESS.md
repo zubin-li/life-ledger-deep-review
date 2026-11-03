@@ -1,14 +1,14 @@
 # Overnight progress
 
-## Batch 10 · Round 6 — done
+## Batch 10 · Round 7 — done
 
 - **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Goal 2 抛光 — Today 组件库 onboarding：** `today-cards.js` — 首次 Today（`life-ledger-today-cards-onboarding-dismissed`）显示 `#tcOnboardHint`（`layout-edit-hint` 插画 + **打开组件库** / **知道了**）；进入编辑、打开组件库或关闭后从 DOM 移除并持久化；抽屉打开时隐藏。
-- **Goal 2 抛光 — 复盘散点空态：** `renderReviewLedgerSummary` — 本月有支出但三类散点均未生成时 `#reviewScatterEmptyHint` + **去 Today 记录**（`empty-insights.svg`）。
-- **文档：** README **EN/ZH/DE** Today 引导 + Review 散点空态一句；`CHANGELOG [Unreleased]` 同上。
-- **回归：** `tests/today-cards-onboard.browser.test.mjs`（Chromium + WebKit，端口 **5294**）；`habit-library-polish.test.mjs` +1 AST。
-- **截图：** `node .overnight/capture-batch10-round6.mjs`（**5296**）→ `b10r6-today-onboard-*`（6 张；散点空态未单独 capture，demo 数据过满）。
-- **测试：** `npm test` **389**；`npm run test:browser` **35**（+2 today-cards-onboard，串行 ~110s）。
+- **Bugfix — 复盘散点空态：** `renderReviewLedgerSummary` 误用 `summary.expenseMinor > 0`（支出为负 minor）；改为 **`expenseMinor < 0`**，空态与 CTA 才会出现。
+- **Goal 2 抛光 — Today 编辑完成动效：** `today-cards.js` — `pulseEditSaved` 使用 CSS 已有的 **`is-saved`**（原 `tc-saved` 从未匹配）；退出编辑时 **720ms** 内保持工具栏可见以播放 bar 动画；**`tc-edit-saved-flash`** 在右下角 **编辑卡片** 按钮上。
+- **回归：** `tests/review-scatter-empty.browser.test.mjs`（Chromium + WebKit，**5286**）；`tests/today-cards-edit-saved.browser.test.mjs`（**5285**）；`habit-library-polish.test.mjs` +AST。
+- **截图：** `node .overnight/capture-batch10-round7.mjs`（**5296**）→ `b10r7-review-scatter-empty-*`（4 张）、`b10r7-today-edit-saved-*`（1 张）。
+- **文档：** README **EN/ZH/DE** Today **Done** 成功动效；`CHANGELOG [Unreleased]` 散点空态 gate + 动效修复。
+- **测试：** `npm test` **389**；`npm run test:browser` **37**（+2，串行 ~109s）。
 
 ## Half-done
 
@@ -16,8 +16,8 @@
 
 ## Next
 
-- Batch 10 Round 7：复盘散点空态专用 capture（需精简 local 档 logs/ledger）；或 Today 编辑成功动效再抛光；**2.2** reduced-motion 物理合并（低优先级）。
-- capture **5296** 与 browser 套件勿并行（Round 6 fakecloud 曾因此 flake，单跑已通过）。
+- Batch 10 Round 8：showcase / docs 截图若需散点空态可复用 round7 capture seed；Mac shell 注入 capture 可选；**2.2** reduced-motion 物理合并（低优先级）。
+- capture **5296** 与 browser 套件勿并行。
 
 ## Known bugs / gaps
 
@@ -31,22 +31,23 @@
 ## npm test
 
 ```
-389 pass, 0 fail (batch 10 round 6, unit gate)
-35 pass, 0 fail (test:browser serial, batch 10 round 6)
+389 pass, 0 fail (batch 10 round 7, unit gate)
+37 pass, 0 fail (test:browser serial, batch 10 round 7)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
 
-## Batch 10 · Round 5 — done
+## Batch 10 · Round 6 — done
 
 - **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Goal 2 抛光 — 本周 / 复盘空态 CTA：** `wirePolishedEmptyCtas` + `syncWeekReviewEmptyHint` / `syncReviewReflectionEmptyHint` — **本周** 无目标 → `weekly-goals-empty ll-polished` + **添加第一个本周目标**（聚焦 `#weeklyGoalInput`）；空白本周复盘 → **开始写本周复盘**；长期目标 tab → hairline + **添加长期目标**；**复盘** 空白月度复盘 → **开始写复盘**；无习惯分数 / 指标 / 明细表 → **去习惯页添加** / **去 Today 打卡**。
-- **文档：** README **EN/ZH/DE** 本周与复盘空态一句；`CHANGELOG [Unreleased]` Week & Review empty states。
-- **回归：** `tests/week-review-empty.browser.test.mjs`（Chromium + WebKit，端口 **5297**）；`habit-library-polish.test.mjs` +2 AST。
-- **截图：** `node .overnight/capture-batch10-round5.mjs`（**5296**，滚动至 CTA）→ `b10r5-week-empty-*`、`b10r5-review-empty-*`。
-- **测试：** `npm test` **388**；`npm run test:browser` **33**（+2 week-review-empty，串行 ~99s）。
+- **Goal 2 抛光 — Today 组件库 onboarding：** `today-cards.js` — 首次 Today（`life-ledger-today-cards-onboarding-dismissed`）显示 `#tcOnboardHint`（`layout-edit-hint` 插画 + **打开组件库** / **知道了**）；进入编辑、打开组件库或关闭后从 DOM 移除并持久化；抽屉打开时隐藏。
+- **Goal 2 抛光 — 复盘散点空态：** `renderReviewLedgerSummary` — 本月有支出但三类散点均未生成时 `#reviewScatterEmptyHint` + **去 Today 记录**（`empty-insights.svg`）。
+- **文档：** README **EN/ZH/DE** Today 引导 + Review 散点空态一句；`CHANGELOG [Unreleased]` 同上。
+- **回归：** `tests/today-cards-onboard.browser.test.mjs`（Chromium + WebKit，端口 **5294**）；`habit-library-polish.test.mjs` +1 AST。
+- **截图：** `node .overnight/capture-batch10-round6.mjs`（**5296**）→ `b10r6-today-onboard-*`（6 张；散点空态未单独 capture，demo 数据过满）。
+- **测试：** `npm test` **389**；`npm run test:browser` **35**（+2 today-cards-onboard，串行 ~110s）。
 
 ## Driver gate after round 1
 ℹ tests 384 ℹ pass 384 ℹ fail 0 
@@ -64,4 +65,7 @@ _pending (driver appends after commit)_
 ℹ tests 388 ℹ pass 388 ℹ fail 0 
 
 ## Driver gate after round 6
+ℹ tests 389 ℹ pass 389 ℹ fail 0 
+
+## Driver gate after round 7
 ℹ tests 389 ℹ pass 389 ℹ fail 0 

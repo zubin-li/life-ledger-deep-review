@@ -9383,7 +9383,7 @@ function renderReviewLedgerSummary() {
     ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div></div>`
     : "";
   let scatterEmptyBlock = "";
-  if (!scatterParts.length && summary.expenseMinor > 0) {
+  if (!scatterParts.length && summary.expenseMinor < 0) {
     const scatterEmptyCta = languageText("去 Today 记录", "Log on Today", "Auf Heute erfassen");
     scatterEmptyBlock = `<div class="review-scatter-empty ll-polished" id="reviewScatterEmptyHint">${hairlineEmptyMarkup(
       "./assets/hairline/empty-insights.svg",
