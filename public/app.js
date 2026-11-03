@@ -5673,15 +5673,8 @@ function renderReview() {
   window.LifeLedgerInteraction?.syncSegments(document);
   wirePolishedEmptyCtas();
   if (pendingReviewScatterFocus) {
-    const scatterId = pendingReviewScatterFocus;
-    pendingReviewScatterFocus = "";
-    requestAnimationFrame(() => {
-      const target = document.getElementById(scatterId);
-      spotlightReviewScatterSection(target);
-      const reduced = document.documentElement.classList.contains("motion-reduced");
-      target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
-      target?.focus?.({ preventScroll: true });
-    });
+    requestAnimationFrame(() => tryFocusPendingReviewScatter());
+    requestAnimationFrame(() => requestAnimationFrame(() => tryFocusPendingReviewScatter()));
   }
 }
 
@@ -9504,30 +9497,46 @@ function openLedgerForReviewMonth(ym) {
   switchToView("ledger");
 }
 
-function renderReviewLedgerSummary() {
-  const host = $("#reviewLedgerSummary");
-  const L = globalThis.LifeLedgerLedger;
-  if (!host || !L) return;
-  const ym = monthKey(cursor);
-  const ledger = state.ledger ? L.normalize(state.ledger, { lang: currentLang }) : null;
-  if (!ledger?.transactions?.length) {
-    disconnectReviewScatterJumpSpy(host);
-    host.hidden = true;
-    host.innerHTML = "";
-    return;
-  }
-  host.hidden = false;
-  const summary = L.monthSummary(ledger, ym);
-  const locale = i18n[currentLang]?.locale || "de-DE";
-  const cur = ledger.settings.defaultCurrency;
-  const dailyRows = buildLedgerMonthDailyRows(ym) || [];
-  const moodCompare = L.moodSpendComparison(dailyRows);
-  const moodScatter = L.moodSpendScatter(dailyRows);
-  const habitScatter = L.habitCompletionSpendScatter(dailyRows);
-  const focusScatter = L.focusSpendScatter(dailyRows);
-  const focusCompare = L.focusSpendInsight(dailyRows);
-  const habitCompare = L.habitCompletionSpendInsight(dailyRows);
-  const scatterRenderOpts = { lang: currentLang, locale, currency: cur };
+function tryFocusPendingReviewScatter() {
+  if (!pendingReviewScatterFocus) return;
+  const scatterId = pendingReviewScatterFocus;
+  const target = document.getElementById(scatterId);
+  if (!target) return;
+  pendingReviewScatterFocus = "";
+  const reduced = document.documentElement.classList.contains("motion-reduced");
+  spotlightReviewScatterSection(target);
+  target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+  target?.focus?.({ preventScroll: true });
+}
+
+function cancelReviewScatterHydrate(host) {
+  if (host) host._reviewScatterHydrateGen = null;
+}
+
+function scheduleReviewScatterHydrate(host, gen, buildPayload) {
+  cancelReviewScatterHydrate(host);
+  host._reviewScatterHydrateGen = gen;
+  const run = () => {
+    if (host._reviewScatterHydrateGen !== gen) return;
+    host._reviewScatterHydrateGen = null;
+    if (host.dataset.reviewScatterGen !== String(gen)) return;
+    const grid = host.querySelector(".review-scatter-grid.is-scatter-pending");
+    if (!grid) return;
+    const { scatterParts } = buildReviewScatterChartBlocks(buildPayload());
+    grid.classList.remove("is-scatter-pending");
+    grid.removeAttribute("aria-busy");
+    grid.innerHTML = `${scatterParts.join("")}<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div>`;
+    bindReviewScatterDotTips(host);
+    bindReviewScatterJumpSpy(host);
+    requestAnimationFrame(() => {
+      globalThis.LifeLedgerInteraction?.retarget?.(grid);
+      tryFocusPendingReviewScatter();
+    });
+  };
+  requestAnimationFrame(() => requestAnimationFrame(run));
+}
+
+function buildReviewScatterChartBlocks({ moodScatter, habitScatter, focusScatter, scatterRenderOpts, L }) {
   let moodScatterBlock = "";
   if (moodScatter) {
     const scatterSvg = L.renderMoodSpendScatterSvg(moodScatter, scatterRenderOpts);
@@ -9571,6 +9580,40 @@ function renderReviewLedgerSummary() {
       <div class="review-focus-scatter-legend" aria-hidden="true">${focusLegend}</div>
     </div>`;
   }
+  const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
+  return { scatterParts };
+}
+
+function renderReviewLedgerSummary() {
+  const host = $("#reviewLedgerSummary");
+  const L = globalThis.LifeLedgerLedger;
+  if (!host || !L) return;
+  const ym = monthKey(cursor);
+  const ledger = state.ledger ? L.normalize(state.ledger, { lang: currentLang }) : null;
+  if (!ledger?.transactions?.length) {
+    cancelReviewScatterHydrate(host);
+    disconnectReviewScatterJumpSpy(host);
+    host.hidden = true;
+    host.innerHTML = "";
+    return;
+  }
+  cancelReviewScatterHydrate(host);
+  const reviewScatterGen = (Number(host.dataset.reviewScatterGen) || 0) + 1;
+  host.dataset.reviewScatterGen = String(reviewScatterGen);
+  host.hidden = false;
+  const summary = L.monthSummary(ledger, ym);
+  const locale = i18n[currentLang]?.locale || "de-DE";
+  const cur = ledger.settings.defaultCurrency;
+  const dailyRows = buildLedgerMonthDailyRows(ym) || [];
+  const moodCompare = L.moodSpendComparison(dailyRows);
+  const moodScatter = L.moodSpendScatter(dailyRows);
+  const habitScatter = L.habitCompletionSpendScatter(dailyRows);
+  const focusScatter = L.focusSpendScatter(dailyRows);
+  const focusCompare = L.focusSpendInsight(dailyRows);
+  const habitCompare = L.habitCompletionSpendInsight(dailyRows);
+  const scatterRenderOpts = { lang: currentLang, locale, currency: cur };
+  const scatterChartPayload = () => ({ moodScatter, habitScatter, focusScatter, scatterRenderOpts, L });
+  const scatterHasCharts = !!(moodScatter || habitScatter || focusScatter);
   let moodLine = "";
   if (moodCompare) {
     const { greatAvg, lowAvg } = moodCompare;
@@ -9700,12 +9743,11 @@ function renderReviewLedgerSummary() {
     }
     budgetLine = `<p class="review-ledger-budget" style="--insight-i:3"><span class="review-ledger-insight-kicker">${escapeHtml(languageText("预算", "Budget", "Budget"))}</span><span class="review-ledger-insight-body">${escapeHtml(budgetBody)}${moodBudgetHtml}</span></p>`;
   }
-  const scatterParts = [moodScatterBlock, habitScatterBlock, focusScatterBlock].filter(Boolean);
-  const scatterSection = scatterParts.length
-    ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div></div>`
+  const scatterSection = scatterHasCharts
+    ? `<div class="review-scatter-grid is-retargeting is-scatter-pending" aria-busy="true"><div class="review-scatter-pending-skeleton ll-skeleton" aria-hidden="true"></div></div>`
     : "";
   let scatterEmptyBlock = "";
-  if (!scatterParts.length && summary.expenseMinor < 0) {
+  if (!scatterHasCharts && summary.expenseMinor < 0) {
     const scatterEmptyCta = languageText("去 Today 记录", "Log on Today", "Auf Heute erfassen");
     const scatterStepLabels = [
       languageText("记录心情", "Log mood", "Stimmung notieren"),
@@ -9839,8 +9881,12 @@ function renderReviewLedgerSummary() {
       target?.focus?.({ preventScroll: true });
     });
   });
-  bindReviewScatterDotTips(host);
-  bindReviewScatterJumpSpy(host);
+  if (scatterHasCharts) {
+    scheduleReviewScatterHydrate(host, reviewScatterGen, scatterChartPayload);
+  } else {
+    bindReviewScatterDotTips(host);
+    bindReviewScatterJumpSpy(host);
+  }
   const scatterEmptyHint = host.querySelector("#reviewScatterEmptyHint");
   if (scatterEmptyHint) {
     hydrateHairlineMounts(scatterEmptyHint);
@@ -9856,7 +9902,8 @@ function renderReviewLedgerSummary() {
   requestAnimationFrame(() => {
     const retarget = globalThis.LifeLedgerInteraction?.retarget;
     retarget?.(host.querySelector(".review-ledger-stats.is-retargeting"));
-    retarget?.(host.querySelector(".review-scatter-grid.is-retargeting"));
+    const grid = host.querySelector(".review-scatter-grid.is-retargeting:not(.is-scatter-pending)");
+    retarget?.(grid);
     retarget?.(host.querySelector(".review-ledger-insights.is-retargeting"));
   });
 }

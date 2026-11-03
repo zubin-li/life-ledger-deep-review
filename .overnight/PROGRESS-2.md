@@ -1,4 +1,68 @@
 
+## Round 12 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **D3 perf** | Review Money scatter SVG **deferred** (double `requestAnimationFrame`); summary shell + jump chips first; `tryFocusPendingReviewScatter` retries after hydrate |
+| **C1 浮层** | `dialog.tc-dialog` opaque in **v210.css**; browser test **tcLibrary** alpha ≥ 0.99 |
+| **CSS** | Scatter pending skeleton; fix **`html[data-theme="dark"] html[data-theme="dark"]`** on ledger chip press → **6042** lines |
+| **验证** | `fb-r12-*`（5297）WebKit + Chromium；`perf-nav-trace.json` **maxLongTaskMs 0**, **CLS 0** |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6042** 行，仍远高于 ~3250；需 v2.2 拆文件或更大 legacy 批删 |
+| **D3** | 其它页 KPI roll-up / chart lazy 可选 |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面（r11 `diff-v2010.json` 仍有效）。
+
+### Evidence (六个已知问题 · r12)
+
+1. **C1** — `fb-r12-today-onboard-zh-light-390-webkit.png` + library dialog browser 测试
+2. **C2** — `fb-r12-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r12-today-zh-light-1440-chromium.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — r7 `weather-headless-compare.json`；天气区空（无网）
+5. **C5** — **6042** 行；单 `capture.mjs` + 维护脚本族
+6. **C6** — `fb-r12-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 12)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | Scatter defer transform/opacity retarget only; reduced-motion skeleton static | **OK** |
+| ui-ux-pro-max | tc-dialog 实色；scatter `aria-busy` pending | **Fixed** C1 dialog |
+| design-dna | fb-r12 ledger/week/review panel 族一致 | OK |
+| Rauno / Linear | 复盘切换 long task **0**（was 67ms） | **Fixed** defer scatter |
+| Screenshots | ledger/review/today 1440+390 目视 | OK |
+| Tests | **433** unit + **76** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- `tc-dialog` 内 input 仍用 `--card` 底（字段非浮层，可保留）
+- v210.css 下一刀：结构性拆文件（2.2）
+
+### `npm test` (round 12 gate · final)
+
+```
+433 pass, 0 fail (unit)
+76 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 2.2 分文件或大批量 legacy 删
+2. `compare-v2010.mjs` 轻量回归
+3. Mac 壳 `fb-r12-mac-*` 补拍
+
+---
+
 ## Round 11 (2026-11-03)
 
 ### Done
@@ -503,8 +567,14 @@ desktop:check 0 fail
 ## Driver gate after sprint 11
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 75 ℹ pass 75 ℹ fail 0 ℹ desktop:check 0 fail
 
+## Driver gate after sprint 12
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 76 ℹ pass 76 ℹ fail 0 ℹ desktop:check 0 fail
+
 ## Driver gate after sprint 10
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
 ## Driver gate after sprint 11
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 12
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

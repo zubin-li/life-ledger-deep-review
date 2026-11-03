@@ -82,6 +82,7 @@ test(
       await page.reload({ waitUntil: "networkidle" });
       await page.locator('.nav-item[data-view="review"]').first().click({ timeout: 8000 });
       await page.waitForSelector(".review-scatter-jump", { timeout: 8000 });
+      await page.waitForSelector("#review-scatter-focus", { timeout: 12000 });
       await page.evaluate(() => {
         const el = document.getElementById("review-scatter-focus");
         if (!el) return;

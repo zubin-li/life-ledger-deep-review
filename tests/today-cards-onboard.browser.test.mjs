@@ -134,6 +134,46 @@ test(
 );
 
 test(
+  "Today card library dialog uses opaque float surface (C1)",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { webkit } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await webkit.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-language", "zh");
+        localStorage.removeItem("life-ledger-today-cards-onboarding-dismissed");
+        localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+        localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
+      });
+      await page.goto(base, { waitUntil: "domcontentloaded" });
+      await page.click('.nav-item[data-view="today"]');
+      await page.waitForSelector("#tcOnboardHint:not([hidden])", { timeout: 15000 });
+      await page.locator("#tcOnboardHint [data-tc-onboard-library]").click();
+      await page.waitForSelector("#tcLibrary[open]", { timeout: 10000 });
+      const styles = await page.evaluate(() => {
+        const el = document.getElementById("tcLibrary");
+        const cs = getComputedStyle(el);
+        const m = cs.backgroundColor.match(/rgba?\(([^)]+)\)/);
+        let alpha = 1;
+        if (m) {
+          const parts = m[1].split(",").map(s => s.trim());
+          if (parts.length === 4) alpha = Number.parseFloat(parts[3]);
+        }
+        return { alpha, backdropFilter: cs.backdropFilter || cs.webkitBackdropFilter };
+      });
+      assert.ok(styles.alpha >= 0.99, `tc-library dialog alpha ${styles.alpha}`);
+      assert.equal(styles.backdropFilter, "none");
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);
+
+test(
   "Today card edit toggle uses opaque float surface (C1)",
   { skip: !hasPlaywright },
   async () => {

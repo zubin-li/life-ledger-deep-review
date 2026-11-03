@@ -40,6 +40,15 @@ html[data-theme="dark"] :is(.icon-picker-popover, .color-picker-popover) {
   background: var(--ll-surface-float, #1e2630) !important;
 }
 
+dialog.tc-dialog {
+  background: var(--ll-surface-float, #ffffff);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] dialog.tc-dialog {
+  background: var(--ll-surface-float, #1e2630);
+}
+
 /* Bookkeeping page — loaded after v202.css */
 .ledger-page {
   display: grid;
@@ -1697,6 +1706,21 @@ html.motion-reduced .review-focus-scatter-dot {
   border-top: 1px solid color-mix(in srgb, var(--hairline) 70%, transparent);
   display: grid;
   gap: 0.85rem;
+}
+
+.review-scatter-grid.is-scatter-pending {
+  min-height: 8.5rem;
+}
+
+.review-scatter-pending-skeleton {
+  width: 100%;
+  min-height: 7.5rem;
+  border-radius: var(--radius-lg, 16px);
+}
+
+html.motion-reduced .review-scatter-pending-skeleton {
+  animation: none;
+  opacity: 0.35;
 }
 
 .review-scatter-grid .review-mood-scatter-wrap,
@@ -4914,7 +4938,7 @@ button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #167dce) 14%, transparent);
 }
 
-html[data-theme="dark"] html[data-theme="dark"] button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
+html[data-theme="dark"] button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
   background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 14%, var(--surface-elevated, #1a1d22));
 }
 

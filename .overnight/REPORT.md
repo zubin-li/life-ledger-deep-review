@@ -1,3 +1,44 @@
+# Life Ledger — 主人反馈 pass（Round 12 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **D3 性能** | 复盘 **本月支出摘要** 先渲染统计/洞察，散点 SVG 延后到下一帧（`requestAnimationFrame`），避免切到复盘时 **67ms long task** → 现 **0ms**（`.overnight/perf-nav-trace.json`） |
+| **C1 浮层** | Today **组件库/卡片设置** `dialog.tc-dialog` 实色 **`--ll-surface-float`**；browser 测试「library dialog opaque」 |
+| **CSS** | 散点 pending 骨架样式；修正 dark 主题 **ledger-tx-cat-chip** 重复选择器 typo → **6042** 行 |
+| **测试** | `review-scatter.browser.test.mjs` 等待 `#review-scatter-focus` 再测 jump spy |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **复盘** → 本月支出摘要：先看到数字，散点约 1 帧后出现
+3. **今日** → 引导卡点「浏览组件库」→ 对话框应为实色底
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r12`
+
+## 截图（Round 12）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r12-ledger-zh-light-1440-chromium.png` | 记账统计 **C2** |
+| `fb-r12-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r12-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡 |
+| `fb-r12-review-zh-light-390-chromium.png` | 复盘 Money 摘要 |
+| `fb-r12-week-zh-light-1440-webkit.png` | 本周对照 |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **76** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 11 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。
