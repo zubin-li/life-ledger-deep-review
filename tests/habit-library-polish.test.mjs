@@ -42,6 +42,22 @@ test("journal feed empty markup wires CTAs", () => {
   assert.match(app, /journal-feed-pane--empty/);
 });
 
+test("week and review empty states wire polished CTAs", () => {
+  const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(app, /function wirePolishedEmptyCtas\(/);
+  assert.match(app, /#weekEmptyAddFirstGoal/);
+  assert.match(app, /#reviewReflectionEmptyWrite/);
+  assert.match(app, /weekly-goals-empty ll-polished/);
+  assert.match(app, /review-reflection-empty ll-polished/);
+});
+
+test("v210 week and review empty polish styles", () => {
+  const css = readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  assert.match(css, /Batch 10 r5 — week goals \/ review reflection empty CTAs/i);
+  assert.match(css, /\.weekly-goals-empty\.ll-polished/);
+  assert.match(css, /\.review-reflection-empty\.ll-polished/);
+});
+
 test("journal feed avoids clearing ready on sync re-render", () => {
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const block = app.slice(app.indexOf("async function renderJournalFeed"), app.indexOf("function journalTextMarkup"));

@@ -4957,3 +4957,137 @@ html.motion-reduced #todayView.view.is-entering.tc-grid > .tc-card {
     transition: none;
   }
 }
+
+/* Batch 10 r5 — week goals / review reflection empty CTAs */
+
+#weekView .weekly-goals-empty.ll-polished,
+#weekView .long-term-goals-empty.ll-polished,
+#weekView .week-review-empty-hint.ll-polished {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: clamp(16px, 3vw, 24px) 16px;
+  margin: 8px auto 0;
+  max-width: 28rem;
+  border: 1px dashed color-mix(in srgb, var(--separator, var(--line)) 88%, transparent);
+  border-radius: 18px;
+}
+
+#weekView .week-review-empty-hint.ll-polished {
+  margin-bottom: 12px;
+  max-width: none;
+}
+
+#weekView .weekly-goals-empty.ll-polished .hairline-empty,
+#weekView .long-term-goals-empty.ll-polished .hairline-empty,
+#weekView .week-review-empty-hint.ll-polished .hairline-empty {
+  gap: 8px;
+}
+
+#weekView .weekly-goals-empty.ll-polished .hairline-mount,
+#weekView .long-term-goals-empty.ll-polished .hairline-mount,
+#weekView .week-review-empty-hint.ll-polished .hairline-mount {
+  max-width: 120px;
+  margin-inline: auto;
+}
+
+#weekView .weekly-goals-empty.ll-polished .hairline-empty > strong,
+#weekView .long-term-goals-empty.ll-polished .hairline-empty > strong,
+#weekView .week-review-empty-hint.ll-polished .hairline-empty > strong {
+  font: 600 1.02rem/1.35 var(--font-display, inherit);
+  color: var(--label, var(--ink));
+}
+
+#weekView .weekly-goals-empty.ll-polished .hairline-empty > p,
+#weekView .long-term-goals-empty.ll-polished .hairline-empty > p,
+#weekView .week-review-empty-hint.ll-polished .hairline-empty > p {
+  margin: 0;
+  max-width: 22rem;
+  color: var(--secondaryLabel, var(--muted));
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+#reviewView .review-score-empty.ll-polished,
+#reviewView .review-inspector-empty.ll-polished,
+#reviewView .review-reflection-empty.ll-polished {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: clamp(18px, 3vw, 28px) 16px;
+  margin: 8px 0 12px;
+  border: 1px dashed color-mix(in srgb, var(--separator, var(--line)) 85%, transparent);
+  border-radius: 18px;
+}
+
+#reviewView .review-reflection-empty.ll-polished {
+  margin-bottom: 14px;
+}
+
+#reviewView .review-score-empty.ll-polished .hairline-mount,
+#reviewView .review-inspector-empty.ll-polished .hairline-mount,
+#reviewView .review-reflection-empty.ll-polished .hairline-mount {
+  max-width: 128px;
+  margin-inline: auto;
+}
+
+#reviewView .review-score-empty.ll-polished .hairline-empty > strong,
+#reviewView .review-inspector-empty.ll-polished .hairline-empty > strong,
+#reviewView .review-reflection-empty.ll-polished .hairline-empty > strong {
+  font: 600 1.02rem/1.35 var(--font-display, inherit);
+}
+
+#reviewView .review-score-empty.ll-polished .hairline-empty > p,
+#reviewView .review-inspector-empty.ll-polished .hairline-empty > p,
+#reviewView .review-reflection-empty.ll-polished .hairline-empty > p {
+  margin: 0;
+  max-width: 24rem;
+  color: var(--secondaryLabel, var(--muted));
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+#reviewView .period-dashboard-empty.review-metric-empty.ll-polished {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 20px 16px;
+}
+
+#reviewView .period-dashboard-empty.review-metric-empty.ll-polished > p {
+  margin: 0;
+  max-width: 22rem;
+  color: var(--secondaryLabel, var(--muted));
+}
+
+#weekView .weekly-goals-empty.ll-polished,
+#weekView .long-term-goals-empty.ll-polished,
+#weekView .week-review-empty-hint.ll-polished,
+#reviewView .review-score-empty.ll-polished,
+#reviewView .review-inspector-empty.ll-polished,
+#reviewView .review-reflection-empty.ll-polished {
+  animation: llEmptyReveal 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+html.motion-reduced #weekView .weekly-goals-empty.ll-polished,
+html.motion-reduced #weekView .long-term-goals-empty.ll-polished,
+html.motion-reduced #weekView .week-review-empty-hint.ll-polished,
+html.motion-reduced #reviewView .review-score-empty.ll-polished,
+html.motion-reduced #reviewView .review-inspector-empty.ll-polished,
+html.motion-reduced #reviewView .review-reflection-empty.ll-polished {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #weekView .weekly-goals-empty.ll-polished,
+  #weekView .long-term-goals-empty.ll-polished,
+  #weekView .week-review-empty-hint.ll-polished,
+  #reviewView .review-score-empty.ll-polished,
+  #reviewView .review-inspector-empty.ll-polished,
+  #reviewView .review-reflection-empty.ll-polished {
+    animation: none !important;
+  }
+}

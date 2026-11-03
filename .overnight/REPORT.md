@@ -1,4 +1,4 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 4）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 5）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
@@ -6,7 +6,26 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 ---
 
-## 本轮（Batch 10 · Round 4）— 时间轴日记空态 + Today 网格节奏
+## 本轮（Batch 10 · Round 5）— 本周 / 复盘空态 CTA 对齐
+
+| 项目 | 说明 |
+|------|------|
+| **本周** | 无周目标：dashed 空态 + **添加第一个本周目标**（聚焦输入框）；空白 `#weeklyOutputText`：复盘模块上方 **开始写本周复盘**；长期目标 tab：hairline + **添加长期目标**（打开对话框）。 |
+| **复盘** | 空白 `#reviewText`：**开始写复盘**；展开「详细指标」后无习惯分数 / 无指标 / 明细表不足时，分别 **去习惯页添加**、**去 Today 打卡**（与习惯库 / 时间轴空态同一套 `ll-polished` 语言）。 |
+| **截图** | `.overnight/shots/b10r5-week-empty-zh-chromium-light-1440-chromium.png`、`.overnight/shots/b10r5-review-empty-zh-light-chromium-light-1440-chromium.png` 等（`node .overnight/capture-batch10-round5.mjs`，端口 **5296**）。 |
+| **测试** | `npm test` **388**；`npm run test:browser` **33**（+2 `week-review-empty`，端口 **5297**）。 |
+
+**怎么验：**
+
+1. 清 `weeklyGoals` / `weeklyOutputs` → **本周** → 见双空态与两个主按钮；点 **添加第一个本周目标** 应聚焦底部输入框。
+2. 清 `reviews` 且 `habits=[]` → **复盘** → 滚到「这个月的复盘」见 **开始写复盘**；展开习惯分数见 **去习惯页添加**。
+3. 全量：`npm test` + `npm run test:browser`（勿与 **5296** capture 并行）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；demo 日度 feed 可能仍有仅照片行。
+
+---
+
+## 上一轮（Batch 10 · Round 4）— 时间轴日记空态 + Today 网格节奏
 
 | 项目 | 说明 |
 |------|------|

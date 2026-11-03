@@ -11,6 +11,7 @@ All notable changes are documented here.
 - **Long-range (Horizon):** empty phase and plan grids use hairline art, enter animation, and **Start your first phase** CTA; sidebar adds subtle dividers before Timeline and Money.
 - **Habits library:** zero-habit empty state uses centered hairline art with **Add your first habit** CTA (filters and stats hidden until the first habit exists); filter/search miss shows horizontal **search-empty** quiet card; Today hero quote block gets a short copy stagger on enter (today only).
 - **Timeline journal feed:** empty daily/weekly/monthly lists use polished hairline art with primary CTAs (**Write today's reflection**, **Open this week**, **Open monthly review**); month filter with no rows shows a quiet **search-empty** strip; Today card grid gets tighter gap rhythm and a light desktop hover lift (respects reduced motion).
+- **Week & Review empty states:** empty weekly goals, blank weekly reflection, and long-term goals on the Week page use hairline art with **Add your first weekly goal**, **Start weekly reflection**, and **Add a long-term goal** CTAs; Review shows matching CTAs for empty habit scores, metrics, inspector table, and blank monthly reflection (**Add habits**, **Check in on Today**, **Start writing**).
 - **QA:** Playwright suite runs serially (`--test-concurrency=1`) and deconflicts static-server ports (`habits-empty` / `review-scatter`) to avoid flaky parallel collisions with fakecloud.
 
 ## [2.1.0] - 2026-11-03

@@ -4405,21 +4405,24 @@ function renderWeeklyWorkspace() {
   setText("#weeklyGoalsTitle", tr("week.goalsTitleProgress", { done, total: goals.length }));
   setText("#inspectorWeekRange", range);
   $(".weekly-goals-section")?.classList.toggle("is-empty", !goals.length);
+  const weekGoalEmptyCta = languageText("添加第一个本周目标", "Add your first weekly goal", "Erstes Wochenziel hinzufügen");
   $("#weeklyGoalList").innerHTML = goals.length ? goals.map(goal => `
     <div class="weekly-goal ${goal.done ? "done" : ""}" data-id="${goal.id}">
       <button class="weekly-goal-check" data-action="toggle" aria-label="${goal.done ? tr("toast.habitOff") : tr("toast.habitOn")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 8"/></svg></button>
       <button class="weekly-goal-text" data-action="toggle">${escapeHtml(goal.text)}</button>
       <button class="weekly-goal-delete" data-action="delete" aria-label="${tr("dialog.delete")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
-    </div>`).join("") : hairlineEmptyMarkup(
+    </div>`).join("") : `<div class="weekly-goals-empty ll-polished">${hairlineEmptyMarkup(
       "./assets/hairline/empty-week-goals.svg",
       tr("week.goalsTitleProgress", { done: 0, total: 0 }),
       languageText("先写一件真正重要的事。", "Put one important thing here.", "Lege eine wirklich wichtige Sache hinein."),
-    );
+    )}<button type="button" class="primary-button" id="weekEmptyAddFirstGoal">${escapeHtml(weekGoalEmptyCta)}</button></div>`;
   if (!goals.length) {
     hydrateHairlineMounts($("#weekView"));
     const weekMount = $("#weeklyGoalList .hairline-mount");
     if (weekMount) weekMount.dataset.filled = String(weekDaysWithCompletion(key));
+    $("#weeklyGoalList .hairline-empty")?.classList.add("ll-empty");
   }
+  syncWeekReviewEmptyHint(output);
   $("#currentWeekNumber").textContent = range;
   $("#basketYear").textContent = "";
   setText("#basketWeekLabel", range);
@@ -4445,6 +4448,7 @@ function renderWeeklyWorkspace() {
     weekNavPulse = false;
     pulseWeekWorkspaceMotion();
   }
+  wirePolishedEmptyCtas();
 }
 
 function pulseWeekWorkspaceMotion() {
@@ -4536,7 +4540,15 @@ function renderLongTermGoals() {
     <span class="long-term-copy"><strong>${escapeHtml(goal.name)}</strong><small>${escapeHtml(goal.nextAction || tr("longTerm.noNext"))}</small></span>
     <span class="long-term-meta"><b>${escapeHtml(tr(`longTerm.${goal.status || "active"}`))}</b><small>${escapeHtml(formatLongTermReviewDate(goal.reviewDate))}</small></span>
     <span class="long-term-chevron" aria-hidden="true">›</span>
-  </button>`).join("") : `<p class="weekly-goal-empty long-term-empty">${tr("longTerm.empty")}</p>`;
+  </button>`).join("") : `<div class="long-term-goals-empty ll-polished long-term-empty">${hairlineEmptyMarkup(
+    "./assets/hairline/empty-week-goals.svg",
+    languageText("还没有长期目标", "No long-term goals yet", "Noch keine Langfristziele"),
+    languageText("添加一个方向，慢慢推进。", "Add a direction worth carrying forward.", "Eine Richtung, die du weiterträgst."),
+  )}<button type="button" class="primary-button" id="longTermEmptyAddFirst">${escapeHtml(tr("longTerm.add"))}</button></div>`;
+  if (!goals.length) {
+    hydrateHairlineMounts($("#longTermGoalList"));
+    $("#longTermGoalList .hairline-empty")?.classList.add("ll-empty");
+  }
   $$("#longTermGoalList .long-term-goal").forEach(button => button.addEventListener("click", () => openLongTermGoalDialog(button.dataset.id)));
 }
 
@@ -5486,11 +5498,11 @@ function renderReview() {
     const rate = Math.round(met / Math.max(1, groups.length) * 100);
     previewRates.push(rate);
     return `<article class="score-card period-score-card score-card--enter"${stagger} data-habit-id="${escapeHtml(h.id)}"><div class="score-card-header"><span class="inline-habit-label">${renderIcon(iconKey(h))} ${escapeHtml(displayHabitName(h))}</span><span class="score-rate">${rate}%</span></div><strong><span class="score-count">${count}</span></strong><p>${tr("review.periodSummary", { met, periods: groups.length })}</p></article>`;
-  }).join("") : hairlineEmptyMarkup(
+  }).join("") : `<div class="review-score-empty ll-polished">${hairlineEmptyMarkup(
     "./assets/hairline/empty-habits.svg",
     languageText("还没有习惯分数", "No habit scores yet", "Noch keine Gewohnheitswerte"),
     languageText("在习惯页添加日常习惯后，这里会显示本月完成率。", "Add daily habits on the Habits page to see completion rates here.", "Lege Gewohnheiten an — hier erscheinen die Monatsquoten."),
-  );
+  )}<button type="button" class="primary-button" id="reviewScoreEmptyAddHabit">${escapeHtml(languageText("去习惯页添加", "Add habits", "Gewohnheiten anlegen"))}</button></div>`;
   rollScoreGridValues(scoreHost);
   hydrateHairlineMounts(scoreHost);
   scoreHost.querySelector(".hairline-empty")?.classList.add("ll-empty", "ll-empty-enter");
@@ -5512,10 +5524,12 @@ function renderReview() {
   pulseReviewRhythmBars();
   requestAnimationFrame(() => requestAnimationFrame(() => pulseReviewRhythmBars()));
   renderPeriodicGoals(monthDates);
+  syncReviewReflectionEmptyHint(key);
   $("#reviewText").value = state.reviews[key] || "";
   fitReviewText();
   renderFocusReview(year, month);
   window.LifeLedgerInteraction?.syncSegments(document);
+  wirePolishedEmptyCtas();
 }
 
 function periodDateGroups(dates, frequency) {
@@ -5618,7 +5632,8 @@ function renderPeriodicGoals(dates) {
   const habits = activeHabits(finalDate);
   if (!habits.length) {
     $("#analyticsMetricPicker").innerHTML = "";
-    $("#weeklyResistance").innerHTML = `<div class="period-dashboard-empty ll-empty ll-empty-enter"><span>${renderIcon("target")}</span><strong>${tr("review.noPeriodic")}</strong><p>${tr("review.noPeriodicHelp")}</p></div>`;
+    const metricCta = languageText("去习惯页添加", "Add habits", "Gewohnheiten anlegen");
+    $("#weeklyResistance").innerHTML = `<div class="period-dashboard-empty review-metric-empty ll-polished ll-empty ll-empty-enter"><span>${renderIcon("target")}</span><strong>${tr("review.noPeriodic")}</strong><p>${tr("review.noPeriodicHelp")}</p><button type="button" class="primary-button" id="reviewMetricEmptyAddHabit">${escapeHtml(metricCta)}</button></div>`;
     return;
   }
   selectedAnalyticsHabitIds = selectedAnalyticsHabitIds.filter(id => habits.some(habit => habit.id === id));
@@ -8343,6 +8358,94 @@ function wireJournalFeedEmptyActions() {
   });
 }
 
+function wirePolishedEmptyCtas() {
+  $("#weekEmptyAddFirstGoal")?.addEventListener("click", () => {
+    requestAnimationFrame(() => {
+      $("#weeklyGoalInput")?.scrollIntoView({ block: "nearest" });
+      $("#weeklyGoalInput")?.focus({ preventScroll: true });
+    });
+  });
+  $("#weekEmptyStartReview")?.addEventListener("click", () => {
+    requestAnimationFrame(() => {
+      $("#weeklyOutputText")?.scrollIntoView({ block: "center" });
+      $("#weeklyOutputText")?.focus({ preventScroll: true });
+    });
+  });
+  $("#longTermEmptyAddFirst")?.addEventListener("click", () => openLongTermGoalDialog());
+  $("#reviewScoreEmptyAddHabit")?.addEventListener("click", () => {
+    switchToView("habits");
+    requestAnimationFrame(() => openHabitDialog());
+  });
+  $("#reviewMetricEmptyAddHabit")?.addEventListener("click", () => {
+    switchToView("habits");
+    requestAnimationFrame(() => openHabitDialog());
+  });
+  $("#reviewInspectorEmptyToday")?.addEventListener("click", () => switchToView("today"));
+  $("#reviewReflectionEmptyWrite")?.addEventListener("click", () => {
+    requestAnimationFrame(() => {
+      $("#reviewText")?.scrollIntoView({ block: "center" });
+      $("#reviewText")?.focus({ preventScroll: true });
+    });
+  });
+}
+
+function syncWeekReviewEmptyHint(output) {
+  const body = $("#module-body-review");
+  if (!body) return;
+  let hint = $("#weekReviewEmptyHint");
+  if (!hint) {
+    hint = document.createElement("div");
+    hint.id = "weekReviewEmptyHint";
+    const promoted = body.querySelector(".week-review-promoted-card");
+    if (promoted) body.insertBefore(hint, promoted);
+    else body.prepend(hint);
+  }
+  if (output.trim()) {
+    hint.hidden = true;
+    hint.className = "";
+    hint.innerHTML = "";
+    return;
+  }
+  hint.hidden = false;
+  hint.className = "week-review-empty-hint ll-polished";
+  const cta = languageText("开始写本周复盘", "Start weekly reflection", "Wochenrückblick beginnen");
+  hint.innerHTML = `${hairlineEmptyMarkup(
+    "./assets/hairline/week-review-empty.svg",
+    languageText("本周复盘还是空白", "Weekly reflection is empty", "Wochenrückblick ist leer"),
+    languageText("有什么值得记住？什么想继续或改变？", "What is worth remembering? What to keep or change?", "Was bleibt? Was ändern?"),
+  )}<button type="button" class="primary-button" id="weekEmptyStartReview">${escapeHtml(cta)}</button>`;
+  hydrateHairlineMounts(hint);
+  hint.querySelector(".hairline-empty")?.classList.add("ll-empty");
+}
+
+function syncReviewReflectionEmptyHint(monthKeyValue) {
+  const narrative = $("#reviewText")?.closest(".review-narrative");
+  if (!narrative) return;
+  let hint = $("#reviewReflectionEmptyHint");
+  if (!hint) {
+    hint = document.createElement("div");
+    hint.id = "reviewReflectionEmptyHint";
+    narrative.insertBefore(hint, $("#reviewText"));
+  }
+  const body = state.reviews[monthKeyValue] || "";
+  if (body.trim()) {
+    hint.className = "";
+    hint.innerHTML = "";
+    hint.hidden = true;
+    return;
+  }
+  hint.hidden = false;
+  hint.className = "review-reflection-empty ll-polished";
+  const cta = languageText("开始写复盘", "Start writing", "Rückblick beginnen");
+  hint.innerHTML = `${hairlineEmptyMarkup(
+    "./assets/hairline/empty-journal.svg",
+    languageText("月度复盘还是空白", "Monthly reflection is empty", "Monatsrückblick ist leer"),
+    languageText("写下这个月值得保留与想改变的事。", "Capture what to keep and what to change.", "Halte fest, was bleiben soll und was sich ändern soll."),
+  )}<button type="button" class="primary-button" id="reviewReflectionEmptyWrite">${escapeHtml(cta)}</button>`;
+  hydrateHairlineMounts(hint);
+  hint.querySelector(".hairline-empty")?.classList.add("ll-empty");
+}
+
 async function renderJournalFeed(version) {
   syncJournalMonthOptions();
   const mode = journalMode, month = $('#journalMonthFilter').value;
@@ -9658,7 +9761,8 @@ function renderReviewInspectorTable() {
     return;
   }
   if (!current.eligible) {
-    table.innerHTML = hairlineEmptyMarkup(
+    const todayCta = languageText("去 Today 打卡", "Check in on Today", "Heute einchecken");
+    table.innerHTML = `<div class="review-inspector-empty ll-polished">${hairlineEmptyMarkup(
       "./assets/hairline/empty-insights.svg",
       tr("review.insufficient"),
       languageText(
@@ -9666,7 +9770,7 @@ function renderReviewInspectorTable() {
         "Not enough check-ins or planned habits this month yet. Keep logging for a few days.",
         "Noch zu wenig Check-ins oder geplante Gewohnheiten in diesem Monat. Halte ein paar Tage durch.",
       ),
-    );
+    )}<button type="button" class="primary-button" id="reviewInspectorEmptyToday">${escapeHtml(todayCta)}</button></div>`;
     hydrateHairlineMounts(table);
     table.querySelector(".hairline-empty")?.classList.add("ll-empty");
     const focusPanel = $("#inspectorReviewFocus");
