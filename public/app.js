@@ -2884,6 +2884,15 @@ function maybeApplyDemoWorkspace() {
   saveState();
 }
 
+function maybeRealignDemoInsights() {
+  const api = demoWorkspaceApi();
+  if (!api?.needsDemoInsightAlign?.(state)) return;
+  const patch = api.realignDemoInsights(state, window.LifeLedgerLedger, new Date());
+  if (!patch) return;
+  state = { ...state, ...patch };
+  saveState();
+}
+
 function renderDemoNotice() {
   const notice = $("#demoWorkspaceNotice");
   if (!notice) return;
@@ -2933,6 +2942,7 @@ async function resetPreviewDemoWorkspace() {
   localStorage.removeItem(demoDismissedStorageKey());
   state = loadState();
   maybeApplyDemoWorkspace();
+  maybeRealignDemoInsights();
   stripDemoCalendarPhotos();
   renderDemoNotice();
   renderAll();
@@ -10574,6 +10584,7 @@ function bootApplication() {
   const syncWorkspace = () => document.documentElement.toggleAttribute("data-workspace", workspaceMedia.matches);
   workspaceMedia.addEventListener("change", syncWorkspace); syncWorkspace();
   maybeApplyDemoWorkspace();
+  maybeRealignDemoInsights();
   syncExportButtonPlacement();
   syncMobileToolbar();
   initSelects();

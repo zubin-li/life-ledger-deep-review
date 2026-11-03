@@ -2,6 +2,8 @@
 
 export const DEMO_META_VERSION = 1;
 export const DEMO_PERSONA_VERSION = 11; // bump to refresh an active older demo
+/** Bump when demo logs need re-alignment with ledger insight helpers (no full re-seed). */
+export const DEMO_INSIGHT_ALIGN_VERSION = 1;
 import { personaPack, demoScheduleFor } from "./demo-persona.js?v=10";
 import { demoDayContent, DEMO_EVENTS } from "./demo-life.js?v=10";
 export const DEMO_CONTENT_SEED = 0x6d656d6f; // "memo"
@@ -134,6 +136,41 @@ export function shouldSeedDemo({ eligible, dismissed, storedRaw, state }) {
   if (!eligible || dismissed) return false;
   if (isDemoActive(state)) return (state.meta.demo.persona || 1) < DEMO_PERSONA_VERSION; // older sample data → new persona
   return storedRaw == null;
+}
+
+export function needsDemoInsightAlign(state) {
+  if (!isDemoActive(state)) return false;
+  if (!(state.ledger?.transactions?.length)) return false;
+  return (state.meta?.demo?.insightAlign ?? 0) < DEMO_INSIGHT_ALIGN_VERSION;
+}
+
+/** Re-run ledger↔mood demo alignment on an active workspace (e.g. ledger added without re-seed). */
+export function realignDemoInsights(state, ledgerApi, now = new Date()) {
+  if (!needsDemoInsightAlign(state) || !ledgerApi) return null;
+  const logs = { ...(state.logs || {}) };
+  const ledger = state.ledger;
+  const anchor = demoSeedAnchor?.(now) ?? now;
+  const habitIds = (state.habits || []).map(habit => habit.id);
+  ledgerApi.alignDemoMoodWithSpend?.(logs, ledger, anchor);
+  ledgerApi.alignDemoMoodWithBudgetOverspend?.(logs, ledger, anchor);
+  ledgerApi.alignDemoHabitCompletionWithSpend?.(logs, ledger, habitIds, anchor);
+  const focusSessions = ledgerApi.alignDemoFocusWithSpend?.(
+    state.focusSessions,
+    ledger,
+    anchor,
+  ) ?? state.focusSessions;
+  return {
+    logs,
+    focusSessions,
+    meta: {
+      ...state.meta,
+      updatedAt: Date.now(),
+      demo: {
+        ...state.meta.demo,
+        insightAlign: DEMO_INSIGHT_ALIGN_VERSION,
+      },
+    },
+  };
 }
 
 export function demoNoticeCopy(lang) {
@@ -780,6 +817,7 @@ export function buildDemoWorkspace({
         contentSeed,
         seededAt: new Date(now).toISOString(),
         persona: DEMO_PERSONA_VERSION,
+        insightAlign: DEMO_INSIGHT_ALIGN_VERSION,
         lang,
       },
     },
@@ -862,6 +900,9 @@ if (typeof window !== "undefined") {
     DEMO_PREVIEW_ID,
     DEMO_MEMORY_ASSETS,
     DEMO_PERSONA_VERSION,
+    DEMO_INSIGHT_ALIGN_VERSION,
+    needsDemoInsightAlign,
+    realignDemoInsights,
     resolveStorageKey,
     resolveDismissedKey,
     isLocalOnlyEligible,

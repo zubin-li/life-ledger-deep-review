@@ -11,6 +11,10 @@ All notable changes are documented here.
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.
 - **CSV import:** German bank amounts with dot decimals only (e.g. `12.50`) no longer inflate 100×; `formatMoney` no longer prints `-0,00 €` for negative zero.
 - **Quick entry:** invalid parse sets `aria-invalid` on the input for screen readers (visual `is-error` unchanged).
+- **Demo insights:** Active demo workspaces with ledger but without `meta.demo.insightAlign` re-align moods/habits/focus once on boot so Today mood×spending and habit×spending hints render without `demo-reset=1`.
+
+### Changed
+- **Today:** Habit and mood spend insight hints use a soft chip surface; mood hint gets the same reveal animation as the habit hint.
 
 ## [2.1.0] - 2026-11-03
 

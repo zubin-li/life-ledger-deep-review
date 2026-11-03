@@ -5322,3 +5322,30 @@ html.motion-reduced :is(.timeline-list-empty, .journal-calendar-empty).ll-polish
     animation: none !important;
   }
 }
+
+/* Batch 11 r3 — Today spend insight hints read as soft chips */
+.today-insight-hint:not([hidden]) {
+  padding: 0.55rem 0.75rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--edge-soft, rgba(0, 0, 0, 0.08)) 88%, transparent);
+  background: color-mix(in srgb, var(--surface-2, #f5f5f7) 72%, transparent);
+}
+
+html[data-theme="dark"] .today-insight-hint:not([hidden]) {
+  background: color-mix(in srgb, var(--surface-2, #1c1c1e) 88%, transparent);
+  border-color: color-mix(in srgb, var(--edge-soft, rgba(255, 255, 255, 0.12)) 90%, transparent);
+}
+
+.today-mood-spend-hint:not([hidden]) {
+  animation: llEmptyReveal 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.motion-reduced .today-mood-spend-hint:not([hidden]) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .today-mood-spend-hint:not([hidden]) {
+    animation: none;
+  }
+}

@@ -1,3 +1,30 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 3）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 3：** 修复旧 demo 缓存缺 Today 洞察 hint；Today 支出关联提示视觉 chip 化。
+
+---
+
+## 本轮（Batch 11 · Round 3）— Demo 洞察对齐 + Today chip
+
+| 项目 | 说明 |
+|------|------|
+| **Demo 迁移** | 活跃 demo 若已有 `state.ledger` 但缺少 `meta.demo.insightAlign`，启动时一次性重跑 mood / budget / habit / focus 对齐（`maybeRealignDemoInsights`），不必 `?demo-reset=1`。 |
+| **Goal 2** | Today 习惯×支出 / 心情×支出 hint 增加软 chip 底与边框；心情 hint 补进入动画（尊重 reduced-motion）。 |
+| **单元测试** | `npm test` **393**（+1：`realignDemoInsights`）。 |
+| **浏览器** | `npm run test:browser` **40** 全绿。 |
+| **截图** | `.overnight/shots/b11r3-today-mood-hint-stale-realigned-zh-light-1440-chromium.png`、`.overnight/shots/b11r3-today-habit-hint-chip-de-dark-390-webkit.png`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**。 |
+
+**怎么验（可选）：**
+
+1. DevTools → Application → 编辑 `life-ledger-preview-demo-showcase-v1`：删掉 `meta.demo.insightAlign`，把所有 `logs[*].mood` 改成同一值 → 刷新 → **今日** 应仍出现「近 30 天：心情较好日…」条。
+2. 对照 Round 3 截图看 hint 是否呈圆角 chip。
+3. 全量：`npm test` + `npm run test:browser`。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 2）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

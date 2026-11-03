@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
+import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import {
   DEFAULT_STORAGE_KEY,
@@ -20,6 +21,9 @@ import {
   resolveStorageKey,
   shouldSeedDemo,
   demoSeedAnchor,
+  needsDemoInsightAlign,
+  realignDemoInsights,
+  DEMO_INSIGHT_ALIGN_VERSION,
 } from "../public/demo-workspace.js";
 import { demoScheduleFor } from "../public/demo-persona.js";
 
@@ -286,4 +290,32 @@ test("hasMeaningfulUserData detects non-empty workspace", () => {
   const base = { logs: {}, reviews: {}, weeklyGoals: {}, weeklyOutputs: {}, weeklyReviews: {}, dailyGoals: {}, longTermGoals: [], focusSessions: [] };
   assert.equal(hasMeaningfulUserData(base), false);
   assert.equal(hasMeaningfulUserData({ ...base, weeklyGoals: { "2026-W41": [{ id: "g", text: "x", done: false }] } }), true);
+});
+
+test("realignDemoInsights patches stale active demo without full re-seed", () => {
+  const ledgerRoot = {};
+  vm.runInNewContext(
+    readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8"),
+    { window: ledgerRoot, globalThis: ledgerRoot, crypto: { randomUUID: () => "22222222-2222-4222-8222-222222222222" } },
+  );
+  const L = ledgerRoot.LifeLedgerLedger;
+  const now = new Date("2026-11-18T12:00:00");
+  let demo = buildDemoWorkspace({ now, lang: "en", seedHabits: starterHabits });
+  demo.ledger = L.buildDemoSample({ now, lang: "en", contentSeed: demo.meta.demo.contentSeed });
+  delete demo.meta.demo.insightAlign;
+  Object.keys(demo.logs).forEach(date => {
+    if (demo.logs[date]) demo.logs[date] = { ...demo.logs[date], mood: "平静" };
+  });
+  assert.equal(needsDemoInsightAlign(demo), true);
+  const patch = realignDemoInsights(demo, L, now);
+  assert.ok(patch);
+  assert.equal(patch.meta.demo.insightAlign, DEMO_INSIGHT_ALIGN_VERSION);
+  const merged = { ...demo, ...patch };
+  assert.equal(needsDemoInsightAlign(merged), false);
+  const rows = Object.keys(merged.logs).map(date => ({
+    date,
+    mood: merged.logs[date].mood,
+    spendMinor: L.spendingTodayMinor(merged.ledger, date),
+  })).filter(row => row.spendMinor > 0);
+  assert.ok(L.moodSpendComparison(rows));
 });
