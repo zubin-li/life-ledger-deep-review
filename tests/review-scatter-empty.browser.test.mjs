@@ -87,6 +87,12 @@ test(
           await page.waitForFunction(() => document.getElementById("todayView")?.classList.contains("active"), null, {
             timeout: 5000,
           });
+          await page.click('.nav-item[data-view="review"]');
+          await page.waitForSelector("#reviewScatterEmptyHint", { timeout: 15000 });
+          await page.locator('[data-scatter-empty-target="ledger"]').click();
+          await page.waitForFunction(() => document.getElementById("ledgerView")?.classList.contains("active"), null, {
+            timeout: 5000,
+          });
         } finally {
           await browser.close();
         }

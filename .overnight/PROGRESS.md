@@ -1,5 +1,46 @@
 # Overnight progress
 
+## Batch 11 · Round 6 — done
+
+- **REVIEW.md：** 仍无新复审；#1–#3 已在 Round 1 关闭；#4 CSS 合并仍 **2.2**。
+- **Goal 2：** 复盘散点空态三步 pill 改为可点击按钮（心情→Today、习惯→习惯页、支出→记账），hover/focus/active 微交互（`v210.css`，尊重 reduced-motion）。
+- **QA：** 扩展 `fakecloud-ledger-mac-shell.browser.test.mjs`：**← / N** 与 `LifeLedgerMac.handle("date:next")`；`review-scatter-empty.browser.test.mjs` 断言 pill 跳转 **Money**。
+- **文档：** README EN/ZH/DE 补散点空态三 pill 说明；CHANGELOG `[Unreleased]`。
+- **QA：** `npm test` **393** pass / 0 fail；`npm run test:browser` **42** pass / 0 fail。
+- **截图：** `node .overnight/capture-batch11-round6.mjs`（**5296**）→ `b11r6-review-scatter-steps-zh-light-1440-chromium.png`、`b11r6-ledger-month-arrow-de-dark-390-webkit.png`。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 11 若继续：`v210.css` reduced-motion 物理合并（2.2）；记账页 Mac 菜单 **date:prev** 单独 smoke；更多 Goal 2（习惯/日记关联洞察动效）。
+- Owner 验收：复盘 Money 散点空态点 **记一笔支出** → 应进入 **记账**；Mac 在线 fakecloud 下 **←** 换月（Round 6 截图）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+
+## npm test
+
+```
+393 pass, 0 fail (batch 11 round 6, unit gate)
+42 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 11 · Round 5 — done
 
 - **REVIEW.md：** 仍无新复审；#1–#3 已在 Round 1 关闭；#4 CSS 合并仍 **2.2**。
@@ -102,4 +143,7 @@ _pending (driver appends after commit)_
 ℹ tests 393 ℹ pass 393 ℹ fail 0 
 
 ## Driver gate after round 5
+ℹ tests 393 ℹ pass 393 ℹ fail 0 
+
+## Driver gate after round 6
 ℹ tests 393 ℹ pass 393 ℹ fail 0 

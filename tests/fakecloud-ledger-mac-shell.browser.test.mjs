@@ -100,6 +100,33 @@ test(
         await page.waitForSelector('[data-ledger-sum="expense"]', { timeout: 15_000 });
         const expense = await page.locator('[data-ledger-sum="expense"]').textContent();
         assert.ok(expense && expense.trim().length > 2, "month expense summary should render");
+
+        const titleBefore = await page.locator(".ledger-header h2").textContent();
+        await page.keyboard.press("ArrowLeft");
+        await page.waitForFunction(
+          prev => {
+            const el = document.querySelector(".ledger-header h2");
+            return el && el.textContent !== prev;
+          },
+          titleBefore,
+          { timeout: 8000 },
+        );
+        await page.evaluate(() => document.activeElement?.blur?.());
+        await page.keyboard.press("n");
+        await page.waitForFunction(() => document.activeElement?.id === "ledgerQuickInput", null, {
+          timeout: 5000,
+        });
+
+        const titleMid = await page.locator(".ledger-header h2").textContent();
+        await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:next"));
+        await page.waitForFunction(
+          prev => {
+            const el = document.querySelector(".ledger-header h2");
+            return el && el.textContent !== prev;
+          },
+          titleMid,
+          { timeout: 8000 },
+        );
       } finally {
         await context.close();
         await browser.close();

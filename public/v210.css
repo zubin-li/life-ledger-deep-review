@@ -5390,6 +5390,7 @@ html.motion-reduced .today-mood-spend-hint:not([hidden]) {
 #reviewView .review-scatter-empty-step {
   margin: 0;
   padding: 6px 11px;
+  font: inherit;
   font-size: 0.78rem;
   font-weight: 560;
   letter-spacing: 0.01em;
@@ -5397,8 +5398,44 @@ html.motion-reduced .today-mood-spend-hint:not([hidden]) {
   background: color-mix(in srgb, var(--surface-2, var(--card)) 88%, var(--accent, #3d8f7a) 12%);
   border: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
   border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 160ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 160ms ease,
+    background 160ms ease;
   animation: llEmptyReveal 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
   animation-delay: calc(var(--step-i, 0) * 55ms + 80ms);
+}
+
+#reviewView .review-scatter-empty-step:hover {
+  border-color: color-mix(in srgb, var(--accent, #3d8f7a) 42%, var(--line));
+  background: color-mix(in srgb, var(--surface-2, var(--card)) 82%, var(--accent, #3d8f7a) 18%);
+}
+
+#reviewView .review-scatter-empty-step:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent, #3d8f7a) 55%, transparent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  #reviewView .review-scatter-empty-step:active {
+    transform: scale(0.97);
+  }
+}
+
+html.motion-reduced #reviewView .review-scatter-empty-step {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #reviewView .review-scatter-empty-step {
+    transition: none;
+  }
+
+  #reviewView .review-scatter-empty-step:active {
+    transform: none;
+  }
 }
 
 #reviewView .review-scatter-empty-cta {

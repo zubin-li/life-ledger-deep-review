@@ -1,3 +1,30 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 6）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 6：** 复盘散点空态 pill 可跳转；Mac 在线记账快捷键 + 菜单换月 QA。
+
+---
+
+## 本轮（Batch 11 · Round 6）— 散点空态导航 + Mac 快捷键
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | 复盘 **Money** 散点数据不足时，三步 checklist 改为按钮：**记录心情** → Today、**完成习惯** → 习惯页、**记一笔支出** → 记账；pill 增加 hover/focus/按压反馈。 |
+| **Mac × fakecloud** | 扩展 `fakecloud-ledger-mac-shell.browser.test.mjs`：在 WebKit + shell 注入 + 云 demo 下断言 **←** 换月、**N** 聚焦快速录入、`LifeLedgerMac.handle("date:next")` 换月。 |
+| **单元测试** | `npm test` **393**（无新增单元项）。 |
+| **浏览器** | `npm run test:browser` **42**（scatter 空态 +1 断言跳转记账）。 |
+| **截图** | `.overnight/shots/b11r6-review-scatter-steps-zh-light-1440-chromium.png`、`.overnight/shots/b11r6-ledger-month-arrow-de-dark-390-webkit.png`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**。 |
+
+**怎么验（可选）：**
+
+1. 本地：有本月支出、无散点数据 → **复盘** → Money 区点 **记一笔支出** → 应进入 **记账**。
+2. `bash .overnight/fakecloud.sh 5297` + Mac 窗口或 shell 注入 → **Finanzen** → **←** 应换月（对照 Round 6 截图）。
+3. 全量：`npm test` + `npm run test:browser`。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 5）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

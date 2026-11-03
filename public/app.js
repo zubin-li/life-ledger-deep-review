@@ -9440,8 +9440,12 @@ function renderReviewLedgerSummary() {
       languageText("完成习惯", "Complete habits", "Gewohnheiten abhaken"),
       languageText("记一笔支出", "Log spending", "Ausgabe erfassen"),
     ];
+    const scatterStepTargets = ["today", "habits", "ledger"];
     const scatterSteps = scatterStepLabels
-      .map((label, i) => `<li class="review-scatter-empty-step" style="--step-i:${i}">${escapeHtml(label)}</li>`)
+      .map(
+        (label, i) =>
+          `<li><button type="button" class="review-scatter-empty-step" data-scatter-empty-target="${scatterStepTargets[i]}" style="--step-i:${i}">${escapeHtml(label)}</button></li>`,
+      )
       .join("");
     scatterEmptyBlock = `<div class="review-scatter-empty ll-polished" id="reviewScatterEmptyHint">${hairlineEmptyMarkup(
       "./assets/hairline/empty-insights.svg",
@@ -9556,6 +9560,12 @@ function renderReviewLedgerSummary() {
     hydrateHairlineMounts(scatterEmptyHint);
     scatterEmptyHint.querySelector(".hairline-empty")?.classList.add("ll-empty");
     host.querySelector("#reviewScatterEmptyToday")?.addEventListener("click", () => switchToView("today"));
+    scatterEmptyHint.querySelectorAll("[data-scatter-empty-target]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const view = btn.getAttribute("data-scatter-empty-target");
+        if (view) switchToView(view);
+      });
+    });
   }
   requestAnimationFrame(() => {
     const retarget = globalThis.LifeLedgerInteraction?.retarget;
