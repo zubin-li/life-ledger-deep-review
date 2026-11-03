@@ -1,3 +1,24 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 8
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 · 导航** | 任意侧栏 **nav-item** 切换页面时 **`is-nav-press`** 按压高亮（含键盘 **M** 进记账时的 **Money** 项）。 |
+| **Goal 2 · 记账 chip** | 快速录入下方 **最近/常用分类 chip** 点击时 **`is-chip-press`**，并照旧把分类名填入录入框。 |
+| **实现** | `app.js` `pulseNavItemPress`；`ledger-ui.js` `pulseLedgerCategoryChip`；`v210.css` Batch 13 r8。 |
+| **测试** | `npm test` **416**；`npm run test:browser` **69**（+2 nav/chip press）。 |
+
+## 验收
+
+1. **1440 浅色 zh** → 侧栏点 **记账** → **记账** 项短暂 accent 底（`b13r8-nav-press-zh-light-1440-chromium.png`）。
+2. **390 深色 de** → **Finanzen** → 点 **Mobilität** chip → 描边高亮 + 输入框 `12,50 Mobilität`（`b13r8-ledger-chip-press-de-dark-390-webkit.png`）。
+3. 重拍：`node .overnight/capture-batch13-round8.mjs`（端口 **5292**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 7
 
 Web **2.1.0**、Mac **3.1.0**。

@@ -259,3 +259,14 @@ test("Batch 13 r7 — scatter jump chip press + Mac View Money menu", () => {
   assert.match(libRs, /item\("view_ledger", Some\("CmdOrCtrl\+7"\)/);
   assert.match(libRs, /"view_ledger" => Some\("view:ledger"\)/);
 });
+
+test("Batch 13 r8 — sidebar nav press + ledger category chip press", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r8 — sidebar nav press/);
+  assert.match(app, /function pulseNavItemPress\(/);
+  assert.match(ledgerUi, /function pulseLedgerCategoryChip\(/);
+  assert.match(css, /is-nav-press/);
+  assert.match(css, /is-chip-press/);
+});

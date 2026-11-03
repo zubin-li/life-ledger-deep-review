@@ -1,5 +1,48 @@
 # Overnight progress
 
+## Batch 13 · Round 8 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 CSS 合并块）。
+- **Goal 2：** 侧边栏 **nav-item** 切页 **`is-nav-press`**（`pulseNavItemPress` / `switchToView`）；**记账** 快速录入 **分类 chip** **`is-chip-press`**（`pulseLedgerCategoryChip`）。
+- **QA：** `view-enter-selectors` Batch 13 r8；`nav-ledger-chip-press.browser`（Chromium 1440 + WebKit 390）。
+- **文档：** CHANGELOG `[Unreleased]` r8。
+- **截图：** `node .overnight/capture-batch13-round8.mjs`（**5292**）→ `b13r8-nav-press-zh-light-1440-chromium.png`、`b13r8-ledger-chip-press-de-dark-390-webkit.png`。
+- **QA：** `npm test` **416** pass / 0 fail；`npm run test:browser` **69** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 9+：`v210.css` reduced-motion 物理合并（2.2）；其它页面 micro-interaction 或 insight 小步。
+- 主人验收：侧栏点 **本周/记账** 等 → 短暂 **is-nav-press**（`b13r8-nav-press-*`）；**记账** 点 **餐饮/Mobilität** chip → **is-chip-press** + 快速录入框填分类（`b13r8-ledger-chip-press-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+416 pass, 0 fail (batch 13 round 8, unit gate)
+69 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 7 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 6120 行 CSS，避免回归）。
@@ -397,3 +440,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 7
 ℹ tests 415 ℹ pass 415 ℹ fail 0 
+
+## Driver gate after round 8
+ℹ tests 416 ℹ pass 416 ℹ fail 0 

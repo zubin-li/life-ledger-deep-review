@@ -16,6 +16,15 @@
   let ledgerCsvDropBound = false;
   let ledgerImportPulse = false;
 
+  function pulseLedgerCategoryChip(chip) {
+    if (!chip || document.documentElement.classList.contains("motion-reduced")) return;
+    chip.classList.remove("is-chip-press");
+    void chip.offsetWidth;
+    chip.classList.add("is-chip-press");
+    clearTimeout(pulseLedgerCategoryChip.timer);
+    pulseLedgerCategoryChip.timer = setTimeout(() => chip.classList.remove("is-chip-press"), 420);
+  }
+
   function isLedgerTypingTarget(target) {
     if (!target || !(target instanceof Element)) return false;
     if (target.isContentEditable) return true;
@@ -1186,6 +1195,7 @@
     });
     host.querySelectorAll(".ledger-chip").forEach(chip => {
       chip.addEventListener("click", () => {
+        pulseLedgerCategoryChip(chip);
         const input = form?.querySelector("input[name=quick]");
         if (!input) return;
         const cat = ledger.categories.find(c => c.id === chip.dataset.cat);

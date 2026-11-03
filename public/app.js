@@ -4504,6 +4504,15 @@ function pulseBackupTabSwitch(selected) {
   setTimeout(() => tabs.classList.remove("is-tab-switch"), 440);
 }
 
+function pulseNavItemPress(button) {
+  if (!button || document.documentElement.classList.contains("motion-reduced")) return;
+  button.classList.remove("is-nav-press");
+  void button.offsetWidth;
+  button.classList.add("is-nav-press");
+  clearTimeout(pulseNavItemPress.timer);
+  pulseNavItemPress.timer = setTimeout(() => button.classList.remove("is-nav-press"), 420);
+}
+
 function pulseShellNav(view) {
   if (!lastShownView || view === lastShownView) return;
   const title = $("#viewTitle");
@@ -10794,8 +10803,9 @@ function renderJournalCalendarLegend() {
 
 var lastShownView = "";
 function switchToView(view) {
-  pulseShellNav(view);
   const button = $(`.nav-item[data-view="${view}"]`);
+  pulseNavItemPress(button);
+  pulseShellNav(view);
   if (!button) return;
   $$(".nav-item").forEach(item => {
     const active = item.dataset.view === view;
