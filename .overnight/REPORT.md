@@ -1,3 +1,30 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 8）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 8：** 时间轴心情×支出洞察；Mac 复盘/周视图菜单换期 QA。
+
+---
+
+## 本轮（Batch 11 · Round 8）— 时间轴关联洞察 + Mac 换期
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **时间轴** feed 标题（周/月/日模式）在数据足够时显示 **近 30 天心情与支出** 对比 chip，点 **复盘里看心情与支出 →** 进入复盘 mood 散点并短暂 spotlight；连续记录 streak 仍只在 **日度** 视图出现。 |
+| **Mac** | 新浏览器套件：注入 shell 后于 **复盘** / **本周** 断言 `LifeLedgerMac.handle("date:prev|next")` 会改变 `#reviewTitle` / `#weekPageTitle`。 |
+| **单元测试** | `npm test` **393**（AST 断言 journal  wiring + CSS）。 |
+| **浏览器** | `npm run test:browser` **44**（+2 journal insight / mac review-week）。 |
+| **截图** | `.overnight/shots/b11r8-journal-spend-insight-zh-light-1440-chromium.png`、`.overnight/shots/b11r8-review-header-de-dark-390-webkit.png`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**。 |
+
+**怎么验（可选）：**
+
+1. Demo → **时间轴**（默认周度即可）→ 标题下应见心情×支出 chip（见 Round 8 截图）→ 点链接应到复盘 mood 散点。
+2. Mac 窗口或 shell 注入 → **复盘** / **本周** → 菜单 **上一月/下一月** 或 **上一周/下一周** 应换标题（Round 8 QA 覆盖）。
+3. `npm test` + `npm run test:browser`。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 7）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

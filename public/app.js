@@ -8369,6 +8369,23 @@ function journalFeedEmptyMarkup(mode, month) {
   return `<div class="feed-empty ll-polished">${hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", title, help)}${cta}</div>`;
 }
 
+function wireJournalFeedSpendInsight() {
+  const host = $("#journalFeedDescription");
+  if (!host || host.dataset.spendInsightWired === "1") return;
+  host.dataset.spendInsightWired = "1";
+  host.addEventListener("click", (ev) => {
+    if (!ev.target.closest(".journal-feed-spend-link")) return;
+    switchToView("review");
+    requestAnimationFrame(() => {
+      const target = document.getElementById("review-scatter-mood");
+      spotlightReviewScatterSection(target);
+      const reduced = document.documentElement.classList.contains("motion-reduced");
+      target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+      target?.focus?.({ preventScroll: true });
+    });
+  });
+}
+
 function wireJournalFeedEmptyActions() {
   const goTodayJournal = () => {
     switchToView("today");
@@ -8511,17 +8528,35 @@ async function renderJournalFeed(version) {
   $('#journalFeedTitle').textContent = languageText(`${words}时间轴`,`${words} timeline`,`${words}e Zeitleiste`);
   const baseDesc = languageText('沿着时间向下读。文字在前，照片是偶尔的注脚。','Read down through time. Your words lead; photos are little footnotes.','Durch die Zeit nach unten lesen. Worte zuerst, Fotos als kleine Fußnoten.');
   let streakHtml = '';
-  if (mode === 'timeline') {
-    const streak = window.LifeLedgerAnalytics?.reflectionStreak?.(state.logs, isoDate(new Date())) || 0;
-    if (streak >= 2) {
-      streakHtml = `<p class="journal-feed-streak" role="status">${escapeHtml(languageText(
-        `连续 ${streak} 天有记录`,
-        `${streak}-day reflection streak`,
-        `${streak} Tage in Folge notiert`,
-      ))}</p>`;
+  let insightHtml = '';
+  if (mode === "timeline" || mode === "weeks" || mode === "months") {
+    if (mode === "timeline") {
+      const streak = window.LifeLedgerAnalytics?.reflectionStreak?.(state.logs, isoDate(new Date())) || 0;
+      if (streak >= 2) {
+        streakHtml = `<p class="journal-feed-streak" role="status">${escapeHtml(languageText(
+          `连续 ${streak} 天有记录`,
+          `${streak}-day reflection streak`,
+          `${streak} Tage in Folge notiert`,
+        ))}</p>`;
+      }
+    }
+    const L = globalThis.LifeLedgerLedger;
+    const moodInsight = L?.moodSpendComparison?.(spendInsightDailyRows(isoDate(new Date()), 30));
+    if (moodInsight) {
+      const ledger = L.normalize(state.ledger, { lang: currentLang });
+      const locale = i18n[currentLang]?.locale || "de-DE";
+      const cur = ledger.settings.defaultCurrency;
+      const { greatAvg, lowAvg } = moodInsight;
+      const body = languageText(
+        `近 30 天：心情较好日平均支出 ${L.formatMoney(-greatAvg, cur, locale)}，较低落日 ${L.formatMoney(-lowAvg, cur, locale)}。`,
+        `Last 30 days: on great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
+        `Letzte 30 Tage: an sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
+      );
+      insightHtml = `<p class="journal-feed-spend-insight" role="status">${escapeHtml(body)} <button type="button" class="text-button journal-feed-spend-link">${escapeHtml(tr("mood.moodSpendReview"))}</button></p>`;
     }
   }
-  $('#journalFeedDescription').innerHTML = `${escapeHtml(baseDesc)}${streakHtml}`;
+  $('#journalFeedDescription').innerHTML = `${escapeHtml(baseDesc)}${streakHtml}${insightHtml}`;
+  wireJournalFeedSpendInsight();
   $('#journalMonthFilterLabel').textContent = languageText('定位月份','Go to month','Monat wählen');
   $('#journalAllMonths').textContent = languageText('全部月份','All months','Alle Monate');
   $('#journalAllMonths').disabled = !month;

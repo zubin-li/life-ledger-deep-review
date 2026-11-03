@@ -19,6 +19,8 @@ test("v210 styles habit library entrance and filters", () => {
   assert.match(css, /\.today-insight-hint/);
   assert.match(css, /\.today-habit-spend-hint/);
   assert.match(css, /\.today-mood-spend-hint/);
+  assert.match(css, /Batch 11 r8 — journal timeline streak/i);
+  assert.match(css, /\.journal-feed-spend-insight/);
 });
 
 test("review habit compare hydrates hairline empty state", () => {
@@ -37,6 +39,8 @@ test("journal feed empty markup wires CTAs", () => {
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   assert.match(app, /function journalFeedEmptyMarkup\(/);
   assert.match(app, /function wireJournalFeedEmptyActions\(/);
+  assert.match(app, /function wireJournalFeedSpendInsight\(/);
+  assert.match(app, /journal-feed-spend-insight/);
   assert.match(app, /journal-feed-filter-quiet ll-polished/);
   assert.match(app, /id="journalEmptyWriteToday"/);
   assert.match(app, /timelineCalendarEmptyWriteToday/);

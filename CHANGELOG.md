@@ -10,6 +10,7 @@ All notable changes are documented here.
 - **QA (Batch 11 r5):** Mac shell + fakecloud online demo opens **Money** with cloud-synced demo rows (WebKit).
 - **QA (Batch 11 r6):** Mac shell fakecloud **Money** asserts **← / N** shortcuts and native menu month step (`date:next`).
 - **QA (Batch 11 r7):** Mac menu **`date:prev`** month step on fakecloud **Money**; Today habit×spend hint link scrolls to habit-vs-spend scatter in **Review**.
+- **QA (Batch 11 r8):** Mac shell **`date:prev` / `date:next`** on **Review** and **Week**; journal timeline mood×spend insight link opens mood scatter.
 
 ### Fixed
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.
@@ -18,6 +19,7 @@ All notable changes are documented here.
 - **Demo insights:** Active demo workspaces with ledger but without `meta.demo.insightAlign` re-align moods/habits/focus once on boot so Today mood×spending and habit×spending hints render without `demo-reset=1`.
 
 ### Changed
+- **Journal — Timeline:** Daily feed description can show a mood×spending insight chip with a link to the mood scatter in **Review** (when data exists).
 - **Today:** Habit×spend insight **Review** link scrolls to the habit-vs-spend scatter (mood hint already jumps to mood scatter).
 - **Habits:** Selected habit streak calendar cells pop in with a short stagger (respects reduced motion).
 - **Money:** Quick-entry submit button gets a brief success pop (respects reduced motion).
