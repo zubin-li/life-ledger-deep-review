@@ -1,3 +1,28 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 4
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **记账** 页 **交易** / **预算进度** / **固定收支** 空态改为 hairline 插画 + 主按钮 CTA（开始录入 → 聚焦快速录入；设置预算 / 添加固定项 → 打开弹层）。 |
+| **Goal 2** | 搜索无结果、热力图选日无交易时显示 `search-empty` 插画；搜索空态带 **清除搜索**。 |
+| **资源** | 新插画 `ledger-month-empty.svg`、`ledger-recurring-empty.svg`；已纳入 PWA `APP_SHELL`。 |
+| **测试** | `npm test` **398**；`npm run test:browser` **51**（+2 `ledger-section-empty`）。 |
+
+## 怎么验
+
+1. 本地空白账本（或 `LifeLedgerLedger.emptyLedger()`）→ **记账** → 滚到 **交易** → 虚线卡片 + **开始录入**（见 `b12r4-ledger-list-empty-zh-light-1440-chromium.png`）。
+2. 点 **开始录入** → 光标应进入上方快速录入框；**预算进度** / **固定收支** 空态按钮应打开对应表单。
+3. 重拍：`node .overnight/capture-batch12-round4.mjs`（端口 **5298**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 3
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

@@ -112,3 +112,13 @@ test("Batch 12 r3 — Money wellness scatter empty checklist", () => {
   assert.match(ledgerUi, /renderWellnessEmptyBlock/);
   assert.match(app, /switchView: switchToView/);
 });
+
+test("Batch 12 r4 — Money section polished empties", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 12 r4 — Money polished section empties/);
+  assert.match(css, /#ledgerView \.ledger-list-empty\.ll-polished/);
+  assert.match(ledgerUi, /ledgerPolishedEmpty/);
+  assert.match(ledgerUi, /ledgerListEmptyQuick/);
+  assert.match(ledgerUi, /focusLedgerQuickEntry/);
+});

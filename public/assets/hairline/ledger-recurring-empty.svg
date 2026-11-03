@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M52 62a28 28 0 1 1 8-20"/>
+    <path d="M52 34v12h12"/>
+  </g>
+  <g data-layer="2" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M96 78h32"/>
+    <path d="M104 70v16"/>
+    <path d="M120 70v16"/>
+  </g>
+  <g data-layer="3" stroke="var(--accent, #4f7a64)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M88 46h20v12H88z"/>
+    <path d="M92 50h12"/>
+  </g>
+</svg>

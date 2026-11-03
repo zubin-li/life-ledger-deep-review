@@ -294,6 +294,19 @@
     return `<div class="ledger-wellness-empty review-scatter-empty ll-polished" id="ledgerWellnessEmptyHint">${body}<ul class="review-scatter-empty-steps" aria-label="${ctx.escape(t("还需要的数据", "Still needed", "Noch nötig"))}">${scatterSteps}</ul><button type="button" class="primary-button review-scatter-empty-cta ledger-wellness-empty-cta" id="ledgerWellnessEmptyToday">${ctx.escape(scatterEmptyCta)}</button></div>`;
   }
 
+  function ledgerPolishedEmpty(className, asset, title, help, ctaHtml = "") {
+    const hairline = ctx.hairlineEmpty?.(asset, title, help);
+    const body = hairline || `<p class="ledger-empty-fallback">${ctx.escape(help)}</p>`;
+    return `<div class="${className} ll-polished ll-empty-enter" role="status">${body}${ctaHtml}</div>`;
+  }
+
+  function focusLedgerQuickEntry(host) {
+    const reduced = root.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    host.querySelector(".ledger-quick")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    const input = host.querySelector("#ledgerQuickInput");
+    input?.focus({ preventScroll: true });
+  }
+
   function renderWellnessInsights(ledger, ym) {
     const summary = core().monthSummary(ledger, ym);
     if (summary.expenseMinor >= 0) return "";
@@ -353,11 +366,18 @@
   function renderBudgets(ledger, ym) {
     const rows = core().budgetProgress(ledger, ym);
     if (!rows.length) {
-      return `<p class="ledger-empty ledger-budget-empty ll-empty-enter">${t(
-        "点击「设置预算」为本月支出分类添加上限。",
-        "Tap “Set budget” to add a monthly limit for an expense category.",
-        "Tippe auf „Budget setzen“, um ein Monatslimit für eine Ausgabenkategorie festzulegen.",
-      )}</p>`;
+      const cta = `<button type="button" class="primary-button" id="ledgerBudgetEmptyAdd">${t("设置预算", "Set budget", "Budget setzen")}</button>`;
+      return ledgerPolishedEmpty(
+        "ledger-budget-empty-wrap",
+        "./assets/hairline/empty-insights.svg",
+        t("还没有本月预算", "No budgets this month", "Noch kein Monatsbudget"),
+        t(
+          "为餐饮、交通等支出分类设上限，进度条会随记账自动更新。",
+          "Set a monthly cap per expense category — progress updates as you log.",
+          "Lege Monatslimits pro Ausgabenkategorie fest — der Fortschritt folgt deinen Buchungen.",
+        ),
+        cta,
+      );
     }
     return `<ul class="ledger-budget-list is-retargeting">${rows.map(row => {
       const cat = ledger.categories.find(c => c.id === row.categoryId);
@@ -439,12 +459,32 @@
     const rows = core().filterTransactions(ledger, ym, listFilter, listDayFilter)
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
     if (!rows.length) {
-      const emptyMsg = listDayFilter
-        ? t("这一天没有交易。", "No entries on this day.", "An diesem Tag keine Buchungen.")
-        : listFilter
-          ? t("没有匹配的交易。", "No matching entries.", "Keine passenden Buchungen.")
-          : t("这个月还没有记录。试试输入「12,50 咖啡」。", "Nothing this month yet. Try \"12.50 coffee\".", "Noch nichts in diesem Monat. Probiere „12,50 Kaffee“.");
-      return `<p class="ledger-empty ll-empty-enter">${emptyMsg}</p>`;
+      if (listDayFilter) {
+        return ledgerPolishedEmpty(
+          "ledger-list-empty ledger-list-empty--day",
+          "./assets/hairline/search-empty.svg",
+          t("这一天没有交易", "No entries this day", "Keine Buchungen an diesem Tag"),
+          t("试试选其他日期，或清除日期筛选。", "Pick another day or clear the date filter.", "Wähle einen anderen Tag oder hebe den Datumsfilter auf."),
+        );
+      }
+      if (listFilter) {
+        const cta = `<button type="button" class="secondary-button" id="ledgerListEmptyClearFilter">${t("清除搜索", "Clear search", "Suche löschen")}</button>`;
+        return ledgerPolishedEmpty(
+          "ledger-list-empty ledger-list-empty--filter",
+          "./assets/hairline/search-empty.svg",
+          t("没有匹配的交易", "No matching entries", "Keine passenden Buchungen"),
+          t("换个关键词，或清除搜索框。", "Try another keyword or clear the search field.", "Anderes Stichwort oder Suche leeren."),
+          cta,
+        );
+      }
+      const cta = `<button type="button" class="primary-button" id="ledgerListEmptyQuick">${t("开始录入", "Start typing", "Erfassung starten")}</button>`;
+      return ledgerPolishedEmpty(
+        "ledger-list-empty",
+        "./assets/hairline/ledger-month-empty.svg",
+        t("这个月还没有记录", "Nothing logged this month", "Noch nichts in diesem Monat"),
+        t("在上方快速录入试试「12,50 咖啡」或「-45 Miete gestern」。", "Use quick entry above — e.g. \"12.50 coffee\" or \"-45 rent yesterday\".", "Oben Schnellerfassung — z. B. „12,50 Kaffee“ oder „-45 Miete gestern“."),
+        cta,
+      );
     }
     return `<ul class="ledger-tx-list">${rows.map(tx => {
       const cat = ledger.categories.find(c => c.id === tx.categoryId);
@@ -502,7 +542,15 @@
     const rows = (ledger.recurring || []).filter(Boolean);
     const addBtn = `<button type="button" class="secondary-button ledger-recurring-add">${t("添加固定项", "Add recurring", "Hinzufügen")}</button>`;
     if (!rows.length) {
-      return `<div class="ledger-recurring-head">${addBtn}</div><p class="ledger-empty ledger-recurring-empty ll-empty-enter">${t("房租、订阅或工资等固定项可在下方添加。", "Add rent, subscriptions, or salary templates.", "Miete, Abos oder Gehalt als Vorlage anlegen.")}</p>`;
+      const cta = `<button type="button" class="primary-button" id="ledgerRecurringEmptyAdd">${t("添加固定项", "Add recurring", "Hinzufügen")}</button>`;
+      const emptyBlock = ledgerPolishedEmpty(
+        "ledger-recurring-empty-wrap",
+        "./assets/hairline/ledger-recurring-empty.svg",
+        t("还没有固定收支", "No recurring templates", "Noch keine Vorlagen"),
+        t("房租、订阅或工资等固定项可一键「记一笔」。", "Rent, subscriptions, or salary — post with one tap.", "Miete, Abos oder Gehalt — mit einem Tipp buchen."),
+        cta,
+      );
+      return `<div class="ledger-recurring-head">${addBtn}</div>${emptyBlock}`;
     }
     return `<div class="ledger-recurring-head"><span class="ledger-recurring-count">${rows.length}</span>${addBtn}</div><ul class="ledger-recurring-list">${rows.map(rec => {
       const cat = ledger.categories.find(c => c.id === rec.categoryId);
@@ -981,6 +1029,27 @@
         }
       });
     });
+    bindLedgerPolishedEmpties(host, ym);
+  }
+
+  function bindLedgerPolishedEmpties(host, ym) {
+    host.querySelectorAll(".ledger-list-empty, .ledger-budget-empty-wrap, .ledger-recurring-empty-wrap").forEach(el => {
+      ctx.hydrateHairline?.(el);
+      el.querySelector(".hairline-empty")?.classList.add("ll-empty");
+    });
+    host.querySelector("#ledgerListEmptyQuick")?.addEventListener("click", () => focusLedgerQuickEntry(host));
+    host.querySelector("#ledgerListEmptyClearFilter")?.addEventListener("click", () => {
+      listFilter = "";
+      const filterInput = host.querySelector("#ledgerFilter");
+      if (filterInput) filterInput.value = "";
+      refreshLedgerList(host, ledgerState(), ym);
+    });
+    host.querySelector("#ledgerBudgetEmptyAdd")?.addEventListener("click", () => {
+      host.querySelector(".ledger-budget-add")?.click();
+    });
+    host.querySelector("#ledgerRecurringEmptyAdd")?.addEventListener("click", () => {
+      host.querySelector(".ledger-recurring-add")?.click();
+    });
   }
 
   function bindEdit(host) {
@@ -1163,6 +1232,7 @@
     bindDuplicate(host);
     bindEdit(host);
     bindSwipeDelete(host);
+    bindLedgerPolishedEmpties(host, ym);
     list.querySelector("[data-ledger-clear-day]")?.addEventListener("click", () => {
       listDayFilter = "";
       syncHeatSelection(host);

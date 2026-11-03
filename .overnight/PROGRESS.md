@@ -1,13 +1,14 @@
 # Overnight progress
 
-## Batch 12 · Round 3 — done
+## Batch 12 · Round 4 — done
 
-- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 已在 Batch 11 实现；#3 浏览器套件本轮全绿。
-- **Goal 2：** **记账 · 本月关联洞察** — 当月有支出但散点数据不足时，显示与 **复盘 Money** 相同的三步 pill（心情 / 习惯 / 支出）+ **去 Today 记录** CTA（`#ledgerWellnessEmptyHint`）；`switchView` / `hairlineEmpty` 经 `renderLedger` 注入。
-- **QA：** `view-enter-selectors` Batch 12 r3 AST；`ledger-wellness-empty.browser`（WebKit 390，scoped 点击避免与复盘空态冲突）。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r3。
-- **截图：** `node .overnight/capture-batch12-round3.mjs`（**5295**）→ `b12r3-ledger-wellness-empty-*`。
-- **QA：** `npm test` **397** pass / 0 fail；`npm run test:browser` **49** pass / 0 fail。
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿。
+- **Goal 2：** **记账** 区块空态升级 — **交易** / **预算进度** / **固定收支** 使用 hairline 插画（新 SVG `ledger-month-empty.svg`、`ledger-recurring-empty.svg`）+ CTA（**开始录入** 聚焦快速录入、**设置预算** / **添加固定项** 打开对应弹层）；搜索/日期筛选空态复用 `search-empty.svg`，含 **清除搜索**。
+- **PWA：** 新 hairline 资源加入 `sw.js` APP_SHELL。
+- **QA：** `view-enter-selectors` Batch 12 r4；`ledger-section-empty.browser`（WebKit 390 月空 CTA 聚焦、Chromium 预算空态开 popover）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r4。
+- **截图：** `node .overnight/capture-batch12-round4.mjs`（**5298**）→ `b12r4-ledger-list-empty-*`。
+- **QA：** `npm test` **398** pass / 0 fail；`npm run test:browser` **51** pass / 0 fail。
 
 ## Half-done
 
@@ -15,8 +16,8 @@
 
 ## Next
 
-- Batch 12 Round 4+：`v210.css` reduced-motion 物理合并（2.2）；或 Goal 2 其它页空态 / 动效。
-- Owner 验收：本地仅一笔支出、无心情/习惯 → **记账** 滚到 **本月关联洞察** 见三步清单；Demo 仍见 mini 散点。
+- Batch 12 Round 5+：`v210.css` reduced-motion 物理合并（2.2）；或其它页 Goal 2 动效/洞察。
+- Owner 验收：清空 `state.ledger.transactions` → **记账** 滚到 **交易** 见 hairline + **开始录入**；预算/固定收支区同理。
 
 ## Known bugs / gaps
 
@@ -32,8 +33,8 @@
 ## npm test
 
 ```
-397 pass, 0 fail (batch 12 round 3, unit gate)
-49 pass, 0 fail (npm run test:browser, full suite)
+398 pass, 0 fail (batch 12 round 4, unit gate)
+51 pass, 0 fail (npm run test:browser, full suite)
 ```
 
 ## Gate result
@@ -41,6 +42,15 @@
 _pending (driver appends after commit)_
 
 ---
+
+## Batch 12 · Round 3 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 已在 Batch 11 实现；#3 浏览器套件本轮全绿。
+- **Goal 2：** **记账 · 本月关联洞察** — 当月有支出但散点数据不足时，显示与 **复盘 Money** 相同的三步 pill（心情 / 习惯 / 支出）+ **去 Today 记录** CTA（`#ledgerWellnessEmptyHint`）；`switchView` / `hairlineEmpty` 经 `renderLedger` 注入。
+- **QA：** `view-enter-selectors` Batch 12 r3 AST；`ledger-wellness-empty.browser`（WebKit 390，scoped 点击避免与复盘空态冲突）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r3。
+- **截图：** `node .overnight/capture-batch12-round3.mjs`（**5295**）→ `b12r3-ledger-wellness-empty-*`。
+- **QA：** `npm test` **397** pass / 0 fail；`npm run test:browser` **49** pass / 0 fail。
 
 ## Batch 12 · Round 2 — done
 
@@ -59,3 +69,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 3
 ℹ tests 397 ℹ pass 397 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 398 ℹ pass 398 ℹ fail 0 

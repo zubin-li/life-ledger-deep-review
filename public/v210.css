@@ -5823,3 +5823,67 @@ html[data-theme="dark"] #ledgerView .ledger-wellness-empty .review-scatter-empty
 html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-empty.review-scatter-empty {
   animation: none;
 }
+
+/* ========== Batch 12 r4 — Money polished section empties ========== */
+
+#ledgerView .ledger-list-empty.ll-polished,
+#ledgerView .ledger-budget-empty-wrap.ll-polished,
+#ledgerView .ledger-recurring-empty-wrap.ll-polished {
+  margin: 12px 0 4px;
+  padding: 20px 18px 18px;
+  border-radius: var(--radius-lg, 16px);
+  border: 1px dashed color-mix(in srgb, var(--border, #d8ddd6) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-2, var(--card)) 94%, var(--accent, #5fbd9f) 6%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+#ledgerView .ledger-list-empty.ll-polished .hairline-empty,
+#ledgerView .ledger-budget-empty-wrap.ll-polished .hairline-empty,
+#ledgerView .ledger-recurring-empty-wrap.ll-polished .hairline-empty {
+  max-width: 22rem;
+}
+
+#ledgerView .ledger-list-empty.ll-polished .hairline-empty > strong,
+#ledgerView .ledger-budget-empty-wrap.ll-polished .hairline-empty > strong,
+#ledgerView .ledger-recurring-empty-wrap.ll-polished .hairline-empty > strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+#ledgerView .ledger-list-empty.ll-polished .primary-button,
+#ledgerView .ledger-budget-empty-wrap.ll-polished .primary-button,
+#ledgerView .ledger-recurring-empty-wrap.ll-polished .primary-button {
+  min-width: 9.5rem;
+  margin-top: 2px;
+}
+
+#ledgerView .ledger-list-empty--filter .secondary-button {
+  margin-top: 2px;
+}
+
+html[data-theme="dark"] #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wrap, .ledger-recurring-empty-wrap).ll-polished {
+  background: color-mix(in srgb, var(--surface-2, var(--card)) 92%, var(--accent, #5fbd9f) 8%);
+  border-color: color-mix(in srgb, var(--border, #3a4038) 65%, transparent);
+}
+
+html.motion-reduced #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wrap, .ledger-recurring-empty-wrap).ll-polished {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ledgerView :is(.ledger-list-empty, .ledger-budget-empty-wrap, .ledger-recurring-empty-wrap).ll-polished {
+    animation: none;
+  }
+}
+
+#ledgerView.view.is-entering .ledger-list-empty.ll-polished {
+  animation-delay: 100ms;
+}
+
+#ledgerView .ledger-recurring-empty-wrap {
+  margin-top: 8px;
+}

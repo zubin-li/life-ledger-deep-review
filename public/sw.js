@@ -27,6 +27,8 @@ const HAIRLINE_ASSETS = [
   "./assets/hairline/launcher-cloud.svg",
   "./assets/hairline/launcher-local.svg",
   "./assets/hairline/layout-edit-hint.svg",
+  "./assets/hairline/ledger-month-empty.svg",
+  "./assets/hairline/ledger-recurring-empty.svg",
   "./assets/hairline/offline-local.svg",
   "./assets/hairline/photos-day-empty.svg",
   "./assets/hairline/search-empty.svg",

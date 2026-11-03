@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 12 r4):** **Money** transaction list, budget, and recurring sections use hairline empty art with primary CTAs (**Start typing**, **Set budget**, **Add recurring**); search/day filter empties reuse the search hairline with **Clear search** when needed.
+- **QA (Batch 12 r4):** Playwright **Money** month-empty CTA focuses quick entry; budget empty opens popover.
 - **Polish (Batch 12 r3):** **Money** **This month’s correlations** shows the same three-step empty checklist as **Review** when the month has spending but not enough mood/habit days for mini scatter charts (pills jump to **Today**, **Habits**, or **Money**).
 - **QA (Batch 12 r3):** Playwright **Money** wellness scatter empty checklist (WebKit 390).
 - **Polish (Batch 12 r2):** **Money** daily spend heatmap cells are tappable (keyboard + screen reader) to filter the transaction list for that day, with a clearable date chip; wellness mini scatter charts reuse Review dot tooltips and arrow-key navigation.
