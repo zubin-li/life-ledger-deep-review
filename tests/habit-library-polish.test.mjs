@@ -27,6 +27,21 @@ test("review habit compare hydrates hairline empty state", () => {
   assert.match(app, /\.insight-habit-panel \.hairline-empty"\)\?\.classList\.add\("ll-empty"\)/);
 });
 
+test("v210 journal feed empty polish styles", () => {
+  const css = readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  assert.match(css, /Batch 10 r4 — journal feed empty polish/i);
+  assert.match(css, /\.journal-feed-filter-quiet\.ll-polished/);
+});
+
+test("journal feed empty markup wires CTAs", () => {
+  const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(app, /function journalFeedEmptyMarkup\(/);
+  assert.match(app, /function wireJournalFeedEmptyActions\(/);
+  assert.match(app, /journal-feed-filter-quiet ll-polished/);
+  assert.match(app, /#journalEmptyWriteToday/);
+  assert.match(app, /journal-feed-pane--empty/);
+});
+
 test("journal feed avoids clearing ready on sync re-render", () => {
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const block = app.slice(app.indexOf("async function renderJournalFeed"), app.indexOf("function journalTextMarkup"));

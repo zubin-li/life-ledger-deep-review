@@ -8300,6 +8300,49 @@ function syncJournalMonthOptions() {
   select.value = months.includes(current) ? current : '';
 }
 
+function journalFeedEmptyMarkup(mode, month) {
+  if (month) {
+    const title = languageText("这个月没有记录", "Nothing this month", "Nichts in diesem Monat");
+    const help = languageText(
+      "试试「全部月份」，或换一个月看看。",
+      "Try All months, or pick another month.",
+      "„Alle Monate“ wählen oder einen anderen Monat.",
+    );
+    return `<div class="journal-feed-filter-quiet ll-polished" role="status">${hairlineEmptyMarkup("./assets/hairline/search-empty.svg", title, help)}</div>`;
+  }
+  const title = languageText("这里，留给以后的回看", "Room for the next chapter", "Platz für das nächste Kapitel");
+  const help = languageText(
+    "这个范围还没有文字或照片。先在今天写下一段复盘吧。",
+    "No writing or photos here yet. Start with today's reflection.",
+    "Noch keine Texte oder Fotos. Beginne mit der heutigen Reflexion.",
+  );
+  const ctaTimeline = languageText("去写今日复盘", "Write today's reflection", "Heutige Reflexion schreiben");
+  const ctaWeek = languageText("打开本周视图", "Open this week", "Diese Woche öffnen");
+  const ctaMonth = languageText("打开月度复盘", "Open monthly review", "Monatsrückblick öffnen");
+  let cta = "";
+  if (mode === "timeline") {
+    cta = `<button type="button" class="primary-button" id="journalEmptyWriteToday">${escapeHtml(ctaTimeline)}</button>`;
+  } else if (mode === "weeks") {
+    cta = `<button type="button" class="primary-button" id="journalEmptyOpenWeek">${escapeHtml(ctaWeek)}</button>`;
+  } else if (mode === "months") {
+    cta = `<button type="button" class="primary-button" id="journalEmptyOpenReview">${escapeHtml(ctaMonth)}</button>`;
+  }
+  return `<div class="feed-empty ll-polished">${hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", title, help)}${cta}</div>`;
+}
+
+function wireJournalFeedEmptyActions() {
+  $("#journalEmptyWriteToday")?.addEventListener("click", () => {
+    switchToView("today");
+    setDailyToolPage("journal", { smooth: false });
+    requestAnimationFrame(() => $("#dayNote")?.focus({ preventScroll: true }));
+  });
+  $("#journalEmptyOpenWeek")?.addEventListener("click", () => switchToView("week"));
+  $("#journalEmptyOpenReview")?.addEventListener("click", () => {
+    switchToView("review");
+    requestAnimationFrame(() => $("#reviewText")?.scrollIntoView({ block: "center" }));
+  });
+}
+
 async function renderJournalFeed(version) {
   syncJournalMonthOptions();
   const mode = journalMode, month = $('#journalMonthFilter').value;
@@ -8309,7 +8352,7 @@ async function renderJournalFeed(version) {
   if (host) {
     keepStaleJournalFeed = feedNeedsAsync
       && host.classList.contains('ll-paint-host--ready')
-      && Boolean(host.querySelector('.journal-feed-entry, .feed-empty'))
+      && Boolean(host.querySelector('.journal-feed-entry, .feed-empty, .journal-feed-filter-quiet'))
       && journalFeedFilterEntering;
     host.classList.remove('ll-paint-host--stale');
     host.querySelector('.ll-stale-veil')?.remove();
@@ -8386,13 +8429,15 @@ async function renderJournalFeed(version) {
     const photoDetails = mode === 'weeks' ? `<details class="feed-week-photos" data-from="${e.from}" data-to="${e.to}"><summary>${escapeHtml(languageText('看看这一周的照片','Photos from this week','Fotos dieser Woche'))}</summary><div class="feed-photo-list"></div></details>` : '';
     const appendClass = appendFrom > 0 && index >= appendFrom ? " journal-feed-entry--append" : "";
     return `<article class="journal-feed-entry${appendClass}" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
-  }).join('') : `<div class="feed-empty">${hairlineEmptyMarkup('./assets/hairline/empty-journal.svg',languageText('这里，留给以后的回看','Room for the next chapter','Platz für das nächste Kapitel'),languageText('这个范围还没有文字或照片。可以切换月份，或先写下一段复盘。','No writing or photos in this range yet. Try another month, or write a reflection.','Noch keine Texte oder Fotos in diesem Zeitraum. Wähle einen anderen Monat oder schreibe einen Rückblick.'))}</div>`;
+  }).join('') : journalFeedEmptyMarkup(mode, month);
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
   host?.classList.remove('ll-paint-host--stale');
   host?.querySelector('.ll-stale-veil')?.remove();
   host?.classList.add('ll-paint-host--ready');
+  $("#journalFeedPane")?.classList.toggle("journal-feed-pane--empty", !visible.length);
   hydrateHairlineMounts(host);
-  host?.querySelector(".feed-empty .hairline-empty")?.classList.add("ll-empty");
+  host?.querySelector(".feed-empty .hairline-empty, .journal-feed-filter-quiet .hairline-empty")?.classList.add("ll-empty");
+  wireJournalFeedEmptyActions();
   finishJournalFeedFilterMotion();
   journalFeedRevealFrom = 0;
   $('#journalLoadMore').hidden = entries.length <= visible.length;

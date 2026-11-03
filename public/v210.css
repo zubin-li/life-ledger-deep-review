@@ -4830,3 +4830,130 @@ html.motion-reduced #todayView.view.is-entering .hero-card[data-viewing-today="t
     animation: none !important;
   }
 }
+
+/* Batch 10 r4 — journal feed empty polish + Today grid rhythm */
+
+#journalFeedPane.journal-feed-pane--empty .journal-feed-heading > div > p {
+  opacity: 0.72;
+}
+
+#journalFeed .feed-empty.ll-polished {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: clamp(20px, 4vw, 36px) 16px 28px;
+  margin: 8px auto 0;
+  max-width: 28rem;
+  border: 1px dashed color-mix(in srgb, var(--separator, var(--line)) 88%, transparent);
+  border-radius: 20px;
+  text-align: center;
+}
+
+#journalFeed .feed-empty.ll-polished .hairline-empty {
+  gap: 8px;
+}
+
+#journalFeed .feed-empty.ll-polished .hairline-empty .hairline-mount {
+  max-width: 140px;
+  margin-inline: auto;
+}
+
+#journalFeed .feed-empty.ll-polished .hairline-empty > strong {
+  font: 600 1.05rem/1.35 var(--font-display, inherit);
+  color: var(--label, var(--ink));
+}
+
+#journalFeed .feed-empty.ll-polished .hairline-empty > p {
+  max-width: 22rem;
+  margin: 0;
+  color: var(--secondaryLabel, var(--muted));
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+#journalFeed .journal-feed-filter-quiet.ll-polished {
+  margin: 12px 0 4px;
+}
+
+#journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--separator, var(--line)) 70%, transparent);
+  background: color-mix(in srgb, var(--secondarySystemGroupedBackground, var(--surface)) 92%, transparent);
+  text-align: start;
+}
+
+#journalFeed .journal-feed-filter-quiet.ll-polished .hairline-mount {
+  grid-row: 1 / span 2;
+  width: 44px;
+}
+
+#journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty > strong {
+  font-size: 0.95rem;
+  color: var(--label, var(--ink));
+}
+
+#journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty > p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--secondaryLabel, var(--muted));
+  line-height: 1.45;
+}
+
+#journalFeed .feed-empty.ll-polished,
+#journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty {
+  animation: llEmptyReveal 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+html.motion-reduced #journalFeed .feed-empty.ll-polished,
+html.motion-reduced #journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #journalFeed .feed-empty.ll-polished,
+  #journalFeed .journal-feed-filter-quiet.ll-polished .hairline-empty {
+    animation: none !important;
+  }
+}
+
+#todayView.tc-grid.active:not(.tc-editing) {
+  --tc-gap: clamp(14px, 1.65vw, 22px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(2) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.12s both; }
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(3) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.15s both; }
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(4) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.18s both; }
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(n + 5) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.21s both; }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  #todayView.tc-grid.active:not(.tc-editing) > .tc-card {
+    transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
+  }
+
+  #todayView.tc-grid.active:not(.tc-editing) > .tc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--shadow, #000) 8%, transparent);
+  }
+}
+
+html.motion-reduced #todayView.view.is-entering.tc-grid > .tc-card {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #todayView.view.is-entering.tc-grid > .tc-card {
+    animation: none !important;
+  }
+
+  #todayView.tc-grid.active:not(.tc-editing) > .tc-card {
+    transition: none;
+  }
+}

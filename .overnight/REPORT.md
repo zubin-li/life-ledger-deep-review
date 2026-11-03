@@ -1,4 +1,4 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 3）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 4）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
@@ -6,7 +6,27 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 ---
 
-## 本轮（Batch 10 · Round 3）— 习惯库空态 + Today hero 节奏 + QA 串行
+## 本轮（Batch 10 · Round 4）— 时间轴日记空态 + Today 网格节奏
+
+| 项目 | 说明 |
+|------|------|
+| **时间轴 · 日/周/月 feed** | 无月份筛选：居中 dashed 空态 + hairline + 主按钮（日度 **去写今日复盘** 跳转 Today 并聚焦 `#dayNote`；周度/月度分别打开 **本周** / **月度复盘**）。已选月份但无条目：横向 **search-empty** quiet 条（与习惯筛选空态同族）。 |
+| **Today 卡片网格** | 非编辑态间距略收紧；浏览 Today 时 hero 下方卡片入场略滞后；桌面鼠标悬停卡片轻抬升（尊重 reduced-motion）。 |
+| **截图** | `.overnight/shots/b10r4-journal-empty-zh-light-1440-chromium.png`、`.overnight/shots/b10r4-today-grid-zh-light-1440-chromium.png` 等（`node .overnight/capture-batch10-round4.mjs`，端口 **5296**）。 |
+| **测试** | `npm test` **386**；`npm run test:browser` **31**（+2 `journal-feed-empty`）。 |
+
+**怎么验：**
+
+1. 本地空档（或清 `logs` 且关闭 demo）→ **时间轴** → **日度** → 见 **去写今日复盘**，点击应到 Today 日记区。
+2. Demo 预览 → **时间轴** → **周度** → 选某一月 → 若该月无周复盘文本，见横向 search-empty 条（可用 devtools 清空 `weeklyOutputs` 后重载 preview 档复现）。
+3. Demo **今日** → 感受卡片间距与 hover（需非编辑、非 reduced-motion）。
+4. 全量：`npm test` + `npm run test:browser`（勿与 **5296** capture 并行）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；demo 日度 feed 可能仍有仅照片行。
+
+---
+
+## 上一轮（Batch 10 · Round 3）— 习惯库空态 + Today hero 节奏 + QA 串行
 
 | 项目 | 说明 |
 |------|------|
