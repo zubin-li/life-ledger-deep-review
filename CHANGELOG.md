@@ -4,6 +4,12 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- **Money (ledger):** CSV import shows a confirm dialog with importable/skipped counts before writing; toast includes skipped rows when relevant.
+- **Money (ledger):** desktop shortcuts — **← / →** change month (when not typing), **/** focuses transaction search; month nav tooltip documents keys.
+- **Styles (`v210.css`):** removed duplicate review habit-spark `@keyframes` block (REVIEW #4 partial; spark motion uses unified `rv-spark-grow`).
+
 ### Fixed
 
 - **Ledger CSV import:** semicolon tokenizer preserves empty cells (`;;`) so Sparkasse-style exports keep the Betrag column index; header rows with `Buchungstag` are skipped like `Datum`.

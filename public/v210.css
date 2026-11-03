@@ -1376,36 +1376,6 @@ html[data-theme="dark"] .ledger-onboarding {
   opacity: 0.88;
 }
 
-#reviewView .rv-habit-spark--enter rect {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: rvSparkGrow 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: calc(var(--spark-i, 0) * 14ms);
-}
-
-@keyframes rvSparkGrow {
-  from {
-    transform: scaleY(0.08);
-    opacity: 0.35;
-  }
-  to {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-}
-
-html.motion-reduced #reviewView .rv-habit-spark--enter rect {
-  animation: none;
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #reviewView .rv-habit-spark--enter rect {
-    animation: none;
-  }
-}
-
 @media (max-width: 640px) {
   .ledger-view .ledger-page,
   #ledgerView .ledger-page {

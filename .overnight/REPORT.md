@@ -1,12 +1,38 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 1）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 2）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 2：** 记账导入确认 + 桌面快捷键 + CSS 去重（审查 LOW #4 一部分）；单元 **353**、浏览器 **8** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 2）— 记账操作感
+
+| 项目 | 说明 |
+|------|------|
+| **CSV 导入** | 选文件后先 `previewGermanBankCsv`，系统 `confirm` 显示将导入/跳过的行数；取消不写库；成功 toast 可带跳过数。 |
+| **键盘** | 在记账页且未在输入框打字时：**← / →** 切换月份（与按钮同动画）；**/** 聚焦交易搜索。月份导航 `title` 有三语提示。 |
+| **CSS** | 去掉重复的 `rvSparkGrow` 动画块，避免与后面 `rv-spark-grow` 双轨。 |
+| **测试** | +1 单元（preview 不 mutate）；`npm test` **353**；`npm run test:browser` **8**。 |
+| **截图** | `.overnight/shots/b7r2-*`（`node .overnight/capture-batch7-round2.mjs`，端口 **5294**）。 |
+
+**怎么试：** 侧栏 **记账** → 按 **/** → 输入商户名筛选；焦点不在输入框时按 **←** 看标题月份与汇总数字 retarget。导入 CSV 时会弹出确认框。
+
+**前后对比：** Round 1 的 `b7r1-ledger-import-*` 侧重 CSV 按钮区；Round 2 的 `b7r2-ledger-filter-*` 展示搜索框聚焦与 REWE 过滤；`b7r2-ledger-month-*` 展示移动端切到 **Oktober 2026**。
+
+**已知：** 导入确认仍是浏览器原生 `confirm`（简洁但样式不可定制）。
+
+---
+
+## 历史（Batch 7 · Round 1）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 启动：** 按 Antigravity `REVIEW.md` 修 CSV 与复盘 inspector 性能；单元 **352**、浏览器 **8** 全绿。
 
 ---
 
-## 本轮（Batch 7 · Round 1）— 审查修复
+## Batch 7 · Round 1 — 审查修复
 
 | 项目 | 说明 |
 |------|------|

@@ -1046,44 +1046,69 @@
     return sign * Math.round(n * 100);
   }
 
+  function germanBankCsvDataStart(lines) {
+    if (!lines.length) return 0;
+    const head = lines[0].toLowerCase();
+    return head.includes("datum") || head.includes("buchungstag") || head.startsWith("buchung") ? 1 : 0;
+  }
+
+  function draftFromGermanBankCsvRow(cols, base) {
+    if (cols.length < 3) return null;
+    const account = base.accounts.find(a => !a.archived);
+    if (!account) return null;
+    const defaultExpense = base.categories.find(c => c.kind === "expense" && !c.archived);
+    const date = parseGermanDate(cols[0].replace(/"/g, ""));
+    let amountMinor = null;
+    let note = "";
+    if (cols.length >= 8) {
+      amountMinor = parseGermanAmount(cols[7]);
+      note = (cols[4] || cols[3] || "").replace(/"/g, "").trim();
+    } else {
+      amountMinor = parseGermanAmount(cols[cols.length - 1]);
+      note = cols.slice(1, -1).join(" ").replace(/"/g, "").trim();
+    }
+    if (!date || amountMinor === null || amountMinor === 0) return null;
+    const incomeCat = base.categories.find(c => c.kind === "income" && !c.archived);
+    const categoryId = amountMinor >= 0
+      ? (incomeCat?.id || defaultExpense?.id || base.categories[0]?.id)
+      : (defaultExpense?.id || base.categories[0]?.id);
+    return {
+      accountId: account.id,
+      categoryId,
+      amountMinor,
+      currency: account.currency,
+      date,
+      note: note || "Import",
+    };
+  }
+
+  function previewGermanBankCsv(text, ledger, options = {}) {
+    const base = normalize(ledger, options);
+    const lines = String(text || "").split(/\r?\n/).filter(line => line.trim());
+    if (!lines.length) return { importable: 0, skipped: 0, dataRows: 0 };
+    const start = germanBankCsvDataStart(lines);
+    let importable = 0;
+    let skipped = 0;
+    for (let i = start; i < lines.length; i++) {
+      const cols = splitGermanCsvLine(lines[i]);
+      if (draftFromGermanBankCsvRow(cols, base)) importable++;
+      else skipped++;
+    }
+    return { importable, skipped, dataRows: lines.length - start };
+  }
+
   function importGermanBankCsv(text, ledger, options = {}) {
     const base = normalize(ledger, options);
     const lines = String(text || "").split(/\r?\n/).filter(line => line.trim());
     if (!lines.length) return { ledger: base, imported: 0, skipped: 0 };
-    const account = base.accounts.find(a => !a.archived);
-    const defaultExpense = base.categories.find(c => c.kind === "expense" && !c.archived);
     let imported = 0;
     let skipped = 0;
-    const head = lines[0].toLowerCase();
-    const start = head.includes("datum") || head.includes("buchungstag") || head.startsWith("buchung") ? 1 : 0;
+    const start = germanBankCsvDataStart(lines);
     for (let i = start; i < lines.length; i++) {
       const cols = splitGermanCsvLine(lines[i]);
-      if (cols.length < 3) { skipped++; continue; }
-      const date = parseGermanDate(cols[0].replace(/"/g, ""));
-      let amountMinor = null;
-      let note = "";
-      if (cols.length >= 8) {
-        amountMinor = parseGermanAmount(cols[7]);
-        note = (cols[4] || cols[3] || "").replace(/"/g, "").trim();
-      } else {
-        amountMinor = parseGermanAmount(cols[cols.length - 1]);
-        note = cols.slice(1, -1).join(" ").replace(/"/g, "").trim();
-      }
-      if (!date || amountMinor === null || !account) { skipped++; continue; }
-      if (amountMinor === 0) { skipped++; continue; }
-      const signed = amountMinor;
-      const incomeCat = base.categories.find(c => c.kind === "income" && !c.archived);
-      const categoryId = signed >= 0
-        ? (incomeCat?.id || defaultExpense?.id || base.categories[0]?.id)
-        : (defaultExpense?.id || base.categories[0]?.id);
-      const { ledger: next } = addTransaction(base, {
-        accountId: account.id,
-        categoryId,
-        amountMinor: signed,
-        currency: account.currency,
-        date,
-        note: note || "Import",
-      }, options);
+      const draft = draftFromGermanBankCsvRow(cols, base);
+      if (!draft) { skipped++; continue; }
+      const { ledger: next } = addTransaction(base, draft, options);
       Object.assign(base, next);
       imported++;
     }
@@ -1780,6 +1805,7 @@
     formatMoney,
     localizedCategoryName,
     importGermanBankCsv,
+    previewGermanBankCsv,
     exportTransactionsCsv,
     spendingTodayMinor,
     dailyExpenseSeries,

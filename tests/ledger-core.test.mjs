@@ -66,6 +66,17 @@ test("importGermanBankCsv keeps column index when cells are empty (;;)", () => {
   assert.match(ledger.transactions[0].note, /REWE/);
 });
 
+test("previewGermanBankCsv counts rows without mutating ledger", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+01.11.2026;Kaffee;3,20
+02.11.2026;;`;
+  const empty = L.emptyLedger();
+  const preview = L.previewGermanBankCsv(csv, empty, { lang: "de" });
+  assert.equal(preview.importable, 1);
+  assert.equal(preview.skipped, 1);
+  assert.equal(empty.transactions.length, 0);
+});
+
 test("exportTransactionsCsv includes amount and currency per row", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

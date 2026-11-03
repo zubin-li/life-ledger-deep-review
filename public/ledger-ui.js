@@ -9,6 +9,47 @@
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
   let lastHighlightTxId = "";
   let popoverEscapeHandler = null;
+  let ledgerShortcutBound = false;
+
+  function isLedgerTypingTarget(target) {
+    if (!target || !(target instanceof Element)) return false;
+    if (target.isContentEditable) return true;
+    const tag = target.tagName;
+    if (tag === "TEXTAREA" || tag === "SELECT") return true;
+    if (tag === "INPUT") {
+      const type = (target.getAttribute("type") || "text").toLowerCase();
+      return type !== "button" && type !== "submit" && type !== "reset" && type !== "checkbox" && type !== "radio";
+    }
+    return false;
+  }
+
+  function bindLedgerShortcuts() {
+    if (ledgerShortcutBound) return;
+    ledgerShortcutBound = true;
+    document.addEventListener("keydown", event => {
+      if (document.body.dataset.activeView !== "ledger") return;
+      if (document.querySelector(".ledger-edit-popover, .ledger-recurring-popover")) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const typing = isLedgerTypingTarget(event.target);
+      if (event.key === "/" && !typing) {
+        const filter = $("#ledgerFilter");
+        if (filter) {
+          event.preventDefault();
+          filter.focus();
+          filter.select?.();
+        }
+        return;
+      }
+      if (typing) return;
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      const ym = viewMonth || ymFromDate(ctx?.iso(new Date()) || "");
+      if (!ym) return;
+      event.preventDefault();
+      viewMonth = shiftMonth(ym, event.key === "ArrowLeft" ? -1 : 1);
+      ledgerMonthPulse = true;
+      render();
+    });
+  }
 
   function detachPopoverEscape() {
     if (!popoverEscapeHandler) return;
@@ -707,11 +748,41 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        const result = core().importGermanBankCsv(String(reader.result || ""), ledgerState(), { lang: ctx.lang?.() });
+        const text = String(reader.result || "");
+        const preview = core().previewGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
+        if (!preview.importable) {
+          ctx.toast?.(
+            preview.skipped
+              ? t(`未导入：${preview.skipped} 行无法识别`, `Nothing imported (${preview.skipped} rows skipped)`, `Keine Buchungen (${preview.skipped} Zeilen übersprungen)`)
+              : t("文件为空", "File is empty", "Datei ist leer"),
+          );
+          fileInput.value = "";
+          return;
+        }
+        const skipNote = preview.skipped
+          ? t(`，跳过 ${preview.skipped} 行`, `, skip ${preview.skipped} rows`, `, ${preview.skipped} Zeilen übersprungen`)
+          : "";
+        const ok = window.confirm(
+          t(
+            `将导入 ${preview.importable} 笔交易${skipNote}。继续？`,
+            `Import ${preview.importable} ${preview.importable === 1 ? "entry" : "entries"}${skipNote}. Continue?`,
+            `${preview.importable} Buchung${preview.importable === 1 ? "" : "en"} importieren${skipNote}. Fortfahren?`,
+          ),
+        );
+        if (!ok) {
+          fileInput.value = "";
+          return;
+        }
+        const result = core().importGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
         const hadNone = !ledgerState().transactions.length;
         commit(result.ledger);
         if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
-        ctx.toast?.(t(`已导入 ${result.imported} 笔`, `Imported ${result.imported} entries`, `${result.imported} Buchungen importiert`));
+        const skippedTail = result.skipped
+          ? t(`（跳过 ${result.skipped} 行）`, ` (${result.skipped} skipped)`, ` (${result.skipped} übersprungen)`)
+          : "";
+        ctx.toast?.(
+          t(`已导入 ${result.imported} 笔${skippedTail}`, `Imported ${result.imported} entries${skippedTail}`, `${result.imported} Buchungen importiert${skippedTail}`),
+        );
         fileInput.value = "";
         render();
       };
@@ -921,7 +992,7 @@
           <span class="kicker">${t("记账", "Money", "Geld")}</span>
           <h2>${ctx.escape(monthLabel(ym))}</h2>
         </div>
-        <div class="ledger-month-nav">
+        <div class="ledger-month-nav" title="${t("← → 切换月份，/ 搜索交易", "← → change month, / search", "← → Monat, / Suche")}">
           <button type="button" class="icon-button" data-ledger-prev aria-label="${t("上个月", "Previous month", "Vorheriger Monat")}">‹</button>
           <button type="button" class="icon-button" data-ledger-next aria-label="${t("下个月", "Next month", "Nächster Monat")}">›</button>
         </div>
@@ -1022,6 +1093,7 @@
   root.LifeLedgerLedgerUI = {
     render(options) {
       ctx = options;
+      bindLedgerShortcuts();
       if (!viewMonth) viewMonth = ymFromDate(options.iso(new Date()));
       render();
     },
