@@ -5,6 +5,7 @@
   let ledgerMonthPulse = false;
   let listFilter = "";
   let listDayFilter = "";
+  let pendingListFocus = false;
   let listCategoryFilter = "";
   let trendPlot = null;
   let categoryChartMode = "donut";
@@ -1560,6 +1561,29 @@
       ledgerMonthPulse = false;
       pulseLedgerMonthMotion(host);
     }
+    if (pendingListFocus) {
+      pendingListFocus = false;
+      const wrap = host.querySelector(".ledger-list-wrap");
+      if (wrap) {
+        wrap.classList.add("is-spotlight");
+        const reduced = document.documentElement.classList.contains("motion-reduced")
+          || matchMedia("(prefers-reduced-motion: reduce)").matches;
+        requestAnimationFrame(() => {
+          wrap.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+          setTimeout(() => wrap.classList.remove("is-spotlight"), reduced ? 0 : 1100);
+        });
+      }
+    }
+  }
+
+  function openToDay(isoDate, options = {}) {
+    if (typeof isoDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return;
+    viewMonth = isoDate.slice(0, 7);
+    listDayFilter = isoDate;
+    listCategoryFilter = "";
+    listFilter = "";
+    pendingListFocus = options.scrollToList !== false;
+    if (ctx) render();
   }
 
   root.LifeLedgerLedgerUI = {
@@ -1572,5 +1596,6 @@
     setViewMonth(ym) {
       if (typeof ym === "string" && /^\d{4}-\d{2}$/.test(ym)) viewMonth = ym;
     },
+    openToDay,
   };
 })(typeof window !== "undefined" ? window : global);

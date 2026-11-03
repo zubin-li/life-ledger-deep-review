@@ -6012,3 +6012,66 @@ html.motion-reduced .ledger-list-filter-sum.ll-insight-enter {
     animation: none;
   }
 }
+
+/* ========== Batch 12 r8 — Today spending card → Money day filter + list spotlight ========== */
+
+button.tw-spend-today {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+button.tw-spend-today:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent-sage, #3a8f7a) 55%, transparent);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button.tw-spend-today:hover {
+    opacity: 0.88;
+  }
+
+  button.tw-spend-today:active {
+    transform: scale(0.985);
+  }
+}
+
+.ledger-list-wrap.is-spotlight {
+  animation: ledger-list-spotlight 1.05s ease-out both;
+}
+
+@keyframes ledger-list-spotlight {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-sage, #3a8f7a) 0%, transparent);
+  }
+  35% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-sage, #3a8f7a) 28%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-sage, #3a8f7a) 0%, transparent);
+  }
+}
+
+html.motion-reduced .ledger-list-wrap.is-spotlight,
+html.motion-reduced button.tw-spend-today {
+  animation: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-list-wrap.is-spotlight {
+    animation: none;
+  }
+
+  button.tw-spend-today {
+    transition: none;
+  }
+}

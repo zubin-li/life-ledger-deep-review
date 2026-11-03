@@ -1,3 +1,26 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 8
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 / Today ↔ 记账** | **今日支出** 卡：点 **当日金额** 或 **打开记账** → 进入 **记账** 并自动按 Today 所选日期筛选（热力格高亮 + 日期 chip + 列表区 scroll/spotlight）。 |
+| **测试** | `npm test` **406**；`npm run test:browser` **55**（+1 `today-spending-ledger-day`）。 |
+
+## 怎么验
+
+1. Demo → **今日** → **今日支出** 卡 → 点大数字（或 **打开记账**）→ 应到 **记账** 且见 **11月3日** 一类日期 chip 与当日交易（见 `b12r8-today-spend-ledger-day-zh-light-1440-chromium.png`）。
+2. 在 Today 用顶栏换到别的日期再点金额 → 记账页应对应那天筛选。
+3. 重拍：`node .overnight/capture-batch12-round8.mjs`（端口 **5294**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 7
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

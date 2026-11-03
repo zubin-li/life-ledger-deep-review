@@ -1,5 +1,48 @@
 # Overnight progress
 
+## Batch 12 · Round 8 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（55）。
+- **Goal 2 / Today ↔ 记账：** **今日支出** 卡点击 **当日金额** 或 **打开记账** → `LifeLedgerLedgerUI.openToDay`（所选 Today 日期、热力格选中、日期 chip、交易列表 scroll + 短暂 spotlight）。
+- **实现：** `ledger-ui.js` `openToDay` / `pendingListFocus`；`today-widgets.js` 金额改为 `button.tw-spend-today`；`v210.css` Batch 12 r8。
+- **QA：** `view-enter-selectors` Batch 12 r8；`today-spending-hint`；`today-spending-ledger-day.browser`（Chromium 1440）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r8。
+- **截图：** `node .overnight/capture-batch12-round8.mjs`（**5294**）→ `b12r8-today-spend-ledger-day-*`。
+- **QA：** `npm test` **406** pass / 0 fail；`npm run test:browser` **55** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 12 Round 9–10：`v210.css` reduced-motion 物理合并（2.2）；习惯/复盘其它 micro-interaction；`.overnight/REPORT.md` 总览收尾。
+- Owner 验收：Demo → **今日** → 点 **今日支出** 大数字 → **记账** 应见当日 chip + 筛选列表（见 `b12r8-today-spend-ledger-day-zh-light-1440-chromium.png`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+406 pass, 0 fail (batch 12 round 8, unit gate)
+55 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 12 · Round 7 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（54）。
@@ -73,3 +116,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 7
 ℹ tests 404 ℹ pass 404 ℹ fail 0 
+
+## Driver gate after round 8
+ℹ tests 406 ℹ pass 406 ℹ fail 0 

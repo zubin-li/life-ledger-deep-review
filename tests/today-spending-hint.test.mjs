@@ -52,3 +52,9 @@ test("Today spending card compares today vs yesterday when ledger has history", 
   assert.match(widgets, /spendingMoreDayAmount/);
   assert.match(widgets, /displaySpendDeltaPercent/);
 });
+
+test("Today spending amount opens Money filtered to the planning day", () => {
+  assert.match(widgets, /openLedgerForPlanningDay/);
+  assert.match(widgets, /spendingOpenDay/);
+  assert.match(widgets, /button type="button" class="tw-spend-today"/);
+});
