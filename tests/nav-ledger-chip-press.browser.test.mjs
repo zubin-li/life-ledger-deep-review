@@ -44,11 +44,11 @@ test(
       assert.ok(navPressed, "week nav should pulse on switch");
 
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-chip", { state: "visible" });
-      const chip = page.locator(".ledger-chip").first();
+      await page.waitForSelector(".ledger-tx-cat-chip", { state: "visible" });
+      const chip = page.locator(".ledger-tx-cat-chip").first();
       await chip.click({ noWaitAfter: true });
       const chipPressed = await page.waitForFunction(
-        () => document.querySelector("button.ledger-chip.is-chip-press"),
+        () => document.querySelector("button.ledger-tx-cat-chip.is-chip-press"),
         { timeout: 2000 },
       );
       assert.ok(chipPressed, "category chip should pulse on tap");
@@ -79,11 +79,11 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-chip", { state: "visible" });
-      const chip = page.locator(".ledger-chip").first();
+      await page.waitForSelector(".ledger-tx-cat-chip", { state: "visible" });
+      const chip = page.locator(".ledger-tx-cat-chip").first();
       await chip.click({ noWaitAfter: true });
       const chipPressed = await page.waitForFunction(
-        () => document.querySelector("button.ledger-chip.is-chip-press"),
+        () => document.querySelector("button.ledger-tx-cat-chip.is-chip-press"),
         { timeout: 2000 },
       );
       assert.ok(chipPressed, "de mobile chip press");

@@ -85,7 +85,8 @@ test(
         await page.waitForSelector("#ledgerView.view.active", { timeout: 45_000 });
         await page.waitForSelector("#ledgerQuickInput", { timeout: 45_000 });
         const ledgerTxRows = await page.locator(".ledger-tx").count();
-        assert.ok(ledgerTxRows > 3, `expected demo ledger rows on cloud UI, got ${ledgerTxRows}`);
+        const dayGroups = await page.locator(".ledger-day-group").count();
+        assert.ok(ledgerTxRows >= 1 && dayGroups >= 1, `ledger list should render (${ledgerTxRows} txs, ${dayGroups} days)`);
         const summaryExpense = await page.locator('[data-ledger-sum="expense"]').textContent();
         assert.ok(summaryExpense && summaryExpense.trim().length > 2, "ledger month expense summary should render");
         await page.waitForSelector(".ledger-category-viz, .ledger-donut", { timeout: 45_000 });

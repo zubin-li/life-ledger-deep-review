@@ -1,3 +1,63 @@
+# Life Ledger — 主人反馈 pass（Round 1 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。规格：每日记账 + 自动统计、界面更简、侧栏 **时间轴 → 记账 → 复盘**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **记账页** | 打开即 **当天**（‹ 11月3日 ›）；顶栏快速录入；**周/月** 收支 + 圆环图 + 一行环比；每月订阅列表；交易 **一行一条**（今天展开、旧日折叠）；搜索/CSV/预算/固定收支进 **⋯** |
+| **自动分类** | 备注关键词推断中/英/德；改分类会记住（如 Rewe → 日用） |
+| **导航** | 侧栏与 Mac：**今日 → 本周 → 长期 → 时间轴 → 记账 → 复盘 → 习惯**；Mac **⌘5** 打开记账 |
+| **Today 引导卡** | 「今日页可按你的习惯排列…」改为 **不透明** 底，不再透出习惯卡 |
+| **标题** | 记账页去掉滚动区重复「记账」，只保留顶栏标题 |
+| **脚本** | 只保留 `.overnight/capture.mjs`（删 121 个旧 capture 脚本） |
+
+## 怎么点（5 分钟）
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. 打开 `http://127.0.0.1:5297/index.html?mode=local&local-preview=demo-showcase-v1`
+3. 侧栏点 **记账** → 试 `12,50 咖啡` → 看分类 chip → 切换 **周/月**
+4. **⋯** → 搜索、CSV、预算
+5. **今日** → 确认 onboarding 提示不半透明
+
+## 截图（本轮）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r1-today-zh-light-1440-chromium.png` | 今日 + 引导卡 |
+| `fb-r1-ledger-zh-light-1440-chromium.png` | 记账日中心 + 统计 |
+| `fb-r1-ledger-de-dark-390-webkit.png` | 手机德文深色 + 底栏顺序 |
+| `fb-r1-week-zh-light-1440-webkit.png` | 本周对照风格 |
+| `fb-r1-review-zh-light-390-chromium.png` | 复盘 |
+| `fb-r1-habits-de-light-1440-chromium.png` | 习惯设置 |
+
+重拍：`node .overnight/capture.mjs --port 5297 --prefix fb-r1`
+
+## 六个已知问题（Round 1）
+
+| # | 状态 | 证据 |
+|---|------|------|
+| 1 引导半透明 | **已修** | CSS + `fb-r1-today-*` |
+| 2 双「记账」 | **已修** | 隐藏 scroll header + 截图 |
+| 3 导航位置 | **已修** | HTML + `NAV_PAGES` + ⌘5 |
+| 4 天气空头 | **非回归** | HEAD = v2.0.10 headless（无网络/无城市） |
+| 5 CSS/capture 膨胀 | **一半** | capture 已 Consolidate；CSS 仍 ~6790 行 → Round 2 |
+| 6 全页回归 | **未做完** | 样本截图已拍；矩阵对比下一轮 |
+
+## 测试
+
+| 命令 | Round 1 |
+|------|---------|
+| `npm test` | **423** pass |
+| `npm run test:browser` | **71** pass |
+| `npm run desktop:check` | **0** fail |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
+
 # Life Ledger 夜间构建 — 全夜总览（Batch 13 · Round 10 收尾）
 
 Web **2.1.0**、Mac **3.1.0**。隔离仓库：`/Users/ashan/Documents/Codex/ll-overnight`（无 remote，未部署）。

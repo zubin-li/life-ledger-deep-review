@@ -91,8 +91,8 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector("#ledgerBudgetEmptyAdd");
-      await page.click("#ledgerBudgetEmptyAdd");
+      await page.click("[data-ledger-more-toggle]");
+      await page.click(".ledger-budget-add");
       await page.waitForSelector(".ledger-budget-form", { timeout: 8000 });
       const title = await page.locator(".ledger-budget-form header strong").textContent();
       assert.match(title || "", /Set budget/i);

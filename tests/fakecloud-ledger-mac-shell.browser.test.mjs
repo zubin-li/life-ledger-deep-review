@@ -92,7 +92,8 @@ test(
         await page.waitForSelector("#ledgerView.view.active", { timeout: 45_000 });
         await page.waitForSelector("#ledgerQuickInput", { timeout: 45_000 });
         const txCount = await page.locator(".ledger-tx").count();
-        assert.ok(txCount > 3, `expected demo transactions in Mac online Money view, got ${txCount}`);
+        const dayGroups = await page.locator(".ledger-day-group").count();
+        assert.ok(txCount >= 1 && dayGroups >= 1, `expected demo ledger UI (${txCount} txs, ${dayGroups} days)`);
 
         const navLabel = await page.locator('.nav-item[data-view="ledger"]').textContent();
         assert.match(navLabel || "", /Finanzen|Geld|记账/i);
@@ -101,31 +102,31 @@ test(
         const expense = await page.locator('[data-ledger-sum="expense"]').textContent();
         assert.ok(expense && expense.trim().length > 2, "month expense summary should render");
 
-        const titleBefore = await page.locator(".ledger-header h2").textContent();
+        const titleBefore = await page.locator(".ledger-day-title").textContent();
         await page.keyboard.press("ArrowLeft");
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-header h2");
+            const el = document.querySelector(".ledger-day-title");
             return el && el.textContent !== prev;
           },
           titleBefore,
           { timeout: 8000 },
         );
-        const titleAfterLeft = await page.locator(".ledger-header h2").textContent();
+        const titleAfterLeft = await page.locator(".ledger-day-title").textContent();
         await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:next"));
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-header h2");
+            const el = document.querySelector(".ledger-day-title");
             return el && el.textContent !== prev;
           },
           titleAfterLeft,
           { timeout: 8000 },
         );
-        const titleBeforePrev = await page.locator(".ledger-header h2").textContent();
+        const titleBeforePrev = await page.locator(".ledger-day-title").textContent();
         await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:prev"));
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-header h2");
+            const el = document.querySelector(".ledger-day-title");
             return el && el.textContent !== prev;
           },
           titleBeforePrev,
@@ -137,11 +138,11 @@ test(
           timeout: 5000,
         });
 
-        const titleMid = await page.locator(".ledger-header h2").textContent();
+        const titleMid = await page.locator(".ledger-day-title").textContent();
         await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:next"));
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-header h2");
+            const el = document.querySelector(".ledger-day-title");
             return el && el.textContent !== prev;
           },
           titleMid,

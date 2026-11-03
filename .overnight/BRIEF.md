@@ -63,6 +63,35 @@ Antigravity's review of the previous batch: fix every HIGH/MED finding you can r
 6. Check 今日, 本周, 长期, 时间轴, 复盘, 习惯设置 at 1440 and 390 widths, light/dark, zh/de, WebKit and Chromium against
    `v2.0.10` screenshots. List every regression or visual defect found and fix it.
 
+## D. Owner addendum (11/03, later) — overrides A where they differ
+Owner's words: 「每日记账是可以作为一个卡片加入这个今日里面的。然后我点开…我可以快速记录…然后我去到记账这个窗口，我看到所有完整的统计…
+现在我觉得风格基本上成型，需要的就是更多的动态的交互模式，然后更加顺滑…加一些更多的简约的一些配图…还有很多很多细节的问题可以打磨。」
+1. **Daily entry lives on 今日** as a Today card (same card system: add/hide/reorder/resize). Tap it → a small quick-entry
+   sheet/popover (amount + note, auto category chip, Enter to save) with today's total and last 2–3 entries. One tap to
+   record, nothing else to learn.
+2. **The 记账 page is the statistics page**: week/month switch, totals, category donut, comparison, subscriptions, slim
+   transaction list, "⋯" menu. It may keep a quick-entry line too, but its focus is the complete statistics.
+3. **Motion and smoothness are now the main polish goal** (the style is settled — do not restyle). Research first and write
+   `.overnight/MOTION-RESEARCH.md`: what you studied, what you adopt, what you reject. Sources:
+   - The design/motion skills copied into `.overnight/skills/` (read their SKILL.md and references):
+     `ui-animation` (easing, springs, choreography, review checklist), `design-dna`, `frontend-design`,
+     `ui-ux-pro-max` (UX guidelines, motion rules), `popular-web-designs` (Linear, Stripe, Vercel, Apple … systems).
+   - GitHub projects for interaction patterns (study, borrow ideas; copy only MIT/Apache/BSD/ISC code, credit in
+     THIRD_PARTY_NOTICES.md, no new runtime dependency unless tiny and justified): e.g. Motion One / motion.dev, Framer
+     Motion docs, react-spring, auto-animate (FormKit), View Transitions API demos, Vaul / Sonner (Emil Kowalski) for sheets
+     and toasts, cmdk, Ark UI / Radix interaction details, Apple HIG motion, Rauno Freiberg's web-interface-guidelines,
+     animations.dev ideas, Number Flow (number transitions).
+   Then apply consistently across ALL pages: page/view transitions (View Transitions API where supported, graceful
+   fallback), list insert/remove/reorder (FLIP), sheet/popover open/close with spring feel, press/hover states unified into
+   one system, number roll-ups, chart draw-in, skeleton → content without layout jumps, drag and reorder feel,
+   success/undo toasts. Smoothness first: 60 fps, transform/opacity only, no layout thrash, no jank on page switch; check
+   with a headless performance trace (long tasks, layout shifts) before/after and record the numbers.
+4. **Simple illustrations (简约配图)**: a small set of consistent, minimal line/duotone SVG illustrations in the existing
+   hairline style for empty states, onboarding tips and section headers (ledger, habits, journal, week, review, photo wall).
+   Hand-made SVG, theme-aware via currentColor/CSS vars, light + dark, small file sizes. No stock images, no network.
+5. **Detail polish everywhere**: alignment, spacing rhythm, truncation, focus rings, hit areas (≥ 32 px desktop, 44 px touch),
+   disabled/loading states, empty states, error messages, consistent copy in zh/en/de. Keep a running list in PROGRESS-2.md.
+
 ## How to verify (mandatory)
 - `npm test` and `npm run desktop:check` green after every change; add the tests listed above.
 - Headless only: Playwright from `/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright/index.mjs`, WebKit and

@@ -45,6 +45,8 @@ test(
         }
         const now = new Date("2026-11-18T12:00:00");
         state.ledger = window.LifeLedgerLedger.buildDemoSample({ now, lang: "zh", contentSeed: 42 });
+        state.meta = state.meta || {};
+        state.meta.demo = { active: false };
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "networkidle" });
@@ -53,9 +55,8 @@ test(
       const label = (await pill.textContent())?.trim() || "";
       assert.match(label, /固定待记|1 笔/);
       await pill.click();
-      await page.waitForSelector(".ledger-recurring-due", { timeout: 8000 });
-      await page.locator(".ledger-recurring-due-all").click();
-      await page.waitForSelector(".ledger-recurring-due", { state: "detached", timeout: 8000 });
+      await page.waitForSelector("#ledgerView.view.active", { timeout: 8000 });
+      await page.waitForSelector(".ledger-sub-list .ledger-sub-row", { timeout: 8000 });
       await assert.doesNotReject(pill.waitFor({ state: "hidden", timeout: 8000 }));
     } finally {
       await browser.close();

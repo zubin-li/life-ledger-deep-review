@@ -3,6 +3,7 @@
 # (each batch ends with an Antigravity review that the next batch reads first).
 W=/Users/ashan/Documents/Codex/ll-overnight
 END=$(( $(date +%s) + ${TOTAL_HOURS:-6} * 3600 ))
+[ -f .overnight/END_AT ] && END=$(cat .overnight/END_AT)
 cd "$W"
 batch=${FIRST_BATCH:-20}
 while [ "$(date +%s)" -lt $(( END - 1200 )) ]; do

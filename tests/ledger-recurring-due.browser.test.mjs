@@ -21,7 +21,7 @@ function startStaticServer() {
 }
 
 test(
-  "ledger recurring due banner posts all pending for current month",
+  "ledger auto-posts monthly subscription after due day (idempotent)",
   { skip: !hasPlaywright },
   async () => {
     const server = await startStaticServer();
@@ -43,30 +43,50 @@ test(
         } catch {
           return;
         }
-        const now = new Date("2026-11-18T12:00:00");
-        state.ledger = window.LifeLedgerLedger.buildDemoSample({ now, lang: "de", contentSeed: 42 });
+        const ledger = window.LifeLedgerLedger.normalize(null, { lang: "de" });
+        const account = ledger.accounts[0].id;
+        const cat = ledger.categories.find(c => c.kind === "expense");
+        ledger.recurring = [{
+          id: "sub-test",
+          label: "Abonnement",
+          accountId: account,
+          categoryId: cat.id,
+          amountMinor: -1299,
+          currency: "EUR",
+          cadence: "monthly",
+          dayOfMonth: 1,
+          note: "Sub",
+        }];
+        state.ledger = ledger;
+        state.meta = state.meta || {};
+        state.meta.demo = { active: false };
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "networkidle" });
-      await page.locator('.nav-item[data-view="ledger"]').first().click({ timeout: 8000 });
-      await page.waitForSelector(".ledger-recurring-due", { timeout: 8000 });
-      const copy = (await page.locator(".ledger-recurring-due-copy").textContent())?.trim() || "";
-      assert.ok(copy.includes("Abonnement") || copy.includes("offen"), "demo subscription recurring should be pending");
       const before = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
-        const state = JSON.parse(localStorage.getItem(key));
-        return state.ledger.transactions.length;
+        return JSON.parse(localStorage.getItem(key)).ledger.transactions.length;
       });
-      await page.locator(".ledger-recurring-due-all").click();
-      await page.waitForSelector(".ledger-recurring-due", { state: "detached", timeout: 8000 });
+      await page.locator('.nav-item[data-view="ledger"]').first().click({ timeout: 8000 });
+      await page.waitForSelector(".ledger-sub-list .ledger-sub-row", { timeout: 8000 });
       const after = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
         const state = JSON.parse(localStorage.getItem(key));
-        const withRecurring = state.ledger.transactions.filter(t => t.recurringId);
-        return { total: state.ledger.transactions.length, tagged: withRecurring.length };
+        return {
+          total: state.ledger.transactions.length,
+          tagged: state.ledger.transactions.filter(t => t.recurringId === "sub-test").length,
+        };
       });
-      assert.ok(after.total > before, "post all should add transactions");
-      assert.ok(after.tagged >= 1, "posted rows should carry recurringId");
+      assert.ok(after.total > before, "auto-post should add one row");
+      assert.equal(after.tagged, 1, "posted row should carry recurringId");
+      await page.reload({ waitUntil: "networkidle" });
+      await page.locator('.nav-item[data-view="ledger"]').first().click({ timeout: 8000 });
+      const taggedAgain = await page.evaluate(() => {
+        const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
+        const state = JSON.parse(localStorage.getItem(key));
+        return state.ledger.transactions.filter(t => t.recurringId === "sub-test").length;
+      });
+      assert.equal(taggedAgain, 1, "auto-post should stay idempotent on reload");
     } finally {
       await browser.close();
       server.kill("SIGTERM");

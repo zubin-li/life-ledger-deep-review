@@ -67,17 +67,8 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-chart-mode");
-      const treemap = page.locator('.ledger-chart-mode[data-chart-mode="treemap"]');
-      await treemap.click({ noWaitAfter: true });
-      const modePressed = await page.waitForFunction(
-        () => document.querySelector("button.ledger-chart-mode.is-mode-press"),
-        { timeout: 2000 },
-      );
-      assert.ok(modePressed, "chart mode should pulse");
-
-      await page.waitForSelector("[data-ledger-day]");
-      const heat = page.locator("[data-ledger-day]").first();
+      await page.waitForSelector(".ledger-daily-strip [data-ledger-day]");
+      const heat = page.locator(".ledger-daily-strip [data-ledger-day]").first();
       await heat.click({ noWaitAfter: true });
       const heatPressed = await page.waitForFunction(
         () => document.querySelector("button.ledger-heat.is-heat-press"),

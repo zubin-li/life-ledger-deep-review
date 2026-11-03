@@ -117,7 +117,7 @@ const EXPECTED_VALUES = {
   calendarView: "heatmap",
   reminder: { enabled: true, time: "08:30" },
   deviceProfile: { name: "Ada", avatar: AVATAR, frame: { x: 20, y: 30, zoom: 2 } },
-  navOrder: ["review", "today", "week", "longrange", "timeline"],
+  navOrder: ["review", "today", "week", "longrange", "timeline", "ledger"],
   todayCards: [{ id: "weather", size: "M", hidden: false }, { id: "habits", size: "L", hidden: true }],
   weatherCity: { name: "Berlin", latitude: 52.52, longitude: 13.405 },
   heatmapPalette: "blue",

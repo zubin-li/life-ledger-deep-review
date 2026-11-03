@@ -11131,14 +11131,21 @@ function initQuoteSettings() {
   $("#settingsButton").addEventListener("click", sync);
 }
 
-// Settings → page order (user 10/27): Today, Week, Horizon, Timeline, Review in any order; Habits stays last.
+// Settings → page order (user 10/27): Today, Week, Horizon, Timeline, Money, Review in any order; Habits stays last.
 const NAV_ORDER_KEY = "life-ledger-nav-order";
-const NAV_PAGES = ["today", "week", "longrange", "timeline", "review"];
+const NAV_PAGES = ["today", "week", "longrange", "timeline", "ledger", "review"];
 function navOrder() {
   let saved = [];
   try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY) || "[]"); } catch {}
-  const order = (Array.isArray(saved) ? saved : []).filter(id => NAV_PAGES.includes(id));
-  return [...new Set([...order, ...NAV_PAGES])];
+  const pages = NAV_PAGES;
+  let order = (Array.isArray(saved) ? saved : []).filter(id => pages.includes(id));
+  if (!order.length) order = [...pages];
+  if (!order.includes("ledger")) {
+    const ti = order.indexOf("timeline");
+    order.splice(ti >= 0 ? ti + 1 : order.length, 0, "ledger");
+  }
+  for (const id of pages) if (!order.includes(id)) order.push(id);
+  return order;
 }
 function applyNavOrder() {
   const nav = $(".main-nav");

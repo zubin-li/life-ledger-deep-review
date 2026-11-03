@@ -37,7 +37,7 @@
       transactions: [],
       budgets: [],
       recurring: [],
-      meta: { recentCategoryIds: [], lastEntryAt: 0 },
+      meta: { recentCategoryIds: [], lastEntryAt: 0, noteCategoryHints: {} },
     };
   }
 
@@ -209,6 +209,13 @@
         ? raw.meta.recentCategoryIds.filter(id => typeof id === "string").slice(0, 12)
         : [];
       ledger.meta.lastEntryAt = Number(raw.meta.lastEntryAt) || 0;
+      if (raw.meta.noteCategoryHints && typeof raw.meta.noteCategoryHints === "object" && !Array.isArray(raw.meta.noteCategoryHints)) {
+        ledger.meta.noteCategoryHints = Object.fromEntries(
+          Object.entries(raw.meta.noteCategoryHints)
+            .filter(([k, v]) => typeof k === "string" && typeof v === "string" && k.length <= 120)
+            .slice(0, 240),
+        );
+      }
     }
     ledger.categories = repairDefaultCategoryNames(ledger.categories);
     ledger.categories = seedDefaultCategories(ledger.categories, options.lang);
@@ -236,6 +243,73 @@
     { re: /(?:^|\s)(heute|today|今天)(?:\s|$)/i, offset: 0 },
     { re: /(?:^|\s)(vorgestern|day before yesterday|前天)(?:\s|$)/i, offset: -2 },
   ];
+
+  function normalizeNoteHintKey(note) {
+    return String(note || "").trim().toLowerCase().replace(/\s+/g, " ").slice(0, 120);
+  }
+
+  const NOTE_INFERENCE_RULES = [
+    { slug: "dining", kind: "expense", words: ["咖啡", "kaffee", "coffee", "restaurant", "café", "cafe", "午餐", "晚餐", "外卖", "essen", "lunch", "dinner", "breakfast", "frühstück", "bäckerei", "bakery"] },
+    { slug: "housing", kind: "expense", words: ["miete", "rent", "房租", "wohnung", "nebenkosten"] },
+    { slug: "groceries", kind: "expense", words: ["rewe", "lidl", "aldi", "edeka", "penny", "netto", "超市", "supermarket", "groceries", "dm", "rossmann", "kaufland"] },
+    { slug: "transport", kind: "expense", words: ["u-bahn", "ubahn", "s-bahn", "sbahn", "deutsche bahn", "地铁", "公交", "ticket", "tanken", "benzin", "fuel", "bvg", "mvv", "hvv"] },
+    { slug: "health", kind: "expense", words: ["apotheke", "pharmacy", "arzt", "doctor", "医院", "health"] },
+    { slug: "salary", kind: "income", words: ["工资", "gehalt", "salary", "lohn", "payroll", "einkommen"] },
+  ];
+
+  function categoryByDefaultSlug(categories, slug, kind) {
+    const pool = kind === "income" ? DEFAULT_INCOME_CATEGORIES : DEFAULT_EXPENSE_CATEGORIES;
+    const def = pool.find(d => d.slug === slug);
+    if (!def) return null;
+    return categories.find(c => !c.archived && c.kind === kind && categoryMatchesDefault(c, def)) || null;
+  }
+
+  function inferCategoryFromNote(note, ledger, amountMinor, lang, options = {}) {
+    const base = normalize(ledger, { lang });
+    const key = normalizeNoteHintKey(note);
+    const hints = base.meta?.noteCategoryHints;
+    if (key && hints && hints[key]) {
+      const hinted = base.categories.find(c => c.id === hints[key] && !c.archived);
+      if (hinted) return hinted;
+    }
+    const hay = key;
+    if (!hay) return null;
+    const rawText = String(options.rawText || note || "");
+    const explicitIncome = /^\+\s*\d/.test(rawText.trim());
+    const kind = explicitIncome || amountMinor > 0 ? "income" : "expense";
+    for (const rule of NOTE_INFERENCE_RULES) {
+      if (rule.kind !== kind) continue;
+      if (rule.words.some(w => hay.includes(w))) {
+        const cat = categoryByDefaultSlug(base.categories, rule.slug, rule.kind);
+        if (cat) return cat;
+      }
+    }
+    return null;
+  }
+
+  function rememberCategoryHint(ledger, note, categoryId) {
+    const key = normalizeNoteHintKey(note);
+    if (!key || !categoryId) return normalize(ledger);
+    const base = normalize(ledger);
+    if (!base.meta.noteCategoryHints) base.meta.noteCategoryHints = {};
+    base.meta.noteCategoryHints[key] = categoryId;
+    return base;
+  }
+
+  function weekRangeMondayLocal(isoDate, todayIso) {
+    if (!ISO_DATE.test(isoDate || "")) return { start: isoDate, end: isoDate };
+    const anchor = new Date(`${isoDate}T12:00:00`);
+    const day = anchor.getDay();
+    const diffToMon = (day + 6) % 7;
+    const mon = new Date(anchor);
+    mon.setDate(anchor.getDate() - diffToMon);
+    const sun = new Date(mon);
+    sun.setDate(mon.getDate() + 6);
+    let end = isoDateFromDate(sun);
+    const today = todayIso && ISO_DATE.test(todayIso) ? todayIso : isoDateFromDate(new Date());
+    if (end > today) end = today;
+    return { start: isoDateFromDate(mon), end };
+  }
 
   function parseQuickEntry(text, ledger, options = {}) {
     const lang = options.lang || "en";
@@ -272,7 +346,10 @@
 
     const activeCategories = base.categories.filter(c => !c.archived);
     const hint = notePart.toLowerCase();
-    let category = activeCategories.find(c => localizedCategoryName(c, lang).toLowerCase() === hint);
+    let category = inferCategoryFromNote(notePart, base, amountMinor, lang, { rawText: text });
+    if (!category && hint) {
+      category = activeCategories.find(c => localizedCategoryName(c, lang).toLowerCase() === hint);
+    }
     if (!category && hint) {
       category = activeCategories.find(c => localizedCategoryName(c, lang).toLowerCase().includes(hint) || hint.includes(localizedCategoryName(c, lang).toLowerCase()));
     }
@@ -558,6 +635,23 @@
     const base = normalize(ledger);
     const totals = new Map();
     transactionsInMonth(base, ym).forEach(tx => {
+      if (!txInReportingCurrency(base, tx)) return;
+      const cat = base.categories.find(c => c.id === tx.categoryId);
+      if (!cat || cat.kind !== kind) return;
+      const mag = kind === "expense" ? Math.abs(Math.min(0, tx.amountMinor)) : Math.max(0, tx.amountMinor);
+      if (!mag) return;
+      totals.set(cat.id, (totals.get(cat.id) || 0) + mag);
+    });
+    return [...totals.entries()]
+      .map(([categoryId, amountMinor]) => ({ categoryId, amountMinor }))
+      .sort((a, b) => b.amountMinor - a.amountMinor);
+  }
+
+  function categoryBreakdownRange(ledger, startIso, endIso, kind = "expense") {
+    const base = normalize(ledger);
+    const totals = new Map();
+    base.transactions.forEach(tx => {
+      if (!tx || tx.date < startIso || tx.date > endIso) return;
       if (!txInReportingCurrency(base, tx)) return;
       const cat = base.categories.find(c => c.id === tx.categoryId);
       if (!cat || cat.kind !== kind) return;
@@ -879,6 +973,37 @@
       transactions.push(result.transaction);
     });
     return transactions.length ? { ledger: current, transactions } : null;
+  }
+
+  /** Idempotent: post monthly recurring templates once their day-of-month has arrived. */
+  function autoPostDueMonthlyRecurring(ledger, options = {}) {
+    const today = options.today && ISO_DATE.test(options.today) ? options.today : isoDateFromDate(new Date());
+    const ym = monthKey(today);
+    const dayNum = Number(today.slice(8, 10));
+    let current = normalize(ledger, options);
+    const posted = [];
+    (current.recurring || []).forEach(rec => {
+      if (!rec?.id || rec.cadence === "weekly") return;
+      const dom = Math.min(31, Math.max(1, Number(rec.dayOfMonth) || 1));
+      if (dayNum < dom) return;
+      if (recurringPostedInMonth(current, rec, ym, options)) return;
+      const date = `${ym}-${String(dom).padStart(2, "0")}`;
+      const accountId = rec.accountId || current.accounts.find(a => !a.archived)?.id;
+      if (!accountId || !rec.categoryId) return;
+      const result = addTransaction(current, {
+        accountId,
+        categoryId: rec.categoryId,
+        amountMinor: rec.amountMinor,
+        currency: rec.currency || current.settings.defaultCurrency,
+        date,
+        note: rec.note || rec.label || "",
+        recurringId: rec.id,
+      }, options);
+      if (!result) return;
+      current = result.ledger;
+      posted.push(result.transaction);
+    });
+    return posted.length ? { ledger: current, transactions: posted } : null;
   }
 
   /** Compare average daily spend on great-mood vs low-mood days (mood values are canonical zh keys). */
@@ -2134,6 +2259,11 @@
     emptyLedger,
     normalize,
     parseQuickEntry,
+    inferCategoryFromNote,
+    rememberCategoryHint,
+    normalizeNoteHintKey,
+    weekRangeMondayLocal,
+    autoPostDueMonthlyRecurring,
     parseAmountToken,
     addTransaction,
     removeTransaction,
@@ -2188,6 +2318,7 @@
     transactionsInMonth,
     dailySpendHeatmap,
     categoryBreakdown,
+    categoryBreakdownRange,
     formatMoney,
     localizedCategoryName,
     importGermanBankCsv,

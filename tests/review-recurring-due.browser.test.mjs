@@ -45,6 +45,8 @@ test(
         }
         const now = new Date("2026-11-18T12:00:00");
         state.ledger = window.LifeLedgerLedger.buildDemoSample({ now, lang: "zh", contentSeed: 42 });
+        state.meta = state.meta || {};
+        state.meta.demo = { active: false };
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "networkidle" });
@@ -53,7 +55,7 @@ test(
       const copy = await page.locator(".review-ledger-recurring-due-copy").textContent();
       assert.match(copy || "", /固定收支|尚未记入|笔固定/);
       await page.locator("[data-open-ledger-recurring]").click();
-      await page.waitForSelector(".ledger-recurring-due", { timeout: 8000 });
+      await page.waitForSelector(".ledger-sub-list", { timeout: 8000 });
       await page.locator('.nav-item[data-view="review"]').click();
       await page.waitForSelector(".review-ledger-recurring-due", { timeout: 8000 });
       await page.locator('[data-rv-month="-1"]').click();

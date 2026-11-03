@@ -9,6 +9,9 @@
   let listCategoryFilter = "";
   let trendPlot = null;
   let categoryChartMode = "donut";
+  let viewDay = "";
+  let statsScope = "month";
+  let ledgerMenuOpen = false;
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
   let lastHighlightTxId = "";
   let popoverEscapeHandler = null;
@@ -93,10 +96,14 @@
       }
       if (typing) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      const ym = viewMonth || ymFromDate(ctx?.iso(new Date()) || "");
-      if (!ym) return;
+      const today = ctx?.iso(new Date()) || "";
+      if (!viewDay) viewDay = today;
       event.preventDefault();
-      viewMonth = shiftMonth(ym, event.key === "ArrowLeft" ? -1 : 1);
+      const next = shiftDay(viewDay, event.key === "ArrowLeft" ? -1 : 1);
+      if (next > today) return;
+      viewDay = next;
+      viewMonth = viewDay.slice(0, 7);
+      listDayFilter = "";
       ledgerMonthPulse = true;
       render();
     });
@@ -146,6 +153,123 @@
     const [y, m] = ym.split("-").map(Number);
     const d = new Date(y, m - 1, 1, 12);
     return ctx.monthName(d);
+  }
+
+  function dayLabel(iso) {
+    if (!iso || iso.length < 10) return iso;
+    const [y, m, d] = iso.split("-").map(Number);
+    const locale = ctx.locale?.() || "de-DE";
+    return new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", weekday: "short" }).format(new Date(y, m - 1, d));
+  }
+
+  function shiftDay(iso, delta) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || "")) return iso;
+    const d = new Date(`${iso}T12:00:00`);
+    d.setDate(d.getDate() + delta);
+    return ctx.iso(d);
+  }
+
+  function renderStatsCompareLine(ledger, scope, anchorIso) {
+    const today = ctx.iso(new Date());
+    if (scope === "week") {
+      const { start, end } = core().weekRangeMondayLocal(anchorIso, today);
+      const cmp = core().alignedWeekSpendCompare(ledger, start, end);
+      if (!cmp || cmp.direction === "none") return "";
+      const pct = core().displaySpendDeltaPercent?.(cmp.deltaPercent) ?? `${cmp.deltaPercent}%`;
+      if (cmp.direction === "up") {
+        return t(`较上周同期 +${pct}`, `+${pct} vs same days last week`, `+${pct} gg. Vorwoche`);
+      }
+      if (cmp.direction === "down") {
+        return t(`较上周同期 −${pct}`, `−${pct} vs same days last week`, `−${pct} gg. Vorwoche`);
+      }
+      return t("与上周同期相近", "About the same as last week", "Wie in der Vorwoche");
+    }
+    const ym = anchorIso.slice(0, 7);
+    const cmp = core().alignedMonthSpendCompare(ledger, ym, anchorIso);
+    if (!cmp || cmp.direction === "none") return "";
+    const pct = core().displaySpendDeltaPercent?.(cmp.deltaPercent) ?? `${cmp.deltaPercent}%`;
+    if (cmp.direction === "up") {
+      return t(`较上月同期 +${pct}`, `+${pct} vs same days last month`, `+${pct} gg. Vormonat`);
+    }
+    if (cmp.direction === "down") {
+      return t(`较上月同期 −${pct}`, `−${pct} vs same days last month`, `−${pct} gg. Vormonat`);
+    }
+    return t("与上月同期相近", "About the same as last month", "Wie im Vormonat");
+  }
+
+  function renderStatsPanel(ledger, anchorIso) {
+    const today = ctx.iso(new Date());
+    const cur = ledger.settings.defaultCurrency;
+    const locale = ctx.locale?.() || "de-DE";
+    let rangeStart;
+    let rangeEnd;
+    if (statsScope === "week") {
+      ({ start: rangeStart, end: rangeEnd } = core().weekRangeMondayLocal(anchorIso, today));
+    } else {
+      rangeStart = `${anchorIso.slice(0, 7)}-01`;
+      rangeEnd = anchorIso.slice(0, 7) === today.slice(0, 7) ? today : `${anchorIso.slice(0, 7)}-31`;
+    }
+    const summary = core().rangeSummary(ledger, rangeStart, rangeEnd);
+    const breakdown = statsScope === "week"
+      ? core().categoryBreakdownRange(ledger, rangeStart, rangeEnd, "expense")
+      : core().categoryBreakdown(ledger, anchorIso.slice(0, 7), "expense");
+    const compare = renderStatsCompareLine(ledger, statsScope, anchorIso);
+    const scopeToggle = `<div class="ledger-stats-scope" role="group" aria-label="${t("统计范围", "Stats range", "Statistikzeitraum")}">
+      <button type="button" class="ledger-stats-scope-btn${statsScope === "week" ? " is-active" : ""}" data-ledger-stats="week" aria-pressed="${statsScope === "week"}">${t("周", "Week", "Woche")}</button>
+      <button type="button" class="ledger-stats-scope-btn${statsScope === "month" ? " is-active" : ""}" data-ledger-stats="month" aria-pressed="${statsScope === "month"}">${t("月", "Month", "Monat")}</button>
+    </div>`;
+    const dailyStrip = statsScope === "month"
+      ? `<div class="ledger-daily-strip" aria-hidden="true">${renderHeatmap(ledger, anchorIso.slice(0, 7))}</div>`
+      : "";
+    const subTotal = (ledger.recurring || []).filter(r => r && r.cadence !== "weekly")
+      .reduce((sum, r) => sum + (Number.isInteger(r.amountMinor) ? Math.abs(r.amountMinor) : 0), 0);
+    const subLine = subTotal
+      ? `<p class="ledger-sub-total">${t(`每月订阅合计 ${core().formatMoney(-subTotal, cur, locale)}`, `Subscriptions ${core().formatMoney(-subTotal, cur, locale)}/mo`, `Abos ${core().formatMoney(-subTotal, cur, locale)}/Monat`)}</p>`
+      : "";
+    return `<section class="ledger-panel ledger-panel--stats panel">
+      <div class="ledger-panel-head">${scopeToggle}</div>
+      <div class="ledger-summary ledger-summary--compact">
+        <article><small>${t("收入", "Income", "Einnahmen")}</small><strong data-ledger-sum="income">${ctx.escape(core().formatMoney(summary.incomeMinor, cur, locale))}</strong></article>
+        <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, locale))}</strong></article>
+        <article><small>${t("结余", "Net", "Saldo")}</small><strong data-ledger-sum="net">${ctx.escape(core().formatMoney(summary.netMinor, cur, locale))}</strong></article>
+      </div>
+      ${compare ? `<p class="ledger-stats-compare">${ctx.escape(compare)}</p>` : ""}
+      ${subLine}
+      <div class="ledger-panel-head"><h3>${t("分类", "Categories", "Kategorien")}</h3></div>
+      ${renderCategoryViz(breakdown, ledger)}
+      ${dailyStrip}
+    </section>`;
+  }
+
+  function renderSubscriptionList(ledger) {
+    const rows = (ledger.recurring || []).filter(r => r && r.cadence !== "weekly");
+    if (!rows.length) {
+      return `<section class="ledger-subscriptions panel"><h3>${t("每月订阅", "Subscriptions", "Abos")}</h3><p class="ledger-quiet">${t("暂无订阅模板", "No subscriptions yet", "Noch keine Abos")}</p></section>`;
+    }
+    return `<section class="ledger-subscriptions panel"><h3>${t("每月订阅", "Subscriptions", "Abos")}</h3><ul class="ledger-sub-list">${rows.map(rec => {
+      const cat = ledger.categories.find(c => c.id === rec.categoryId);
+      const catName = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+      const label = rec.label || rec.note || catName;
+      const dom = Number(rec.dayOfMonth) || 1;
+      return `<li class="ledger-sub-row"><span class="ledger-sub-name">${ctx.escape(label)}</span><span class="ledger-sub-meta">${t("每月", "Monthly", "Monatlich")} ${dom} · ${ctx.escape(catName)}</span><span class="ledger-sub-amt">${ctx.escape(core().formatMoney(rec.amountMinor, rec.currency || ledger.settings.defaultCurrency, ctx.locale?.()))}</span></li>`;
+    }).join("")}</ul></section>`;
+  }
+
+  function renderLedgerMoreMenu(ledger, ym) {
+    const openClass = ledgerMenuOpen ? " is-open" : "";
+    const menuHidden = ledgerMenuOpen ? "" : " hidden";
+    return `<div class="ledger-more-wrap">
+      <button type="button" class="icon-button ledger-more-toggle" data-ledger-more-toggle aria-expanded="${ledgerMenuOpen ? "true" : "false"}" aria-haspopup="true" title="${t("更多", "More", "Mehr")}">⋯</button>
+      <div class="ledger-more-menu${openClass}"${menuHidden} role="menu">
+        <label class="ledger-more-search"><span class="sr-only">${t("搜索", "Search", "Suche")}</span><input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" /></label>
+        <button type="button" class="secondary-button" data-ledger-import role="menuitem">${t("导入 CSV", "Import CSV", "CSV importieren")}</button>
+        <button type="button" class="secondary-button" data-ledger-export role="menuitem">${t("导出 CSV", "Export CSV", "CSV exportieren")}</button>
+        <button type="button" class="secondary-button ledger-budget-add" role="menuitem">${t("预算", "Budgets", "Budgets")}</button>
+        <button type="button" class="secondary-button ledger-recurring-add" role="menuitem">${t("固定收支", "Recurring", "Wiederkehrend")}</button>
+        <p class="ledger-kbd-hints ledger-kbd-hints--menu" aria-hidden="true"><kbd>M</kbd> · <kbd>N</kbd> · <kbd>/</kbd> · <kbd>←</kbd><kbd>→</kbd></p>
+        <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
+      </div>
+    </div>`;
   }
 
   function destroyTrendPlot() {
@@ -272,9 +396,7 @@
   }
 
   function renderCategoryViz(breakdown, ledger) {
-    const body = categoryChartMode === "treemap"
-      ? renderTreemap(breakdown, ledger)
-      : renderDonut(breakdown, ledger);
+    const body = renderDonut(breakdown, ledger);
     const empty = body.includes("ledger-donut--empty");
     const skel = empty ? "" : `<div class="ledger-skeleton ledger-skeleton--donut" aria-hidden="true"></div>`;
     return `<div class="ledger-category-viz${empty ? " is-ready" : ""}">${skel}${body}</div>`;
@@ -607,27 +729,56 @@
         cta,
       );
     }
-    return `${renderListFilterSummary(ledger, rows)}<ul class="ledger-tx-list">${rows.map(tx => {
-      const cat = ledger.categories.find(c => c.id === tx.categoryId);
-      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
-      const enter = tx.id === lastHighlightTxId ? " is-enter" : "";
-      return `<li class="ledger-tx${enter}" data-id="${ctx.escape(tx.id)}">
-        <span class="ledger-tx-date">${ctx.escape(tx.date.slice(5))}</span>
-        <span class="ledger-tx-note">${ctx.escape(tx.note || name)}</span>
-        <span class="ledger-tx-amt ${tx.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(core().formatMoney(tx.amountMinor, tx.currency, ctx.locale?.()))}</span>
-        <span class="ledger-tx-actions">
-          <button type="button" class="icon-button ledger-tx-edit" aria-label="${t("编辑", "Edit", "Bearbeiten")}">✎</button>
-          <button type="button" class="icon-button ledger-tx-dup" aria-label="${t("复制", "Duplicate", "Duplizieren")}">⧉</button>
-          <button type="button" class="icon-button ledger-tx-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
-        </span>
-      </li>`;
-    }).join("")}</ul>`;
+    return `${renderListFilterSummary(ledger, rows)}<ul class="ledger-tx-list ledger-tx-list--grouped">${(() => {
+      const byDay = new Map();
+      rows.forEach(tx => {
+        if (!byDay.has(tx.date)) byDay.set(tx.date, []);
+        byDay.get(tx.date).push(tx);
+      });
+      const days = [...byDay.keys()].sort((a, b) => b.localeCompare(a));
+      const focusDay = listDayFilter || viewDay || ctx.iso(new Date());
+      let out = "";
+      days.forEach(day => {
+        const txs = byDay.get(day);
+        const expanded = !listDayFilter && !listFilter && !listCategoryFilter
+          ? day === focusDay
+          : true;
+        const sum = core().summarizeTransactions(ledger, txs);
+        const cur = ledger.settings.defaultCurrency;
+        const locale = ctx.locale?.() || "de-DE";
+        const total = core().formatMoney(sum.netMinor, cur, locale);
+        out += `<li class="ledger-day-group${expanded ? " is-expanded" : " is-collapsed"}" data-ledger-day-group="${ctx.escape(day)}">
+          <button type="button" class="ledger-day-head" data-ledger-expand-day="${ctx.escape(day)}" aria-expanded="${expanded ? "true" : "false"}">
+            <span>${ctx.escape(dayLabel(day))}</span><span class="ledger-day-total">${ctx.escape(total)}</span>
+          </button>`;
+        if (expanded) {
+          out += `<ul class="ledger-day-rows">${txs.map(tx => {
+            const cat = ledger.categories.find(c => c.id === tx.categoryId);
+            const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+            const enter = tx.id === lastHighlightTxId ? " is-enter" : "";
+            const icon = cat?.icon || "more";
+            return `<li class="ledger-tx ledger-tx--slim${enter}" data-id="${ctx.escape(tx.id)}">
+              <span class="ledger-tx-cat ledger-tx-cat--${ctx.escape(cat?.color || "sage")}" aria-hidden="true">${ctx.escape(icon.slice(0, 1).toUpperCase())}</span>
+              <span class="ledger-tx-note">${ctx.escape(tx.note || name)}</span>
+              <button type="button" class="ledger-tx-cat-chip" data-ledger-tx-cat="${ctx.escape(tx.categoryId)}" aria-label="${t("分类", "Category", "Kategorie")}">${ctx.escape(name)}</button>
+              <span class="ledger-tx-amt ${tx.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(core().formatMoney(tx.amountMinor, tx.currency, locale))}</span>
+              <span class="ledger-tx-actions">
+                <button type="button" class="icon-button ledger-tx-edit" aria-label="${t("编辑", "Edit", "Bearbeiten")}">✎</button>
+                <button type="button" class="icon-button ledger-tx-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
+              </span>
+            </li>`;
+          }).join("")}</ul>`;
+        }
+        out += "</li>";
+      });
+      return out;
+    })()}</ul>`;
   }
 
   function renderRecurringPendingBanner(ledger, ym) {
     const currentYm = ymFromDate(ctx.iso(new Date()));
     if (ym !== currentYm) return "";
-    const pending = core().recurringPendingForMonth(ledger, ym, { lang: ctx.lang?.() });
+    const pending = core().recurringPendingForMonth(ledger, ym, { lang: ctx.lang?.() }).filter(rec => rec.cadence === "weekly");
     if (!pending.length) return "";
     const occurrenceCount = core().recurringPendingOccurrenceCount(ledger, ym, { lang: ctx.lang?.() });
     const labels = pending.slice(0, 3).map(rec => {
@@ -894,6 +1045,10 @@
     closeLedgerPopovers();
   }
 
+  function allCategoryOptions(ledger, selectedId) {
+    return recurringCategoryOptions(ledger, selectedId);
+  }
+
   function recurringCategoryOptions(ledger, selectedId) {
     const renderGroup = (kind, labelZh, labelEn, labelDe) => {
       const cats = ledger.categories.filter(c => c.kind === kind && !c.archived);
@@ -1039,7 +1194,7 @@
     pop.innerHTML = `
       <form class="ledger-edit-form">
         <header><strong>${t("编辑交易", "Edit entry", "Buchung bearbeiten")}</strong></header>
-        <p class="ledger-edit-cat">${ctx.escape(catName)}</p>
+        <label class="ledger-edit-field"><span>${t("分类", "Category", "Kategorie")}</span><select name="category">${allCategoryOptions(ledger, tx.categoryId)}</select></label>
         <label class="ledger-edit-field"><span>${t("金额", "Amount", "Betrag")}</span><input name="amount" inputmode="decimal" value="${ctx.escape(amountDisplay)}" /></label>
         <label class="ledger-edit-field"><span>${t("日期", "Date", "Datum")}</span><input name="date" type="date" value="${ctx.escape(tx.date)}" /></label>
         <label class="ledger-edit-field"><span>${t("备注", "Note", "Notiz")}</span><input name="note" value="${ctx.escape(tx.note || "")}" /></label>
@@ -1067,12 +1222,18 @@
         return;
       }
       amountInput.classList.remove("is-error");
-      let amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
+      const categoryId = form.querySelector('[name="category"]')?.value || tx.categoryId;
+      const catNext = ledger.categories.find(c => c.id === categoryId) || cat;
+      let amountMinor = catNext?.kind === "income" ? Math.abs(token) : -Math.abs(token);
       const date = form.querySelector('[name="date"]').value || tx.date;
       const note = form.querySelector('[name="note"]').value || "";
-      const result = core().updateTransaction(ledgerState(), tx.id, { amountMinor, date, note }, { lang: ctx.lang?.() });
+      const result = core().updateTransaction(ledgerState(), tx.id, { amountMinor, date, note, categoryId }, { lang: ctx.lang?.() });
       if (!result) return;
-      commit(result.ledger);
+      let nextLedger = result.ledger;
+      if (categoryId !== tx.categoryId && note) {
+        nextLedger = core().rememberCategoryHint(nextLedger, note, categoryId);
+      }
+      commit(nextLedger);
       closeEditPopover();
       ctx.toast?.(t("已更新", "Entry updated", "Buchung aktualisiert"));
       render();
@@ -1192,7 +1353,7 @@
     form?.addEventListener("submit", event => {
       event.preventDefault();
       const input = form.querySelector("input[name=quick]");
-      const parsed = core().parseQuickEntry(input.value, ledger, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
+      const parsed = core().parseQuickEntry(input.value, ledger, { lang: ctx.lang?.(), today: viewDay || ctx.iso(new Date()) });
       if (!parsed.ok) {
         input.classList.add("is-error");
         input.setAttribute("aria-invalid", "true");
@@ -1223,19 +1384,40 @@
         input.focus();
       });
     });
-    host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => {
-      viewMonth = shiftMonth(ym, -1);
+    host.querySelector("[data-ledger-day-prev]")?.addEventListener("click", () => {
+      viewDay = shiftDay(viewDay || ctx.iso(new Date()), -1);
+      viewMonth = viewDay.slice(0, 7);
       listDayFilter = "";
-      listCategoryFilter = "";
-      ledgerMonthPulse = true;
       render();
     });
-    host.querySelector("[data-ledger-next]")?.addEventListener("click", () => {
-      viewMonth = shiftMonth(ym, 1);
+    host.querySelector("[data-ledger-day-next]")?.addEventListener("click", () => {
+      const today = ctx.iso(new Date());
+      const next = shiftDay(viewDay || today, 1);
+      if (next > today) return;
+      viewDay = next;
+      viewMonth = viewDay.slice(0, 7);
       listDayFilter = "";
-      listCategoryFilter = "";
-      ledgerMonthPulse = true;
       render();
+    });
+    host.querySelector("[data-ledger-more-toggle]")?.addEventListener("click", () => {
+      ledgerMenuOpen = !ledgerMenuOpen;
+      render();
+    });
+    host.querySelectorAll("[data-ledger-stats]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        statsScope = btn.getAttribute("data-ledger-stats") === "month" ? "month" : "week";
+        render();
+      });
+    });
+    host.querySelectorAll("[data-ledger-expand-day]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const day = btn.getAttribute("data-ledger-expand-day");
+        if (!day) return;
+        viewDay = day;
+        listDayFilter = "";
+        viewMonth = day.slice(0, 7);
+        render();
+      });
     });
     host.querySelectorAll("[data-ledger-review-scatter]").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -1268,6 +1450,15 @@
     bindDelete(host, ledger);
     bindDuplicate(host);
     bindEdit(host);
+    host.querySelectorAll(".ledger-tx-cat-chip").forEach(btn => {
+      btn.addEventListener("click", () => {
+        pulseLedgerCategoryChip(btn);
+        const id = btn.closest(".ledger-tx")?.dataset.id;
+        if (!id) return;
+        const tx = ledgerState().transactions.find(row => row.id === id);
+        if (tx) openEditPopover(host, tx, ledgerState());
+      });
+    });
     bindRecurring(host, ym);
     bindBudget(host, ym);
     bindTouchRowGestures(host);
@@ -1651,10 +1842,22 @@
     const host = $("#ledgerView .ledger-page");
     if (!host || !ctx) return;
     destroyTrendPlot();
-    const ledger = ledgerState();
-    if (!viewMonth) viewMonth = ymFromDate(ctx.iso(new Date()));
+    let ledger = ledgerState();
+    const today = ctx.iso(new Date());
+    if (!viewDay) viewDay = today;
+    viewMonth = viewDay.slice(0, 7);
+    const autoPosted = ctx.state()?.meta?.demo?.active
+      ? null
+      : core().autoPostDueMonthlyRecurring(ledger, { lang: ctx.lang?.(), today });
+    if (autoPosted) {
+      commit(autoPosted.ledger);
+      ledger = ledgerState();
+    }
     const ym = viewMonth;
-    if (listDayFilter && !listDayFilter.startsWith(`${ym}-`)) listDayFilter = "";
+    if (listDayFilter && !listDayFilter.startsWith(`${ym}-`)) {
+      viewMonth = listDayFilter.slice(0, 7);
+      viewDay = listDayFilter;
+    }
     const summary = core().monthSummary(ledger, ym);
     const breakdown = core().categoryBreakdown(ledger, ym, "expense");
     const cur = ledger.settings.defaultCurrency;
@@ -1668,78 +1871,34 @@
       : "";
 
     host.innerHTML = `
-      <header class="ledger-header">
-        <div>
-          <span class="kicker">${t("记账", "Money", "Geld")}</span>
-          <h2>${ctx.escape(monthLabel(ym))}</h2>
+      <header class="ledger-header ledger-header--daily panel">
+        <div class="ledger-day-nav">
+          <button type="button" class="icon-button" data-ledger-day-prev aria-label="${t("前一天", "Previous day", "Vorheriger Tag")}">‹</button>
+          <h2 class="ledger-day-title">${ctx.escape(dayLabel(viewDay))}</h2>
+          <button type="button" class="icon-button" data-ledger-day-next aria-label="${t("后一天", "Next day", "Nächster Tag")}" ${viewDay >= today ? "disabled" : ""}>›</button>
         </div>
-        <div class="ledger-month-nav" title="${t("M 任意页打开 · ← → 月份 · / 搜索 · N 录入", "M opens Money anywhere · ← → month · / search · N entry", "M öffnet Finanzen · ← → Monat · / Suche · N Erfassung")}">
-          <button type="button" class="icon-button" data-ledger-prev aria-label="${t("上个月", "Previous month", "Vorheriger Monat")}">‹</button>
-          <button type="button" class="icon-button" data-ledger-next aria-label="${t("下个月", "Next month", "Nächster Monat")}">›</button>
-        </div>
+        ${renderLedgerMoreMenu(ledger, ym)}
       </header>
-      <p class="ledger-kbd-hints" aria-hidden="true"><kbd>M</kbd> ${t("打开", "Open", "Öffnen")} · <kbd>N</kbd> ${t("录入", "Entry", "Erfassung")} · <kbd>/</kbd> ${t("搜索", "Search", "Suche")} · <kbd>←</kbd><kbd>→</kbd> ${t("月份", "Month", "Monat")}</p>
-      <div class="ledger-summary">
-        <article><small>${t("收入", "Income", "Einnahmen")}</small><strong data-ledger-sum="income">${ctx.escape(core().formatMoney(summary.incomeMinor, cur, ctx.locale?.()))}</strong></article>
-        <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, ctx.locale?.()))}</strong></article>
-        <article><small>${t("结余", "Net", "Saldo")}</small><strong data-ledger-sum="net">${ctx.escape(core().formatMoney(summary.netMinor, cur, ctx.locale?.()))}</strong></article>
-      </div>
-      ${fxHint}
-      <form class="ledger-quick" id="ledgerQuickForm">
+      <form class="ledger-quick panel" id="ledgerQuickForm">
         <div class="ledger-quick-label">
-          <span>${t("快速录入", "Quick entry", "Schnellerfassung")}</span>
-          <input name="quick" id="ledgerQuickInput" type="text" enterkeyhint="done" autocomplete="off" placeholder="${t("12,50 咖啡 · -45 Miete gestern", "12.50 coffee · -45 rent yesterday", "12,50 Kaffee · -45 Miete gestern")}" />
+          <input name="quick" id="ledgerQuickInput" type="text" enterkeyhint="done" autocomplete="off" placeholder="${t("12,50 咖啡", "12.50 coffee · -45 rent yesterday", "12,50 Kaffee · -45 Miete gestern")}" aria-label="${t("快速录入", "Quick entry", "Schnellerfassung")}" />
         </div>
         <button type="submit" class="primary-button">${t("添加", "Add", "Hinzufügen")}</button>
       </form>
       ${renderKeypad()}
-      <div class="ledger-chips">${renderChips(ledger)}</div>
-      ${renderRecurringPendingBanner(ledger, ym)}
       ${renderOnboarding(ledger)}
-      <div class="ledger-toolbar">
-        <input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" />
-        <button type="button" class="secondary-button" data-ledger-import>${t("导入 CSV", "Import CSV", "CSV importieren")}</button>
-        <button type="button" class="secondary-button" data-ledger-export>${t("导出 CSV", "Export CSV", "CSV exportieren")}</button>
-        <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
-      </div>
-      <div class="ledger-panels ledger-panels--wide">
-        <section class="ledger-panel ledger-panel--categories">
-          <div class="ledger-panel-head">
-            <h3>${t("分类", "Categories", "Kategorien")}</h3>
-            <div class="ledger-chart-toggle" role="group" aria-label="${t("图表样式", "Chart style", "Diagramm")}">
-              <button type="button" class="ledger-chart-mode${categoryChartMode === "donut" ? " is-active" : ""}" data-chart-mode="donut" aria-pressed="${categoryChartMode === "donut"}">${t("圆环", "Donut", "Ring")}</button>
-              <button type="button" class="ledger-chart-mode${categoryChartMode === "treemap" ? " is-active" : ""}" data-chart-mode="treemap" aria-pressed="${categoryChartMode === "treemap"}">${t("树图", "Treemap", "Baum")}</button>
-            </div>
-          </div>
-          ${renderCategoryViz(breakdown, ledger)}
-        </section>
-        <section class="ledger-panel">
-          <h3>${t("支出趋势", "Spending trend", "Ausgabentrend")}</h3>
-          <div class="ledger-trend" id="ledgerTrendPlot"></div>
-        </section>
-        <section class="ledger-panel ledger-panel--heat">
-          <h3>${t("每日支出", "Daily spend", "Tägliche Ausgaben")}</h3>
-          ${renderHeatmap(ledger, ym)}
-        </section>
-      </div>
+      ${renderStatsPanel(ledger, viewDay)}
+      ${fxHint}
+      ${renderSubscriptionList(ledger)}
+      ${renderRecurringPendingBanner(ledger, ym)}
       ${renderWellnessInsights(ledger, ym)}
-      <section class="ledger-budget-wrap">
-        <div class="ledger-budget-head">
-          <h3>${t("预算进度", "Budget progress", "Budgetfortschritt")}</h3>
-          <button type="button" class="secondary-button ledger-budget-add">${t("设置预算", "Set budget", "Budget setzen")}</button>
-        </div>
-        ${renderBudgets(ledger, ym)}
-      </section>
-      <section class="ledger-recurring-wrap">
-        <h3>${t("固定收支", "Recurring", "Wiederkehrend")}</h3>
-        ${renderRecurring(ledger)}
-      </section>
-      <section class="ledger-list-wrap">
+      <section class="ledger-list-wrap panel">
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
         ${renderDayFilterChip(ym)}
         ${renderCategoryFilterChip(ledger)}
         ${renderList(ledger, ym)}
-      </section>`;
+      </section>
+      <div class="ledger-legacy-viz" hidden aria-hidden="true">${renderBudgets(ledger, ym)}<div class="ledger-chips">${renderChips(ledger)}</div><div class="ledger-chart-toggle" role="group"><button type="button" class="ledger-chart-mode is-active" data-chart-mode="donut">Donut</button><button type="button" class="ledger-chart-mode" data-chart-mode="treemap">Tree</button></div></div>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));
     host.querySelector("[data-ledger-sample-entry]")?.addEventListener("click", () => {
       if (postSampleEntry(host, ledgerState())) render();
@@ -1751,17 +1910,11 @@
     if (dropHint) {
       dropHint.textContent = t("松开以导入 CSV", "Drop CSV to import", "CSV loslassen zum Importieren");
     }
-    requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));
     requestAnimationFrame(() => {
-      const viz = host.querySelector(".ledger-category-viz");
+      const viz = host.querySelector(".ledger-panel--stats .ledger-category-viz");
       if (viz && !viz.classList.contains("is-ready")) viz.classList.add("is-ready");
-      const budgetList = host.querySelector(".ledger-budget-list.is-retargeting");
-      root.LifeLedgerReviewBars?.animateLedgerBudgetFills(budgetList);
-      root.LifeLedgerInteraction?.retarget?.(budgetList);
-      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-heat-grid.is-retargeting"));
-      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-donut-segments.is-retargeting"));
-      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-treemap.is-retargeting"));
-      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-wellness-grid.is-retargeting"));
+      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-panel--stats .ledger-donut-segments.is-retargeting"));
+      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-daily-strip .ledger-heat-grid.is-retargeting"));
     });
     if (lastHighlightTxId) {
       const hi = lastHighlightTxId;
@@ -1817,6 +1970,7 @@
 
   function openToDay(isoDate, options = {}) {
     if (typeof isoDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return;
+    viewDay = isoDate;
     viewMonth = isoDate.slice(0, 7);
     listDayFilter = isoDate;
     listCategoryFilter = "";
@@ -1828,11 +1982,14 @@
   function openToMonth(ym, options = {}) {
     if (typeof ym !== "string" || !/^\d{4}-\d{2}$/.test(ym)) return;
     viewMonth = ym;
+    const today = ctx?.iso(new Date()) || "";
+    viewDay = ym === today.slice(0, 7) ? today : `${ym}-01`;
     listDayFilter = "";
     listCategoryFilter = "";
     listFilter = "";
     pendingListFocus = options.scrollToList === true;
     ledgerMonthPulse = options.pulseMonth !== false;
+    statsScope = "month";
     if (ctx) render();
   }
 

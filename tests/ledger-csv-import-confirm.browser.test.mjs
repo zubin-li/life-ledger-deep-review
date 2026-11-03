@@ -53,6 +53,8 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
+      await page.waitForSelector("#ledgerView.active");
+      await page.locator("[data-ledger-more-toggle]").click();
       await page.waitForSelector("[data-ledger-import]");
 
       await page.locator("#ledgerCsvFile").setInputFiles({
@@ -84,7 +86,11 @@ test(
       await page.waitForSelector(".ledger-import-popover");
       await page.click("[data-import-confirm]");
       await page.waitForSelector(".ledger-import-popover", { state: "detached" });
-      await page.waitForSelector(".ledger-tx", { timeout: 8000 });
+      await page.waitForFunction(() => {
+        const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
+        const state = JSON.parse(localStorage.getItem(key));
+        return (state.ledger?.transactions?.length ?? 0) === 2;
+      }, { timeout: 8000 });
 
       const countAfterImport = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));

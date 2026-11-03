@@ -1240,3 +1240,63 @@ test("monthSummary reports otherCurrencyCount", () => {
   assert.equal(summary.otherCurrencyCount, 1);
   assert.equal(summary.expenseMinor, 0);
 });
+
+test("inferCategoryFromNote maps coffee keywords to dining", () => {
+  const ledger = L.normalize(null, { lang: "zh" });
+  const cat = L.inferCategoryFromNote("rewe einkauf", ledger, -500, "de");
+  const groceries = ledger.categories.find(c => c.defaultSlug === "groceries" || L.localizedCategoryName(c, "de") === "Lebensmittel");
+  assert.equal(cat?.id, groceries?.id);
+  const dining = L.inferCategoryFromNote("12,50 kaffee", ledger, -1250, "de");
+  const diningCat = ledger.categories.find(c => c.defaultSlug === "dining" || L.localizedCategoryName(c, "zh") === "餐饮");
+  assert.equal(dining?.id, diningCat?.id);
+});
+
+test("rememberCategoryHint overrides keyword inference", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const transport = ledger.categories.find(c => c.defaultSlug === "transport");
+  ledger = L.rememberCategoryHint(ledger, "rewe", transport.id);
+  const cat = L.inferCategoryFromNote("rewe", ledger, -100, "en");
+  assert.equal(cat?.id, transport.id);
+});
+
+test("weekRangeMondayLocal uses Monday start in local calendar", () => {
+  const range = L.weekRangeMondayLocal("2026-11-05", "2026-11-05");
+  assert.equal(range.start, "2026-11-02");
+  assert.equal(range.end, "2026-11-05");
+});
+
+test("categoryBreakdownRange limits to ISO date span", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const food = ledger.categories.find(c => c.defaultSlug === "dining");
+  const home = ledger.categories.find(c => c.defaultSlug === "housing");
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: food.id, amountMinor: -500, date: "2026-11-03", note: "a" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: home.id, amountMinor: -4500, date: "2026-11-01", note: "b" }));
+  const week = L.categoryBreakdownRange(ledger, "2026-11-02", "2026-11-05", "expense");
+  assert.equal(week.length, 1);
+  assert.equal(week[0].categoryId, food.id);
+  assert.equal(week[0].amountMinor, 500);
+});
+
+test("autoPostDueMonthlyRecurring is idempotent within a month", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense");
+  ledger.recurring = [{
+    id: "sub1",
+    label: "Streaming",
+    accountId: account,
+    categoryId: cat.id,
+    amountMinor: -1299,
+    currency: "EUR",
+    cadence: "monthly",
+    dayOfMonth: 1,
+    note: "Sub",
+  }];
+  ledger = L.normalize(ledger);
+  const first = L.autoPostDueMonthlyRecurring(ledger, { today: "2026-11-03" });
+  assert.ok(first);
+  assert.equal(first.transactions.length, 1);
+  const second = L.autoPostDueMonthlyRecurring(first.ledger, { today: "2026-11-03" });
+  assert.equal(second, null);
+});

@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Owner feedback pass (2026-11-03): simplified Money daily-first UI, nav order, opaque Today onboarding hint, consolidated `.overnight/capture.mjs` (see `[2.1.0]` entry and `.overnight/PROGRESS-2.md`).
+
 ## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
@@ -95,6 +97,7 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Habits:** Selected habit streak calendar cells pop in with a short stagger (respects reduced motion).
 - **Money:** Quick-entry submit button gets a brief success pop (respects reduced motion).
 - **Review — Money:** scatter empty state shows a three-step checklist (mood / habits / spending) and a primary **Log on Today** CTA; checklist pills jump to **Today**, **Habits**, or **Money**.
+- **Owner feedback (2026-11-03):** Money page recentred on daily entry and automatic week/month stats (donut only on main view); slim grouped transaction list; **⋯** menu for search/CSV/budgets/recurring; sidebar **Money** below Timeline (**⌘5** on Mac); keyword category inference with learned hints; monthly subscription auto-posting; Today onboarding hint card uses opaque surface.
 
 ### Fixed
 

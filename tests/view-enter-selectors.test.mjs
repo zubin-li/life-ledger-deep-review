@@ -244,7 +244,7 @@ test("Batch 13 r6 — global M shortcut, kbd hints, long-press edit, review open
   assert.match(app, /LifeLedgerLedgerUI\?\.focusQuickEntry/);
   assert.match(ledgerUi, /function bindTouchRowGestures\(/);
   assert.match(ledgerUi, /function focusQuickEntry\(/);
-  assert.match(ledgerUi, /ledger-kbd-hints/);
+  assert.match(ledgerUi, /ledger-kbd-hints--menu/);
   assert.match(css, /is-long-press-hint/);
   assert.match(css, /button\.text-button\[data-open-ledger\]\.is-stat-press/);
 });
@@ -256,7 +256,8 @@ test("Batch 13 r7 — scatter jump chip press + Mac View Money menu", () => {
   assert.match(css, /Batch 13 r7 — review scatter jump chip press/);
   assert.match(app, /function pulseReviewScatterJumpChip\(/);
   assert.match(css, /is-jump-press/);
-  assert.match(libRs, /item\("view_ledger", Some\("CmdOrCtrl\+7"\)/);
+  assert.match(libRs, /item\("view_ledger", Some\("CmdOrCtrl\+5"\)/);
+  assert.match(libRs, /item\("view_habits", Some\("CmdOrCtrl\+7"\)/);
   assert.match(libRs, /"view_ledger" => Some\("view:ledger"\)/);
 });
 
@@ -282,4 +283,18 @@ test("Batch 13 r9 — Today spending open + ledger chart / heat press", () => {
   assert.match(css, /is-spend-press/);
   assert.match(css, /is-mode-press/);
   assert.match(css, /is-heat-press/);
+});
+
+test("Owner feedback r1 — daily ledger shell + nav order", () => {
+  const html = fs.readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+  const navBlock = html.match(/<nav class="main-nav"[\s\S]*?<\/nav>/)[0];
+  assert.ok(navBlock.indexOf('data-view="timeline"') < navBlock.indexOf('data-view="ledger"'));
+  assert.ok(navBlock.indexOf('data-view="ledger"') < navBlock.indexOf('data-view="review"'));
+  assert.match(ledgerUi, /renderStatsPanel/);
+  assert.match(ledgerUi, /data-ledger-day-prev/);
+  assert.match(ledgerUi, /renderSubscriptionList/);
+  assert.match(core, /inferCategoryFromNote/);
+  assert.match(core, /autoPostDueMonthlyRecurring/);
 });
