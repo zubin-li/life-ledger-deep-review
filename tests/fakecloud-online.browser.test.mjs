@@ -43,11 +43,16 @@ test(
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       try {
         await page.addInitScript(() => {
+          localStorage.clear();
           localStorage.setItem("life-ledger-demo-workspace-dismissed", "1");
           localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
         });
         await page.goto(base, { waitUntil: "networkidle", timeout: 60_000 });
         await page.waitForSelector(".tc-grid", { timeout: 30_000 });
+        await page.waitForFunction(() => document.querySelector("#saveMode")?.classList.contains("cloud"), {
+          timeout: 90_000,
+        });
+        await page.waitForTimeout(500);
         const conflictHidden = await page.evaluate(() => {
           const row = document.getElementById("conflictRecoveryRow");
           return !row || row.hidden || getComputedStyle(row).display === "none";

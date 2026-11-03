@@ -72,6 +72,14 @@ test(
         const weekHint = await page.locator("#weekSpendingHint").textContent();
         assert.doesNotMatch(weekHint || "", /\+\d{4,}%/);
         assert.match(weekHint || "", /较上周同期|与上周同期相近/);
+
+        await page.locator('.nav-item[data-view="review"]').click();
+        await page.waitForSelector("#reviewLedgerSummary:not([hidden])", { timeout: 45_000 });
+        await page.locator("#reviewLedgerSummary").scrollIntoViewIfNeeded();
+        await page.waitForSelector("#reviewLedgerSpendHint:not([hidden])", { timeout: 45_000 });
+        const reviewHint = await page.locator("#reviewLedgerSpendHint").textContent();
+        assert.doesNotMatch(reviewHint || "", /\+\d{4,}%/);
+        assert.match(reviewHint || "", /较上月同期|与上月同期相近|较上月/);
       } finally {
         await context.close();
         await browser.close();

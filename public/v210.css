@@ -4426,6 +4426,20 @@ html[data-theme="dark"] .tw-card.tw-spending .tw-spend-compare {
   min-width: 2ch;
 }
 
+/* Batch 9 r5 — journal feed skeleton host + review inspector empty */
+#journalFeed.ll-paint-host:not(.ll-paint-host--ready) {
+  min-height: min(42vh, 320px);
+}
+
+#reviewView #inspectorReviewTable .hairline-empty.ll-empty {
+  padding: 20px 12px 8px;
+}
+
+#timelineView #journalFeedPane .feed-empty .hairline-empty.ll-empty {
+  max-width: 28rem;
+  margin-inline: auto;
+}
+
 html.motion-reduced #weekView .week-insight-value.roll-host {
   display: inline;
 }

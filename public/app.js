@@ -8259,6 +8259,7 @@ async function renderJournalFeed(version) {
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
   host?.classList.add('ll-paint-host--ready');
   hydrateHairlineMounts(host);
+  host?.querySelector(".feed-empty .hairline-empty")?.classList.add("ll-empty");
   finishJournalFeedFilterMotion();
   journalFeedRevealFrom = 0;
   $('#journalLoadMore').hidden = entries.length <= visible.length;
@@ -8319,6 +8320,7 @@ function renderTimelineEntryList(entries = []) {
   if (!entries.length) {
     container.innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-journal.svg", tr("timeline.emptyTitle"), tr("timeline.emptyHelp"));
     hydrateHairlineMounts(container);
+    container.querySelector(".hairline-empty")?.classList.add("ll-empty");
     return;
   }
   container.innerHTML = entries.map(entry => {
@@ -9488,6 +9490,7 @@ function renderReviewInspectorTable() {
       ),
     );
     hydrateHairlineMounts(table);
+    table.querySelector(".hairline-empty")?.classList.add("ll-empty");
     const focusPanel = $("#inspectorReviewFocus");
     if (focusPanel) focusPanel.innerHTML = "";
     return;

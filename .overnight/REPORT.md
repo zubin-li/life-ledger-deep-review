@@ -1,12 +1,33 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 4）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 5）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 4：** 本周洞察数字 roll-up + fakecloud 本周支出 hint 烟测；单元 **379**、浏览器 **20** 全绿。
+**Batch 9 Round 5：** 时间轴 feed skeleton 宿主 + 空状态 polish + fakecloud 复盘支出 hint 烟测；单元 **379**、浏览器 **21** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 4）— 本周 roll-up 与 fakecloud 烟测
+## 本轮（Batch 9 · Round 5）— 时间轴 skeleton 与空状态
+
+| 项目 | 说明 |
+|------|------|
+| **时间轴 feed** | `#journalFeed` 带 **`ll-paint-host`**，日度模式拉照片前先显示 **`ll-skeleton--feed`**，加载完加 **`ll-paint-host--ready`**（`prefers-reduced-motion` 仍直出内容）。 |
+| **空状态** | 时间轴 feed / 日历条目列表 / 复盘 inspector 表格的空 hairline 卡片统一 **`ll-empty`** 与居中宽度（见 `v210.css` Batch 9 r5）。 |
+| **fakecloud** | preview 用例在 **本周** 之后进入 **复盘**，断言 `#reviewLedgerSpendHint` 无四位数 +%、含 **较上月同期** 类文案；`fakecloud-online` 先 **clear + 等 cloud** 减少并行 flake。 |
+| **测试** | `npm test` **379**；`npm run test:browser` **21**（+1 `journal-feed-paint`）。 |
+| **截图** | `.overnight/shots/b9r5-journal-feed-*`、`.overnight/shots/b9r5-review-inspector-empty-*`（`node .overnight/capture-batch9-round5.mjs`，端口 **5295**）。 |
+
+**怎么验：**
+
+1. Demo → **时间轴**：首次进入日度 feed 应短暂 skeleton 再出现条目（或看 Round 5 截图）。
+2. 空数据月 / 复盘明细无数据时，空状态插画居中、有 **llEmptyReveal** 动效（减弱动效下无动画）。
+3. `bash .overnight/fakecloud.sh 5296` → showcase 同步 → **复盘** 本月支出 hint 可读。
+4. `npm run test:browser` 应 **21** 条全过。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；对比基线 ≥ €15 时仍 **+999%** 封顶。
+
+---
+
+## 上一轮（Batch 9 · Round 4）— 本周 roll-up 与 fakecloud 烟测
 
 | 项目 | 说明 |
 |------|------|
