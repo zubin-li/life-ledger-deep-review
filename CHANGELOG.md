@@ -4,19 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-### Changed
-
-- **Today — Spending today:** when today has expenses, the card shows the largest category chip and an entry count in the caption; a **vs yesterday** line compares default-currency spend (+/−% or “about the same”); brand-new ledgers get a subtle € side marker on empty days; German recurring pills use occurrence wording (**offene Posten**).
-- **Week — Insights:** fifth tile shows **week spending** (Mon–today for the selected week, reporting currency); tap opens **Money** on that week’s month; a caption compares the same weekday span to **last week** (+/−% or “about the same”). The **focus time** tile adds a caption for days with journal notes or mood reasons vs the same span **last week** (day count). The **completion rate** tile adds a caption comparing habit completion **percentage points** vs the same span **last week**.
-- **Review — Money summary:** spending stat includes a caption comparing the same calendar days to **last month** (+/−% or “about the same”).
-
-### Fixed
-
-- **Weekly recurring pending:** fixed templates stay on the due list until each ISO week in the calendar month has a matching entry (legacy rows without `recurringId` only clear their week); **Post all pending** books every past occurrence in the month for weekly cadence.
-- **Recurring due counts:** Today pill, Money banner, and Review strip now count **unposted occurrences** (remaining weekly dates in the month), not just template rows.
-- **Voice hints:** built-in habit names in voice context terms follow the active UI language via `displayHabitName`.
-
-## [2.1.0] - 2026-11-02
+## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
 
@@ -38,9 +26,15 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Money desktop shortcuts:** **N** quick entry, **/** search, **← / →** month (Mac menu month step includes Money).
 - Timeline calendar photo skeleton; mobile ledger keypad clearance; week insight pulse; README EN/ZH/DE showcase adds Money (`08-ledger-v21`) desktop/mobile rows; `.overnight/CSS-LAYERS.md` documents CSS slices.
 - Release metadata, PWA cache, and asset `?v=` markers aligned to **2.1.0** / Mac **3.1.0**.
+- **Today — Spending today:** when today has expenses, the card shows the largest category chip and an entry count in the caption; a **vs yesterday** line compares default-currency spend (+/−% or “about the same”); brand-new ledgers get a subtle € side marker on empty days; German recurring pills use occurrence wording (**offene Posten**).
+- **Week — Insights:** fifth tile shows **week spending** (Mon–today for the selected week, reporting currency); tap opens **Money** on that week’s month; a caption compares the same weekday span to **last week** (+/−% or “about the same”). The **focus time** tile adds a caption for days with journal notes or mood reasons vs the same span **last week** (day count). The **completion rate** tile adds a caption comparing habit completion **percentage points** vs the same span **last week**.
+- **Review — Money summary:** spending stat includes a caption comparing the same calendar days to **last month** (+/−% or “about the same”).
 
 ### Fixed
 
+- **Weekly recurring pending:** fixed templates stay on the due list until each ISO week in the calendar month has a matching entry (legacy rows without `recurringId` only clear their week); **Post all pending** books every past occurrence in the month for weekly cadence.
+- **Recurring due counts:** Today pill, Money banner, and Review strip now count **unposted occurrences** (remaining weekly dates in the month), not just template rows.
+- **Voice hints:** built-in habit names in voice context terms follow the active UI language via `displayHabitName`.
 - **CSV:** semicolon tokenizer preserves empty cells (`;;`); skips `Buchungstag` header rows; quoted amounts and trailing-minus parsing; export uses active UI language for categories and explicit `currency` column.
 - **Sync & backup:** Tencent/Cloudflare merge keeps local ledger when remote lacks it; conflict recovery merges ledger; export/import v3 round-trip and budget dedupe by `(month, categoryId)`.
 - **Money UI:** default-currency-only summaries; edit invalid amount surfaces error; popovers dismiss on backdrop/Escape; swipe-delete ignores vertical scroll; category repair for localized default names; donut/treemap counts default currency only.

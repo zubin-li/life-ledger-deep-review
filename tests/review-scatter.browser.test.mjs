@@ -106,6 +106,16 @@ test(
         spendBefore,
         { timeout: 5000 },
       );
+      await page.waitForFunction(
+        () => {
+          const strong = document.querySelector(".review-ledger-stats strong");
+          if (!strong) return false;
+          const layers = strong.querySelectorAll(".roll-old, .roll-new").length;
+          if (layers >= 2) return true;
+          return !strong.classList.contains("roll-host") && Boolean(strong.dataset.rollValue);
+        },
+        { timeout: 3000 },
+      );
       const rolling = await page.locator(".review-ledger-stats strong.roll-host").count();
       const rollLayers = await page.locator(".review-ledger-stats strong.roll-host .roll-old, .review-ledger-stats strong.roll-host .roll-new").count();
       if (rolling >= 1) {

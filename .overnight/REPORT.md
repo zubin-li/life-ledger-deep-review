@@ -1,12 +1,35 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 9）
+# Life Ledger 夜间构建总报告（Batch 8 完成 · Round 10）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 9：** **本周 · 数据洞察** 的 **完成率** 格增加 **较上周同期** 习惯完成率 **百分点** 对比；单元 **374**、浏览器 **17** 全绿。
+**Batch 8 已收尾：** 记账 Goal 1 的周固定待记与跨页支出/习惯/日记对比 caption 全部落地；CHANGELOG **2.1.0** 日期 **2026-11-03**；单元 **374**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 9）— 本周完成率对比
+## 本轮（Batch 8 · Round 10）— 发布整理
+
+| 项目 | 说明 |
+|------|------|
+| **CHANGELOG** | `[Unreleased]` 内容并入 `[2.1.0]`（Changed/Fixed）；空 `[Unreleased]` 占位。 |
+| **Release notes** | `.github/releases/v2.1.0.md` 增加 Batch 8 亮点段落。 |
+| **测试** | 修复 `review-scatter.browser.test.mjs` roll 动画 race；`npm test` **374**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r10-release-*`（`node .overnight/capture-batch8-round10.mjs`，端口 **5291**）。 |
+
+**明天早上建议路径（demo）：**
+
+1. `public/index.html?mode=local&local-preview=demo-showcase-v1`
+2. **今日** → 滚到 **今日支出** → 分类 chip + **较昨日**（`b8r10-release-today-spending-zh-light-1440-chromium.png`）
+3. **本周** → **数据洞察** 五格 + 三行 hint（`b8r10-release-week-insights-zh-light-1440-chromium.png`）
+4. **复盘** → **本月支出摘要** → **较上月同期**（`b8r10-release-review-ledger-zh-light-1440-chromium.png`）
+5. **记账** 全页（德语深色手机：`b8r10-release-ledger-de-dark-390-webkit.png`）
+
+**Batch 8 各轮细节：** 见下文 Round 9 → Round 1 条目；设计见 `.overnight/LEDGER-DESIGN.md`；Antigravity 审查见 `.overnight/REVIEW.md`（无 HIGH/MED）。
+
+**留到 2.2：** `v210.css` reduced-motion 物理合并；Cloudflare 首次不 seed 账本；demo 对比数字可能很夸张。
+
+---
+
+## 上一轮（Batch 8 · Round 9）— 本周完成率对比
 
 | 项目 | 说明 |
 |------|------|
