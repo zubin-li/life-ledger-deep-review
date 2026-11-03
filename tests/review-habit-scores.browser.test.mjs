@@ -79,3 +79,31 @@ test(
     }
   },
 );
+
+test(
+  "review habit inspector streak labels use zh copy",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-language", "zh");
+        localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+      });
+      await page.goto(base, { waitUntil: "networkidle" });
+      await page.click('.nav-item[data-view="review"]');
+      await page.waitForSelector("#reviewView.active", { timeout: 15000 });
+      await page.waitForSelector(".review-score-table[open]", { timeout: 8000 });
+      await page.waitForSelector("#inspectorReviewTable .inspector-stat-list--live article", { timeout: 8000 });
+      const text = await page.locator("#inspectorReviewTable .inspector-stat-list--live article").first().textContent();
+      assert.match(text || "", /当前连续/);
+      assert.doesNotMatch(text || "", /Current streak/i);
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);

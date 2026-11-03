@@ -19,3 +19,10 @@ test("ledgerHasEntries is declared before spending note reads it", () => {
   const note = widgets.indexOf('t("spendingEmptyQuiet")');
   assert.ok(decl > 0 && note > decl, "avoid temporal dead zone in spending()");
 });
+
+test("Today spending card shows localized mood pill when mood is logged", () => {
+  assert.match(widgets, /tw-spend-mood-pill/);
+  assert.match(widgets, /spendingMoodLabel/);
+  assert.match(widgets, /moodPill\.dataset\.mood = dayMood/);
+  assert.match(widgets, /t\("moodGood"\)/);
+});

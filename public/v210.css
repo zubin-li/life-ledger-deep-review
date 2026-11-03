@@ -3966,3 +3966,87 @@ html:not([data-workspace]) #reviewView > .review-score-table:not([open]) #inspec
     transition: none;
   }
 }
+
+/* Batch 7 r5 — Today spending × mood pill (Goal 2 correlation hint) */
+.tw-spend-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.tw-spend-mood-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font: 500 0.6875rem/1.35 var(--font-body);
+  letter-spacing: 0.02em;
+  border: 1px solid color-mix(in srgb, var(--text-primary, #1d1d1f) 12%, transparent);
+  background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
+  color: var(--secondaryLabel, #6e6e73);
+}
+
+.tw-spend-mood-pill[data-mood="很好"] {
+  color: #9b6c1d;
+  border-color: rgba(182, 129, 37, 0.35);
+  background: color-mix(in srgb, #fff5d9 72%, var(--card, #fff));
+}
+
+.tw-spend-mood-pill[data-mood="平静"] {
+  color: #567963;
+  border-color: rgba(100, 138, 113, 0.38);
+  background: color-mix(in srgb, #edf5ef 72%, var(--card, #fff));
+}
+
+.tw-spend-mood-pill[data-mood="低落"] {
+  color: #4f7fad;
+  border-color: rgba(93, 143, 197, 0.38);
+  background: color-mix(in srgb, #eaf3fc 72%, var(--card, #fff));
+}
+
+html[data-theme="dark"] .tw-spend-mood-pill[data-mood="很好"] {
+  color: #ffe2a2;
+  border-color: rgba(240, 185, 110, 0.35);
+  background: rgba(182, 129, 37, 0.16);
+}
+
+html[data-theme="dark"] .tw-spend-mood-pill[data-mood="平静"] {
+  color: #c0e1ca;
+  border-color: rgba(155, 194, 171, 0.35);
+  background: rgba(100, 138, 113, 0.18);
+}
+
+html[data-theme="dark"] .tw-spend-mood-pill[data-mood="低落"] {
+  color: #b9dbff;
+  border-color: rgba(125, 183, 255, 0.35);
+  background: rgba(93, 143, 197, 0.16);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tw-card.tw-spending:not(.is-empty) .tw-spend-mood-pill:not([hidden]) {
+    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+@keyframes tw-spend-mood-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+html.motion-reduced .tw-card.tw-spending .tw-spend-mood-pill {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-card.tw-spending .tw-spend-mood-pill {
+    animation: none;
+  }
+}

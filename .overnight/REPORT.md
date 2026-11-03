@@ -1,6 +1,35 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 4）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 5）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 5：** Today 支出卡心情胶囊 + 记账快捷键/复盘 i18n 浏览器回归；单元 **354**、浏览器 **14** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 5）— 支出 × 心情 + QA
+
+| 项目 | 说明 |
+|------|------|
+| **Today · 今日支出** | 当天已记录心情且账本有数据时，金额旁显示心情胶囊（很好/平静/低落 → 三语）；tooltip 指向复盘「心情与支出」对照。 |
+| **样式** | `v210.css` 末尾：胶囊配色对齐 Today 心情按钮、轻量 enter 动画、`prefers-reduced-motion` 关闭。 |
+| **测试** | `today-spending-mood.browser.test.mjs`、`ledger-shortcuts.browser.test.mjs`；`review-habit-scores` 增加 zh「当前连续」断言；`npm test` **354**；`npm run test:browser` **14**。 |
+| **截图** | `.overnight/shots/b7r5-*`（`node .overnight/capture-batch7-round5.mjs`，端口 **5288**）。 |
+
+**怎么试：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **今日** 滚到 **今日支出**，应见金额与 **平静 / Ruhig** 等胶囊（见 `b7r5-today-spend-mood-zh-light-390-chromium.png`）。
+2. 清空 `state.logs` 当日心情或删掉 `ledger` → 胶囊应消失。
+3. **记账** → 不在输入框时 **←** 换月、**/** 搜索、**N** 快速录入（`ledger-shortcuts.browser.test.mjs` 覆盖）。
+
+**前后对比：** Round 4 只有金额与 sparkline；Round 5 在同一张卡上增加心情上下文，与复盘 Money 散点/洞察同一数据轴。
+
+**已知：** 习惯名仍为 demo 英文；CSS reduced-motion 大表合并仍未做（REVIEW #4）。
+
+---
+
+## 历史（Batch 7 · Round 4）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 4：** 复盘页习惯评分明细重新可见 + 记账 **N** 快捷键；单元 **353**、浏览器 **11** 全绿。
 
