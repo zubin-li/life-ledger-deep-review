@@ -232,7 +232,7 @@ html[data-theme="dark"] .ledger-chart-mode.is-active {
     color-mix(in srgb, var(--hairline, #ccc) 25%, transparent) 100%
   );
   background-size: 200% 100%;
-  animation: ledger-shimmer 1.15s ease-in-out infinite;
+  animation: ll-shimmer 1.15s ease-in-out infinite;
 }
 
 .ledger-skeleton--chart {
@@ -245,17 +245,6 @@ html[data-theme="dark"] .ledger-chart-mode.is-active {
   opacity: 0;
 }
 
-@keyframes ledger-shimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ledger-skeleton {
-    animation: none;
-    opacity: 0.35;
-  }
-}
 
 .ledger-heat-grid {
   display: grid;
@@ -1265,7 +1254,8 @@ html.motion-reduced #reviewView .rv-bar i {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ll-skeleton {
+  .ll-skeleton,
+  .ledger-skeleton {
     animation: none;
     opacity: 0.35;
   }
@@ -3879,4 +3869,33 @@ html[data-theme="dark"] .review-scatter-tip {
 html.motion-reduced .review-scatter-dot-group circle:last-child,
 html.motion-reduced #reviewView .rv-habit-spark rect {
   transition: none !important;
+}
+
+/* Batch 7 round 3 — CSV import confirm sheet + shimmer unify (REVIEW #4 partial) */
+
+.ledger-import-confirm .ledger-import-confirm-body {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--text, #1a1a1a) 88%, transparent);
+}
+
+html[data-theme="dark"] .ledger-import-confirm .ledger-import-confirm-body {
+  color: color-mix(in srgb, var(--text, #edf2f7) 92%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ledger-import-popover .ledger-import-confirm {
+    animation: modalSheetEnter 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+html.motion-reduced .ledger-import-popover .ledger-import-confirm {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-import-popover .ledger-import-confirm {
+    animation: none !important;
+  }
 }

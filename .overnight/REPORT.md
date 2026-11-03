@@ -1,12 +1,35 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 2）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 3）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 3：** CSV 导入改为应用内确认层 + shimmer CSS 去重；单元 **353**、浏览器 **9** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 3）— CSV 确认层
+
+| 项目 | 说明 |
+|------|------|
+| **导入 UI** | 选 CSV 后弹出 **导入 CSV / CSV importieren**  sheet，显示将写入的笔数；取消不写库；与编辑交易弹层同 z-index、不透明遮罩。 |
+| **CSS** | 骨架屏 shimmer 统一为 `ll-shimmer`；合并 skeleton 的 reduced-motion 规则（REVIEW #4 一小步）。 |
+| **测试** | `tests/ledger-csv-import-confirm.browser.test.mjs`（取消保持 0 笔、确认后 2 笔）；`npm test` **353**；`npm run test:browser` **9**。 |
+| **截图** | `.overnight/shots/b7r3-*`（`node .overnight/capture-batch7-round3.mjs`，端口 **5291**）。 |
+
+**怎么试：** 侧栏 **记账** → **导入 CSV** → 选银行文件 → 在居中卡片点 **导入** 或 **Abbrechen**（Esc / 点暗区等同取消）。
+
+**前后对比：** Round 2 用系统 `confirm`；Round 3 的 `b7r3-*` 为浅色 zh / 深色 de 移动宽下的同一套产品 UI。
+
+**已知：** 截图里若仍见「虚构示例数据」横幅，是因为本地 demo 未清除，仅 ledger 被置空做演示；真实用户无 demo 时不显示。
+
+---
+
+## 历史（Batch 7 · Round 2）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 2：** 记账导入确认 + 桌面快捷键 + CSS 去重（审查 LOW #4 一部分）；单元 **353**、浏览器 **8** 全绿。
 
 ---
-
-## 本轮（Batch 7 · Round 2）— 记账操作感
 
 | 项目 | 说明 |
 |------|------|
@@ -67,7 +90,7 @@ Web **2.1.0** / Mac **3.1.0**。
 | 7 | 在线 fakecloud | `bash .overnight/fakecloud.sh 5298` → `?mode=cloudflare&local-preview=demo-showcase-v1` 同步后记账有数据 |
 | 8 | 文档 | README / SHOWCASE 三语 hero 为 **08-ledger-v21**；手机 Product tour 四图含 Money |
 | 9 | 回归 | 习惯颜色/图标选择器：颜色在 `<label>` 外、popover 不透明（2.0.10 修复，勿回归） |
-| 10 | 测试（可选） | 仓库根目录 `npm test` + `npm run test:browser`（若 fakecloud 超时先 `pkill -f wrangler`） |
+| 10 | 测试（可选） | 仓库根目录 `npm test` + `npm run test:browser`（**9** 项；若 fakecloud 超时先 `pkill -f wrangler`） |
 
 **代表截图（Round 10）：**
 

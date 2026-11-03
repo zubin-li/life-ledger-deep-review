@@ -6,9 +6,9 @@ All notable changes are documented here.
 
 ### Changed
 
-- **Money (ledger):** CSV import shows a confirm dialog with importable/skipped counts before writing; toast includes skipped rows when relevant.
+- **Money (ledger):** CSV import shows an in-app confirm sheet (importable/skipped counts, opaque overlay, Esc/backdrop cancel) before writing; toast includes skipped rows when relevant.
 - **Money (ledger):** desktop shortcuts — **← / →** change month (when not typing), **/** focuses transaction search; month nav tooltip documents keys.
-- **Styles (`v210.css`):** removed duplicate review habit-spark `@keyframes` block (REVIEW #4 partial; spark motion uses unified `rv-spark-grow`).
+- **Styles (`v210.css`):** removed duplicate review habit-spark `@keyframes` block (REVIEW #4 partial; spark motion uses unified `rv-spark-grow`); ledger skeleton shimmer reuses `ll-shimmer` with merged reduced-motion rules.
 
 ### Fixed
 

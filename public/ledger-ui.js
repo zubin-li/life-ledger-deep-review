@@ -28,7 +28,7 @@
     ledgerShortcutBound = true;
     document.addEventListener("keydown", event => {
       if (document.body.dataset.activeView !== "ledger") return;
-      if (document.querySelector(".ledger-edit-popover, .ledger-recurring-popover")) return;
+      if (document.querySelector(".ledger-edit-popover, .ledger-recurring-popover, .ledger-import-popover")) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const typing = isLedgerTypingTarget(event.target);
       if (event.key === "/" && !typing) {
@@ -415,9 +415,48 @@
 
   function closeLedgerPopovers() {
     detachPopoverEscape();
+    document.querySelector(".ledger-import-popover")?.remove();
     document.querySelector(".ledger-edit-popover")?.remove();
     document.querySelector(".ledger-recurring-popover")?.remove();
     document.querySelector(".ledger-budget-popover")?.remove();
+  }
+
+  function openCsvImportConfirm(preview, onConfirm, onCancel) {
+    closeLedgerPopovers();
+    const skipNote = preview.skipped
+      ? t(`，跳过 ${preview.skipped} 行`, `, skip ${preview.skipped} rows`, `, ${preview.skipped} Zeilen übersprungen`)
+      : "";
+    const body = t(
+      `将导入 ${preview.importable} 笔交易${skipNote}。`,
+      `Import ${preview.importable} ${preview.importable === 1 ? "entry" : "entries"}${skipNote}.`,
+      `${preview.importable} Buchung${preview.importable === 1 ? "" : "en"} importieren${skipNote}.`,
+    );
+    const pop = document.createElement("div");
+    pop.className = "ledger-edit-popover ledger-import-popover";
+    pop.innerHTML = `
+      <div class="ledger-edit-form ledger-import-confirm" role="dialog" aria-modal="true" aria-labelledby="ledgerImportConfirmTitle">
+        <header><strong id="ledgerImportConfirmTitle">${t("导入 CSV", "Import CSV", "CSV importieren")}</strong></header>
+        <p class="ledger-import-confirm-body">${ctx.escape(body)}</p>
+        <div class="ledger-edit-actions">
+          <button type="button" class="secondary-button" data-import-cancel>${t("取消", "Cancel", "Abbrechen")}</button>
+          <button type="button" class="primary-button" data-import-confirm>${t("导入", "Import", "Importieren")}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(pop);
+    const finishCancel = () => {
+      closeLedgerPopovers();
+      onCancel?.();
+    };
+    attachPopoverEscape(finishCancel);
+    pop.addEventListener("click", event => {
+      if (event.target === pop) finishCancel();
+    });
+    pop.querySelector("[data-import-cancel]")?.addEventListener("click", finishCancel);
+    pop.querySelector("[data-import-confirm]")?.addEventListener("click", () => {
+      closeLedgerPopovers();
+      onConfirm?.();
+    });
+    pop.querySelector("[data-import-confirm]")?.focus();
   }
 
   function closeEditPopover() {
@@ -759,32 +798,26 @@
           fileInput.value = "";
           return;
         }
-        const skipNote = preview.skipped
-          ? t(`，跳过 ${preview.skipped} 行`, `, skip ${preview.skipped} rows`, `, ${preview.skipped} Zeilen übersprungen`)
-          : "";
-        const ok = window.confirm(
-          t(
-            `将导入 ${preview.importable} 笔交易${skipNote}。继续？`,
-            `Import ${preview.importable} ${preview.importable === 1 ? "entry" : "entries"}${skipNote}. Continue?`,
-            `${preview.importable} Buchung${preview.importable === 1 ? "" : "en"} importieren${skipNote}. Fortfahren?`,
-          ),
+        openCsvImportConfirm(
+          preview,
+          () => {
+            const result = core().importGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
+            const hadNone = !ledgerState().transactions.length;
+            commit(result.ledger);
+            if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
+            const skippedTail = result.skipped
+              ? t(`（跳过 ${result.skipped} 行）`, ` (${result.skipped} skipped)`, ` (${result.skipped} übersprungen)`)
+              : "";
+            ctx.toast?.(
+              t(`已导入 ${result.imported} 笔${skippedTail}`, `Imported ${result.imported} entries${skippedTail}`, `${result.imported} Buchungen importiert${skippedTail}`),
+            );
+            fileInput.value = "";
+            render();
+          },
+          () => {
+            fileInput.value = "";
+          },
         );
-        if (!ok) {
-          fileInput.value = "";
-          return;
-        }
-        const result = core().importGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
-        const hadNone = !ledgerState().transactions.length;
-        commit(result.ledger);
-        if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
-        const skippedTail = result.skipped
-          ? t(`（跳过 ${result.skipped} 行）`, ` (${result.skipped} skipped)`, ` (${result.skipped} übersprungen)`)
-          : "";
-        ctx.toast?.(
-          t(`已导入 ${result.imported} 笔${skippedTail}`, `Imported ${result.imported} entries${skippedTail}`, `${result.imported} Buchungen importiert${skippedTail}`),
-        );
-        fileInput.value = "";
-        render();
       };
       reader.readAsText(file);
     });
