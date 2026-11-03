@@ -4,6 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Owner feedback pass r3 (2026-11-03): ledger **周/月** stats cross-fade + segment glide; `/` opens **⋯** search; dead trend chart JS removed; **v210.css** parse fix + dead layout rules (−507 lines vs r2); Today onboarding **z-index 12000**; mobile ledger edit sheet layout; `.overnight/compare-v2010.mjs` + `diff-v2010.json`; fakecloud browser test port **5298**; Today sheet **aria-label** zh/en/de.
 - Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
 
 ## [2.1.0] - 2026-11-03

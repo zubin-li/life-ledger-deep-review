@@ -21,7 +21,7 @@ function startStaticServer() {
 }
 
 test(
-  "ledger desktop shortcuts: N quick entry and arrows change month title",
+  "ledger desktop shortcuts: N quick entry and arrows change day title",
   { skip: !hasPlaywright },
   async () => {
     const server = await startStaticServer();
@@ -37,11 +37,11 @@ test(
       await page.goto(base, { waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
       await page.waitForSelector("#ledgerView.active", { timeout: 15000 });
-      const titleBefore = await page.locator(".ledger-header h2").textContent();
+      const titleBefore = await page.locator(".ledger-day-title").textContent();
       await page.keyboard.press("ArrowLeft");
       await page.waitForFunction(
         (prev) => {
-          const el = document.querySelector(".ledger-header h2");
+          const el = document.querySelector(".ledger-day-title");
           return el && el.textContent !== prev;
         },
         titleBefore,

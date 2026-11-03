@@ -1,3 +1,44 @@
+# Life Ledger — 主人反馈 pass（Round 3 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **记账 周/月** | 切换统计范围时有 **cross-fade**；圆环仍 **sweep**；分段控件跟手（`data-segment`） |
+| **快捷键 /** | 打开 **⋯** 菜单并聚焦搜索（菜单内 `#ledgerFilter`） |
+| **CSS 严重修复** | 曾误删块导致 **v210.css 只解析 35 条规则**（复盘习惯分、大量动效失效）→ 已修复；现 **6283** 行 |
+| **Today** | 快速记账 sheet 关闭钮 **中/英/德 aria-label**；引导卡 **z-index 12000** |
+| **对比 v2.0.10** | `node .overnight/compare-v2010.mjs` → `.overnight/diff-v2010.json` |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5292 --bind 127.0.0.1`
+2. **今日** → 点 **今日支出** 金额 → 记一笔 sheet（见截图）
+3. **记账** → 切换 **周/月** 看统计区动画
+4. 重拍：`node .overnight/capture.mjs --port 5292 --prefix fb-r3`
+
+## 截图（Round 3）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r3-today-sheet-zh-light-390-webkit.png` | Today **记一笔** sheet 打开 |
+| `fb-r3-ledger-zh-light-1440-chromium.png` | 记账统计 + 周/月 |
+| `fb-r3-today-zh-light-1440-chromium.png` | 今日侧栏顺序 |
+
+## 测试
+
+| 命令 | Round 3 |
+|------|---------|
+| `npm test` | **424** pass |
+| `npm run test:browser` | **72** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
+
 # Life Ledger — 主人反馈 pass（Round 2 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

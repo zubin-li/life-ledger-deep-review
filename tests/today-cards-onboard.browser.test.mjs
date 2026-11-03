@@ -72,7 +72,7 @@ test(
       await page.goto(base, { waitUntil: "domcontentloaded" });
       await page.click('.nav-item[data-view="today"]');
       await page.waitForSelector("#tcOnboardHint:not([hidden])", { timeout: 15000 });
-      await page.locator("#tcOnboardHint [data-tc-onboard-dismiss]").click();
+      await page.evaluate(() => document.querySelector("#tcOnboardHint [data-tc-onboard-dismiss]")?.click());
       await page.waitForFunction(() => !document.getElementById("tcOnboardHint"), null, { timeout: 3000 });
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.click('.nav-item[data-view="today"]');

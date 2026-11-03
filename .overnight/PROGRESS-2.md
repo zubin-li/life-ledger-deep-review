@@ -2,6 +2,71 @@
 
 Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight` (isolated)
 
+## Round 3 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **B 周/月动效** | `ledgerStatsScopePulse` + `.is-scope-swap` / `ledger-stats-scope-in`；`data-segment` + `syncSegments`；donut `retarget` 保留 |
+| **C5 CSS** | 修复 **v210 语法错误**（`.ledger-skeleton` 误合并导致仅 35 条规则生效 → 复盘习惯分 inspector 全挂）；删 dead `ledger-panels`/trend 样式；**6283** 行（r2: 6290） |
+| **C6 vs v2.0.10** | `.overnight/compare-v2010.mjs` → `.overnight/diff-v2010.json` + `base-r3-*` / `head-r3-*` 截图（预期 diff：Today 支出卡、导航、2.1 抛光） |
+| **D polish** | Today sheet 关闭 **aria-label** 三语；onboarding **z-index 12000**；mobile 记账 edit popover 底栏避让；`/` 快捷键打开 **⋯** 并 focus 搜索 |
+| **测试/回归** | 修 **v210 解析** 后 review habit scores 全绿；ledger shortcuts 改 `.ledger-day-title`；fakecloud 端口 **5298**（避免与 debug 5296 冲突） |
+| **截图** | `fb-r3-*` 含 **`fb-r3-today-sheet-zh-light-390-webkit.png`** |
+| **死代码** | 移除未使用的 `renderTrend` / uPlot 记账趋势 |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | 仍远高于 50% 目标（6283 vs ~3250）；需继续删 legacy / 合并 press |
+| **B 动效** | 统一 `.ll-press-bump`（仍分散 `is-*-press`） |
+| **C6** | diff 为像素比例，非视觉 sign-off；habits 32% diff 需人工看是否 OK |
+
+### Known bugs / limits
+
+- Headless 天气仍无温度（r1 环境结论不变）。
+- v2.0.10 worktree 在 `.overnight/base`（可 `git worktree remove .overnight/base` 清理）。
+- Today onboarding WebKit headless 仍用 `evaluate` 点 dismiss（底栏 hit-test 偶发）；产品侧已抬高 z-index。
+
+### Evidence (六个已知问题 · r3)
+
+1. **C1** — onboarding z-index **12000**；sheet/popover 不透明
+2. **C2** — `fb-r3-ledger-zh-light-1440-chromium.png` 单标题
+3. **C3** — 侧栏顺序；`fb-r3-ledger-de-dark-390-webkit.png`
+4. **C4** — 未重跑；r1 有效
+5. **C5** — capture 单脚本；CSS **6283**（修复解析后全站样式恢复）
+6. **C6** — `diff-v2010.json` + fb-r3 矩阵
+
+### Self-review (Round 3)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | Stats swap opacity/transform only; reduced-motion off | OK |
+| ui-ux-pro-max | Sheet/popover z-index ≥ 底栏；touch 关闭 44px 级 | OK |
+| design-dna | 记账页 panel 与 week/review 一致（fb-r3 目视） | OK |
+| Screenshots | Today sheet + 记账统计页可用 | OK |
+| CSS catastrophe | r3 初版破坏 v210 解析 → 已修并加 browser 回归 | **Fixed** |
+| Tests | 424 unit + **72** browser + desktop:check 0 | OK |
+
+### `npm test` (round 3 gate)
+
+```
+424 pass, 0 fail (unit)
+72 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 继续瘦身至 <50%
+2. 统一 press / list FLIP 动效
+3. 更多 hairline 空态插画（habits/journal/week/review）
+4. Mac shell sheet 截图
+
+---
+
 ## Round 2 (2026-11-03)
 
 ### Done
@@ -12,85 +77,18 @@ Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight
 | **D3 动效研究** | `.overnight/MOTION-RESEARCH.md`（ui-animation / design-dna / Linear·Stripe·Vaul 等） |
 | **A5 主路径瘦身** | 记账页 **本月关联洞察** 移入 `.ledger-legacy-viz`（主屏不再显示；DOM/测试保留） |
 | **C5 CSS** | `v210.css` **6790 → 6290** 行（删 79 个重复 `@media (prefers-reduced-motion)`；`index.html` 启动时加 `html.motion-reduced`） |
-| **C6 截图矩阵** | `node .overnight/capture.mjs --port 5292 --prefix fb-r2` → 9 张（today/week/longrange/timeline/ledger/review/habits × zh/de × 1440/390）；目视侧栏顺序与面板风格 OK |
+| **C6 截图矩阵** | `node .overnight/capture.mjs --port 5292 --prefix fb-r2` → 9 张 |
 | **插画 D4** | `assets/hairline/today-quick-ledger.svg` + PWA shell |
-| **测试** | `npm test` **423**；`npm run test:browser` **72**（+1 today sheet）；`npm run desktop:check` **0** |
-| **文档** | README EN/ZH/DE 记账段、CHANGELOG `[Unreleased]` r2 |
-
-### Half-done
-
-| Area | Next |
-|------|------|
-| **C5 v210.css** | 目标 &lt;50% 仍差 ~1600 行；合并 Batch 13 `is-*-press` 规则、删 legacy 专用大块 CSS |
-| **B 动效** | 周/月统计区 cross-fade；donut sweep；统一 `.ll-press-bump` |
-| **C6 vs v2.0.10** | 未做像素 diff；已拍 fb-r2 全页样本，待 worktree 对比脚本 |
-
-### Known bugs / limits
-
-- Headless 天气仍无温度（与 r1 相同，环境限制）。
-- Wellness 深链/空态在 **hidden legacy** 内，需 `evaluate` 点击（测试已更新）。
-- `v210.css` 全局 `@media (prefers-reduced-motion)` fallback 对未加 `motion-reduced` 的旧会话仍生效。
-
-### Evidence (六个已知问题 · r2)
-
-1. **C1** — `.tc-onboard-hint` 仍 `background: var(--surface-2)`；`fb-r2-today-zh-light-1440-chromium.png` 目视不透明（模型描述偶误）
-2. **C2** — 单标题；`fb-r2-ledger-zh-light-1440-chromium.png`
-3. **C3** — 侧栏顺序；`fb-r2-ledger-de-dark-390-webkit.png`
-4. **C4** — 未重跑；r1 结论仍有效
-5. **C5** — capture 仍单一脚本；CSS **6290** 行（未达标）
-6. **C6** — fb-r2 九页矩阵；无 v2.0.10 自动 diff
-
-### Detail polish backlog (r2)
-
-- Today sheet：关闭按钮三语 `aria-label`
-- 记账周/月切换动效
-- 删除 legacy hidden 块内 dead JS 绑定（低优先）
-- Mac shell 下 sheet 底栏避让再验
-
-### Self-review (Round 2)
-
-| Checklist | Finding | Action |
-|-----------|---------|--------|
-| ui-animation | Sheet uses transform/opacity only; exit faster than enter | OK |
-| ui-animation | No `transition: all` on new sheet rules | OK |
-| ui-ux-pro-max | Sheet primary button ≥44px on mobile padding | OK |
-| design-dna | Sheet uses existing `panel` / `--surface-2` | OK |
-| Rauno / Linear | One motion per tap (sheet OR nav, not both) | OK |
-| Screenshots | Ledger 与 week/review 同 panel 语言；nav 记账在复盘前 | OK |
-| Tests | 423 + 72 green | OK |
-
-### `npm test` (round 2 gate)
-
-```
-423 pass, 0 fail (unit)
-72 pass, 0 fail (browser)
-desktop:check 0 fail
-```
-
-### Next round priority
-
-1. `v210.css` 继续瘦身 + 统一 press 动效
-2. v2.0.10 worktree 截图 diff 脚本 + 修回归
-3. 周/月 stats cross-fade + donut draw-in
-4. Today sheet 截图（打开态）入 REPORT
+| **测试** | Round 2: **423** unit + **72** browser |
 
 ---
 
 ## Round 1 (2026-11-03)
 
-### Done
-
-| Area | Notes |
-|------|--------|
-| **A 记账 redesign (core)** | 日切换 + 快速录入；周/月统计（donut + 月视图日条）；订阅列表；`inferCategoryFromNote` + `rememberCategoryHint`；monthly 自动记账 `autoPostDueMonthlyRecurring`；slim 交易行 + ⋯ 菜单；`categoryBreakdownRange` 修复周分类 |
-| **A6 / C3 导航** | `index.html` 顺序；Mac **⌘5** 记账；`NAV_PAGES` 含 `ledger` + 旧 nav-order 迁移；`applyNavOrder` |
-| **C1 onboarding 半透明** | `.tc-onboard-hint` → 不透明 `var(--surface-2)` |
-| **C2 双标题** | 隐藏 `#ledgerView > .view-scroll-header`（保留顶栏 `#viewTitle`） |
-| **C5 capture 脚本** | 删除 121 个 `capture-*.mjs`，保留 **`.overnight/capture.mjs`** |
-| **C4 天气空头** | `weather-headless-compare.mjs`：HEAD = v2.0.10 headless（无城市 / 假 cache 均无温度文本）→ **环境限制，非回归** |
-| **测试** | Round 1: **423** unit + **71** browser |
-| **截图** | `.overnight/shots/fb-r1-*.png` |
-| **文档** | `CHANGELOG [2.1.0]`、`README` EN/ZH/DE 记账段、`REPORT.md` 本轮摘要 |
+（见 git 历史 / REPORT Round 1）
 
 ## Driver gate after sprint 1
 ℹ tests 423 ℹ pass 423 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 2
+ℹ tests 424 ℹ pass 424 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

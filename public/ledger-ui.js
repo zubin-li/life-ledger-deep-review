@@ -7,7 +7,6 @@
   let listDayFilter = "";
   let pendingListFocus = false;
   let listCategoryFilter = "";
-  let trendPlot = null;
   let categoryChartMode = "donut";
   let viewDay = "";
   let statsScope = "month";
@@ -18,6 +17,7 @@
   let ledgerShortcutBound = false;
   let ledgerCsvDropBound = false;
   let ledgerImportPulse = false;
+  let ledgerStatsScopePulse = false;
   let ledgerChartModePulse = false;
 
   function pulseLedgerCategoryChip(chip) {
@@ -68,12 +68,14 @@
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const typing = isLedgerTypingTarget(event.target);
       if (event.key === "/" && !typing) {
-        const filter = $("#ledgerFilter");
-        if (filter) {
-          event.preventDefault();
-          filter.focus();
-          filter.select?.();
-        }
+        event.preventDefault();
+        ledgerMenuOpen = true;
+        render();
+        root.requestAnimationFrame?.(() => {
+          const filter = $("#ledgerFilter");
+          filter?.focus();
+          filter?.select?.();
+        });
         return;
       }
       if ((event.key === "n" || event.key === "N") && !typing) {
@@ -214,7 +216,7 @@
       ? core().categoryBreakdownRange(ledger, rangeStart, rangeEnd, "expense")
       : core().categoryBreakdown(ledger, anchorIso.slice(0, 7), "expense");
     const compare = renderStatsCompareLine(ledger, statsScope, anchorIso);
-    const scopeToggle = `<div class="ledger-stats-scope" role="group" aria-label="${t("统计范围", "Stats range", "Statistikzeitraum")}">
+    const scopeToggle = `<div class="ledger-stats-scope" data-segment role="group" aria-label="${t("统计范围", "Stats range", "Statistikzeitraum")}">
       <button type="button" class="ledger-stats-scope-btn${statsScope === "week" ? " is-active" : ""}" data-ledger-stats="week" aria-pressed="${statsScope === "week"}">${t("周", "Week", "Woche")}</button>
       <button type="button" class="ledger-stats-scope-btn${statsScope === "month" ? " is-active" : ""}" data-ledger-stats="month" aria-pressed="${statsScope === "month"}">${t("月", "Month", "Monat")}</button>
     </div>`;
@@ -228,16 +230,18 @@
       : "";
     return `<section class="ledger-panel ledger-panel--stats panel">
       <div class="ledger-panel-head">${scopeToggle}</div>
-      <div class="ledger-summary ledger-summary--compact">
-        <article><small>${t("收入", "Income", "Einnahmen")}</small><strong data-ledger-sum="income">${ctx.escape(core().formatMoney(summary.incomeMinor, cur, locale))}</strong></article>
-        <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, locale))}</strong></article>
-        <article><small>${t("结余", "Net", "Saldo")}</small><strong data-ledger-sum="net">${ctx.escape(core().formatMoney(summary.netMinor, cur, locale))}</strong></article>
+      <div class="ledger-stats-anim">
+        <div class="ledger-summary ledger-summary--compact">
+          <article><small>${t("收入", "Income", "Einnahmen")}</small><strong data-ledger-sum="income">${ctx.escape(core().formatMoney(summary.incomeMinor, cur, locale))}</strong></article>
+          <article><small>${t("支出", "Spending", "Ausgaben")}</small><strong class="is-expense" data-ledger-sum="expense">${ctx.escape(core().formatMoney(summary.expenseMinor, cur, locale))}</strong></article>
+          <article><small>${t("结余", "Net", "Saldo")}</small><strong data-ledger-sum="net">${ctx.escape(core().formatMoney(summary.netMinor, cur, locale))}</strong></article>
+        </div>
+        ${compare ? `<p class="ledger-stats-compare">${ctx.escape(compare)}</p>` : ""}
+        ${subLine}
+        <div class="ledger-panel-head"><h3>${t("分类", "Categories", "Kategorien")}</h3></div>
+        ${renderCategoryViz(breakdown, ledger)}
+        ${dailyStrip}
       </div>
-      ${compare ? `<p class="ledger-stats-compare">${ctx.escape(compare)}</p>` : ""}
-      ${subLine}
-      <div class="ledger-panel-head"><h3>${t("分类", "Categories", "Kategorien")}</h3></div>
-      ${renderCategoryViz(breakdown, ledger)}
-      ${dailyStrip}
     </section>`;
   }
 
@@ -270,53 +274,6 @@
         <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
       </div>
     </div>`;
-  }
-
-  function destroyTrendPlot() {
-    trendPlot?.destroy?.();
-    trendPlot = null;
-  }
-
-  function renderTrend(host, ledger, ym) {
-    destroyTrendPlot();
-    if (!host) return;
-    host.classList.remove("ledger-trend--ready");
-    host.innerHTML = `<div class="ledger-skeleton ledger-skeleton--chart" aria-hidden="true"></div>`;
-    const uPlot = root.LifeLedgerWidgetUI?.uPlot;
-    const series = core().monthlyTrendSeries(ledger, ym, 6);
-    const hasData = series.some(row => row.expenseMinor > 0 || row.incomeMinor > 0);
-    const paint = () => {
-      if (!hasData || !uPlot) {
-        host.innerHTML = `<p class="ledger-empty ll-empty-enter">${t("暂无趋势数据", "Add entries to see the trend.", "Noch keine Trenddaten.")}</p>`;
-        host.classList.add("ledger-trend--ready");
-        return;
-      }
-      host.innerHTML = "";
-      const width = Math.max(200, Math.floor(host.clientWidth || 280));
-      const height = 120;
-      const dark = document.documentElement.dataset.theme === "dark";
-      const ink = dark ? "#9eafbe" : "#738495";
-      const grid = dark ? "rgba(200,220,235,.09)" : "rgba(60,90,120,.09)";
-      const accent = dark ? "#7fd4b0" : "#2d7a62";
-      const labels = series.map(row => row.ym.slice(5));
-      trendPlot = new uPlot({
-        width,
-        height,
-        pxAlign: 1,
-        padding: [8, 8, 0, 0],
-        legend: { show: false },
-        select: { show: false },
-        cursor: { show: false },
-        scales: { x: { time: false }, y: { auto: true } },
-        series: [{}, { label: "€", stroke: accent, width: 2, points: { show: false } }],
-        axes: [
-          { stroke: ink, font: "10px -apple-system, system-ui", size: 18, grid: { stroke: grid, width: 1 }, ticks: { show: false } },
-          { stroke: ink, font: "10px -apple-system, system-ui", size: 28, space: 22, grid: { show: false }, ticks: { show: false }, values: (_u, vals) => vals.map(v => `${Math.round(v / 100)}`) },
-        ],
-      }, [labels, series.map(row => row.expenseMinor)], host);
-      host.classList.add("ledger-trend--ready");
-    };
-    requestAnimationFrame(paint);
   }
 
   function accentFill(colorName) {
@@ -1423,7 +1380,10 @@
     });
     host.querySelectorAll("[data-ledger-stats]").forEach(btn => {
       btn.addEventListener("click", () => {
-        statsScope = btn.getAttribute("data-ledger-stats") === "month" ? "month" : "week";
+        const next = btn.getAttribute("data-ledger-stats") === "month" ? "month" : "week";
+        if (next === statsScope) return;
+        ledgerStatsScopePulse = true;
+        statsScope = next;
         render();
       });
     });
@@ -1859,7 +1819,6 @@
   function render() {
     const host = $("#ledgerView .ledger-page");
     if (!host || !ctx) return;
-    destroyTrendPlot();
     let ledger = ledgerState();
     const today = ctx.iso(new Date());
     if (!viewDay) viewDay = today;
@@ -1930,8 +1889,15 @@
     requestAnimationFrame(() => {
       const viz = host.querySelector(".ledger-panel--stats .ledger-category-viz");
       if (viz && !viz.classList.contains("is-ready")) viz.classList.add("is-ready");
+      root.LifeLedgerInteraction?.syncSegments?.(host);
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-panel--stats .ledger-donut-segments.is-retargeting"));
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-daily-strip .ledger-heat-grid.is-retargeting"));
+      if (ledgerStatsScopePulse) {
+        ledgerStatsScopePulse = false;
+        const panel = host.querySelector(".ledger-panel--stats");
+        panel?.classList.add("is-scope-swap");
+        root.setTimeout?.(() => panel?.classList.remove("is-scope-swap"), 480);
+      }
     });
     if (lastHighlightTxId) {
       const hi = lastHighlightTxId;

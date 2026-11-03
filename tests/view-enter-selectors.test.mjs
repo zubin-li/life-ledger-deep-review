@@ -298,3 +298,12 @@ test("Owner feedback r1 — daily ledger shell + nav order", () => {
   assert.match(core, /inferCategoryFromNote/);
   assert.match(core, /autoPostDueMonthlyRecurring/);
 });
+
+test("Owner feedback r3 — ledger week/month scope cross-fade", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /ledger-stats-scope-in/);
+  assert.match(css, /\.ledger-panel--stats\.is-scope-swap/);
+  assert.match(ledgerUi, /ledgerStatsScopePulse/);
+  assert.match(ledgerUi, /data-segment role="group"/);
+});

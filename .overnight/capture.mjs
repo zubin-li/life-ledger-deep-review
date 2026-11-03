@@ -1,6 +1,6 @@
 /**
  * Parametrised headless screenshots for owner feedback / release checks.
- * Usage: node .overnight/capture.mjs [--port 5294] [--prefix fb-r1] [--only ledger,today]
+ * Usage: node .overnight/capture.mjs [--port 5294] [--prefix fb-r1] [--only ledger,today] [--publicDir public]
  */
 import { chromium, webkit } from "/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright/index.mjs";
 import { mkdir } from "node:fs/promises";
@@ -16,10 +16,12 @@ const args = process.argv.slice(2);
 const portIdx = args.indexOf("--port");
 const prefixIdx = args.indexOf("--prefix");
 const onlyIdx = args.indexOf("--only");
+const publicDirIdx = args.indexOf("--publicDir");
 const port = Number(portIdx >= 0 ? args[portIdx + 1] : 5294);
 const prefix = prefixIdx >= 0 ? args[prefixIdx + 1] : "fb";
 const onlyRaw = onlyIdx >= 0 ? args[onlyIdx + 1] : null;
 const only = onlyRaw ? new Set(onlyRaw.split(",")) : null;
+const serveDir = publicDirIdx >= 0 ? join(repoRoot, args[publicDirIdx + 1]) : join(repoRoot, "public");
 const base = `http://127.0.0.1:${port}/index.html?mode=local&local-preview=demo-showcase-v1`;
 
 const SHOTS = [
@@ -28,6 +30,7 @@ const SHOTS = [
   { id: "week", view: "week", lang: "zh", theme: "light", w: 1440, h: 900, browser: "webkit" },
   { id: "longrange", view: "longrange", lang: "en", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "timeline", view: "timeline", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
+  { id: "today-sheet", view: "today", lang: "zh", theme: "light", w: 390, h: 844, browser: "webkit", openTodaySheet: true },
   { id: "ledger", view: "ledger", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "ledger", view: "ledger", lang: "de", theme: "dark", w: 390, h: 844, browser: "webkit" },
   { id: "review", view: "review", lang: "zh", theme: "light", w: 390, h: 844, browser: "chromium" },
@@ -60,7 +63,12 @@ async function shot(browserType, spec) {
   const page = await context.newPage();
   await page.goto(base, { waitUntil: "networkidle" });
   await gotoView(page, spec.view);
-  const name = `${prefix}-${spec.view}-${spec.lang}-${spec.theme}-${spec.w}-${spec.browser}.png`;
+  if (spec.openTodaySheet) {
+    await page.locator(".tw-spend-today").click();
+    await page.waitForSelector("#todayLedgerSheet.is-open");
+    await page.waitForTimeout(180);
+  }
+  const name = `${prefix}-${spec.openTodaySheet ? "today-sheet" : spec.view}-${spec.lang}-${spec.theme}-${spec.w}-${spec.browser}.png`;
   await page.screenshot({ path: join(outDir, name), fullPage: false });
   await context.close();
   return name;
@@ -69,7 +77,7 @@ async function shot(browserType, spec) {
 await mkdir(outDir, { recursive: true });
 
 const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1"], {
-  cwd: join(repoRoot, "public"),
+  cwd: serveDir,
   stdio: "ignore",
 });
 await new Promise(r => setTimeout(r, 500));

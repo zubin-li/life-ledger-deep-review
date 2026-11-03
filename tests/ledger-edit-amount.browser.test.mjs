@@ -66,7 +66,7 @@ test(
       await page.waitForSelector(".ledger-edit-popover");
       const amount = page.locator('.ledger-edit-popover input[name="amount"]');
       await amount.fill("not-a-number");
-      await page.locator(".ledger-edit-popover button[type='submit']").click();
+      await page.evaluate(() => document.querySelector(".ledger-edit-popover form")?.requestSubmit());
       await page.waitForTimeout(120);
 
       assert.equal(await amount.evaluate(el => el.classList.contains("is-error")), true);

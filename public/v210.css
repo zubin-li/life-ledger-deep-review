@@ -120,13 +120,6 @@ html[data-theme="dark"] .ledger-quick input {
   transform: scale(0.97);
 }
 
-.ledger-panels {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 1rem;
-  align-items: center;
-}
-
 .ledger-panel h3 {
   margin: 0 0 0.5rem;
   font-size: 0.85rem;
@@ -229,16 +222,6 @@ html[data-theme="dark"] .ledger-chart-mode.is-active {
   animation: ll-shimmer 1.15s ease-in-out infinite;
 }
 
-.ledger-skeleton--chart {
-  width: 100%;
-  height: 120px;
-  border-radius: 12px;
-}
-
-.ledger-trend:not(.ledger-trend--ready) .ledger-empty {
-  opacity: 0;
-}
-
 .ledger-heat-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -338,9 +321,6 @@ html[data-theme="dark"] .ledger-tx {
   .ledger-summary {
     grid-template-columns: 1fr;
   }
-  .ledger-panels {
-    grid-template-columns: 1fr;
-  }
   .ledger-quick {
     grid-template-columns: 1fr;
   }
@@ -353,13 +333,6 @@ html[data-theme="dark"] .ledger-tx {
   }
 }
 
-.ledger-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-}
-
 .ledger-filter {
   flex: 1 1 160px;
   min-width: 0;
@@ -367,15 +340,6 @@ html[data-theme="dark"] .ledger-tx {
   border-radius: 12px;
   border: 1px solid var(--hairline, rgba(0, 0, 0, 0.08));
   font-size: 0.9rem;
-}
-
-.ledger-panels--wide {
-  grid-template-columns: minmax(120px, 140px) 1fr minmax(140px, 1fr);
-}
-
-.ledger-trend {
-  min-height: 120px;
-  width: 100%;
 }
 
 .ledger-budget-list {
@@ -495,9 +459,6 @@ html[data-theme="dark"] .review-ledger-stats .review-ledger-spend-hint {
 }
 
 @media (max-width: 640px) {
-  .ledger-panels--wide {
-    grid-template-columns: 1fr;
-  }
   .review-ledger-stats {
     grid-template-columns: 1fr;
   }
@@ -1115,6 +1076,18 @@ html[data-theme="dark"] .ledger-recurring {
   flex-shrink: 0;
 }
 
+body:has(.ledger-edit-popover),
+body:has(.ledger-recurring-popover),
+body:has(.ledger-import-popover) {
+  overflow: hidden;
+}
+
+body:has(.ledger-edit-popover) .sidebar,
+body:has(.ledger-recurring-popover) .sidebar,
+body:has(.ledger-import-popover) .sidebar {
+  pointer-events: none;
+}
+
 .ledger-edit-popover {
   position: fixed;
   inset: 0;
@@ -1138,6 +1111,18 @@ html[data-theme="dark"] .ledger-recurring {
 html[data-theme="dark"] .ledger-edit-form {
   background: #1e2630;
   color: #edf2f7;
+}
+
+@media (max-width: 859px) {
+  .ledger-edit-popover {
+    place-items: end center;
+    padding: 12px 12px calc(88px + var(--mobile-nav-safe-bottom, 0px));
+  }
+
+  .ledger-edit-form {
+    max-height: min(72vh, 520px);
+    overflow: auto;
+  }
 }
 
 .ledger-edit-field {
@@ -2419,36 +2404,6 @@ html.motion-reduced .focus-inline-timer.is-active .focus-inline-ring {
   }
 }
 
-.ledger-category-viz .ledger-donut:not(.ledger-donut--empty) {
-  box-shadow:
-    inset 0 0 0 11px var(--surface-page, #f5f5f0),
-    0 0 0 1px color-mix(in srgb, var(--text-primary, #1d1d1f) 10%, transparent);
-}
-
-html[data-theme="dark"] .ledger-category-viz .ledger-donut:not(.ledger-donut--empty) {
-  box-shadow:
-    inset 0 0 0 11px var(--surface-page, #121214),
-    0 0 0 1px color-mix(in srgb, #fff 12%, transparent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .ledger-category-viz.is-ready .ledger-donut:not(.ledger-donut--empty) {
-    animation: ledger-donut-reveal 480ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-}
-
-@keyframes ledger-donut-reveal {
-  from {
-    opacity: 0.55;
-    transform: scale(0.9);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .score-card strong.roll-host {
   display: inline-block;
 }
@@ -2496,6 +2451,18 @@ html[data-theme="dark"] .ledger-donut-hole {
     transform-origin: center bottom;
     animation: rv-spark-grow 360ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
     animation-delay: calc(var(--spark-i, 0) * 12ms);
+  }
+}
+
+@keyframes ledger-donut-reveal {
+  from {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -4681,7 +4648,7 @@ html.motion-reduced #reviewView .review-reflection-empty.ll-polished {
 /* Batch 10 r6 — Today widget library onboarding + review scatter empty */
 .tc-onboard-hint {
   position: fixed;
-  z-index: 56;
+  z-index: 12000;
   right: 28px;
   bottom: calc(78px + var(--mobile-nav-safe-bottom, 0px));
   display: grid;
@@ -4749,7 +4716,7 @@ html.motion-reduced .tc-onboard-hint.is-dismissed {
 @media (max-width: 859px) {
   .tc-onboard-hint {
     right: 16px;
-    bottom: calc(148px + var(--mobile-nav-safe-bottom, 0px));
+    bottom: calc(188px + var(--mobile-nav-safe-bottom, 0px));
     grid-template-columns: 1fr;
   }
 
@@ -4757,6 +4724,10 @@ html.motion-reduced .tc-onboard-hint.is-dismissed {
     width: 44px;
     height: 44px;
   }
+}
+
+html.tc-onboard-open .tc-onboard-hint {
+  pointer-events: auto;
 }
 
 html.tc-on body:has(#todayView.tc-editing) .tc-onboard-hint,
@@ -5960,6 +5931,28 @@ html[data-theme="dark"] .ledger-more-menu {
   background: var(--surface-1, var(--card));
   color: var(--label, var(--ink));
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
+    animation: ledger-stats-scope-in 0.42s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+}
+
+@keyframes ledger-stats-scope-in {
+  from {
+    opacity: 0.4;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html.motion-reduced .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
+  animation: none;
 }
 
 .ledger-summary--compact {

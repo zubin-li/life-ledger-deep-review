@@ -8,7 +8,7 @@ import { hasPlaywright, playwrightRoot } from "./playwright-resolve.mjs";
 
 const execFileAsync = promisify(execFile);
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-const port = 5296;
+const port = 5298;
 const base = `http://127.0.0.1:${port}/index.html?mode=cloudflare&local-preview=demo-showcase-v1`;
 
 async function waitForHttp(url, attempts = 120) {

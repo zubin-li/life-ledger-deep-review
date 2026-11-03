@@ -125,17 +125,22 @@
   function onboardDismissed() {
     try { return localStorage.getItem(ONBOARD_KEY) === "1"; } catch { return false; }
   }
+  function setOnboardShell(open) {
+    document.documentElement.classList.toggle("tc-onboard-open", Boolean(open));
+  }
   function dismissOnboard() {
     if (onboardDismissed()) {
       if (onboardHint) {
         onboardHint.remove();
         onboardHint = null;
       }
+      setOnboardShell(false);
       return;
     }
     try { localStorage.setItem(ONBOARD_KEY, "1"); } catch { /* quota */ }
     if (!onboardHint) return;
     onboardHint.classList.add("is-dismissed");
+    setOnboardShell(false);
     setTimeout(() => {
       onboardHint?.remove();
       onboardHint = null;
@@ -185,15 +190,18 @@
         onboardHint.remove();
         onboardHint = null;
       }
+      setOnboardShell(false);
       return;
     }
     const show = view.classList.contains("active") && !editing && !document.querySelector(".day-drawer.open");
     if (!show) {
       if (onboardHint) onboardHint.hidden = true;
+      setOnboardShell(false);
       return;
     }
     renderOnboardCopy();
     onboardHint.hidden = false;
+    setOnboardShell(true);
   }
 
   const bar = document.createElement("div");
