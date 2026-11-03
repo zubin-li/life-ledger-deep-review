@@ -1,11 +1,11 @@
 # Overnight progress
 
-## Batch 10 · Round 9 — done
+## Batch 10 · Round 10 — done（终轮 10/10）
 
-- **REVIEW.md：** 仍无 HIGH/MED；LOW #1（`syncBackupPreferencesToRuntime` 冗余分支）已在先前 round 修复；LOW #2 reduced-motion 大合并仍 **2.2**；LOW #3 大额增幅金额文案已在 Unreleased/2.1.0 记录。
-- **发布整理：** `CHANGELOG [Unreleased]` → 并入 **[2.1.0]**；`.github/releases/v2.1.0.md` 更新 Batch 10 抛光与 QA 计数；`.overnight/ROUND10-CHECKLIST.md` 终轮项全部勾选。
-- **终轮截图：** `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `b10r10-release-*`（6 张：Today 洞察/支出、ledger zh、review Money、ledger de-dark-390 webkit、Mac shell ledger en webkit）。
-- **视觉抽检：** Today 洞察区、Mac 壳 Money 页截图正常（组件库 onboarding 在 demo 预览仍可见属预期，capture 未强制 dismiss 以便展示抛光）。
+- **REVIEW.md：** 无 HIGH/MED；LOW #1 已修复（`syncBackupPreferencesToRuntime` 仅 `explicitLang !== "false"`）；LOW #2 `v210.css` reduced-motion 物理合并仍 **2.2**；LOW #3 极端增幅金额文案为 intentional。
+- **终轮 QA：** `npm test` **389** pass；`npm run test:browser` **39** pass（~113s）；复跑 `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `b10r10-release-*` 六张截图；抽检 Today 洞察/支出卡片、de 深色 390 记账页布局正常。
+- **发布状态：** Web **2.1.0** / Mac **3.1.0**；`CHANGELOG [2.1.0]` + 空 `[Unreleased]`；`.overnight/ROUND10-CHECKLIST.md` 全勾选；`.overnight/REPORT.md` 终稿已更新。
+- **Batch 10 收工：** 记账（Goal 1）+ 抛光（Goal 2）交付完毕；下一迭代见 PROGRESS「Known bugs」与 owner 反馈。
 
 ## Half-done
 
@@ -13,8 +13,9 @@
 
 ## Next
 
-- **Round 10（缓冲）：** 可选 `v210.css` reduced-motion 物理合并；或 owner 验收反馈后再开 2.2。
-- capture **5291** 与 browser 套件勿并行。
+- **Owner 本地验收**（见 `.overnight/REPORT.md` 顶部「明天早上怎么快速验」）。
+- **2.2 候选：** `v210.css` reduced-motion 物理合并；Cloudflare 首次 seed 策略若需调整再议。
+- capture **5291** 与 `npm run test:browser` 勿并行。
 
 ## Known bugs / gaps
 
@@ -29,8 +30,8 @@
 ## npm test
 
 ```
-389 pass, 0 fail (batch 10 round 9, unit gate)
-39 pass, 0 fail (test:browser serial, batch 10 round 9, ~115s)
+389 pass, 0 fail (batch 10 round 10, unit gate)
+39 pass, 0 fail (test:browser serial, batch 10 round 10, ~113s)
 ```
 
 ## Gate result
@@ -80,4 +81,7 @@ _pending (driver appends after commit)_
 ℹ tests 389 ℹ pass 389 ℹ fail 0 
 
 ## Driver gate after round 9
+ℹ tests 389 ℹ pass 389 ℹ fail 0 
+
+## Driver gate after round 10
 ℹ tests 389 ℹ pass 389 ℹ fail 0 

@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 9 · 发布整理）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 10 · 终轮收工）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 已 10/10 终稿。** **Batch 10** 记账 + 抛光已就绪；本轮完成 CHANGELOG 合并、终轮截图与 QA 复跑。
+**Batch 10 已 10/10 终稿。** 记账（Goal 1）与全站抛光（Goal 2）已交付；本轮为终轮缓冲 QA，无新功能 diff。
 
 ---
 
-## 本轮（Batch 10 · Round 9）— 发布整理 + 终轮截图
+## 本轮（Batch 10 · Round 10）— 终轮 QA + 截图复验
+
+| 项目 | 说明 |
+|------|------|
+| **REVIEW** | Antigravity 仍无 HIGH/MED；LOW #1 语言恢复分支已在代码中简化；#2 CSS 合并、#3 增幅文案留文档说明。 |
+| **测试** | `npm test` **389**；`npm run test:browser` **39**（串行 ~113s，与 Round 9 同规模）。 |
+| **截图** | 复跑 `node .overnight/capture-batch10-round10.mjs`（**5291**）→ `.overnight/shots/b10r10-release-*.png`（6 张）；目视 Today 中文洞察/支出、de 深色移动记账页无布局回归。 |
+| **文档** | `.overnight/PROGRESS.md` 标记 Batch 10 完成；本 REPORT 顶栏更新。 |
+
+**明天早上怎么快速验（与 Round 9 相同）：**
+
+1. `cd public && python3 -m http.server 5291 --bind 127.0.0.1` → `index.html?mode=local&local-preview=demo-showcase-v1` → 侧栏 **记账**、**复盘** Money、**今日** 支出与习惯/心情 hint。
+2. 对照 `.overnight/shots/b10r10-release-*.png` 与 `b10r4`…`b10r8` 空态/动效截图。
+3. 全量：`npm test` + `npm run test:browser`（勿与 **5291** capture 并行）。
+
+**2.2 再议（非阻塞）：** `v210.css` reduced-motion 物理合并；Cloudflare 首次不 seed 账本；demo 缓存未 reset 时 Today 心情×支出 hint 可能缺失。
+
+---
+
+## 上一轮（Batch 10 · Round 9）— 发布整理 + 终轮截图
 
 | 项目 | 说明 |
 |------|------|
