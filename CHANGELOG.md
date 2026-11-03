@@ -7,6 +7,7 @@ All notable changes are documented here.
 ### Added
 - **QA (Batch 11):** Playwright regression for ledger quick-entry success flash; explicit service-worker test that `NETWORK_FIRST_SUFFIXES` lists ledger scripts.
 - **QA (Batch 11 r4):** Offline PWA browser test (cached ledger scripts + Money view while offline); fakecloud preview flow opens **Money** and asserts month summary + category viz.
+- **QA (Batch 11 r5):** Mac shell + fakecloud online demo opens **Money** with cloud-synced demo rows (WebKit).
 
 ### Fixed
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.
@@ -17,6 +18,7 @@ All notable changes are documented here.
 ### Changed
 - **Today:** Habit and mood spend insight hints use a soft chip surface; mood hint gets the same reveal animation as the habit hint.
 - **Money:** Quick-entry submit button gets a brief success pop (respects reduced motion).
+- **Review — Money:** scatter empty state shows a three-step checklist (mood / habits / spending) and a primary **Log on Today** CTA.
 
 ## [2.1.0] - 2026-11-03
 

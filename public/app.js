@@ -9435,11 +9435,19 @@ function renderReviewLedgerSummary() {
   let scatterEmptyBlock = "";
   if (!scatterParts.length && summary.expenseMinor < 0) {
     const scatterEmptyCta = languageText("去 Today 记录", "Log on Today", "Auf Heute erfassen");
+    const scatterStepLabels = [
+      languageText("记录心情", "Log mood", "Stimmung notieren"),
+      languageText("完成习惯", "Complete habits", "Gewohnheiten abhaken"),
+      languageText("记一笔支出", "Log spending", "Ausgabe erfassen"),
+    ];
+    const scatterSteps = scatterStepLabels
+      .map((label, i) => `<li class="review-scatter-empty-step" style="--step-i:${i}">${escapeHtml(label)}</li>`)
+      .join("");
     scatterEmptyBlock = `<div class="review-scatter-empty ll-polished" id="reviewScatterEmptyHint">${hairlineEmptyMarkup(
       "./assets/hairline/empty-insights.svg",
       languageText("散点图还需要一点数据", "Scatter charts need a few more days", "Streudiagramme brauchen noch Tage"),
       languageText("连续记录心情、习惯完成与支出后，心情 / 习惯 / 专注与支出的对照图会自动出现。", "Log mood, habit completion, and spending on more days and mood, habit, and focus vs spend charts will appear.", "Erfasse an mehr Tagen Stimmung, Gewohnheiten und Ausgaben — dann erscheinen die Vergleichsdiagramme."),
-    )}<button type="button" class="secondary-button" id="reviewScatterEmptyToday">${escapeHtml(scatterEmptyCta)}</button></div>`;
+    )}<ul class="review-scatter-empty-steps" aria-label="${escapeHtml(languageText("还需要的数据", "Still needed", "Noch nötig"))}">${scatterSteps}</ul><button type="button" class="primary-button review-scatter-empty-cta" id="reviewScatterEmptyToday">${escapeHtml(scatterEmptyCta)}</button></div>`;
   }
   const insightParts = [moodLine, habitLine, focusLine, budgetLine].filter(Boolean);
   const insightSection = insightParts.length

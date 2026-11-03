@@ -79,6 +79,8 @@ test(
           await page.reload({ waitUntil: "domcontentloaded" });
           await page.click('.nav-item[data-view="review"]');
           await page.waitForSelector("#reviewScatterEmptyHint", { timeout: 15000 });
+          const stepCount = await page.locator("#reviewScatterEmptyHint .review-scatter-empty-step").count();
+          assert.equal(stepCount, 3, `${name}: expected three scatter empty checklist chips`);
           const gridCount = await page.locator("#reviewLedgerSummary .review-scatter-grid").count();
           assert.equal(gridCount, 0, `${name}: scatter grid should stay empty`);
           await page.locator("#reviewScatterEmptyToday").click();

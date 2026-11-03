@@ -1,5 +1,45 @@
 # Overnight progress
 
+## Batch 11 · Round 5 — done
+
+- **REVIEW.md：** 仍无新复审；#1–#3 已在 Round 1 关闭；#4 CSS 合并仍 **2.2**。
+- **QA：** 新套件 `fakecloud-ledger-mac-shell.browser.test.mjs`（WebKit + Mac shell 注入 + fakecloud **5297**）— 云端 demo 同步后打开 **Finanzen**，断言 `ll-mac` 与交易行。
+- **Goal 2：** 复盘 Money 散点空态增加三步 checklist chip（心情 / 习惯 / 支出）+ 主按钮 **去 Today 记录**（`v210.css` stagger，尊重 reduced-motion）；`review-scatter-empty.browser.test.mjs` 断言 3 chip。
+- **QA：** `npm test` **393** pass / 0 fail；`npm run test:browser` **42** pass / 0 fail（+1 套件）。
+- **截图：** `node .overnight/capture-batch11-round5.mjs`（**5295**）→ `b11r5-review-scatter-empty-zh-light-1440-chromium.png`、`b11r5-ledger-summary-de-dark-390-webkit.png`；目视 checklist 与 de 深色月摘要无回归。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 11 若继续：`v210.css` reduced-motion 物理合并（2.2）；README 三语若需补 scatter 空态一句；更多 Mac online 快捷键 smoke。
+- Owner 验收：Mac 窗口或 shell 注入 + `bash .overnight/fakecloud.sh 5297` → `?mode=cloudflare&local-preview=demo-showcase-v1` → **记账/Finanzen**。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+
+## npm test
+
+```
+393 pass, 0 fail (batch 11 round 5, unit gate)
+42 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 11 · Round 4 — done
 
 - **REVIEW.md：** 无新复审；Round 1–3 已关闭 HIGH/MED/LOW（#4 CSS 合并仍 **2.2**）。
@@ -59,4 +99,7 @@ _pending (driver appends after commit)_
 ℹ tests 393 ℹ pass 393 ℹ fail 0 
 
 ## Driver gate after round 4
+ℹ tests 393 ℹ pass 393 ℹ fail 0 
+
+## Driver gate after round 5
 ℹ tests 393 ℹ pass 393 ℹ fail 0 

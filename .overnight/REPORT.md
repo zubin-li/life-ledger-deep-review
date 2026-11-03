@@ -1,3 +1,30 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 5）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 5：** Mac shell × fakecloud 在线记账 smoke；复盘散点空态 checklist + 主 CTA。
+
+---
+
+## 本轮（Batch 11 · Round 5）— Mac 在线记账 QA + 复盘散点空态
+
+| 项目 | 说明 |
+|------|------|
+| **Mac × fakecloud** | 新套件 `fakecloud-ledger-mac-shell.browser.test.mjs`：注入 `desktop/mac/shell.js` + `shell.css`，`?mode=cloudflare&local-preview=demo-showcase-v1`，等云同步后点 **Finanzen**，确认 `ll-mac`、demo 交易行与月支出摘要。 |
+| **Goal 2** | 复盘 **Money** 有支出但散点数据不足时：三条 pill（记录心情 / 完成习惯 / 记一笔支出）+ 主色 **去 Today 记录**；进入动画分步 stagger（`prefers-reduced-motion` 关闭）。 |
+| **单元测试** | `npm test` **393**（无新增单元项）。 |
+| **浏览器** | `npm run test:browser` **42**（+1 Mac fakecloud 记账）。 |
+| **截图** | `.overnight/shots/b11r5-review-scatter-empty-zh-light-1440-chromium.png`、`.overnight/shots/b11r5-ledger-summary-de-dark-390-webkit.png`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**。 |
+
+**怎么验（可选）：**
+
+1. `bash .overnight/fakecloud.sh 5297` → 浏览器 `http://127.0.0.1:5297/index.html?mode=cloudflare&local-preview=demo-showcase-v1` → 等 **云** 保存模式 → 侧栏 **Finanzen** / **记账**。
+2. 本地空习惯 + 一笔支出 → **复盘** → Money 面板底部应见三步 checklist 与主按钮（对照 Round 5 截图）。
+3. 全量：`npm test` + `npm run test:browser`。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 4）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
