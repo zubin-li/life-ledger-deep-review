@@ -4,6 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Owner feedback pass r8 (2026-11-03): **C1** Today onboarding + sheet use opaque **`--ll-surface-float`** (fixes translucent `--card` glass); browser test for background alpha; **C5** merge 29× `@media (prefers-reduced-motion: no-preference)` blocks → **6285** lines (`.overnight/merge-no-preference-motion.mjs`); **C6** `compare-v2010.mjs` refreshed; `fb-r8-*` + Mac `fb-r8-mac-*` screenshots; capture adds **today-onboard** 390 shot.
 - Owner feedback pass r7 (2026-11-03): **C4** headless weather probe (correct preview storage suffix) → `.overnight/weather-headless-compare.json` — cold start empty on **HEAD** and **v2.0.10** (no Open-Meteo in headless); seeded offline cache renders **11°** on both (**not a regression**); **v210.css** `--ll-anim-enter-*` tokens (`.overnight/consolidate-v210-css.mjs`, **6336** lines, −428 B); **2.1.0** docs note **Money** main view **donut-only**.
 - Owner feedback pass r6 (2026-11-03): removed dead **treemap / chart-toggle** UI and CSS (~95 lines); **v210.css** 6421→6326; `.overnight/prune-ledger-treemap-css.mjs` + `.overnight/perf-nav-trace.mjs`; **compare-v2010** matrix refreshed; nav perf trace (max long task 58ms, CLS 0).
 - Owner feedback pass r5 (2026-11-03): **View Transitions API** for sidebar page switches (`withViewTransition`, directional cross-fade); section **hairline marks** on Review / Timeline / Habits headers; scatter deep-link spotlight after `renderReview`; capture settle wait 450ms.

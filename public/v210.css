@@ -6,8 +6,12 @@
   --ll-anim-enter-44: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
   --ll-anim-enter-46: pageCardIn 0.46s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
   --ll-anim-enter-50: pageCardIn 0.5s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  --ll-surface-float: #ffffff;
 }
 
+html[data-theme="dark"] {
+  --ll-surface-float: #1e2630;
+}
 /* Bookkeeping page — loaded after v202.css */
 .ledger-page {
   display: grid;
@@ -540,12 +544,6 @@ html.motion-reduced #reviewView .review-insight-block .review-insight-value {
   transition: transform 0.15s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .tw-card.tw-spending:active {
-    transform: scale(0.985);
-  }
-}
-
 .review-ledger-panel {
   animation: var(--ll-anim-enter-50);
 }
@@ -798,40 +796,6 @@ html.motion-reduced #weekView.view.is-entering :is(.week-page-header, #weekCalen
   animation: var(--ll-anim-enter-44);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  #journalPhotoLibrary.journal-library--ready .journal-library-month {
-    animation: var(--ll-anim-enter-42);
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(2) {
-    animation-delay: 35ms;
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(n + 3) {
-    animation-delay: 70ms;
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card {
-    animation: llPhotoTileIn 0.38s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(2) {
-    animation-delay: 22ms;
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(3) {
-    animation-delay: 44ms;
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(4) {
-    animation-delay: 66ms;
-  }
-
-  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(n + 5) {
-    animation-delay: 88ms;
-  }
-}
-
 @keyframes llPhotoTileIn {
   from {
     opacity: 0;
@@ -885,60 +849,6 @@ html.motion-reduced #journalPhotoLibrary.journal-library--ready :is(.journal-lib
   box-shadow: 0 8px 22px color-mix(in srgb, var(--desk-text, #111) 8%, transparent);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry:not(.journal-feed-entry--append) {
-    animation: none !important;
-  }
-
-  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append {
-    animation: llFeedRowIn 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-
-  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(2) {
-    animation-delay: 35ms;
-  }
-
-  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(3) {
-    animation-delay: 70ms;
-  }
-
-  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(n + 4) {
-    animation-delay: 105ms;
-  }
-
-  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside) {
-    animation: llCalDayIn 0.38s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-
-  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n + 1) {
-    animation-delay: 0ms;
-  }
-
-  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n + 2) {
-    animation-delay: 18ms;
-  }
-
-  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n) {
-    animation-delay: 36ms;
-  }
-
-  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row {
-    animation: llTimelineRowIn 0.36s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-
-  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(2) {
-    animation-delay: 28ms;
-  }
-
-  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(3) {
-    animation-delay: 56ms;
-  }
-
-  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(n + 4) {
-    animation-delay: 84ms;
-  }
-}
-
 @keyframes llCalDayIn {
   from {
     opacity: 0;
@@ -985,12 +895,6 @@ html.motion-reduced #journalPhotoLibrary.journal-library--ready :is(.journal-lib
 
 .journal-composer-status[data-pending] {
   opacity: 0.78;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .journal-composer-status[data-pending] {
-    animation: llComposerPending 1.1s ease-in-out infinite;
-  }
 }
 
 @keyframes llComposerPending {
@@ -2175,12 +2079,6 @@ html[data-theme="dark"] .hero-card::before {
   transform: translateY(0);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .progress-orbit[style*="--progress:"]:not([style*="--progress: 0"]):not([style*="--progress:0"]) .progress-orbit-ring {
-    animation: llOrbitGlow 2.8s ease-in-out infinite;
-  }
-}
-
 @keyframes llOrbitGlow {
   0%,
   100% {
@@ -2231,24 +2129,6 @@ html[data-workspace] .journal-composer textarea:focus-visible {
   border: 1px solid color-mix(in srgb, var(--desk-teal) 22%, transparent);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  #journalFeed.ll-paint-host--ready .journal-feed-entry {
-    animation: llFeedRowIn 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-
-  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(2) {
-    animation-delay: 40ms;
-  }
-
-  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(3) {
-    animation-delay: 80ms;
-  }
-
-  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(n + 4) {
-    animation-delay: 120ms;
-  }
-}
-
 @keyframes llFeedRowIn {
   from {
     opacity: 0;
@@ -2272,17 +2152,6 @@ html.motion-reduced #journalFeed .journal-feed-entry {
   #journalFeed .journal-feed-entry:hover .feed-paper {
     transform: translateY(-2px);
     box-shadow: 0 14px 36px color-mix(in srgb, var(--desk-text) 7%, transparent);
-  }
-}
-
-/* Batch 5 round 2 — inline focus ring breathe while running */
-@media (prefers-reduced-motion: no-preference) {
-  .focus-inline-timer.is-active.is-running .focus-inline-ring {
-    animation: llFocusRingBreathe 2.4s ease-in-out infinite;
-  }
-
-  .focus-inline-timer.is-active.is-break.is-running .focus-inline-ring {
-    animation: llFocusRingBreatheBreak 2.8s ease-in-out infinite;
   }
 }
 
@@ -2335,16 +2204,6 @@ html.motion-reduced .focus-inline-timer.is-active .focus-inline-ring {
     filter 160ms ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .habit-card:not(.future-locked):active {
-    transform: scale(0.97);
-  }
-
-  .habit-card.completed:not(.future-locked) {
-    box-shadow: 0 10px 28px color-mix(in srgb, var(--accent, #6f8f7d) 14%, transparent);
-  }
-}
-
 .score-card strong.roll-host {
   display: inline-block;
 }
@@ -2376,23 +2235,6 @@ html[data-theme="dark"] .ledger-donut-hole {
 
 .ledger-category-viz.is-ready .ledger-donut-svg {
   transform-origin: center center;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .ledger-category-viz.is-ready .ledger-donut-svg {
-    animation: ledger-donut-reveal 480ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
-  #reviewView .score-card--enter {
-    animation: score-card-enter 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-    animation-delay: calc(var(--score-i, 0) * 45ms);
-  }
-
-  #reviewView .rv-habit-spark--enter rect {
-    transform-origin: center bottom;
-    animation: rv-spark-grow 360ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-    animation-delay: calc(var(--spark-i, 0) * 12ms);
-  }
 }
 
 @keyframes ledger-donut-reveal {
@@ -2449,51 +2291,6 @@ html.motion-reduced #reviewView .rv-habit-spark--enter rect {
 
 /* ========== merged from v227-review-bars-weekday.css ========== */
 /* Goal 2 batch 3 r5: review rhythm bars, weekday retarget, empty enter */
-
-@media (prefers-reduced-motion: no-preference) {
-  #reviewView .bar-chart.is-retargeting .bar {
-    animation: barGrow 520ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-    animation-delay: calc(var(--bar-i, 0) * 10ms);
-  }
-
-  #reviewView .rv-weekdays.is-retargeting .insight-weekday-track i {
-    transform-origin: bottom center;
-    animation: rvWeekdayGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(1) .insight-weekday-track i { animation-delay: 0ms; }
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(2) .insight-weekday-track i { animation-delay: 35ms; }
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(3) .insight-weekday-track i { animation-delay: 70ms; }
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(4) .insight-weekday-track i { animation-delay: 105ms; }
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(5) .insight-weekday-track i { animation-delay: 140ms; }
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(6) .insight-weekday-track i { animation-delay: 175ms; }
-  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(7) .insight-weekday-track i { animation-delay: 210ms; }
-
-  .focus-review-chart.is-retargeting .focus-review-day i {
-    animation: focusReviewBarIn 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-    animation-delay: calc(var(--focus-bar-i, 0) * 42ms);
-  }
-
-  #reviewView .review-habit-compare.is-retargeting .analytics-bar-track i {
-    transform-origin: left center;
-    animation: rvAnalyticsBarGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(var(--bar-i, 0) * 28ms);
-  }
-
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-track i {
-    transform-origin: bottom center;
-    animation: rvWeekdayGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(1) .analytics-bar-track i { animation-delay: 0ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(2) .analytics-bar-track i { animation-delay: 35ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(3) .analytics-bar-track i { animation-delay: 70ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(4) .analytics-bar-track i { animation-delay: 105ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(5) .analytics-bar-track i { animation-delay: 140ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(6) .analytics-bar-track i { animation-delay: 175ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(7) .analytics-bar-track i { animation-delay: 210ms; }
-  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(8) .analytics-bar-track i { animation-delay: 245ms; }
-}
 
 @keyframes rvAnalyticsBarGrow {
   from {
@@ -2566,22 +2363,6 @@ html.motion-reduced .ledger-budget-list.is-retargeting .ledger-budget-bar::after
 /* ========== merged from v230-ledger-chart-retarget.css ========== */
 /* Ledger category donut / treemap / daily heat — month-change stagger (v2.1.0) */
 
-@media (prefers-reduced-motion: no-preference) {
-  .ledger-heat-grid.is-retargeting .ledger-heat {
-    transform: scale(0.55);
-    animation: ledger-heat-cell-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--heat-i, 0) * 14ms);
-  }
-
-  .ledger-donut-segments.is-retargeting path {
-    transform-box: fill-box;
-    transform-origin: center;
-    transform: scale(0.72);
-    opacity: 0.35;
-    animation: ledger-donut-seg-in 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--seg-i, 0) * 38ms);
-  }}
-
 @keyframes ledger-heat-cell-in {
   to {
     transform: scale(1);
@@ -2601,34 +2382,6 @@ html.motion-reduced .ledger-heat-grid.is-retargeting .ledger-heat,
 html.motion-reduced .ledger-donut-segments.is-retargeting path,
 html.motion-reduced/* ========== merged from v231-review-ledger-retarget.css ========== */
 /* Goal 2 batch 3 r9: review Money panel stats + scatter retarget on month change */
-
-@media (prefers-reduced-motion: no-preference) {
-  .review-ledger-stats.is-retargeting > span {
-    animation: rvLedgerStatIn 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--stat-i, 0) * 48ms);
-  }
-
-  .review-scatter-grid.is-retargeting :is(
-    .review-mood-scatter-dot,
-    .review-habit-scatter-dot,
-    .review-focus-scatter-dot
-  ) {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: rvScatterDotRetarget 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(var(--dot-i, 0) * 22ms);
-  }
-
-  .review-ledger-insights.is-retargeting :is(
-    .review-ledger-mood,
-    .review-ledger-habits,
-    .review-ledger-focus,
-    .review-ledger-budget
-  ) {
-    animation: rvLedgerInsightIn 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--insight-i, 0) * 55ms);
-  }
-}
 
 @keyframes rvLedgerStatIn {
   from {
@@ -2926,12 +2679,6 @@ html.motion-reduced #habitLibraryFilters button:active:not(.active) {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #65a9ff) 22%, transparent);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  #reviewDetailedMetrics.is-metrics-hint:not([open]) > summary {
-    animation: ll-metrics-hint 2.4s ease-in-out 2;
-  }
-}
-
 @keyframes ll-metrics-hint {
   0%,
   100% {
@@ -3098,64 +2845,6 @@ html.motion-reduced #weeklyGoalList .ll-week-all-done.ll-empty-enter {
 
 /* Batch 5 round 7 — review month/metric motion, periodic chart retarget, Today edit saved */
 
-@media (prefers-reduced-motion: no-preference) {
-  #reviewTitle.is-retargeting > span {
-    animation: var(--ll-anim-enter-42);
-  }
-
-  #reviewInsights .rv-metrics.is-retargeting > article {
-    animation: var(--ll-anim-enter-42);
-  }
-
-  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
-  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(2) { animation-delay: 35ms; }
-  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(3) { animation-delay: 70ms; }
-  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(4) { animation-delay: 105ms; }
-
-  #reviewView .review-habit-compare.is-retargeting .rv-bar i {
-    transform-origin: left center;
-    animation: rvAnalyticsBarGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(var(--bar-i, 0) * 22ms);
-  }
-
-  #reviewView .review-habit-compare.is-retargeting tbody tr {
-    animation: llTimelineRowIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-    animation-delay: calc(var(--spark-row-i, 0) * 28ms);
-  }
-
-  #weeklyResistance .analytics-chart.is-retargeting .analytics-bar {
-    transform-origin: center bottom;
-    animation: rvWeekdayGrow 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(var(--series-i, 0) * 48ms + var(--bar-i, 0) * 10ms);
-  }
-
-  #weeklyResistance .analytics-chart.is-retargeting .analytics-point {
-    transform-origin: center;
-    animation: llCalDayIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-    animation-delay: calc(var(--series-i, 0) * 40ms + var(--dot-i, 0) * 12ms);
-  }
-
-  #weeklyResistance .analytics-chart.is-retargeting .analytics-line {
-    stroke-dasharray: 420;
-    stroke-dashoffset: 420;
-    animation: insightPlotLineDraw 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) forwards;
-    animation-delay: calc(var(--series-i, 0) * 90ms);
-  }
-
-  .tc-bar.is-saved {
-    animation: tcBarSaved 620ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
-  .tc-bar .tc-done.tc-done--pulse {
-    animation: tcDonePulse 620ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
-  .tc-editing > .tc-card.tc-drop-success {
-    outline-color: color-mix(in srgb, var(--accent) 78%, transparent);
-    transition: outline-color 180ms ease;
-  }
-}
-
 @keyframes insightPlotLineDraw {
   to {
     stroke-dashoffset: 0;
@@ -3193,55 +2882,6 @@ html.motion-reduced .tc-bar .tc-done.tc-done--pulse {
 
 /* Batch 5 round 8 — shell nav, week modules, ledger month, scatter spotlight */
 
-@media (prefers-reduced-motion: no-preference) {
-  #viewTitle.is-view-switch {
-    animation: var(--ll-anim-enter-38);
-  }
-
-  .nav-item.is-landing {
-    animation: navItemLand 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
-  @keyframes navItemLand {
-    0% {
-      transform: translateX(0) scale(0.98);
-    }
-    45% {
-      transform: translateX(2px) scale(1.02);
-    }
-    100% {
-      transform: translateX(0) scale(1);
-    }
-  }
-
-  #weekView.view.is-entering .module-card {
-    animation: var(--ll-anim-enter-44);
-    animation-delay: calc(420ms + var(--module-i, 0) * 45ms);
-  }
-
-  #weekView .week-page-header.is-retargeting,
-  #weekView .module-card.is-retargeting {
-    animation: var(--ll-anim-enter-40);
-    animation-delay: calc(var(--module-i, 0) * 40ms);
-  }
-
-  #ledgerView .ledger-header h2.is-retargeting {
-    animation: var(--ll-anim-enter-38);
-  }
-
-  #ledgerView .ledger-summary.is-retargeting > article {
-    animation: var(--ll-anim-enter-40);
-  }
-
-  #ledgerView .ledger-summary.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
-  #ledgerView .ledger-summary.is-retargeting > article:nth-child(2) { animation-delay: 35ms; }
-  #ledgerView .ledger-summary.is-retargeting > article:nth-child(3) { animation-delay: 70ms; }
-
-  :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight {
-    animation: scatterSpotlight 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-}
-
 @keyframes scatterSpotlight {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--desk-accent, #167dce) 0%, transparent);
@@ -3271,24 +2911,6 @@ html.motion-reduced :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .
 
 #todayView.tc-grid.active:not(.tc-editing) > .tc-top {
   margin-bottom: max(4px, calc(var(--tc-gap, 20px) * 0.14));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  :is(.settings-dialog, .export-dialog).is-modal-enter {
-    animation: modalSheetEnter 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
-  :is(.settings-dialog, .export-dialog).is-modal-enter::backdrop {
-    animation: modalBackdropIn 0.36s ease both;
-  }
-
-  .export-dialog [data-backup-panel].is-retargeting {
-    animation: var(--ll-anim-enter-40);
-  }
-
-  .backup-tabs.is-tab-switch button.active {
-    animation: navItemLand 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
 }
 
 @keyframes modalSheetEnter {
@@ -3376,14 +2998,6 @@ html.motion-reduced .review-period-habits-list--live.review-period-habits-list--
   animation: none !important;
 }
 
-/* Today hero — soft retarget when browsing other days */
-@media (prefers-reduced-motion: no-preference) {
-  .hero-card.is-day-retarget .hero-copy h2,
-  .hero-card.is-day-retarget .date-chip {
-    animation: heroDayRetarget 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-}
-
 @keyframes heroDayRetarget {
   from {
     opacity: 0.55;
@@ -3450,31 +3064,9 @@ html[data-theme="dark"] .review-scatter-tip {
   stroke-width: 1.5;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .review-scatter-dot-group circle:last-child {
-    transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 160ms ease;
-  }
-
-  .review-scatter-dot-hit.is-active + circle,
-  .review-scatter-dot-hit:focus-visible + circle {
-    transform: scale(1.18);
-    opacity: 1;
-  }
-}
-
 #reviewView .rv-habit-spark rect.rv-spark-on,
 #reviewView .rv-habit-spark rect.rv-spark-miss {
   transition: fill 140ms ease, opacity 140ms ease;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  #reviewView .rv-habit-spark:hover rect.rv-spark-on {
-    fill: color-mix(in srgb, var(--sage) 92%, #fff);
-  }
-
-  #reviewView .rv-habit-spark:hover rect.rv-spark-miss {
-    opacity: 0.72;
-  }
 }
 
 html.motion-reduced .review-scatter-dot-group circle:last-child,
@@ -3493,12 +3085,6 @@ html.motion-reduced #reviewView .rv-habit-spark rect {
 
 html[data-theme="dark"] .ledger-import-confirm .ledger-import-confirm-body {
   color: color-mix(in srgb, var(--text, #edf2f7) 92%, transparent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .ledger-import-popover .ledger-import-confirm {
-    animation: modalSheetEnter 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
 }
 
 html.motion-reduced .ledger-import-popover .ledger-import-confirm {
@@ -3635,12 +3221,6 @@ html[data-theme="dark"] .tw-spend-mood-pill[data-mood="低落"] {
   background: rgba(93, 143, 197, 0.16);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .tw-card.tw-spending:not(.is-empty) .tw-spend-mood-pill:not([hidden]) {
-    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-}
-
 @keyframes tw-spend-mood-in {
   from {
     opacity: 0;
@@ -3729,12 +3309,6 @@ html[data-theme="dark"] button.tw-spend-recurring-pill {
   border-color: color-mix(in srgb, var(--accent, #64d2ff) 32%, var(--line, #3a3a3c));
   background: color-mix(in srgb, var(--accent, #64d2ff) 12%, var(--card, #1c1c1e));
   color: var(--accent, #64d2ff);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .tw-card.tw-spending .tw-spend-recurring-pill:not([hidden]) {
-    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
 }
 
 html.motion-reduced button.tw-spend-recurring-pill:not([hidden]):hover,
@@ -4306,28 +3880,6 @@ html.motion-reduced #habitsView .habit-filter-quiet.ll-polished .hairline-empty 
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .date-chip {
-    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-
-  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > h2 {
-    animation: heroCopyIn 0.52s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.05s both;
-  }
-
-  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .quote-source {
-    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.1s both;
-  }
-
-  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > p {
-    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.14s both;
-  }
-
-  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .progress-orbit {
-    animation: heroCopyIn 0.54s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.08s both;
-  }
-}
-
 html.motion-reduced #todayView.view.is-entering .hero-card[data-viewing-today="true"] :is(.hero-copy > *, .progress-orbit) {
   animation: none !important;
 }
@@ -4418,24 +3970,6 @@ html.motion-reduced #journalFeed .journal-feed-filter-quiet.ll-polished .hairlin
 
 #todayView.tc-grid.active:not(.tc-editing) {
   --tc-gap: clamp(14px, 1.65vw, 22px);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(2) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.12s both; }
-  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(3) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.15s both; }
-  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(4) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.18s both; }
-  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(n + 5) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.21s both; }
-}
-
-@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
-  #todayView.tc-grid.active:not(.tc-editing) > .tc-card {
-    transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
-  }
-
-  #todayView.tc-grid.active:not(.tc-editing) > .tc-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px color-mix(in srgb, var(--shadow, #000) 8%, transparent);
-  }
 }
 
 html.motion-reduced #todayView.view.is-entering.tc-grid > .tc-card {
@@ -4579,15 +4113,17 @@ html.motion-reduced #reviewView .review-reflection-empty.ll-polished {
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: var(--card, #ffffff);
+  background: var(--ll-surface-float, #ffffff);
   box-shadow: 0 16px 44px rgba(16, 35, 29, 0.14);
   pointer-events: auto;
   isolation: isolate;
   opacity: 1;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 html[data-theme="dark"] .tc-onboard-hint {
-  background: var(--card, #1e2228);
+  background: var(--ll-surface-float, #1e2630);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
 }
 
@@ -4689,12 +4225,6 @@ html.motion-reduced #reviewView .review-scatter-empty.ll-polished {
 
 /* Batch 10 r7 — Today edit done success (bar pulse + edit toggle flash) */
 
-@media (prefers-reduced-motion: no-preference) {
-  html.tc-on .tc-edit-toggle.tc-edit-saved-flash {
-    animation: tcEditSavedFlash 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-}
-
 @keyframes tcEditSavedFlash {
   0%, 100% {
     box-shadow: 0 12px 34px rgba(16, 35, 29, .1);
@@ -4771,13 +4301,6 @@ html.motion-reduced .tc-edit-toggle.tc-edit-saved-flash {
 #timelineView[data-journal-layout="calendar"] .journal-calendar-empty.ll-polished {
   max-width: 420px;
   margin: 8px auto 32px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .timeline-list-empty.ll-polished,
-  .journal-calendar-empty.ll-polished {
-    animation: llEmptyEnter 520ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
 }
 
 html.motion-reduced :is(.timeline-list-empty, .journal-calendar-empty).ll-polished {
@@ -4882,14 +4405,6 @@ html[data-theme="dark"] #reviewView .review-scatter-empty-step {
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .habit-streak-grid i.done {
-    transform-origin: center;
-    animation: llStreakCellIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: min(calc(var(--cell-i, 0) * 14ms), 196ms);
   }
 }
 
@@ -5828,12 +5343,6 @@ html[data-theme="dark"] .ledger-more-menu {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
-    animation: ledger-stats-scope-in 0.42s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-  }
-}
-
 @keyframes ledger-stats-scope-in {
   from {
     opacity: 0.4;
@@ -6040,7 +5549,7 @@ html.motion-reduced .ledger-day-group.is-expanded .ledger-day-rows {
   width: min(100%, 420px);
   padding: 16px 18px 18px;
   border-radius: 20px;
-  background: var(--card, #ffffff);
+  background: var(--ll-surface-float, #ffffff);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
   transform: translateY(12px);
   opacity: 0;
@@ -6048,7 +5557,7 @@ html.motion-reduced .ledger-day-group.is-expanded .ledger-day-rows {
 }
 
 html[data-theme="dark"] .today-ledger-sheet-panel {
-  background: var(--card, #1e2228);
+  background: var(--ll-surface-float, #1e2630);
 }
 
 .today-ledger-sheet.is-open .today-ledger-sheet-backdrop {
@@ -6332,5 +5841,445 @@ html.motion-reduced ::view-transition-new(*) {
 @media (prefers-reduced-motion: reduce) {
   .view.active {
     view-transition-name: none;
+  }
+}
+/* Owner pass r8 — consolidated prefers-reduced-motion: no-preference */
+@media (prefers-reduced-motion: no-preference) {
+.tw-card.tw-spending:active {
+    transform: scale(0.985);
+  }
+
+#journalPhotoLibrary.journal-library--ready .journal-library-month {
+    animation: var(--ll-anim-enter-42);
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(2) {
+    animation-delay: 35ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-month:nth-of-type(n + 3) {
+    animation-delay: 70ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card {
+    animation: llPhotoTileIn 0.38s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(2) {
+    animation-delay: 22ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(3) {
+    animation-delay: 44ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(4) {
+    animation-delay: 66ms;
+  }
+
+  #journalPhotoLibrary.journal-library--ready .journal-library-grid .journal-library-card:nth-child(n + 5) {
+    animation-delay: 88ms;
+  }
+
+#journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry:not(.journal-feed-entry--append) {
+    animation: none !important;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append {
+    animation: llFeedRowIn 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(2) {
+    animation-delay: 35ms;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(3) {
+    animation-delay: 70ms;
+  }
+
+  #journalFeed[data-feed-motion="append"].ll-paint-host--ready .journal-feed-entry--append:nth-child(n + 4) {
+    animation-delay: 105ms;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside) {
+    animation: llCalDayIn 0.38s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n + 1) {
+    animation-delay: 0ms;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n + 2) {
+    animation-delay: 18ms;
+  }
+
+  #timelineView.is-calendar-entering .timeline-calendar-card .calendar-day:not(.outside):nth-child(3n) {
+    animation-delay: 36ms;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row {
+    animation: llTimelineRowIn 0.36s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(2) {
+    animation-delay: 28ms;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(3) {
+    animation-delay: 56ms;
+  }
+
+  #timelineEntryList.timeline-entry-list--entering .timeline-entry-row:nth-child(n + 4) {
+    animation-delay: 84ms;
+  }
+
+.journal-composer-status[data-pending] {
+    animation: llComposerPending 1.1s ease-in-out infinite;
+  }
+
+.progress-orbit[style*="--progress:"]:not([style*="--progress: 0"]):not([style*="--progress:0"]) .progress-orbit-ring {
+    animation: llOrbitGlow 2.8s ease-in-out infinite;
+  }
+
+#journalFeed.ll-paint-host--ready .journal-feed-entry {
+    animation: llFeedRowIn 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(2) {
+    animation-delay: 40ms;
+  }
+
+  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(3) {
+    animation-delay: 80ms;
+  }
+
+  #journalFeed.ll-paint-host--ready .journal-feed-entry:nth-child(n + 4) {
+    animation-delay: 120ms;
+  }
+
+.focus-inline-timer.is-active.is-running .focus-inline-ring {
+    animation: llFocusRingBreathe 2.4s ease-in-out infinite;
+  }
+
+  .focus-inline-timer.is-active.is-break.is-running .focus-inline-ring {
+    animation: llFocusRingBreatheBreak 2.8s ease-in-out infinite;
+  }
+
+.habit-card:not(.future-locked):active {
+    transform: scale(0.97);
+  }
+
+  .habit-card.completed:not(.future-locked) {
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--accent, #6f8f7d) 14%, transparent);
+  }
+
+.ledger-category-viz.is-ready .ledger-donut-svg {
+    animation: ledger-donut-reveal 480ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  #reviewView .score-card--enter {
+    animation: score-card-enter 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--score-i, 0) * 45ms);
+  }
+
+  #reviewView .rv-habit-spark--enter rect {
+    transform-origin: center bottom;
+    animation: rv-spark-grow 360ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--spark-i, 0) * 12ms);
+  }
+
+#reviewView .bar-chart.is-retargeting .bar {
+    animation: barGrow 520ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--bar-i, 0) * 10ms);
+  }
+
+  #reviewView .rv-weekdays.is-retargeting .insight-weekday-track i {
+    transform-origin: bottom center;
+    animation: rvWeekdayGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(1) .insight-weekday-track i { animation-delay: 0ms; }
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(2) .insight-weekday-track i { animation-delay: 35ms; }
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(3) .insight-weekday-track i { animation-delay: 70ms; }
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(4) .insight-weekday-track i { animation-delay: 105ms; }
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(5) .insight-weekday-track i { animation-delay: 140ms; }
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(6) .insight-weekday-track i { animation-delay: 175ms; }
+  #reviewView .rv-weekdays.is-retargeting .rv-weekday:nth-child(7) .insight-weekday-track i { animation-delay: 210ms; }
+
+  .focus-review-chart.is-retargeting .focus-review-day i {
+    animation: focusReviewBarIn 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--focus-bar-i, 0) * 42ms);
+  }
+
+  #reviewView .review-habit-compare.is-retargeting .analytics-bar-track i {
+    transform-origin: left center;
+    animation: rvAnalyticsBarGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--bar-i, 0) * 28ms);
+  }
+
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-track i {
+    transform-origin: bottom center;
+    animation: rvWeekdayGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(1) .analytics-bar-track i { animation-delay: 0ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(2) .analytics-bar-track i { animation-delay: 35ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(3) .analytics-bar-track i { animation-delay: 70ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(4) .analytics-bar-track i { animation-delay: 105ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(5) .analytics-bar-track i { animation-delay: 140ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(6) .analytics-bar-track i { animation-delay: 175ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(7) .analytics-bar-track i { animation-delay: 210ms; }
+  #reviewView .review-habit-compare.is-retargeting .analytics-bars:last-of-type .analytics-bar-row:nth-child(8) .analytics-bar-track i { animation-delay: 245ms; }
+
+.ledger-heat-grid.is-retargeting .ledger-heat {
+    transform: scale(0.55);
+    animation: ledger-heat-cell-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--heat-i, 0) * 14ms);
+  }
+
+  .ledger-donut-segments.is-retargeting path {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.72);
+    opacity: 0.35;
+    animation: ledger-donut-seg-in 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--seg-i, 0) * 38ms);
+  }
+
+.review-ledger-stats.is-retargeting > span {
+    animation: rvLedgerStatIn 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--stat-i, 0) * 48ms);
+  }
+
+  .review-scatter-grid.is-retargeting :is(
+    .review-mood-scatter-dot,
+    .review-habit-scatter-dot,
+    .review-focus-scatter-dot
+  ) {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: rvScatterDotRetarget 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--dot-i, 0) * 22ms);
+  }
+
+  .review-ledger-insights.is-retargeting :is(
+    .review-ledger-mood,
+    .review-ledger-habits,
+    .review-ledger-focus,
+    .review-ledger-budget
+  ) {
+    animation: rvLedgerInsightIn 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--insight-i, 0) * 55ms);
+  }
+
+#reviewDetailedMetrics.is-metrics-hint:not([open]) > summary {
+    animation: ll-metrics-hint 2.4s ease-in-out 2;
+  }
+
+#reviewTitle.is-retargeting > span {
+    animation: var(--ll-anim-enter-42);
+  }
+
+  #reviewInsights .rv-metrics.is-retargeting > article {
+    animation: var(--ll-anim-enter-42);
+  }
+
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(2) { animation-delay: 35ms; }
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(3) { animation-delay: 70ms; }
+  #reviewInsights .rv-metrics.is-retargeting > article:nth-child(4) { animation-delay: 105ms; }
+
+  #reviewView .review-habit-compare.is-retargeting .rv-bar i {
+    transform-origin: left center;
+    animation: rvAnalyticsBarGrow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--bar-i, 0) * 22ms);
+  }
+
+  #reviewView .review-habit-compare.is-retargeting tbody tr {
+    animation: llTimelineRowIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--spark-row-i, 0) * 28ms);
+  }
+
+  #weeklyResistance .analytics-chart.is-retargeting .analytics-bar {
+    transform-origin: center bottom;
+    animation: rvWeekdayGrow 0.52s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--series-i, 0) * 48ms + var(--bar-i, 0) * 10ms);
+  }
+
+  #weeklyResistance .analytics-chart.is-retargeting .analytics-point {
+    transform-origin: center;
+    animation: llCalDayIn 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+    animation-delay: calc(var(--series-i, 0) * 40ms + var(--dot-i, 0) * 12ms);
+  }
+
+  #weeklyResistance .analytics-chart.is-retargeting .analytics-line {
+    stroke-dasharray: 420;
+    stroke-dashoffset: 420;
+    animation: insightPlotLineDraw 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) forwards;
+    animation-delay: calc(var(--series-i, 0) * 90ms);
+  }
+
+  .tc-bar.is-saved {
+    animation: tcBarSaved 620ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  .tc-bar .tc-done.tc-done--pulse {
+    animation: tcDonePulse 620ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  .tc-editing > .tc-card.tc-drop-success {
+    outline-color: color-mix(in srgb, var(--accent) 78%, transparent);
+    transition: outline-color 180ms ease;
+  }
+
+#viewTitle.is-view-switch {
+    animation: var(--ll-anim-enter-38);
+  }
+
+  .nav-item.is-landing {
+    animation: navItemLand 0.42s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  @keyframes navItemLand {
+    0% {
+      transform: translateX(0) scale(0.98);
+    }
+    45% {
+      transform: translateX(2px) scale(1.02);
+    }
+    100% {
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  #weekView.view.is-entering .module-card {
+    animation: var(--ll-anim-enter-44);
+    animation-delay: calc(420ms + var(--module-i, 0) * 45ms);
+  }
+
+  #weekView .week-page-header.is-retargeting,
+  #weekView .module-card.is-retargeting {
+    animation: var(--ll-anim-enter-40);
+    animation-delay: calc(var(--module-i, 0) * 40ms);
+  }
+
+  #ledgerView .ledger-header h2.is-retargeting {
+    animation: var(--ll-anim-enter-38);
+  }
+
+  #ledgerView .ledger-summary.is-retargeting > article {
+    animation: var(--ll-anim-enter-40);
+  }
+
+  #ledgerView .ledger-summary.is-retargeting > article:nth-child(1) { animation-delay: 0ms; }
+  #ledgerView .ledger-summary.is-retargeting > article:nth-child(2) { animation-delay: 35ms; }
+  #ledgerView .ledger-summary.is-retargeting > article:nth-child(3) { animation-delay: 70ms; }
+
+  :is(.review-mood-scatter-wrap, .review-habit-scatter-wrap, .review-focus-scatter-wrap).is-scatter-spotlight {
+    animation: scatterSpotlight 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+:is(.settings-dialog, .export-dialog).is-modal-enter {
+    animation: modalSheetEnter 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+  :is(.settings-dialog, .export-dialog).is-modal-enter::backdrop {
+    animation: modalBackdropIn 0.36s ease both;
+  }
+
+  .export-dialog [data-backup-panel].is-retargeting {
+    animation: var(--ll-anim-enter-40);
+  }
+
+  .backup-tabs.is-tab-switch button.active {
+    animation: navItemLand 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+.hero-card.is-day-retarget .hero-copy h2,
+  .hero-card.is-day-retarget .date-chip {
+    animation: heroDayRetarget 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+.review-scatter-dot-group circle:last-child {
+    transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 160ms ease;
+  }
+
+  .review-scatter-dot-hit.is-active + circle,
+  .review-scatter-dot-hit:focus-visible + circle {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+
+#reviewView .rv-habit-spark:hover rect.rv-spark-on {
+    fill: color-mix(in srgb, var(--sage) 92%, #fff);
+  }
+
+  #reviewView .rv-habit-spark:hover rect.rv-spark-miss {
+    opacity: 0.72;
+  }
+
+.ledger-import-popover .ledger-import-confirm {
+    animation: modalSheetEnter 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+.tw-card.tw-spending:not(.is-empty) .tw-spend-mood-pill:not([hidden]) {
+    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+.tw-card.tw-spending .tw-spend-recurring-pill:not([hidden]) {
+    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+#todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .date-chip {
+    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > h2 {
+    animation: heroCopyIn 0.52s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.05s both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .quote-source {
+    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.1s both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > p {
+    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.14s both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .progress-orbit {
+    animation: heroCopyIn 0.54s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.08s both;
+  }
+
+#todayView.view.is-entering.tc-grid > .tc-card:nth-child(2) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.12s both; }
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(3) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.15s both; }
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(4) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.18s both; }
+  #todayView.view.is-entering.tc-grid > .tc-card:nth-child(n + 5) { animation: pageCardIn 0.44s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) 0.21s both; }
+
+#todayView.tc-grid.active:not(.tc-editing) > .tc-card {
+    transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
+  }
+
+  #todayView.tc-grid.active:not(.tc-editing) > .tc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--shadow, #000) 8%, transparent);
+  }
+
+html.tc-on .tc-edit-toggle.tc-edit-saved-flash {
+    animation: tcEditSavedFlash 720ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+.timeline-list-empty.ll-polished,
+  .journal-calendar-empty.ll-polished {
+    animation: llEmptyEnter 520ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+
+.habit-streak-grid i.done {
+    transform-origin: center;
+    animation: llStreakCellIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: min(calc(var(--cell-i, 0) * 14ms), 196ms);
+  }
+
+.ledger-panel--stats.is-scope-swap .ledger-stats-anim {
+    animation: ledger-stats-scope-in 0.42s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
   }
 }

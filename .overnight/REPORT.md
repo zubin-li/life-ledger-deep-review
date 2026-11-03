@@ -1,3 +1,44 @@
+# Life Ledger — 主人反馈 pass（Round 8 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **C1 引导卡不透明** | 今日组件库提示卡与记一笔 sheet 改用实色 **`--ll-surface-float`**（不再用半透明 `--card`）；390 宽 browser 测试 + `fb-r8-today-onboard-*` |
+| **C5 CSS** | 合并 29 段 `prefers-reduced-motion: no-preference` → **6285** 行（`merge-no-preference-motion.mjs`） |
+| **C6** | 重跑 `compare-v2010.mjs`；Mac 壳 `fb-r8-mac-today-sheet-*` |
+| **capture** | 新增 **today-onboard** 场景（390 WebKit） |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **今日** → 若未 dismiss 过，右下角出现**实色**引导卡（可点「编辑卡片」流程）
+3. **今日支出** → 记一笔 sheet（实色面板）
+4. **记账** → 周/月统计、donut、订阅
+5. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r8`
+
+## 截图（Round 8）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r8-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡 390 实色 |
+| `fb-r8-today-sheet-zh-light-390-webkit.png` | Today 记一笔 sheet |
+| `fb-r8-today-zh-light-1440-chromium.png` | 今日 + 侧栏 **C3** |
+| `fb-r8-ledger-zh-light-1440-chromium.png` | 记账统计 **C2** |
+| `fb-r8-mac-today-sheet-zh-light-1440-webkit.png` | Mac 壳 sheet |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **73** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+---
 # Life Ledger — 主人反馈 pass（Round 7 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

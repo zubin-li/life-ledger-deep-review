@@ -88,3 +88,47 @@ test(
     }
   },
 );
+
+test(
+  "Today card onboarding hint is opaque at mobile width (C1)",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { webkit } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await webkit.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-language", "zh");
+        localStorage.removeItem("life-ledger-today-cards-onboarding-dismissed");
+        localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+        localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
+      });
+      await page.goto(base, { waitUntil: "domcontentloaded" });
+      await page.click('.nav-item[data-view="today"]');
+      await page.waitForSelector("#tcOnboardHint:not([hidden])", { timeout: 15000 });
+      const styles = await page.evaluate(() => {
+        const el = document.getElementById("tcOnboardHint");
+        const cs = getComputedStyle(el);
+        const m = cs.backgroundColor.match(/rgba?\(([^)]+)\)/);
+        let alpha = 1;
+        if (m) {
+          const parts = m[1].split(",").map(s => s.trim());
+          if (parts.length === 4) alpha = Number.parseFloat(parts[3]);
+        }
+        return {
+          opacity: cs.opacity,
+          backgroundColor: cs.backgroundColor,
+          alpha,
+          zIndex: cs.zIndex,
+        };
+      });
+      assert.equal(styles.opacity, "1");
+      assert.ok(styles.alpha >= 0.99, `onboard background alpha ${styles.alpha}`);
+      assert.ok(Number.parseInt(styles.zIndex, 10) >= 12000);
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);

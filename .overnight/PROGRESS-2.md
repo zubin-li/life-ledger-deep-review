@@ -2,6 +2,71 @@
 
 Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight` (isolated)
 
+## Round 8 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **C1 引导卡** | 根因：`--card` 为 76% 透明玻璃；新增 **`--ll-surface-float`**，`.tc-onboard-hint` / Today sheet 面板实色；`tests/today-cards-onboard.browser.test.mjs` 断言 alpha ≥ 0.99 |
+| **C5 CSS** | `.overnight/merge-no-preference-motion.mjs` 合并 **29** 个 `no-preference` 媒体块 → **6285** 行（−51 行 / −1.6 KB） |
+| **C6** | 重跑 `compare-v2010.mjs` → `.overnight/diff-v2010.json`（59–79% diff = 2.1 功能面，同 r6） |
+| **截图** | `fb-r8-*`（5297）+ `fb-r8-mac-today-sheet-*`（5295）；capture 增加 **today-onboard** 390 |
+| **文档** | `CSS-LAYERS.md` 端口表 + r8 merge 说明；CHANGELOG Unreleased r8 |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6285** 行，仍远高于 ~3250；需删 legacy hidden DOM 样式或 2.2 拆文件 |
+| **D3 动效** | 全站 FLIP/VT 已铺；数字 roll-up 可继续统一 |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（与 v2.0.10 一致）。
+- v2.0.10 像素 diff 大面积为 Today 支出 / 记账 nav / 动效，非 layout 破图。
+
+### Evidence (六个已知问题 · r8)
+
+1. **C1** — `fb-r8-today-onboard-zh-light-390-webkit.png` + browser alpha 测试；`rgb(255,255,255)` computed
+2. **C2** — `fb-r8-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r8-today-zh-light-1440-chromium.png` 侧栏顺序
+4. **C4** — r7 `weather-headless-compare.json` 仍有效
+5. **C5** — **6285** 行；`capture.mjs` + merge/consolidate/prune 脚本
+6. **C6** — `diff-v2010.json` + `fb-r8-*` 目视 week/ledger/review/habits OK
+
+### Self-review (Round 8)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | merge 仅搬动 `no-preference` 块，规则顺序不变 | OK |
+| ui-ux-pro-max | C1 实色浮层；touch 目标未改 | **Fixed** `--ll-surface-float` |
+| design-dna | fb-r8 ledger/week 与 panel 族一致 | OK |
+| Rauno / Linear | 浮层不透明、z-index 12000 | **Fixed C1** |
+| Screenshots | onboard 390 实色（Playwright elementFromPoint + rgb 255） | OK |
+| Tests | **433** unit + **73** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- 其它 popover/sheet 仍用 `--card` 的可逐个改为 `--ll-surface-float`
+- v210.css 下一刀：legacy `.ledger-legacy-viz` 样式归档
+
+### `npm test` (round 8 gate · final)
+
+```
+433 pass, 0 fail (unit)
+73 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 更大瘦身（legacy hidden + 重复 press 块）
+2. 浮层实色 audit（settings dialog 等）
+3. 动效 perf trace 复跑
+
+---
+
 ## Round 7 (2026-11-03)
 
 ### Done
@@ -294,4 +359,7 @@ desktop:check 0 fail
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 72 ℹ pass 72 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
 ## Driver gate after sprint 7
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 8
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

@@ -31,6 +31,7 @@ const SHOTS = [
   { id: "longrange", view: "longrange", lang: "en", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "timeline", view: "timeline", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "today-sheet", view: "today", lang: "zh", theme: "light", w: 390, h: 844, browser: "webkit", openTodaySheet: true },
+  { id: "today-onboard", view: "today", lang: "zh", theme: "light", w: 390, h: 844, browser: "webkit", showTodayOnboard: true },
   { id: "ledger", view: "ledger", lang: "zh", theme: "light", w: 1440, h: 900, browser: "chromium" },
   { id: "ledger", view: "ledger", lang: "de", theme: "dark", w: 390, h: 844, browser: "webkit" },
   { id: "review", view: "review", lang: "zh", theme: "light", w: 390, h: 844, browser: "chromium" },
@@ -57,6 +58,13 @@ async function shot(browserType, spec) {
   await context.addInitScript(() => {
     localStorage.removeItem("life-ledger-nav-order");
   });
+  if (spec.showTodayOnboard) {
+    await context.addInitScript(() => {
+      localStorage.removeItem("life-ledger-today-cards-onboarding-dismissed");
+      localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+      localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
+    });
+  }
   if (spec.theme === "dark") {
     await context.addInitScript(() => { document.documentElement.dataset.theme = "dark"; });
   }
@@ -68,7 +76,12 @@ async function shot(browserType, spec) {
     await page.waitForSelector("#todayLedgerSheet.is-open");
     await page.waitForTimeout(180);
   }
-  const name = `${prefix}-${spec.openTodaySheet ? "today-sheet" : spec.view}-${spec.lang}-${spec.theme}-${spec.w}-${spec.browser}.png`;
+  if (spec.showTodayOnboard) {
+    await page.waitForSelector("#tcOnboardHint:not([hidden])", { timeout: 15000 });
+    await page.waitForTimeout(200);
+  }
+  const slug = spec.openTodaySheet ? "today-sheet" : spec.showTodayOnboard ? "today-onboard" : spec.view;
+  const name = `${prefix}-${slug}-${spec.lang}-${spec.theme}-${spec.w}-${spec.browser}.png`;
   await page.screenshot({ path: join(outDir, name), fullPage: false });
   await context.close();
   return name;
