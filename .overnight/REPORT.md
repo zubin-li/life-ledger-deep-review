@@ -1,3 +1,46 @@
+# Life Ledger — 主人反馈 pass（Round 9 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **记账页更简** | 删除 hidden **`ledger-legacy-viz`**（本月关联洞察 / 预算列表 / 分类 chips 不再占 DOM）；洞察与散点空态只在 **复盘 → 本月支出摘要** |
+| **C5 CSS** | `prune-ledger-legacy-css.mjs` → **6140** 行（−171） |
+| **C1 浮层** | 设置/导出/日历对话框、记账 popover、习惯 icon/颜色 picker 统一实色 **`--ll-surface-float`** |
+| **测试** | wellness 场景改测 Review；新增设置对话框不透明 browser 测试 |
+| **性能** | 导航 trace：最长 long task **64ms**，CLS **0** |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **记账** → 仅统计 + 订阅 + 折叠交易列表（无底部 hidden 洞察块）
+3. **复盘** → 本月支出摘要里的散点 / 空态 checklist / 390 宽 jump chips
+4. 右上角 **齿轮** → 设置对话框应为实色底
+5. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r9`
+
+## 截图（Round 9）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r9-ledger-zh-light-1440-chromium.png` | 记账统计页（简化后） **C2** |
+| `fb-r9-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r9-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡 |
+| `fb-r9-week-zh-light-1440-webkit.png` | 本周 panel 对照 |
+| `fb-r9-review-zh-light-390-chromium.png` | 复盘 Money 散点 |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **433** pass |
+| `npm run test:browser` | **74** pass（全 suite；fakecloud 偶发 flake 单测可重跑） |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 8 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

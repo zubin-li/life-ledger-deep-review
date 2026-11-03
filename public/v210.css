@@ -12,6 +12,34 @@
 html[data-theme="dark"] {
   --ll-surface-float: #1e2630;
 }
+
+/* Owner pass r9 — opaque floating surfaces (C1 audit) */
+:is(.settings-dialog, .export-dialog, .calendar-settings-dialog) {
+  background: var(--ll-surface-float, #ffffff);
+}
+
+html[data-theme="dark"] :is(.settings-dialog, .export-dialog, .calendar-settings-dialog) {
+  background: var(--ll-surface-float, #1e2630);
+}
+
+.ledger-edit-form,
+.ledger-import-popover .ledger-import-confirm {
+  background: var(--ll-surface-float, #ffffff);
+}
+
+html[data-theme="dark"] .ledger-edit-form,
+html[data-theme="dark"] .ledger-import-popover .ledger-import-confirm {
+  background: var(--ll-surface-float, #1e2630);
+}
+
+:is(.icon-picker-popover, .color-picker-popover) {
+  background: var(--ll-surface-float, #ffffff) !important;
+}
+
+html[data-theme="dark"] :is(.icon-picker-popover, .color-picker-popover) {
+  background: var(--ll-surface-float, #1e2630) !important;
+}
+
 /* Bookkeeping page — loaded after v202.css */
 .ledger-page {
   display: grid;
@@ -107,26 +135,6 @@ html[data-theme="dark"] .ledger-quick input {
 .ledger-edit-field input.is-error {
   border-color: var(--danger-text, #c44);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger-text, #c44) 18%, transparent);
-}
-
-.ledger-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.ledger-chip {
-  border: 1px solid var(--hairline, rgba(0, 0, 0, 0.08));
-  border-radius: 999px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.82rem;
-  background: var(--surface-elevated, rgba(255, 255, 255, 0.6));
-  cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.ledger-chip:active {
-  transform: scale(0.97);
 }
 
 .ledger-panel h3 {
@@ -314,45 +322,6 @@ html[data-theme="dark"] .ledger-tx {
   border-radius: 12px;
   border: 1px solid var(--hairline, rgba(0, 0, 0, 0.08));
   font-size: 0.9rem;
-}
-
-.ledger-budget-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.ledger-budget {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.25rem 0.75rem;
-  align-items: center;
-  font-size: 0.85rem;
-}
-
-.ledger-budget-bar {
-  grid-column: 1 / -1;
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-sage, #3a8f7a) 15%, transparent);
-  position: relative;
-  overflow: hidden;
-}
-
-.ledger-budget-bar::after {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: calc(var(--p, 0) * 100%);
-  background: var(--accent-sage, #3a8f7a);
-  border-radius: inherit;
-  transition: width 0.35s ease;
-}
-
-.ledger-budget.is-over .ledger-budget-bar::after {
-  background: var(--danger-text, #c44);
 }
 
 .review-ledger-stats {
@@ -957,14 +926,12 @@ body:has(.ledger-import-popover) .sidebar {
   width: min(100%, 360px);
   padding: 1rem 1.1rem 1.1rem;
   border-radius: 18px;
-  background: #fff;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
   display: grid;
   gap: 0.65rem;
 }
 
 html[data-theme="dark"] .ledger-edit-form {
-  background: #1e2630;
   color: #edf2f7;
 }
 
@@ -2350,17 +2317,7 @@ html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint 
 /* ========== merged from v229-ledger-budget-bars.css ========== */
 /* Ledger budget progress — month-change bar grow (v2.1.0) */
 
-.ledger-budget-list.is-retargeting .ledger-budget-bar::after {
-  transition: width 0.42s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: calc(var(--bar-i, 0) * 42ms);
-}
-
-html.motion-reduced .ledger-budget-list.is-retargeting .ledger-budget-bar::after {
-  transition: none;
-  transition-delay: 0ms;
-}
-
-/* ========== merged from v230-ledger-chart-retarget.css ========== */
+html.motion-reduced /* ========== merged from v230-ledger-chart-retarget.css ========== */
 /* Ledger category donut / treemap / daily heat — month-change stagger (v2.1.0) */
 
 @keyframes ledger-heat-cell-in {
@@ -4465,103 +4422,7 @@ html.motion-reduced #weekView .week-page-spend-insight:not([hidden]) {
   animation: none;
 }
 
-/* Batch 12 r1 — Money page mood/habit mini scatter correlations */
-
-.ledger-wellness-insights {
-  margin: 1.25rem 0 0.5rem;
-  padding: 1.1rem 1.15rem 1rem;
-  border-radius: var(--ll-radius-lg, 14px);
-  border: 1px solid color-mix(in srgb, var(--hairline) 72%, transparent);
-  background: color-mix(in srgb, var(--surface-elevated, var(--card)) 88%, transparent);
-}
-
-.ledger-wellness-head h3 {
-  margin: 0 0 0.85rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.ledger-wellness-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  position: relative;
-}
-
-.ledger-wellness-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-.ledger-wellness-caption {
-  margin: 0;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  line-height: 1.35;
-}
-
-.ledger-wellness-chart {
-  border-radius: 10px;
-  padding: 0.35rem 0.25rem 0.15rem;
-  background: color-mix(in srgb, var(--surface, var(--bg)) 55%, transparent);
-}
-
-.ledger-wellness-chart :is(.review-mood-scatter, .review-habit-scatter) {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 5.5rem;
-  pointer-events: none;
-}
-
-.ledger-wellness-chart .review-scatter-dot-hit {
-  pointer-events: auto;
-  cursor: default;
-}
-
-.ledger-wellness-link {
-  align-self: flex-start;
-  margin-top: 0.15rem;
-  padding: 0.15rem 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--accent, var(--link));
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-.ledger-wellness-link:hover {
-  opacity: 0.82;
-}
-
-.ledger-wellness-link:active {
-  transform: scale(0.98);
-}
-
-html.motion-reduced .ledger-wellness-link:active {
-  transform: none;
-}
-
-#ledgerView.view.is-entering .ledger-wellness-insights {
-  animation: llEmptyReveal 520ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
-}
-
-html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-insights {
-  animation: none;
-}
-
-@media (max-width: 520px) {
-  .ledger-wellness-insights {
-    padding: 1rem 0.85rem;
-  }
-}
+/* Batch 12 r1 — Money page mood/habit mini scatter correlations (Review-only since 2.1.0 owner pass) */
 
 /* Batch 12 round 2 — heatmap day filter + ledger scatter tips */
 .ledger-day-filter-chip,
@@ -4687,7 +4548,6 @@ html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-empty.review-s
 /* ========== Batch 12 r4 — Money polished section empties ========== */
 
 #ledgerView .ledger-list-empty.ll-polished,
-#ledgerView .ledger-budget-empty-wrap.ll-polished,
 #ledgerView .ledger-recurring-empty-wrap.ll-polished {
   margin: 12px 0 4px;
   padding: 20px 18px 18px;
@@ -4702,13 +4562,11 @@ html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-empty.review-s
 }
 
 #ledgerView .ledger-list-empty.ll-polished .hairline-empty,
-#ledgerView .ledger-budget-empty-wrap.ll-polished .hairline-empty,
 #ledgerView .ledger-recurring-empty-wrap.ll-polished .hairline-empty {
   max-width: 22rem;
 }
 
 #ledgerView .ledger-list-empty.ll-polished .hairline-empty > strong,
-#ledgerView .ledger-budget-empty-wrap.ll-polished .hairline-empty > strong,
 #ledgerView .ledger-recurring-empty-wrap.ll-polished .hairline-empty > strong {
   font-size: 1.05rem;
   letter-spacing: -0.01em;
@@ -5132,7 +4990,6 @@ button.review-ledger-recurring-open:is(.ll-press-bump, .is-stat-press),
 button.text-button[data-open-ledger]:is(.ll-press-bump, .is-stat-press),
 button.review-scatter-jump-chip:is(.ll-press-bump, .is-jump-press),
 .nav-item:is(.ll-press-bump, .is-nav-press),
-button.ledger-chip:is(.ll-press-bump, .is-chip-press),
 button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press),
 button.tw-spend-today:is(.ll-press-bump, .is-spend-press),
 button.tw-spend-open:is(.ll-press-bump, .is-spend-press),
@@ -5172,7 +5029,6 @@ html[data-theme="dark"] .nav-item:is(.ll-press-bump, .is-nav-press) {
   background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 12%, var(--sidebar-surface, var(--card, #1a1d22)));
 }
 
-button.ledger-chip:is(.ll-press-bump, .is-chip-press),
 button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
   transform: scale(0.94);
   background: color-mix(in srgb, var(--desk-accent, #167dce) 12%, var(--surface-elevated, #fff));
@@ -5180,8 +5036,7 @@ button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #167dce) 14%, transparent);
 }
 
-html[data-theme="dark"] button.ledger-chip:is(.ll-press-bump, .is-chip-press),
-html[data-theme="dark"] button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
+html[data-theme="dark"] html[data-theme="dark"] button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
   background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 14%, var(--surface-elevated, #1a1d22));
 }
 

@@ -1,6 +1,3 @@
-# Owner feedback pass 2.1.0 — progress
-
-Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight` (isolated)
 
 ## Round 8 (2026-11-03)
 
@@ -362,4 +359,7 @@ desktop:check 0 fail
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
 ## Driver gate after sprint 8
+ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 9
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

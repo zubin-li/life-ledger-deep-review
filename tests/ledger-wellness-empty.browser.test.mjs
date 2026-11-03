@@ -57,7 +57,7 @@ async function seedScatterEmptyLedger(page) {
 }
 
 test(
-  "Money wellness scatter empty checklist when month has spend but not enough scatter days",
+  "Review scatter empty checklist when month has spend but not enough scatter days",
   { skip: !hasPlaywright },
   async () => {
     const server = await startStaticServer();
@@ -75,14 +75,12 @@ test(
         await page.goto(base, { waitUntil: "domcontentloaded" });
         await seedScatterEmptyLedger(page);
         await page.reload({ waitUntil: "domcontentloaded" });
-        await page.click('.nav-item[data-view="ledger"]');
-        await page.waitForSelector(".ledger-legacy-viz #ledgerWellnessEmptyHint", { timeout: 15000, state: "attached" });
-        const stepCount = await page.locator("#ledgerWellnessEmptyHint .review-scatter-empty-step").count();
-        assert.equal(stepCount, 3, "expected three wellness empty checklist chips");
-        const mainGrid = await page.locator("#ledgerView:not(.ledger-legacy-viz) .ledger-wellness-grid").count();
-        assert.equal(mainGrid, 0, "scatter grid should not appear on main ledger surface");
+        await page.click('.nav-item[data-view="review"]');
+        await page.waitForSelector("#reviewLedgerSummary .review-scatter-empty", { timeout: 15000 });
+        const stepCount = await page.locator("#reviewLedgerSummary .review-scatter-empty-step").count();
+        assert.equal(stepCount, 3, "expected three scatter empty checklist chips on Review");
         await page.evaluate(() => {
-          document.querySelector('#ledgerWellnessEmptyHint [data-scatter-empty-target="today"]')?.click();
+          document.querySelector('#reviewLedgerSummary [data-scatter-empty-target="today"]')?.click();
         });
         await page.waitForFunction(() => document.getElementById("todayView")?.classList.contains("active"), null, {
           timeout: 5000,

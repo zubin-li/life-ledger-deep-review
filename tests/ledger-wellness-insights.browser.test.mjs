@@ -21,13 +21,13 @@ function startStaticServer() {
 }
 
 test(
-  "Money legacy block keeps wellness scatters and Review habit deep link",
+  "Review scatter jump chips focus habit chart with spotlight",
   { skip: !hasPlaywright },
   async () => {
     const server = await startStaticServer();
     const { chromium } = await import(join(playwrightRoot, "index.mjs"));
     const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     try {
       await page.addInitScript(() => {
         localStorage.setItem("life-ledger-demo-workspace-dismissed", "1");
@@ -35,21 +35,22 @@ test(
         localStorage.setItem("life-ledger-language", "zh");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForTimeout(400);
-      const legacy = page.locator(".ledger-legacy-viz");
-      await legacy.waitFor({ state: "attached", timeout: 8000 });
-      const section = legacy.locator(".ledger-wellness-insights");
-      await assert.ok(await section.count() === 1);
-      await assert.ok(await section.locator(".review-mood-scatter, .review-habit-scatter").count() >= 1);
-      await page.evaluate(() => {
-        document.querySelector('.ledger-legacy-viz [data-ledger-review-scatter="review-scatter-habit"]')?.click();
+      await page.locator('.nav-item[data-view="review"]').click();
+      await page.waitForSelector(".review-scatter-jump-chip[data-review-scatter-jump='review-scatter-habit']", {
+        state: "attached",
+        timeout: 8000,
       });
-      await page.waitForTimeout(500);
-      await assert.ok(await page.locator('.nav-item[data-view="review"].active').count() === 1);
+      await page.evaluate(() => {
+        document.querySelector('.review-scatter-jump-chip[data-review-scatter-jump="review-scatter-habit"]')?.click();
+      });
+      await page.waitForTimeout(400);
       const habitScatter = page.locator("#review-scatter-habit");
       await assert.doesNotReject(() => habitScatter.waitFor({ state: "visible", timeout: 5000 }));
-      await assert.ok(await habitScatter.evaluate(el => el.classList.contains("is-scatter-spotlight") || el.classList.contains("is-scatter-spotlight-static")));
+      await assert.ok(
+        await habitScatter.evaluate(
+          el => el.classList.contains("is-scatter-spotlight") || el.classList.contains("is-scatter-spotlight-static"),
+        ),
+      );
     } finally {
       await browser.close();
       server.kill("SIGTERM");

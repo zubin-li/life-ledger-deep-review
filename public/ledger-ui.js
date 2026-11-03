@@ -320,35 +320,6 @@
     return `<div class="ledger-heat-grid is-retargeting">${cells}</div>`;
   }
 
-  function renderWellnessEmptyBlock() {
-    const scatterEmptyCta = t("去 Today 记录", "Log on Today", "Auf Heute erfassen");
-    const scatterStepLabels = [
-      t("记录心情", "Log mood", "Stimmung notieren"),
-      t("完成习惯", "Complete habits", "Gewohnheiten abhaken"),
-      t("记一笔支出", "Log spending", "Ausgabe erfassen"),
-    ];
-    const scatterStepTargets = ["today", "habits", "ledger"];
-    const scatterSteps = scatterStepLabels
-      .map(
-        (label, i) =>
-          `<li><button type="button" class="review-scatter-empty-step" data-scatter-empty-target="${scatterStepTargets[i]}" style="--step-i:${i}">${ctx.escape(label)}</button></li>`,
-      )
-      .join("");
-    const hairline = ctx.hairlineEmpty?.(
-      "./assets/hairline/empty-insights.svg",
-      t("散点图还需要一点数据", "Scatter charts need a few more days", "Streudiagramme brauchen noch Tage"),
-      t(
-        "连续记录心情、习惯完成与支出后，心情 / 习惯与支出的对照图会自动出现。",
-        "Log mood, habit completion, and spending on more days and mood / habit vs spend charts will appear.",
-        "Erfasse an mehr Tagen Stimmung, Gewohnheiten und Ausgaben — dann erscheinen die Vergleichsdiagramme.",
-      ),
-    );
-    const body = hairline
-      ? hairline
-      : `<p>${t("散点图还需要一点数据", "Scatter charts need a few more days", "Streudiagramme brauchen noch Tage")}</p>`;
-    return `<div class="ledger-wellness-empty review-scatter-empty ll-polished" id="ledgerWellnessEmptyHint">${body}<ul class="review-scatter-empty-steps" aria-label="${ctx.escape(t("还需要的数据", "Still needed", "Noch nötig"))}">${scatterSteps}</ul><button type="button" class="primary-button review-scatter-empty-cta ledger-wellness-empty-cta" id="ledgerWellnessEmptyToday">${ctx.escape(scatterEmptyCta)}</button></div>`;
-  }
-
   function ledgerPolishedEmpty(className, asset, title, help, ctaHtml = "") {
     const hairline = ctx.hairlineEmpty?.(asset, title, help);
     const body = hairline || `<p class="ledger-empty-fallback">${ctx.escape(help)}</p>`;
@@ -362,93 +333,12 @@
     input?.focus({ preventScroll: true });
   }
 
-  function renderWellnessInsights(ledger, ym) {
-    const summary = core().monthSummary(ledger, ym);
-    if (summary.expenseMinor >= 0) return "";
-    const rows = ctx.monthDailyRows?.(ym) || [];
-    const L = core();
-    const lang = ctx.lang?.() || "en";
-    const locale = ctx.locale?.();
-    const cur = ledger.settings.defaultCurrency;
-    const moodScatter = rows.length ? L.moodSpendScatter(rows) : null;
-    const habitScatter = rows.length ? L.habitCompletionSpendScatter(rows) : null;
-    const scatterOpts = { lang, locale, currency: cur, width: 268, height: 90 };
-    const cards = [];
-    if (moodScatter) {
-      cards.push(`<article class="ledger-wellness-card">
-        <p class="ledger-wellness-caption">${t("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben")}</p>
-        <div class="ledger-wellness-chart">${L.renderMoodSpendScatterSvg(moodScatter, scatterOpts)}</div>
-        <button type="button" class="ledger-wellness-link" data-ledger-review-scatter="review-scatter-mood">${t("在复盘中查看 →", "Open in Review →", "In Rückblick öffnen →")}</button>
-      </article>`);
-    }
-    if (habitScatter) {
-      cards.push(`<article class="ledger-wellness-card">
-        <p class="ledger-wellness-caption">${t("习惯完成度与当日支出", "Habit completion vs spending", "Gewohnheitsquote und Ausgaben")}</p>
-        <div class="ledger-wellness-chart">${L.renderHabitCompletionSpendScatterSvg(habitScatter, scatterOpts)}</div>
-        <button type="button" class="ledger-wellness-link" data-ledger-review-scatter="review-scatter-habit">${t("在复盘中查看 →", "Open in Review →", "In Rückblick öffnen →")}</button>
-      </article>`);
-    }
-    const inner = cards.length
-      ? `<div class="ledger-wellness-grid is-retargeting">${cards.join("")}</div>`
-      : renderWellnessEmptyBlock();
-    return `<section class="ledger-wellness-insights ll-polished" aria-label="${t("支出与生活关联", "Spending & life correlations", "Ausgaben und Leben")}">
-      <div class="ledger-wellness-head"><h3>${t("本月关联洞察", "This month’s correlations", "Zusammenhänge in diesem Monat")}</h3></div>
-      ${inner}
-      <p class="sr-only ledger-scatter-live" aria-live="polite" aria-atomic="true"></p>
-    </section>`;
-  }
-
-  function renderChips(ledger) {
-    const ids = ledger.meta.recentCategoryIds.length
-      ? ledger.meta.recentCategoryIds
-      : ledger.categories.filter(c => !c.archived && c.kind === "expense").slice(0, 6).map(c => c.id);
-    return ids.map(id => {
-      const cat = ledger.categories.find(c => c.id === id);
-      if (!cat) return "";
-      const name = core().localizedCategoryName(cat, ctx.lang?.());
-      return `<button type="button" class="ledger-chip" data-cat="${ctx.escape(id)}">${ctx.escape(name)}</button>`;
-    }).join("");
-  }
-
   function expenseCategoryOptions(ledger, selectedId) {
     return ledger.categories.filter(c => c.kind === "expense" && !c.archived).map(c => {
       const name = core().localizedCategoryName(c, ctx.lang?.());
       const sel = c.id === selectedId ? " selected" : "";
       return `<option value="${ctx.escape(c.id)}"${sel}>${ctx.escape(name)}</option>`;
     }).join("");
-  }
-
-  function renderBudgets(ledger, ym) {
-    const rows = core().budgetProgress(ledger, ym);
-    if (!rows.length) {
-      const cta = `<button type="button" class="primary-button" id="ledgerBudgetEmptyAdd">${t("设置预算", "Set budget", "Budget setzen")}</button>`;
-      return ledgerPolishedEmpty(
-        "ledger-budget-empty-wrap",
-        "./assets/hairline/empty-insights.svg",
-        t("还没有本月预算", "No budgets this month", "Noch kein Monatsbudget"),
-        t(
-          "为餐饮、交通等支出分类设上限，进度条会随记账自动更新。",
-          "Set a monthly cap per expense category — progress updates as you log.",
-          "Lege Monatslimits pro Ausgabenkategorie fest — der Fortschritt folgt deinen Buchungen.",
-        ),
-        cta,
-      );
-    }
-    return `<ul class="ledger-budget-list is-retargeting">${rows.map(row => {
-      const cat = ledger.categories.find(c => c.id === row.categoryId);
-      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
-      const pct = Math.min(100, Math.round(row.ratio * 100));
-      const over = row.ratio > 1;
-      return `<li class="ledger-budget${over ? " is-over" : ""}" data-budget-id="${ctx.escape(row.id)}">
-        <span class="ledger-budget-name">${ctx.escape(name)}</span>
-        <span class="ledger-budget-actions">
-          <button type="button" class="icon-button ledger-budget-edit" aria-label="${t("编辑", "Edit", "Bearbeiten")}">✎</button>
-          <button type="button" class="icon-button ledger-budget-del" aria-label="${t("删除", "Delete", "Löschen")}">×</button>
-        </span>
-        <span class="ledger-budget-amt">${ctx.escape(core().formatMoney(row.spentMinor, row.currency, ctx.locale?.()))} / ${ctx.escape(core().formatMoney(row.limitMinor, row.currency, ctx.locale?.()))}</span>
-        <span class="ledger-budget-bar" style="--p:${pct / 100}"></span>
-      </li>`;
-    }).join("")}</ul>`;
   }
 
   function openBudgetPopover(ledger, ym, existing) {
@@ -1273,17 +1163,6 @@
       const result = submitQuickEntry(host, input.value, viewDay || ctx.iso(new Date()), { inputEl: input, formEl: form });
       if (!result.ok) return;
     });
-    host.querySelectorAll(".ledger-chip").forEach(chip => {
-      chip.addEventListener("click", () => {
-        pulseLedgerCategoryChip(chip);
-        const input = form?.querySelector("input[name=quick]");
-        if (!input) return;
-        const cat = ledger.categories.find(c => c.id === chip.dataset.cat);
-        const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
-        input.value = input.value.trim() ? `${input.value.trim()} ${name}` : `12,50 ${name}`;
-        input.focus();
-      });
-    });
     host.querySelector("[data-ledger-day-prev]")?.addEventListener("click", () => {
       viewDay = shiftDay(viewDay || ctx.iso(new Date()), -1);
       viewMonth = viewDay.slice(0, 7);
@@ -1329,12 +1208,6 @@
         finishFlip?.(host.querySelector(".ledger-tx-list--grouped"));
       });
     });
-    host.querySelectorAll("[data-ledger-review-scatter]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-ledger-review-scatter");
-        ctx.openReviewScatter?.(ym, id);
-      });
-    });
     host.querySelector("#ledgerFilter")?.addEventListener("input", e => {
       listFilter = e.target.value;
       refreshLedgerList(host, ledgerState(), ym);
@@ -1373,21 +1246,6 @@
     bindBudget(host, ym);
     bindTouchRowGestures(host);
     bindKeypad(host);
-    ctx.bindScatterDotTips?.(host);
-    const wellnessEmpty = host.querySelector("#ledgerWellnessEmptyHint");
-    if (wellnessEmpty) {
-      ctx.hydrateHairline?.(wellnessEmpty);
-      wellnessEmpty.querySelector(".hairline-empty")?.classList.add("ll-empty");
-      wellnessEmpty.querySelector("#ledgerWellnessEmptyToday")?.addEventListener("click", () => {
-        ctx.switchView?.("today");
-      });
-      wellnessEmpty.querySelectorAll("[data-scatter-empty-target]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const view = btn.getAttribute("data-scatter-empty-target");
-          if (view) ctx.switchView?.(view);
-        });
-      });
-    }
     host.querySelectorAll("[data-ledger-day]").forEach(btn => {
       btn.addEventListener("click", () => {
         pulseLedgerHeatDay(btn);
@@ -1429,7 +1287,7 @@
   }
 
   function bindLedgerPolishedEmpties(host, ym) {
-    host.querySelectorAll(".ledger-list-empty, .ledger-budget-empty-wrap, .ledger-recurring-empty-wrap").forEach(el => {
+    host.querySelectorAll(".ledger-list-empty, .ledger-recurring-empty-wrap").forEach(el => {
       ctx.hydrateHairline?.(el);
       el.querySelector(".hairline-empty")?.classList.add("ll-empty");
     });
@@ -1450,9 +1308,6 @@
     });
     host.querySelector("[data-ledger-clear-all-filters]")?.addEventListener("click", () => {
       clearAllListFilters(host, ym);
-    });
-    host.querySelector("#ledgerBudgetEmptyAdd")?.addEventListener("click", () => {
-      host.querySelector(".ledger-budget-add")?.click();
     });
     host.querySelector("#ledgerRecurringEmptyAdd")?.addEventListener("click", () => {
       host.querySelector(".ledger-recurring-add")?.click();
@@ -1797,8 +1652,7 @@
         ${renderDayFilterChip(ym)}
         ${renderCategoryFilterChip(ledger)}
         ${renderList(ledger, ym)}
-      </section>
-      <div class="ledger-legacy-viz" hidden aria-hidden="true">${renderWellnessInsights(ledger, ym)}${renderBudgets(ledger, ym)}<div class="ledger-chips">${renderChips(ledger)}</div></div>`;
+      </section>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));
     host.querySelector("[data-ledger-sample-entry]")?.addEventListener("click", () => {
       if (postSampleEntry(host, ledgerState())) render();
