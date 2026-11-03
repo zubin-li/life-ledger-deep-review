@@ -5129,9 +5129,12 @@ html.motion-reduced .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
 
 .ledger-summary--compact {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin: 12px 0 8px;
+}
+@media (max-width: 640px) {
+  .ledger-summary--compact { grid-template-columns: 1fr; }
 }
 
 .ledger-stats-compare,
