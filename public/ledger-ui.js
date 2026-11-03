@@ -4,6 +4,7 @@
   let viewMonth = "";
   let ledgerMonthPulse = false;
   let listFilter = "";
+  let listDayFilter = "";
   let trendPlot = null;
   let categoryChartMode = "donut";
   let lastSummaryDisplay = { income: "", expense: "", net: "" };
@@ -247,14 +248,21 @@
     const [y, m] = ym.split("-").map(Number);
     const days = new Date(y, m, 0).getDate();
     const max = Math.max(1, ...map.values());
+    const locale = ctx.locale?.() || "de-DE";
     let cells = "";
     for (let day = 1; day <= days; day += 1) {
       const iso = `${ym}-${String(day).padStart(2, "0")}`;
       const val = map.get(iso) || 0;
       const level = val ? Math.min(4, Math.ceil((val / max) * 4)) : 0;
-      cells += `<span class="ledger-heat ledger-heat-${level}" style="--heat-i:${day - 1}" title="${ctx.escape(iso)}"></span>`;
+      const selected = listDayFilter === iso ? " is-selected" : "";
+      const spendLabel = val
+        ? core().formatMoney(-Math.abs(val), ledger.settings.defaultCurrency, locale)
+        : t("无支出", "No spend", "Keine Ausgaben");
+      const dayLabel = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(new Date(y, m - 1, day));
+      const aria = t(`${dayLabel}：${spendLabel}，筛选交易`, `${dayLabel}: ${spendLabel}, filter list`, `${dayLabel}: ${spendLabel}, Liste filtern`);
+      cells += `<button type="button" class="ledger-heat ledger-heat-${level}${selected}" style="--heat-i:${day - 1}" data-ledger-day="${ctx.escape(iso)}" aria-label="${ctx.escape(aria)}" aria-pressed="${listDayFilter === iso ? "true" : "false"}"></button>`;
     }
-    return `<div class="ledger-heat-grid is-retargeting" aria-hidden="true">${cells}</div>`;
+    return `<div class="ledger-heat-grid is-retargeting">${cells}</div>`;
   }
 
   function renderWellnessInsights(ledger, ym) {
@@ -286,6 +294,7 @@
     return `<section class="ledger-wellness-insights ll-polished" aria-label="${t("支出与生活关联", "Spending & life correlations", "Ausgaben und Leben")}">
       <div class="ledger-wellness-head"><h3>${t("本月关联洞察", "This month’s correlations", "Zusammenhänge in diesem Monat")}</h3></div>
       <div class="ledger-wellness-grid is-retargeting">${cards.join("")}</div>
+      <p class="sr-only ledger-scatter-live" aria-live="polite" aria-atomic="true"></p>
     </section>`;
   }
 
@@ -395,12 +404,15 @@
   }
 
   function renderList(ledger, ym) {
-    const rows = core().filterTransactions(ledger, ym, listFilter)
+    const rows = core().filterTransactions(ledger, ym, listFilter, listDayFilter)
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
     if (!rows.length) {
-      return `<p class="ledger-empty ll-empty-enter">${listFilter
-        ? t("没有匹配的交易。", "No matching entries.", "Keine passenden Buchungen.")
-        : t("这个月还没有记录。试试输入「12,50 咖啡」。", "Nothing this month yet. Try \"12.50 coffee\".", "Noch nichts in diesem Monat. Probiere „12,50 Kaffee“.")}</p>`;
+      const emptyMsg = listDayFilter
+        ? t("这一天没有交易。", "No entries on this day.", "An diesem Tag keine Buchungen.")
+        : listFilter
+          ? t("没有匹配的交易。", "No matching entries.", "Keine passenden Buchungen.")
+          : t("这个月还没有记录。试试输入「12,50 咖啡」。", "Nothing this month yet. Try \"12.50 coffee\".", "Noch nichts in diesem Monat. Probiere „12,50 Kaffee“.");
+      return `<p class="ledger-empty ll-empty-enter">${emptyMsg}</p>`;
     }
     return `<ul class="ledger-tx-list">${rows.map(tx => {
       const cat = ledger.categories.find(c => c.id === tx.categoryId);
@@ -843,15 +855,7 @@
     });
     host.querySelector("#ledgerFilter")?.addEventListener("input", e => {
       listFilter = e.target.value;
-      const list = host.querySelector(".ledger-list-wrap");
-      if (list) {
-        const h = list.querySelector("h3");
-        list.innerHTML = `${h ? h.outerHTML : ""}${renderList(ledgerState(), ym)}`;
-        bindDelete(host, ledgerState());
-        bindDuplicate(host);
-        bindEdit(host);
-        bindSwipeDelete(host);
-      }
+      refreshLedgerList(host, ledgerState(), ym);
     });
     host.querySelector("[data-ledger-export]")?.addEventListener("click", () => {
       const csv = core().exportTransactionsCsv(ledgerState(), ym, { lang: ctx.lang?.() });
@@ -916,6 +920,19 @@
       btn.addEventListener("click", () => {
         categoryChartMode = btn.dataset.chartMode || "donut";
         render();
+      });
+    });
+    ctx.bindScatterDotTips?.(host);
+    host.querySelectorAll("[data-ledger-day]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const day = btn.getAttribute("data-ledger-day");
+        listDayFilter = listDayFilter === day ? "" : day;
+        syncHeatSelection(host);
+        refreshLedgerList(host, ledgerState(), ym);
+        if (listDayFilter) {
+          const reduced = root.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+          host.querySelector(".ledger-list-wrap")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+        }
       });
     });
   }
@@ -1075,6 +1092,38 @@
     }
   }
 
+  function renderDayFilterChip(ym) {
+    if (!listDayFilter || !listDayFilter.startsWith(`${ym}-`)) return "";
+    const [y, m, d] = listDayFilter.split("-").map(Number);
+    const locale = ctx.locale?.() || "de-DE";
+    const label = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(new Date(y, m - 1, d));
+    return `<button type="button" class="ledger-day-filter-chip" data-ledger-clear-day aria-label="${t(`清除 ${label} 筛选`, `Clear ${label} filter`, `Filter ${label} aufheben`)}"><span>${ctx.escape(label)}</span><span class="ledger-day-filter-x" aria-hidden="true">×</span></button>`;
+  }
+
+  function syncHeatSelection(host) {
+    host.querySelectorAll("[data-ledger-day]").forEach(btn => {
+      const on = btn.getAttribute("data-ledger-day") === listDayFilter;
+      btn.classList.toggle("is-selected", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function refreshLedgerList(host, ledger, ym) {
+    const list = host.querySelector(".ledger-list-wrap");
+    if (!list) return;
+    const h3 = list.querySelector("h3");
+    list.innerHTML = `${h3 ? h3.outerHTML : ""}${renderDayFilterChip(ym)}${renderList(ledger, ym)}`;
+    bindDelete(host, ledger);
+    bindDuplicate(host);
+    bindEdit(host);
+    bindSwipeDelete(host);
+    list.querySelector("[data-ledger-clear-day]")?.addEventListener("click", () => {
+      listDayFilter = "";
+      syncHeatSelection(host);
+      refreshLedgerList(host, ledgerState(), ym);
+    });
+  }
+
   function bindDelete(host, ledger) {
     host.querySelectorAll(".ledger-tx-del").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -1106,6 +1155,7 @@
     const ledger = ledgerState();
     if (!viewMonth) viewMonth = ymFromDate(ctx.iso(new Date()));
     const ym = viewMonth;
+    if (listDayFilter && !listDayFilter.startsWith(`${ym}-`)) listDayFilter = "";
     const summary = core().monthSummary(ledger, ym);
     const breakdown = core().categoryBreakdown(ledger, ym, "expense");
     const cur = ledger.settings.defaultCurrency;
@@ -1186,6 +1236,7 @@
       </section>
       <section class="ledger-list-wrap">
         <h3>${t("交易", "Transactions", "Buchungen")}</h3>
+        ${renderDayFilterChip(ym)}
         ${renderList(ledger, ym)}
       </section>`;
     host.querySelector("[data-ledger-hint-dismiss]")?.addEventListener("click", () => dismissOnboarding(host));

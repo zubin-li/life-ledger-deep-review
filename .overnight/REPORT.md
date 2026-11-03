@@ -1,3 +1,29 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 2
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **每日支出** 热力格可点选，筛选下方 **交易** 列表；日期 **chip** 可一键清除。 |
+| **Goal 2** | **本月关联洞察** 散点支持悬停/键盘 **tooltip**（与复盘同源逻辑）。 |
+| **修复** | 热力点击监听曾误放在 `bindRecurring` 内，导致点击无效 — 已移回 `bindInteractions`。 |
+| **测试** | `npm test` **396**；`npm run test:browser` **48**。 |
+
+## 怎么验
+
+1. Demo → **记账** → 点 **每日支出** 任一有色格子 → 列表应只剩该日交易，标题下出现日期 chip（见 `b12r2-ledger-heat-filter-zh-light-1440-chromium.png`）。
+2. 点 chip 上 **×** → 恢复整月列表。
+3. 滚到 **本月关联洞察** → Tab 到散点 → 应出现浮动读数；**在复盘中查看 →** 仍跳转复盘（Round 1 行为）。
+4. 重拍：`node .overnight/capture-batch12-round2.mjs`（端口 **5296**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 1
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

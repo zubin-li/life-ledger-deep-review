@@ -9143,7 +9143,7 @@ function hideReviewScatterTip(host) {
 }
 
 function bindReviewScatterDotTips(host) {
-  const grid = host?.querySelector(".review-scatter-grid");
+  const grid = host?.querySelector(".review-scatter-grid, .ledger-wellness-grid");
   if (!grid) return;
   let tip = grid.querySelector(".review-scatter-tip");
   if (!tip) {
@@ -9178,7 +9178,7 @@ function bindReviewScatterDotTips(host) {
     tip.style.top = `${y}px`;
     grid.querySelectorAll(".review-scatter-dot-hit.is-active").forEach(el => el.classList.remove("is-active"));
     dot.classList.add("is-active");
-    const live = host.querySelector(".review-scatter-live");
+    const live = host.querySelector(".review-scatter-live, .ledger-scatter-live");
     if (live) live.textContent = `${dot.dataset.tipLine1 || ""} — ${dot.dataset.tipLine2 || ""}`.trim();
   };
   host._scatterTipOver = event => {
@@ -10181,6 +10181,7 @@ function renderLedger() {
     toast: (message, options) => showToast(message, options),
     monthDailyRows: buildLedgerMonthDailyRows,
     openReviewScatter: openReviewScatterForMonth,
+    bindScatterDotTips: bindReviewScatterDotTips,
     changed: () => {
       window.LifeLedgerTodayWidgets?.render?.();
     },

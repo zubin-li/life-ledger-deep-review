@@ -52,3 +52,32 @@ test(
     }
   },
 );
+
+test(
+  "Money wellness scatter dots show tooltip on hover",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-demo-workspace-dismissed", "1");
+        localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
+        localStorage.setItem("life-ledger-language", "en");
+      });
+      await page.goto(base, { waitUntil: "networkidle" });
+      await page.locator('.nav-item[data-view="ledger"]').click();
+      await page.waitForSelector(".ledger-wellness-grid .review-scatter-dot-hit", { timeout: 8000 });
+      const dot = page.locator(".ledger-wellness-grid .review-scatter-dot-hit").first();
+      await dot.focus();
+      const tip = page.locator(".ledger-wellness-grid .review-scatter-tip");
+      await assert.doesNotReject(() => tip.waitFor({ state: "visible", timeout: 3000 }));
+      await assert.ok((await tip.locator("strong").textContent())?.length > 0);
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);
