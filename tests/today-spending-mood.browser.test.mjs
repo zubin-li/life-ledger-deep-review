@@ -39,6 +39,11 @@ test(
       assert.ok(mood === "很好" || mood === "平静" || mood === "低落", `unexpected mood ${mood}`);
       const label = await page.locator(".tw-spend-mood-pill").textContent();
       assert.match(label || "", /很好|平静|低落/);
+      await page.locator(".tw-spend-mood-pill").click();
+      await page.waitForSelector("#reviewView.view.active", { timeout: 8000 });
+      await page.waitForSelector("#review-scatter-mood", { timeout: 8000 });
+      const reviewActive = await page.evaluate(() => document.getElementById("reviewView")?.classList.contains("active"));
+      assert.equal(reviewActive, true);
     } finally {
       await browser.close();
       server.kill("SIGTERM");

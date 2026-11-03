@@ -16,7 +16,7 @@
       heat26: "近 26 周", heatRate: "完成率", heatFull: "满分天", heatBest: "最长连续", days: "天", focusArt: "专注", wallAddHint: "放一张你喜欢的照片", photosLocalTitle: "这一天的照片", freqEmptyTitle: "还没有频率目标", weatherEmptyTitle: "今天的天气",
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
       wallEmptyShort: "在卡片设置里放入照片", wallMedia: "照片与视频", wallAuto: "自动轮播", wallFit: "显示方式", fill: "铺满", fit: "完整显示", wallFocus: "点或拖动预览，选择显示的位置", wallTip: "左右滑动或点两侧切换",
-      spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今日暂无新支出。", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", openLedger: "打开记账", spendingMonth: "本月累计", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出" },
+      spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今日暂无新支出。", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", openLedger: "打开记账", spendingMonth: "本月累计", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出", spendingMoodReview: "打开复盘 · 心情与支出对照" },
     en: { weather: "Weather", weatherK: "WEATHER", rhythm: "Recent rhythm", rhythmK: "LAST 7 DAYS", heatmap: "Habit heatmap", heatmapK: "HABIT RHYTHM", wall: "Photo wall", wallK: "PHOTO WALL", photos: "Photo memories", photosK: "MEMORY", focus: "Focus", focusK: "FOCUS", freq: "By frequency", freqK: "WEEKLY · MONTHLY",
       chooseCity: "Choose a city to show its weather.", setCity: "Set location", city: "City", search: "Search", noCity: "No matching city found.", loading: "Loading…", unavailable: "Could not refresh. Check your connection.", cached: "Saved forecast · offline", updated: "Updated",
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
@@ -27,7 +27,7 @@
       heat26: "Last 26 weeks", heatRate: "Done", heatFull: "Full days", heatBest: "Best streak", days: "d", focusArt: "Focus", wallAddHint: "Put a photo you love here", photosLocalTitle: "Photos of this day", freqEmptyTitle: "No frequency goals yet", weatherEmptyTitle: "Today's weather",
       freqEmpty: "No weekly or monthly habits yet. Set a habit's frequency to weekly or monthly in Adjust goals.", freqWeek: "This week {done}/{target}", freqMonth: "This month {done}/{target}", freqPick: "Habit shown",
       wallEmptyShort: "Add photos in card settings", wallMedia: "Photos and videos", wallAuto: "Auto-play", wallFit: "Display", fill: "Fill", fit: "Fit", wallFocus: "Tap or drag the preview to choose what shows", wallTip: "Swipe or tap the sides to switch",
-      spendingEmpty: "No spending logged today yet.", spendingEmptyQuiet: "Nothing new logged for today.", spendingHint: "Try: 12.50 coffee", spendingToday: "Spending today", openLedger: "Open Money", spendingMonth: "This month", moodGood: "Good", moodCalm: "Calm", moodLow: "Low", spendingMoodTip: "Today's mood · compare with spending in Review" },
+      spendingEmpty: "No spending logged today yet.", spendingEmptyQuiet: "Nothing new logged for today.", spendingHint: "Try: 12.50 coffee", spendingToday: "Spending today", openLedger: "Open Money", spendingMonth: "This month", moodGood: "Good", moodCalm: "Calm", moodLow: "Low", spendingMoodTip: "Today's mood · compare with spending in Review", spendingMoodReview: "Open Review · mood vs spending" },
     de: { weather: "Wetter", weatherK: "WETTER", rhythm: "Letzte Tage", rhythmK: "7 TAGE", heatmap: "Gewohnheits-Heatmap", heatmapK: "RHYTHMUS", wall: "Fotowand", wallK: "FOTOWAND", photos: "Fotoerinnerungen", photosK: "ERINNERUNG", focus: "Fokus", focusK: "FOKUS", freq: "Nach Häufigkeit", freqK: "WOCHE · MONAT",
       chooseCity: "Wähle eine Stadt für die Wettervorhersage.", setCity: "Ort wählen", city: "Stadt", search: "Suchen", noCity: "Keine passende Stadt gefunden.", loading: "Wird geladen …", unavailable: "Aktualisierung fehlgeschlagen. Verbindung prüfen.", cached: "Gespeicherte Prognose · offline", updated: "Aktualisiert",
       clear: "Klar", cloud: "Bewölkt", rain: "Regen", snow: "Schnee", storm: "Gewitter", rainSoon: "Regen erwartet", snowSoon: "Schnee erwartet", noRain: "Kein Niederschlag in den nächsten 24 Stunden", hour: "Vorhersagezeit",
@@ -38,7 +38,7 @@
       heat26: "Letzte 26 Wochen", heatRate: "Erledigt", heatFull: "Volle Tage", heatBest: "Beste Serie", days: "T.", focusArt: "Fokus", wallAddHint: "Lege ein Lieblingsfoto hierher", photosLocalTitle: "Fotos dieses Tages", freqEmptyTitle: "Noch keine Häufigkeitsziele", weatherEmptyTitle: "Wetter heute",
       freqEmpty: "Noch keine wöchentlichen oder monatlichen Ziele. Stelle die Häufigkeit in „Ziele anpassen“ auf wöchentlich / monatlich.", freqWeek: "Diese Woche {done}/{target}", freqMonth: "Diesen Monat {done}/{target}", freqPick: "Angezeigtes Ziel",
       wallEmptyShort: "Fotos in den Karteneinstellungen hinzufügen", wallMedia: "Fotos und Videos", wallAuto: "Automatisch wechseln", wallFit: "Darstellung", fill: "Füllen", fit: "Ganz zeigen", wallFocus: "Tippe oder ziehe in der Vorschau, um den Ausschnitt zu wählen", wallTip: "Wischen oder seitlich tippen zum Wechseln",
-      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingEmptyQuiet: "Heute bisher nichts gebucht.", spendingHint: "Z. B.: 12,50 Kaffee", spendingToday: "Ausgaben heute", openLedger: "Finanzen öffnen", spendingMonth: "Diesen Monat", moodGood: "Gut", moodCalm: "Ruhig", moodLow: "Schwer", spendingMoodTip: "Stimmung heute · in der Monatsübersicht mit Ausgaben vergleichen" },
+      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingEmptyQuiet: "Heute bisher nichts gebucht.", spendingHint: "Z. B.: 12,50 Kaffee", spendingToday: "Ausgaben heute", openLedger: "Finanzen öffnen", spendingMonth: "Diesen Monat", moodGood: "Gut", moodCalm: "Ruhig", moodLow: "Schwer", spendingMoodTip: "Stimmung heute · in der Monatsübersicht mit Ausgaben vergleichen", spendingMoodReview: "Rückblick · Stimmung und Ausgaben" },
   };
   const lang = () => (T[currentLang] ? currentLang : "en");
   const t = (k, v = {}) => String(T[lang()][k] ?? T.en[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n] ?? "");
@@ -103,7 +103,7 @@
     freq: shell("freq", `<span class="tw-side tw-freq-month"></span>`, `<div class="tw-freq-info"><div class="tw-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><b class="tw-freq-count"></b></div><div class="tw-freq-tabs" role="tablist"></div></div><div class="tw-heat-box"><div class="tw-heat-weekdays" aria-hidden="true"></div><div class="tw-freq-grid tw-heat-grid"></div></div>`),
     photos: shell("photos", `<button type="button" class="text-button tw-open-day" data-tw="openDay"></button>`, `<div class="tw-photo-list"></div><p class="tw-caption tw-photo-note"></p>`),
     focus: shell("focus", "", `<div class="tw-art tw-focus-art"></div><div class="tw-focus-main"><div class="tw-ring tw-focus-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><strong></strong></div><div class="tw-focus-meta"><span class="tw-focus-topic"></span><p class="tw-caption tw-focus-today"></p><button type="button" class="primary-button tw-focus-start"></button></div></div>`),
-    spending: shell("spending", `<strong class="tw-side tw-spend-month"></strong>`, `<div class="tw-spend-main"><div class="tw-spend-head"><strong class="tw-spend-today"></strong><span class="tw-spend-mood-pill" hidden role="status"></span></div><div class="tw-spend-spark" aria-hidden="true"></div><p class="tw-caption tw-spend-note"></p><p class="tw-caption tw-spend-hint" hidden></p><button type="button" class="text-button tw-spend-open" data-tw="openLedger"></button></div>`),
+    spending: shell("spending", `<strong class="tw-side tw-spend-month"></strong>`, `<div class="tw-spend-main"><div class="tw-spend-head"><strong class="tw-spend-today"></strong><button type="button" class="tw-spend-mood-pill" hidden></button></div><div class="tw-spend-spark" aria-hidden="true"></div><p class="tw-caption tw-spend-note"></p><p class="tw-caption tw-spend-hint" hidden></p><button type="button" class="text-button tw-spend-open" data-tw="openLedger"></button></div>`),
   };
   // Hero gets the weather chip (weather-widget.js fills #heroWeather).
   const chip = document.createElement("span");
@@ -573,6 +573,7 @@
         moodPill.textContent = spendingMoodLabel(dayMood);
         moodPill.dataset.mood = dayMood;
         moodPill.title = t("spendingMoodTip");
+        moodPill.setAttribute("aria-label", t("spendingMoodReview"));
         moodPill.hidden = false;
       } else {
         moodPill.hidden = true;
@@ -608,6 +609,19 @@
     else delete c.dataset.spendEmptyEnter;
   }
   $(".tw-spend-open", cards.spending).addEventListener("click", () => switchToView?.("ledger"));
+  function scrollReviewMoodScatter() {
+    const target = document.getElementById("review-scatter-mood") || document.getElementById("reviewLedgerSummary");
+    if (!target) return;
+    if (typeof spotlightReviewScatterSection === "function") spotlightReviewScatterSection(target);
+    const reduced = document.documentElement.classList.contains("motion-reduced");
+    target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+    target.focus?.({ preventScroll: true });
+  }
+  $(".tw-spend-mood-pill", cards.spending)?.addEventListener("click", () => {
+    if (typeof switchToView !== "function") return;
+    switchToView("review");
+    requestAnimationFrame(() => requestAnimationFrame(scrollReviewMoodScatter));
+  });
 
   // Mount every hairline placeholder (data-art) inside a card once; hairline.js caches the SVGs.
   function arts(scope) { scope.querySelectorAll(".tw-art[data-art]").forEach(n => window.LifeLedgerHairline?.mount(n, n.dataset.art)); }

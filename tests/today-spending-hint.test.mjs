@@ -26,3 +26,9 @@ test("Today spending card shows localized mood pill when mood is logged", () => 
   assert.match(widgets, /moodPill\.dataset\.mood = dayMood/);
   assert.match(widgets, /t\("moodGood"\)/);
 });
+
+test("Today spending mood pill opens Review mood scatter", () => {
+  assert.match(widgets, /switchToView\("review"\)/);
+  assert.match(widgets, /review-scatter-mood/);
+  assert.match(widgets, /spendingMoodReview/);
+});

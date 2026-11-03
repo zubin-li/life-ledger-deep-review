@@ -3985,6 +3985,20 @@ html:not([data-workspace]) #reviewView > .review-score-table:not([open]) #inspec
   border: 1px solid color-mix(in srgb, var(--text-primary, #1d1d1f) 12%, transparent);
   background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
   color: var(--secondaryLabel, #6e6e73);
+  margin: 0;
+  appearance: none;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)), box-shadow 160ms ease;
+}
+
+button.tw-spend-mood-pill:not([hidden]):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--text-primary, #1d1d1f) 8%, transparent);
+}
+
+button.tw-spend-mood-pill:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent, #007aff) 72%, transparent);
+  outline-offset: 2px;
 }
 
 .tw-spend-mood-pill[data-mood="很好"] {
@@ -4043,6 +4057,11 @@ html[data-theme="dark"] .tw-spend-mood-pill[data-mood="低落"] {
 
 html.motion-reduced .tw-card.tw-spending .tw-spend-mood-pill {
   animation: none;
+}
+
+html.motion-reduced button.tw-spend-mood-pill:not([hidden]):hover {
+  transform: none;
+  box-shadow: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -6,6 +6,7 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Today · Spending today:** mood pill is a button — tap/click opens **Review** and scrolls to the mood-vs-spend scatter (fallback: Money summary panel); hover/focus polish (`v210.css` Batch 7 r6).
 - **Today · Spending today:** when you logged mood and the ledger has entries (or spend today), the card shows a localized mood pill beside the amount — a quick link to mood-vs-spend insights in Review (`tw-spend-mood-pill`, `v210.css` Batch 7 r5).
 - **Review:** habit score inspector (`#inspectorReviewTable`) is visible again on the unified monthly review page — expanded by default from 960px width, collapsible on narrow screens; opening the panel renders live streak stats (fix `setInsightView` using `trend` layout instead of retired `month` token).
 - **Money (ledger):** desktop **N** focuses the quick-entry field (with **/** search and **← / →** month keys).

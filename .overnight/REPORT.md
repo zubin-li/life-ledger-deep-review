@@ -1,6 +1,36 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 5）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 6）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 6：** Today 心情胶囊一键进复盘散点图；单元 **355**、浏览器 **14** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 6）— 心情胶囊 → 复盘
+
+| 项目 | 说明 |
+|------|------|
+| **Today · 今日支出** | 心情胶囊改为可点击按钮；进入 **复盘** 并滚到「心情与当日支出」散点（无散点则滚到本月支出摘要）。 |
+| **样式** | 胶囊 hover 微抬、`focus-visible` 描边；`prefers-reduced-motion` 关闭 hover 位移。 |
+| **REVIEW** | Antigravity MED/LOW #1–#3 已在早期批次修复；本轮仅复核单测。 |
+| **测试** | `today-spending-hint.test.mjs` +1；`today-spending-mood.browser.test.mjs` 增加点击断言；`npm test` **355**；`npm run test:browser` **14**。 |
+| **截图** | `.overnight/shots/b7r6-*`（`node .overnight/capture-batch7-round6.mjs`，端口 **5287**）。 |
+
+**怎么试：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **今日** → 点 **今日支出** 旁的心情胶囊（如「平静」）→ 应到 **复盘** 且看见散点图（见 `b7r6-today-mood-to-review-zh-light-1440-chromium.png`）。
+2. 键盘：Tab 到胶囊 → Enter/Space 同样跳转。
+3. 无心情或无账本时胶囊不出现（与 Round 5 相同）。
+
+**前后对比：** Round 5 仅展示胶囊；Round 6 把 tooltip 文案兑现为真实导航。
+
+**已知：** CSS reduced-motion 大表合并仍未做（REVIEW #4）；demo 习惯名仍为英文。
+
+---
+
+## 历史（Batch 7 · Round 5）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 5：** Today 支出卡心情胶囊 + 记账快捷键/复盘 i18n 浏览器回归；单元 **354**、浏览器 **14** 全绿。
 
