@@ -1,13 +1,9 @@
 # Overnight progress
 
-## Batch 12 · Round 9 — done
+## Batch 12 · Round 10 — done (final)
 
-- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（56）。
-- **Goal 2 / 复盘 ↔ 记账：** **Review** 月度 **Money** 摘要三项 **支出 / 收入 / 结余** 与 **打开记账** → `openLedgerForReviewMonth` + `LifeLedgerLedgerUI.openToMonth`（清除日/分类筛选；月份 summary retarget；固定待记仍 `openToMonth` 后滚横幅）。
-- **实现：** `ledger-ui.js` `openToMonth`；`app.js` `openLedgerForReviewMonth`、`.review-ledger-stat-btn`；`v210.css` Batch 12 r9；`review-scatter.browser` 选择器更新。
-- **QA：** `view-enter-selectors` Batch 12 r9；`review-spending-ledger-month.browser`（WebKit 1440）。
-- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r9。
-- **截图：** `node .overnight/capture-batch12-round9.mjs`（**5295**）→ `b12r9-review-spend-ledger-month-*`。
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件已在本仓库实测全绿（**56**）。
+- **收尾：** `.overnight/REPORT.md` 顶部 **全夜总览**（Goal 1/2、验收路径、Batch 12 表、已知限制、测试数）；`CHANGELOG` Batch 12 r10 final；发布截图 `capture-batch12-round10.mjs`（**5296**）→ `b12r10-release-*`（Today 日筛选 / Review 月跳转 / 日+分类合计 / de390 / Mac shell）。
 - **QA：** `npm test` **407** pass / 0 fail；`npm run test:browser` **56** pass / 0 fail。
 
 ## Half-done
@@ -16,8 +12,8 @@
 
 ## Next
 
-- Batch 12 Round 10：`v210.css` reduced-motion 物理合并（2.2，可选）；`.overnight/REPORT.md` 全夜总览收尾；最后一轮补漏截图/测试。
-- Owner 验收：Demo → **复盘** → 点 **本月支出摘要** 大数字 → **记账** 应同月且无日期 chip（见 `b12r9-review-spend-ledger-month-zh-light-1440-chromium.png`）；切到上月复盘再点数字 → 记账页应对应月份。
+- 主人本地验收（见 REPORT 全夜总览 **5 分钟**清单）。
+- **2.2：** `v210.css` reduced-motion 物理合并（REVIEW #1）；可选中等环比文案优化（REVIEW #2）。
 
 ## Known bugs / gaps
 
@@ -33,7 +29,7 @@
 ## npm test
 
 ```
-407 pass, 0 fail (batch 12 round 9, unit gate)
+407 pass, 0 fail (batch 12 round 10, unit gate)
 56 pass, 0 fail (npm run test:browser, full suite)
 ```
 
@@ -42,6 +38,16 @@
 _pending (driver appends after commit)_
 
 ---
+
+## Batch 12 · Round 9 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（56）。
+- **Goal 2 / 复盘 ↔ 记账：** **Review** 月度 **Money** 摘要三项 **支出 / 收入 / 结余** 与 **打开记账** → `openLedgerForReviewMonth` + `LifeLedgerLedgerUI.openToMonth`（清除日/分类筛选；月份 summary retarget；固定待记仍 `openToMonth` 后滚横幅）。
+- **实现：** `ledger-ui.js` `openToMonth`；`app.js` `openLedgerForReviewMonth`、`.review-ledger-stat-btn`；`v210.css` Batch 12 r9；`review-scatter.browser` 选择器更新。
+- **QA：** `view-enter-selectors` Batch 12 r9；`review-spending-ledger-month.browser`（WebKit 1440）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r9。
+- **截图：** `node .overnight/capture-batch12-round9.mjs`（**5295**）→ `b12r9-review-spend-ledger-month-*`。
+- **QA：** `npm test` **407** pass / 0 fail；`npm run test:browser` **56** pass / 0 fail。
 
 ## Batch 12 · Round 8 — done
 
@@ -164,4 +170,7 @@ _pending (driver appends after commit)_
 ℹ tests 406 ℹ pass 406 ℹ fail 0 
 
 ## Driver gate after round 9
+ℹ tests 407 ℹ pass 407 ℹ fail 0 
+
+## Driver gate after round 10
 ℹ tests 407 ℹ pass 407 ℹ fail 0 

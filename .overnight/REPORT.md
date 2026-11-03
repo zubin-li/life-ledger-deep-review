@@ -1,3 +1,92 @@
+# Life Ledger 夜间构建 — 全夜总览（Batch 12 · Round 10 收尾）
+
+Web **2.1.0**、Mac **3.1.0**。隔离仓库：`/Users/ashan/Documents/Codex/ll-overnight`（无 remote，未部署）。
+
+## 交付摘要
+
+| 目标 | 内容 |
+|------|------|
+| **Goal 1 · 记账** | `state.ledger`（账户、分类、交易、预算、固定收支）；快速录入、CSV 德式导入/导出、uPlot 趋势、SVG 圆环/树图、热力日历、预算条；Today「今日支出」卡；复盘 Money 摘要；侧栏 **记账 / Money / Finanzen**；本地/云 CAS/备份 v3/demo/可撤销删除。设计见 `.overnight/LEDGER-DESIGN.md`，第三方见 `THIRD_PARTY_NOTICES.md`。 |
+| **Goal 2 · 抛光** | 多轮 `v210.css`：空状态插画、页面进入动效、习惯 streak 日历、Journal/Week/Today/Review 与支出的关联散点与 deep link、记账筛选 UX（热力日/分类 chip、合计条、Esc 清筛选、收入·支出·净分列）、Today/Review → 记账一键跳转。 |
+| **QA** | `npm test` **407** pass；`npm run test:browser` **56** pass（含 fakecloud、Mac shell、离线 PWA）。Antigravity **REVIEW.md**：无 HIGH/MED。 |
+
+## 主人明天建议验收（5 分钟）
+
+1. 终端：`cd public && python3 -m http.server 8080 --bind 127.0.0.1`，浏览器打开 `http://127.0.0.1:8080/index.html?mode=local&local-preview=demo-showcase-v1`。
+2. **今日** → 点 **今日支出** 大数字 → **记账** 应出现 **日期 chip** + 热力格选日（`b12r10-release-today-ledger-day-zh-light-1440-chromium.png`）。
+3. **复盘** → **本月支出摘要** 点大数字 → **记账** 同月、**无** 日期 chip（`b12r10-release-review-ledger-month-zh-light-1440-chromium.png`）。
+4. **记账** → 点热力格一日 → 再点圆环分类 → 列表上方 **笔数·合计** + **清除全部筛选**（`b12r10-release-ledger-filters-zh-light-1440-chromium.png`）。
+5. 快速录入试：`12,50 咖啡`；设置 → 导出/导入备份仍含 ledger。
+6. 深色 / 德语 / 窄屏：见 `b12r10-release-ledger-de-dark-390-webkit.png`；Mac 窗口感：`b12r10-release-ledger-mac-en-light-1440-webkit.png`。
+
+重拍发布集：`node .overnight/capture-batch12-round10.mjs`（端口 **5296**）。
+
+## Batch 12 十轮一览
+
+| 轮 | 主题 |
+|----|------|
+| R1 | 记账页 mood×spend / habit×spend 迷你散点 → 复盘 deep link |
+| R2 | 热力格筛日 + chip；wellness 散点 tooltip |
+| R3 | 记账侧 wellness 空态三步清单 |
+| R4 | 交易/预算/固定收支 hairline 空态 + CTA |
+| R5 | 圆环/树图筛分类 + chip |
+| R6 | 筛选 **笔数·合计** + 多筛选 **清除全部** |
+| R7 | 混合日 **收入·支出·净**；**Esc** 清筛选 |
+| R8 | Today 支出 → 记账 **按 Today 日期** |
+| R9 | 复盘 Money 摘要 → 记账 **按复盘月份** |
+| **R10** | **全夜 REPORT 收尾 + 发布截图集 `b12r10-*`** |
+
+更早 Batch 3–11 的记账首发与跨页洞察见下方各轮 REPORT 与 `CHANGELOG` `[2.1.0]` / `[Unreleased]`。
+
+## 截图索引（Batch 12）
+
+| 前缀 | 场景 |
+|------|------|
+| `b12r1`–`b12r3` | wellness 散点、热力筛日、空态清单 |
+| `b12r4`–`b12r6` | 空态 CTA、分类筛选、合计条 |
+| `b12r7`–`b12r9` | 分列合计、Today→记账、Review→记账 |
+| **`b12r10-release-*`** | **发布集：Today/Review/筛选/de390/Mac** |
+
+目录：`.overnight/shots/`。Batch 11 发布集：`b11r10-release-*`。
+
+## 已知限制（ intentional / 留 2.2）
+
+- 纯 Cloudflare **首次**访问不自动 seed 记账（真实用户从空账本开始）。
+- `v210.css` 内分散的 `prefers-reduced-motion` **未**物理合并（REVIEW #1 → **2.2**）。
+- 支出环比：中等增幅仍显示 **+N%**；极大跳变在 Today 卡用金额差（非 +999%）。
+- Demo 旧缓存偶需 `?demo-reset=1`；Journal demo 下 reflection streak 数字偏大。
+
+## 尝试后放弃
+
+- 未新增重型图表库（uPlot + SVG）。
+- 未改 `functions/`、D1 migration、Tauri 签名/更新器。
+- GPL/AGPL 项目仅借鉴产品思路，无抄码。
+
+## 测试（Batch 12 Round 10 实测）
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **407 pass, 0 fail** |
+| `npm run test:browser` | **56 pass, 0 fail** |
+
+---
+
+# Life Ledger 夜间构建 — Batch 12 · Round 10
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **收尾** | 全夜总览（见上文）；发布截图 `capture-batch12-round10.mjs` → `b12r10-release-*`。 |
+| **文档** | `CHANGELOG` Batch 12 r10 final 条目。 |
+
+## 怎么验
+
+见全夜总览 **主人明天建议验收**；重拍：`node .overnight/capture-batch12-round10.mjs`（**5296**）。
+
+---
 # Life Ledger 夜间构建 — Batch 12 · Round 9
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
