@@ -96,11 +96,11 @@ test(
       await page.locator('[data-review-scatter-jump="review-scatter-habit"]').click();
       const activeFromClick = await page.locator('.review-scatter-jump-chip.is-active[data-review-scatter-jump="review-scatter-habit"]').count();
       assert.equal(activeFromClick, 1, "clicking habit chip should mark it active");
-      const spendBefore = (await page.locator(".review-ledger-stats strong").first().textContent())?.trim();
+      const spendBefore = (await page.locator(".review-ledger-stat-btn").first().textContent())?.trim();
       await page.locator('.rv-month-step[data-rv-month="-1"]').click();
       await page.waitForFunction(
         before => {
-          const next = document.querySelector(".review-ledger-stats strong")?.textContent?.trim();
+          const next = document.querySelector(".review-ledger-stat-btn")?.textContent?.trim();
           return Boolean(next && next !== before);
         },
         spendBefore,
@@ -108,7 +108,7 @@ test(
       );
       await page.waitForFunction(
         () => {
-          const strong = document.querySelector(".review-ledger-stats strong");
+          const strong = document.querySelector(".review-ledger-stat-btn");
           if (!strong) return false;
           const layers = strong.querySelectorAll(".roll-old, .roll-new").length;
           if (layers >= 2) return true;
@@ -116,15 +116,15 @@ test(
         },
         { timeout: 3000 },
       );
-      const rolling = await page.locator(".review-ledger-stats strong.roll-host").count();
-      const rollLayers = await page.locator(".review-ledger-stats strong.roll-host .roll-old, .review-ledger-stats strong.roll-host .roll-new").count();
+      const rolling = await page.locator(".review-ledger-stat-btn.roll-host").count();
+      const rollLayers = await page.locator(".review-ledger-stat-btn.roll-host .roll-old, .review-ledger-stat-btn.roll-host .roll-new").count();
       if (rolling >= 1) {
         assert.ok(rollLayers >= 2, "roll animation should expose outgoing and incoming layers");
       }
       await sleep(220);
-      const spendAfter = (await page.locator(".review-ledger-stats strong").first().textContent())?.trim();
+      const spendAfter = (await page.locator(".review-ledger-stat-btn").first().textContent())?.trim();
       assert.notEqual(spendBefore, spendAfter, "previous month should show different spending total");
-      const rollValue = await page.locator(".review-ledger-stats strong").first().getAttribute("data-roll-value");
+      const rollValue = await page.locator(".review-ledger-stat-btn").first().getAttribute("data-roll-value");
       assert.equal(rollValue, spendAfter, "rolled stat should persist data-roll-value after animation");
 
       const firstDot = page.locator("#reviewLedgerSummary .review-scatter-dot-hit[tabindex='0']").first();

@@ -1,5 +1,48 @@
 # Overnight progress
 
+## Batch 12 · Round 9 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（56）。
+- **Goal 2 / 复盘 ↔ 记账：** **Review** 月度 **Money** 摘要三项 **支出 / 收入 / 结余** 与 **打开记账** → `openLedgerForReviewMonth` + `LifeLedgerLedgerUI.openToMonth`（清除日/分类筛选；月份 summary retarget；固定待记仍 `openToMonth` 后滚横幅）。
+- **实现：** `ledger-ui.js` `openToMonth`；`app.js` `openLedgerForReviewMonth`、`.review-ledger-stat-btn`；`v210.css` Batch 12 r9；`review-scatter.browser` 选择器更新。
+- **QA：** `view-enter-selectors` Batch 12 r9；`review-spending-ledger-month.browser`（WebKit 1440）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r9。
+- **截图：** `node .overnight/capture-batch12-round9.mjs`（**5295**）→ `b12r9-review-spend-ledger-month-*`。
+- **QA：** `npm test` **407** pass / 0 fail；`npm run test:browser` **56** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 12 Round 10：`v210.css` reduced-motion 物理合并（2.2，可选）；`.overnight/REPORT.md` 全夜总览收尾；最后一轮补漏截图/测试。
+- Owner 验收：Demo → **复盘** → 点 **本月支出摘要** 大数字 → **记账** 应同月且无日期 chip（见 `b12r9-review-spend-ledger-month-zh-light-1440-chromium.png`）；切到上月复盘再点数字 → 记账页应对应月份。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+407 pass, 0 fail (batch 12 round 9, unit gate)
+56 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 12 · Round 8 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（55）。
@@ -119,3 +162,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 8
 ℹ tests 406 ℹ pass 406 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 407 ℹ pass 407 ℹ fail 0 

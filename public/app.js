@@ -9356,6 +9356,12 @@ function openReviewScatterForMonth(ym, scatterId) {
   });
 }
 
+function openLedgerForReviewMonth(ym) {
+  if (!/^\d{4}-\d{2}$/.test(String(ym || ""))) return;
+  window.LifeLedgerLedgerUI?.openToMonth?.(ym, { scrollToList: false, pulseMonth: true });
+  switchToView("ledger");
+}
+
 function renderReviewLedgerSummary() {
   const host = $("#reviewLedgerSummary");
   const L = globalThis.LifeLedgerLedger;
@@ -9634,23 +9640,29 @@ function renderReviewLedgerSummary() {
   const jumpNav = jumpChips.length >= 2
     ? `<nav class="review-scatter-jump" aria-label="${escapeHtml(languageText("本月相关图表", "Monthly chart sections", "Monatsdiagramme"))}">${jumpChips.join("")}</nav>`
     : "";
+  const statBtn = (text, label) => `<button type="button" class="review-ledger-stat-btn roll-host" data-open-ledger-month aria-label="${escapeHtml(label)}">${escapeHtml(text)}</button>`;
+  const openMonthLabel = languageText("打开本月记账", "Open Money for this month", "Finanzen für diesen Monat öffnen");
   host.innerHTML = `<article class="panel review-ledger-panel">
     <div class="panel-heading"><div><span class="kicker">${escapeHtml(languageText("记账", "Money", "Geld"))}</span><h3>${escapeHtml(languageText("本月支出摘要", "Monthly spending", "Monatsausgaben"))}</h3></div>
     <button type="button" class="text-button" data-open-ledger>${escapeHtml(languageText("打开记账", "Open Money", "Finanzen öffnen"))}</button></div>
     <div class="review-ledger-stats is-retargeting">
-      <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong><small class="review-ledger-spend-hint" id="reviewLedgerSpendHint"${spendHint ? "" : " hidden"}>${escapeHtml(spendHint)}</small></span>
-      <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
-      <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
+      <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small>${statBtn(spendText, openMonthLabel)}<small class="review-ledger-spend-hint" id="reviewLedgerSpendHint"${spendHint ? "" : " hidden"}>${escapeHtml(spendHint)}</small></span>
+      <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small>${statBtn(incomeText, openMonthLabel)}</span>
+      <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small>${statBtn(netText, openMonthLabel)}</span>
     </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${scatterEmptyBlock}${insightSection}</article>`;
-  host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
+  host.querySelector("[data-open-ledger]")?.addEventListener("click", () => openLedgerForReviewMonth(ym));
+  host.querySelectorAll("[data-open-ledger-month]").forEach(btn => {
+    btn.addEventListener("click", () => openLedgerForReviewMonth(ym));
+  });
   host.querySelector("[data-open-ledger-recurring]")?.addEventListener("click", () => {
+    window.LifeLedgerLedgerUI?.openToMonth?.(ym, { scrollToList: false, pulseMonth: true });
     switchToView("ledger");
     requestAnimationFrame(() => requestAnimationFrame(scrollToLedgerRecurringDue));
   });
   const roll = globalThis.LifeLedgerInteraction?.rollText;
   const statKeys = ["reviewStatSpend", "reviewStatIncome", "reviewStatNet"];
   const statTexts = [spendText, incomeText, netText];
-  host.querySelectorAll(".review-ledger-stats strong").forEach((el, i) => {
+  host.querySelectorAll(".review-ledger-stat-btn").forEach((el, i) => {
     const prev = host.dataset[statKeys[i]] || "";
     if (roll && prev && prev !== statTexts[i]) roll(el, statTexts[i], prev);
     host.dataset[statKeys[i]] = statTexts[i];

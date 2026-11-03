@@ -169,3 +169,16 @@ test("Batch 12 r8 — Today spending opens Money with day filter", () => {
   assert.match(widgets, /openToDay\?\.\(selectedPlanningDate\)/);
   assert.match(widgets, /button type="button" class="tw-spend-today"/);
 });
+
+test("Batch 12 r9 — Review Money stats open ledger month", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 12 r9 — Review Money stats open ledger month/);
+  assert.match(css, /button\.review-ledger-stat-btn/);
+  assert.match(ledgerUi, /function openToMonth\(/);
+  assert.match(ledgerUi, /openToMonth,/);
+  assert.match(app, /function openLedgerForReviewMonth\(/);
+  assert.match(app, /review-ledger-stat-btn/);
+  assert.match(app, /data-open-ledger-month/);
+});

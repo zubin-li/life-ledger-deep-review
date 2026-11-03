@@ -1,3 +1,26 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 9
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 / 复盘 ↔ 记账** | **Review**「本月支出摘要」三项金额（支出/收入/结余）与 **打开记账** 可点 → 进入 **记账** 并定位到 **当前复盘月份**（清除日/分类筛选；顶部月份 summary 有 retarget 动效）。 |
+| **测试** | `npm test` **407**；`npm run test:browser` **56**（+1 `review-spending-ledger-month`）。 |
+
+## 怎么验
+
+1. Demo → **复盘** → **本月支出摘要** → 点任一 **大数字**（或 **打开记账**）→ 应到 **记账** 且 **无** 日期 chip / 热力格选日（见 `b12r9-review-spend-ledger-month-zh-light-1440-chromium.png`）。
+2. 用复盘顶栏切到 **上个月** 再点支出数字 → 记账页标题月份应对应上月。
+3. 重拍：`node .overnight/capture-batch12-round9.mjs`（端口 **5295**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 8
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

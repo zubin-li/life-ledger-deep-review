@@ -1586,6 +1586,17 @@
     if (ctx) render();
   }
 
+  function openToMonth(ym, options = {}) {
+    if (typeof ym !== "string" || !/^\d{4}-\d{2}$/.test(ym)) return;
+    viewMonth = ym;
+    listDayFilter = "";
+    listCategoryFilter = "";
+    listFilter = "";
+    pendingListFocus = options.scrollToList === true;
+    ledgerMonthPulse = options.pulseMonth !== false;
+    if (ctx) render();
+  }
+
   root.LifeLedgerLedgerUI = {
     render(options) {
       ctx = options;
@@ -1597,5 +1608,6 @@
       if (typeof ym === "string" && /^\d{4}-\d{2}$/.test(ym)) viewMonth = ym;
     },
     openToDay,
+    openToMonth,
   };
 })(typeof window !== "undefined" ? window : global);

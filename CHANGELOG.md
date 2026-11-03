@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 12 r9):** **Review** monthly **Money** summary — tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month (clears day/category filters; month summary retarget animation).
+- **QA (Batch 12 r9):** Structural tests for `openToMonth` / `openLedgerForReviewMonth`; Playwright Review stat → Money month (WebKit).
 - **Polish (Batch 12 r8):** **Today** **Spending today** card — tap the day amount or **Open Money** to open **Money** with that planning day pre-filtered (heatmap selection + date chip; transaction list scroll spotlight).
 - **QA (Batch 12 r8):** Structural tests for `openToDay`; Playwright Today amount → Money day filter (Chromium).
 - **Polish (Batch 12 r7):** **Money** filtered list subtotal shows **Income** and **Expenses** separately when the filtered set mixes both, then **Net**; **Escape** clears active list filters (search/day/category) when no popover is open (still clears from the search field).

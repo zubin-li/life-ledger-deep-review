@@ -445,7 +445,8 @@ html[data-theme="dark"] .ledger-tx {
   letter-spacing: 0.05em;
 }
 
-.review-ledger-stats strong {
+.review-ledger-stats strong,
+.review-ledger-stats .review-ledger-stat-btn {
   font-variant-numeric: tabular-nums;
   font-size: 1.05rem;
 }
@@ -6072,6 +6073,48 @@ html.motion-reduced button.tw-spend-today {
   }
 
   button.tw-spend-today {
+    transition: none;
+  }
+}
+
+/* ========== Batch 12 r9 — Review Money stats open ledger month ========== */
+
+button.review-ledger-stat-btn {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: start;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+button.review-ledger-stat-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent, #43aeb2) 55%, transparent);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  button.review-ledger-stat-btn:hover {
+    opacity: 0.82;
+  }
+
+  button.review-ledger-stat-btn:active {
+    transform: scale(0.98);
+  }
+}
+
+html.motion-reduced button.review-ledger-stat-btn {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.review-ledger-stat-btn {
     transition: none;
   }
 }
