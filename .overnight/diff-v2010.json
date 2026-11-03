@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T10:24:52.023Z",
+  "generatedAt": "2026-11-03T10:54:22.708Z",
   "baseTag": "v2.0.10",
   "head": "overnight-2.1",
   "note": "Expected diffs: new Today spending card, nav order (ledger), 2.1 polish — not necessarily regressions.",
@@ -12,9 +12,9 @@
       "baseShot": "base-r3-today-zh-light-1440.png",
       "headShot": "head-r3-today-zh-light-1440.png",
       "ok": true,
-      "diffPixels": 834219,
+      "diffPixels": 838921,
       "totalPixels": 1296000,
-      "ratio": 0.6436875
+      "ratio": 0.6473155864197531
     },
     {
       "view": "today",
@@ -36,9 +36,9 @@
       "baseShot": "base-r3-week-zh-light-1440.png",
       "headShot": "head-r3-week-zh-light-1440.png",
       "ok": true,
-      "diffPixels": 1053096,
+      "diffPixels": 998716,
       "totalPixels": 1296000,
-      "ratio": 0.8125740740740741
+      "ratio": 0.7706141975308642
     },
     {
       "view": "longrange",
@@ -48,9 +48,9 @@
       "baseShot": "base-r3-longrange-en-light-1440.png",
       "headShot": "head-r3-longrange-en-light-1440.png",
       "ok": true,
-      "diffPixels": 1005271,
+      "diffPixels": 1005268,
       "totalPixels": 1296000,
-      "ratio": 0.7756720679012346
+      "ratio": 0.7756697530864197
     },
     {
       "view": "timeline",
@@ -60,9 +60,9 @@
       "baseShot": "base-r3-timeline-zh-light-1440.png",
       "headShot": "head-r3-timeline-zh-light-1440.png",
       "ok": true,
-      "diffPixels": 1041887,
+      "diffPixels": 841473,
       "totalPixels": 1296000,
-      "ratio": 0.8039251543209877
+      "ratio": 0.6492847222222222
     },
     {
       "view": "review",
@@ -72,9 +72,9 @@
       "baseShot": "base-r3-review-zh-light-390.png",
       "headShot": "head-r3-review-zh-light-390.png",
       "ok": true,
-      "diffPixels": 258258,
+      "diffPixels": 258451,
       "totalPixels": 329160,
-      "ratio": 0.7845971563981042
+      "ratio": 0.7851834973872889
     },
     {
       "view": "habits",
@@ -84,9 +84,9 @@
       "baseShot": "base-r3-habits-de-light-1440.png",
       "headShot": "head-r3-habits-de-light-1440.png",
       "ok": true,
-      "diffPixels": 944067,
+      "diffPixels": 1010574,
       "totalPixels": 1296000,
-      "ratio": 0.7284467592592593
+      "ratio": 0.7797638888888889
     }
   ]
 }

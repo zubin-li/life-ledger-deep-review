@@ -8461,7 +8461,7 @@ function renderWeekInsights() {
 function rollWeekInsightValues() {
   const roll = globalThis.LifeLedgerInteraction?.rollText;
   if (!roll) return;
-  ["weekCompletionRate", "weekSpendingValue", "weekStreak", "weekFocusMinutes"].forEach(id => {
+  ["weekCompletionRate", "weekBestDay", "weekSpendingValue", "weekStreak", "weekFocusMinutes"].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     const next = el.textContent.trim();
@@ -9871,7 +9871,11 @@ function renderReviewLedgerSummary() {
         if (on) chip.setAttribute("aria-current", "location");
         else chip.removeAttribute("aria-current");
       });
-      const target = document.getElementById(id);
+      let target = document.getElementById(id);
+      if (!target && host.querySelector(".review-scatter-grid.is-scatter-pending")) {
+        pendingReviewScatterFocus = id;
+        return;
+      }
       spotlightReviewScatterSection(target);
       if (motionReduced) {
         const live = host.querySelector(".review-scatter-live");

@@ -1,3 +1,44 @@
+# Life Ledger — 主人反馈 pass（Round 14 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **D3 动效** | 本周洞察 **「最佳日」** 换周时与其它 KPI 一样 **`rollText`** 滚动 |
+| **复盘散点** | 图表还在 skeleton 时，点 jump chip 会 **排队 spotlight**，hydrate 后自动聚焦 |
+| **CSS** | 深色 + 减少动效下 donut 分段 transition 选择器修正 |
+| **C6** | 重跑 **`compare-v2010.mjs`** → `.overnight/diff-v2010.json`（64–79% = 2.1 功能面） |
+| **验证** | `fb-r14-*`（5297）；perf **maxLongTaskMs 50**（复盘 hydrate），**CLS 0** |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5297 --bind 127.0.0.1`
+2. **本周** → 切换周次 → **最佳日 / 完成率 / 支出** 数字滚动
+3. **复盘** → 散点加载后点 **习惯** chip → 区块高亮
+4. 截图：`node .overnight/capture.mjs --port 5297 --prefix fb-r14`
+
+## 截图（Round 14）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r14-ledger-zh-light-1440-chromium.png` | 记账 **C2** 单标题 |
+| `fb-r14-today-zh-light-1440-chromium.png` | 侧栏 **C3** |
+| `fb-r14-today-onboard-zh-light-390-webkit.png` | **C1** 引导卡 |
+| `fb-r14-week-zh-light-1440-webkit.png` | panel 族对照 |
+
+## 测试
+
+| 命令 | 结果 |
+|------|------|
+| `npm test` | **434** pass |
+| `npm run test:browser` | **76** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
 # Life Ledger — 主人反馈 pass（Round 13 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

@@ -4516,7 +4516,7 @@ html.motion-reduced #ledgerView :is(.ledger-list-empty, .ledger-recurring-empty-
   stroke-width: 1.75px;
 }
 
-html[data-theme="dark"] html.motion-reduced .ledger-cat-seg {
+html[data-theme="dark"].motion-reduced .ledger-cat-seg {
   transition: none;
 }
 

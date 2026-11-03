@@ -40,16 +40,16 @@ test(
         state: "attached",
         timeout: 8000,
       });
+      await page.waitForSelector(".review-scatter-grid:not(.is-scatter-pending)", { timeout: 12000 });
       await page.evaluate(() => {
         document.querySelector('.review-scatter-jump-chip[data-review-scatter-jump="review-scatter-habit"]')?.click();
       });
-      await page.waitForTimeout(400);
-      const habitScatter = page.locator("#review-scatter-habit");
-      await assert.doesNotReject(() => habitScatter.waitFor({ state: "visible", timeout: 5000 }));
-      await assert.ok(
-        await habitScatter.evaluate(
-          el => el.classList.contains("is-scatter-spotlight") || el.classList.contains("is-scatter-spotlight-static"),
-        ),
+      await page.waitForFunction(
+        () => {
+          const el = document.getElementById("review-scatter-habit");
+          return el && (el.classList.contains("is-scatter-spotlight") || el.classList.contains("is-scatter-spotlight-static"));
+        },
+        { timeout: 5000 },
       );
     } finally {
       await browser.close();

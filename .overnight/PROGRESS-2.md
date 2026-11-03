@@ -1,5 +1,71 @@
 
 
+
+## Round 14 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **D3 KPI roll-up** | `rollWeekInsightValues` 含 **`weekBestDay`**；Review scatter jump 在 **pending hydrate** 时设 `pendingReviewScatterFocus` |
+| **C6 compare** | 重建 `.overnight/base` worktree → **`compare-v2010.mjs`** → `diff-v2010.json`（64–79%，2.1 功能面）；worktree 已移除 |
+| **CSS** | 修正 **`html[data-theme="dark"].motion-reduced .ledger-cat-seg`**（原无效嵌套 `html` 选择器）→ **6031** 行 |
+| **测试** | `tests/week-insight-roll.test.mjs`；修复 `ledger-wellness-insights.browser.test.mjs` 等待 hydrate + spotlight |
+| **验证** | `fb-r14-*`（5297）WebKit + Chromium；`perf-nav-trace.json` **maxLongTaskMs 50**（review），**CLS 0** |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | **6031** 行，仍远高于 ~3250；需 2.2 拆文件或归档 merged-from-v2xx（非 bulk `:is()` 合并） |
+| **D3 perf** | Review 切换 **50ms** long task（scatter hydrate）；可再 defer 或 worker 切片 |
+
+### Known bugs / limits
+
+- Headless 天气无 Open-Meteo 时空白（`.overnight/weather-headless-compare.json`，非回归）。
+- v2.0.10 像素 diff 仍为 2.1 功能面（r14 `diff-v2010.json`）。
+
+### Evidence (六个已知问题 · r14)
+
+1. **C1** — `fb-r14-today-onboard-zh-light-390-webkit.png` + browser alpha 测试（r13）
+2. **C2** — `fb-r14-ledger-zh-light-1440-chromium.png` 顶栏单标题
+3. **C3** — `fb-r14-today-zh-light-1440-chromium.png` 侧栏：时间轴 → 记账 → 复盘
+4. **C4** — r7 `weather-headless-compare.json`；`fb-r14-today-zh-light-1440` 天气空（无网）
+5. **C5** — **6031** 行；单 `capture.mjs` + `capture-mac.mjs`
+6. **C6** — `diff-v2010.json` + `fb-r14-week/ledger/review/habits/timeline` 目视无破版
+
+### Self-review (Round 14)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | scatter jump 在 pending 时排队 focus；KPI roll 补 weekBestDay | **Fixed** |
+| ui-ux-pro-max | ledger/week 同 panel 族（fb-r14）；touch 未改 | OK |
+| design-dna | 侧栏顺序、单标题、donut+日条符合 spec | OK |
+| Rauno / Linear | review 50ms long task（hydrate）；VT/FLIP 未回归 | **Note** 下轮可再 defer |
+| Screenshots | fb-r14 矩阵 1440+390 zh/de light/dark 目视；onboard 以 computed alpha 为准 | OK |
+| Tests | **434** unit + **76** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- v210.css 2.2 分文件（CSS-LAYERS.md）
+- Review scatter hydrate 再降 main-thread 块（目标 long task **0**）
+
+### `npm test` (round 14 gate · final)
+
+```
+434 pass, 0 fail (unit)
+76 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 2.2 拆文件 / css-archive
+2. Review hydrate long task → 0ms
+3. Mac `fb-r14-mac-*` 补拍
+
+---
+
 ## Round 13 (2026-11-03)
 
 ### Done
@@ -649,3 +715,12 @@ desktop:check 0 fail
 
 ## Driver gate after sprint 13
 ℹ tests 433 ℹ pass 433 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 14
+ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 76 ℹ pass 76 ℹ fail 0 ℹ desktop:check 0 fail
+
+## Driver gate after sprint 14
+ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 76 ℹ pass 76 ℹ fail 0 ℹ desktop:check 0 fail
+
+## Driver gate after sprint 14
+ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
