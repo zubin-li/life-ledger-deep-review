@@ -1,4 +1,4 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 2）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 3）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
@@ -6,7 +6,28 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 ---
 
-## 本轮（Batch 10 · Round 2）— 长期页空态 + 侧栏节奏
+## 本轮（Batch 10 · Round 3）— 习惯库空态 + Today hero 节奏 + QA 串行
+
+| 项目 | 说明 |
+|------|------|
+| **习惯库** | 零习惯时隐藏提醒/三格概览/筛选/表头（`habits-view--empty`），居中 dashed 空态 + hairline + **添加第一个习惯**（等同顶栏「新增习惯」，打开 `#habitDialog`）。搜索无匹配时用 `search-empty.svg` 横向 quiet 条。 |
+| **Today hero** | 仅「今天」浏览时，日期/引文/出处/进度文案与进度环有短 stagger 入场（`prefers-reduced-motion` / `html.motion-reduced` 关闭）。 |
+| **QA** | 浏览器套件改为 **`--test-concurrency=1`**；`habits-empty` / `review-scatter` 静态端口改为 **5288** / **5287**，避免与 recurring / fakecloud-preview 争 5295/5296。 |
+| **截图** | `.overnight/shots/b10r3-habits-empty-zh-light-light-1440-chromium.png`、`.overnight/shots/b10r3-today-hero-zh-light-light-1440-chromium.png`（`node .overnight/capture-batch10-round3.mjs`，端口 **5295**）。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **29**（+2 `habits-empty`，串行约 90s）。 |
+
+**怎么验：**
+
+1. 清空 `state.habits` 或新本地档 → **习惯设置** → 见居中空态与 **添加第一个习惯**（不应再被下方筛选栏挤到视口外）。
+2. Demo 预览 → **今日** → 刷新或切回今天，hero 引文区有轻微分层入场（与整卡 `pageCardIn` 叠加，正常）。
+3. Demo 习惯页搜索 `zzzzz` → 见搜索空插画条。
+4. 全量：`npm test` + `npm run test:browser`（browser 已串行，无需重跑碰运气；fakecloud 仍占 **5298/5299**）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；capture 脚本与 `npm run test:browser` 勿同时占用 **5295**。
+
+---
+
+## 上一轮（Batch 10 · Round 2）— 长期页空态 + 侧栏节奏
 
 | 项目 | 说明 |
 |------|------|

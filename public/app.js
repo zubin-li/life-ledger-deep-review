@@ -5788,6 +5788,7 @@ function formatWeekRangeFull(key) {
 
 function renderHabitSettings() {
   $('#habitInspectorForm').hidden = !state.habits.length;
+  $("#habitsView")?.classList.toggle("habits-view--empty", !state.habits.length);
   if (!state.habits.some(h=>h.id===selectedHabitSettingsId)) selectedHabitSettingsId=null;
   const activeCount = state.habits.filter(habit => habit.active).length;
   $("#habitSummary").textContent = tr("habits.summary", { count: state.habits.length, active: activeCount });
@@ -5812,9 +5813,11 @@ function renderHabitSettings() {
   Object.entries(fields).forEach(([id,label])=>setText('#'+id,label));
   $('#habitInspectorForm [name="frequency"]').querySelectorAll('option').forEach(option=>{option.textContent=option.value==='daily'?tr('habits.daily'):option.value==='weekly'?languageText('每周','Weekly','Wöchentlich'):languageText('每月','Monthly','Monatlich');});
   if (!state.habits.length) {
-    $("#habitSettingsList").innerHTML = hairlineEmptyMarkup("./assets/hairline/empty-habits.svg", tr("habits.emptyTitle"), tr("habits.emptyHelp"));
+    const emptyCta = languageText("添加第一个习惯", "Add your first habit", "Erste Gewohnheit anlegen");
+    $("#habitSettingsList").innerHTML = `<div class="habit-library-empty ll-polished">${hairlineEmptyMarkup("./assets/hairline/empty-habits.svg", tr("habits.emptyTitle"), tr("habits.emptyHelp"))}<button type="button" class="primary-button" id="habitEmptyAddFirst">${escapeHtml(emptyCta)}</button></div>`;
     hydrateHairlineMounts($("#habitsView"));
     $("#habitSettingsList").querySelector(".hairline-empty")?.classList.add("ll-empty", "ll-empty-enter");
+    $("#habitEmptyAddFirst")?.addEventListener("click", () => openHabitDialog());
     return;
   }
   const visible=state.habits.filter(h=>(habitLibraryFilter==='all'||(habitLibraryFilter==='active'?h.active:!h.active)) && displayHabitName(h).toLocaleLowerCase().includes(habitLibrarySearch.toLocaleLowerCase()));
@@ -5832,7 +5835,13 @@ function renderHabitSettings() {
       <span class="habit-settings-target">${escapeHtml(trackingModeFor(v) === "measured" ? target : "")}</span>
       <label class="habit-enabled-switch"><input class="desktop-switch habit-enabled-toggle" type="checkbox" role="switch" data-id="${h.id}" ${h.active ? "checked" : ""} aria-label="${escapeHtml(displayHabitName(h))}" /><span class="sr-only">${escapeHtml(h.active ? tr("habits.active") : tr("habits.inactive"))}</span></label>
     </article>`;
-  }).join("") || `<p class="habit-filter-empty ll-hint-card ll-empty-enter" role="status">${escapeHtml(languageText('没有匹配的习惯。试试其他筛选。','No matching habits. Try another filter.','Keine passende Gewohnheit. Einen anderen Filter versuchen.'))}</p>`;
+  }).join("") || (() => {
+    const title = languageText("没有匹配的习惯", "No matching habits", "Keine passende Gewohnheit");
+    const help = languageText("试试其他筛选或清空搜索。", "Try another filter or clear search.", "Anderen Filter wählen oder Suche leeren.");
+    return `<div class="habit-filter-quiet ll-polished" role="status">${hairlineEmptyMarkup("./assets/hairline/search-empty.svg", title, help)}</div>`;
+  })();
+  hydrateHairlineMounts($("#habitsView"));
+  $("#habitSettingsList .habit-filter-quiet .hairline-empty")?.classList.add("ll-empty", "ll-empty-enter");
   $$(".habit-settings-main").forEach(button => button.addEventListener("click", () => {
     selectedHabitSettingsId = button.dataset.id;
     populateHabitInspectorForm(selectedHabitSettingsId);

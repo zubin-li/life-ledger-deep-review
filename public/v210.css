@@ -4677,3 +4677,156 @@ html.motion-reduced .main-nav .nav-item[data-view="timeline"]::after,
 html.motion-reduced .main-nav .nav-item[data-view="ledger"]::after {
   opacity: 0.85;
 }
+
+/* Batch 10 r3 — habit library empty + filter quiet + Today hero copy rhythm */
+#habitsView .habit-library-empty.ll-polished {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 24px 16px 12px;
+  margin: 0.35rem auto 0;
+  max-width: 32rem;
+  border: 1px dashed var(--separator, var(--line));
+  border-radius: var(--radius-lg, 14px);
+  background: color-mix(in srgb, var(--surface-1, #fff) 68%, transparent);
+}
+
+#habitsView.habits-view--empty #habitReminderCard,
+#habitsView.habits-view--empty #habitLibraryOverview,
+#habitsView.habits-view--empty .habit-library-tools,
+#habitsView.habits-view--empty .habit-settings-header {
+  display: none;
+}
+
+#habitsView.habits-view--empty .habit-settings-list {
+  min-height: min(42vh, 360px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#habitsView .habit-library-empty.ll-polished .hairline-empty {
+  max-width: 26rem;
+  padding: 8px 8px 0;
+}
+
+#habitsView .habit-library-empty.ll-polished .hairline-empty .hairline-mount {
+  max-width: 132px;
+  margin-inline: auto;
+}
+
+#habitsView .habit-library-empty.ll-polished .hairline-empty > strong {
+  display: block;
+  font: 600 clamp(1.1rem, 2.2vw, 1.38rem) / 1.35 var(--font-display, inherit);
+  color: var(--label, inherit);
+}
+
+#habitsView .habit-library-empty.ll-polished .hairline-empty > p {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--secondaryLabel, var(--muted));
+  line-height: 1.55;
+}
+
+#habitsView .habit-filter-quiet.ll-polished {
+  grid-column: 1 / -1;
+  padding: 6px 0 2px;
+}
+
+#habitsView .habit-filter-quiet.ll-polished .hairline-empty {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 4px;
+  align-items: center;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px dashed var(--separator, var(--line));
+  border-radius: var(--radius-lg, 14px);
+  background: color-mix(in srgb, var(--surface-1, #fff) 52%, transparent);
+}
+
+#habitsView .habit-filter-quiet.ll-polished .hairline-mount {
+  grid-row: 1 / span 2;
+  width: 68px;
+  max-height: 52px;
+}
+
+#habitsView .habit-filter-quiet.ll-polished .hairline-empty > strong {
+  font-weight: 650;
+  font-size: var(--text-secondary, 0.92rem);
+}
+
+#habitsView .habit-filter-quiet.ll-polished .hairline-empty > p {
+  margin: 0;
+  font-size: var(--text-caption, 0.82rem);
+  line-height: 1.5;
+  color: var(--secondaryLabel, var(--muted));
+}
+
+#habitsView .habit-library-empty.ll-polished,
+#habitsView .habit-filter-quiet.ll-polished .hairline-empty {
+  animation: llEmptyReveal 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+html.motion-reduced #habitsView .habit-library-empty.ll-polished,
+html.motion-reduced #habitsView .habit-filter-quiet.ll-polished .hairline-empty {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #habitsView .habit-library-empty.ll-polished,
+  #habitsView .habit-filter-quiet.ll-polished .hairline-empty {
+    animation: none !important;
+  }
+}
+
+.hero-card[data-viewing-today="true"] .hero-copy h2 {
+  letter-spacing: -0.018em;
+  line-height: 1.26;
+}
+
+@keyframes heroCopyIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .date-chip {
+    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > h2 {
+    animation: heroCopyIn 0.52s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.05s both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .quote-source {
+    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.1s both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > p {
+    animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.14s both;
+  }
+
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] .progress-orbit {
+    animation: heroCopyIn 0.54s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.08s both;
+  }
+}
+
+html.motion-reduced #todayView.view.is-entering .hero-card[data-viewing-today="true"] :is(.hero-copy > *, .progress-orbit) {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #todayView.view.is-entering .hero-card[data-viewing-today="true"] :is(.hero-copy > *, .progress-orbit) {
+    animation: none !important;
+  }
+}

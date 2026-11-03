@@ -9,6 +9,8 @@ All notable changes are documented here.
 - **Spending compare copy:** when the prior period baseline is **≥ €15** but spend rose by more than **500%**, captions show a **money delta** (e.g. €20 → €500 reads **较昨日多 480,00 €** instead of **+999%**).
 - **Backup restore:** removed redundant explicit-language branch in `syncBackupPreferencesToRuntime` (same behaviour as cold start).
 - **Long-range (Horizon):** empty phase and plan grids use hairline art, enter animation, and **Start your first phase** CTA; sidebar adds subtle dividers before Timeline and Money.
+- **Habits library:** zero-habit empty state uses centered hairline art with **Add your first habit** CTA (filters and stats hidden until the first habit exists); filter/search miss shows horizontal **search-empty** quiet card; Today hero quote block gets a short copy stagger on enter (today only).
+- **QA:** Playwright suite runs serially (`--test-concurrency=1`) and deconflicts static-server ports (`habits-empty` / `review-scatter`) to avoid flaky parallel collisions with fakecloud.
 
 ## [2.1.0] - 2026-11-03
 
