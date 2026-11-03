@@ -337,9 +337,36 @@ test("breakdownDonutSlices covers full circle and annularSectorPath is valid SVG
   const slices = L.breakdownDonutSlices(breakdown);
   assert.equal(slices.length, 2);
   assert.equal(Math.round(slices.at(-1).endAngle), 360);
+  const skewed = L.breakdownDonutSlices([
+    { categoryId: "rent", amountMinor: 95000 },
+    { categoryId: "coffee", amountMinor: 420 },
+  ]);
+  assert.ok(skewed[1].endAngle - skewed[1].startAngle >= 4);
   const path = L.annularSectorPath(50, 50, 30, 48, 0, 90);
   assert.match(path, /^M [\d.]+ [\d.]+ A /);
   assert.ok(path.endsWith("Z"));
+});
+
+test("buildDemoSample never dates transactions after real today", () => {
+  const ledger = L.buildDemoSample({
+    now: new Date("2026-11-18T12:00:00"),
+    realToday: "2026-11-03",
+    lang: "en",
+    contentSeed: 42,
+  });
+  assert.ok(ledger.transactions.length > 0);
+  assert.ok(ledger.transactions.every(tx => tx.date <= "2026-11-03"));
+});
+
+test("clipDemoTransactionsToRealToday trims future demo rows only", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -100, currency: "EUR", date: "2026-11-18", note: "future" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: cat, amountMinor: -200, currency: "EUR", date: "2026-11-02", note: "ok" }));
+  const clipped = L.clipDemoTransactionsToRealToday(ledger, "2026-11-03");
+  assert.equal(clipped.transactions.length, 1);
+  assert.equal(clipped.transactions[0].note, "ok");
 });
 
 test("updateTransaction patches amount and date", () => {

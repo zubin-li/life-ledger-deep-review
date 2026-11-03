@@ -220,7 +220,7 @@
       <button type="button" class="ledger-stats-scope-btn${statsScope === "month" ? " is-active" : ""}" data-ledger-stats="month" aria-pressed="${statsScope === "month"}">${t("月", "Month", "Monat")}</button>
     </div>`;
     const dailyStrip = statsScope === "month"
-      ? `<div class="ledger-daily-strip" aria-hidden="true">${renderHeatmap(ledger, anchorIso.slice(0, 7))}</div>`
+      ? `<div class="ledger-daily-strip">${renderHeatmap(ledger, anchorIso.slice(0, 7))}</div>`
       : "";
     const subTotal = statsScope === "month"
       ? (ledger.recurring || [])
@@ -269,19 +269,17 @@
   }
 
   function renderLedgerMoreMenu(ledger, ym) {
-    const openClass = ledgerMenuOpen ? " is-open" : "";
-    const menuHidden = ledgerMenuOpen ? "" : " hidden";
     return `<div class="ledger-more-wrap">
       <button type="button" class="icon-button ledger-more-toggle" data-ledger-more-toggle aria-expanded="${ledgerMenuOpen ? "true" : "false"}" aria-haspopup="true" title="${t("更多", "More", "Mehr")}">⋯</button>
-      <div class="ledger-more-menu${openClass}"${menuHidden} role="menu">
+      ${ledgerMenuOpen ? `<div class="ledger-more-menu is-open" role="menu">
         <label class="ledger-more-search"><span class="sr-only">${t("搜索", "Search", "Suche")}</span><input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" /></label>
         <button type="button" class="secondary-button" data-ledger-import role="menuitem">${t("导入 CSV", "Import CSV", "CSV importieren")}</button>
         <button type="button" class="secondary-button" data-ledger-export role="menuitem">${t("导出 CSV", "Export CSV", "CSV exportieren")}</button>
         <button type="button" class="secondary-button ledger-budget-add" role="menuitem">${t("预算", "Budgets", "Budgets")}</button>
         <button type="button" class="secondary-button ledger-recurring-add" role="menuitem">${t("固定收支", "Recurring", "Wiederkehrend")}</button>
         <p class="ledger-kbd-hints ledger-kbd-hints--menu" aria-hidden="true"><kbd>M</kbd> · <kbd>N</kbd> · <kbd>/</kbd> · <kbd>←</kbd><kbd>→</kbd></p>
-        <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
-      </div>
+      </div>` : ""}
+      <input type="file" id="ledgerCsvFile" accept=".csv,text/csv" hidden />
     </div>`;
   }
 
@@ -291,6 +289,19 @@
     const picked = getComputedStyle(root).getPropertyValue(`--accent-${key}`).trim();
     if (picked) return picked;
     return getComputedStyle(root).getPropertyValue("--accent-sage").trim() || "#3a8f7a";
+  }
+
+  function renderIconMarkup(iconKey) {
+    const render = typeof root.renderIcon === "function"
+      ? root.renderIcon
+      : (typeof globalThis.renderIcon === "function" ? globalThis.renderIcon : null);
+    if (!render) return ctx.escape(String(iconKey || "more").slice(0, 1).toUpperCase());
+    return render(iconKey || "more", "ledger-cat-icon-svg");
+  }
+
+  function renderCategoryIcon(cat) {
+    const fill = accentFill(cat?.color);
+    return `<span class="ledger-tx-cat" style="--accent:${ctx.escape(fill)}" aria-hidden="true">${renderIconMarkup(cat?.icon || "more")}</span>`;
   }
 
   function categorySegAttrs(categoryId, label, styleExtra) {
@@ -304,7 +315,33 @@
     const body = renderDonut(breakdown, ledger);
     const empty = body.includes("ledger-donut--empty");
     const skel = empty ? "" : `<div class="ledger-skeleton ledger-skeleton--donut" aria-hidden="true"></div>`;
-    return `<div class="ledger-category-viz${empty ? " is-ready" : ""}">${skel}${body}</div>`;
+    const legend = empty ? "" : renderDonutLegend(breakdown, ledger);
+    return `<div class="ledger-category-viz${empty ? " is-ready" : ""}"><div class="ledger-category-viz-row">${skel}${body}${legend}</div></div>`;
+  }
+
+  function renderDonutLegend(breakdown, ledger) {
+    const total = breakdown.reduce((s, row) => s + row.amountMinor, 0);
+    if (!total) return "";
+    const locale = ctx.locale?.() || "de-DE";
+    const cur = ledger.settings.defaultCurrency;
+    const top = breakdown.slice(0, 5);
+    const rest = breakdown.slice(5);
+    const restSum = rest.reduce((s, row) => s + row.amountMinor, 0);
+    const rows = top.map(row => {
+      const cat = ledger.categories.find(c => c.id === row.categoryId);
+      const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
+      const fill = accentFill(cat?.color);
+      const pct = Math.round((row.amountMinor / total) * 100);
+      const amt = core().formatMoney(-row.amountMinor, cur, locale);
+      return `<li class="ledger-donut-legend-row"><span class="ledger-donut-legend-dot" style="background:${ctx.escape(fill)}"></span><span class="ledger-donut-legend-name">${ctx.escape(name)}</span><span class="ledger-donut-legend-amt">${ctx.escape(amt)}</span><span class="ledger-donut-legend-pct">${pct}%</span></li>`;
+    });
+    if (restSum > 0) {
+      const pct = Math.round((restSum / total) * 100);
+      const amt = core().formatMoney(-restSum, cur, locale);
+      const other = t("其他", "Other", "Sonstiges");
+      rows.push(`<li class="ledger-donut-legend-row ledger-donut-legend-row--other"><span class="ledger-donut-legend-dot ledger-donut-legend-dot--other"></span><span class="ledger-donut-legend-name">${ctx.escape(other)}</span><span class="ledger-donut-legend-amt">${ctx.escape(amt)}</span><span class="ledger-donut-legend-pct">${pct}%</span></li>`);
+    }
+    return `<ol class="ledger-donut-legend">${rows.join("")}</ol>`;
   }
 
   function renderDonut(breakdown, ledger) {
@@ -338,7 +375,7 @@
         : t("无支出", "No spend", "Keine Ausgaben");
       const dayLabel = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(new Date(y, m - 1, day));
       const aria = t(`${dayLabel}：${spendLabel}，筛选交易`, `${dayLabel}: ${spendLabel}, filter list`, `${dayLabel}: ${spendLabel}, Liste filtern`);
-      cells += `<button type="button" class="ledger-heat ledger-heat-${level}${selected}" style="--heat-i:${day - 1}" data-ledger-day="${ctx.escape(iso)}" aria-label="${ctx.escape(aria)}" aria-pressed="${listDayFilter === iso ? "true" : "false"}"></button>`;
+      cells += `<button type="button" class="ledger-heat ledger-heat-${level}${selected}" style="--heat-i:${day - 1}" data-ledger-day="${ctx.escape(iso)}" title="${ctx.escape(spendLabel)}" aria-label="${ctx.escape(aria)}" aria-pressed="${listDayFilter === iso ? "true" : "false"}"></button>`;
     }
     return `<div class="ledger-heat-grid is-retargeting">${cells}</div>`;
   }
@@ -551,9 +588,8 @@
             const cat = ledger.categories.find(c => c.id === tx.categoryId);
             const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
             const enter = tx.id === lastHighlightTxId ? " is-enter" : "";
-            const icon = cat?.icon || "more";
             return `<li class="ledger-tx ledger-tx--slim${enter}" data-id="${ctx.escape(tx.id)}">
-              <span class="ledger-tx-cat ledger-tx-cat--${ctx.escape(cat?.color || "sage")}" aria-hidden="true">${ctx.escape(icon.slice(0, 1).toUpperCase())}</span>
+              ${renderCategoryIcon(cat)}
               <span class="ledger-tx-note">${ctx.escape(tx.note || name)}</span>
               <button type="button" class="ledger-tx-cat-chip" data-ledger-tx-cat="${ctx.escape(tx.categoryId)}" aria-label="${t("分类", "Category", "Kategorie")}">${ctx.escape(name)}</button>
               <span class="ledger-tx-amt ${tx.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(core().formatMoney(tx.amountMinor, tx.currency, locale))}</span>

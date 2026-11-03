@@ -5,6 +5,12 @@
   const view = document.getElementById("todayView");
   if (!view) return;
   const $ = (s, r = document) => r.querySelector(s);
+  function categoryAccentFill(colorName) {
+    const key = (colorName || "sage").replace(/[^a-z0-9-]/gi, "") || "sage";
+    const picked = getComputedStyle(document.documentElement).getPropertyValue(`--accent-${key}`).trim();
+    if (picked) return picked;
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent-sage").trim() || "#3a8f7a";
+  }
   const T = {
     zh: { weather: "天气", weatherK: "WEATHER", rhythm: "近期节律", rhythmK: "LAST 7 DAYS", heatmap: "习惯热力图", heatmapK: "HABIT RHYTHM", wall: "照片墙", wallK: "PHOTO WALL", photos: "照片记忆", photosK: "MEMORY", focus: "专注", focusK: "FOCUS", freq: "频率记录", freqK: "BY FREQUENCY", spending: "今日支出", spendingK: "TODAY",
       chooseCity: "选择城市后显示当地天气。", setCity: "设置地点", city: "城市", search: "搜索", noCity: "未找到匹配的城市。", loading: "正在加载……", unavailable: "刷新失败，请检查网络后重试。", cached: "已保存的预报 · 离线", updated: "更新于",
@@ -801,10 +807,13 @@
         .slice(0, 3);
       recentList.innerHTML = rows.map(tx => {
         const cat = ledger.categories.find(c => c.id === tx.categoryId);
-        const icon = cat?.icon || "more";
         const note = tx.note || L.localizedCategoryName(cat, currentLang) || "";
         const amt = L.formatMoney(tx.amountMinor, tx.currency || ledger.settings.defaultCurrency, locale);
-        return `<li><span class="today-ledger-sheet-row-icon ledger-tx-cat ledger-tx-cat--${escapeHtml(cat?.color || "sage")}" aria-hidden="true">${escapeHtml(icon.slice(0, 1).toUpperCase())}</span><span class="today-ledger-sheet-row-note">${escapeHtml(note)}</span><span class="today-ledger-sheet-row-amt">${escapeHtml(amt)}</span></li>`;
+        const fill = categoryAccentFill(cat?.color);
+        const iconHtml = typeof renderIcon === "function"
+          ? renderIcon(cat?.icon || "more", "ledger-cat-icon-svg")
+          : escapeHtml(String(cat?.icon || "more").slice(0, 1).toUpperCase());
+        return `<li><span class="today-ledger-sheet-row-icon ledger-tx-cat" style="--accent:${escapeHtml(fill)}" aria-hidden="true">${iconHtml}</span><span class="today-ledger-sheet-row-note">${escapeHtml(note)}</span><span class="today-ledger-sheet-row-amt">${escapeHtml(amt)}</span></li>`;
       }).join("");
     }
     function refreshSheetCopy() {

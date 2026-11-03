@@ -1,5 +1,28 @@
 
 
+## Hermes 复核修复轮（2026-11-03）
+
+### Done
+
+| # | Fix | Evidence |
+|---|-----|----------|
+| 1 | 月视图日条 → 单行细条 ≤48px | `v210.css` `.ledger-daily-strip`；`fb-hermes-ledger-zh-light-1440-webkit.png` |
+| 2 | 圆环图例 top5+其他、最小扇区 | `ledger-ui.js` `renderDonutLegend`；`ledger-core.js` `breakdownDonutSlices` |
+| 3 | 交易/今日 sheet `renderIcon` | `ledger-ui.js` / `today-widgets.js` |
+| 4 | ⋯ 关时不渲染菜单 | `renderLedgerMoreMenu` 条件 DOM |
+| 5 | 演示交易 ≤ 真实今天 | `buildDemoSample` `realToday` + `clipDemoTransactionsToRealToday` + `maybeClipDemoLedgerFuture` |
+| 6 | quickAdd / Kaffee 回归 | 既有测试仍绿 |
+
+### Tests
+
+- `npm test` **438** pass  
+- `npm run desktop:check` **23** pass  
+- 截图 `.overnight/shots/fb-hermes-ledger-{zh,de}-{light,dark}-*.{webkit,chromium}.png`（4 组合，目视 OK）
+
+### Next
+
+- （无 — 本 focused round 范围已闭合）
+
 ## Round 17 — FINAL (2026-11-03)
 
 ### Done

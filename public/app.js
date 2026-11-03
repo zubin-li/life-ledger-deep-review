@@ -2867,6 +2867,7 @@ function maybeApplyDemoWorkspace() {
   if (window.LifeLedgerLedger?.buildDemoSample) {
     demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
       now: demoAnchor,
+      realToday: isoDate(new Date()),
       lang: currentLang,
       contentSeed: demoState.meta?.demo?.contentSeed,
     });
@@ -2890,6 +2891,17 @@ function maybeRealignDemoInsights() {
   const patch = api.realignDemoInsights(state, window.LifeLedgerLedger, new Date());
   if (!patch) return;
   state = { ...state, ...patch };
+  saveState();
+}
+
+function maybeClipDemoLedgerFuture() {
+  if (!isDemoWorkspaceActive()) return;
+  const clip = window.LifeLedgerLedger?.clipDemoTransactionsToRealToday;
+  if (!clip) return;
+  const real = isoDate(new Date());
+  const next = clip(state.ledger, real);
+  if (next === state.ledger || !next) return;
+  state = { ...state, ledger: next };
   saveState();
 }
 
@@ -2943,6 +2955,7 @@ async function resetPreviewDemoWorkspace() {
   state = loadState();
   maybeApplyDemoWorkspace();
   maybeRealignDemoInsights();
+  maybeClipDemoLedgerFuture();
   stripDemoCalendarPhotos();
   renderDemoNotice();
   renderAll();
@@ -11034,6 +11047,7 @@ function bootApplication() {
   workspaceMedia.addEventListener("change", syncWorkspace); syncWorkspace();
   maybeApplyDemoWorkspace();
   maybeRealignDemoInsights();
+  maybeClipDemoLedgerFuture();
   syncExportButtonPlacement();
   syncMobileToolbar();
   initSelects();
@@ -11468,6 +11482,7 @@ async function loadMacSample() {
   if (window.LifeLedgerLedger?.buildDemoSample) {
     demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
       now: demoAnchor,
+      realToday: isoDate(new Date()),
       lang: currentLang,
       contentSeed: demoState.meta?.demo?.contentSeed,
     });

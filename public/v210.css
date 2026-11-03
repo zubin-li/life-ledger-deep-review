@@ -196,6 +196,63 @@ html[data-theme="dark"] .ledger-category-viz {
   place-items: center;
 }
 
+.ledger-category-viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 20px;
+  width: 100%;
+}
+
+.ledger-donut-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 160px;
+  max-width: 100%;
+  display: grid;
+  gap: 4px;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.ledger-donut-legend-row {
+  display: grid;
+  grid-template-columns: 8px 1fr auto auto;
+  gap: 6px 8px;
+  align-items: center;
+}
+
+.ledger-donut-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ledger-donut-legend-dot--other {
+  background: color-mix(in srgb, var(--secondaryLabel, #888) 55%, transparent);
+}
+
+.ledger-donut-legend-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ledger-donut-legend-amt,
+.ledger-donut-legend-pct {
+  font-variant-numeric: tabular-nums;
+  color: var(--secondaryLabel, var(--muted));
+}
+
+.ledger-donut-legend-pct {
+  min-width: 2.2em;
+  text-align: right;
+}
+
 .ledger-category-viz .ledger-skeleton--donut {
   position: absolute;
   inset: 0;
@@ -225,6 +282,29 @@ html[data-theme="dark"] .ledger-category-viz {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
+}
+
+.ledger-daily-strip {
+  margin-top: 10px;
+}
+
+.ledger-daily-strip .ledger-heat-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 2px;
+  width: 100%;
+  max-height: 48px;
+  transform: none;
+}
+
+.ledger-daily-strip .ledger-heat {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 36px;
+  max-height: 48px;
+  aspect-ratio: auto;
+  border-radius: 3px;
 }
 
 .ledger-heat {
@@ -4999,6 +5079,10 @@ html[data-theme="dark"] .ledger-kbd-hints kbd {
   box-shadow: 0 16px 40px rgba(16, 35, 29, 0.12);
 }
 
+.ledger-more-menu[hidden] {
+  display: none !important;
+}
+
 html[data-theme="dark"] .ledger-more-menu {
   background: var(--surface-2, #22252a);
 }
@@ -5055,11 +5139,6 @@ html.motion-reduced .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
   margin: 0 0 10px;
   font-size: 12.5px;
   color: var(--secondaryLabel, var(--muted));
-}
-
-.ledger-daily-strip .ledger-heat-grid {
-  transform: scale(0.92);
-  transform-origin: left center;
 }
 
 .ledger-sub-list {
@@ -5181,7 +5260,15 @@ html.motion-reduced .ledger-day-group.is-expanded .ledger-day-rows {
   place-items: center;
   font-size: 11px;
   font-weight: 700;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent, var(--accent-sage, #3a8f7a));
+  background: color-mix(in srgb, var(--accent, var(--accent-sage, #3a8f7a)) 12%, transparent);
+}
+
+.ledger-tx-cat .lucide-icon,
+.ledger-tx-cat .ledger-cat-icon-svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
 }
 
 .ledger-tx-cat-chip {

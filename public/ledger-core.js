@@ -1392,16 +1392,32 @@
     ].join(" ");
   }
 
-  function breakdownDonutSlices(breakdown, maxSlices = 6) {
-    const total = (breakdown || []).reduce((s, row) => s + row.amountMinor, 0);
+  function breakdownDonutSlices(breakdown, maxSlices = 6, minSweepDeg = 4) {
+    const rows = (breakdown || []).slice(0, maxSlices);
+    const total = rows.reduce((s, row) => s + row.amountMinor, 0);
     if (!total) return [];
+    const n = rows.length;
+    const minTotal = minSweepDeg * n;
+    const flexible = Math.max(0, 360 - minTotal);
     let angle = 0;
-    return breakdown.slice(0, maxSlices).map(row => {
-      const sweep = (row.amountMinor / total) * 360;
+    const slices = rows.map(row => {
+      const share = row.amountMinor / total;
+      const sweep = minSweepDeg + flexible * share;
       const startAngle = angle;
       angle += sweep;
       return { categoryId: row.categoryId, startAngle, endAngle: angle, amountMinor: row.amountMinor };
     });
+    if (slices.length) slices[slices.length - 1].endAngle = 360;
+    return slices;
+  }
+
+  /** Demo-only hygiene: drop ledger rows dated after real today (demo seed anchor may be mid-month). */
+  function clipDemoTransactionsToRealToday(ledger, realTodayIso) {
+    const base = normalize(ledger);
+    const real = realTodayIso || isoDateFromDate(new Date());
+    const kept = base.transactions.filter(tx => !tx.date || tx.date <= real);
+    if (kept.length === base.transactions.length) return base;
+    return { ...base, transactions: kept };
   }
 
   /** Map treemap cell size (0–100 viewBox units) to a readable label length. */
@@ -1921,7 +1937,9 @@
     let ledger = normalize(null, { lang });
     const account = ledger.accounts[0]?.id;
     if (!account) return ledger;
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const seedToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const realToday = options.realToday != null ? options.realToday : seedToday;
+    const today = seedToday > realToday ? realToday : seedToday;
     const salaryCat = categoryByEnglishName(ledger, "Salary", "income");
     const groceries = categoryByEnglishName(ledger, "Groceries");
     const dining = categoryByEnglishName(ledger, "Dining");
@@ -1972,7 +1990,8 @@
     }
     ledger = ensureDemoBudgets(ledger, monthKey(today));
     ledger = ensureDemoBudgets(ledger, shiftYm(monthKey(today), -1));
-    ledger = ensureDemoMonthActivity(ledger, now, lang, rng);
+    const activityAnchor = new Date(`${today}T12:00:00`);
+    ledger = ensureDemoMonthActivity(ledger, activityAnchor, lang, rng);
     ledger = alignDemoBudgetOverspendForReview(ledger, monthKey(today));
     return ledger;
   }
@@ -2301,6 +2320,7 @@
     treemapLabelMaxChars,
     annularSectorPath,
     breakdownDonutSlices,
+    clipDemoTransactionsToRealToday,
     parseCssRgb,
     relativeLuminance,
     isLightAccentColor,
