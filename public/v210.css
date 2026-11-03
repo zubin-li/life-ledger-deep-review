@@ -6276,3 +6276,146 @@ html.motion-reduced .today-ledger-sheet-backdrop {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ========== owner feedback round 5 — section hairline marks + view transitions ========== */
+.review-page-art,
+.journal-page-art,
+.habits-page-art {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 54px;
+  opacity: 0.62;
+  object-fit: contain;
+}
+
+html[data-theme="dark"] :is(.review-page-art, .journal-page-art, .habits-page-art) {
+  filter: invert(0.88);
+}
+
+.review-intro.quiet-intro {
+  position: relative;
+}
+
+.review-intro .review-page-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.journal-feed-heading .journal-page-art {
+  align-self: flex-end;
+  margin-bottom: 6px;
+}
+
+.habits-view-header {
+  position: relative;
+}
+
+.habits-view-header .habits-page-art {
+  position: absolute;
+  top: 0;
+  right: 120px;
+  width: 64px;
+  height: 48px;
+  pointer-events: none;
+}
+
+@media (max-width: 719px) {
+  .review-intro .review-page-art,
+  .journal-feed-heading .journal-page-art {
+    display: none;
+  }
+}
+
+.view {
+  view-transition-name: none;
+}
+
+html.ll-view-transition .view.active {
+  view-transition-name: ll-main-view;
+}
+
+@keyframes ll-vt-fade-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.992);
+  }
+}
+
+@keyframes ll-vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(1.004);
+  }
+}
+
+@keyframes ll-vt-out-forward {
+  to {
+    opacity: 0;
+    transform: translate3d(-12px, 0, 0);
+  }
+}
+
+@keyframes ll-vt-in-forward {
+  from {
+    opacity: 0;
+    transform: translate3d(16px, 0, 0);
+  }
+}
+
+@keyframes ll-vt-out-back {
+  to {
+    opacity: 0;
+    transform: translate3d(12px, 0, 0);
+  }
+}
+
+@keyframes ll-vt-in-back {
+  from {
+    opacity: 0;
+    transform: translate3d(-16px, 0, 0);
+  }
+}
+
+::view-transition-old(ll-main-view),
+::view-transition-new(ll-main-view) {
+  animation-duration: 0.34s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-view-transition-dir="none"] ::view-transition-old(ll-main-view) {
+  animation-name: ll-vt-fade-out;
+}
+
+html[data-view-transition-dir="none"] ::view-transition-new(ll-main-view) {
+  animation-name: ll-vt-fade-in;
+}
+
+html[data-view-transition-dir="forward"] ::view-transition-old(ll-main-view) {
+  animation-name: ll-vt-out-forward;
+}
+
+html[data-view-transition-dir="forward"] ::view-transition-new(ll-main-view) {
+  animation-name: ll-vt-in-forward;
+}
+
+html[data-view-transition-dir="back"] ::view-transition-old(ll-main-view) {
+  animation-name: ll-vt-out-back;
+}
+
+html[data-view-transition-dir="back"] ::view-transition-new(ll-main-view) {
+  animation-name: ll-vt-in-back;
+}
+
+html.motion-reduced ::view-transition-group(*),
+html.motion-reduced ::view-transition-old(*),
+html.motion-reduced ::view-transition-new(*) {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view.active {
+    view-transition-name: none;
+  }
+}

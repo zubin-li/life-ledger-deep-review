@@ -4,6 +4,7 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Owner feedback pass r5 (2026-11-03): **View Transitions API** for sidebar page switches (`withViewTransition`, directional cross-fade); section **hairline marks** on Review / Timeline / Habits headers; scatter deep-link spotlight after `renderReview`; capture settle wait 450ms.
 - Owner feedback pass r4 (2026-11-03): **FLIP** day-group expand on **Money** transaction list (`captureFlip`); dead ledger enter CSS trimmed; **habits-library-quiet** hairline asset; `pressBump` + subscription empty state (see r3 for stats cross-fade).
 - Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
 

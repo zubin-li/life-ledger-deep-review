@@ -1,5 +1,36 @@
 (function (root) {
   const VIEW_ORDER = ["today", "week", "timeline", "review", "habits"];
+  /** Sidebar order including long-range + ledger (owner nav spec A6). */
+  const NAV_VIEW_ORDER = ["today", "week", "longrange", "timeline", "ledger", "review", "habits"];
+
+  function navViewDirection(from, to) {
+    const start = NAV_VIEW_ORDER.indexOf(from);
+    const end = NAV_VIEW_ORDER.indexOf(to);
+    if (start < 0 || end < 0 || start === end) return 0;
+    return end > start ? 1 : -1;
+  }
+
+  function withViewTransition(updateDom, options = {}) {
+    const doc = root.document;
+    if (typeof updateDom !== "function") return Promise.resolve();
+    if (!doc || motionTravelDisabled() || typeof doc.startViewTransition !== "function") {
+      updateDom();
+      return Promise.resolve();
+    }
+    const from = String(options.from ?? doc.body?.dataset?.activeView ?? "");
+    const to = String(options.to ?? "");
+    const dir = navViewDirection(from, to);
+    const rootEl = doc.documentElement;
+    rootEl.dataset.viewTransitionDir = dir > 0 ? "forward" : dir < 0 ? "back" : "none";
+    rootEl.classList.add("ll-view-transition");
+    const vt = doc.startViewTransition(() => {
+      updateDom();
+    });
+    return vt.finished.finally(() => {
+      delete rootEl.dataset.viewTransitionDir;
+      rootEl.classList.remove("ll-view-transition");
+    });
+  }
 
   function normalizeQuery(query) {
     return String(query || "").trim().toLowerCase();
@@ -743,6 +774,9 @@
 
   const exported = {
     VIEW_ORDER,
+    NAV_VIEW_ORDER,
+    navViewDirection,
+    withViewTransition,
     MOTION_CLASS,
     skeletonMarkup,
     paintWithSkeleton,

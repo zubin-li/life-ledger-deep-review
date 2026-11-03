@@ -459,7 +459,7 @@
             <button type="button" role="tab" data-journal-mode="calendar" aria-selected="false" id="journalModeCalendar">Calendar</button>
           </div>
           <section id="journalFeedPane" aria-label="Timeline">
-            <header class="journal-feed-heading"><div><span class="kicker" id="journalFeedKicker"></span><h2 id="journalFeedTitle"></h2><p id="journalFeedDescription"></p></div><div class="journal-feed-filter"><label for="journalMonthFilter" id="journalMonthFilterLabel">Month</label><select id="journalMonthFilter"><option value="">All months</option></select><button type="button" id="journalAllMonths" class="text-button" hidden>All months</button></div></header>
+            <header class="journal-feed-heading"><div><span class="kicker" id="journalFeedKicker"></span><h2 id="journalFeedTitle"></h2><p id="journalFeedDescription"></p></div><img class="journal-page-art" src="./assets/hairline/journal-section-quiet.svg" alt="" aria-hidden="true"><div class="journal-feed-filter"><label for="journalMonthFilter" id="journalMonthFilterLabel">Month</label><select id="journalMonthFilter"><option value="">All months</option></select><button type="button" id="journalAllMonths" class="text-button" hidden>All months</button></div></header>
             <div id="journalFeed" class="ll-paint-host" aria-live="polite"></div>
             <button type="button" id="journalLoadMore" class="secondary-button" hidden>Load more</button>
           </section>
@@ -522,6 +522,7 @@
             <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
           </header>
           <div class="review-intro quiet-intro">
+            <img class="review-page-art" src="./assets/hairline/review-section-quiet.svg" alt="" aria-hidden="true">
             <h2 id="reviewTitle">June 2026</h2>
             <div class="insight-view-switch" id="insightViewSwitch" role="tablist" aria-label="Report view">
               <button type="button" class="active" role="tab" data-insight-view="trend" aria-selected="true" id="insightViewTrend">Trend</button>
@@ -616,6 +617,7 @@
           </header>
           <header class="habits-view-header">
             <div><span class="kicker" id="habitLibraryKicker">YOUR DAILY RHYTHM</span><h2 id="habitLibraryTitle">Small habits, your own rhythm.</h2><p class="habits-view-summary" id="habitSummary">4 active habits</p></div>
+            <img class="habits-page-art" src="./assets/hairline/habits-library-quiet.svg" alt="" aria-hidden="true">
             <button class="primary-button" id="addHabitButton">＋ Add habit</button>
           </header>
           <button class="habit-reminder-card" id="habitReminderCard" type="button">

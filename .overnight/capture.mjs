@@ -45,7 +45,7 @@ async function gotoView(page, view) {
   else if (view === "today") await page.waitForSelector(".tc-grid");
   else if (view === "longrange") await page.waitForSelector("#longrangeView.active");
   else if (view === "timeline") await page.waitForSelector("#journalFeedPane");
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(450);
 }
 
 async function shot(browserType, spec) {

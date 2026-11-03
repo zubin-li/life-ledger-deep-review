@@ -5672,6 +5672,17 @@ function renderReview() {
   renderFocusReview(year, month);
   window.LifeLedgerInteraction?.syncSegments(document);
   wirePolishedEmptyCtas();
+  if (pendingReviewScatterFocus) {
+    const scatterId = pendingReviewScatterFocus;
+    pendingReviewScatterFocus = "";
+    requestAnimationFrame(() => {
+      const target = document.getElementById(scatterId);
+      spotlightReviewScatterSection(target);
+      const reduced = document.documentElement.classList.contains("motion-reduced");
+      target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+      target?.focus?.({ preventScroll: true });
+    });
+  }
 }
 
 function periodDateGroups(dates, frequency) {
@@ -9483,14 +9494,8 @@ function openReviewScatterForMonth(ym, scatterId) {
   if (!/^\d{4}-\d{2}$/.test(String(ym || "")) || !scatterId) return;
   const [y, m] = ym.split("-").map(Number);
   cursor = new Date(y, m - 1, 15, 12);
-  switchToView("review");
-  requestAnimationFrame(() => {
-    const target = document.getElementById(scatterId);
-    spotlightReviewScatterSection(target);
-    const reduced = document.documentElement.classList.contains("motion-reduced");
-    target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
-    target?.focus?.({ preventScroll: true });
-  });
+  pendingReviewScatterFocus = scatterId;
+  void switchToView("review");
 }
 
 function openLedgerForReviewMonth(ym) {
@@ -10787,32 +10792,44 @@ function renderJournalCalendarLegend() {
 }
 
 var lastShownView = "";
+var pendingReviewScatterFocus = "";
 function switchToView(view) {
   const button = $(`.nav-item[data-view="${view}"]`);
   pulseNavItemPress(button);
   pulseShellNav(view);
-  if (!button) return;
-  $$(".nav-item").forEach(item => {
-    const active = item.dataset.view === view;
-    item.classList.toggle("active", active);
-    if (active) item.setAttribute("aria-current", "page");
-    else item.removeAttribute("aria-current");
-  });
-  $$(".view").forEach(section => section.classList.toggle("active", section.id === view + "View"));
-  // entrance stagger only right after switching (re-renders inside a page must not replay it)
-  const entering = $(`#${view}View`);
-  if (entering && !entering.classList.contains("is-entering")) { entering.classList.add("is-entering"); setTimeout(() => entering.classList.remove("is-entering"), 900); }
-  document.body.dataset.activeView = view;
-  // Pages scroll with the window (the sidebar stays put), so a newly opened page starts at its top.
-  if (view !== lastShownView) window.scrollTo({ top: 0, behavior: "instant" });
-  lastShownView = view;
-  $("#viewTitle").textContent = tr(`viewTitles.${view}`);
-  if (view === "week") renderWeeklyWorkspace();
-  if (view === "longrange") renderLongRange();
-  if (view === "timeline") void renderTimeline();
-  if (view === "review") { renderReview(); requestAnimationFrame(fitReviewText); }
-  if (view === "habits") renderHabitSettings();
-  if (view === "ledger") renderLedger();
+  if (!button) return Promise.resolve();
+  const previous = lastShownView || document.body.dataset.activeView || "";
+  const apply = () => {
+    $$(".nav-item").forEach(item => {
+      const active = item.dataset.view === view;
+      item.classList.toggle("active", active);
+      if (active) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
+    });
+    $$(".view").forEach(section => section.classList.toggle("active", section.id === view + "View"));
+    // entrance stagger only right after switching (re-renders inside a page must not replay it)
+    const entering = $(`#${view}View`);
+    if (entering && !entering.classList.contains("is-entering")) {
+      entering.classList.add("is-entering");
+      setTimeout(() => entering.classList.remove("is-entering"), 900);
+    }
+    document.body.dataset.activeView = view;
+    if (view !== previous) window.scrollTo({ top: 0, behavior: "instant" });
+    lastShownView = view;
+    $("#viewTitle").textContent = tr(`viewTitles.${view}`);
+    if (view === "week") renderWeeklyWorkspace();
+    if (view === "longrange") renderLongRange();
+    if (view === "timeline") void renderTimeline();
+    if (view === "review") { renderReview(); requestAnimationFrame(fitReviewText); }
+    if (view === "habits") renderHabitSettings();
+    if (view === "ledger") renderLedger();
+  };
+  const vt = window.LifeLedgerInteraction?.withViewTransition;
+  if (view !== previous && typeof vt === "function") {
+    return vt(apply, { from: previous, to: view });
+  }
+  apply();
+  return Promise.resolve();
 }
 
 function applyPortedPageLanguage() {
