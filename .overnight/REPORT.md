@@ -1,3 +1,30 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 9）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 9：** 本周页习惯×支出洞察 chip；Today 习惯链接 spotlight 对齐。
+
+---
+
+## 本轮（Batch 11 · Round 9）— 本周页关联洞察
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **本周** 视图在 **当前周** 时，页头（日期标题下）显示与 Today **同源** 的 **近 30 天习惯完成度×支出** 软提示；点 **复盘里看支出关联 →** 进入复盘 **习惯与支出** 散点并短暂 spotlight。Today 上同一链接行为已对齐（spotlight + smooth scroll）。 |
+| **实现** | `#weekHabitSpendHint` + `renderWeekHabitSpendHint(weekOffset)`；样式类 **`week-page-spend-insight`**（与时间轴 `journal-feed-spend-insight` 分离，避免 Playwright 误匹配）。 |
+| **单元测试** | `npm test` **394**（+1 AST 套件）。 |
+| **浏览器** | `npm run test:browser` **45**（+1 Week → habit scatter）。 |
+| **截图** | `.overnight/shots/b11r9-week-habit-spend-insight-zh-light-1440-chromium.png`、`.overnight/shots/b11r9-week-habit-spend-insight-de-dark-390-webkit.png`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**（Round 10 可选）。 |
+
+**怎么验（可选）：**
+
+1. Demo → 侧栏 **本周** → 标题下应见习惯×支出 chip（见 Round 9 截图）→ 点链接应到复盘 **习惯完成度与当日支出** 散点。
+2. **今日** → 点习惯洞察链接，散点区应有 spotlight 高亮（与心情洞察一致）。
+3. `npm test` + `npm run test:browser`。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

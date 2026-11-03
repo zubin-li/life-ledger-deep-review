@@ -1,5 +1,46 @@
 # Overnight progress
 
+## Batch 11 · Round 9 — done
+
+- **REVIEW.md：** 仍无新复审；#1–#3 已在 Round 1 关闭；#4 CSS 合并仍 **2.2**。
+- **Goal 2：** **本周**（仅当前周）页头增加 **近 30 天习惯×支出** 软提示 chip，点 **复盘里看支出关联 →** 进入复盘 habit 散点并 spotlight；Today 习惯洞察链接同步 spotlight 行为。
+- **QA：** `week-habit-spend-insight.test.mjs` + `week-habit-spend-insight.browser.test.mjs`；修复 week chip 与时间轴测试的 CSS 类名冲突（`week-page-spend-insight` 独立类）。
+- **文档：** README EN/ZH/DE 本周页习惯洞察；CHANGELOG `[Unreleased]` r9。
+- **QA：** `npm test` **394** pass / 0 fail；`npm run test:browser` **45** pass / 0 fail。
+- **截图：** `node .overnight/capture-batch11-round9.mjs`（**5293**）→ `b11r9-week-habit-spend-insight-zh-light-1440-chromium.png`、`b11r9-week-habit-spend-insight-de-dark-390-webkit.png`。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- **Round 10（终轮）：** `v210.css` reduced-motion 物理合并仍可选 **2.2**；终轮全量截图、`REPORT.md` 收束、Batch 11 完成标记。
+- Owner 验收：Demo → **本周**（当前周）→ 标题下 habit×spend chip → 复盘 habit 散点；侧栏 **时间轴** mood chip 仍独立（Round 8）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+
+## npm test
+
+```
+394 pass, 0 fail (batch 11 round 9, unit gate)
+45 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 11 · Round 8 — done
 
 - **REVIEW.md：** 仍无新复审；#1–#3 已在 Round 1 关闭；#4 CSS 合并仍 **2.2**。
@@ -114,3 +155,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 8
 ℹ tests 393 ℹ pass 393 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 394 ℹ pass 394 ℹ fail 0 

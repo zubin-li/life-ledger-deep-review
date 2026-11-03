@@ -5493,7 +5493,8 @@ html.motion-reduced .habit-streak-grid i.done {
 /* Batch 11 r8 — journal timeline streak + mood×spend insight chips */
 
 .journal-feed-streak,
-.journal-feed-spend-insight {
+.journal-feed-spend-insight,
+.week-page-spend-insight {
   margin-top: 0.65rem;
   max-width: 36rem;
   font-size: 0.92rem;
@@ -5501,14 +5502,15 @@ html.motion-reduced .habit-streak-grid i.done {
   color: color-mix(in srgb, var(--ink) 78%, transparent);
 }
 
-.journal-feed-spend-insight {
+.journal-feed-spend-insight,
+.week-page-spend-insight {
   padding: 0.55rem 0.75rem 0.6rem;
   border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(--edge-soft, rgba(0, 0, 0, 0.08)) 88%, transparent);
   background: color-mix(in srgb, var(--surface-2, #f5f5f7) 72%, transparent);
 }
 
-html[data-theme="dark"] .journal-feed-spend-insight {
+html[data-theme="dark"] :is(.journal-feed-spend-insight, .week-page-spend-insight) {
   background: color-mix(in srgb, var(--surface-2, #1c1c1e) 88%, transparent);
   border-color: color-mix(in srgb, var(--edge-soft, rgba(255, 255, 255, 0.12)) 90%, transparent);
 }
@@ -5521,12 +5523,33 @@ html[data-theme="dark"] .journal-feed-spend-insight {
   animation: llEmptyReveal 480ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both;
 }
 
-html.motion-reduced :is(.journal-feed-streak, .journal-feed-spend-insight) {
+html.motion-reduced :is(.journal-feed-streak, .journal-feed-spend-insight, .week-page-spend-insight) {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(.journal-feed-streak, .journal-feed-spend-insight) {
+  :is(.journal-feed-streak, .journal-feed-spend-insight, .week-page-spend-insight) {
+    animation: none;
+  }
+}
+
+/* Batch 11 r9 — Week header habit×spend insight (same chip family as timeline) */
+
+.week-page-spend-insight {
+  margin-top: 0.85rem;
+  max-width: 42rem;
+}
+
+#weekView .week-page-header .week-page-spend-insight:not([hidden]) {
+  animation: llEmptyReveal 480ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+}
+
+html.motion-reduced #weekView .week-page-spend-insight:not([hidden]) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #weekView .week-page-spend-insight:not([hidden]) {
     animation: none;
   }
 }

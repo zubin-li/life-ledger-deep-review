@@ -11,6 +11,8 @@ All notable changes are documented here.
 - **QA (Batch 11 r6):** Mac shell fakecloud **Money** asserts **← / N** shortcuts and native menu month step (`date:next`).
 - **QA (Batch 11 r7):** Mac menu **`date:prev`** month step on fakecloud **Money**; Today habit×spend hint link scrolls to habit-vs-spend scatter in **Review**.
 - **QA (Batch 11 r8):** Mac shell **`date:prev` / `date:next`** on **Review** and **Week**; journal timeline mood×spend insight link opens mood scatter.
+- **Polish (Batch 11 r9):** **Week** page header shows the rolling **30-day habit × spend** chip on the current week (links to habit scatter in **Review** with spotlight); Today habit insight link uses the same scatter spotlight.
+- **QA (Batch 11 r9):** Playwright **Week** habit×spend insight → `#review-scatter-habit`.
 
 ### Fixed
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.

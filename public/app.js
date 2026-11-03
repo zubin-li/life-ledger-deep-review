@@ -4408,6 +4408,7 @@ function renderWeeklyWorkspace() {
   setText("#weekRelativeLabel", weekOffset === 0 ? tr("week.relativeCurrent") : weekOffset === 1 ? tr("week.relativeNext") : weekOffset === -1 ? tr("week.relativePrevious") : weekOffset > 0 ? tr("week.relativeFuture", { n: weekOffset }) : tr("week.relativePast", { n: Math.abs(weekOffset) }));
   renderWeekCalendar();
   setText('#weekPlanLede', languageText('安排这一周，写下这一周。','Make room for the week. Put it into words.','Plane deine Woche. Halte sie fest.'));
+  renderWeekHabitSpendHint(weekOffset);
   if (googleCalendar.connected) void loadGoogleCalendarMonth(weekDatesFromKey(key).monday);
   renderWeekInsights();
   renderWeekPromotedReview();
@@ -4800,6 +4801,50 @@ function spendInsightDailyRows(endIso, dayCount = 30) {
   return rows;
 }
 
+function renderWeekHabitSpendHint(weekOffset) {
+  const el = $("#weekHabitSpendHint");
+  if (!el) return;
+  if (weekOffset !== 0) {
+    el.hidden = true;
+    el.textContent = "";
+    el.replaceChildren();
+    return;
+  }
+  const L = globalThis.LifeLedgerLedger;
+  const insight = L?.habitCompletionSpendInsight?.(spendInsightDailyRows(isoDate(new Date()), 30));
+  if (!insight) {
+    el.hidden = true;
+    el.textContent = "";
+    el.replaceChildren();
+    return;
+  }
+  const ledger = L.normalize(state.ledger, { lang: currentLang });
+  const locale = i18n[currentLang]?.locale || "de-DE";
+  const cur = ledger.settings.defaultCurrency;
+  const { highCompletionAvg, lowCompletionAvg } = insight;
+  const body = languageText(
+    `近 30 天：习惯完成较高日平均支出 ${L.formatMoney(-highCompletionAvg, cur, locale)}，较低日 ${L.formatMoney(-lowCompletionAvg, cur, locale)}。`,
+    `Last 30 days: on high-completion days you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
+    `Letzte 30 Tage: bei hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, bei niedriger ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
+  );
+  el.innerHTML = `${escapeHtml(body)} <button type="button" class="text-button week-page-spend-link">${escapeHtml(tr("foundations.habitSpendReview"))}</button>`;
+  el.hidden = false;
+  if (!el.dataset.boundReview) {
+    el.dataset.boundReview = "1";
+    el.addEventListener("click", (ev) => {
+      if (!ev.target.closest(".week-page-spend-link")) return;
+      switchToView("review");
+      requestAnimationFrame(() => {
+        const target = document.getElementById("review-scatter-habit");
+        spotlightReviewScatterSection(target);
+        const reduced = document.documentElement.classList.contains("motion-reduced");
+        target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+        target?.focus?.({ preventScroll: true });
+      });
+    });
+  }
+}
+
 function renderTodayHabitSpendHint(viewingToday, future) {
   const el = $("#todayHabitSpendHint");
   if (!el) return;
@@ -4834,7 +4879,11 @@ function renderTodayHabitSpendHint(viewingToday, future) {
       if (ev.target.closest(".today-insight-hint-link")) {
         switchToView("review");
         requestAnimationFrame(() => {
-          document.getElementById("review-scatter-habit")?.scrollIntoView({ behavior: "auto", block: "nearest" });
+          const target = document.getElementById("review-scatter-habit");
+          spotlightReviewScatterSection(target);
+          const reduced = document.documentElement.classList.contains("motion-reduced");
+          target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+          target?.focus?.({ preventScroll: true });
         });
       }
     });
