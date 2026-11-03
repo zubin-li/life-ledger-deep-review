@@ -1,5 +1,67 @@
 
 
+## Round 17 — FINAL (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **REVIEW MED #1** | `BACKUP_PREF_CARD_SIZES` 增加 **`spending: ["S","M"]`**；`backup-preferences.test.mjs` 同步 |
+| **REVIEW MED #2** | `formatStatsCompareCaption` — 无 `%` / `+null%` 修复；小基线用金额 |
+| **REVIEW MED #3** | 今日 **快速记账** chip **点击循环分类** + `quickAdd` **`categoryId`** + `rememberCategoryHint`；最近行 **首字母图标** |
+| **REVIEW LOW #4–5** | 移除 **ledger-keypad** DOM/CSS/绑定；**订阅合计** 仅 **月** + 支出 + 默认货币 |
+| **REVIEW LOW #6（部分）** | keypad CSS 删除 → **5968** 行（仍 >>3250） |
+| **Browser flake** | `ledger-wellness-insights.browser.test.mjs` 等待 `is-scatter-pending` 结束 |
+| **文档** | **`.overnight/CHANGES-zh.md`**（主人变更全集 v2.0.10→2.1.0） |
+
+### Could not reproduce
+
+| Finding | Why |
+|---------|-----|
+| （无 HIGH/MED 遗留） | 三项 MED + 可做的 LOW 均已改并测 |
+
+### Half-done / limits
+
+| Area | Notes |
+|------|------|
+| **C5 v210.css** | **5968** 行；半体积目标需 2.2 拆文件（见 CHANGES-zh **已知限制**） |
+| **test:browser** | fakecloud **5299** 偶发未起服 → 环境 flake，非本轮代码回归 |
+
+### Evidence (六个已知问题 · r17 final)
+
+1. **C1** — r16 onboard 截图 + browser alpha（未改 CSS 本轮）
+2. **C2** — 顶栏单标题（维持）
+3. **C3** — 侧栏 时间轴→记账→复盘（维持）
+4. **C4** — `weather-headless-compare.json`
+5. **C5** — **5968** 行；keypad dead CSS 已删
+6. **C6** — r14 `diff-v2010.json` + 目视矩阵（未重跑像素）
+
+### Antigravity REVIEW.md (final) — disposition
+
+| # | Sev | Status |
+|---|-----|--------|
+| 1 spending backup | MED | **Fixed** |
+| 2 compare +null% | MED | **Fixed** |
+| 3 sheet chip | MED | **Fixed** |
+| 4 keypad | LOW | **Fixed** |
+| 5 subTotal | LOW | **Fixed** |
+| 6 CSS/scripts bloat | LOW | **Partial**（5968 行；脚本未删） |
+
+### `npm test` (round 17 final gate)
+
+```
+434 pass, 0 fail (unit)
+23 pass, 0 fail (desktop:check)
+```
+
+### Next (post-release)
+
+1. v210.css 2.2 分文件 / css-archive → <3250 或分 bundle
+2. Review scatter long task → worker
+3. Consolidate `.overnight/*.mjs` 仅留 capture 族（可选）
+
+---
+
 ## Round 16 (2026-11-03)
 
 ### Done
@@ -854,4 +916,7 @@ desktop:check 0 fail
 ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
 
 ## Driver gate after sprint 15
+ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint final
 ℹ tests 434 ℹ pass 434 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

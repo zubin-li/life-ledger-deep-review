@@ -74,6 +74,7 @@ test(
       });
       await page.goto(base, { waitUntil: "networkidle" });
       await page.locator('.nav-item[data-view="review"]').click();
+      await page.waitForSelector(".review-scatter-grid:not(.is-scatter-pending)", { timeout: 12000 });
       await page.waitForSelector("#reviewLedgerSummary .review-scatter-dot-hit", { timeout: 8000 });
       const dot = page.locator("#reviewLedgerSummary .review-scatter-dot-hit").first();
       await dot.focus();

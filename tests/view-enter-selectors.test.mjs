@@ -66,11 +66,11 @@ test("Batch 5 round 9 settings backup dialog motion and Today hero rhythm", () =
   assert.match(app, /review-scatter-live/);
 });
 
-test("short viewport ledger keypad docks fixed while quick field focused", () => {
+test("ledger page omits touch keypad on mobile (quick entry uses system keyboard)", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
-  assert.match(css, /Batch 5 round 3 — dock keypad/);
-  assert.match(css, /#ledgerView \.ledger-quick:focus-within ~ \.ledger-keypad/);
-  assert.match(css, /position:\s*fixed/);
+  const ui = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.doesNotMatch(css, /\.ledger-keypad/);
+  assert.doesNotMatch(ui, /renderKeypad/);
 });
 
 test("focus inline timer exposes running state for CSS micro-interaction", () => {

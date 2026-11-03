@@ -179,7 +179,7 @@ test("field keys and the card/nav/week allow-lists stay in step with the app", (
     assert.ok(match, `today-cards.js card ${id}`);
     assert.deepEqual(plain(sizes[id]), parse(match[1]), id);
   }
-  for (const id of ["weather", "freq", "rhythm", "heatmap", "photos", "focus"]) {
+  for (const id of ["weather", "freq", "rhythm", "heatmap", "photos", "focus", "spending"]) {
     const match = widgetsSource.match(new RegExp(`id: "${id}",[^\\n]*?sizes: \\[([^\\]]*)\\]`));
     assert.ok(match, `today-widgets.js card ${id}`);
     assert.deepEqual(plain(sizes[id]), parse(match[1]), id);
@@ -187,7 +187,7 @@ test("field keys and the card/nav/week allow-lists stay in step with the app", (
   const wallMatch = widgetsSource.match(/Object\.entries\(walls\)\.map\([^\n]*?sizes: \[([^\]]*)\]/);
   assert.ok(wallMatch, "today-widgets.js wall cards");
   for (const id of ["wall", "wall2", "wall3"]) assert.deepEqual(plain(sizes[id]), parse(wallMatch[1]), id);
-  assert.deepEqual(plain(Object.keys(sizes)).sort(), ["calendar", "dayplan", "focus", "freq", "habits", "heatmap", "photos", "rhythm", "tools", "wall", "wall2", "wall3", "weather"]);
+  assert.deepEqual(plain(Object.keys(sizes)).sort(), ["calendar", "dayplan", "focus", "freq", "habits", "heatmap", "photos", "rhythm", "spending", "tools", "wall", "wall2", "wall3", "weather"]);
 });
 
 test("full v3 backup encodes safe preferences and decodes them back on import", () => {

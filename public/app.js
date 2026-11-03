@@ -6641,7 +6641,7 @@ const BACKUP_PREF_CARD_SIZES = Object.freeze({
   habits: ["L", "W", "X"], calendar: ["L", "X"], dayplan: ["L"], tools: ["L", "M", "X"],
   weather: ["L", "M", "S"], freq: ["L", "M"], rhythm: ["M", "S"], heatmap: ["S", "M", "L"],
   wall: ["L", "S", "M", "X"], wall2: ["L", "S", "M", "X"], wall3: ["L", "S", "M", "X"],
-  photos: ["M", "L"], focus: ["S", "M"],
+  photos: ["M", "L"], focus: ["S", "M"], spending: ["S", "M"],
 });
 function backupPrefIsRecord(value) { return value !== null && typeof value === "object" && !Array.isArray(value); }
 function backupPrefText(value, max) {

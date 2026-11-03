@@ -741,9 +741,11 @@
     const recentList = $(".today-ledger-sheet-list", rootEl);
     const fullBtn = $("[data-tls-full]", rootEl);
     const panel = $(".today-ledger-sheet-panel", rootEl);
+    let sheetCategoryOverride = null;
     function close() {
       rootEl.classList.remove("is-open");
       rootEl.classList.add("is-closing");
+      sheetCategoryOverride = null;
       const reduced = document.documentElement.classList.contains("motion-reduced");
       setTimeout(() => {
         rootEl.hidden = true;
@@ -762,10 +764,27 @@
         catChip.hidden = true;
         return;
       }
-      const cat = ledger.categories.find(c => c.id === parsed.draft.categoryId);
+      const categoryId = sheetCategoryOverride || parsed.draft.categoryId;
+      const cat = ledger.categories.find(c => c.id === categoryId);
       const name = cat ? L.localizedCategoryName(cat, currentLang) : t("spendingQuickOther");
       catChip.textContent = name;
+      catChip.dataset.categoryId = categoryId;
       catChip.hidden = false;
+    }
+    function cycleSheetCategory() {
+      const L = window.LifeLedgerLedger;
+      const ledger = state.ledger ? L?.normalize(state.ledger, { lang: currentLang }) : null;
+      if (!ledger || !input.value.trim()) return;
+      const parsed = L.parseQuickEntry(input.value, ledger, { lang: currentLang, today: selectedPlanningDate });
+      if (!parsed.ok || !parsed.draft) return;
+      const kind = parsed.draft.amountMinor < 0 ? "expense" : "income";
+      const cats = ledger.categories.filter(c => !c.archived && c.kind === kind);
+      if (!cats.length) return;
+      const currentId = sheetCategoryOverride || parsed.draft.categoryId;
+      const idx = Math.max(0, cats.findIndex(c => c.id === currentId));
+      sheetCategoryOverride = cats[(idx + 1) % cats.length].id;
+      window.LifeLedgerInteraction?.pressBump?.(catChip, "is-spend-press");
+      refreshCatChip();
     }
     function refreshRecent() {
       const L = window.LifeLedgerLedger;
@@ -782,10 +801,10 @@
         .slice(0, 3);
       recentList.innerHTML = rows.map(tx => {
         const cat = ledger.categories.find(c => c.id === tx.categoryId);
-        const icon = cat?.icon || "•";
+        const icon = cat?.icon || "more";
         const note = tx.note || L.localizedCategoryName(cat, currentLang) || "";
         const amt = L.formatMoney(tx.amountMinor, tx.currency || ledger.settings.defaultCurrency, locale);
-        return `<li><span class="today-ledger-sheet-row-icon" aria-hidden="true">${escapeHtml(icon)}</span><span class="today-ledger-sheet-row-note">${escapeHtml(note)}</span><span class="today-ledger-sheet-row-amt">${escapeHtml(amt)}</span></li>`;
+        return `<li><span class="today-ledger-sheet-row-icon ledger-tx-cat ledger-tx-cat--${escapeHtml(cat?.color || "sage")}" aria-hidden="true">${escapeHtml(icon.slice(0, 1).toUpperCase())}</span><span class="today-ledger-sheet-row-note">${escapeHtml(note)}</span><span class="today-ledger-sheet-row-amt">${escapeHtml(amt)}</span></li>`;
       }).join("");
     }
     function refreshSheetCopy() {
@@ -817,7 +836,9 @@
     closeBtns.forEach(btn => btn.addEventListener("click", close));
     form.addEventListener("submit", e => {
       e.preventDefault();
-      const result = window.LifeLedgerLedgerUI?.quickAdd?.(input.value, selectedPlanningDate);
+      const result = window.LifeLedgerLedgerUI?.quickAdd?.(input.value, selectedPlanningDate, {
+        categoryId: sheetCategoryOverride || undefined,
+      });
       if (!result?.ok) {
         input.classList.add("is-error");
         input.setAttribute("aria-invalid", "true");
@@ -826,12 +847,17 @@
       input.classList.remove("is-error");
       input.removeAttribute("aria-invalid");
       input.value = "";
+      sheetCategoryOverride = null;
       spending();
       refreshSheetCopy();
       panel.classList.add("is-saved");
       setTimeout(() => panel.classList.remove("is-saved"), 480);
     });
-    input.addEventListener("input", refreshCatChip);
+    input.addEventListener("input", () => {
+      sheetCategoryOverride = null;
+      refreshCatChip();
+    });
+    catChip.addEventListener("click", cycleSheetCategory);
     fullBtn.addEventListener("click", () => {
       close();
       openLedgerForPlanningDay();

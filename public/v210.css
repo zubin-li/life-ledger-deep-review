@@ -449,44 +449,6 @@ html[data-theme="dark"] .review-ledger-stats .review-ledger-spend-hint {
   grid-template-columns: 3rem 1fr auto auto;
 }
 
-.ledger-keypad {
-  display: none;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
-  margin-top: 0.25rem;
-}
-
-@media (pointer: coarse), (max-width: 640px) {
-  .ledger-keypad {
-    display: grid;
-  }
-}
-
-.ledger-key {
-  min-height: 44px;
-  border-radius: 12px;
-  border: 1px solid var(--hairline, rgba(0, 0, 0, 0.08));
-  background: var(--surface-elevated, rgba(255, 255, 255, 0.72));
-  font-size: 1.05rem;
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition: transform 0.12s ease, opacity 0.12s ease;
-}
-
-html[data-theme="dark"] .ledger-key {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.ledger-key:active {
-  transform: scale(0.96);
-  opacity: 0.85;
-}
-
-.ledger-key-sign {
-  grid-column: span 4;
-  font-size: 0.95rem;
-}
-
 #ledgerView.view.is-entering .ledger-summary article,
 #ledgerView.view.is-entering .ledger-quick,
 #ledgerView.view.is-entering .ledger-panel,
@@ -1147,18 +1109,13 @@ html[data-theme="dark"] .ledger-onboarding {
   .ledger-view .ledger-page,
   #ledgerView .ledger-page {
     padding-bottom: max(
-      calc(280px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
+      calc(24px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
       calc(120px + var(--mobile-nav-safe-bottom, 0px))
     );
   }
 
-  .ledger-keypad {
-    margin-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
-    scroll-margin-bottom: calc(180px + var(--mobile-nav-safe-bottom, 0px));
-  }
-
   .ledger-quick {
-    scroll-margin-bottom: calc(200px + var(--mobile-nav-safe-bottom, 0px));
+    scroll-margin-bottom: calc(80px + var(--mobile-nav-safe-bottom, 0px));
   }
 }
 
@@ -1166,13 +1123,9 @@ html[data-theme="dark"] .ledger-onboarding {
   .ledger-view .ledger-page,
   #ledgerView .ledger-page {
     padding-bottom: max(
-      calc(340px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
-      calc(140px + var(--mobile-nav-safe-bottom, 0px))
+      calc(32px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
+      calc(120px + var(--mobile-nav-safe-bottom, 0px))
     );
-  }
-
-  .ledger-keypad {
-    scroll-margin-bottom: calc(220px + var(--mobile-nav-safe-bottom, 0px));
   }
 }
 
@@ -1180,36 +1133,9 @@ html[data-theme="dark"] .ledger-onboarding {
   .ledger-view .ledger-page,
   #ledgerView .ledger-page {
     padding-bottom: max(
-      calc(380px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
-      calc(160px + var(--mobile-nav-safe-bottom, 0px))
+      calc(40px + env(safe-area-inset-bottom, 0px) + var(--mobile-nav-safe-bottom, 0px)),
+      calc(120px + var(--mobile-nav-safe-bottom, 0px))
     );
-  }
-
-  .ledger-keypad {
-    scroll-margin-bottom: calc(240px + var(--mobile-nav-safe-bottom, 0px));
-  }
-
-  /* Batch 5 round 3 — dock keypad above mobile tab bar while quick field focused */
-  #ledgerView .ledger-quick:focus-within ~ .ledger-keypad {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--mobile-nav-safe-bottom, 0px) + env(safe-area-inset-bottom, 0px));
-    z-index: 11500;
-    margin: 0;
-    padding: 0.45rem 0.75rem 0.35rem;
-    background: var(--desk-canvas, var(--canvas, #f1f5f9));
-    border-top: 1px solid var(--desk-border, var(--hairline, rgba(0, 0, 0, 0.08)));
-    box-shadow: 0 -10px 36px rgba(29, 49, 70, 0.14);
-  }
-
-  html[data-theme="dark"] #ledgerView .ledger-quick:focus-within ~ .ledger-keypad {
-    background: var(--desk-canvas, #15191e);
-    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.45);
-  }
-
-  #ledgerView:has(.ledger-quick:focus-within) .ledger-page {
-    scroll-padding-bottom: calc(200px + var(--mobile-nav-safe-bottom, 0px));
   }
 }
 

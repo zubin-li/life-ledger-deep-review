@@ -150,30 +150,50 @@
     return ctx.iso(d);
   }
 
+  function formatStatsCompareCaption(ledger, cmp) {
+    const cur = ledger.settings.defaultCurrency;
+    const locale = ctx.locale?.() || "de-DE";
+    if (core().preferSpendCompareAmountCaption?.(cmp)) {
+      return core().formatMoney(Math.abs(cmp.deltaMinor), cur, locale);
+    }
+    const pct = core().displaySpendDeltaPercent?.(cmp.deltaPercent, cmp.direction);
+    if (pct == null) {
+      if (Math.abs(Number(cmp.deltaMinor)) > 0) {
+        return core().formatMoney(Math.abs(cmp.deltaMinor), cur, locale);
+      }
+      return null;
+    }
+    return `${pct}%`;
+  }
+
   function renderStatsCompareLine(ledger, scope, anchorIso) {
     const today = ctx.iso(new Date());
     if (scope === "week") {
       const { start, end } = core().weekRangeMondayLocal(anchorIso, today);
       const cmp = core().alignedWeekSpendCompare(ledger, start, end);
       if (!cmp || cmp.direction === "none") return "";
-      const pct = core().displaySpendDeltaPercent?.(cmp.deltaPercent) ?? `${cmp.deltaPercent}%`;
+      const caption = formatStatsCompareCaption(ledger, cmp);
       if (cmp.direction === "up") {
-        return t(`较上周同期 +${pct}`, `+${pct} vs same days last week`, `+${pct} gg. Vorwoche`);
+        if (!caption) return t("较上周同期新增支出", "New spending vs last week", "Neue Ausgaben gg. Vorwoche");
+        return t(`较上周同期 +${caption}`, `+${caption} vs same days last week`, `+${caption} gg. Vorwoche`);
       }
       if (cmp.direction === "down") {
-        return t(`较上周同期 −${pct}`, `−${pct} vs same days last week`, `−${pct} gg. Vorwoche`);
+        if (!caption) return t("较上周同期减少支出", "Less spending vs last week", "Weniger Ausgaben gg. Vorwoche");
+        return t(`较上周同期 −${caption}`, `−${caption} vs same days last week`, `−${caption} gg. Vorwoche`);
       }
       return t("与上周同期相近", "About the same as last week", "Wie in der Vorwoche");
     }
     const ym = anchorIso.slice(0, 7);
     const cmp = core().alignedMonthSpendCompare(ledger, ym, anchorIso);
     if (!cmp || cmp.direction === "none") return "";
-    const pct = core().displaySpendDeltaPercent?.(cmp.deltaPercent) ?? `${cmp.deltaPercent}%`;
+    const caption = formatStatsCompareCaption(ledger, cmp);
     if (cmp.direction === "up") {
-      return t(`较上月同期 +${pct}`, `+${pct} vs same days last month`, `+${pct} gg. Vormonat`);
+      if (!caption) return t("较上月同期新增支出", "New spending vs last month", "Neue Ausgaben gg. Vormonat");
+      return t(`较上月同期 +${caption}`, `+${caption} vs same days last month`, `+${caption} gg. Vormonat`);
     }
     if (cmp.direction === "down") {
-      return t(`较上月同期 −${pct}`, `−${pct} vs same days last month`, `−${pct} gg. Vormonat`);
+      if (!caption) return t("较上月同期减少支出", "Less spending vs last month", "Weniger Ausgaben gg. Vormonat");
+      return t(`较上月同期 −${caption}`, `−${caption} vs same days last month`, `−${caption} gg. Vormonat`);
     }
     return t("与上月同期相近", "About the same as last month", "Wie im Vormonat");
   }
@@ -202,8 +222,11 @@
     const dailyStrip = statsScope === "month"
       ? `<div class="ledger-daily-strip" aria-hidden="true">${renderHeatmap(ledger, anchorIso.slice(0, 7))}</div>`
       : "";
-    const subTotal = (ledger.recurring || []).filter(r => r && r.cadence !== "weekly")
-      .reduce((sum, r) => sum + (Number.isInteger(r.amountMinor) ? Math.abs(r.amountMinor) : 0), 0);
+    const subTotal = statsScope === "month"
+      ? (ledger.recurring || [])
+        .filter(r => r && r.cadence !== "weekly" && r.amountMinor < 0 && (r.currency || cur) === cur)
+        .reduce((sum, r) => sum + (Number.isInteger(r.amountMinor) ? Math.abs(r.amountMinor) : 0), 0)
+      : 0;
     const subLine = subTotal
       ? `<p class="ledger-sub-total">${t(`每月订阅合计 ${core().formatMoney(-subTotal, cur, locale)}`, `Subscriptions ${core().formatMoney(-subTotal, cur, locale)}/mo`, `Abos ${core().formatMoney(-subTotal, cur, locale)}/Monat`)}</p>`
       : "";
@@ -1090,19 +1113,19 @@
     if (box && root.LifeLedgerHairline?.mount) root.LifeLedgerHairline.mount(box, box.dataset.art);
   }
 
-  function renderKeypad() {
-    const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ",", "0", "⌫"];
-    return `<div class="ledger-keypad" role="group" aria-label="${t("金额键盘", "Amount keypad", "Ziffernblock")}">
-      ${keys.map(k => `<button type="button" class="ledger-key" data-key="${k === "⌫" ? "backspace" : k}">${k}</button>`).join("")}
-      <button type="button" class="ledger-key ledger-key-sign" data-key="sign">±</button>
-    </div>`;
-  }
-
   function submitQuickEntry(host, rawText, anchorDay, options = {}) {
     const ledger = ledgerState();
     const input = options.inputEl;
     const form = options.formEl;
     const parsed = core().parseQuickEntry(rawText, ledger, { lang: ctx.lang?.(), today: anchorDay || ctx.iso(new Date()) });
+    if (parsed.ok && options.categoryId && parsed.draft) {
+      const cat = ledger.categories.find(c => c.id === options.categoryId && !c.archived);
+      if (cat) {
+        parsed.draft.categoryId = cat.id;
+        const abs = Math.abs(parsed.draft.amountMinor);
+        parsed.draft.amountMinor = cat.kind === "income" ? abs : -abs;
+      }
+    }
     if (!parsed.ok) {
       if (input) {
         input.classList.add("is-error");
@@ -1114,7 +1137,10 @@
       input.classList.remove("is-error");
       input.removeAttribute("aria-invalid");
     }
-    const { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
+    let { ledger: next, transaction } = core().addTransaction(ledger, parsed.draft, { lang: ctx.lang?.() });
+    if (options.categoryId && parsed.draft.note) {
+      next = core().rememberCategoryHint(next, parsed.draft.note, parsed.draft.categoryId);
+    }
     const firstEntry = !ledger.transactions.length && next.transactions.length;
     lastHighlightTxId = transaction.id;
     commit(next);
@@ -1131,28 +1157,6 @@
     if (options.render !== false) render();
     root.LifeLedgerTodayWidgets?.reload?.();
     return { ok: true, transaction };
-  }
-
-  function bindKeypad(host) {
-    const input = host.querySelector("#ledgerQuickForm input[name=quick]");
-    const pad = host.querySelector(".ledger-keypad");
-    if (!input || !pad) return;
-    pad.querySelectorAll(".ledger-key").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const key = btn.dataset.key;
-        let value = input.value;
-        if (key === "backspace") {
-          input.value = value.slice(0, -1);
-        } else if (key === "sign") {
-          if (/^\s*[-+]/.test(value)) input.value = value.replace(/^\s*[-+]/, "");
-          else if (/^\s*\d/.test(value) || /^\s*[,.\d]/.test(value)) input.value = `-${value.trimStart()}`;
-          else input.value = `- ${value}`;
-        } else {
-          input.value = value + key;
-        }
-        input.focus();
-      });
-    });
   }
 
   function bindInteractions(host, ledger, ym) {
@@ -1245,7 +1249,6 @@
     bindRecurring(host, ym);
     bindBudget(host, ym);
     bindTouchRowGestures(host);
-    bindKeypad(host);
     host.querySelectorAll("[data-ledger-day]").forEach(btn => {
       btn.addEventListener("click", () => {
         pulseLedgerHeatDay(btn);
@@ -1641,7 +1644,6 @@
         </div>
         <button type="submit" class="primary-button">${t("添加", "Add", "Hinzufügen")}</button>
       </form>
-      ${renderKeypad()}
       ${renderOnboarding(ledger)}
       ${renderStatsPanel(ledger, viewDay)}
       ${fxHint}
