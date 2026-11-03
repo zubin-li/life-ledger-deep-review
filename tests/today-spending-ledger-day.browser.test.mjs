@@ -35,8 +35,8 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      await page.waitForSelector(".tw-card.tw-spending .tw-spend-today");
-      await page.locator(".tw-spend-open").click();
+      await page.waitForSelector(".tw-card.tw-spending .tw-spend-body");
+      await page.locator(".tw-spend-body").click();
       await page.waitForSelector("#ledgerView.view.active", { timeout: 10000 });
       await page.waitForSelector("[data-ledger-clear-day]", { timeout: 8000 });
       const selectedHeat = await page.locator(".ledger-heat.is-selected").getAttribute("data-ledger-day");

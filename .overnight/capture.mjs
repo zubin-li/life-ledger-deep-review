@@ -84,7 +84,7 @@ async function shot(browserType, spec) {
   await page.goto(base, { waitUntil: "networkidle" });
   await gotoView(page, spec.view);
   if (spec.openTodaySheet) {
-    await page.locator(".tw-spend-today").click();
+    await page.locator(".tw-spend-quick").click();
     await page.waitForSelector("#todayLedgerSheet.is-open");
     await page.waitForTimeout(180);
   }

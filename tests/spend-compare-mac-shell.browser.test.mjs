@@ -91,7 +91,7 @@ async function seedSmallBaselineIncrease(page) {
 }
 
 test(
-  "Today spending card prefers amount caption when yesterday baseline is under €15",
+  "Today spending card shows category hints when today has expenses",
   { skip: !hasPlaywright },
   async () => {
     const server = await startStaticServer();
@@ -104,13 +104,11 @@ test(
         localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
-      await seedSmallBaselineIncrease(page);
-      await page.locator(".tw-card.tw-spending").scrollIntoViewIfNeeded();
-      await page.waitForSelector(".tw-spend-compare:not([hidden])", { timeout: 15000 });
-      const compareText = await page.locator(".tw-spend-compare").textContent();
-      assert.match(compareText || "", /较昨日多/);
-      assert.doesNotMatch(compareText || "", /\+\d{3,}%/);
-      assert.match(compareText || "", /47/);
+      await page.goto(demoBase, { waitUntil: "domcontentloaded" });
+      await page.locator('.nav-item[data-view="today"]').click();
+      await page.waitForSelector(".tw-spend-cats:not([hidden]) li", { timeout: 12000 });
+      const items = await page.locator(".tw-spend-cats li").count();
+      assert.ok(items >= 1 && items <= 3);
     } finally {
       await browser.close();
       server.kill("SIGTERM");
@@ -155,12 +153,8 @@ test(
 
       await page.locator('.nav-item[data-view="today"]').click();
       await page.waitForTimeout(350);
-      await page.waitForSelector("#todayHabitSpendHint:not([hidden])", { timeout: 15000 });
-      await page.waitForSelector("#todayMoodSpendHint:not([hidden])", { timeout: 15000 });
-      const habitText = await page.locator("#todayHabitSpendHint").textContent();
-      const moodText = await page.locator("#todayMoodSpendHint").textContent();
-      assert.match(habitText || "", /近 30 天/);
-      assert.match(moodText || "", /心情较好日/);
+      assert.equal(await page.locator("#todayHabitSpendHint").count(), 0);
+      assert.equal(await page.locator("#todayMoodSpendHint").count(), 0);
     } finally {
       await context.close();
       await browser.close();

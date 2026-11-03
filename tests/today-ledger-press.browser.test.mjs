@@ -36,14 +36,14 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.locator('.nav-item[data-view="today"]').click();
-      const todayBtn = page.locator("button.tw-spend-today");
-      await todayBtn.waitFor({ state: "visible" });
-      await todayBtn.click({ noWaitAfter: true });
+      const quickBtn = page.locator("button.tw-spend-quick");
+      await quickBtn.waitFor({ state: "visible" });
+      await quickBtn.click({ noWaitAfter: true });
       const pressed = await page.waitForFunction(
-        () => document.querySelector("button.tw-spend-today.is-spend-press"),
+        () => document.querySelector("button.tw-spend-quick.is-spend-press"),
         { timeout: 2000 },
       );
-      assert.ok(pressed, "tw-spend-today should pulse");
+      assert.ok(pressed, "tw-spend-quick should pulse");
     } finally {
       await browser.close();
       server.kill("SIGTERM");

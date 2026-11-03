@@ -157,13 +157,12 @@ test("Batch 12 r8 — Today spending opens Money with day filter", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
   const widgets = fs.readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
-  assert.match(css, /Batch 12 r8 — Today spending card → Money day filter/);
   assert.match(css, /\.ledger-list-wrap\.is-spotlight/);
   assert.match(ledgerUi, /function openToDay\(/);
   assert.match(ledgerUi, /openToDay,/);
   assert.match(widgets, /openLedgerForPlanningDay/);
   assert.match(widgets, /openToDay\?\.\(selectedPlanningDate\)/);
-  assert.match(widgets, /button type="button" class="tw-spend-today"/);
+  assert.match(widgets, /tw-spend-body/);
 });
 
 test("Batch 12 r9 — Review Money stats open ledger month", () => {

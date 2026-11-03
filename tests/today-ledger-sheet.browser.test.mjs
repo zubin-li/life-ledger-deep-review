@@ -21,7 +21,7 @@ function startStaticServer() {
 }
 
 test(
-  "Today spending amount opens quick-entry sheet",
+  "Today spending + opens quick-entry sheet",
   { skip: !hasPlaywright },
   async () => {
     const server = await startStaticServer();
@@ -35,8 +35,8 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      await page.waitForSelector(".tw-card.tw-spending .tw-spend-today");
-      await page.locator(".tw-spend-today").click();
+      await page.waitForSelector(".tw-card.tw-spending .tw-spend-quick");
+      await page.locator(".tw-spend-quick").click();
       await page.waitForSelector("#todayLedgerSheet.is-open");
       await page.waitForSelector("#todayLedgerQuickForm input[name=quick]");
       const visible = await page.locator("#todayLedgerSheet .today-ledger-sheet-panel").isVisible();

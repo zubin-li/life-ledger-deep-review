@@ -464,34 +464,6 @@ html[data-theme="dark"] .review-ledger-stats .review-ledger-spend-hint {
   opacity: 0.85;
 }
 
-.tw-spend-main {
-  display: grid;
-  gap: 0.35rem;
-  align-content: center;
-  height: 100%;
-}
-
-.tw-spend-today {
-  font-size: clamp(1.35rem, 4vw, 1.75rem);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
-}
-
-.tw-card.tw-spending.is-empty .tw-spend-today {
-  opacity: 0.45;
-}
-
-.tw-spend-spark {
-  min-height: 28px;
-  margin: -0.15rem 0 0.1rem;
-  opacity: 0.92;
-}
-
-.tw-spend-sparkline {
-  display: block;
-  max-width: 100%;
-}
-
 @media (max-width: 640px) {
   .review-ledger-stats {
     grid-template-columns: 1fr;
@@ -1172,17 +1144,6 @@ html[data-theme="dark"] .ledger-onboarding {
   .ledger-onboarding-copy button {
     justify-self: center;
   }
-}
-
-.tw-spend-hint {
-  margin: 0;
-  font-size: 0.78rem;
-  opacity: 0.72;
-  letter-spacing: 0.01em;
-}
-
-.tw-card.tw-spending.is-empty .tw-spend-hint {
-  opacity: 0.88;
 }
 
 @media (max-width: 640px) {
@@ -2297,21 +2258,14 @@ html.motion-reduced #reviewView .period-dashboard-empty.ll-empty-enter {
 .ledger-onboarding.ll-empty-enter,
 .ledger-empty.ll-empty-enter,
 .ledger-donut--empty.ll-empty-enter,
-.ledger-recurring-empty.ll-empty-enter,
-.tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-main {
+.ledger-recurring-empty.ll-empty-enter {
   animation: llEmptyReveal 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
-}
-
-.tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint:not([hidden]) {
-  animation: llEmptyReveal 640ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) 0.12s both;
 }
 
 html.motion-reduced .ledger-onboarding.ll-empty-enter,
 html.motion-reduced .ledger-empty.ll-empty-enter,
 html.motion-reduced .ledger-donut--empty.ll-empty-enter,
-html.motion-reduced .ledger-recurring-empty.ll-empty-enter,
-html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-main,
-html.motion-reduced .tw-card.tw-spending.is-empty.ll-empty-enter .tw-spend-hint {
+html.motion-reduced .ledger-recurring-empty.ll-empty-enter {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
@@ -3114,173 +3068,6 @@ html:not([data-workspace]) #reviewView > .review-score-table:not([open]) #inspec
   }
 }
 
-/* Batch 7 r5 — Today spending × mood pill (Goal 2 correlation hint) */
-.tw-spend-head {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 8px 10px;
-}
-
-.tw-spend-mood-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font: 500 0.6875rem/1.35 var(--font-body);
-  letter-spacing: 0.02em;
-  border: 1px solid color-mix(in srgb, var(--text-primary, #1d1d1f) 12%, transparent);
-  background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
-  color: var(--secondaryLabel, #6e6e73);
-  margin: 0;
-  appearance: none;
-  cursor: pointer;
-  transition: transform 160ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)), box-shadow 160ms ease;
-}
-
-button.tw-spend-mood-pill:not([hidden]):hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--text-primary, #1d1d1f) 8%, transparent);
-}
-
-button.tw-spend-mood-pill:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent, #007aff) 72%, transparent);
-  outline-offset: 2px;
-}
-
-.tw-spend-mood-pill[data-mood="很好"] {
-  color: #9b6c1d;
-  border-color: rgba(182, 129, 37, 0.35);
-  background: color-mix(in srgb, #fff5d9 72%, var(--card, #fff));
-}
-
-.tw-spend-mood-pill[data-mood="平静"] {
-  color: #567963;
-  border-color: rgba(100, 138, 113, 0.38);
-  background: color-mix(in srgb, #edf5ef 72%, var(--card, #fff));
-}
-
-.tw-spend-mood-pill[data-mood="低落"] {
-  color: #4f7fad;
-  border-color: rgba(93, 143, 197, 0.38);
-  background: color-mix(in srgb, #eaf3fc 72%, var(--card, #fff));
-}
-
-html[data-theme="dark"] .tw-spend-mood-pill[data-mood="很好"] {
-  color: #ffe2a2;
-  border-color: rgba(240, 185, 110, 0.35);
-  background: rgba(182, 129, 37, 0.16);
-}
-
-html[data-theme="dark"] .tw-spend-mood-pill[data-mood="平静"] {
-  color: #c0e1ca;
-  border-color: rgba(155, 194, 171, 0.35);
-  background: rgba(100, 138, 113, 0.18);
-}
-
-html[data-theme="dark"] .tw-spend-mood-pill[data-mood="低落"] {
-  color: #b9dbff;
-  border-color: rgba(125, 183, 255, 0.35);
-  background: rgba(93, 143, 197, 0.16);
-}
-
-@keyframes tw-spend-mood-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-html.motion-reduced .tw-card.tw-spending .tw-spend-mood-pill {
-  animation: none;
-}
-
-html.motion-reduced button.tw-spend-mood-pill:not([hidden]):hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* Batch 7 r7 — recurring due banner + Today month roll */
-.ledger-recurring-due {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 16px;
-  margin: 4px 0 18px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--accent, #007aff) 22%, var(--line, #e5e5ea));
-  background: color-mix(in srgb, var(--accent, #007aff) 6%, var(--card, #fff));
-}
-
-.ledger-recurring-due-copy {
-  flex: 1 1 220px;
-  margin: 0;
-  font: 500 0.875rem/1.45 var(--font-body);
-  color: var(--text-primary, #1d1d1f);
-}
-
-.ledger-recurring-due-all {
-  flex-shrink: 0;
-}
-
-html[data-theme="dark"] .ledger-recurring-due {
-  border-color: color-mix(in srgb, var(--accent, #64d2ff) 28%, var(--line, #3a3a3c));
-  background: color-mix(in srgb, var(--accent, #64d2ff) 10%, var(--card, #1c1c1e));
-}
-
-html[data-theme="dark"] .ledger-recurring-due-copy {
-  color: var(--text-primary, #f5f5f7);
-}
-
-.tw-spend-month.roll-host {
-  display: inline-block;
-}
-
-button.tw-spend-recurring-pill {
-  flex-shrink: 0;
-  max-width: 100%;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent, #007aff) 35%, var(--line, #d1d1d6));
-  background: color-mix(in srgb, var(--accent, #007aff) 8%, var(--card, #fff));
-  color: var(--accent, #007aff);
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  line-height: 1.25;
-  cursor: pointer;
-  transition: transform 160ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)), box-shadow 160ms ease;
-}
-
-button.tw-spend-recurring-pill:not([hidden]):hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent, #007aff) 18%, transparent);
-}
-
-button.tw-spend-recurring-pill:focus-visible {
-  outline: 2px solid var(--accent, #007aff);
-  outline-offset: 2px;
-}
-
-html[data-theme="dark"] button.tw-spend-recurring-pill {
-  border-color: color-mix(in srgb, var(--accent, #64d2ff) 32%, var(--line, #3a3a3c));
-  background: color-mix(in srgb, var(--accent, #64d2ff) 12%, var(--card, #1c1c1e));
-  color: var(--accent, #64d2ff);
-}
-
-html.motion-reduced button.tw-spend-recurring-pill:not([hidden]):hover,
-html.motion-reduced .tw-card.tw-spending .tw-spend-recurring-pill {
-  animation: none;
-  transform: none;
-  box-shadow: none;
-}
-
 /* Batch 7 r9 — Review Money recurring due strip */
 .review-ledger-recurring-due {
   display: flex;
@@ -3315,106 +3102,6 @@ html[data-theme="dark"] .review-ledger-recurring-due-copy {
 }
 
 /* Batch 8 round 3 — Today spending card polish */
-.tw-spend-top-cat {
-  display: inline-flex;
-  align-items: center;
-  max-width: min(100%, 9.5rem);
-  padding: 2px 9px;
-  border-radius: 999px;
-  font: 600 0.6875rem/1.35 var(--font-body);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border: 1px solid color-mix(in srgb, var(--text-primary, #1d1d1f) 10%, transparent);
-  background: color-mix(in srgb, var(--card, #fff) 90%, transparent);
-  color: var(--secondaryLabel, #6e6e73);
-}
-
-.tw-spend-top-cat[data-color="sage"] {
-  color: #3d6b55;
-  border-color: color-mix(in srgb, var(--sage, #00ad7c) 35%, transparent);
-  background: color-mix(in srgb, var(--sage, #00ad7c) 14%, var(--card, #fff));
-}
-
-.tw-spend-top-cat[data-color="amber"] {
-  color: #9b6c1d;
-  border-color: color-mix(in srgb, #c9922a 35%, transparent);
-  background: color-mix(in srgb, #fff5d9 55%, var(--card, #fff));
-}
-
-.tw-spend-top-cat[data-color="blue"],
-.tw-spend-top-cat[data-color="cyan"] {
-  color: #2a5f8f;
-  border-color: color-mix(in srgb, var(--blue, #258fe5) 32%, transparent);
-  background: color-mix(in srgb, var(--blue, #258fe5) 12%, var(--card, #fff));
-}
-
-.tw-spend-top-cat[data-color="coral"],
-.tw-spend-top-cat[data-color="violet"] {
-  color: #6b4a7a;
-  border-color: color-mix(in srgb, #9b59b6 28%, transparent);
-  background: color-mix(in srgb, #f3eaf8 50%, var(--card, #fff));
-}
-
-html[data-theme="dark"] .tw-spend-top-cat {
-  background: color-mix(in srgb, var(--card, #1c1c1e) 88%, #fff 12%);
-  border-color: color-mix(in srgb, var(--line, #3a3a3c) 80%, transparent);
-}
-
-.tw-card.tw-spending.is-empty:not(.has-ledger-history) .tw-spend-month:empty::before {
-  content: "€";
-  display: block;
-  font-size: 1.35rem;
-  font-weight: 650;
-  opacity: 0.22;
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-
-.tw-card.tw-spending.is-empty:not(.has-ledger-history) .tw-spend-spark {
-  min-height: 0;
-  margin: 0;
-}
-
-.tw-card.tw-spending:not(.is-empty) .tw-spend-top-cat:not([hidden]) {
-  animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-}
-
-html.motion-reduced .tw-card.tw-spending .tw-spend-top-cat {
-  animation: none;
-}
-
-.tw-card.tw-spending.is-empty.has-ledger-history .tw-spend-note {
-  opacity: 0.82;
-}
-
-.tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading h3 {
-  display: none;
-}
-
-.tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading {
-  align-items: flex-start;
-  gap: 2px 8px;
-}
-
-.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-month {
-  flex: 1 1 100%;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 10px;
-  line-height: 1.3;
-}
-
-.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-today {
-  font-size: clamp(1.15rem, 6.5vw, 1.42rem);
-  line-height: 1.15;
-}
-
-.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-head {
-  gap: 6px 8px;
-}
 
 /* Batch 8 round 4 — week insights spending tile */
 #weekView .week-insights-grid {
@@ -3477,26 +3164,6 @@ html[data-theme="dark"] #weekView .week-insight-card .week-insight-hint {
 
 html.motion-reduced button.week-insight-card.week-insight-card--ledger:not(:disabled):active {
   transform: none;
-}
-
-/* Batch 8 round 7 — Today spending vs yesterday caption */
-.tw-card.tw-spending .tw-spend-compare {
-  display: block;
-  margin: 2px 0 0;
-  font-size: 0.68rem;
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--text-secondary, rgba(60, 60, 67, 0.68));
-  opacity: 0.92;
-}
-
-html[data-theme="dark"] .tw-card.tw-spending .tw-spend-compare {
-  color: var(--text-secondary, rgba(235, 235, 245, 0.62));
-}
-
-.tw-card.tw-spending.is-empty .tw-spend-compare[hidden] {
-  display: none;
 }
 
 /* Batch 9 r4 — Week insights metric roll-up when changing workspace week */
@@ -3580,37 +3247,6 @@ html.motion-reduced #weekView .week-insight-value.roll-host {
   min-height: min(24vh, 160px);
   margin: 0;
   opacity: 0.85;
-}
-
-.today-insight-hint {
-  margin: 0.55rem 0 0;
-  max-width: 42rem;
-  font-size: var(--text-secondary, 0.92rem);
-  line-height: 1.45;
-  color: var(--text-muted, color-mix(in srgb, var(--ink, #1a1a1a) 62%, transparent));
-}
-
-.today-habit-spend-hint {
-  margin: -0.35rem 0 0.85rem;
-}
-
-.today-mood-spend-hint {
-  margin-top: 0.65rem;
-}
-
-.today-insight-hint-link {
-  margin-inline-start: 0.15rem;
-  vertical-align: baseline;
-}
-
-.today-insight-hint:not([hidden]),
-.today-habit-spend-hint:not([hidden]) {
-  animation: llEmptyReveal 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-html.motion-reduced .today-insight-hint:not([hidden]),
-html.motion-reduced .today-habit-spend-hint:not([hidden]) {
-  animation: none;
 }
 
 /* Batch 10 r2 — long-range empty polish + sidebar nav rhythm */
@@ -4270,27 +3906,6 @@ html.motion-reduced :is(.timeline-list-empty, .journal-calendar-empty).ll-polish
   animation: none !important;
 }
 
-/* Batch 11 r3 — Today spend insight hints read as soft chips */
-.today-insight-hint:not([hidden]) {
-  padding: 0.55rem 0.75rem 0.6rem;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--edge-soft, rgba(0, 0, 0, 0.08)) 88%, transparent);
-  background: color-mix(in srgb, var(--surface-2, #f5f5f7) 72%, transparent);
-}
-
-html[data-theme="dark"] .today-insight-hint:not([hidden]) {
-  background: color-mix(in srgb, var(--surface-2, #1c1c1e) 88%, transparent);
-  border-color: color-mix(in srgb, var(--edge-soft, rgba(255, 255, 255, 0.12)) 90%, transparent);
-}
-
-.today-mood-spend-hint:not([hidden]) {
-  animation: llEmptyReveal 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-html.motion-reduced .today-mood-spend-hint:not([hidden]) {
-  animation: none;
-}
-
 /* Batch 11 r5 — Review scatter empty checklist + primary CTA */
 
 #reviewView .review-scatter-empty-steps {
@@ -4612,59 +4227,6 @@ html.motion-reduced .ledger-list-filter-sum.ll-insight-enter {
   animation: none;
 }
 
-/* ========== Batch 12 r8 — Today spending card → Money day filter + list spotlight ========== */
-
-button.tw-spend-today {
-  appearance: none;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-button.tw-spend-today:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent-sage, #3a8f7a) 55%, transparent);
-  outline-offset: 3px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  button.tw-spend-today:hover {
-    opacity: 0.88;
-  }
-
-  button.tw-spend-today:active {
-    transform: scale(0.985);
-  }
-}
-
-.ledger-list-wrap.is-spotlight {
-  animation: ledger-list-spotlight 1.05s ease-out both;
-}
-
-@keyframes ledger-list-spotlight {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-sage, #3a8f7a) 0%, transparent);
-  }
-  35% {
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-sage, #3a8f7a) 28%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-sage, #3a8f7a) 0%, transparent);
-  }
-}
-
-html.motion-reduced .ledger-list-wrap.is-spotlight,
-html.motion-reduced button.tw-spend-today {
-  animation: none;
-  transition: none;
-}
-
 /* ========== Batch 12 r9 — Review Money stats open ledger month ========== */
 
 button.review-ledger-stat-btn {
@@ -4900,8 +4462,6 @@ button.text-button[data-open-ledger]:is(.ll-press-bump, .is-stat-press),
 button.review-scatter-jump-chip:is(.ll-press-bump, .is-jump-press),
 .nav-item:is(.ll-press-bump, .is-nav-press),
 button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press),
-button.tw-spend-today:is(.ll-press-bump, .is-spend-press),
-button.tw-spend-open:is(.ll-press-bump, .is-spend-press),
 button.ledger-heat:is(.ll-press-bump, .is-heat-press),
 .ledger-tx:is(.ll-press-bump, .is-long-press-hint) {
   transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease, border-color 0.22s ease;
@@ -4949,10 +4509,8 @@ html[data-theme="dark"] button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-pr
   background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 14%, var(--surface-elevated, #1a1d22));
 }
 
-button.tw-spend-today:is(.ll-press-bump, .is-spend-press),
-button.tw-spend-open:is(.ll-press-bump, .is-spend-press) {
-  transform: scale(0.96);
-  opacity: 0.92;
+button.tw-spend-quick:is(.ll-press-bump, .is-spend-press) {
+  transform: scale(0.97);
 }
 
 button.ledger-heat:is(.ll-press-bump, .is-heat-press) {
@@ -5365,12 +4923,6 @@ html[data-theme="dark"] .today-ledger-sheet-panel {
   font-size: 1.05rem;
 }
 
-.today-ledger-sheet-total {
-  margin: 0 0 12px;
-  font-size: 1.35rem;
-  font-variant-numeric: tabular-nums;
-}
-
 .today-ledger-sheet-form {
   display: grid;
   gap: 10px;
@@ -5389,45 +4941,6 @@ html[data-theme="dark"] .today-ledger-sheet-panel {
   border-radius: 14px;
   border: 1px solid var(--line);
   font-size: 1.05rem;
-}
-
-.today-ledger-sheet-cat {
-  flex-shrink: 0;
-  max-width: 38%;
-}
-
-.today-ledger-sheet-recent-label {
-  display: block;
-  margin: 14px 0 6px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.68rem;
-  opacity: 0.65;
-}
-
-.today-ledger-sheet-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 6px;
-}
-
-.today-ledger-sheet-list li {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 8px;
-  align-items: center;
-  font-size: 0.88rem;
-}
-
-.today-ledger-sheet-row-amt {
-  font-variant-numeric: tabular-nums;
-}
-
-.today-ledger-sheet-full {
-  margin-top: 12px;
-  justify-self: start;
 }
 
 .today-ledger-sheet-panel.is-saved {
@@ -5995,14 +5508,6 @@ html.motion-reduced ::view-transition-new(*) {
     animation: modalSheetEnter 0.38s var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
   }
 
-.tw-card.tw-spending:not(.is-empty) .tw-spend-mood-pill:not([hidden]) {
-    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
-.tw-card.tw-spending .tw-spend-recurring-pill:not([hidden]) {
-    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
-  }
-
 #todayView.view.is-entering .hero-card[data-viewing-today="true"] .hero-copy > .date-chip {
     animation: heroCopyIn 0.48s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
   }
@@ -6055,4 +5560,18 @@ html.tc-on .tc-edit-toggle.tc-edit-saved-flash {
 .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
     animation: ledger-stats-scope-in 0.42s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
   }
+
+.ledger-list-wrap.is-spotlight {
+  animation: ledger-list-spotlight 1.05s ease-out both;
+}
+
+@keyframes ledger-list-spotlight {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-sage, #3a8f7a) 0%, transparent); }
+  35% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-sage, #3a8f7a) 28%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+html.motion-reduced .ledger-list-wrap.is-spotlight {
+  animation: none;
+}
 }

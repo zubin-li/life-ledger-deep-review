@@ -3,58 +3,31 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const widgets = readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
+const css = readFileSync(new URL("../public/today-cards.css", import.meta.url), "utf8");
 
 test("Today spending hint hides once the ledger has any transaction", () => {
   assert.match(widgets, /ledgerHasEntries\s*=\s*Boolean\(ledger\?\.transactions\?\.length\)/);
   assert.match(widgets, /hint\.hidden\s*=\s*Boolean\(todayMinor\)\s*\|\|\s*ledgerHasEntries/);
 });
 
-test("Today spending note uses quiet copy when ledger has history but today is zero", () => {
-  assert.match(widgets, /spendingEmptyQuiet/);
-  assert.match(widgets, /ledgerHasEntries\s*\?\s*t\("spendingEmptyQuiet"\)\s*:\s*t\("spendingEmpty"\)/);
+test("Today spending card shows category hints up to three lines", () => {
+  assert.match(widgets, /tw-spend-cats/);
+  assert.match(widgets, /spendingCategoryHints/);
+  assert.match(widgets, /\.slice\(0,\s*limit\)/);
 });
 
-test("ledgerHasEntries is declared before spending note reads it", () => {
-  const decl = widgets.indexOf("const ledgerHasEntries = Boolean(ledger?.transactions?.length)");
-  const note = widgets.indexOf('t("spendingEmptyQuiet")');
-  assert.ok(decl > 0 && note > decl, "avoid temporal dead zone in spending()");
-});
-
-test("Today spending card shows localized mood pill when mood is logged", () => {
-  assert.match(widgets, /tw-spend-mood-pill/);
-  assert.match(widgets, /spendingMoodLabel/);
-  assert.match(widgets, /moodPill\.dataset\.mood = dayMood/);
-  assert.match(widgets, /t\("moodGood"\)/);
-});
-
-test("Today spending mood pill opens Review mood scatter", () => {
-  assert.match(widgets, /switchToView\("review"\)/);
-  assert.match(widgets, /review-scatter-mood/);
-  assert.match(widgets, /spendingMoodReview/);
-});
-
-test("Today spending recurring pill uses pending templates for current month", () => {
-  assert.match(widgets, /tw-spend-recurring-pill/);
-  assert.match(widgets, /recurringPendingForMonth/);
-  assert.match(widgets, /spendingRecurringOne/);
-  assert.match(widgets, /switchToView\("ledger"\)/);
-});
-
-test("Today spending card shows top category chip when today has expenses", () => {
-  assert.match(widgets, /tw-spend-top-cat/);
-  assert.match(widgets, /spendingTodayDetail/);
-  assert.match(widgets, /spendingTodayCountMany/);
-});
-
-test("Today spending card compares today vs yesterday when ledger has history", () => {
-  assert.match(widgets, /tw-spend-compare/);
-  assert.match(widgets, /alignedDaySpendCompare/);
-  assert.match(widgets, /spendingMoreDayAmount/);
-  assert.match(widgets, /displaySpendDeltaPercent/);
-});
-
-test("Today spending amount opens Money filtered to the planning day", () => {
+test("Today spending card has quick entry and body opens Money", () => {
+  assert.match(widgets, /tw-spend-quick/);
+  assert.match(widgets, /tw-spend-body/);
   assert.match(widgets, /openLedgerForPlanningDay/);
+  assert.match(widgets, /openTodayLedgerSheet/);
   assert.match(widgets, /spendingOpenDay/);
-  assert.match(widgets, /button type="button" class="tw-spend-today"/);
+  assert.doesNotMatch(widgets, /tw-spend-compare/);
+  assert.doesNotMatch(widgets, /tw-spend-mood-pill/);
+  assert.doesNotMatch(widgets, /tw-spend-month/);
+});
+
+test("Today spending card styles live in today-cards.css", () => {
+  assert.match(css, /\.tw-spend-total/);
+  assert.match(css, /button\.tw-spend-quick/);
 });

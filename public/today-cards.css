@@ -748,3 +748,23 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 .tc-dialog form { max-height: calc(100dvh - 24px); overflow-y: auto; }
 /* thumbnail strip scrolls sideways: fade the edge so the 6th photo reads as "more", not as cut off */
 .tc-dialog .tw-wall-thumbs { mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); padding-right: 18px; }
+
+/* Slice 1 — Today spending card + quick-entry (2.0 card family) */
+.tw-spending .tw-spend-main { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; }
+button.tw-spend-body { appearance: none; border: 0; margin: 0; padding: 0; width: 100%; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; border-radius: 12px; transition: opacity 160ms ease, transform 160ms var(--ease-enter); }
+button.tw-spend-body:focus-visible { outline: 2px solid color-mix(in srgb, var(--w-solid, var(--sage)) 45%, transparent); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { button.tw-spend-body:hover { opacity: 0.88; } }
+.tw-spend-total { margin: 0; font: 500 clamp(1.35rem, 4vw, 1.75rem)/1.1 var(--font-display, "Noto Serif SC"); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.tw-card.tw-spending.is-empty .tw-spend-total { opacity: 0.45; }
+.tw-spend-cats { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; font-size: 11px; color: var(--muted); }
+.tw-spend-cats li { display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+.tw-spend-cats li span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tw-spend-cats li span:last-child { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.tw-spend-empty { margin: 4px 0 0; }
+button.tw-spend-quick { align-self: flex-start; margin-top: auto; }
+button.tw-spend-quick:is(.ll-press-bump, .is-spend-press) { transform: scale(0.97); }
+html.motion-reduced button.tw-spend-body,
+html.motion-reduced button.tw-spend-quick:is(.ll-press-bump, .is-spend-press) { transition: none; transform: none; }
+.today-ledger-sheet-panel.is-saved { animation: tw-sheet-saved 480ms ease both; }
+@keyframes tw-sheet-saved { 50% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage) 32%, transparent); } }
+html.motion-reduced .today-ledger-sheet-panel.is-saved { animation: none; }
