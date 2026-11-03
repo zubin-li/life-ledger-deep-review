@@ -385,6 +385,14 @@
     return isoDateFromDate(dt);
   }
 
+  /** Percent change vs a prior baseline (always divides by previous period spend). */
+  function temporalSpendChangePercent(previousExpenseMinor, currentExpenseMinor) {
+    const prev = Math.abs(Number(previousExpenseMinor)) || 0;
+    const cur = Math.abs(Number(currentExpenseMinor)) || 0;
+    if (prev <= 0) return null;
+    return Math.round(Math.abs(cur - prev) / prev * 100);
+  }
+
   /** Compare default-currency expenses for [start,end] vs the same span shifted back 7 days. */
   function alignedWeekSpendCompare(ledger, startIso, endIso) {
     if (!ISO_DATE.test(startIso) || !ISO_DATE.test(endIso)) return null;
@@ -406,9 +414,7 @@
     }
     const direction = curExp > prevExp ? "up" : "down";
     const deltaMinor = curExp - prevExp;
-    const deltaPercent = prevExp > 0 && curExp > 0
-      ? spendInsightDeltaPercent(Math.max(curExp, prevExp), Math.min(curExp, prevExp))
-      : null;
+    const deltaPercent = temporalSpendChangePercent(prevExp, curExp);
     return {
       direction,
       currentExpenseMinor: curExp,
@@ -457,9 +463,7 @@
     }
     const direction = curExp > prevExp ? "up" : "down";
     const deltaMinor = curExp - prevExp;
-    const deltaPercent = prevExp > 0 && curExp > 0
-      ? spendInsightDeltaPercent(Math.max(curExp, prevExp), Math.min(curExp, prevExp))
-      : null;
+    const deltaPercent = temporalSpendChangePercent(prevExp, curExp);
     return {
       direction,
       currentExpenseMinor: curExp,
@@ -487,9 +491,7 @@
     }
     const direction = curExp > prevExp ? "up" : "down";
     const deltaMinor = curExp - prevExp;
-    const deltaPercent = prevExp > 0 && curExp > 0
-      ? spendInsightDeltaPercent(Math.max(curExp, prevExp), Math.min(curExp, prevExp))
-      : null;
+    const deltaPercent = temporalSpendChangePercent(prevExp, curExp);
     return {
       direction,
       currentExpenseMinor: curExp,
@@ -2108,6 +2110,7 @@
     alignedWeekSpendCompare,
     alignedMonthSpendCompare,
     alignedDaySpendCompare,
+    temporalSpendChangePercent,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

@@ -1,5 +1,40 @@
 # Overnight progress
 
+## Batch 9 · Round 1 — done
+
+- **REVIEW.md MED #1：** `alignedDay/Week/MonthSpendCompare` 改用 `temporalSpendChangePercent`（分母为**对比期**支出）；支出下降不再出现 −900% 类 inflated caption；`spendInsightDeltaPercent` 仍仅用于复盘散点「两组均值 lift」。
+- **REVIEW.md LOW #3：** 去掉 `app.js` 冗余的 `explicitLanguagePreference === "true"` 分支。
+- **REVIEW.md LOW #1/#2：** CSS reduced-motion 合并仍留 **2.2**（未做物理合并）。
+- **文档：** CHANGELOG `[Unreleased]` Fixed 一条。
+- **测试：** `ledger-core.test.mjs` +2；`npm test` **376**；`npm run test:browser` **17**。
+- **截图：** `node .overnight/capture-batch9-round1.mjs`（**5292**）→ `b9r1-spend-decrease-baseline-*`（人工注入 €100→€10 场景，caption **−90%**）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 9 Round 2：demo 习惯名/对比文案 polish，或 Week/Review 同类 caption 视觉回归；2.2 候选 `v210.css` reduced-motion 单表。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- Demo **支出上升**时对比 % 仍可能因基数很小而显得夸张（行为正确；仅下降侧已修）。
+- `npm run test:browser` 与 fakecloud 并行时偶发超时 — 先清 529x / wrangler。
+
+## npm test
+
+```
+376 pass, 0 fail (batch 9 round 1, unit gate)
+17 pass, 0 fail (test:browser, batch 9 round 1)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 8 · Round 10 — done（最后一轮）
 
 - **REVIEW.md：** 无 HIGH/MED；LOW #2 已在 Round 9 前修复；LOW #1 CSS 合并留 **2.2**。
@@ -104,3 +139,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 10
 ℹ tests 374 ℹ pass 374 ℹ fail 0 
+
+## Driver gate after round 1
+ℹ tests 376 ℹ pass 376 ℹ fail 0 

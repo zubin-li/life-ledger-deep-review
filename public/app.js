@@ -2159,11 +2159,9 @@ const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
 const explicitLanguagePreference = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
 let currentLang = supportedLanguages.includes(requestedLanguage)
   ? requestedLanguage
-  : explicitLanguagePreference === "true" && supportedLanguages.includes(storedLanguage)
+  : explicitLanguagePreference !== "false" && supportedLanguages.includes(storedLanguage)
     ? storedLanguage
-    : explicitLanguagePreference !== "false" && supportedLanguages.includes(storedLanguage)
-      ? storedLanguage
-      : "en";
+    : "en";
 const cloneData = value => typeof structuredClone === "function"
   ? structuredClone(value)
   : JSON.parse(JSON.stringify(value));

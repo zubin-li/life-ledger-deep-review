@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Spending compare captions:** Today / Week / Review temporal spend hints (vs yesterday, last week, last month) now compute ±% against the **previous** period baseline, so large drops no longer show inflated percentages (e.g. €100 → €10 reads **−90%**, not −900%).
+
 ## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.

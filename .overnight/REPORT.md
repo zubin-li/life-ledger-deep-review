@@ -1,8 +1,32 @@
-# Life Ledger 夜间构建总报告（Batch 8 完成 · Round 10）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 1）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 已收尾：** 记账 Goal 1 的周固定待记与跨页支出/习惯/日记对比 caption 全部落地；CHANGELOG **2.1.0** 日期 **2026-11-03**；单元 **374**、浏览器 **17** 全绿。
+**Batch 9 启动：** Antigravity 审查 MED #1（支出下降对比 % 分母错误）已修；单元 **376**、浏览器 **17** 全绿。
+
+---
+
+## 本轮（Batch 9 · Round 1）— 支出对比 % 基线
+
+| 项目 | 说明 |
+|------|------|
+| **审查** | `.overnight/REVIEW.md` MED #1 已复现并修复；LOW #3 语言偏好分支简化；LOW #1 CSS 合并仍留 2.2。 |
+| **逻辑** | 新增 `temporalSpendChangePercent`；Today / Week / Review 的「较昨日 / 上周 / 上月」caption 一律相对**对比期**算 ±%。 |
+| **测试** | `ledger-core.test.mjs` 下降 90% 用例；`npm test` **376**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b9r1-spend-decrease-baseline-*`（`node .overnight/capture-batch9-round1.mjs`，端口 **5292**）。 |
+
+**怎么验：**
+
+1. 本地 `?mode=local`（非 demo）：昨天记 **−100 €**、今天 **−10 €** → **今日** 支出卡应显示 **较昨日 −90%**（中文）或 **−90 % gg. gestern**（德文），见 `b9r1-spend-decrease-baseline-zh-light-1440-chromium.png` / `b9r1-spend-decrease-baseline-de-dark-390-webkit.png`。
+2. Demo 上若仍是「较昨日 +xxxx%」，多半是昨日基数极小导致的**上升**对比，属预期；下降侧不再出现 −900% 类错误。
+
+**已知：** 支出**增加**时小基数仍可能显示很大的 +%；Cloudflare 首次不 seed 账本；reduced-motion CSS 大合并留 2.2。
+
+---
+
+## 上一批（Batch 8 完成 · Round 10）— 发布整理
+
+Web **2.1.0** / Mac **3.1.0**。Batch 8 已收尾；CHANGELOG **2.1.0** 日期 **2026-11-03**；单元 **374**、浏览器 **17** 全绿（Batch 8 末轮）。
 
 ---
 
