@@ -691,12 +691,7 @@
     else delete c.dataset.spendEmptyEnter;
   }
   function pulseTodaySpendControl(btn) {
-    if (!btn || document.documentElement.classList.contains("motion-reduced")) return;
-    btn.classList.remove("is-spend-press");
-    void btn.offsetWidth;
-    btn.classList.add("is-spend-press");
-    clearTimeout(pulseTodaySpendControl.timer);
-    pulseTodaySpendControl.timer = setTimeout(() => btn.classList.remove("is-spend-press"), 420);
+    window.LifeLedgerInteraction?.pressBump?.(btn, "is-spend-press");
   }
   function openLedgerForPlanningDay(event) {
     pulseTodaySpendControl(event?.currentTarget);

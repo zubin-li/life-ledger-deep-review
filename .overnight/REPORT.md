@@ -1,3 +1,45 @@
+# Life Ledger — 主人反馈 pass（Round 4 · 2026-11-03）
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 改了什么
+
+| 项目 | 说明 |
+|------|------|
+| **按压反馈** | 全站 `LifeLedgerInteraction.pressBump`；CSS 合并，行为与原先 `is-*-press` 一致 |
+| **订阅空态** | 无每月订阅时显示 hairline 插画 +「添加订阅」 |
+| **Mac 窗口** | 注入 Mac 壳后拍 Today **记一笔** sheet |
+| **修复** | Today 支出按钮 `root is not defined` 导致无法跳转记账（browser 回归） |
+| **CSS** | v210 **6252** 行（去重动效块） |
+
+## 怎么点
+
+1. `cd public && python3 -m http.server 5294 --bind 127.0.0.1`
+2. **今日** → 点金额 → sheet；点 **打开记账** → 完整统计页
+3. **记账** → 若 demo 无订阅模板，看订阅区空态插画
+4. 重拍：`node .overnight/capture.mjs --port 5294 --prefix fb-r4`
+5. Mac 壳：`node .overnight/capture-mac.mjs --port 5295 --prefix fb-r4-mac`
+
+## 截图（Round 4）
+
+| 文件 | 场景 |
+|------|------|
+| `fb-r4-ledger-zh-light-1440-chromium.png` | 记账统计页 |
+| `fb-r4-today-sheet-zh-light-390-webkit.png` | Today 记一笔 |
+| `fb-r4-mac-today-sheet-zh-light-1440-webkit.png` | **Mac 壳** + sheet |
+
+## 测试
+
+| 命令 | Round 4 |
+|------|---------|
+| `npm test` | **425** pass |
+| `npm run test:browser` | **72** pass |
+| `npm run desktop:check` | **0** fail |
+
+详情：`.overnight/PROGRESS-2.md`
+
+---
+
 # Life Ledger — 主人反馈 pass（Round 3 · 2026-11-03）
 
 Web **2.1.0**、Mac **3.1.0**。

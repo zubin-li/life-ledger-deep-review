@@ -5698,22 +5698,117 @@ html[data-theme="dark"] .tc-grid > [data-card="habits"].is-all-complete {
     0 12px 36px rgba(0, 0, 0, 0.35);
 }
 
-button.review-ledger-stat-btn.is-stat-press {
+button.review-ledger-stat-btn:is(.ll-press-bump, .is-stat-press),
+button.review-ledger-recurring-open:is(.ll-press-bump, .is-stat-press),
+button.text-button[data-open-ledger]:is(.ll-press-bump, .is-stat-press),
+button.review-scatter-jump-chip:is(.ll-press-bump, .is-jump-press),
+.nav-item:is(.ll-press-bump, .is-nav-press),
+button.ledger-chip:is(.ll-press-bump, .is-chip-press),
+button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press),
+button.tw-spend-today:is(.ll-press-bump, .is-spend-press),
+button.tw-spend-open:is(.ll-press-bump, .is-spend-press),
+button.ledger-chart-mode:is(.ll-press-bump, .is-mode-press),
+button.ledger-heat:is(.ll-press-bump, .is-heat-press),
+.ledger-tx:is(.ll-press-bump, .is-long-press-hint) {
+  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease, border-color 0.22s ease;
+}
+
+button.review-ledger-stat-btn:is(.ll-press-bump, .is-stat-press) {
   transform: scale(0.97);
   background: color-mix(in srgb, var(--desk-accent, #167dce) 12%, var(--card, #fff));
-  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease;
+}
+
+button.review-ledger-recurring-open:is(.ll-press-bump, .is-stat-press),
+button.text-button[data-open-ledger]:is(.ll-press-bump, .is-stat-press) {
+  transform: scale(0.97);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 10%, transparent);
+}
+
+button.review-scatter-jump-chip:is(.ll-press-bump, .is-jump-press) {
+  transform: scale(0.94);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 14%, var(--card, #fff));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--desk-accent, #167dce) 22%, transparent);
+}
+
+html[data-theme="dark"] button.review-scatter-jump-chip:is(.ll-press-bump, .is-jump-press) {
+  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 16%, var(--card, #1a1d22));
+}
+
+.nav-item:is(.ll-press-bump, .is-nav-press) {
+  transform: scale(0.97);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 10%, var(--sidebar-surface, var(--card, #fff)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--desk-accent, #167dce) 18%, transparent);
+}
+
+html[data-theme="dark"] .nav-item:is(.ll-press-bump, .is-nav-press) {
+  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 12%, var(--sidebar-surface, var(--card, #1a1d22)));
+}
+
+button.ledger-chip:is(.ll-press-bump, .is-chip-press),
+button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
+  transform: scale(0.94);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 12%, var(--surface-elevated, #fff));
+  border-color: color-mix(in srgb, var(--desk-accent, #167dce) 28%, var(--hairline, rgba(0, 0, 0, 0.08)));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #167dce) 14%, transparent);
+}
+
+html[data-theme="dark"] button.ledger-chip:is(.ll-press-bump, .is-chip-press),
+html[data-theme="dark"] button.ledger-tx-cat-chip:is(.ll-press-bump, .is-chip-press) {
+  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 14%, var(--surface-elevated, #1a1d22));
+}
+
+button.tw-spend-today:is(.ll-press-bump, .is-spend-press),
+button.tw-spend-open:is(.ll-press-bump, .is-spend-press) {
+  transform: scale(0.96);
+  opacity: 0.92;
+}
+
+button.ledger-chart-mode:is(.ll-press-bump, .is-mode-press) {
+  transform: scale(0.94);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--desk-accent, #3a8f7a) 45%, transparent);
+}
+
+button.ledger-heat:is(.ll-press-bump, .is-heat-press) {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #3a8f7a) 38%, transparent);
+}
+
+html[data-theme="dark"] button.ledger-heat:is(.ll-press-bump, .is-heat-press) {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #6eb3ff) 42%, transparent);
+}
+
+.ledger-tx:is(.ll-press-bump, .is-long-press-hint) {
+  transform: scale(0.985);
+  background: color-mix(in srgb, var(--desk-accent, #167dce) 8%, var(--card, #fff));
+}
+
+html.motion-reduced :is(
+  .ll-press-bump,
+  .is-stat-press,
+  .is-jump-press,
+  .is-nav-press,
+  .is-chip-press,
+  .is-spend-press,
+  .is-mode-press,
+  .is-heat-press,
+  .is-long-press-hint
+) {
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transition: none !important;
+  filter: none !important;
 }
 
 html.motion-reduced #progressOrbit.is-all-complete-orbit,
-html.motion-reduced .tc-grid > [data-card="habits"].is-all-complete,
-html.motion-reduced button.review-ledger-stat-btn.is-stat-press {
+html.motion-reduced .tc-grid > [data-card="habits"].is-all-complete {
   transform: none;
   filter: none;
   box-shadow: none;
   transition: none;
 }
 
-/* Batch 13 r6 — global M shortcut hints; review open press; long-press edit row */
+/* Batch 13 r6 — global M shortcut hints (desktop workspace) */
 html[data-workspace] .ledger-kbd-hints {
   display: flex;
   flex-wrap: wrap;
@@ -5745,113 +5840,6 @@ html[data-workspace] .ledger-kbd-hints {
 html[data-theme="dark"] .ledger-kbd-hints kbd {
   background: color-mix(in srgb, var(--card, #1c1c1e) 80%, #fff 6%);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 14%, transparent);
-}
-
-button.review-ledger-recurring-open.is-stat-press,
-button.text-button[data-open-ledger].is-stat-press {
-  transform: scale(0.97);
-  background: color-mix(in srgb, var(--desk-accent, #167dce) 10%, transparent);
-  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease;
-}
-
-.ledger-tx.is-long-press-hint {
-  transform: scale(0.985);
-  background: color-mix(in srgb, var(--desk-accent, #167dce) 8%, var(--card, #fff));
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-html.motion-reduced .ledger-tx.is-long-press-hint,
-html.motion-reduced button.review-ledger-recurring-open.is-stat-press,
-html.motion-reduced button.text-button[data-open-ledger].is-stat-press {
-  transform: none;
-  transition: none;
-}
-
-/* Batch 13 r7 — review scatter jump chip press; Mac View → Money (⌘7) */
-button.review-scatter-jump-chip.is-jump-press {
-  transform: scale(0.94);
-  background: color-mix(in srgb, var(--desk-accent, #167dce) 14%, var(--card, #fff));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--desk-accent, #167dce) 22%, transparent);
-  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, box-shadow 0.22s ease;
-}
-
-html[data-theme="dark"] button.review-scatter-jump-chip.is-jump-press {
-  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 16%, var(--card, #1a1d22));
-}
-
-html.motion-reduced button.review-scatter-jump-chip.is-jump-press {
-  transform: none;
-  box-shadow: none;
-  transition: none;
-}
-
-/* Batch 13 r8 — sidebar nav press + ledger quick category chip press */
-.nav-item.is-nav-press {
-  transform: scale(0.97);
-  background: color-mix(in srgb, var(--desk-accent, #167dce) 10%, var(--sidebar-surface, var(--card, #fff)));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--desk-accent, #167dce) 18%, transparent);
-  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, box-shadow 0.22s ease;
-}
-
-html[data-theme="dark"] .nav-item.is-nav-press {
-  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 12%, var(--sidebar-surface, var(--card, #1a1d22)));
-}
-
-button.ledger-chip.is-chip-press,
-button.ledger-tx-cat-chip.is-chip-press {
-  transform: scale(0.94);
-  background: color-mix(in srgb, var(--desk-accent, #167dce) 12%, var(--surface-elevated, #fff));
-  border-color: color-mix(in srgb, var(--desk-accent, #167dce) 28%, var(--hairline, rgba(0, 0, 0, 0.08)));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #167dce) 14%, transparent);
-  transition: transform 0.22s var(--ease-enter, ease), background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-}
-
-html[data-theme="dark"] button.ledger-chip.is-chip-press,
-button.ledger-tx-cat-chip.is-chip-press {
-  background: color-mix(in srgb, var(--desk-accent, #6eb3ff) 14%, var(--surface-elevated, #1a1d22));
-}
-
-html.motion-reduced .nav-item.is-nav-press,
-html.motion-reduced button.ledger-chip.is-chip-press,
-button.ledger-tx-cat-chip.is-chip-press {
-  transform: none;
-  box-shadow: none;
-  transition: none;
-}
-
-/* Batch 13 r9 — Today spending open + ledger chart mode / heatmap day press */
-
-button.tw-spend-today.is-spend-press,
-button.tw-spend-open.is-spend-press {
-  transform: scale(0.96);
-  opacity: 0.92;
-  transition: transform 0.22s var(--ease-enter, ease), opacity 0.22s ease;
-}
-
-button.ledger-chart-mode.is-mode-press {
-  transform: scale(0.94);
-  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--desk-accent, #3a8f7a) 45%, transparent);
-  transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
-}
-
-button.ledger-heat.is-heat-press {
-  transform: scale(1.12);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #3a8f7a) 38%, transparent);
-  transition: transform 0.22s var(--ease-enter, ease), box-shadow 0.22s ease;
-}
-
-html[data-theme="dark"] button.ledger-heat.is-heat-press {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--desk-accent, #6eb3ff) 42%, transparent);
-}
-
-html.motion-reduced button.tw-spend-today.is-spend-press,
-html.motion-reduced button.tw-spend-open.is-spend-press,
-html.motion-reduced button.ledger-chart-mode.is-mode-press,
-html.motion-reduced button.ledger-heat.is-heat-press {
-  transform: none;
-  box-shadow: none;
-  opacity: 1;
-  transition: none;
 }
 
 /* Owner feedback pass r1 — daily ledger layout */
@@ -6085,25 +6073,6 @@ html.motion-reduced .ledger-panel--stats.is-scope-swap .ledger-stats-anim {
   margin: 4px 0 0;
   font-size: 11px;
   color: var(--secondaryLabel, var(--muted));
-}
-
-.ledger-tx.is-enter {
-  animation: ledgerRowEnter 420ms ease;
-}
-
-@keyframes ledgerRowEnter {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-html.motion-reduced .ledger-tx.is-enter {
-  animation: none;
 }
 
 /* Owner feedback pass r2 — Today quick-entry sheet */

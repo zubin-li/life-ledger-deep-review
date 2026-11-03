@@ -246,15 +246,15 @@ test("Batch 13 r6 — global M shortcut, kbd hints, long-press edit, review open
   assert.match(ledgerUi, /function focusQuickEntry\(/);
   assert.match(ledgerUi, /ledger-kbd-hints--menu/);
   assert.match(css, /is-long-press-hint/);
-  assert.match(css, /button\.text-button\[data-open-ledger\]\.is-stat-press/);
+  assert.match(css, /data-open-ledger\]:is\(\.ll-press-bump, \.is-stat-press\)/);
 });
 
 test("Batch 13 r7 — scatter jump chip press + Mac View Money menu", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const libRs = fs.readFileSync(new URL("../src-tauri/src/lib.rs", import.meta.url), "utf8");
-  assert.match(css, /Batch 13 r7 — review scatter jump chip press/);
-  assert.match(app, /function pulseReviewScatterJumpChip\(/);
+  assert.match(css, /review-scatter-jump-chip:is\(\.ll-press-bump, \.is-jump-press\)/);
+  assert.match(app, /LifeLedgerInteraction\?\.pressBump\?\.\(btn, "is-jump-press"\)/);
   assert.match(css, /is-jump-press/);
   assert.match(libRs, /item\("view_ledger", Some\("CmdOrCtrl\+5"\)/);
   assert.match(libRs, /item\("view_habits", Some\("CmdOrCtrl\+7"\)/);
@@ -265,21 +265,22 @@ test("Batch 13 r8 — sidebar nav press + ledger category chip press", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
-  assert.match(css, /Batch 13 r8 — sidebar nav press/);
-  assert.match(app, /function pulseNavItemPress\(/);
-  assert.match(ledgerUi, /function pulseLedgerCategoryChip\(/);
+  const interaction = fs.readFileSync(new URL("../public/interaction.js", import.meta.url), "utf8");
+  assert.match(interaction, /function pressBump\(/);
+  assert.match(app, /LifeLedgerInteraction\?\.pressBump\?\.\(button, "is-nav-press"\)/);
+  assert.match(ledgerUi, /pressBump\?\.\(chip, "is-chip-press"\)/);
   assert.match(css, /is-nav-press/);
   assert.match(css, /is-chip-press/);
+  assert.match(css, /\.ll-press-bump/);
 });
 
 test("Batch 13 r9 — Today spending open + ledger chart / heat press", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
   const todayWidgets = fs.readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
-  assert.match(css, /Batch 13 r9 — Today spending open/);
-  assert.match(todayWidgets, /function pulseTodaySpendControl\(/);
-  assert.match(ledgerUi, /function pulseLedgerChartMode\(/);
-  assert.match(ledgerUi, /function pulseLedgerHeatDay\(/);
+  assert.match(todayWidgets, /pressBump\?\.\(btn, "is-spend-press"\)/);
+  assert.match(ledgerUi, /pressBump\?\.\(btn, "is-mode-press"\)/);
+  assert.match(ledgerUi, /pressBump\?\.\(cell, "is-heat-press"\)/);
   assert.match(css, /is-spend-press/);
   assert.match(css, /is-mode-press/);
   assert.match(css, /is-heat-press/);
@@ -297,6 +298,14 @@ test("Owner feedback r1 — daily ledger shell + nav order", () => {
   assert.match(ledgerUi, /renderSubscriptionList/);
   assert.match(core, /inferCategoryFromNote/);
   assert.match(core, /autoPostDueMonthlyRecurring/);
+});
+
+test("Owner feedback r4 — subscription empty hairline + single ledger row enter keyframe", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(ledgerUi, /ledger-subscriptions-empty\.svg/);
+  assert.match(css, /@keyframes ledgerTxEnter/);
+  assert.doesNotMatch(css, /@keyframes ledgerRowEnter/);
 });
 
 test("Owner feedback r3 — ledger week/month scope cross-fade", () => {

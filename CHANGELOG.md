@@ -72,6 +72,7 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 
 ### Changed
 
+- **Owner feedback (2026-11-03):** Today **Spending today** amount opens a quick-entry sheet (full stats on **Money**); `LifeLedgerInteraction.pressBump` centralises tap feedback; monthly **Subscriptions** empty state uses hairline art + **Add subscription** CTA.
 - Mood-vs-spend logic lives in testable `ledger-core.js` helpers; quick-entry field is not wrapped in `<label>` (Add stays outside; WebKit-safe pickers elsewhere).
 - **Money desktop shortcuts:** **N** quick entry, **/** search, **← / →** month (Mac menu month step includes Money).
 - Timeline calendar photo skeleton; mobile ledger keypad clearance; week insight pulse; README EN/ZH/DE showcase adds Money (`08-ledger-v21`) desktop/mobile rows; `.overnight/CSS-LAYERS.md` documents CSS slices.

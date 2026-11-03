@@ -4505,12 +4505,7 @@ function pulseBackupTabSwitch(selected) {
 }
 
 function pulseNavItemPress(button) {
-  if (!button || document.documentElement.classList.contains("motion-reduced")) return;
-  button.classList.remove("is-nav-press");
-  void button.offsetWidth;
-  button.classList.add("is-nav-press");
-  clearTimeout(pulseNavItemPress.timer);
-  pulseNavItemPress.timer = setTimeout(() => button.classList.remove("is-nav-press"), 420);
+  LifeLedgerInteraction?.pressBump?.(button, "is-nav-press");
 }
 
 function pulseShellNav(view) {
@@ -6215,21 +6210,11 @@ function showCelebration() {
 }
 
 function pulseReviewLedgerStatBtn(btn) {
-  if (!btn || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  btn.classList.remove("is-stat-press");
-  void btn.offsetWidth;
-  btn.classList.add("is-stat-press");
-  clearTimeout(pulseReviewLedgerStatBtn.timer);
-  pulseReviewLedgerStatBtn.timer = setTimeout(() => btn.classList.remove("is-stat-press"), 420);
+  LifeLedgerInteraction?.pressBump?.(btn, "is-stat-press");
 }
 
 function pulseReviewScatterJumpChip(btn) {
-  if (!btn || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  btn.classList.remove("is-jump-press");
-  void btn.offsetWidth;
-  btn.classList.add("is-jump-press");
-  clearTimeout(pulseReviewScatterJumpChip.timer);
-  pulseReviewScatterJumpChip.timer = setTimeout(() => btn.classList.remove("is-jump-press"), 420);
+  LifeLedgerInteraction?.pressBump?.(btn, "is-jump-press");
 }
 
 function isGenericTypingTarget(target) {

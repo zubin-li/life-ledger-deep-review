@@ -2,6 +2,73 @@
 
 Web **2.1.0** / Mac **3.1.0** · repo `/Users/ashan/Documents/Codex/ll-overnight` (isolated)
 
+## Round 4 (2026-11-03)
+
+### Done
+
+| Area | Notes |
+|------|--------|
+| **B 按压动效** | `LifeLedgerInteraction.pressBump`；CSS 合并为 `:is(.ll-press-bump, .is-*-press)`；删重复 `ledgerRowEnter` |
+| **D4 配图** | `ledger-subscriptions-empty.svg` + 订阅区空态 CTA；入 `sw.js` |
+| **Mac 壳** | `.overnight/capture-mac.mjs` → `fb-r4-mac-today-sheet-zh-light-1440-webkit.png` |
+| **回归** | `today-widgets.js` 误用 `root` → `window`（修复 3 个 browser 测试） |
+| **C5 CSS** | **6283 → 6252** 行（去重 press + row enter） |
+| **截图** | `node .overnight/capture.mjs --port 5294 --prefix fb-r4`（9 张） |
+
+### Half-done
+
+| Area | Next |
+|------|------|
+| **C5 v210.css** | 仍远高于 50% 目标；需删 legacy wellness 等大块 |
+| **B FLIP** | 列表折叠/展开仍无 FLIP；新交易已有 `is-enter` |
+| **D4 配图** | habits/journal/week 区头图仍可补 |
+
+### Known bugs / limits
+
+- Headless 天气仍无温度（r1 环境结论不变）。
+- `.overnight/base` v2.0.10 worktree 可 `git worktree remove` 清理。
+
+### Evidence (六个已知问题 · r4)
+
+1. **C1** — Mac 壳 sheet 截图；onboarding 仍见底栏（产品 z-index 12000 已设）
+2. **C2** — `fb-r4-ledger-zh-light-1440-chromium.png` 单顶栏标题
+3. **C3** — 侧栏顺序；`fb-r4-today-zh-light-1440-chromium.png`
+4. **C4** — 未重跑；r1 有效
+5. **C5** — **6252** 行；单 capture + capture-mac
+6. **C6** — r3 `diff-v2010.json` 仍有效；r4 目视矩阵 OK
+
+### Self-review (Round 4)
+
+| Checklist | Finding | Action |
+|-----------|---------|--------|
+| ui-animation | press 仅 transform/opacity；`motion-reduced` 一条规则 | OK |
+| ui-ux-pro-max | Today sheet Mac 1440 可点关；订阅空态 CTA ≥44px 级 | OK |
+| design-dna | 记账 panel 与 week 一致（fb-r4-ledger 目视） | OK |
+| Screenshots | WebKit/Chromium r4 矩阵 + Mac sheet | OK |
+| Rauno / Linear | 无 layout 动画；页内 stagger 保留 | OK |
+| Tests | **425** unit + **72** browser + desktop:check **0** | OK |
+
+### Detail polish (running)
+
+- 订阅空态 hairline + 「添加订阅」链到 recurring
+- pressBump 统一入口（legacy class 名保留给测试）
+
+### `npm test` (round 4 gate)
+
+```
+425 pass, 0 fail (unit)
+72 pass, 0 fail (browser)
+desktop:check 0 fail
+```
+
+### Next round priority
+
+1. v210.css 大块删除（hidden legacy 样式移出或删）
+2. 日组折叠 FLIP / View Transitions 试点
+3. CHANGELOG/README 记账段落补「订阅空态 + 动效统一」
+
+---
+
 ## Round 3 (2026-11-03)
 
 ### Done
@@ -92,3 +159,6 @@ desktop:check 0 fail
 
 ## Driver gate after sprint 2
 ℹ tests 424 ℹ pass 424 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 
+
+## Driver gate after sprint 3
+ℹ tests 425 ℹ pass 425 ℹ fail 0 ℹ tests 23 ℹ pass 23 ℹ fail 0 

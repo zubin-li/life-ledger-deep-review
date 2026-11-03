@@ -21,30 +21,15 @@
   let ledgerChartModePulse = false;
 
   function pulseLedgerCategoryChip(chip) {
-    if (!chip || document.documentElement.classList.contains("motion-reduced")) return;
-    chip.classList.remove("is-chip-press");
-    void chip.offsetWidth;
-    chip.classList.add("is-chip-press");
-    clearTimeout(pulseLedgerCategoryChip.timer);
-    pulseLedgerCategoryChip.timer = setTimeout(() => chip.classList.remove("is-chip-press"), 420);
+    root.LifeLedgerInteraction?.pressBump?.(chip, "is-chip-press");
   }
 
   function pulseLedgerChartMode(btn) {
-    if (!btn || document.documentElement.classList.contains("motion-reduced")) return;
-    btn.classList.remove("is-mode-press");
-    void btn.offsetWidth;
-    btn.classList.add("is-mode-press");
-    clearTimeout(pulseLedgerChartMode.timer);
-    pulseLedgerChartMode.timer = setTimeout(() => btn.classList.remove("is-mode-press"), 420);
+    root.LifeLedgerInteraction?.pressBump?.(btn, "is-mode-press");
   }
 
   function pulseLedgerHeatDay(cell) {
-    if (!cell || document.documentElement.classList.contains("motion-reduced")) return;
-    cell.classList.remove("is-heat-press");
-    void cell.offsetWidth;
-    cell.classList.add("is-heat-press");
-    clearTimeout(pulseLedgerHeatDay.timer);
-    pulseLedgerHeatDay.timer = setTimeout(() => cell.classList.remove("is-heat-press"), 420);
+    root.LifeLedgerInteraction?.pressBump?.(cell, "is-heat-press");
   }
 
   function isLedgerTypingTarget(target) {
@@ -248,7 +233,14 @@
   function renderSubscriptionList(ledger) {
     const rows = (ledger.recurring || []).filter(r => r && r.cadence !== "weekly");
     if (!rows.length) {
-      return `<section class="ledger-subscriptions panel"><h3>${t("每月订阅", "Subscriptions", "Abos")}</h3><p class="ledger-quiet">${t("暂无订阅模板", "No subscriptions yet", "Noch keine Abos")}</p></section>`;
+      const empty = ledgerPolishedEmpty(
+        "ledger-subscriptions-empty",
+        "./assets/hairline/ledger-subscriptions-empty.svg",
+        t("暂无订阅", "No subscriptions yet", "Noch keine Abos"),
+        t("在 ⋯ 菜单添加固定收支，每月自动记一笔。", "Add recurring in ⋯ — posted once each month.", "Unter ⋯ Wiederkehrend — monatlich automatisch."),
+        `<button type="button" class="secondary-button ledger-recurring-add">${t("添加订阅", "Add subscription", "Abo hinzufügen")}</button>`,
+      );
+      return `<section class="ledger-subscriptions panel"><h3>${t("每月订阅", "Subscriptions", "Abos")}</h3>${empty}</section>`;
     }
     return `<section class="ledger-subscriptions panel"><h3>${t("每月订阅", "Subscriptions", "Abos")}</h3><ul class="ledger-sub-list">${rows.map(rec => {
       const cat = ledger.categories.find(c => c.id === rec.categoryId);
@@ -1666,9 +1658,8 @@
         longTimer = setTimeout(() => {
           longFired = true;
           cancelLong();
-          row.classList.add("is-long-press-hint");
           row.querySelector(".ledger-tx-edit")?.click();
-          setTimeout(() => row.classList.remove("is-long-press-hint"), 420);
+          root.LifeLedgerInteraction?.pressBump?.(row, "is-long-press-hint");
         }, 520);
       };
       row.addEventListener("pointerdown", event => {

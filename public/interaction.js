@@ -659,6 +659,26 @@
     return `<div class="${className}" aria-hidden="true"></div>`;
   }
 
+  const pressBumpTimers = new WeakMap();
+
+  /** Brief scale/opacity press — pass legacy class e.g. is-nav-press for existing CSS hooks. */
+  function pressBump(node, className = "ll-press-bump") {
+    if (!node || motionTravelDisabled()) return;
+    const token = String(className || "ll-press-bump");
+    node.classList.remove(token);
+    void node.offsetWidth;
+    node.classList.add(token);
+    const prev = pressBumpTimers.get(node);
+    if (prev) clearTimeout(prev);
+    pressBumpTimers.set(
+      node,
+      setTimeout(() => {
+        node.classList.remove(token);
+        pressBumpTimers.delete(node);
+      }, 420),
+    );
+  }
+
   function paintWithSkeleton(host, paint, options = {}) {
     if (!host || typeof paint !== "function") return;
     const skelClass = options.skeletonClass || "ll-skeleton ll-skeleton--block";
@@ -718,6 +738,7 @@
     rollText,
     mountDisclosures,
     mountCommandPalette,
+    pressBump,
   };
 
   root.LifeLedgerInteraction = exported;
