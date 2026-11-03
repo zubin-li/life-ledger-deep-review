@@ -1765,6 +1765,8 @@
     openToMonth,
     focusQuickEntry,
     quickAdd(text, anchorDay, options) {
+      // Today's quick sheet can be used before the ledger page was ever rendered; ctx is set by render().
+      if (!ctx) root.renderLedger?.();
       if (!ctx) return { ok: false };
       return submitQuickEntry(null, text, anchorDay, { ...options, render: options?.render !== false });
     },

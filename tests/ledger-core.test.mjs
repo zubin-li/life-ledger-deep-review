@@ -1300,3 +1300,17 @@ test("autoPostDueMonthlyRecurring is idempotent within a month", () => {
   const second = L.autoPostDueMonthlyRecurring(first.ledger, { today: "2026-11-03" });
   assert.equal(second, null);
 });
+
+test("parseQuickEntry: unsigned amount before the note still infers the spending category", () => {
+  const ledger = L.normalize(undefined, { lang: "zh" });
+  const cat = s => ledger.categories.find(c => c.id === L.parseQuickEntry(s, ledger, { lang: "zh", today: "2026-11-03" }).draft.categoryId);
+  for (const s of ["4,20 Kaffee", "Kaffee 4,20", "12 咖啡"]) assert.equal(cat(s)?.defaultSlug, "dining", s);
+  const d = L.parseQuickEntry("4,20 Kaffee", ledger, { lang: "zh", today: "2026-11-03" }).draft;
+  assert.equal(d.amountMinor, -420);
+  assert.equal(ledger.categories.find(c => c.id === L.parseQuickEntry("+2000 工资", ledger, { lang: "zh", today: "2026-11-03" }).draft.categoryId).kind, "income");
+});
+
+test("Today quick sheet saves even before the ledger page was rendered", () => {
+  const ui = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(ui, /quickAdd\(text, anchorDay, options\) \{\s*\/\/[^\n]*\n\s*if \(!ctx\) root\.renderLedger\?\.\(\);/);
+});

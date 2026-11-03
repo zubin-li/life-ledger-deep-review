@@ -346,7 +346,10 @@
 
     const activeCategories = base.categories.filter(c => !c.archived);
     const hint = notePart.toLowerCase();
-    let category = inferCategoryFromNote(notePart, base, amountMinor, lang, { rawText: text });
+    // Unsigned amounts are spending ("4,20 Kaffee"); infer with the expense sign first, then fall back.
+    const signedIncome = /^\+\s*\d/.test(String(text || "").trim());
+    let category = (!signedIncome && amountMinor > 0 && inferCategoryFromNote(notePart, base, -amountMinor, lang, { rawText: text }))
+      || inferCategoryFromNote(notePart, base, amountMinor, lang, { rawText: text });
     if (!category && hint) {
       category = activeCategories.find(c => localizedCategoryName(c, lang).toLowerCase() === hint);
     }
