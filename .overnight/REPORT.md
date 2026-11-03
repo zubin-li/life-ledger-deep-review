@@ -1,12 +1,49 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 9）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 10 · 终稿）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 9：** README 三语 Today 洞察说明 + Mac 壳 Today hint 回归与截图；单元 **384**、浏览器 **24** 全绿。
+**Batch 9 已完成 10/10。** 单元 **384**、浏览器 **24** 全绿；`CHANGELOG` Batch 9 内容已并入 **2.1.0**。
 
 ---
 
-## 本轮（Batch 9 · Round 9）— 文档与 Mac 壳 Today
+## 本轮（Batch 9 · Round 10）— 发布整理与验收截图
+
+| 项目 | 说明 |
+|------|------|
+| **CHANGELOG** | `[Unreleased]` 清空；Batch 9 的 spend 对比修复、Today 洞察、时间轴 skeleton/stale/空态、Week roll、QA 套件说明并入 **`[2.1.0]`**。 |
+| **GitHub Release 草稿** | `.github/releases/v2.1.0.md` 增加 Batch 9 亮点与测试计数。 |
+| **终轮截图** | `.overnight/shots/b9r10-release-*`（`node .overnight/capture-batch9-round10.mjs`，端口 **5291**）。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **24**。 |
+
+**明早怎么验（5 分钟）：**
+
+1. `cd public && python3 -m http.server 8080 --bind 127.0.0.1` → 打开 `index.html?mode=local&local-preview=demo-showcase-v1`（或 Mac 应用同一 demo）。
+2. **今日**：见习惯/心情两行 30 天洞察 + 支出卡片（对比 `b9r10-release-today-insights-zh-light-1440-chromium.png`）。
+3. **记账 / 复盘 / 本周**：支出 hint 无 −900% 类 inflated %；换周时指标有 roll（Round 4–5 已测）。
+4. 全量：`npm test` + `npm run test:browser`（跑 browser 前勿占用 **5271–5275 / 5291–5299**）。
+
+**仍留 2.2 / 已知：** `v210.css` reduced-motion 大合并；Cloudflare 首次不 seed 账本；旧 demo localStorage 可能缺心情 hint（`?demo-reset=1`）；极大增幅仍 **+999%** 封顶。
+
+**Batch 9 交付摘要（Goal 1 + Goal 2）：**
+
+- **记账：** `state.ledger`、快速录入、图表/预算/CSV、Today 支出卡、复盘 Money 面板、云同步/备份/撤销删除（见 `CHANGELOG [2.1.0]` 与 `.overnight/LEDGER-DESIGN.md`）。
+- **抛光：** 跨页 spend 对比文案与 baseline 数学修复；Week 数字 roll；时间轴 paint/stale/空态；Today 习惯×支出与心情×支出 demo 洞察；Mac 壳 spend hint 回归；README 三语已写 Today 洞察 bullet。
+
+**推荐截图路径（before/after 对照）：**
+
+| 主题 | 路径 |
+|------|------|
+| Today 洞察 + hero | `.overnight/shots/b9r10-release-today-insights-zh-light-1440-chromium.png` |
+| Today 支出卡 | `.overnight/shots/b9r10-release-today-spending-zh-light-1440-chromium.png` |
+| 复盘 Money | `.overnight/shots/b9r10-release-review-ledger-zh-light-1440-chromium.png` |
+| 记账移动暗色 DE | `.overnight/shots/b9r10-release-ledger-de-dark-390-webkit.png` |
+| Mac Today 洞察 | `.overnight/shots/b9r9-mac-today-insights-zh-light-1440-webkit.png` |
+
+**曾尝试又放弃：** reduced-motion CSS 物理合并（10 轮内风险/体积权衡，留 2.2）；Cloudflare 自动 seed 账本（与「空云首次」产品 intentional 冲突）。
+
+---
+
+## 上一轮（Batch 9 · Round 9）— 文档与 Mac 壳 Today
 
 | 项目 | 说明 |
 |------|------|

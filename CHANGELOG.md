@@ -4,29 +4,6 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
-### Fixed
-
-- **Spending compare captions:** Today / Week / Review temporal spend hints (vs yesterday, last week, last month) now compute ±% against the **previous** period baseline, so large drops no longer show inflated percentages (e.g. €100 → €10 reads **−90%**, not −900%).
-
-### Changed
-
-- **Spending compare copy:** Increases cap at **+999%**; when the prior period baseline is under **€15**, captions show a **money delta** (e.g. demo coffee → rent reads **较昨日多 €947…** instead of +2000%).
-- **Demo habits:** Fictional sample data stores starter habit names in the active UI language (zh/de/en) while custom renames stay untouched.
-- **Week insights:** switching workspace weeks rolls completion rate, spending, streak, and focus minutes (same motion as Today spending totals).
-- **Journal / review empty states:** timeline feed uses **`ll-paint-host`** skeleton while photos load; feed / calendar list / review inspector empties get consistent **`ll-empty`** styling.
-- **Journal filter / habits empty:** weekly/monthly feed filters no longer flash skeleton; daily filter keeps prior feed visible while photos reload; habit filter miss + review habit compare empty use **`ll-empty`** polish.
-- **Today habit insight:** rolling 30-day **习惯完成度 × 支出** caption under foundations (link to Review); **心情 × 支出** caption under the mood card (link to Review mood scatter); daily journal filter adds **stale shimmer veil** and clears **`ll-paint-host--stale`** when photos finish.
-
-### QA
-
-- Playwright **`spend-compare-mac-shell.browser.test.mjs`:** locks Today **amount caption** when yesterday’s baseline is under €15, Mac shell **Week / Review / Today** spend hints without four-digit +% inflation (Today includes demo **habit + mood** insight lines), and **Week insights** metric roll when changing workspace week.
-- **`fakecloud-preview-ledger.browser.test.mjs`:** after demo cloud sync, **本周** spend hint stays readable (no four-digit +%); **复盘** `#reviewLedgerSpendHint` same check.
-- **`journal-feed-paint.browser.test.mjs`:** timeline feed paint host reaches **ready** without leaving skeleton markup.
-- **`journal-feed-filter.browser.test.mjs`:** weekly timeline month filter stays **ready** without feed skeleton; daily filter clears **stale** veil when ready.
-- **`today-habit-spend-hint.test.mjs`:** Today foundations habit × spend insight wiring + journal stale veil cleanup.
-- **`today-habit-spend-hint.browser.test.mjs`:** demo Today **habit + mood** spend hints visible and review links work (Chromium + WebKit).
-- **`fakecloud-online.browser.test.mjs`:** clears storage and waits for **cloud** save mode before asserting conflict UI stays hidden (parallel suite stability).
-
 ## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
@@ -52,6 +29,12 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Today — Spending today:** when today has expenses, the card shows the largest category chip and an entry count in the caption; a **vs yesterday** line compares default-currency spend (+/−% or “about the same”); brand-new ledgers get a subtle € side marker on empty days; German recurring pills use occurrence wording (**offene Posten**).
 - **Week — Insights:** fifth tile shows **week spending** (Mon–today for the selected week, reporting currency); tap opens **Money** on that week’s month; a caption compares the same weekday span to **last week** (+/−% or “about the same”). The **focus time** tile adds a caption for days with journal notes or mood reasons vs the same span **last week** (day count). The **completion rate** tile adds a caption comparing habit completion **percentage points** vs the same span **last week**.
 - **Review — Money summary:** spending stat includes a caption comparing the same calendar days to **last month** (+/−% or “about the same”).
+- **Spending compare copy:** increases cap at **+999%**; when the prior period baseline is under **€15**, captions show a **money delta** (e.g. demo coffee → rent reads **较昨日多 €947…** instead of +2000%).
+- **Demo habits:** fictional sample data stores starter habit names in the active UI language (zh/de/en) while custom renames stay untouched.
+- **Week insights:** switching workspace weeks rolls completion rate, spending, streak, and focus minutes (same motion as Today spending totals).
+- **Journal / review empty states:** timeline feed uses **`ll-paint-host`** skeleton while photos load; feed / calendar list / review inspector empties get consistent **`ll-empty`** styling.
+- **Journal filter / habits empty:** weekly/monthly feed filters no longer flash skeleton; daily filter keeps prior feed visible while photos reload; habit filter miss + review habit compare empty use **`ll-empty`** polish.
+- **Today insights:** rolling 30-day **习惯完成度 × 支出** caption under foundations (link to Review); **心情 × 支出** caption under the mood card (link to Review mood scatter); daily journal filter adds **stale shimmer veil** and clears **`ll-paint-host--stale`** when photos finish.
 
 ### Fixed
 
@@ -63,8 +46,17 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Money UI:** default-currency-only summaries; edit invalid amount surfaces error; popovers dismiss on backdrop/Escape; swipe-delete ignores vertical scroll; category repair for localized default names; donut/treemap counts default currency only.
 - **Review:** habit score inspector visible on unified monthly page; hidden `#inspectorReviewTable` skips DOM work when collapsed; `is-entering` stagger attaches to view roots (Today/Timeline/Review/Long-range).
 - **Today:** focus tab reachable again; spending card TDZ when ledger empty; language preference on first paint; cloud first-pull re-uploads layout/profile when needed.
+- **Spending compare captions:** Today / Week / Review temporal spend hints (vs yesterday, last week, last month) compute ±% against the **previous** period baseline, so large drops no longer show inflated percentages (e.g. €100 → €10 reads **−90%**, not −900%).
 - **QA:** Playwright suites use dedicated ports **5271–5275** (no parallel flake); deploy test writes manifests to temp dir.
 - **Assets:** `pages-polish.css` / `pages-art.js` wired in shell; cascade order keeps consolidated polish winning.
+- **`spend-compare-mac-shell.browser.test.mjs`:** locks Today **amount caption** when yesterday’s baseline is under €15, Mac shell **Week / Review / Today** spend hints without four-digit +% inflation (Today includes demo **habit + mood** insight lines), and **Week insights** metric roll when changing workspace week.
+- **`fakecloud-preview-ledger.browser.test.mjs`:** after demo cloud sync, **本周** spend hint stays readable (no four-digit +%); **复盘** `#reviewLedgerSpendHint` same check.
+- **`journal-feed-paint.browser.test.mjs`:** timeline feed paint host reaches **ready** without leaving skeleton markup.
+- **`journal-feed-filter.browser.test.mjs`:** weekly timeline month filter stays **ready** without feed skeleton; daily filter clears **stale** veil when ready.
+- **`today-habit-spend-hint.test.mjs`:** Today foundations habit × spend insight wiring + journal stale veil cleanup.
+- **`today-habit-spend-hint.browser.test.mjs`:** demo Today **habit + mood** spend hints visible and review links work (Chromium + WebKit).
+- **`fakecloud-online.browser.test.mjs`:** clears storage and waits for **cloud** save mode before asserting conflict UI stays hidden (parallel suite stability).
+- **Suite size:** `npm test` **384** unit checks; `npm run test:browser` **24** Playwright cases (Chromium + WebKit, dedicated **529x** ports).
 
 ## [2.0.10] - 2026-11-02
 

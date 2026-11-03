@@ -1,13 +1,13 @@
 # Overnight progress
 
-## Batch 9 · Round 9 — done
+## Batch 9 · Round 10 — done (终稿)
 
-- **REVIEW.md：** MED #1 / LOW #3 仍已在先前轮次修复；LOW #2 reduced-motion 合并仍 **2.2**（未动）。
-- **文档：** README **EN / ZH / DE** 各增一条 **Today 习惯×支出 / 心情×支出** 近 30 天洞察（demo showcase）说明。
-- **Mac 壳：** `spend-compare-mac-shell.browser.test.mjs` 在 Week/Review 之后断言 **Today** `#todayHabitSpendHint` / `#todayMoodSpendHint`；截图 `node .overnight/capture-batch9-round9.mjs`（**5298**）→ `b9r9-mac-today-*`（zh/de × light/dark）。
-- **文档：** CHANGELOG `[Unreleased]` QA 行更新 Mac Today 断言说明。
-- **测试：** `npm test` **384**；`npm run test:browser` **24**（Mac 用例扩展，总数不变）。
-- **未做：** `v210.css` reduced-motion 单表合并仍 **2.2**；Round 10 可做 Batch 9 终稿 / `[Unreleased]` 归档（若 driver 要求）。
+- **REVIEW.md：** MED #1 已在 `temporalSpendChangePercent` 修复（Round 7+）；LOW #2 reduced-motion 合并仍 **2.2**；LOW #3 语言三元已无冗余 `=== "true"` 分支。
+- **发布整理：** `CHANGELOG` 将 Batch 9 的 `[Unreleased]` 条目并入 **`[2.1.0]`**；`.github/releases/v2.1.0.md` 补充 spend 对比 / Today 洞察 / 时间轴 UX / QA 计数。
+- **截图：** `node .overnight/capture-batch9-round10.mjs`（**5291**）→ `b9r10-release-*`（Today 洞察/支出、复盘 Money、DE 移动记账）。
+- **清单：** `.overnight/ROUND10-CHECKLIST.md`（Batch 9）全部勾选。
+- **测试：** `npm test` **384**；`npm run test:browser` **24**。
+- **Batch 9 状态：** **10/10 完成**；`v210.css` reduced-motion 物理合并留 **2.2**。
 
 ## Half-done
 
@@ -15,7 +15,7 @@
 
 ## Next
 
-- Batch 9 Round 10（若仍有）：`[Unreleased]` → 2.1.0 补丁条目或保持 Unreleased；reduced-motion 合并仍可选 **2.2**。
+- 明早 owner 本地验收；后续可选 **2.2**：`v210.css` reduced-motion 单块合并。
 
 ## Known bugs / gaps
 
@@ -29,13 +29,21 @@
 ## npm test
 
 ```
-384 pass, 0 fail (batch 9 round 9, unit gate)
-24 pass, 0 fail (test:browser, batch 9 round 9)
+384 pass, 0 fail (batch 9 round 10, unit gate)
+24 pass, 0 fail (test:browser, batch 9 round 10)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 9 · Round 9 — done
+
+- **REVIEW.md：** MED #1 / LOW #3 仍已在先前轮次修复；LOW #2 reduced-motion 合并仍 **2.2**（未动）。
+- **文档：** README **EN / ZH / DE** 各增一条 **Today 习惯×支出 / 心情×支出** 近 30 天洞察（demo showcase）说明。
+- **Mac 壳：** `spend-compare-mac-shell.browser.test.mjs` 在 Week/Review 之后断言 **Today** `#todayHabitSpendHint` / `#todayMoodSpendHint`；截图 `node .overnight/capture-batch9-round9.mjs`（**5298**）→ `b9r9-mac-today-*`（zh/de × light/dark）。
+- **文档：** CHANGELOG `[Unreleased]` QA 行更新 Mac Today 断言说明。
+- **测试：** `npm test` **384**；`npm run test:browser` **24**（Mac 用例扩展，总数不变）。
 
 ## Batch 9 · Round 8 — done
 
@@ -72,4 +80,7 @@ _pending (driver appends after commit)_
 ℹ tests 384 ℹ pass 384 ℹ fail 0 
 
 ## Driver gate after round 9
+ℹ tests 384 ℹ pass 384 ℹ fail 0 
+
+## Driver gate after round 10
 ℹ tests 384 ℹ pass 384 ℹ fail 0 
