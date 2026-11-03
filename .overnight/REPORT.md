@@ -1,3 +1,23 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 3
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 1 · CSV** | 导入确认层增加 **可滚动预览表**（日期、备注、金额，最多 5 行 +「还有 N 笔」）；**拖放** 银行 `.csv` 到记账页（虚线提示层）；导入成功后交易列表 **accent 描边脉冲**。 |
+| **实现** | `ledger-core.js` `previewGermanBankCsv` → `samples`；`ledger-ui.js` `renderCsvImportPreview` / `bindLedgerCsvDrop` / `readLedgerCsvFile`；`index.html` `#ledgerCsvDropHint`；`v210.css` Batch 13 r3。 |
+| **测试** | `npm test` **411**；`npm run test:browser` **59**（CSV 预览行断言更新）。 |
+
+## 验收
+
+1. **记账** → **导入 CSV**（或把 `.csv` 拖到页面）→ 确认层应看到 **REWE / Gehalt** 等预览行（`b13r3-csv-preview-de-light-1440-chromium.png`）。
+2. 点 **导入** → 列表出现两笔交易，列表区短暂高亮描边（`b13r3-csv-import-zh-dark-390-webkit.png`）。
+3. 重拍：`node .overnight/capture-batch13-round3.mjs`（端口 **5295**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 2
 
 Web **2.1.0**、Mac **3.1.0**。

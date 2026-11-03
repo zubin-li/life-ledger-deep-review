@@ -1,5 +1,47 @@
 # Overnight progress
 
+## Batch 13 · Round 3 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 1 / 记账 CSV UX：** `previewGermanBankCsv` 返回 **samples**（最多 5 笔）；确认层 **预览表**（日期/备注/金额）；**拖放 `.csv`** 到 `#ledgerView`（`ledgerCsvDropHint`）；导入成功后 **`.ledger-list-wrap.is-import-pulse`** + `retarget`。
+- **QA：** `view-enter-selectors` Batch 13 r3；`ledger-core` preview samples；`ledger-csv-import-confirm.browser` 断言预览行。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r3。
+- **截图：** `node .overnight/capture-batch13-round3.mjs`（**5295**）→ `b13r3-csv-preview-de-light-1440-chromium.png`、`b13r3-csv-import-zh-dark-390-webkit.png`。
+- **QA：** `npm test` **411** pass / 0 fail；`npm run test:browser` **59** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 4+：`v210.css` reduced-motion 物理合并（2.2）；复盘/Week 其它 micro-interaction；习惯完成反馈等。
+- 主人验收：**记账** → **导入 CSV** 或拖放银行 `.csv` → 确认层见预览表（`b13r3-csv-preview-*`）；确认后列表短暂描边（`b13r3-csv-import-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+411 pass, 0 fail (batch 13 round 3, unit gate)
+59 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 2 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**；#3/#4 Round 1 已部分采纳。
@@ -169,3 +211,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 2
 ℹ tests 409 ℹ pass 409 ℹ fail 0 
+
+## Driver gate after round 3
+ℹ tests 411 ℹ pass 411 ℹ fail 0 

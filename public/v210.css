@@ -6163,3 +6163,108 @@ html.motion-reduced .mood-options button.just-picked {
     transition: none;
   }
 }
+
+/* Batch 13 r3 — CSV import preview table, drag-drop, list pulse */
+.ledger-import-preview-wrap {
+  margin: 12px 0 4px;
+  max-height: min(220px, 38vh);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--hairline, #d8dee6) 88%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface, #fff) 96%, var(--accent, #43aeb2) 4%);
+}
+
+html[data-theme="dark"] .ledger-import-preview-wrap {
+  background: color-mix(in srgb, var(--surface, #141820) 94%, var(--accent, #43aeb2) 6%);
+  border-color: color-mix(in srgb, var(--hairline, #2a3140) 90%, transparent);
+}
+
+.ledger-import-preview {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.ledger-import-preview th,
+.ledger-import-preview td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.ledger-import-preview th {
+  position: sticky;
+  top: 0;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text, #1a1a1a) 62%, transparent);
+  background: color-mix(in srgb, var(--surface, #fff) 92%, var(--hairline, #d8dee6) 8%);
+}
+
+html[data-theme="dark"] .ledger-import-preview th {
+  color: color-mix(in srgb, var(--text, #edf2f7) 68%, transparent);
+  background: color-mix(in srgb, var(--surface, #141820) 92%, #000 8%);
+}
+
+.ledger-import-preview-amt {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger-import-preview-more {
+  margin: 0;
+  padding: 8px 12px 10px;
+  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--text, #1a1a1a) 58%, transparent);
+}
+
+#ledgerView {
+  position: relative;
+}
+
+#ledgerView .ledger-csv-drop-hint {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+  inset: 12px;
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 2px dashed color-mix(in srgb, var(--accent, #43aeb2) 72%, transparent);
+  background: color-mix(in srgb, var(--surface, #fff) 88%, var(--accent, #43aeb2) 12%);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent, #43aeb2);
+  text-align: center;
+  padding: 24px;
+}
+
+html[data-theme="dark"] #ledgerView .ledger-csv-drop-hint {
+  background: color-mix(in srgb, var(--surface, #141820) 86%, var(--accent, #43aeb2) 14%);
+}
+
+#ledgerView.is-csv-drag .ledger-csv-drop-hint {
+  display: flex;
+}
+
+.ledger-list-wrap.is-import-pulse {
+  outline: 2px solid color-mix(in srgb, var(--accent, #43aeb2) 55%, transparent);
+  outline-offset: 4px;
+  border-radius: 14px;
+  transition: outline-color 0.35s ease;
+}
+
+html.motion-reduced .ledger-list-wrap.is-import-pulse {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-list-wrap.is-import-pulse {
+    transition: none;
+  }
+}

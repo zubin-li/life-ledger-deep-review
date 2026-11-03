@@ -202,3 +202,16 @@ test("Batch 13 r2 — journal autosave pulse + mood pick polish", () => {
   assert.match(app, /function pulseMoodButton\(/);
   assert.match(widgets, /dataset\.spendCompare/);
 });
+
+test("Batch 13 r3 — CSV import preview, drag-drop, import pulse", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+  const html = fs.readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r3 — CSV import preview/);
+  assert.match(ledgerUi, /function renderCsvImportPreview\(/);
+  assert.match(ledgerUi, /function bindLedgerCsvDrop\(/);
+  assert.match(ledgerUi, /ledgerImportPulse/);
+  assert.match(core, /samples\.push/);
+  assert.match(html, /ledgerCsvDropHint/);
+});

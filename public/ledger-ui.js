@@ -13,6 +13,8 @@
   let lastHighlightTxId = "";
   let popoverEscapeHandler = null;
   let ledgerShortcutBound = false;
+  let ledgerCsvDropBound = false;
+  let ledgerImportPulse = false;
 
   function isLedgerTypingTarget(target) {
     if (!target || !(target instanceof Element)) return false;
@@ -680,6 +682,46 @@
     document.querySelector(".ledger-budget-popover")?.remove();
   }
 
+  function formatImportPreviewDate(isoDate) {
+    if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return isoDate || "";
+    const locale = ctx.locale?.() || "de-DE";
+    const [y, m, d] = isoDate.split("-").map(Number);
+    return new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(y, m - 1, d));
+  }
+
+  function renderCsvImportPreview(preview) {
+    const samples = preview.samples || [];
+    if (!samples.length) return "";
+    const locale = ctx.locale?.() || "de-DE";
+    const rows = samples.map(row => {
+      const note = row.note ? String(row.note).slice(0, 48) : t("（无备注）", "(no memo)", "(ohne Verwendungszweck)");
+      const amt = core().formatMoney(row.amountMinor, row.currency, locale);
+      return `<tr>
+        <td>${ctx.escape(formatImportPreviewDate(row.date))}</td>
+        <td>${ctx.escape(note)}</td>
+        <td class="ledger-import-preview-amt ${row.amountMinor < 0 ? "is-expense" : "is-income"}">${ctx.escape(amt)}</td>
+      </tr>`;
+    }).join("");
+    const more = preview.importable > samples.length
+      ? `<p class="ledger-import-preview-more">${ctx.escape(t(
+        `还有 ${preview.importable - samples.length} 笔未列出`,
+        `+ ${preview.importable - samples.length} more not shown`,
+        `+ ${preview.importable - samples.length} weitere nicht angezeigt`,
+      ))}</p>`
+      : "";
+    const tableLabel = t("预览将导入的交易", "Preview of entries to import", "Vorschau der Buchungen");
+    return `<div class="ledger-import-preview-wrap">
+      <table class="ledger-import-preview" aria-label="${ctx.escape(tableLabel)}">
+        <thead><tr>
+          <th scope="col">${t("日期", "Date", "Datum")}</th>
+          <th scope="col">${t("备注", "Memo", "Verwendungszweck")}</th>
+          <th scope="col">${t("金额", "Amount", "Betrag")}</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>${more}
+    </div>`;
+  }
+
   function openCsvImportConfirm(preview, onConfirm, onCancel) {
     closeLedgerPopovers();
     const skipNote = preview.skipped
@@ -696,6 +738,7 @@
       <div class="ledger-edit-form ledger-import-confirm" role="dialog" aria-modal="true" aria-labelledby="ledgerImportConfirmTitle">
         <header><strong id="ledgerImportConfirmTitle">${t("导入 CSV", "Import CSV", "CSV importieren")}</strong></header>
         <p class="ledger-import-confirm-body">${ctx.escape(body)}</p>
+        ${renderCsvImportPreview(preview)}
         <div class="ledger-edit-actions">
           <button type="button" class="secondary-button" data-import-cancel>${t("取消", "Cancel", "Abbrechen")}</button>
           <button type="button" class="primary-button" data-import-confirm>${t("导入", "Import", "Importieren")}</button>
@@ -716,6 +759,107 @@
       onConfirm?.();
     });
     pop.querySelector("[data-import-confirm]")?.focus();
+  }
+
+  function isLikelyCsvFile(file) {
+    if (!file) return false;
+    const name = String(file.name || "").toLowerCase();
+    if (name.endsWith(".csv")) return true;
+    const type = String(file.type || "").toLowerCase();
+    return type === "text/csv" || type === "application/vnd.ms-excel" || type === "";
+  }
+
+  function processGermanBankCsvText(text, fileInput) {
+    const preview = core().previewGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
+    if (!preview.importable) {
+      ctx.toast?.(
+        preview.skipped
+          ? t(`未导入：${preview.skipped} 行无法识别`, `Nothing imported (${preview.skipped} rows skipped)`, `Keine Buchungen (${preview.skipped} Zeilen übersprungen)`)
+          : t("文件为空", "File is empty", "Datei ist leer"),
+      );
+      if (fileInput) fileInput.value = "";
+      return;
+    }
+    openCsvImportConfirm(
+      preview,
+      () => {
+        const result = core().importGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
+        const hadNone = !ledgerState().transactions.length;
+        commit(result.ledger);
+        if (hadNone && ledgerState().transactions.length) {
+          const host = $("#ledgerView .ledger-page");
+          if (host) dismissOnboarding(host);
+        }
+        const skippedTail = result.skipped
+          ? t(`（跳过 ${result.skipped} 行）`, ` (${result.skipped} skipped)`, ` (${result.skipped} übersprungen)`)
+          : "";
+        ctx.toast?.(
+          t(`已导入 ${result.imported} 笔${skippedTail}`, `Imported ${result.imported} entries${skippedTail}`, `${result.imported} Buchungen importiert${skippedTail}`),
+        );
+        if (fileInput) fileInput.value = "";
+        ledgerImportPulse = true;
+        render();
+      },
+      () => {
+        if (fileInput) fileInput.value = "";
+      },
+    );
+  }
+
+  function readLedgerCsvFile(file, fileInput) {
+    if (!isLikelyCsvFile(file)) {
+      ctx.toast?.(t("请使用 .csv 银行导出文件", "Use a .csv bank export file", "Bitte eine .csv-Bankdatei verwenden"));
+      if (fileInput) fileInput.value = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => processGermanBankCsvText(String(reader.result || ""), fileInput);
+    reader.readAsText(file);
+  }
+
+  function bindLedgerCsvDrop() {
+    if (ledgerCsvDropBound) return;
+    const view = document.getElementById("ledgerView");
+    if (!view) return;
+    ledgerCsvDropBound = true;
+    let dragDepth = 0;
+    const hasFileDrag = event => {
+      const types = event.dataTransfer?.types;
+      if (!types) return false;
+      return [...types].includes("Files");
+    };
+    const showDrop = () => view.classList.add("is-csv-drag");
+    const hideDrop = () => {
+      dragDepth = 0;
+      view.classList.remove("is-csv-drag");
+    };
+    view.addEventListener("dragenter", event => {
+      if (document.body.dataset.activeView !== "ledger") return;
+      if (!hasFileDrag(event)) return;
+      event.preventDefault();
+      dragDepth += 1;
+      showDrop();
+    });
+    view.addEventListener("dragover", event => {
+      if (document.body.dataset.activeView !== "ledger") return;
+      if (!hasFileDrag(event)) return;
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+    });
+    view.addEventListener("dragleave", event => {
+      if (document.body.dataset.activeView !== "ledger") return;
+      if (!hasFileDrag(event)) return;
+      dragDepth = Math.max(0, dragDepth - 1);
+      if (dragDepth === 0) hideDrop();
+    });
+    view.addEventListener("drop", event => {
+      if (document.body.dataset.activeView !== "ledger") return;
+      event.preventDefault();
+      hideDrop();
+      const file = event.dataTransfer?.files?.[0];
+      if (!file) return;
+      readLedgerCsvFile(file, document.getElementById("ledgerCsvFile"));
+    });
   }
 
   function closeEditPopover() {
@@ -1090,41 +1234,7 @@
     fileInput?.addEventListener("change", () => {
       const file = fileInput.files?.[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const text = String(reader.result || "");
-        const preview = core().previewGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
-        if (!preview.importable) {
-          ctx.toast?.(
-            preview.skipped
-              ? t(`未导入：${preview.skipped} 行无法识别`, `Nothing imported (${preview.skipped} rows skipped)`, `Keine Buchungen (${preview.skipped} Zeilen übersprungen)`)
-              : t("文件为空", "File is empty", "Datei ist leer"),
-          );
-          fileInput.value = "";
-          return;
-        }
-        openCsvImportConfirm(
-          preview,
-          () => {
-            const result = core().importGermanBankCsv(text, ledgerState(), { lang: ctx.lang?.() });
-            const hadNone = !ledgerState().transactions.length;
-            commit(result.ledger);
-            if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
-            const skippedTail = result.skipped
-              ? t(`（跳过 ${result.skipped} 行）`, ` (${result.skipped} skipped)`, ` (${result.skipped} übersprungen)`)
-              : "";
-            ctx.toast?.(
-              t(`已导入 ${result.imported} 笔${skippedTail}`, `Imported ${result.imported} entries${skippedTail}`, `${result.imported} Buchungen importiert${skippedTail}`),
-            );
-            fileInput.value = "";
-            render();
-          },
-          () => {
-            fileInput.value = "";
-          },
-        );
-      };
-      reader.readAsText(file);
+      readLedgerCsvFile(file, fileInput);
     });
     bindDelete(host, ledger);
     bindDuplicate(host);
@@ -1566,6 +1676,11 @@
     });
     mountOnboardingArt(host);
     bindInteractions(host, ledger, ym);
+    bindLedgerCsvDrop();
+    const dropHint = document.getElementById("ledgerCsvDropHint");
+    if (dropHint) {
+      dropHint.textContent = t("松开以导入 CSV", "Drop CSV to import", "CSV loslassen zum Importieren");
+    }
     requestAnimationFrame(() => renderTrend($("#ledgerTrendPlot"), ledger, ym));
     requestAnimationFrame(() => {
       const viz = host.querySelector(".ledger-category-viz");
@@ -1611,6 +1726,17 @@
         });
       }
     }
+    if (ledgerImportPulse) {
+      ledgerImportPulse = false;
+      const wrap = host.querySelector(".ledger-list-wrap");
+      if (wrap) {
+        wrap.classList.add("is-import-pulse");
+        root.LifeLedgerInteraction?.retarget?.(wrap);
+        const reduced = document.documentElement.classList.contains("motion-reduced")
+          || matchMedia("(prefers-reduced-motion: reduce)").matches;
+        setTimeout(() => wrap.classList.remove("is-import-pulse"), reduced ? 0 : 900);
+      }
+    }
   }
 
   function openToDay(isoDate, options = {}) {
@@ -1638,6 +1764,7 @@
     render(options) {
       ctx = options;
       bindLedgerShortcuts();
+      bindLedgerCsvDrop();
       if (!viewMonth) viewMonth = ymFromDate(options.iso(new Date()));
       render();
     },

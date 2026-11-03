@@ -194,6 +194,20 @@ test("previewGermanBankCsv counts rows without mutating ledger", () => {
   assert.equal(empty.transactions.length, 0);
 });
 
+test("previewGermanBankCsv returns sample rows for confirm UI", () => {
+  const csv = `Datum;Verwendungszweck;Betrag
+01.11.2026;REWE;-12,50
+02.11.2026;Gehalt;2500,00
+03.11.2026;Bäcker;-4,20`;
+  const empty = L.emptyLedger();
+  const preview = L.previewGermanBankCsv(csv, empty, { lang: "de", maxPreviewRows: 2 });
+  assert.equal(preview.importable, 3);
+  assert.equal(preview.samples.length, 2);
+  assert.equal(preview.samples[0].note, "REWE");
+  assert.equal(preview.samples[0].amountMinor, -1250);
+  assert.match(preview.samples[0].date, /^2026-11-01$/);
+});
+
 test("exportTransactionsCsv includes amount and currency per row", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

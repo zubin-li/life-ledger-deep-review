@@ -1406,16 +1406,28 @@
   function previewGermanBankCsv(text, ledger, options = {}) {
     const base = normalize(ledger, options);
     const lines = String(text || "").split(/\r?\n/).filter(line => line.trim());
-    if (!lines.length) return { importable: 0, skipped: 0, dataRows: 0 };
+    if (!lines.length) return { importable: 0, skipped: 0, dataRows: 0, samples: [] };
     const start = germanBankCsvDataStart(lines);
     let importable = 0;
     let skipped = 0;
+    const maxSamples = Math.min(Math.max(Number(options.maxPreviewRows) || 5, 1), 12);
+    const samples = [];
     for (let i = start; i < lines.length; i++) {
       const cols = splitGermanCsvLine(lines[i]);
-      if (draftFromGermanBankCsvRow(cols, base)) importable++;
-      else skipped++;
+      const draft = draftFromGermanBankCsvRow(cols, base);
+      if (draft) {
+        importable++;
+        if (samples.length < maxSamples) {
+          samples.push({
+            date: draft.date,
+            note: draft.note,
+            amountMinor: draft.amountMinor,
+            currency: draft.currency || base.settings.defaultCurrency,
+          });
+        }
+      } else skipped++;
     }
-    return { importable, skipped, dataRows: lines.length - start };
+    return { importable, skipped, dataRows: lines.length - start, samples };
   }
 
   function importGermanBankCsv(text, ledger, options = {}) {

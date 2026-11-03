@@ -63,6 +63,9 @@ test(
       await page.waitForSelector(".ledger-import-popover");
       const title = await page.locator("#ledgerImportConfirmTitle").textContent();
       assert.match(title || "", /CSV importieren/i);
+      await page.waitForSelector(".ledger-import-preview tbody tr");
+      const previewRows = await page.locator(".ledger-import-preview tbody tr").count();
+      assert.equal(previewRows, 2);
       await page.click("[data-import-cancel]");
       await page.waitForSelector(".ledger-import-popover", { state: "detached" });
 
