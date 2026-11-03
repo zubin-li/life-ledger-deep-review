@@ -1,3 +1,23 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 4
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 · 习惯 / 周目标** | Today 点习惯：**just-checked / just-unchecked** 卡片反馈（含勾选 pop）；完成时 **#progressOrbit.is-progress-bump** 进度环轻弹；**本周** 勾选周目标时 **just-toggled** 动画后再重绘列表。 |
+| **实现** | `app.js` `applyHabitCardPulse` / `pulseProgressOrbit` / `pulseWeeklyGoalRow`；`toggleHabit` 在 view-transition 与即时提交路径统一脉冲；`v210.css` Batch 13 r4。 |
+| **测试** | `npm test` **412**；`npm run test:browser` **61**（+2 习惯/周目标）。 |
+
+## 验收
+
+1. **今日** → 点任一未完成习惯 → 卡片描边 + 勾选动画，右侧进度环短暂放大（`b13r4-habit-check-zh-light-1440-webkit.png`）。
+2. **本周** → 点周目标左侧勾选 → 勾选框缩放高亮（`b13r4-week-goal-de-dark-390-chromium.png`）。
+3. 重拍：`node .overnight/capture-batch13-round4.mjs`（端口 **5297**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 3
 
 Web **2.1.0**、Mac **3.1.0**。

@@ -215,3 +215,12 @@ test("Batch 13 r3 — CSV import preview, drag-drop, import pulse", () => {
   assert.match(core, /samples\.push/);
   assert.match(html, /ledgerCsvDropHint/);
 });
+
+test("Batch 13 r4 — habit check pulse + weekly goal toggle polish", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r4 — habit check pulse/);
+  assert.match(app, /function applyHabitCardPulse\(/);
+  assert.match(app, /function pulseProgressOrbit\(/);
+  assert.match(app, /function pulseWeeklyGoalRow\(/);
+});

@@ -6268,3 +6268,53 @@ html.motion-reduced .ledger-list-wrap.is-import-pulse {
     transition: none;
   }
 }
+
+/* Batch 13 r4 — habit check pulse, progress orbit bump, weekly goal toggle */
+.tc-grid > [data-card="habits"] .habit-card.just-unchecked:not(.future-locked) {
+  filter: brightness(0.96);
+  transition: filter 0.24s ease, box-shadow 0.24s ease;
+}
+
+.tc-grid > [data-card="habits"] .habit-card.just-unchecked:not(.future-locked) .habit-check {
+  transform: scale(0.88);
+  transition: transform 0.28s var(--ease-enter, ease);
+}
+
+#progressOrbit.is-progress-bump {
+  transform: scale(1.06);
+  transition: transform 0.42s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+#progressOrbit.is-progress-bump .progress-orbit-ring {
+  filter: brightness(1.08);
+  transition: filter 0.42s ease;
+}
+
+.weekly-goal.just-toggled .weekly-goal-check {
+  transform: scale(1.12);
+  transition: transform 0.32s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.weekly-goal.just-toggled.done .weekly-goal-check {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #43aeb2) 22%, transparent);
+}
+
+html.motion-reduced #progressOrbit.is-progress-bump,
+html.motion-reduced .weekly-goal.just-toggled .weekly-goal-check,
+html.motion-reduced .tc-grid > [data-card="habits"] .habit-card.just-unchecked:not(.future-locked) {
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #progressOrbit.is-progress-bump,
+  #progressOrbit.is-progress-bump .progress-orbit-ring,
+  .weekly-goal.just-toggled .weekly-goal-check,
+  .tc-grid > [data-card="habits"] .habit-card.just-unchecked:not(.future-locked) {
+    transform: none;
+    filter: none;
+    transition: none;
+    box-shadow: none;
+  }
+}

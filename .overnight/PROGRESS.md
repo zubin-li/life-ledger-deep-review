@@ -1,5 +1,47 @@
 # Overnight progress
 
+## Batch 13 · Round 4 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 2：** Today 习惯 `applyHabitCardPulse`（**just-checked / just-unchecked**）；完成时 `pulseProgressOrbit`（**is-progress-bump**）；**Week** 周目标 `pulseWeeklyGoalRow`（**just-toggled** + 延迟重绘）。
+- **QA：** `view-enter-selectors` Batch 13 r4；`habit-toggle-pulse.browser`（WebKit 习惯 + Chromium 周目标）。
+- **文档：** CHANGELOG `[Unreleased]` r4。
+- **截图：** `node .overnight/capture-batch13-round4.mjs`（**5297**）→ `b13r4-habit-check-zh-light-1440-webkit.png`、`b13r4-week-goal-de-dark-390-chromium.png`。
+- **QA：** `npm test` **412** pass / 0 fail；`npm run test:browser` **61** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 5+：`v210.css` reduced-motion 物理合并（2.2）；复盘页其它 micro-interaction；习惯「全部完成」celebration 与 orbit 联动等。
+- 主人验收：**今日** 点习惯（`b13r4-habit-check-*`）；**本周** 勾选目标（`b13r4-week-goal-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+412 pass, 0 fail (batch 13 round 4, unit gate)
+61 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 3 — done
 
 - **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
@@ -214,3 +256,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 3
 ℹ tests 411 ℹ pass 411 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 412 ℹ pass 412 ℹ fail 0 

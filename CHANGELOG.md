@@ -8,9 +8,11 @@ All notable changes are documented here.
 - **Polish (Batch 13 r1):** **Money** first-visit onboarding explains that starter categories are ready and offers **Add sample entry** (toast undo); spending compare hints show **currency** when the week/month delta is **≥ €100** (not only tiny baselines or +500% jumps).
 - **Polish (Batch 13 r2):** **Today** daily reflection **autosaved** badge pulses after debounced save; mood buttons get **just-picked** press feedback (Today + drawer); **Today spending** day-over-day compare line uses number **roll-up** when the caption changes.
 - **Polish (Batch 13 r3):** **Money** CSV import confirm shows a **scrollable preview table** (date, memo, amount); drag-and-drop **.csv** onto the ledger view; transaction list **outline pulse** after a successful import.
+- **Polish (Batch 13 r4):** **Today** habit check/uncheck plays **just-checked / just-unchecked** card feedback with a **progress orbit** bump on complete; **Week** weekly goal toggles get a brief **just-toggled** check animation before re-render.
 - **QA (Batch 13 r1):** Unit test for large absolute spend deltas; Playwright sample-entry onboarding (Chromium); structural Batch 13 r1 selectors.
 - **QA (Batch 13 r2):** Playwright journal autosave pulse (WebKit) + mood pick (Chromium); structural Batch 13 r2 selectors.
 - **QA (Batch 13 r3):** Unit test for CSV preview samples; Playwright import preview rows; structural Batch 13 r3 selectors.
+- **QA (Batch 13 r4):** Playwright habit check pulse + weekly goal toggle (WebKit/Chromium); structural Batch 13 r4 selectors.
 - **Polish (Batch 12 r10 · final):** Overnight Batch 12 closed with release screenshot set `capture-batch12-round10.mjs` (Today→Money day filter, Review→Money month, filtered list strip, de 390 / Mac shell **Money**); **407** unit + **56** browser tests at gate.
 - **Polish (Batch 12 r9):** **Review** monthly **Money** summary — tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month (clears day/category filters; month summary retarget animation).
 - **QA (Batch 12 r9):** Structural tests for `openToMonth` / `openLedgerForReviewMonth`; Playwright Review stat → Money month (WebKit).

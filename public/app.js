@@ -4451,7 +4451,18 @@ function renderWeeklyWorkspace() {
     if (!action) return;
     const list = state.weeklyGoals[key] || [];
     const index = list.findIndex(goal => goal.id === row.dataset.id);
-    if (action === "toggle") list[index].done = !list[index].done;
+    if (action === "toggle") {
+      const nowDone = !list[index].done;
+      list[index].done = nowDone;
+      state.weeklyGoals[key] = list;
+      saveState();
+      const row = event.target.closest(".weekly-goal");
+      if (row && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        pulseWeeklyGoalRow(row, nowDone);
+        setTimeout(() => renderWeeklyWorkspace(), 360);
+      } else renderWeeklyWorkspace();
+      return;
+    }
     if (action === "delete") list.splice(index, 1);
     state.weeklyGoals[key] = list; saveState(); renderWeeklyWorkspace();
   }));
@@ -5342,9 +5353,36 @@ function habitCard(habit, date, done, locked = false) {
     <h3>${escapeHtml(displayHabitName(habit))}</h3><p>${target}</p>${periodNote}
   </article>`;
 }
+function applyHabitCardPulse(card, nowDone) {
+  if (!card || card.classList.contains("future-locked")) return;
+  card.classList.toggle("completed", nowDone);
+  card.setAttribute("aria-pressed", nowDone ? "true" : "false");
+  card.classList.remove("just-checked", "just-unchecked");
+  void card.offsetWidth;
+  card.classList.add(nowDone ? "just-checked" : "just-unchecked");
+}
+
+function pulseProgressOrbit() {
+  const orbit = $("#progressOrbit");
+  if (!orbit || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  orbit.classList.remove("is-progress-bump");
+  void orbit.offsetWidth;
+  orbit.classList.add("is-progress-bump");
+  clearTimeout(pulseProgressOrbit.timer);
+  pulseProgressOrbit.timer = setTimeout(() => orbit.classList.remove("is-progress-bump"), 560);
+}
+
+function pulseWeeklyGoalRow(row, nowDone) {
+  if (!row || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  row.classList.toggle("done", nowDone);
+  row.classList.remove("just-toggled");
+  void row.offsetWidth;
+  row.classList.add("just-toggled");
+}
+
 function toggleHabit(date, id) {
   if (isFutureDate(date)) return;
-  if (document.querySelector(`#todayHabits .habit-card.just-checked[data-id="${CSS.escape(id)}"]`)) return; // pop in flight
+  if (document.querySelector(`#todayHabits .habit-card:is(.just-checked, .just-unchecked)[data-id="${CSS.escape(id)}"]`)) return; // pop in flight
   const log = { ...getLog(date), completed: [...getLog(date).completed] };
   const scored = activeHabits(date).filter(habit => countsTowardDaily(habit, date));
   const wasComplete = scored.length > 0 && scored.every(habit => log.completed.includes(habit.id));
@@ -5367,15 +5405,23 @@ function toggleHabit(date, id) {
     && $("#todayView").classList.contains("active")
     && typeof document.startViewTransition === "function"
     && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nowDone = log.completed.includes(id);
+  const card = document.querySelector(`#todayHabits .habit-card[data-id="${CSS.escape(id)}"]`);
   if (animateReorder) {
+    if (nowDone) pulseProgressOrbit();
+    if (card && nowDone) applyHabitCardPulse(card, true);
     document.documentElement.classList.add("habit-reordering");
     const finishReorder = () => document.documentElement.classList.remove("habit-reordering");
     document.startViewTransition(commit).finished.then(finishReorder, finishReorder);
   } else {
-    // The card would leave this page: check it in place first (original check pop), then re-sort.
-    const card = document.querySelector(`#todayHabits .habit-card[data-id="${CSS.escape(id)}"]`);
-    if (card && !staysOnPage) {
-      card.classList.toggle("completed", log.completed.includes(id)); card.classList.add("just-checked");
+    const motionOk = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (card && motionOk) {
+      applyHabitCardPulse(card, nowDone);
+      if (nowDone) pulseProgressOrbit();
+      setTimeout(commit, 420);
+    } else if (card && !staysOnPage) {
+      card.classList.toggle("completed", nowDone);
+      card.classList.add("just-checked");
       setTimeout(commit, 420);
     } else commit();
   }
