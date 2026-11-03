@@ -7,6 +7,8 @@ All notable changes are documented here.
 ### Fixed
 
 - **Weekly recurring pending:** fixed templates stay on the due list until each ISO week in the calendar month has a matching entry (legacy rows without `recurringId` only clear their week); **Post all pending** books every past occurrence in the month for weekly cadence.
+- **Recurring due counts:** Today pill, Money banner, and Review strip now count **unposted occurrences** (remaining weekly dates in the month), not just template rows.
+- **Voice hints:** built-in habit names in voice context terms follow the active UI language via `displayHabitName`.
 
 ## [2.1.0] - 2026-11-02
 

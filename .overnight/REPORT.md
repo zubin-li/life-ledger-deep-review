@@ -1,12 +1,32 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 1）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 2）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 1：** Antigravity REVIEW **LOW #2**（周固定待记）已修；单元 **360**、浏览器 **17** 全绿。
+**Batch 8 Round 2：** 固定待记三处 UI 改为按「未记笔数」计数（周固定显示剩余周次）；单元 **361**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 1）— 周固定项待记
+## 本轮（Batch 8 · Round 2）— 待记笔数
+
+| 项目 | 说明 |
+|------|------|
+| **问题** | Round 1 逻辑已按 ISO 周判待记，但 Today / Money / Review 仍按**模板条数**显示「1 项」，周固定易误导。 |
+| **修复** | `recurringPendingOccurrenceCount`：monthly=0/1，weekly=当月该 weekday 尚未记清的日期数；三处 copy 同步（中文「笔」）。 |
+| **附带** | 语音输入上下文里的内置习惯名走 `displayHabitName`。 |
+| **测试** | `ledger-core.test.mjs` +1；`npm test` **361**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r2-*`（`node .overnight/capture-batch8-round2.mjs`，端口 **5292**）。 |
+
+**怎么验：**
+
+1. Demo 记账页：若存在未记清的周固定 + 月固定，横幅应类似「本月尚有 **5** 笔固定待记：…」（见 `b8r2-ledger-recurring-count-zh-light-1440-chromium.png`）。
+2. 自建 weekly 固定项，只记第一周 → Today 支出卡胶囊应显示 **N 笔固定待记**（N>1），而非「1 项」。
+3. 复盘 **本月支出摘要** 下条数与记账页一致。
+
+**已知：** `v210.css` reduced-motion 大合并仍留 2.2；Cloudflare 首次不 seed 记账（ intentional）。
+
+---
+
+## 上一轮（Batch 8 · Round 1）— 周固定项待记
 
 | 项目 | 说明 |
 |------|------|
@@ -17,7 +37,7 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 **怎么验：** Demo `?mode=local&local-preview=demo-showcase-v1` → **记账** → 见「本月尚未记：订阅」横幅（对照 `b8r1-ledger-recurring-zh-light-1440-chromium.png`）。若自建 **weekly** 固定项，记第一周后横幅应仍在，直到当月各周都记齐或点 **全部记入账**。
 
-**已知：** UI 仍显示「1 项待记」而非「剩 N 周」；CSS reduced-motion 大合并仍留 2.2。
+**已知：** UI 计数已改为「笔数」（Round 2）；CSS reduced-motion 大合并仍留 2.2。
 
 ---
 

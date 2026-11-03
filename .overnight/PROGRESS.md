@@ -1,11 +1,11 @@
 # Overnight progress
 
-## Batch 8 · Round 1 — done
+## Batch 8 · Round 2 — done
 
-- **REVIEW.md（Antigravity Batch 7）：** 无 HIGH/MED；**LOW #2** 已修 — 周固定项按 ISO 周判定是否已记，`recurringPendingForMonth` 不再因一笔同分类同金额就整月消待记；**Alle buchen / 全部记入账** 对 weekly 会补记当月所有已过去的发生日。**LOW #1** CSS reduced-motion 合并仍留 2.2。
-- **逻辑：** `ledger-core.js` — `weeklyOccurrenceDatesInMonth`、`transactionFulfillsRecurringOccurrence`、`isoWeekKeyFromIso`；`applyAllRecurringPending` 周 cadence 逐周补账。
-- **测试：** `ledger-core.test.mjs` +2（weekly 待记 / legacy 仅清一周）；`npm test` **360**；`npm run test:browser` **17**（首轮 fakecloud 并行偶发 flake，单跑与全量第二轮均绿）。
-- **文档：** CHANGELOG `[Unreleased]` 一条 Fixed；截图 `node .overnight/capture-batch8-round1.mjs`（**5291**）→ `b8r1-ledger-recurring-*`。
+- **固定待记计数：** `recurringPendingOccurrenceCount` / `recurringUnpostedOccurrenceCount`（`ledger-core.js`）；Today 胶囊、Money 横幅、复盘条按**当月未记笔数**（周固定 = 剩余周一数）而非模板条数。
+- **Goal 2 小修：** 语音上下文习惯词用 `displayHabitName`；中文 Today 胶囊 copy 改为「笔固定待记」。
+- **测试：** `ledger-core.test.mjs` +1；`npm test` **361**；`npm run test:browser` **17**（首轮 fakecloud 超时，清 529x 后全绿）。
+- **文档：** CHANGELOG `[Unreleased]` 两条 Fixed；截图 `node .overnight/capture-batch8-round2.mjs`（**5292**）→ `b8r2-*`（横幅「5 笔固定待记」+ 周固定 partial seed）。
 
 ## Half-done
 
@@ -13,25 +13,32 @@
 
 ## Next
 
-- Batch 8 Round 2：2.2 候选 reduced-motion 单表；或 Goal 2 小抛光（空状态 / Today 节奏）；demo 习惯名英文化（已知 gap）。
+- Batch 8 Round 3：2.2 候选 reduced-motion 单表；或 Today 支出卡布局/空状态抛光；demo 习惯名若仍有裸 `habit.name` 再扫一遍。
 - 并行 browser 套件时若 fakecloud 失败，先 `pkill -f 'http.server 529'` / 5298 wrangler 再跑。
 
 ## Known bugs / gaps
 
 - 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
-- 周固定项 UI 仍按「模板条数」计数（1 条 weekly = 1 项待记），非「剩余周数」。
-- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- Today 截图需滚到 `.tw-spending` 才看见胶囊（capture 脚本已 scroll）。
 
 ## npm test
 
 ```
-360 pass, 0 fail (batch 8 round 1, unit gate)
-17 pass, 0 fail (test:browser, batch 8 round 1)
+361 pass, 0 fail (batch 8 round 2, unit gate)
+17 pass, 0 fail (test:browser, batch 8 round 2)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
+
+## Batch 8 · Round 1 — done
+
+- **REVIEW.md（Antigravity Batch 7）：** 无 HIGH/MED；**LOW #2** 已修 — 周固定项按 ISO 周判定是否已记，`recurringPendingForMonth` 不再因一笔同分类同金额就整月消待记；**Alle buchen / 全部记入账** 对 weekly 会补记当月所有已过去的发生日。**LOW #1** CSS reduced-motion 合并仍留 2.2。
+- **逻辑：** `ledger-core.js` — `weeklyOccurrenceDatesInMonth`、`transactionFulfillsRecurringOccurrence`、`isoWeekKeyFromIso`；`applyAllRecurringPending` 周 cadence 逐周补账。
+- **测试：** `ledger-core.test.mjs` +2（weekly 待记 / legacy 仅清一周）；`npm test` **360**；`npm run test:browser` **17**（首轮 fakecloud 并行偶发 flake，单跑与全量第二轮均绿）。
+- **文档：** CHANGELOG `[Unreleased]` 一条 Fixed；截图 `node .overnight/capture-batch8-round1.mjs`（**5291**）→ `b8r1-ledger-recurring-*`。
 
 ## Batch 7 · Round 10 — done (final)
 
@@ -75,3 +82,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 1
 ℹ tests 360 ℹ pass 360 ℹ fail 0 
+
+## Driver gate after round 2
+ℹ tests 361 ℹ pass 361 ℹ fail 0 

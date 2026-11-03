@@ -4870,7 +4870,7 @@ function voiceContextTerms(date) {
     if (terms.length < 16) terms.push(term.slice(0, 64));
   };
 
-  activeHabits(date).forEach(habit => add(habit.name));
+  activeHabits(date).forEach(habit => add(displayHabitName(habit)));
   add(state.focusSettings?.defaultTopic);
   [...(state.focusSessions || [])].reverse().slice(0, 12).forEach(session => add(session.label));
   (state.weeklyGoals[isoWeekKey(parseDate(date))] || []).forEach(goal => add(goal.text));
@@ -8797,12 +8797,13 @@ function renderReviewLedgerSummary() {
   if (reviewIsCurrentMonth) {
     const pending = L.recurringPendingForMonth(ledger, ym, { lang: currentLang });
     if (pending.length) {
-      const pendingCopy = pending.length === 1
-        ? languageText("还有 1 项固定收支尚未记入本月。", "1 fixed item is not posted for this month yet.", "1 Vorlage ist diesen Monat noch nicht gebucht.")
+      const n = L.recurringPendingOccurrenceCount(ledger, ym, { lang: currentLang });
+      const pendingCopy = n === 1
+        ? languageText("还有 1 笔固定收支尚未记入本月。", "1 fixed entry is not posted for this month yet.", "1 Buchung ist diesen Monat noch nicht erfasst.")
         : languageText(
-          `还有 ${pending.length} 项固定收支尚未记入本月。`,
-          `${pending.length} fixed items are not posted for this month yet.`,
-          `${pending.length} Vorlagen sind diesen Monat noch nicht gebucht.`,
+          `还有 ${n} 笔固定收支尚未记入本月。`,
+          `${n} fixed entries are not posted for this month yet.`,
+          `${n} Buchungen sind diesen Monat noch nicht erfasst.`,
         );
       recurringDueBlock = `<div class="review-ledger-recurring-due ll-insight-enter" role="status">
         <p class="review-ledger-recurring-due-copy">${escapeHtml(pendingCopy)}</p>

@@ -399,6 +399,29 @@ test("weekly recurring stays pending until each ISO week in month is posted", ()
   assert.equal(pending.length, 0);
 });
 
+test("recurringPendingOccurrenceCount counts remaining weekly dates in month", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-weekly-count",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -800,
+    currency: "EUR",
+    cadence: "weekly",
+    weekday: 1,
+    label: "Class",
+  });
+  const ym = "2026-11";
+  const novMondays = L.recurringUnpostedOccurrenceCount(ledger, ledger.recurring[0], ym);
+  assert.ok(novMondays >= 4, "November 2026 has at least four Mondays");
+  assert.equal(L.recurringPendingOccurrenceCount(ledger, ym), novMondays);
+  const first = L.applyRecurringTemplate(ledger, "rec-weekly-count", { lang: "en", today: "2026-11-03" });
+  assert.equal(L.recurringPendingOccurrenceCount(first.ledger, ym), novMondays - 1);
+  assert.equal(L.recurringPendingForMonth(first.ledger, ym).length, 1);
+});
+
 test("weekly legacy manual row only clears matching ISO week", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

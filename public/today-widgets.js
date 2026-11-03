@@ -16,7 +16,7 @@
       heat26: "近 26 周", heatRate: "完成率", heatFull: "满分天", heatBest: "最长连续", days: "天", focusArt: "专注", wallAddHint: "放一张你喜欢的照片", photosLocalTitle: "这一天的照片", freqEmptyTitle: "还没有频率目标", weatherEmptyTitle: "今天的天气",
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
       wallEmptyShort: "在卡片设置里放入照片", wallMedia: "照片与视频", wallAuto: "自动轮播", wallFit: "显示方式", fill: "铺满", fit: "完整显示", wallFocus: "点或拖动预览，选择显示的位置", wallTip: "左右滑动或点两侧切换",
-      spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今日暂无新支出。", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", openLedger: "打开记账", spendingMonth: "本月累计", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出", spendingMoodReview: "打开复盘 · 心情与支出对照", spendingRecurringOne: "1 项固定待记", spendingRecurringMany: "{n} 项固定待记", spendingRecurringOpen: "打开记账 · 固定收支待记" },
+      spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今日暂无新支出。", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", openLedger: "打开记账", spendingMonth: "本月累计", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出", spendingMoodReview: "打开复盘 · 心情与支出对照", spendingRecurringOne: "1 笔固定待记", spendingRecurringMany: "{n} 笔固定待记", spendingRecurringOpen: "打开记账 · 固定收支待记" },
     en: { weather: "Weather", weatherK: "WEATHER", rhythm: "Recent rhythm", rhythmK: "LAST 7 DAYS", heatmap: "Habit heatmap", heatmapK: "HABIT RHYTHM", wall: "Photo wall", wallK: "PHOTO WALL", photos: "Photo memories", photosK: "MEMORY", focus: "Focus", focusK: "FOCUS", freq: "By frequency", freqK: "WEEKLY · MONTHLY",
       chooseCity: "Choose a city to show its weather.", setCity: "Set location", city: "City", search: "Search", noCity: "No matching city found.", loading: "Loading…", unavailable: "Could not refresh. Check your connection.", cached: "Saved forecast · offline", updated: "Updated",
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
@@ -586,7 +586,8 @@
       const currentYm = typeof isoDate === "function" ? isoDate(new Date()).slice(0, 7) : ym;
       const pending = ledger && ym === currentYm ? L.recurringPendingForMonth(ledger, ym, { lang: currentLang }) : [];
       if (pending.length) {
-        recurringPill.textContent = pending.length === 1 ? t("spendingRecurringOne") : t("spendingRecurringMany", { n: pending.length });
+        const n = L.recurringPendingOccurrenceCount(ledger, ym, { lang: currentLang });
+        recurringPill.textContent = n === 1 ? t("spendingRecurringOne") : t("spendingRecurringMany", { n });
         recurringPill.setAttribute("aria-label", t("spendingRecurringOpen"));
         recurringPill.title = t("spendingRecurringOpen");
         recurringPill.hidden = false;

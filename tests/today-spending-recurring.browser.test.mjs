@@ -51,7 +51,7 @@ test(
       const pill = page.locator(".tw-spend-recurring-pill");
       await pill.waitFor({ state: "visible", timeout: 8000 });
       const label = (await pill.textContent())?.trim() || "";
-      assert.match(label, /固定待记|1 项/);
+      assert.match(label, /固定待记|1 笔/);
       await pill.click();
       await page.waitForSelector(".ledger-recurring-due", { timeout: 8000 });
       await page.locator(".ledger-recurring-due-all").click();

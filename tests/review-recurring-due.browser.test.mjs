@@ -51,7 +51,7 @@ test(
       await page.locator('.nav-item[data-view="review"]').click();
       await page.waitForSelector("#reviewLedgerSummary:not([hidden]) .review-ledger-recurring-due", { timeout: 12000 });
       const copy = await page.locator(".review-ledger-recurring-due-copy").textContent();
-      assert.match(copy || "", /固定收支|尚未记入/);
+      assert.match(copy || "", /固定收支|尚未记入|笔固定/);
       await page.locator("[data-open-ledger-recurring]").click();
       await page.waitForSelector(".ledger-recurring-due", { timeout: 8000 });
       await page.locator('.nav-item[data-view="review"]').click();

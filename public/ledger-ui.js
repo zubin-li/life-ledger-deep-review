@@ -392,6 +392,7 @@
     if (ym !== currentYm) return "";
     const pending = core().recurringPendingForMonth(ledger, ym, { lang: ctx.lang?.() });
     if (!pending.length) return "";
+    const occurrenceCount = core().recurringPendingOccurrenceCount(ledger, ym, { lang: ctx.lang?.() });
     const labels = pending.slice(0, 3).map(rec => {
       const cat = ledger.categories.find(c => c.id === rec.categoryId);
       const raw = rec.label || (cat ? core().localizedCategoryName(cat, ctx.lang?.()) : t("固定项", "Recurring", "Vorlage"));
@@ -399,9 +400,22 @@
     });
     const more = pending.length > 3 ? t(` 等 ${pending.length} 项`, ` and ${pending.length - 3} more`, ` und ${pending.length - 3} weitere`) : "";
     const listText = `${labels.join(" · ")}${more}`;
-    const body = pending.length === 1
-      ? t(`本月尚未记：${listText}`, `Not posted this month: ${listText}`, `Diesen Monat noch nicht gebucht: ${listText}`)
-      : t(`本月有 ${pending.length} 项固定收支待记：${listText}`, `${pending.length} recurring items not posted this month: ${listText}`, `${pending.length} Vorlagen diesen Monat offen: ${listText}`);
+    let body;
+    if (occurrenceCount <= 1) {
+      body = t(`本月尚未记：${listText}`, `Not posted this month: ${listText}`, `Diesen Monat noch nicht gebucht: ${listText}`);
+    } else if (pending.length === 1) {
+      body = t(
+        `本月尚有 ${occurrenceCount} 笔固定待记：${listText}`,
+        `${occurrenceCount} recurring entries not posted this month: ${listText}`,
+        `${occurrenceCount} Buchungen diesen Monat offen: ${listText}`,
+      );
+    } else {
+      body = t(
+        `本月有 ${occurrenceCount} 笔固定待记：${listText}`,
+        `${occurrenceCount} recurring entries not posted this month: ${listText}`,
+        `${occurrenceCount} Buchungen diesen Monat offen: ${listText}`,
+      );
+    }
     return `<div class="ledger-recurring-due ll-insight-enter" role="status">
       <p class="ledger-recurring-due-copy">${body}</p>
       <button type="button" class="primary-button ledger-recurring-due-all">${t("全部记入账", "Post all pending", "Alle buchen")}</button>

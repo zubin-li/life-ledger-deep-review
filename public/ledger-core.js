@@ -635,6 +635,26 @@
     return (base.recurring || []).filter(rec => rec && rec.id && !recurringPostedInMonth(base, rec, ym, options));
   }
 
+  /** Unposted occurrence count for one template in ym (weekly = remaining weekdays; monthly = 0 or 1). */
+  function recurringUnpostedOccurrenceCount(ledger, rec, ym, options = {}) {
+    if (!rec?.id || !/^\d{4}-\d{2}$/.test(ym || "")) return 0;
+    if (rec.cadence === "weekly") {
+      const base = normalize(ledger, options);
+      const dates = weeklyOccurrenceDatesInMonth(rec, ym);
+      return dates.filter(
+        occ => !base.transactions.some(tx => transactionFulfillsRecurringOccurrence(tx, rec, occ)),
+      ).length;
+    }
+    return recurringPostedInMonth(ledger, rec, ym, options) ? 0 : 1;
+  }
+
+  function recurringPendingOccurrenceCount(ledger, ym, options = {}) {
+    return recurringPendingForMonth(ledger, ym, options).reduce(
+      (sum, rec) => sum + recurringUnpostedOccurrenceCount(ledger, rec, ym, options),
+      0,
+    );
+  }
+
   function applyAllRecurringPending(ledger, ym, options = {}) {
     if (!/^\d{4}-\d{2}$/.test(ym || "")) return null;
     let current = normalize(ledger, options);
@@ -1878,6 +1898,8 @@
     updateTransaction,
     applyRecurringTemplate,
     recurringPendingForMonth,
+    recurringUnpostedOccurrenceCount,
+    recurringPendingOccurrenceCount,
     applyAllRecurringPending,
     upsertRecurringTemplate,
     removeRecurringTemplate,
