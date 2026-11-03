@@ -1,6 +1,35 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 7）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 8：** Today「固定待记」胶囊 + 记账保存刷新 Today 卡；浏览器端口去重；单元 **358**、浏览器 **16** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 8）— Today 固定待记胶囊
+
+| 项目 | 说明 |
+|------|------|
+| **Today · 今日支出** | 当月仍有未记的固定模板时，金额旁显示蓝色 **固定待记** 胶囊（如「1 项固定待记」）；点击打开 **记账** 并滚到待记横幅。 |
+| **刷新** | 在记账页 **全部记入账** 后，Today 卡片胶囊会消失（无需手动切页）。 |
+| **QA** | `today-spending-hint.test.mjs` +1；`today-spending-recurring.browser.test.mjs`（端口 **5274**）；并行测试端口冲突修复（5271–5273 等）；`npm test` **358**；`npm run test:browser` **16**。 |
+| **截图** | `.overnight/shots/b7r8-*`（`node .overnight/capture-batch7-round8.mjs`，端口 **5286**）。 |
+
+**怎么试：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **今日** → **今日支出** 卡片应见 **1 项固定待记**（与「平静」心情胶囊可并存，见 `b7r8-today-recurring-pill-zh-light-1440-chromium.png`）。
+2. 点胶囊 → **记账** 页出现蓝色待记条 → **全部记入账** → 回到 **今日**，胶囊应隐藏。
+3. 浏览非当前自然月的历史日时，胶囊不出现（仅真实「本月」）。
+
+**前后对比：** Round 7 只在记账页提醒待记；Round 8 在 Today 主屏也能看见并一键跳转。
+
+**已知：** CSS reduced-motion 大表合并仍未做；同金额手动录入仍会消掉待记（启发式）。
+
+---
+
+## 历史（Batch 7 · Round 7）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 7：** 记账「固定收支待记」横幅 + 全部记入账；Today 本月累计 roll；单元 **357**、浏览器 **15** 全绿。
 

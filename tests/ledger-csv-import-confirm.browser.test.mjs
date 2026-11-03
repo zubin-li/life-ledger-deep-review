@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { hasPlaywright, playwrightRoot } from "./playwright-resolve.mjs";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-const port = 5293;
+const port = 5273;
 const base = `http://127.0.0.1:${port}/index.html?mode=local`;
 
 function startStaticServer() {

@@ -9326,7 +9326,9 @@ function renderLedger() {
     locale: () => i18n[currentLang]?.locale || "de-DE",
     monthName: date => new Intl.DateTimeFormat(i18n[currentLang].locale, { month: "long", year: "numeric" }).format(date),
     toast: (message, options) => showToast(message, options),
-    changed: () => {},
+    changed: () => {
+      window.LifeLedgerTodayWidgets?.render?.();
+    },
   });
 }
 

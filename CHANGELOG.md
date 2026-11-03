@@ -6,19 +6,24 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Today · Spending today:** when fixed templates are still open this calendar month, the card shows a **recurring pending** pill — tap opens **Money** and scrolls to the due banner; posting all pending clears the pill without leaving Today (`LifeLedgerTodayWidgets` refresh on ledger save); Batch 7 r8.
 - **Money (ledger):** current month shows a **recurring due** banner when fixed templates are not yet posted — **Post all pending** books every open item (transactions store optional `recurringId`; legacy rows still match by category + amount); Batch 7 r7.
+
+### Fixed
+
+- **QA:** Playwright static-server suites no longer share ports (5292/5293/5295/5299 duplicates → dedicated **5271–5274**), stabilizing parallel `npm run test:browser`.
+- **Ledger CSV import:** semicolon tokenizer preserves empty cells (`;;`) so Sparkasse-style exports keep the Betrag column index; header rows with `Buchungstag` are skipped like `Datum`.
+- **Ledger CSV export:** category column uses the active UI language (`localizedCategoryName`).
+- **Review:** habit score inspector skips DOM work while `#inspectorReviewTable` is not displayed (collapsed/hidden score panel).
+
+### Changed
+
 - **Today · Spending today:** mood pill is a button — tap/click opens **Review** and scrolls to the mood-vs-spend scatter (fallback: Money summary panel); hover/focus polish (`v210.css` Batch 7 r6).
 - **Today · Spending today:** when you logged mood and the ledger has entries (or spend today), the card shows a localized mood pill beside the amount — a quick link to mood-vs-spend insights in Review (`tw-spend-mood-pill`, `v210.css` Batch 7 r5).
 - **Review:** habit score inspector (`#inspectorReviewTable`) is visible again on the unified monthly review page — expanded by default from 960px width, collapsible on narrow screens; opening the panel renders live streak stats (fix `setInsightView` using `trend` layout instead of retired `month` token).
 - **Money (ledger):** desktop **N** focuses the quick-entry field (with **/** search and **← / →** month keys).
 - **Money (ledger):** desktop shortcuts — **← / →** change month (when not typing), **/** focuses transaction search; month nav tooltip documents keys.
 - **Styles (`v210.css`):** removed duplicate review habit-spark `@keyframes` block (REVIEW #4 partial; spark motion uses unified `rv-spark-grow`); ledger skeleton shimmer reuses `ll-shimmer` with merged reduced-motion rules.
-
-### Fixed
-
-- **Ledger CSV import:** semicolon tokenizer preserves empty cells (`;;`) so Sparkasse-style exports keep the Betrag column index; header rows with `Buchungstag` are skipped like `Datum`.
-- **Ledger CSV export:** category column uses the active UI language (`localizedCategoryName`).
-- **Review:** habit score inspector skips DOM work while `#inspectorReviewTable` is not displayed (collapsed/hidden score panel).
 
 ### Changed
 

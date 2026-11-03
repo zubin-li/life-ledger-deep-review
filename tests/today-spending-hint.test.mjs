@@ -32,3 +32,10 @@ test("Today spending mood pill opens Review mood scatter", () => {
   assert.match(widgets, /review-scatter-mood/);
   assert.match(widgets, /spendingMoodReview/);
 });
+
+test("Today spending recurring pill uses pending templates for current month", () => {
+  assert.match(widgets, /tw-spend-recurring-pill/);
+  assert.match(widgets, /recurringPendingForMonth/);
+  assert.match(widgets, /spendingRecurringOne/);
+  assert.match(widgets, /switchToView\("ledger"\)/);
+});

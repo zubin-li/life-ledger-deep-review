@@ -4107,8 +4107,62 @@ html[data-theme="dark"] .ledger-recurring-due-copy {
   display: inline-block;
 }
 
+button.tw-spend-recurring-pill {
+  flex-shrink: 0;
+  max-width: 100%;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent, #007aff) 35%, var(--line, #d1d1d6));
+  background: color-mix(in srgb, var(--accent, #007aff) 8%, var(--card, #fff));
+  color: var(--accent, #007aff);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)), box-shadow 160ms ease;
+}
+
+button.tw-spend-recurring-pill:not([hidden]):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent, #007aff) 18%, transparent);
+}
+
+button.tw-spend-recurring-pill:focus-visible {
+  outline: 2px solid var(--accent, #007aff);
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] button.tw-spend-recurring-pill {
+  border-color: color-mix(in srgb, var(--accent, #64d2ff) 32%, var(--line, #3a3a3c));
+  background: color-mix(in srgb, var(--accent, #64d2ff) 12%, var(--card, #1c1c1e));
+  color: var(--accent, #64d2ff);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tw-card.tw-spending .tw-spend-recurring-pill:not([hidden]) {
+    animation: tw-spend-mood-in 420ms var(--ease-enter, cubic-bezier(0.2, 0.8, 0.2, 1)) both;
+  }
+}
+
+html.motion-reduced button.tw-spend-recurring-pill:not([hidden]):hover,
+html.motion-reduced .tw-card.tw-spending .tw-spend-recurring-pill {
+  animation: none;
+  transform: none;
+  box-shadow: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ledger-recurring-due.ll-insight-enter {
+    animation: none;
+  }
+
+  button.tw-spend-recurring-pill:not([hidden]):hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .tw-card.tw-spending .tw-spend-recurring-pill {
     animation: none;
   }
 }
