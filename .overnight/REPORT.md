@@ -1,6 +1,37 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 6）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 7）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 7：** 记账「固定收支待记」横幅 + 全部记入账；Today 本月累计 roll；单元 **357**、浏览器 **15** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 7）— 固定收支待记
+
+| 项目 | 说明 |
+|------|------|
+| **Money · 待记横幅** | 浏览**当前月**时，若固定模板在本月尚无对应流水，显示蓝色提示条（demo 下通常为「订阅」一项）；**全部记入账** 一次写入并带上 `recurringId`。 |
+| **匹配规则** | 新流水带 `recurringId`；旧数据仍按「同月 + 同分类 + 同金额」视为已记（与手动录入兼容）。 |
+| **Today** | 侧栏「本月累计 · €…」在金额变化时使用与复盘相同的数字 roll 动画。 |
+| **Bugfix** | `bindRecurring` 未接收 `ym`，导致批量按钮此前静默无效。 |
+| **测试** | `ledger-core.test.mjs` +2；`ledger-recurring-due.browser.test.mjs`；`npm test` **357**；`npm run test:browser` **15**。 |
+| **截图** | `.overnight/shots/b7r7-*`（`node .overnight/capture-batch7-round7.mjs`，端口 **5286**）。 |
+
+**怎么试：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **记账** → 见「本月尚未记：订阅」→ 点 **全部记入账** → 横幅消失、交易列表多一笔 `-12,99 €`（见 `b7r7-ledger-recurring-due-zh-light-1440-chromium.png`）。
+2. 固定收支区仍可对单项点 **记一笔**；撤销删除与以前相同。
+3. **今日** 快速录入一笔支出 → 观察卡片右侧「本月累计」数字 roll（需非 reduced-motion）。
+
+**前后对比：** Round 6 只有 Today→复盘跳转；Round 7 在记账主流程补上固定项跟进，减少漏记房租/订阅。
+
+**已知：** CSS reduced-motion 大表合并仍未做；同金额不同用途的手动录入会误消待记（可接受启发式）。
+
+---
+
+## 历史（Batch 7 · Round 6）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 6：** Today 心情胶囊一键进复盘散点图；单元 **355**、浏览器 **14** 全绿。
 

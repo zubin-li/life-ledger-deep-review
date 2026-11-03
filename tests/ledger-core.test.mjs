@@ -269,6 +269,70 @@ test("applyRecurringTemplate posts using today date", () => {
   assert.ok(result);
   assert.equal(result.transaction.date, "2026-11-02");
   assert.equal(result.transaction.amountMinor, -999);
+  assert.equal(result.transaction.recurringId, "rec-1");
+});
+
+test("recurringPendingForMonth skips posted templates", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-a",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -1200,
+    currency: "EUR",
+    dayOfMonth: 5,
+    cadence: "monthly",
+    label: "Gym",
+  });
+  ledger.recurring.push({
+    id: "rec-b",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -800,
+    currency: "EUR",
+    dayOfMonth: 10,
+    cadence: "monthly",
+    label: "Cloud",
+  });
+  let pending = L.recurringPendingForMonth(ledger, "2026-11");
+  assert.equal(pending.length, 2);
+  const posted = L.applyRecurringTemplate(ledger, "rec-a", { lang: "en", today: "2026-11-05" });
+  assert.ok(posted);
+  pending = L.recurringPendingForMonth(posted.ledger, "2026-11");
+  assert.equal(pending.length, 1);
+  assert.equal(pending[0].id, "rec-b");
+  const bulk = L.applyAllRecurringPending(posted.ledger, "2026-11", { lang: "en", today: "2026-11-10" });
+  assert.ok(bulk);
+  assert.equal(bulk.transactions.length, 1);
+  pending = L.recurringPendingForMonth(bulk.ledger, "2026-11");
+  assert.equal(pending.length, 0);
+});
+
+test("recurring pending matches legacy rows without recurringId", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const cat = ledger.categories.find(c => c.kind === "expense").id;
+  ledger.recurring.push({
+    id: "rec-legacy",
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -500,
+    currency: "EUR",
+    dayOfMonth: 1,
+    cadence: "monthly",
+  });
+  ({ ledger } = L.addTransaction(ledger, {
+    accountId: account,
+    categoryId: cat,
+    amountMinor: -500,
+    currency: "EUR",
+    date: "2026-11-01",
+    note: "manual",
+  }, { lang: "en" }));
+  const pending = L.recurringPendingForMonth(ledger, "2026-11");
+  assert.equal(pending.length, 0);
 });
 
 test("upsertRecurringTemplate accepts income categories", () => {

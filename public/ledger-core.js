@@ -399,6 +399,7 @@
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
+    if (typeof draft.recurringId === "string" && draft.recurringId) tx.recurringId = draft.recurringId;
     if (!validTransaction(tx)) throw new Error("invalid-transaction");
     base.transactions.push(tx);
     const recent = [tx.categoryId, ...base.meta.recentCategoryIds.filter(id => id !== tx.categoryId)].slice(0, 8);
@@ -560,7 +561,40 @@
       currency: rec.currency || base.settings.defaultCurrency,
       date,
       note: rec.note || rec.label || "",
+      recurringId: rec.id,
     }, options);
+  }
+
+  function transactionFulfillsRecurring(tx, rec, ym) {
+    if (!tx || !rec || typeof tx.date !== "string" || !tx.date.startsWith(ym)) return false;
+    if (typeof tx.recurringId === "string" && tx.recurringId === rec.id) return true;
+    return tx.categoryId === rec.categoryId && tx.amountMinor === rec.amountMinor;
+  }
+
+  function recurringPostedInMonth(ledger, rec, ym, options = {}) {
+    const base = normalize(ledger, options);
+    return base.transactions.some(tx => transactionFulfillsRecurring(tx, rec, ym));
+  }
+
+  function recurringPendingForMonth(ledger, ym, options = {}) {
+    if (!/^\d{4}-\d{2}$/.test(ym || "")) return [];
+    const base = normalize(ledger, options);
+    return (base.recurring || []).filter(rec => rec && rec.id && !recurringPostedInMonth(base, rec, ym, options));
+  }
+
+  function applyAllRecurringPending(ledger, ym, options = {}) {
+    const pending = recurringPendingForMonth(ledger, ym, options);
+    if (!pending.length) return null;
+    let current = normalize(ledger, options);
+    const transactions = [];
+    const today = options.today && ISO_DATE.test(options.today) ? options.today : "";
+    pending.forEach(rec => {
+      const result = applyRecurringTemplate(current, rec.id, { ...options, today: today || undefined });
+      if (!result) return;
+      current = result.ledger;
+      transactions.push(result.transaction);
+    });
+    return transactions.length ? { ledger: current, transactions } : null;
   }
 
   /** Compare average daily spend on great-mood vs low-mood days (mood values are canonical zh keys). */
@@ -1769,6 +1803,8 @@
     duplicateTransaction,
     updateTransaction,
     applyRecurringTemplate,
+    recurringPendingForMonth,
+    applyAllRecurringPending,
     upsertRecurringTemplate,
     removeRecurringTemplate,
     restoreRecurringTemplate,

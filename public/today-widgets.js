@@ -590,9 +590,18 @@
       hint.textContent = t("spendingHint");
       hint.hidden = Boolean(todayMinor) || ledgerHasEntries;
     }
-    if (monthSide) monthSide.textContent = ledger
-      ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
-      : "";
+    if (monthSide) {
+      const monthText = ledger
+        ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
+        : "";
+      monthSide.textContent = monthText;
+      const prevMonth = c.dataset.spendMonth || "";
+      if (window.LifeLedgerInteraction?.rollText && monthText && monthText !== prevMonth && prevMonth) {
+        window.LifeLedgerInteraction.rollText(monthSide, monthText, prevMonth);
+      }
+      if (monthText) c.dataset.spendMonth = monthText;
+      else delete c.dataset.spendMonth;
+    }
     if (sparkHost && ledger) {
       const series = L.dailyExpenseSeries(ledger, today, 7);
       const hasAny = series.some(r => r.spendMinor > 0);

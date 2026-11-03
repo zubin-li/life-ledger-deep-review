@@ -387,6 +387,27 @@
     }).join("")}</ul>`;
   }
 
+  function renderRecurringPendingBanner(ledger, ym) {
+    const currentYm = ymFromDate(ctx.iso(new Date()));
+    if (ym !== currentYm) return "";
+    const pending = core().recurringPendingForMonth(ledger, ym, { lang: ctx.lang?.() });
+    if (!pending.length) return "";
+    const labels = pending.slice(0, 3).map(rec => {
+      const cat = ledger.categories.find(c => c.id === rec.categoryId);
+      const raw = rec.label || (cat ? core().localizedCategoryName(cat, ctx.lang?.()) : t("固定项", "Recurring", "Vorlage"));
+      return ctx.escape(raw);
+    });
+    const more = pending.length > 3 ? t(` 等 ${pending.length} 项`, ` and ${pending.length - 3} more`, ` und ${pending.length - 3} weitere`) : "";
+    const listText = `${labels.join(" · ")}${more}`;
+    const body = pending.length === 1
+      ? t(`本月尚未记：${listText}`, `Not posted this month: ${listText}`, `Diesen Monat noch nicht gebucht: ${listText}`)
+      : t(`本月有 ${pending.length} 项固定收支待记：${listText}`, `${pending.length} recurring items not posted this month: ${listText}`, `${pending.length} Vorlagen diesen Monat offen: ${listText}`);
+    return `<div class="ledger-recurring-due ll-insight-enter" role="status">
+      <p class="ledger-recurring-due-copy">${body}</p>
+      <button type="button" class="primary-button ledger-recurring-due-all">${t("全部记入账", "Post all pending", "Alle buchen")}</button>
+    </div>`;
+  }
+
   function renderRecurring(ledger) {
     const rows = (ledger.recurring || []).filter(Boolean);
     const addBtn = `<button type="button" class="secondary-button ledger-recurring-add">${t("添加固定项", "Add recurring", "Hinzufügen")}</button>`;
@@ -833,7 +854,7 @@
     bindDelete(host, ledger);
     bindDuplicate(host);
     bindEdit(host);
-    bindRecurring(host);
+    bindRecurring(host, ym);
     bindBudget(host, ym);
     bindSwipeDelete(host);
     bindKeypad(host);
@@ -857,7 +878,7 @@
     });
   }
 
-  function bindRecurring(host) {
+  function bindRecurring(host, viewYm) {
     host.querySelector(".ledger-recurring-add")?.addEventListener("click", () => {
       openRecurringPopover(ledgerState(), null);
     });
@@ -903,6 +924,21 @@
         ctx.toast?.(t("已记一笔", "Entry posted", "Gebucht"));
         render();
       });
+    });
+    host.querySelector(".ledger-recurring-due-all")?.addEventListener("click", () => {
+      const ym = viewYm || viewMonth || ymFromDate(ctx.iso(new Date()));
+      const result = core().applyAllRecurringPending(ledgerState(), ym, { lang: ctx.lang?.(), today: ctx.iso(new Date()) });
+      if (!result) return;
+      const hadNone = !ledgerState().transactions.length;
+      commit(result.ledger);
+      if (hadNone && ledgerState().transactions.length) dismissOnboarding(host);
+      const n = result.transactions.length;
+      ctx.toast?.(
+        n === 1
+          ? t("已记 1 笔", "Posted 1 entry", "1 Buchung erfasst")
+          : t(`已记 ${n} 笔`, `Posted ${n} entries`, `${n} Buchungen erfasst`),
+      );
+      render();
     });
   }
 
@@ -1054,6 +1090,7 @@
       </form>
       ${renderKeypad()}
       <div class="ledger-chips">${renderChips(ledger)}</div>
+      ${renderRecurringPendingBanner(ledger, ym)}
       ${renderOnboarding(ledger)}
       <div class="ledger-toolbar">
         <input type="search" id="ledgerFilter" class="ledger-filter" value="${ctx.escape(listFilter)}" placeholder="${t("搜索交易…", "Search entries…", "Buchungen suchen…")}" />

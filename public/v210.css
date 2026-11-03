@@ -4069,3 +4069,46 @@ html.motion-reduced button.tw-spend-mood-pill:not([hidden]):hover {
     animation: none;
   }
 }
+
+/* Batch 7 r7 — recurring due banner + Today month roll */
+.ledger-recurring-due {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin: 4px 0 18px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--accent, #007aff) 22%, var(--line, #e5e5ea));
+  background: color-mix(in srgb, var(--accent, #007aff) 6%, var(--card, #fff));
+}
+
+.ledger-recurring-due-copy {
+  flex: 1 1 220px;
+  margin: 0;
+  font: 500 0.875rem/1.45 var(--font-body);
+  color: var(--text-primary, #1d1d1f);
+}
+
+.ledger-recurring-due-all {
+  flex-shrink: 0;
+}
+
+html[data-theme="dark"] .ledger-recurring-due {
+  border-color: color-mix(in srgb, var(--accent, #64d2ff) 28%, var(--line, #3a3a3c));
+  background: color-mix(in srgb, var(--accent, #64d2ff) 10%, var(--card, #1c1c1e));
+}
+
+html[data-theme="dark"] .ledger-recurring-due-copy {
+  color: var(--text-primary, #f5f5f7);
+}
+
+.tw-spend-month.roll-host {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-recurring-due.ll-insight-enter {
+    animation: none;
+  }
+}
