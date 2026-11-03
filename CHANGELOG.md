@@ -6,6 +6,7 @@ All notable changes are documented here.
 
 ### Changed
 
+- **Review · Money summary:** on the **current** review month, an accent strip lists fixed templates not yet posted — **Open Money** jumps to the ledger due banner (hidden on past months); Batch 7 r9.
 - **Today · Spending today:** when fixed templates are still open this calendar month, the card shows a **recurring pending** pill — tap opens **Money** and scrolls to the due banner; posting all pending clears the pill without leaving Today (`LifeLedgerTodayWidgets` refresh on ledger save); Batch 7 r8.
 - **Money (ledger):** current month shows a **recurring due** banner when fixed templates are not yet posted — **Post all pending** books every open item (transactions store optional `recurringId`; legacy rows still match by category + amount); Batch 7 r7.
 

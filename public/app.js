@@ -8563,6 +8563,16 @@ function bindReviewScatterJumpSpy(panel) {
   syncActiveFromScroll();
 }
 
+function scrollToLedgerRecurringDue() {
+  requestAnimationFrame(() => {
+    const reduced = document.documentElement.classList.contains("motion-reduced");
+    document.querySelector(".ledger-recurring-due")?.scrollIntoView({
+      behavior: reduced ? "auto" : "smooth",
+      block: "nearest",
+    });
+  });
+}
+
 function renderReviewLedgerSummary() {
   const host = $("#reviewLedgerSummary");
   const L = globalThis.LifeLedgerLedger;
@@ -8782,6 +8792,24 @@ function renderReviewLedgerSummary() {
   const spendText = L.formatMoney(summary.expenseMinor, cur, locale);
   const incomeText = L.formatMoney(summary.incomeMinor, cur, locale);
   const netText = L.formatMoney(summary.netMinor, cur, locale);
+  const reviewIsCurrentMonth = ym === monthKey(parseDate(effectiveDemoTodayIso()));
+  let recurringDueBlock = "";
+  if (reviewIsCurrentMonth) {
+    const pending = L.recurringPendingForMonth(ledger, ym, { lang: currentLang });
+    if (pending.length) {
+      const pendingCopy = pending.length === 1
+        ? languageText("还有 1 项固定收支尚未记入本月。", "1 fixed item is not posted for this month yet.", "1 Vorlage ist diesen Monat noch nicht gebucht.")
+        : languageText(
+          `还有 ${pending.length} 项固定收支尚未记入本月。`,
+          `${pending.length} fixed items are not posted for this month yet.`,
+          `${pending.length} Vorlagen sind diesen Monat noch nicht gebucht.`,
+        );
+      recurringDueBlock = `<div class="review-ledger-recurring-due ll-insight-enter" role="status">
+        <p class="review-ledger-recurring-due-copy">${escapeHtml(pendingCopy)}</p>
+        <button type="button" class="secondary-button review-ledger-recurring-open" data-open-ledger-recurring>${escapeHtml(languageText("去记账", "Open Money", "Finanzen öffnen"))}</button>
+      </div>`;
+    }
+  }
   const topBreakdown = L.categoryBreakdown(ledger, ym, "expense");
   let topCategoryLine = "";
   if (topBreakdown[0]?.amountMinor) {
@@ -8810,8 +8838,12 @@ function renderReviewLedgerSummary() {
       <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong></span>
       <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
       <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
-    </div>${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;
+    </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
+  host.querySelector("[data-open-ledger-recurring]")?.addEventListener("click", () => {
+    switchToView("ledger");
+    requestAnimationFrame(() => requestAnimationFrame(scrollToLedgerRecurringDue));
+  });
   const roll = globalThis.LifeLedgerInteraction?.rollText;
   const statKeys = ["reviewStatSpend", "reviewStatIncome", "reviewStatNet"];
   const statTexts = [spendText, incomeText, netText];

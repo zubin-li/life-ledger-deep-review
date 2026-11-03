@@ -1,6 +1,35 @@
-# Life Ledger 夜间构建总报告（Batch 7 · Round 8）
+# Life Ledger 夜间构建总报告（Batch 7 · Round 9）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 7 Round 9：** 复盘「本月支出摘要」固定待记条 + Antigravity REVIEW 复核；单元 **358**、浏览器 **17** 全绿。
+
+---
+
+## 本轮（Batch 7 · Round 9）— 复盘固定待记条
+
+| 项目 | 说明 |
+|------|------|
+| **Review · 记账摘要** | 仅当复盘月份 = 当前月且仍有未记固定模板时，支出/收入/结余下方显示蓝色提示条；**去记账** 打开 **记账** 并滚到待记横幅。 |
+| **REVIEW.md** | CSV 空列、导出本地化、inspector 短路已在先前批次修复；本轮确认单测仍覆盖。 |
+| **QA** | `review-recurring-due.browser.test.mjs`（端口 **5275**）；切到上个月断言条消失；`npm test` **358**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b7r9-*`（`node .overnight/capture-batch7-round9.mjs`，端口 **5289**）。 |
+
+**怎么试：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **复盘** → **本月支出摘要** 下见「还有 1 项固定收支尚未记入本月。」+ **去记账**（见 `b7r9-review-recurring-due-zh-light-1440-chromium.png`）。
+2. 点 **去记账** → **记账** 页蓝色待记条在视口内；**全部记入账** 后回到 **复盘**，条应消失。
+3. 复盘标题旁 **‹** 切到上个月 → 条不出现（仅当前月提醒）。
+
+**前后对比：** Round 8 只在 **今日** 卡片提醒；Round 9 在 **复盘** 月度 Money 面板同样跟进，与 Goal 1「复盘支出摘要」集成一致。
+
+**已知：** CSS reduced-motion 大表合并仍未做；同金额手动录入仍会消掉待记（启发式）。
+
+---
+
+## 历史（Batch 7 · Round 8）
+
+Web **2.1.0** / Mac **3.1.0**。
 
 **Batch 7 Round 8：** Today「固定待记」胶囊 + 记账保存刷新 Today 卡；浏览器端口去重；单元 **358**、浏览器 **16** 全绿。
 

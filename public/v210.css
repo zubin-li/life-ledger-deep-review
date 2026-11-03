@@ -4166,3 +4166,42 @@ html.motion-reduced .tw-card.tw-spending .tw-spend-recurring-pill {
     animation: none;
   }
 }
+
+/* Batch 7 r9 — Review Money recurring due strip */
+.review-ledger-recurring-due {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--accent, #007aff) 22%, var(--line, #e5e5ea));
+  background: color-mix(in srgb, var(--accent, #007aff) 6%, var(--card, #fff));
+}
+
+.review-ledger-recurring-due-copy {
+  flex: 1 1 200px;
+  margin: 0;
+  font: 500 0.8125rem/1.45 var(--font-body);
+  color: var(--text-primary, #1d1d1f);
+}
+
+.review-ledger-recurring-open {
+  flex-shrink: 0;
+}
+
+html[data-theme="dark"] .review-ledger-recurring-due {
+  border-color: color-mix(in srgb, var(--accent, #64d2ff) 28%, var(--line, #3a3a3c));
+  background: color-mix(in srgb, var(--accent, #64d2ff) 10%, var(--card, #1c1c1e));
+}
+
+html[data-theme="dark"] .review-ledger-recurring-due-copy {
+  color: var(--text-primary, #f5f5f7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .review-ledger-recurring-due.ll-insight-enter {
+    animation: none;
+  }
+}
