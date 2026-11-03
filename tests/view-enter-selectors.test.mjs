@@ -192,3 +192,13 @@ test("Batch 13 r1 — Money sample entry onboarding", () => {
   assert.match(ledgerUi, /function postSampleEntry\(/);
   assert.match(core, /SPEND_COMPARE_AMOUNT_DELTA_MINOR/);
 });
+
+test("Batch 13 r2 — journal autosave pulse + mood pick polish", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const widgets = fs.readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 13 r2 — journal autosave pulse/);
+  assert.match(app, /function pulseHomeJournalSaved\(/);
+  assert.match(app, /function pulseMoodButton\(/);
+  assert.match(widgets, /dataset\.spendCompare/);
+});

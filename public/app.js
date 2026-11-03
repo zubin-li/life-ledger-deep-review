@@ -5429,11 +5429,32 @@ function openMoodReasonDialog(date, mood) {
   }
 }
 
-function setMood(date, mood, promptReason = true) {
+function pulseMoodButton(button) {
+  if (!button || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  LifeLedgerInteraction?.retarget?.(button);
+  button.classList.remove("just-picked");
+  void button.offsetWidth;
+  button.classList.add("just-picked");
+  clearTimeout(pulseMoodButton.timer);
+  pulseMoodButton.timer = setTimeout(() => button.classList.remove("just-picked"), 480);
+}
+
+function pulseHomeJournalSaved() {
+  const badge = $("#homeJournalSave");
+  if (!badge) return;
+  badge.classList.remove("is-saved");
+  void badge.offsetWidth;
+  badge.classList.add("is-saved");
+  clearTimeout(pulseHomeJournalSaved.timer);
+  pulseHomeJournalSaved.timer = setTimeout(() => badge.classList.remove("is-saved"), 900);
+}
+
+function setMood(date, mood, promptReason = true, sourceButton = null) {
   if (isFutureDate(date)) return;
   const current = getLog(date);
   state.logs[date] = { ...current, mood, moodReason: current.mood === mood ? current.moodReason || "" : "" };
   saveState();
+  pulseMoodButton(sourceButton);
   renderAll();
   if ($("#dayDrawer").classList.contains("open")) renderDrawer();
   showToast(tr("toast.mood"));
@@ -7705,8 +7726,8 @@ function bindEvents() {
   };
   $("#todayHabitViewport").addEventListener("pointerup", finishHabitDrag);
   $("#todayHabitViewport").addEventListener("pointercancel", finishHabitDrag);
-  $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(selectedPlanningDate, b.dataset.mood)));
-  $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood)));
+  $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(selectedPlanningDate, b.dataset.mood, true, b)));
+  $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood, true, b)));
   $("#quickMoodReason").addEventListener("click", () => {
     const date = selectedPlanningDate;
     const log = getLog(date);
@@ -7746,6 +7767,8 @@ function bindEvents() {
     if (isFutureDate(selectedPlanningDate)) return;
     state.logs[selectedPlanningDate] = { ...getLog(selectedPlanningDate), note: event.target.value };
     saveState();
+    clearTimeout(pulseHomeJournalSaved.debounce);
+    pulseHomeJournalSaved.debounce = setTimeout(pulseHomeJournalSaved, 380);
   });
   $("#closeDrawer").addEventListener("click", closeDrawer); $("#drawerBackdrop").addEventListener("click", closeDrawer);
   $("#dayNote").addEventListener("input", event => {

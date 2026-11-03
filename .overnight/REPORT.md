@@ -1,3 +1,22 @@
+# Life Ledger 夜间构建 — Batch 13 · Round 2
+
+Web **2.1.0**、Mac **3.1.0**。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | Today **每日复盘** 自动保存徽标防抖脉冲（`pulseHomeJournalSaved` / `#homeJournalSave.is-saved`）；**心情** 按钮 `just-picked` + `LifeLedgerInteraction.retarget`（Today + 抽屉）；**今日支出** 卡「较昨日…」环比文案变更时用 `rollText`。 |
+| **测试** | `npm test` **409**；`npm run test:browser` **59**（+2 日记/心情）。 |
+
+## 验收
+
+1. **今日** → 滚动到 **Daily Reflection / 每日复盘** → 输入几字 → 右上角 **● autosaved** 应短暂变 accent 色（见 `b13r2-journal-autosave-en-light-1440-webkit.png`）。
+2. 点 **心情** 任一选项 → 按钮有轻缩放反馈（截图时可能已弹出原因对话框，见 `b13r2-mood-pick-zh-light-390-chromium.png`）。
+3. 重拍：`node .overnight/capture-batch13-round2.mjs`（端口 **5294**）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 13 · Round 1
 
 Web **2.1.0**、Mac **3.1.0**。

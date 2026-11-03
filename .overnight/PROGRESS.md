@@ -1,5 +1,47 @@
 # Overnight progress
 
+## Batch 13 · Round 2 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**；#3/#4 Round 1 已部分采纳。
+- **Goal 2：** **Today** 每日复盘 `#homeJournalSave` 防抖后 **is-saved** 脉冲；**心情** Today/抽屉 `just-picked` + `retarget`；**今日支出** 环比行 `rollText`（`dataset.spendCompare`）。
+- **QA：** `view-enter-selectors` Batch 13 r2；`journal-home-autosave-pulse.browser`（WebKit + Chromium）；`day-plan.test` 绑定新 `setMood(..., b)` 签名。
+- **文档：** CHANGELOG `[Unreleased]` r2。
+- **截图：** `node .overnight/capture-batch13-round2.mjs`（**5294**）→ `b13r2-journal-autosave-en-light-1440-webkit.png`、`b13r2-mood-pick-zh-light-390-chromium.png`。
+- **QA：** `npm test` **409** pass / 0 fail；`npm run test:browser` **59** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 3+：`v210.css` reduced-motion 物理合并（2.2）；复盘/Week 其它 micro-interaction；或记账 CSV 导入 UX 小步。
+- 主人验收：Today **每日复盘** 输入 → `#homeJournalSave` 短暂高亮（`b13r2-journal-autosave-*`）；点 **心情** → 按钮缩放反馈（`b13r2-mood-pick-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+409 pass, 0 fail (batch 13 round 2, unit gate)
+59 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 13 · Round 1 — done
 
 - **REVIEW.md：** 无 HIGH/MED；#1 浏览器套件本机 **57** pass；#2 reduced-motion 合并仍留 **2.2**；#3 部分采纳（绝对差额 **≥ €100** 也显示金额）；#4 部分采纳（空账本 onboarding **记一笔示例** + 撤销，说明默认分类已就绪）。
@@ -124,3 +166,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 1
 ℹ tests 408 ℹ pass 408 ℹ fail 0 
+
+## Driver gate after round 2
+ℹ tests 409 ℹ pass 409 ℹ fail 0 

@@ -648,11 +648,19 @@
           compareText = t("spendingZeroDay");
         }
       }
-      compareEl.textContent = compareText;
+      const prevCompare = c.dataset.spendCompare || "";
+      if (window.LifeLedgerInteraction?.rollText && compareText && compareText !== prevCompare && prevCompare) {
+        window.LifeLedgerInteraction.rollText(compareEl, compareText, prevCompare);
+      } else {
+        compareEl.textContent = compareText;
+      }
+      if (compareText) c.dataset.spendCompare = compareText;
+      else delete c.dataset.spendCompare;
       compareEl.hidden = !compareText;
     } else if (compareEl) {
       compareEl.textContent = "";
       compareEl.hidden = true;
+      delete c.dataset.spendCompare;
     }
     if (monthSide) {
       const monthText = ledger && ledgerHasEntries

@@ -6137,3 +6137,29 @@ html.motion-reduced button.review-ledger-stat-btn {
     transition: none;
   }
 }
+
+/* Batch 13 r2 — journal autosave pulse + mood pick feedback */
+#homeJournalSave.is-saved {
+  color: var(--accent, #43aeb2);
+  transform: scale(1.04);
+  transition: color 0.28s ease, transform 0.28s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.mood-options button.just-picked {
+  transform: scale(1.05);
+  transition: transform 0.32s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+html.motion-reduced #homeJournalSave.is-saved,
+html.motion-reduced .mood-options button.just-picked {
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #homeJournalSave.is-saved,
+  .mood-options button.just-picked {
+    transform: none;
+    transition: none;
+  }
+}

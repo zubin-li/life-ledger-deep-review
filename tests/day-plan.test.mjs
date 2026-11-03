@@ -29,7 +29,7 @@ test("Day Plan keeps the schedule and removes daily flexible goals", () => {
 test("the selected Day Plan date drives the complete Today workspace", () => {
   assert.match(app, /function renderToday\(\)\s*\{\s*const date = selectedPlanningDate;/);
   assert.match(app, /renderHabitCarousel\(habits, date, log\.completed, future\)/);
-  assert.match(app, /setMood\(selectedPlanningDate, b\.dataset\.mood\)/);
+  assert.match(app, /setMood\(selectedPlanningDate, b\.dataset\.mood, true, b\)/);
   assert.match(app, /const date = selectedPlanningDate;\s*const log = getLog\(date\);/);
   assert.match(app, /selectedPlanningDate = isoDate\(cursor\);/);
   assert.match(app, /cursor = new Date\(selected\);\s*setDailyToolPage\("journal"/);
