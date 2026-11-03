@@ -1,3 +1,30 @@
+# Life Ledger 夜间构建总报告（Batch 11 · Round 7）
+
+Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
+
+**Batch 11 Round 7：** Today 习惯洞察直达 habit 散点；Mac 菜单 date:prev QA；习惯连续网格动效。
+
+---
+
+## 本轮（Batch 11 · Round 7）— 洞察导航 + Mac 换月 + 习惯 streak 动效
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **Today** 习惯×支出 hint 点 **复盘里看支出关联** 会进入复盘并滚到 **习惯完成度与当日支出** 散点（与心情 hint 对称）。习惯检视器 **28 日连续** 网格：已完成格短 stagger scale-in（`prefers-reduced-motion` 关闭）。 |
+| **Mac × fakecloud** | `fakecloud-ledger-mac-shell.browser.test.mjs` 增加 **`date:prev`** 菜单换月断言（与既有 **← / date:next / N** 同套件）。 |
+| **单元测试** | `npm test` **393**（无新增单元项）。 |
+| **浏览器** | `npm run test:browser` **42**（Today habit hint 断言 `#review-scatter-habit`）。 |
+| **截图** | `.overnight/shots/b11r7-today-habit-hint-chip-zh-light-1440-chromium.png`、`.overnight/shots/b11r7-review-habit-scatter-zh-light-1440-chromium.png`、`.overnight/shots/b11r7-habit-streak-grid-de-dark-390-webkit.png`。 |
+| **未做** | `v210.css` reduced-motion 大合并仍 **2.2**。 |
+
+**怎么验（可选）：**
+
+1. Demo → **今日** → 点习惯洞察里的 **复盘里看支出关联 →** → 复盘页应定位 **习惯完成度与当日支出**（见 Round 7 散点截图）。
+2. **习惯** → 选中 demo 习惯 → 侧栏 **6 Tage in Folge** 网格应有轻微弹入（de 深色见 Round 7 截图）。
+3. `bash .overnight/fakecloud.sh 5297` + shell 注入 → **Finanzen** → 菜单/快捷键换月仍绿（全量 `npm run test:browser`）。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 6）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。

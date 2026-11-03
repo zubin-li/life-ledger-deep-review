@@ -60,6 +60,7 @@ test(
         await page.waitForSelector("#todayView.view.active", { timeout: 8000 });
         await habitHint.locator(".today-insight-hint-link").click();
         await page.waitForSelector("#reviewView.view.active", { timeout: 8000 });
+        await page.waitForSelector("#review-scatter-habit", { timeout: 8000 });
       } finally {
         await browser.close();
       }

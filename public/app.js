@@ -4831,7 +4831,12 @@ function renderTodayHabitSpendHint(viewingToday, future) {
   if (!el.dataset.boundReview) {
     el.dataset.boundReview = "1";
     el.addEventListener("click", (ev) => {
-      if (ev.target.closest(".today-insight-hint-link")) switchToView("review");
+      if (ev.target.closest(".today-insight-hint-link")) {
+        switchToView("review");
+        requestAnimationFrame(() => {
+          document.getElementById("review-scatter-habit")?.scrollIntoView({ behavior: "auto", block: "nearest" });
+        });
+      }
     });
   }
 }
@@ -10279,7 +10284,7 @@ function renderHabitStreakCalendar(habitId) {
     date.setDate(start.getDate() + index);
     const key = isoDate(date);
     const done = getLog(key).completed.includes(habitId);
-    return `<i class="${done ? "done" : ""}" title="${key}"></i>`;
+    return `<i class="${done ? "done" : ""}" style="--cell-i:${index}" title="${key}"></i>`;
   }).join("");
   const streak = habitStreak(habitId, today);
   host.innerHTML = `<p>${escapeHtml(languageText(`${streak} 天连续`, `${streak}-day streak`, `${streak} Tage in Folge`))}</p><div class="habit-streak-grid" aria-hidden="true">${cells}</div>`;

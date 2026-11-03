@@ -9,6 +9,7 @@ All notable changes are documented here.
 - **QA (Batch 11 r4):** Offline PWA browser test (cached ledger scripts + Money view while offline); fakecloud preview flow opens **Money** and asserts month summary + category viz.
 - **QA (Batch 11 r5):** Mac shell + fakecloud online demo opens **Money** with cloud-synced demo rows (WebKit).
 - **QA (Batch 11 r6):** Mac shell fakecloud **Money** asserts **← / N** shortcuts and native menu month step (`date:next`).
+- **QA (Batch 11 r7):** Mac menu **`date:prev`** month step on fakecloud **Money**; Today habit×spend hint link scrolls to habit-vs-spend scatter in **Review**.
 
 ### Fixed
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.
@@ -17,7 +18,8 @@ All notable changes are documented here.
 - **Demo insights:** Active demo workspaces with ledger but without `meta.demo.insightAlign` re-align moods/habits/focus once on boot so Today mood×spending and habit×spending hints render without `demo-reset=1`.
 
 ### Changed
-- **Today:** Habit and mood spend insight hints use a soft chip surface; mood hint gets the same reveal animation as the habit hint.
+- **Today:** Habit×spend insight **Review** link scrolls to the habit-vs-spend scatter (mood hint already jumps to mood scatter).
+- **Habits:** Selected habit streak calendar cells pop in with a short stagger (respects reduced motion).
 - **Money:** Quick-entry submit button gets a brief success pop (respects reduced motion).
 - **Review — Money:** scatter empty state shows a three-step checklist (mood / habits / spending) and a primary **Log on Today** CTA; checklist pills jump to **Today**, **Habits**, or **Money**.
 

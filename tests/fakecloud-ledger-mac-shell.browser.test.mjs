@@ -111,6 +111,26 @@ test(
           titleBefore,
           { timeout: 8000 },
         );
+        const titleAfterLeft = await page.locator(".ledger-header h2").textContent();
+        await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:next"));
+        await page.waitForFunction(
+          prev => {
+            const el = document.querySelector(".ledger-header h2");
+            return el && el.textContent !== prev;
+          },
+          titleAfterLeft,
+          { timeout: 8000 },
+        );
+        const titleBeforePrev = await page.locator(".ledger-header h2").textContent();
+        await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:prev"));
+        await page.waitForFunction(
+          prev => {
+            const el = document.querySelector(".ledger-header h2");
+            return el && el.textContent !== prev;
+          },
+          titleBeforePrev,
+          { timeout: 8000 },
+        );
         await page.evaluate(() => document.activeElement?.blur?.());
         await page.keyboard.press("n");
         await page.waitForFunction(() => document.activeElement?.id === "ledgerQuickInput", null, {

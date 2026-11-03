@@ -5456,3 +5456,36 @@ html.motion-reduced #reviewView .review-scatter-empty-step {
 html[data-theme="dark"] #reviewView .review-scatter-empty-step {
   background: color-mix(in srgb, var(--surface-2, var(--card)) 92%, var(--accent, #5fbd9f) 8%);
 }
+
+/* Batch 11 r7 — habit streak grid cell pop-in */
+
+@keyframes llStreakCellIn {
+  from {
+    opacity: 0.4;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .habit-streak-grid i.done {
+    transform-origin: center;
+    animation: llStreakCellIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: min(calc(var(--cell-i, 0) * 14ms), 196ms);
+  }
+}
+
+html.motion-reduced .habit-streak-grid i.done {
+  animation: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .habit-streak-grid i.done {
+    animation: none;
+    transform: none;
+  }
+}
