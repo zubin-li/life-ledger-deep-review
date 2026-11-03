@@ -134,3 +134,15 @@ test("Batch 12 r5 — Money category chart filters list", () => {
   assert.match(ledgerUi, /ledger-category-filter-chip/);
   assert.match(core, /function filterTransactions\(ledger, ym, query, dayIso, categoryId\)/);
 });
+
+test("Batch 12 r6 — Money filtered list subtotal strip", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 12 r6 — Money filtered list subtotal strip/);
+  assert.match(css, /\.ledger-list-filter-sum/);
+  assert.match(ledgerUi, /renderListFilterSummary/);
+  assert.match(ledgerUi, /clearAllListFilters/);
+  assert.match(ledgerUi, /data-ledger-clear-all-filters/);
+  assert.match(core, /function summarizeTransactions\(ledger, transactions\)/);
+});

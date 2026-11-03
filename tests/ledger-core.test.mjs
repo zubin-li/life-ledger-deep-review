@@ -665,6 +665,22 @@ test("filterTransactions can scope to a category", () => {
   assert.equal(foodOnly[0].note, "food");
 });
 
+test("summarizeTransactions totals filtered rows in reporting currency", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const food = ledger.categories.filter(c => c.kind === "expense")[0].id;
+  const inc = ledger.categories.find(c => c.kind === "income").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: food, amountMinor: -500, currency: "EUR", date: "2026-11-02", note: "food" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: food, amountMinor: -300, currency: "EUR", date: "2026-11-02", note: "more" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: inc, amountMinor: 2000, currency: "EUR", date: "2026-11-02", note: "tip" }));
+  const rows = L.filterTransactions(ledger, "2026-11", "", "2026-11-02", food);
+  const sum = L.summarizeTransactions(ledger, rows);
+  assert.equal(sum.count, 2);
+  assert.equal(sum.expenseMinor, -800);
+  assert.equal(sum.incomeMinor, 0);
+  assert.equal(sum.netMinor, -800);
+});
+
 test("spendingTodayMinor sums expenses only", () => {
   let ledger = L.normalize(null, { lang: "en" });
   const account = ledger.accounts[0].id;

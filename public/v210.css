@@ -5931,3 +5931,60 @@ html.motion-reduced .ledger-cat-seg {
     transition: none;
   }
 }
+
+/* ========== Batch 12 r6 — Money filtered list subtotal strip ========== */
+
+.ledger-list-filter-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin: 0.35rem 0 0.65rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface-elevated, #fff) 88%, var(--accent-sage, #3a8f7a) 12%);
+  border: 1px solid color-mix(in srgb, var(--line, rgba(0, 0, 0, 0.08)) 70%, transparent);
+}
+
+html[data-theme="dark"] .ledger-list-filter-sum {
+  background: color-mix(in srgb, var(--surface-elevated, #1a1f1c) 92%, var(--accent-sage, #3a8f7a) 8%);
+}
+
+html[data-theme="dark"] .ledger-list-filter-sum-copy {
+  color: var(--text-secondary, #9eafbe);
+}
+
+html[data-theme="dark"] .ledger-list-filter-sum-net {
+  color: var(--text, #e8ece9);
+}
+
+.ledger-list-filter-sum-copy {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #5a6560);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.ledger-list-filter-sum-net {
+  font-size: 0.9375rem;
+  font-weight: 650;
+  color: var(--text, #1a1f1c);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger-filter-clear-all {
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+
+html.motion-reduced .ledger-list-filter-sum.ll-insight-enter {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-list-filter-sum.ll-insight-enter {
+    animation: none;
+  }
+}

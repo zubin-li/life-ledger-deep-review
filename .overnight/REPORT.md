@@ -1,3 +1,28 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 6
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2 / 记账** | **交易** 列表在任意筛选（搜索/日期/分类）且有结果时显示 **笔数 · 合计** 条；**两个及以上** 筛选时出现 **清除全部筛选**；日期+分类组合无匹配时有专用空态。 |
+| **逻辑** | 新增 `summarizeTransactions`；列表合计随筛选 `rollText` 更新。 |
+| **测试** | `npm test` **402**；`npm run test:browser` **53**（+1 `ledger-filter-summary`）。 |
+
+## 怎么验
+
+1. Demo → **记账** → 点 **每日支出** 一格 → 再点 **分类** 圆环任一扇区 → 应见日期+分类 chip、绿色合计条与 **清除全部筛选**（见 `b12r6-ledger-filter-sum-zh-light-1440-chromium.png`）。
+2. 点 **清除全部筛选** → chip 与合计条消失，恢复整月列表。
+3. 若日+分类下无交易 → 虚线空态 + **清除全部筛选**。
+4. 重拍：`node .overnight/capture-batch12-round6.mjs`（端口 **5292**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 5
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

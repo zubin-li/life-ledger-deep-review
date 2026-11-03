@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 12 r6):** **Money** filtered **Transactions** list shows an entry count and net total strip; **Clear all filters** appears when two or more filters are active (search, day, category); day+category empty combo has a dedicated empty state.
+- **QA (Batch 12 r6):** Unit test for `summarizeTransactions`; Playwright day+category filters → subtotal or combo empty → clear all.
 - **Polish (Batch 12 r5):** **Money** donut/treemap segments filter the **Transactions** list (keyboard + clearable category chip); empty category filter shows **Clear category filter**.
 - **QA (Batch 12 r5):** Unit test for category-scoped `filterTransactions`; Playwright donut segment → list filter.
 - **Polish (Batch 12 r4):** **Money** transaction list, budget, and recurring sections use hairline empty art with primary CTAs (**Start typing**, **Set budget**, **Add recurring**); search/day filter empties reuse the search hairline with **Clear search** when needed.

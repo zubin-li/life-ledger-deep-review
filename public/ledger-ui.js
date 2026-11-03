@@ -466,10 +466,61 @@
     });
   }
 
+  function listFiltersActive() {
+    return Boolean(String(listFilter || "").trim() || listDayFilter || listCategoryFilter);
+  }
+
+  function activeListFilterCount() {
+    let n = 0;
+    if (String(listFilter || "").trim()) n += 1;
+    if (listDayFilter) n += 1;
+    if (listCategoryFilter) n += 1;
+    return n;
+  }
+
+  function clearAllListFilters(host, ym) {
+    listFilter = "";
+    listDayFilter = "";
+    listCategoryFilter = "";
+    const filterInput = host.querySelector("#ledgerFilter");
+    if (filterInput) filterInput.value = "";
+    syncHeatSelection(host);
+    syncCategorySelection(host);
+    refreshLedgerList(host, ledgerState(), ym);
+  }
+
+  function renderListFilterSummary(ledger, rows) {
+    if (!listFiltersActive() || !rows.length) return "";
+    const sum = core().summarizeTransactions(ledger, rows);
+    const cur = ledger.settings.defaultCurrency;
+    const locale = ctx.locale?.() || "de-DE";
+    const countLabel = sum.count === 1
+      ? t("1 笔", "1 entry", "1 Buchung")
+      : t(`${sum.count} 笔`, `${sum.count} entries`, `${sum.count} Buchungen`);
+    const net = core().formatMoney(sum.netMinor, cur, locale);
+    const clearAll = activeListFilterCount() >= 2
+      ? `<button type="button" class="text-button ledger-filter-clear-all" data-ledger-clear-all-filters>${t("清除全部筛选", "Clear all filters", "Alle Filter aufheben")}</button>`
+      : "";
+    return `<div class="ledger-list-filter-sum ll-insight-enter" role="status">
+      <span class="ledger-list-filter-sum-copy"><span class="ledger-list-filter-sum-count">${ctx.escape(countLabel)}</span><span class="ledger-list-filter-sum-sep" aria-hidden="true">·</span><strong class="ledger-list-filter-sum-net">${ctx.escape(net)}</strong></span>
+      ${clearAll}
+    </div>`;
+  }
+
   function renderList(ledger, ym) {
     const rows = core().filterTransactions(ledger, ym, listFilter, listDayFilter, listCategoryFilter)
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt);
     if (!rows.length) {
+      if (listDayFilter && listCategoryFilter) {
+        const cta = `<button type="button" class="secondary-button" id="ledgerListEmptyClearAll">${t("清除全部筛选", "Clear all filters", "Alle Filter aufheben")}</button>`;
+        return ledgerPolishedEmpty(
+          "ledger-list-empty ledger-list-empty--combo",
+          "./assets/hairline/search-empty.svg",
+          t("没有匹配的交易", "No matching entries", "Keine passenden Buchungen"),
+          t("这一天在这个分类下没有记录，试试放宽筛选。", "Nothing on this day in this category — try clearing a filter.", "An diesem Tag in dieser Kategorie nichts — Filter lockern."),
+          cta,
+        );
+      }
       if (listDayFilter) {
         return ledgerPolishedEmpty(
           "ledger-list-empty ledger-list-empty--day",
@@ -507,7 +558,7 @@
         cta,
       );
     }
-    return `<ul class="ledger-tx-list">${rows.map(tx => {
+    return `${renderListFilterSummary(ledger, rows)}<ul class="ledger-tx-list">${rows.map(tx => {
       const cat = ledger.categories.find(c => c.id === tx.categoryId);
       const name = cat ? core().localizedCategoryName(cat, ctx.lang?.()) : "";
       const enter = tx.id === lastHighlightTxId ? " is-enter" : "";
@@ -1106,6 +1157,12 @@
       syncCategorySelection(host);
       refreshLedgerList(host, ledgerState(), ym);
     });
+    host.querySelector("#ledgerListEmptyClearAll")?.addEventListener("click", () => {
+      clearAllListFilters(host, ym);
+    });
+    host.querySelector("[data-ledger-clear-all-filters]")?.addEventListener("click", () => {
+      clearAllListFilters(host, ym);
+    });
     host.querySelector("#ledgerBudgetEmptyAdd")?.addEventListener("click", () => {
       host.querySelector(".ledger-budget-add")?.click();
     });
@@ -1321,6 +1378,17 @@
       syncCategorySelection(host);
       refreshLedgerList(host, ledgerState(), ym);
     });
+    list.querySelector("[data-ledger-clear-all-filters]")?.addEventListener("click", () => {
+      clearAllListFilters(host, ym);
+    });
+    const roll = root.LifeLedgerInteraction?.rollText;
+    const netEl = list.querySelector(".ledger-list-filter-sum-net");
+    if (roll && netEl) {
+      const next = netEl.textContent || "";
+      const prev = list.dataset.filterSumNet || "";
+      if (prev && prev !== next) roll(netEl, next, prev);
+      list.dataset.filterSumNet = next;
+    }
   }
 
   function bindDelete(host, ledger) {

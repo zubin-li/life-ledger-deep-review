@@ -335,6 +335,23 @@
     return (tx.currency || cur) === cur;
   }
 
+  function summarizeTransactions(ledger, transactions) {
+    const base = normalize(ledger);
+    const rows = (transactions || []).filter(tx => txInReportingCurrency(base, tx));
+    let income = 0;
+    let expense = 0;
+    rows.forEach(tx => {
+      if (tx.amountMinor >= 0) income += tx.amountMinor;
+      else expense += tx.amountMinor;
+    });
+    return {
+      incomeMinor: income,
+      expenseMinor: expense,
+      netMinor: income + expense,
+      count: rows.length,
+    };
+  }
+
   function monthSummary(ledger, ym) {
     const base = normalize(ledger);
     const inMonth = transactionsInMonth(base, ym);
@@ -2142,6 +2159,7 @@
     alignDemoHabitCompletionWithSpend,
     nearestWeekdayIso,
     monthSummary,
+    summarizeTransactions,
     rangeSummary,
     alignedWeekSpendCompare,
     alignedMonthSpendCompare,
