@@ -5553,3 +5553,108 @@ html.motion-reduced #weekView .week-page-spend-insight:not([hidden]) {
     animation: none;
   }
 }
+
+/* Batch 12 r1 — Money page mood/habit mini scatter correlations */
+
+.ledger-wellness-insights {
+  margin: 1.25rem 0 0.5rem;
+  padding: 1.1rem 1.15rem 1rem;
+  border-radius: var(--ll-radius-lg, 14px);
+  border: 1px solid color-mix(in srgb, var(--hairline) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated, var(--card)) 88%, transparent);
+}
+
+.ledger-wellness-head h3 {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ledger-wellness-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.ledger-wellness-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.ledger-wellness-caption {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.ledger-wellness-chart {
+  border-radius: 10px;
+  padding: 0.35rem 0.25rem 0.15rem;
+  background: color-mix(in srgb, var(--surface, var(--bg)) 55%, transparent);
+}
+
+.ledger-wellness-chart :is(.review-mood-scatter, .review-habit-scatter) {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 5.5rem;
+}
+
+.ledger-wellness-chart .review-scatter-dot-hit {
+  pointer-events: none;
+}
+
+.ledger-wellness-link {
+  align-self: flex-start;
+  margin-top: 0.15rem;
+  padding: 0.15rem 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--accent, var(--link));
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.ledger-wellness-link:hover {
+  opacity: 0.82;
+}
+
+.ledger-wellness-link:active {
+  transform: scale(0.98);
+}
+
+html.motion-reduced .ledger-wellness-link:active {
+  transform: none;
+}
+
+#ledgerView.view.is-entering .ledger-wellness-insights {
+  animation: llEmptyReveal 520ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+}
+
+html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-insights {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ledgerView.view.is-entering .ledger-wellness-insights {
+    animation: none;
+  }
+
+  .ledger-wellness-link {
+    transition: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .ledger-wellness-insights {
+    padding: 1rem 0.85rem;
+  }
+}

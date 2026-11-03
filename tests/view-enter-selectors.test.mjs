@@ -89,3 +89,15 @@ test("Batch 6 round 9 review scatter keyboard roving focus", () => {
   assert.match(app, /focusScatterDot/);
   assert.match(core, /tabindex="\$\{tab\}"/);
 });
+
+test("Batch 12 r1 — Money wellness mini scatters + shared daily rows", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 12 r1 — Money page mood\/habit mini scatter correlations/);
+  assert.match(css, /\.ledger-wellness-insights/);
+  assert.match(app, /function buildLedgerMonthDailyRows/);
+  assert.match(app, /openReviewScatterForMonth/);
+  assert.match(ledgerUi, /renderWellnessInsights/);
+  assert.match(ledgerUi, /data-ledger-review-scatter/);
+});

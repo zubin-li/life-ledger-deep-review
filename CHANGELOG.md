@@ -5,7 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
-- **QA (Batch 11):** Playwright regression for ledger quick-entry success flash; explicit service-worker test that `NETWORK_FIRST_SUFFIXES` lists ledger scripts.
+- **Polish (Batch 12 r1):** **Money** page shows side-by-side **mood × spend** and **habit × spend** mini scatter charts for the viewed month, with links that open the matching scatter in **Review** (shared `buildLedgerMonthDailyRows` with the review Money panel).
+- **QA (Batch 12 r1):** Playwright **Money** wellness insights → **Review** habit scatter spotlight.
 - **QA (Batch 11 r4):** Offline PWA browser test (cached ledger scripts + Money view while offline); fakecloud preview flow opens **Money** and asserts month summary + category viz.
 - **QA (Batch 11 r5):** Mac shell + fakecloud online demo opens **Money** with cloud-synced demo rows (WebKit).
 - **QA (Batch 11 r6):** Mac shell fakecloud **Money** asserts **← / N** shortcuts and native menu month step (`date:next`).

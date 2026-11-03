@@ -1,3 +1,28 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 1
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **记账** 页在分类/趋势/热力图下方新增 **本月关联洞察**：并排 mini **心情×支出**、**习惯×支出** 散点（与复盘同源 SVG）；**在复盘中查看 →** 会切到对应月份复盘并 spotlight 散点区。 |
+| **重构** | `buildLedgerMonthDailyRows` / `ledgerViewMonthDates` 供复盘 Money 与记账页共用，避免两套日行逻辑。 |
+| **REVIEW** | Antigravity 无 HIGH/MED；LOW #2 已在 Batch 11 用 >500% 金额差解决；#3 浏览器套件本轮 **46** 全绿。 |
+| **测试** | `npm test` **395**；`npm run test:browser` **46**。 |
+
+## 怎么验
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → 侧栏 **记账** → 向下滚到 **本月关联洞察**（见截图）。
+2. 点 **在复盘中查看 →**（习惯或心情）→ 应进入 **复盘** 对应散点并短暂高亮。
+3. 截图：`.overnight/shots/b12r1-ledger-wellness-*`；重拍 `node .overnight/capture-batch12-round1.mjs`（端口 **5297**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — 2.1.0 / Mac 3.1.0 终夜收束
 
 Web **2.1.0**、Mac **3.1.0**。仓库路径：`/Users/ashan/Documents/Codex/ll-overnight`（无 git remote 的 overnight 克隆）。请在本地用 `public/` 静态服务或已安装的 Mac 应用验收。

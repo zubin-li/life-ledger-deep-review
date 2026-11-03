@@ -9309,6 +9309,53 @@ function scrollToLedgerRecurringDue() {
   });
 }
 
+/** ISO dates in `YYYY-MM` for ledger/review wellness rows (past months whole; current month through today). */
+function ledgerViewMonthDates(ym) {
+  if (!/^\d{4}-\d{2}$/.test(String(ym || ""))) return [];
+  const [y, m] = ym.split("-").map(Number);
+  const today = effectiveDemoTodayIso();
+  const todayYm = today.slice(0, 7);
+  if (ym > todayYm) return [];
+  const days = new Date(y, m, 0).getDate();
+  const all = Array.from({ length: days }, (_, i) => isoDate(new Date(y, m - 1, i + 1, 12)));
+  if (ym === todayYm) return all.filter(d => d <= today);
+  return all;
+}
+
+function buildLedgerMonthDailyRows(ym) {
+  const L = globalThis.LifeLedgerLedger;
+  if (!L || !state.ledger?.transactions?.length) return null;
+  const ledger = L.normalize(state.ledger, { lang: currentLang });
+  const dates = ledgerViewMonthDates(ym);
+  if (!dates.length) return null;
+  return dates.map(date => {
+    const scored = dailyHabits(date);
+    const done = scored.filter(h => getLog(date).completed.includes(h.id)).length;
+    const completionPercent = scored.length ? Math.round((done / scored.length) * 100) : null;
+    return {
+      date,
+      mood: getLog(date).mood,
+      spendMinor: L.spendingTodayMinor(ledger, date),
+      focusMinutes: focusSessionsBetween(date, date).reduce((sum, session) => sum + focusSessionMinutes(session), 0),
+      completionPercent,
+    };
+  });
+}
+
+function openReviewScatterForMonth(ym, scatterId) {
+  if (!/^\d{4}-\d{2}$/.test(String(ym || "")) || !scatterId) return;
+  const [y, m] = ym.split("-").map(Number);
+  cursor = new Date(y, m - 1, 15, 12);
+  switchToView("review");
+  requestAnimationFrame(() => {
+    const target = document.getElementById(scatterId);
+    spotlightReviewScatterSection(target);
+    const reduced = document.documentElement.classList.contains("motion-reduced");
+    target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+    target?.focus?.({ preventScroll: true });
+  });
+}
+
 function renderReviewLedgerSummary() {
   const host = $("#reviewLedgerSummary");
   const L = globalThis.LifeLedgerLedger;
@@ -9325,19 +9372,7 @@ function renderReviewLedgerSummary() {
   const summary = L.monthSummary(ledger, ym);
   const locale = i18n[currentLang]?.locale || "de-DE";
   const cur = ledger.settings.defaultCurrency;
-  const dates = reviewMonthDates(cursor);
-  const dailyRows = dates.map(date => {
-    const scored = dailyHabits(date);
-    const done = scored.filter(h => getLog(date).completed.includes(h.id)).length;
-    const completionPercent = scored.length ? Math.round((done / scored.length) * 100) : null;
-    return {
-      date,
-      mood: getLog(date).mood,
-      spendMinor: L.spendingTodayMinor(ledger, date),
-      focusMinutes: focusSessionsBetween(date, date).reduce((sum, session) => sum + focusSessionMinutes(session), 0),
-      completionPercent,
-    };
-  });
+  const dailyRows = buildLedgerMonthDailyRows(ym) || [];
   const moodCompare = L.moodSpendComparison(dailyRows);
   const moodScatter = L.moodSpendScatter(dailyRows);
   const habitScatter = L.habitCompletionSpendScatter(dailyRows);
@@ -10144,6 +10179,8 @@ function renderLedger() {
     locale: () => i18n[currentLang]?.locale || "de-DE",
     monthName: date => new Intl.DateTimeFormat(i18n[currentLang].locale, { month: "long", year: "numeric" }).format(date),
     toast: (message, options) => showToast(message, options),
+    monthDailyRows: buildLedgerMonthDailyRows,
+    openReviewScatter: openReviewScatterForMonth,
     changed: () => {
       window.LifeLedgerTodayWidgets?.render?.();
     },

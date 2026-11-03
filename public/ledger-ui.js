@@ -257,6 +257,38 @@
     return `<div class="ledger-heat-grid is-retargeting" aria-hidden="true">${cells}</div>`;
   }
 
+  function renderWellnessInsights(ledger, ym) {
+    const rows = ctx.monthDailyRows?.(ym);
+    if (!rows?.length) return "";
+    const L = core();
+    const lang = ctx.lang?.() || "en";
+    const locale = ctx.locale?.();
+    const cur = ledger.settings.defaultCurrency;
+    const moodScatter = L.moodSpendScatter(rows);
+    const habitScatter = L.habitCompletionSpendScatter(rows);
+    if (!moodScatter && !habitScatter) return "";
+    const scatterOpts = { lang, locale, currency: cur, width: 268, height: 90 };
+    const cards = [];
+    if (moodScatter) {
+      cards.push(`<article class="ledger-wellness-card">
+        <p class="ledger-wellness-caption">${t("心情与当日支出", "Mood vs daily spending", "Stimmung und Tagesausgaben")}</p>
+        <div class="ledger-wellness-chart">${L.renderMoodSpendScatterSvg(moodScatter, scatterOpts)}</div>
+        <button type="button" class="ledger-wellness-link" data-ledger-review-scatter="review-scatter-mood">${t("在复盘中查看 →", "Open in Review →", "In Rückblick öffnen →")}</button>
+      </article>`);
+    }
+    if (habitScatter) {
+      cards.push(`<article class="ledger-wellness-card">
+        <p class="ledger-wellness-caption">${t("习惯完成度与当日支出", "Habit completion vs spending", "Gewohnheitsquote und Ausgaben")}</p>
+        <div class="ledger-wellness-chart">${L.renderHabitCompletionSpendScatterSvg(habitScatter, scatterOpts)}</div>
+        <button type="button" class="ledger-wellness-link" data-ledger-review-scatter="review-scatter-habit">${t("在复盘中查看 →", "Open in Review →", "In Rückblick öffnen →")}</button>
+      </article>`);
+    }
+    return `<section class="ledger-wellness-insights ll-polished" aria-label="${t("支出与生活关联", "Spending & life correlations", "Ausgaben und Leben")}">
+      <div class="ledger-wellness-head"><h3>${t("本月关联洞察", "This month’s correlations", "Zusammenhänge in diesem Monat")}</h3></div>
+      <div class="ledger-wellness-grid is-retargeting">${cards.join("")}</div>
+    </section>`;
+  }
+
   function renderChips(ledger) {
     const ids = ledger.meta.recentCategoryIds.length
       ? ledger.meta.recentCategoryIds
@@ -803,6 +835,12 @@
     });
     host.querySelector("[data-ledger-prev]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, -1); ledgerMonthPulse = true; render(); });
     host.querySelector("[data-ledger-next]")?.addEventListener("click", () => { viewMonth = shiftMonth(ym, 1); ledgerMonthPulse = true; render(); });
+    host.querySelectorAll("[data-ledger-review-scatter]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-ledger-review-scatter");
+        ctx.openReviewScatter?.(ym, id);
+      });
+    });
     host.querySelector("#ledgerFilter")?.addEventListener("input", e => {
       listFilter = e.target.value;
       const list = host.querySelector(".ledger-list-wrap");
@@ -1134,6 +1172,7 @@
           ${renderHeatmap(ledger, ym)}
         </section>
       </div>
+      ${renderWellnessInsights(ledger, ym)}
       <section class="ledger-budget-wrap">
         <div class="ledger-budget-head">
           <h3>${t("预算进度", "Budget progress", "Budgetfortschritt")}</h3>
@@ -1162,6 +1201,7 @@
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-heat-grid.is-retargeting"));
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-donut-segments.is-retargeting"));
       root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-treemap.is-retargeting"));
+      root.LifeLedgerInteraction?.retarget?.(host.querySelector(".ledger-wellness-grid.is-retargeting"));
     });
     if (lastHighlightTxId) {
       const hi = lastHighlightTxId;
