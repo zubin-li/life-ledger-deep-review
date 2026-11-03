@@ -163,3 +163,38 @@ test(
 function documentHasMacClass(className) {
   return String(className).includes("ll-mac");
 }
+
+test(
+  "Week insights roll metric values when navigating to another week",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-language", "zh");
+        localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+        localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
+      });
+      await page.goto(demoBase, { waitUntil: "domcontentloaded" });
+      await page.locator('.nav-item[data-view="week"]').click();
+      await page.waitForSelector("#weekCompletionRate", { timeout: 15000 });
+      await page.locator("#previousWorkspaceWeek").click();
+      await page.waitForTimeout(120);
+      await page.locator("#previousWorkspaceWeek").click();
+      const sawRoll = await page.waitForFunction(
+        () => {
+          const el = document.getElementById("weekCompletionRate");
+          return Boolean(el?.classList.contains("roll-host") || el?.querySelector(".roll-new"));
+        },
+        { timeout: 3000 },
+      ).then(() => true).catch(() => false);
+      assert.equal(sawRoll, true, "expected roll animation on week completion rate");
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);

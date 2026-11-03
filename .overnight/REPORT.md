@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 3）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 4）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 3：** Today 小基数金额 caption 截图 + Mac 壳 Week/Review 支出 hint 浏览器回归；单元 **379**、浏览器 **19** 全绿。
+**Batch 9 Round 4：** 本周洞察数字 roll-up + fakecloud 本周支出 hint 烟测；单元 **379**、浏览器 **20** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 3）— 金额 caption 与 Mac 壳 hint 回归
+## 本轮（Batch 9 · Round 4）— 本周 roll-up 与 fakecloud 烟测
+
+| 项目 | 说明 |
+|------|------|
+| **本周数字 roll** | 点 **‹** 切换工作区周时，完成率、本周支出、最长连续、专注分钟与 Today/记账汇总一样做 **roll** 动画（`prefers-reduced-motion` 下仍为直切）。 |
+| **fakecloud** | demo 首次云同步后打开 **本周**，支出 hint 仍为 **较上周同期 +999%** 封顶量级，无四位数 +%（浏览器测内嵌）。 |
+| **测试** | `npm test` **379**；`npm run test:browser` **20**（+1 Week roll）。 |
+| **截图** | `.overnight/shots/b9r4-week-insights-roll-*`（`node .overnight/capture-batch9-round4.mjs`，端口 **5294**）。 |
+
+**怎么验：**
+
+1. Demo → **本周** → 连点两次 **‹**：完成率等数字应有短暂上滚切换（或看 Round 4 截图）。
+2. 可选：`bash .overnight/fakecloud.sh 5298` → `?mode=cloudflare&local-preview=demo-showcase-v1` → 同步完成后 **本周** 卡片下 hint 正常。
+3. `npm run test:browser` 应含 **Week insights roll metric values** 与扩展后的 fakecloud preview 用例。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；对比基线 ≥ €15 时仍 **+999%** 封顶。
+
+---
+
+## 上一轮（Batch 9 · Round 3）— 金额 caption 与 Mac 壳 hint 回归
 
 | 项目 | 说明 |
 |------|------|

@@ -4418,3 +4418,14 @@ html[data-theme="dark"] .tw-card.tw-spending .tw-spend-compare {
 .tw-card.tw-spending.is-empty .tw-spend-compare[hidden] {
   display: none;
 }
+
+/* Batch 9 r4 — Week insights metric roll-up when changing workspace week */
+#weekView .week-insight-value.roll-host {
+  display: inline-grid;
+  vertical-align: baseline;
+  min-width: 2ch;
+}
+
+html.motion-reduced #weekView .week-insight-value.roll-host {
+  display: inline;
+}

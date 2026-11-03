@@ -8112,7 +8112,21 @@ function renderWeekInsights() {
       emptyArt.classList.remove("ll-empty-enter");
     }
   }
+  rollWeekInsightValues();
   requestAnimationFrame(() => grid.classList.remove("week-insights--loading"));
+}
+
+function rollWeekInsightValues() {
+  const roll = globalThis.LifeLedgerInteraction?.rollText;
+  if (!roll) return;
+  ["weekCompletionRate", "weekSpendingValue", "weekStreak", "weekFocusMinutes"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const next = el.textContent.trim();
+    const prev = el.dataset.rollPrev || "";
+    if (prev && prev !== next) roll(el, next, prev);
+    el.dataset.rollPrev = next;
+  });
 }
 
 function habitStreak(habitId, date) {

@@ -47,6 +47,7 @@ test(
           localStorage.clear();
           localStorage.setItem("life-ledger-demo-workspace-dismissed", "1");
           localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
+          localStorage.setItem("life-ledger-language", "zh");
         });
         await page.goto(base, { waitUntil: "networkidle", timeout: 90_000 });
         await page.waitForSelector(".tc-grid", { timeout: 45_000 });
@@ -65,6 +66,12 @@ test(
 
         const todaySpend = await page.locator(".tw-card.tw-spending .tw-spend-today").textContent();
         assert.ok(todaySpend && todaySpend.trim().length > 0, "Today spending card should show an amount");
+
+        await page.locator('.nav-item[data-view="week"]').click();
+        await page.waitForSelector("#weekSpendingHint:not([hidden])", { timeout: 45_000 });
+        const weekHint = await page.locator("#weekSpendingHint").textContent();
+        assert.doesNotMatch(weekHint || "", /\+\d{4,}%/);
+        assert.match(weekHint || "", /较上周同期|与上周同期相近/);
       } finally {
         await context.close();
         await browser.close();
