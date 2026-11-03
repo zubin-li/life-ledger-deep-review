@@ -10182,6 +10182,9 @@ function renderLedger() {
     monthDailyRows: buildLedgerMonthDailyRows,
     openReviewScatter: openReviewScatterForMonth,
     bindScatterDotTips: bindReviewScatterDotTips,
+    switchView: switchToView,
+    hairlineEmpty: hairlineEmptyMarkup,
+    hydrateHairline: scope => hydrateHairlineMounts(scope || document),
     changed: () => {
       window.LifeLedgerTodayWidgets?.render?.();
     },

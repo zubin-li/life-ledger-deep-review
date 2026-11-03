@@ -265,16 +265,45 @@
     return `<div class="ledger-heat-grid is-retargeting">${cells}</div>`;
   }
 
+  function renderWellnessEmptyBlock() {
+    const scatterEmptyCta = t("去 Today 记录", "Log on Today", "Auf Heute erfassen");
+    const scatterStepLabels = [
+      t("记录心情", "Log mood", "Stimmung notieren"),
+      t("完成习惯", "Complete habits", "Gewohnheiten abhaken"),
+      t("记一笔支出", "Log spending", "Ausgabe erfassen"),
+    ];
+    const scatterStepTargets = ["today", "habits", "ledger"];
+    const scatterSteps = scatterStepLabels
+      .map(
+        (label, i) =>
+          `<li><button type="button" class="review-scatter-empty-step" data-scatter-empty-target="${scatterStepTargets[i]}" style="--step-i:${i}">${ctx.escape(label)}</button></li>`,
+      )
+      .join("");
+    const hairline = ctx.hairlineEmpty?.(
+      "./assets/hairline/empty-insights.svg",
+      t("散点图还需要一点数据", "Scatter charts need a few more days", "Streudiagramme brauchen noch Tage"),
+      t(
+        "连续记录心情、习惯完成与支出后，心情 / 习惯与支出的对照图会自动出现。",
+        "Log mood, habit completion, and spending on more days and mood / habit vs spend charts will appear.",
+        "Erfasse an mehr Tagen Stimmung, Gewohnheiten und Ausgaben — dann erscheinen die Vergleichsdiagramme.",
+      ),
+    );
+    const body = hairline
+      ? hairline
+      : `<p>${t("散点图还需要一点数据", "Scatter charts need a few more days", "Streudiagramme brauchen noch Tage")}</p>`;
+    return `<div class="ledger-wellness-empty review-scatter-empty ll-polished" id="ledgerWellnessEmptyHint">${body}<ul class="review-scatter-empty-steps" aria-label="${ctx.escape(t("还需要的数据", "Still needed", "Noch nötig"))}">${scatterSteps}</ul><button type="button" class="primary-button review-scatter-empty-cta ledger-wellness-empty-cta" id="ledgerWellnessEmptyToday">${ctx.escape(scatterEmptyCta)}</button></div>`;
+  }
+
   function renderWellnessInsights(ledger, ym) {
-    const rows = ctx.monthDailyRows?.(ym);
-    if (!rows?.length) return "";
+    const summary = core().monthSummary(ledger, ym);
+    if (summary.expenseMinor >= 0) return "";
+    const rows = ctx.monthDailyRows?.(ym) || [];
     const L = core();
     const lang = ctx.lang?.() || "en";
     const locale = ctx.locale?.();
     const cur = ledger.settings.defaultCurrency;
-    const moodScatter = L.moodSpendScatter(rows);
-    const habitScatter = L.habitCompletionSpendScatter(rows);
-    if (!moodScatter && !habitScatter) return "";
+    const moodScatter = rows.length ? L.moodSpendScatter(rows) : null;
+    const habitScatter = rows.length ? L.habitCompletionSpendScatter(rows) : null;
     const scatterOpts = { lang, locale, currency: cur, width: 268, height: 90 };
     const cards = [];
     if (moodScatter) {
@@ -291,9 +320,12 @@
         <button type="button" class="ledger-wellness-link" data-ledger-review-scatter="review-scatter-habit">${t("在复盘中查看 →", "Open in Review →", "In Rückblick öffnen →")}</button>
       </article>`);
     }
+    const inner = cards.length
+      ? `<div class="ledger-wellness-grid is-retargeting">${cards.join("")}</div>`
+      : renderWellnessEmptyBlock();
     return `<section class="ledger-wellness-insights ll-polished" aria-label="${t("支出与生活关联", "Spending & life correlations", "Ausgaben und Leben")}">
       <div class="ledger-wellness-head"><h3>${t("本月关联洞察", "This month’s correlations", "Zusammenhänge in diesem Monat")}</h3></div>
-      <div class="ledger-wellness-grid is-retargeting">${cards.join("")}</div>
+      ${inner}
       <p class="sr-only ledger-scatter-live" aria-live="polite" aria-atomic="true"></p>
     </section>`;
   }
@@ -923,6 +955,20 @@
       });
     });
     ctx.bindScatterDotTips?.(host);
+    const wellnessEmpty = host.querySelector("#ledgerWellnessEmptyHint");
+    if (wellnessEmpty) {
+      ctx.hydrateHairline?.(wellnessEmpty);
+      wellnessEmpty.querySelector(".hairline-empty")?.classList.add("ll-empty");
+      wellnessEmpty.querySelector("#ledgerWellnessEmptyToday")?.addEventListener("click", () => {
+        ctx.switchView?.("today");
+      });
+      wellnessEmpty.querySelectorAll("[data-scatter-empty-target]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const view = btn.getAttribute("data-scatter-empty-target");
+          if (view) ctx.switchView?.(view);
+        });
+      });
+    }
     host.querySelectorAll("[data-ledger-day]").forEach(btn => {
       btn.addEventListener("click", () => {
         const day = btn.getAttribute("data-ledger-day");

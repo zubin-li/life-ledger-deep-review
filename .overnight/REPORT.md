@@ -1,3 +1,26 @@
+# Life Ledger 夜间构建 — Batch 12 · Round 3
+
+Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。
+
+## 本轮新增
+
+| 项目 | 说明 |
+|------|------|
+| **Goal 2** | **记账 · 本月关联洞察**：当月已有支出但心情/习惯天数不足以画 mini 散点时，显示与 **复盘 Money** 相同的三步 pill + **去 Today 记录**（`#ledgerWellnessEmptyHint`）。 |
+| **测试** | `npm test` **397**；`npm run test:browser` **49**（+1 `ledger-wellness-empty`）。 |
+
+## 怎么验
+
+1. 本地空白档：记 **一笔支出**（不要记心情/习惯）→ **记账** → 滚到 **本月关联洞察** → 应见虚线框与三 pill（见 `b12r3-ledger-wellness-empty-zh-light-1440-chromium.png`）。
+2. 点 **记录心情** → 应到 **Today**；Demo 数据充足时仍显示并排 mini 散点（Round 1–2 行为不变）。
+3. 重拍：`node .overnight/capture-batch12-round3.mjs`（端口 **5295**）。
+
+## 未做 / 留 2.2
+
+- `v210.css` reduced-motion 规则物理合并（REVIEW #1）。
+
+---
+
 # Life Ledger 夜间构建 — Batch 12 · Round 2
 
 Web **2.1.0**、Mac **3.1.0**。仓库：`/Users/ashan/Documents/Codex/ll-overnight`。

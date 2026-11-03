@@ -5,6 +5,8 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **Polish (Batch 12 r3):** **Money** **This month’s correlations** shows the same three-step empty checklist as **Review** when the month has spending but not enough mood/habit days for mini scatter charts (pills jump to **Today**, **Habits**, or **Money**).
+- **QA (Batch 12 r3):** Playwright **Money** wellness scatter empty checklist (WebKit 390).
 - **Polish (Batch 12 r2):** **Money** daily spend heatmap cells are tappable (keyboard + screen reader) to filter the transaction list for that day, with a clearable date chip; wellness mini scatter charts reuse Review dot tooltips and arrow-key navigation.
 - **QA (Batch 12 r2):** Unit test for day-scoped `filterTransactions`; Playwright heatmap day filter + wellness scatter tooltip.
 - **Polish (Batch 12 r1):** **Money** page shows side-by-side **mood × spend** and **habit × spend** mini scatter charts for the viewed month, with links that open the matching scatter in **Review** (shared `buildLedgerMonthDailyRows` with the review Money panel).

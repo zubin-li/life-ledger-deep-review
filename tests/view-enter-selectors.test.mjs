@@ -101,3 +101,14 @@ test("Batch 12 r1 — Money wellness mini scatters + shared daily rows", () => {
   assert.match(ledgerUi, /renderWellnessInsights/);
   assert.match(ledgerUi, /data-ledger-review-scatter/);
 });
+
+test("Batch 12 r3 — Money wellness scatter empty checklist", () => {
+  const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
+  const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(css, /Batch 12 r3 — Money wellness scatter empty/);
+  assert.match(css, /#ledgerView \.ledger-wellness-empty/);
+  assert.match(ledgerUi, /ledgerWellnessEmptyHint/);
+  assert.match(ledgerUi, /renderWellnessEmptyBlock/);
+  assert.match(app, /switchView: switchToView/);
+});

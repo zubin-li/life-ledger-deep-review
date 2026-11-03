@@ -5712,3 +5712,114 @@ html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-insights {
 .ledger-wellness-grid .review-scatter-tip {
   z-index: 8;
 }
+
+/* Batch 12 r3 — Money wellness scatter empty (Review-aligned checklist) */
+
+#ledgerView .ledger-wellness-empty.review-scatter-empty.ll-polished {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  margin-top: 4px;
+  padding: 18px 16px 20px;
+  border: 1px dashed color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: 20px;
+  animation: llEmptyReveal 520ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+#ledgerView .ledger-wellness-empty.review-scatter-empty.ll-polished > p {
+  margin: 0;
+  max-width: 24rem;
+  color: var(--secondaryLabel, var(--muted));
+}
+
+html.motion-reduced #ledgerView .ledger-wellness-empty.review-scatter-empty.ll-polished {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ledgerView .ledger-wellness-empty.review-scatter-empty.ll-polished {
+    animation: none !important;
+  }
+}
+
+#ledgerView .ledger-wellness-empty .review-scatter-empty-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 2px;
+  padding: 0;
+  list-style: none;
+  max-width: 26rem;
+}
+
+#ledgerView .ledger-wellness-empty .review-scatter-empty-step {
+  margin: 0;
+  padding: 6px 11px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 560;
+  letter-spacing: 0.01em;
+  color: var(--secondaryLabel, var(--muted));
+  background: color-mix(in srgb, var(--surface-2, var(--card)) 88%, var(--accent, #3d8f7a) 12%);
+  border: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 160ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 160ms ease,
+    background 160ms ease;
+  animation: llEmptyReveal 420ms var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation-delay: calc(var(--step-i, 0) * 55ms + 80ms);
+}
+
+#ledgerView .ledger-wellness-empty .review-scatter-empty-step:hover {
+  border-color: color-mix(in srgb, var(--accent, #3d8f7a) 42%, var(--line));
+  background: color-mix(in srgb, var(--surface-2, var(--card)) 82%, var(--accent, #3d8f7a) 18%);
+}
+
+#ledgerView .ledger-wellness-empty .review-scatter-empty-step:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent, #3d8f7a) 55%, transparent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  #ledgerView .ledger-wellness-empty .review-scatter-empty-step:active {
+    transform: scale(0.97);
+  }
+}
+
+html.motion-reduced #ledgerView .ledger-wellness-empty .review-scatter-empty-step {
+  transition: none;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ledgerView .ledger-wellness-empty .review-scatter-empty-step {
+    transition: none;
+    animation: none;
+  }
+
+  #ledgerView .ledger-wellness-empty .review-scatter-empty-step:active {
+    transform: none;
+  }
+}
+
+#ledgerView .ledger-wellness-empty .ledger-wellness-empty-cta {
+  margin-top: 4px;
+  min-width: 9.5rem;
+}
+
+html[data-theme="dark"] #ledgerView .ledger-wellness-empty .review-scatter-empty-step {
+  background: color-mix(in srgb, var(--surface-2, var(--card)) 92%, var(--accent, #5fbd9f) 8%);
+}
+
+#ledgerView.view.is-entering .ledger-wellness-empty.review-scatter-empty {
+  animation-delay: 120ms;
+}
+
+html.motion-reduced #ledgerView.view.is-entering .ledger-wellness-empty.review-scatter-empty {
+  animation: none;
+}
