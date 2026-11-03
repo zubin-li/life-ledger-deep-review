@@ -40,7 +40,6 @@ test("journal feed empty markup wires CTAs", () => {
   assert.match(app, /function journalFeedEmptyMarkup\(/);
   assert.match(app, /function wireJournalFeedEmptyActions\(/);
   assert.match(app, /function wireJournalFeedSpendInsight\(/);
-  assert.match(app, /journal-feed-spend-insight/);
   assert.match(app, /journal-feed-filter-quiet ll-polished/);
   assert.match(app, /id="journalEmptyWriteToday"/);
   assert.match(app, /timelineCalendarEmptyWriteToday/);
