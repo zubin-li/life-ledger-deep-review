@@ -868,17 +868,19 @@ test("ledgerConflictCompare surfaces transaction count mismatch", () => {
 });
 
 test("alignDemoMoodWithSpend tags high and low spend days for review insights", () => {
-  const ledger = L.buildDemoSample({ now: new Date("2026-11-02T12:00:00"), lang: "en", contentSeed: 42 });
-  const logs = {
-    "2026-11-01": { completed: [], mood: "平静", moodReason: "", note: "" },
-    "2026-11-02": { completed: [], mood: "平静", moodReason: "", note: "" },
-  };
-  L.alignDemoMoodWithSpend(logs, ledger, new Date("2026-11-02T12:00:00"));
-  const rows = ["2026-11-01", "2026-11-02"].map(date => ({
+  const now = new Date("2026-11-02T12:00:00");
+  const ledger = L.buildDemoSample({ now, lang: "en", contentSeed: 42 });
+  const logs = {};
+  ledger.transactions.forEach(tx => {
+    if (tx.amountMinor >= 0 || tx.date > "2026-11-02") return;
+    if (!logs[tx.date]) logs[tx.date] = { completed: [], mood: "平静", moodReason: "", note: "" };
+  });
+  L.alignDemoMoodWithSpend(logs, ledger, now);
+  const rows = Object.keys(logs).sort().map(date => ({
     date,
     mood: logs[date].mood,
     spendMinor: L.spendingTodayMinor(ledger, date),
-  }));
+  })).filter(row => row.spendMinor > 0);
   const cmp = L.moodSpendComparison(rows);
   assert.ok(cmp);
   assert.ok(cmp.lowAvg > cmp.greatAvg);

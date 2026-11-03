@@ -150,6 +150,7 @@ const i18n = {
       values: { 低落: "低落", 平静: "平静", 很好: "很好" },
       note: "人有悲欢离合，月有阴晴圆缺。",
       source: "苏轼《水调歌头》",
+      moodSpendReview: "复盘里看心情与支出 →",
     },
     moodReason: { kicker: "心情札记", title: "为什么今天感觉{mood}？", help: "这完全是可选的。留下一句话，未来回看时会更容易理解这一天。", label: "今天为什么会有这样的感受？", placeholder: "例如：完成了一件拖了很久的事情……", skip: "暂不记录", save: "保存原因", close: "关闭心情原因", summary: "原因 · {reason}" },
     timeline: { kicker: "记忆时间轴", title: "时间轴", description: "沿着心情与照片，重新看见走过的日子。", previous: "上个月", next: "下个月", loading: "正在整理这段记忆……", summary: "{days} 个留下记录的日子 · {photos} 张照片", summaryOnePhoto: "{days} 个留下记录的日子 · 1 张照片", emptyTitle: "这个月还没有留下记忆", emptyHelp: "心情、原因或照片会沿着时间轴出现在这里。", noMood: "一日记忆" ,
@@ -831,6 +832,7 @@ const i18n = {
       values: { 低落: "Low", 平静: "Calm", 很好: "Good" },
       note: "The mind is everything. What you think you become.",
       source: "Attributed to the Buddha",
+      moodSpendReview: "See mood vs spending in Review →",
     },
     moodReason: { kicker: "MOOD NOTE", title: "What made today feel {mood}?", help: "This is completely optional. One sentence can make this day easier to understand when you look back.", label: "What shaped this feeling today?", placeholder: "For example: I finally finished something I had postponed…", skip: "Not now", save: "Save reason", close: "Close mood reason", summary: "Reason · {reason}" },
     timeline: { kicker: "MEMORY LINE", title: "Timeline", description: "Follow your moods and photos back through the days you lived.", previous: "Previous month", next: "Next month", loading: "Gathering this month’s memories…", summary: "{days} recorded days · {photos} photos", summaryOnePhoto: "{days} recorded days · 1 photo", emptyTitle: "No memories here yet", emptyHelp: "Moods, reasons, and photos will appear here as the month unfolds.", noMood: "Daily memory" ,
@@ -1512,6 +1514,7 @@ const i18n = {
       values: { 低落: "Schwer", 平静: "Ruhig", 很好: "Gut" },
       note: "Das Glück ist das einzige, das sich verdoppelt, wenn man es teilt.",
       source: "Albert Schweitzer",
+      moodSpendReview: "Stimmung und Ausgaben im Rückblick →",
     },
     moodReason: { kicker: "STIMMUNGSNOTIZ", title: "Warum fühlte sich heute {mood} an?", help: "Das ist völlig freiwillig. Ein Satz kann helfen, diesen Tag später besser zu verstehen.", label: "Was hat dieses Gefühl heute geprägt?", placeholder: "Zum Beispiel: Ich habe endlich etwas lange Aufgeschobenes beendet…", skip: "Nicht jetzt", save: "Grund speichern", close: "Stimmungsgrund schließen", summary: "Grund · {reason}" },
     timeline: { kicker: "ERINNERUNGSLINIE", title: "Zeitleiste", description: "Folge deinen Stimmungen und Fotos zurück durch die gelebten Tage.", previous: "Vormonat", next: "Nächster Monat", loading: "Erinnerungen dieses Monats werden gesammelt …", summary: "{days} festgehaltene Tage · {photos} Fotos", summaryOnePhoto: "{days} festgehaltene Tage · 1 Foto", emptyTitle: "Noch keine Erinnerungen in diesem Monat", emptyHelp: "Stimmungen, Gründe und Fotos erscheinen hier im Lauf des Monats.", noMood: "Tageserinnerung" ,
@@ -4759,6 +4762,7 @@ function spendInsightDailyRows(endIso, dayCount = 30) {
     const completionPercent = scored.length ? Math.round((done / scored.length) * 100) : null;
     rows.push({
       date,
+      mood: getLog(date).mood,
       spendMinor: L.spendingTodayMinor(ledger, date),
       completionPercent,
     });
@@ -4793,12 +4797,53 @@ function renderTodayHabitSpendHint(viewingToday, future) {
     `Last 30 days: on high-completion days you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
     `Letzte 30 Tage: bei hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, bei niedriger ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
   );
-  el.innerHTML = `${escapeHtml(body)} <button type="button" class="text-button today-habit-spend-hint-link">${escapeHtml(tr("foundations.habitSpendReview"))}</button>`;
+  el.innerHTML = `${escapeHtml(body)} <button type="button" class="text-button today-insight-hint-link">${escapeHtml(tr("foundations.habitSpendReview"))}</button>`;
   el.hidden = false;
   if (!el.dataset.boundReview) {
     el.dataset.boundReview = "1";
     el.addEventListener("click", (ev) => {
-      if (ev.target.closest(".today-habit-spend-hint-link")) switchToView("review");
+      if (ev.target.closest(".today-insight-hint-link")) switchToView("review");
+    });
+  }
+}
+
+function renderTodayMoodSpendHint(viewingToday, future) {
+  const el = $("#todayMoodSpendHint");
+  if (!el) return;
+  if (!viewingToday || future) {
+    el.hidden = true;
+    el.textContent = "";
+    el.replaceChildren();
+    return;
+  }
+  const L = globalThis.LifeLedgerLedger;
+  const insight = L?.moodSpendComparison?.(spendInsightDailyRows(isoDate(new Date()), 30));
+  if (!insight) {
+    el.hidden = true;
+    el.textContent = "";
+    el.replaceChildren();
+    return;
+  }
+  const ledger = L.normalize(state.ledger, { lang: currentLang });
+  const locale = i18n[currentLang]?.locale || "de-DE";
+  const cur = ledger.settings.defaultCurrency;
+  const { greatAvg, lowAvg } = insight;
+  const body = languageText(
+    `近 30 天：心情较好日平均支出 ${L.formatMoney(-greatAvg, cur, locale)}，较低落日 ${L.formatMoney(-lowAvg, cur, locale)}。`,
+    `Last 30 days: on great-mood days you spent ${L.formatMoney(-greatAvg, cur, locale)} on average vs ${L.formatMoney(-lowAvg, cur, locale)} on low-mood days.`,
+    `Letzte 30 Tage: an sehr guten Tagen im Schnitt ${L.formatMoney(-greatAvg, cur, locale)} Ausgaben, an schwachen ${L.formatMoney(-lowAvg, cur, locale)}.`,
+  );
+  el.innerHTML = `${escapeHtml(body)} <button type="button" class="text-button today-insight-hint-link">${escapeHtml(tr("mood.moodSpendReview"))}</button>`;
+  el.hidden = false;
+  if (!el.dataset.boundReview) {
+    el.dataset.boundReview = "1";
+    el.addEventListener("click", (ev) => {
+      if (ev.target.closest(".today-insight-hint-link")) {
+        switchToView("review");
+        requestAnimationFrame(() => {
+          document.getElementById("review-scatter-mood")?.scrollIntoView({ behavior: "auto", block: "nearest" });
+        });
+      }
     });
   }
 }
@@ -4869,6 +4914,7 @@ function renderToday() {
     button.disabled = future;
   });
   renderMoodReasonSummary("#quickMoodReason", log);
+  renderTodayMoodSpendHint(viewingToday, future);
   renderDailyGoals();
   renderTodayHabitSpendHint(viewingToday, future);
 }

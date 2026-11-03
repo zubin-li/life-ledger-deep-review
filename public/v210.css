@@ -4517,28 +4517,39 @@ html.motion-reduced #weekView .week-insight-value.roll-host {
   opacity: 0.85;
 }
 
-.today-habit-spend-hint {
-  margin: -0.35rem 0 0.85rem;
+.today-insight-hint {
+  margin: 0.55rem 0 0;
   max-width: 42rem;
   font-size: var(--text-secondary, 0.92rem);
   line-height: 1.45;
   color: var(--text-muted, color-mix(in srgb, var(--ink, #1a1a1a) 62%, transparent));
 }
 
-.today-habit-spend-hint-link {
+.today-habit-spend-hint {
+  margin: -0.35rem 0 0.85rem;
+}
+
+.today-mood-spend-hint {
+  margin-top: 0.65rem;
+}
+
+.today-insight-hint-link {
   margin-inline-start: 0.15rem;
   vertical-align: baseline;
 }
 
+.today-insight-hint:not([hidden]),
 .today-habit-spend-hint:not([hidden]) {
   animation: llEmptyReveal 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+html.motion-reduced .today-insight-hint:not([hidden]),
 html.motion-reduced .today-habit-spend-hint:not([hidden]) {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .today-insight-hint:not([hidden]),
   .today-habit-spend-hint:not([hidden]) {
     animation: none;
   }

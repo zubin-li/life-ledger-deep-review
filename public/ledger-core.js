@@ -1970,10 +1970,13 @@
     if (!logs || !ledger?.transactions?.length) return logs;
     const anchor = now instanceof Date ? now : new Date(now);
     const today = isoDateFromDate(anchor);
-    const ym = monthKey(today);
+    const startDate = new Date(anchor);
+    startDate.setHours(12, 0, 0, 0);
+    startDate.setDate(startDate.getDate() - 44);
+    const start = isoDateFromDate(startDate);
     const spendByDate = new Map();
     ledger.transactions.forEach(tx => {
-      if (!tx.date.startsWith(ym) || tx.date > today || tx.amountMinor >= 0) return;
+      if (tx.date < start || tx.date > today || tx.amountMinor >= 0) return;
       spendByDate.set(tx.date, (spendByDate.get(tx.date) || 0) + Math.abs(tx.amountMinor));
     });
     const ranked = [...spendByDate.entries()].sort((a, b) => a[1] - b[1]);
@@ -1983,7 +1986,9 @@
     const lowDates = new Set(ranked.slice(-Math.max(1, Math.ceil(ranked.length / 3))).map(row => row[0]));
     const greatDates = new Set(ranked.slice(0, Math.max(1, Math.ceil(ranked.length / 3))).map(row => row[0]));
     ranked.forEach(([date]) => {
-      if (!logs[date]) return;
+      if (!logs[date]) {
+        logs[date] = { completed: [], mood: "", moodReason: "", note: "" };
+      }
       let mood = logs[date].mood;
       if (greatDates.has(date)) mood = greatMood;
       else if (lowDates.has(date)) mood = lowMood;

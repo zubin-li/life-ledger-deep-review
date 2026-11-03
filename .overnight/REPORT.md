@@ -1,12 +1,33 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 7）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 8）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 7：** Today 习惯×支出洞察 + 日度 feed stale 叠层；单元 **384**、浏览器 **23** 全绿（fakecloud 与 529x 静态服勿并行）。
+**Batch 9 Round 8：** Today 心情×支出洞察 + demo 心情对齐窗口 + 浏览器回归；单元 **384**、浏览器 **24** 全绿。
 
 ---
 
-## 本轮（Batch 9 · Round 7）— Today 洞察与日度 stale 叠层
+## 本轮（Batch 9 · Round 8）— Today 心情×支出洞察
+
+| 项目 | 说明 |
+|------|------|
+| **Today · 心情卡** | Demo 下心情选项下方显示近 **30 天** 较好日 vs 较低落日平均支出，**复盘里看心情与支出 →** 跳转复盘并滚到 `#review-scatter-mood`（`#todayMoodSpendHint`）。 |
+| **Today · 习惯** | 原有 **习惯×支出** hint 与心情 hint 共用 **`today-insight-hint`** 链接样式。 |
+| **Demo 数据** | `alignDemoMoodWithSpend` 覆盖近 **45 天**支出日并补全 log，使 30 天滚动洞察与复盘一致。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **24**（+1 `today-habit-spend-hint.browser`）。 |
+| **截图** | `.overnight/shots/b9r8-today-mood-spend-hint-*`、`.overnight/shots/b9r8-today-habit-spend-hints-*`（`node .overnight/capture-batch9-round8.mjs`，端口 **5297**）。 |
+
+**怎么验：**
+
+1. Demo → **今日**：心情卡底部一行支出关联（见 `b9r8-today-mood-spend-hint-zh-light-1440-chromium.png`）；基础目标上方仍有习惯×支出句。
+2. 点 **复盘里看心情与支出 →** 应进入复盘且可见心情散点区。
+3. 若看不到心情 hint：清除 `life-ledger-preview-demo-showcase-v1` 或打开 `?demo-reset=1` 重新 seed。
+4. `npm run test:browser` 应 **24** 条全过。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；旧 demo 缓存可能缺心情 hint。
+
+---
+
+## 上一轮（Batch 9 · Round 7）— Today 洞察与日度 stale 叠层
 
 | 项目 | 说明 |
 |------|------|

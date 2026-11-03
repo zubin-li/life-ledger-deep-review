@@ -15,7 +15,7 @@ All notable changes are documented here.
 - **Week insights:** switching workspace weeks rolls completion rate, spending, streak, and focus minutes (same motion as Today spending totals).
 - **Journal / review empty states:** timeline feed uses **`ll-paint-host`** skeleton while photos load; feed / calendar list / review inspector empties get consistent **`ll-empty`** styling.
 - **Journal filter / habits empty:** weekly/monthly feed filters no longer flash skeleton; daily filter keeps prior feed visible while photos reload; habit filter miss + review habit compare empty use **`ll-empty`** polish.
-- **Today habit insight:** rolling 30-day **习惯完成度 × 支出** caption under foundations (link to Review); daily journal filter adds **stale shimmer veil** and clears **`ll-paint-host--stale`** when photos finish.
+- **Today habit insight:** rolling 30-day **习惯完成度 × 支出** caption under foundations (link to Review); **心情 × 支出** caption under the mood card (link to Review mood scatter); daily journal filter adds **stale shimmer veil** and clears **`ll-paint-host--stale`** when photos finish.
 
 ### QA
 
@@ -24,6 +24,7 @@ All notable changes are documented here.
 - **`journal-feed-paint.browser.test.mjs`:** timeline feed paint host reaches **ready** without leaving skeleton markup.
 - **`journal-feed-filter.browser.test.mjs`:** weekly timeline month filter stays **ready** without feed skeleton; daily filter clears **stale** veil when ready.
 - **`today-habit-spend-hint.test.mjs`:** Today foundations habit × spend insight wiring + journal stale veil cleanup.
+- **`today-habit-spend-hint.browser.test.mjs`:** demo Today **habit + mood** spend hints visible and review links work (Chromium + WebKit).
 - **`fakecloud-online.browser.test.mjs`:** clears storage and waits for **cloud** save mode before asserting conflict UI stays hidden (parallel suite stability).
 
 ## [2.1.0] - 2026-11-03

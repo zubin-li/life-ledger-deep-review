@@ -13,11 +13,15 @@ test("Today foundations shows rolling habit × spend insight", () => {
 test("Today habit spend hint markup and i18n", () => {
   const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
   assert.match(html, /id="todayHabitSpendHint"/);
+  assert.match(html, /id="todayMoodSpendHint"/);
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   assert.match(app, /foundations\.habitSpendReview/);
   assert.match(app, /habitSpendReview: "复盘里看支出关联 →"/);
   assert.match(app, /habitSpendReview: "See spending links in Review →"/);
   assert.match(app, /habitSpendReview: "Ausgaben-Zusammenhänge im Rückblick →"/);
+  assert.match(app, /function renderTodayMoodSpendHint\(/);
+  assert.match(app, /mood\.moodSpendReview/);
+  assert.match(app, /moodSpendReview: "复盘里看心情与支出 →"/);
 });
 
 test("journal stale feed clears veil when ready", () => {

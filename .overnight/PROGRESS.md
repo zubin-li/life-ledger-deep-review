@@ -1,5 +1,43 @@
 # Overnight progress
 
+## Batch 9 · Round 8 — done
+
+- **REVIEW.md：** MED #1 仍已在 `temporalSpendChangePercent` 修复；LOW #2 reduced-motion 合并仍 **2.2**；LOW #3 语言三元已不含冗余 `=== "true"` 分支（当前代码已简化，未再改）。
+- **Goal 2 polish：** Today **心情 × 支出** 近 30 天一句 + 跳转复盘散点（`#todayMoodSpendHint`）；习惯/心情 hint 共用 **`today-insight-hint`** 样式；demo **`alignDemoMoodWithSpend`** 改为 **45 天**窗口并为有支出日补 log，保证滚动 30 天洞察可算。
+- **回归：** `today-habit-spend-hint.browser.test.mjs`（Chromium+WebKit）；`today-habit-spend-hint.test.mjs` / `ledger-core.test.mjs` / `habit-library-polish` 更新。
+- **截图：** `node .overnight/capture-batch9-round8.mjs`（**5297**）→ `b9r8-today-mood-spend-hint-*`、`b9r8-today-habit-spend-hints-*`。
+- **文档：** CHANGELOG `[Unreleased]` Changed + QA 一条。
+- **测试：** `npm test` **384**；`npm run test:browser` **24**（+1 Today hints）。
+- **未做：** `v210.css` reduced-motion 单表合并仍 **2.2**。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 9 Round 9（最后一轮前）：README 三语记账/Today 洞察补一句；或 reduced-motion 合并；Mac 壳 Today 截图。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 对比基线 ≥ €15 且增幅极大时仍显示 **+999%**（封顶，非金额句）。
+- 旧 demo 缓存未 re-seed 时，Today **心情×支出** hint 可能不显示（需清除 preview 存储或 `demo-reset=1`）。
+- 旧 demo 缓存未 bump persona 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- `npm run test:browser` 与 fakecloud 并行时偶发超时 — 先清 529x / wrangler（Round 5 已加固 fakecloud-online 等待 cloud）。
+
+## npm test
+
+```
+384 pass, 0 fail (batch 9 round 8, unit gate)
+24 pass, 0 fail (test:browser, batch 9 round 8)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 9 · Round 7 — done
 
 - **REVIEW.md：** MED #1 已在先前轮次用 `temporalSpendChangePercent` 修复（本轮未改逻辑）；LOW #2 reduced-motion 合并仍 **2.2**。
@@ -66,4 +104,7 @@ _pending (driver appends after commit)_
 ℹ tests 381 ℹ pass 381 ℹ fail 0 
 
 ## Driver gate after round 7
+ℹ tests 384 ℹ pass 384 ℹ fail 0 
+
+## Driver gate after round 8
 ℹ tests 384 ℹ pass 384 ℹ fail 0 

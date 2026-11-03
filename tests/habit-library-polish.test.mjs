@@ -16,7 +16,9 @@ test("v210 styles habit library entrance and filters", () => {
   assert.match(css, /\.habit-filter-empty\.ll-hint-card/);
   assert.match(css, /Batch 9 r6 — journal filter stale feed/i);
   assert.match(css, /Batch 9 r7 — journal stale shimmer veil/i);
+  assert.match(css, /\.today-insight-hint/);
   assert.match(css, /\.today-habit-spend-hint/);
+  assert.match(css, /\.today-mood-spend-hint/);
 });
 
 test("review habit compare hydrates hairline empty state", () => {
