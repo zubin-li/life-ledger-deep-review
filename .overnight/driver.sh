@@ -19,7 +19,7 @@ gate() { npm test > "$L/test-$1.log" 2>&1; grep -E "^ℹ (tests|pass|fail)" "$L/
 
 for i in $(seq 1 "$ROUNDS"); do
   [ "$(date +%s)" -lt "$DEADLINE" ] || { log "deadline reached"; break; }
-  printf '%s\n\n---\nThis is round %s of up to %s. Read .overnight/PROGRESS.md first, continue where it stops, pick the most valuable next steps, verify them, update PROGRESS.md and REPORT.md before you finish. Last gate result: %s\n' \
+  printf '%s\n\n---\nThis is round %s of up to %s. Read .overnight/PROGRESS-2.md first, continue where it stops, pick the most valuable next steps, verify them, update PROGRESS-2.md and REPORT.md before you finish. Last gate result: %s\n' \
     "$(cat .overnight/BRIEF.md)" "$i" "$ROUNDS" "$(tail -1 "$L/gates.txt" 2>/dev/null || echo none)" > "$L/brief-$i.md"
   log "round $i: cursor $MODEL"
   node "$CR" --brief "$L/brief-$i.md" --cd "$W" --model "$MODEL" --timeout 75m --out-dir "$L/round-$i" > "$L/round-$i.out" 2>&1
@@ -27,7 +27,7 @@ for i in $(seq 1 "$ROUNDS"); do
   log "round $i: relay $st"
   pkill -f "http.server 529[0-9]" 2>/dev/null; pkill -f "pages dev . --port 5298" 2>/dev/null
   g=$(gate "$i"); log "round $i: gate $g"; echo "round $i: $g" >> "$L/gates.txt"
-  printf '\n## Driver gate after round %s\n%s\n' "$i" "$g" >> .overnight/PROGRESS.md
+  printf '\n## Driver gate after round %s\n%s\n' "$i" "$g" >> .overnight/PROGRESS-2.md
   git add -A && git commit -q -m "overnight round $i (cursor $MODEL)" -m "gate: $g" && log "round $i: committed $(git rev-parse --short HEAD)"
   case "$st" in
     completed*) FAILS=0; OK_ROUNDS=$((OK_ROUNDS + 1)) ;;
@@ -39,7 +39,7 @@ done
 
 [ "$OK_ROUNDS" -gt 0 ] || { log "no successful round - skipping review"; exit 1; }
 log "review: antigravity read-only"
-node "$AR" --brief .overnight/REVIEW-BRIEF.md --cd "$W" --model gemini-3.8-flash-high --read-only --timeout 40m --out-dir "$L/review" > "$L/review.out" 2>&1
+node "$AR" --brief .overnight/REVIEW-BRIEF.md --cd "$W" --model gemini-4-argon-high --read-only --timeout 40m --out-dir "$L/review" > "$L/review.out" 2>&1
 python3 - "$L/review/result.json" "$W/.overnight/REVIEW.md" <<'EOF'
 import json, sys
 try: d = json.load(open(sys.argv[1]))

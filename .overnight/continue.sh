@@ -2,11 +2,10 @@
 # Keep the overnight loop going until 08:00: wait for the running driver, then start the next batch
 # (each batch ends with an Antigravity review that the next batch reads first).
 W=/Users/ashan/Documents/Codex/ll-overnight
-END=$(date -j -v+1d -f "%H:%M" "08:00" +%s)
+END=$(( $(date +%s) + ${TOTAL_HOURS:-6} * 3600 ))
 cd "$W"
-while pgrep -f "bash .overnight/driver.sh" > /dev/null; do sleep 60; done
-batch=2
-while [ "$(date +%s)" -lt $(( END - 1800 )) ]; do
+batch=${FIRST_BATCH:-20}
+while [ "$(date +%s)" -lt $(( END - 1200 )) ]; do
   echo "$(date '+%F %T') batch $batch starts" >> .overnight/logs/driver.log
   HOURS=$(( (END - $(date +%s)) / 3600 )); [ "$HOURS" -ge 1 ] || break
   # own copy per batch: never edit a script bash is executing; unique artifact dirs per batch
