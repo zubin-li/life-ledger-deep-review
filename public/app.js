@@ -294,6 +294,12 @@ const i18n = {
 ,
 "journalLessPeriod": "较上周同期 −{n} 天"
 ,
+"completionSamePeriod": "与上周同期相同"
+,
+"completionMorePeriod": "较上周同期 +{n} 个百分点"
+,
+"completionLessPeriod": "较上周同期 −{n} 个百分点"
+,
 "habitsProgress": "{done}/{total} 个习惯"
 ,
 "goalsTitleProgress": "本周目标 · {done} / {total}"
@@ -965,6 +971,12 @@ const i18n = {
 ,
 "journalLessPeriod": "−{n} days vs same days last week"
 ,
+"completionSamePeriod": "Same as same days last week"
+,
+"completionMorePeriod": "+{n} pp vs same days last week"
+,
+"completionLessPeriod": "−{n} pp vs same days last week"
+,
 "habitsProgress": "{done}/{total} habits"
 ,
 "goalsTitleProgress": "Weekly goals · {done} of {total}"
@@ -1635,6 +1647,12 @@ const i18n = {
 "journalMorePeriod": "+{n} Tage gg. Vorwoche (gleicher Zeitraum)"
 ,
 "journalLessPeriod": "−{n} Tage gg. Vorwoche (gleicher Zeitraum)"
+,
+"completionSamePeriod": "Wie Vorwoche (gleicher Zeitraum)"
+,
+"completionMorePeriod": "+{n} Pp. gg. Vorwoche (gleicher Zeitraum)"
+,
+"completionLessPeriod": "−{n} Pp. gg. Vorwoche (gleicher Zeitraum)"
 ,
 "habitsProgress": "{done}/{total} Gewohnheiten"
 ,
@@ -7875,6 +7893,46 @@ function alignedWeekJournalCompare(startDay, rangeEnd) {
   };
 }
 
+function habitCompletionStatsInRange(startIso, endIso) {
+  const todayKey = isoDate(new Date());
+  let totalScored = 0;
+  let totalDone = 0;
+  const cursor = parseDate(startIso);
+  const end = parseDate(endIso);
+  while (cursor <= end) {
+    const dayIso = isoDate(cursor);
+    if (dayIso <= todayKey) {
+      const scored = dailyHabits(dayIso);
+      const done = scored.filter(h => getLog(dayIso).completed.includes(h.id)).length;
+      totalScored += scored.length;
+      totalDone += done;
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  const rate = totalScored > 0 ? Math.round((totalDone / totalScored) * 100) : null;
+  return { totalScored, totalDone, rate };
+}
+
+function alignedWeekCompletionCompare(startDay, rangeEnd) {
+  const current = habitCompletionStatsInRange(startDay, rangeEnd);
+  if (current.rate == null) return null;
+  const ps = parseDate(startDay);
+  ps.setDate(ps.getDate() - 7);
+  const pe = parseDate(rangeEnd);
+  pe.setDate(pe.getDate() - 7);
+  const previous = habitCompletionStatsInRange(isoDate(ps), isoDate(pe));
+  if (previous.rate == null) return null;
+  if (current.rate === previous.rate) {
+    return { direction: "same", current: current.rate, previous: previous.rate, deltaPoints: 0 };
+  }
+  return {
+    direction: current.rate > previous.rate ? "up" : "down",
+    current: current.rate,
+    previous: previous.rate,
+    deltaPoints: Math.abs(current.rate - previous.rate),
+  };
+}
+
 function renderWeekInsights() {
   const grid = $("#weekInsightsGrid");
   if (!grid) return;
@@ -7884,10 +7942,14 @@ function renderWeekInsights() {
   const { monday } = weekDatesFromKey(key);
   const todayKey = isoDate(new Date());
 
-  let totalScored = 0;
-  let totalDone = 0;
   let bestDayName = "—";
   let maxDayDone = 0;
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const startDay = isoDate(monday);
+  const endDay = isoDate(sunday);
+  const rangeEnd = endDay > todayKey ? todayKey : endDay;
 
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
@@ -7896,20 +7958,35 @@ function renderWeekInsights() {
     const scored = dailyHabits(dayIso);
     const done = scored.filter(h => getLog(dayIso).completed.includes(h.id)).length;
 
-    if (dayIso <= todayKey) {
-      totalScored += scored.length;
-      totalDone += done;
-    }
-
     if (dayIso <= todayKey && done > maxDayDone) {
       maxDayDone = done;
       bestDayName = formatLocalizedDate(d, { weekday: "short" });
     }
   }
 
-  const rate = totalScored > 0 ? Math.round((totalDone / totalScored) * 100) : 0;
+  const completion = startDay <= rangeEnd ? habitCompletionStatsInRange(startDay, rangeEnd) : { rate: 0, totalScored: 0 };
+  const rate = completion.rate ?? 0;
   setText("#weekCompletionRate", `${rate}%`);
   setText("#weekBestDay", bestDayName);
+
+  let completionHint = "";
+  if (startDay <= rangeEnd && completion.totalScored > 0) {
+    const ccmp = alignedWeekCompletionCompare(startDay, rangeEnd);
+    if (ccmp) {
+      if (ccmp.direction === "same") {
+        completionHint = tr("week.completionSamePeriod");
+      } else if (ccmp.direction === "up") {
+        completionHint = tr("week.completionMorePeriod", { n: ccmp.deltaPoints });
+      } else {
+        completionHint = tr("week.completionLessPeriod", { n: ccmp.deltaPoints });
+      }
+    }
+  }
+  const completionHintEl = $("#weekCompletionHint");
+  if (completionHintEl) {
+    completionHintEl.textContent = completionHint;
+    completionHintEl.hidden = !completionHint;
+  }
 
   const streakEnd = new Date(monday);
   streakEnd.setDate(monday.getDate() + 6);
@@ -7918,10 +7995,6 @@ function renderWeekInsights() {
   const maxStreak = isoDate(monday) > todayKey ? 0 : activeHabitList.length ? Math.max(0, ...activeHabitList.map(h => habitStreak(h.id, streakDate))) : 0;
   setText("#weekStreak", languageText(`${maxStreak} 天`, `${maxStreak} days`, `${maxStreak} Tage`));
 
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-  const startDay = isoDate(monday);
-  const endDay = isoDate(sunday);
   const weekSessions = (state.focusSessions || []).filter(s => s.date >= startDay && s.date <= endDay && (s.outcome === "completed" || s.outcome === "finishedEarly"));
   const weekFocusMinutes = weekSessions.reduce((acc, s) => acc + Math.round(s.actualMinutes || s.durationMinutes || 0), 0);
   setText("#weekFocusMinutes", languageText(`${weekFocusMinutes} 分钟`, `${weekFocusMinutes} min`, `${weekFocusMinutes} Min.`));
@@ -7930,9 +8003,9 @@ function renderWeekInsights() {
   let weekExpenseTotal = 0;
   let weekSpendDisplay = "—";
   let spendHint = "";
-  const rangeEnd = endDay > todayKey ? todayKey : endDay;
   let journalDays = 0;
   let journalHint = "";
+  const totalDone = completion.totalDone ?? 0;
   if (startDay <= rangeEnd) {
     journalDays = journalEntryDaysInRange(startDay, rangeEnd);
     if (journalDays > 0) {

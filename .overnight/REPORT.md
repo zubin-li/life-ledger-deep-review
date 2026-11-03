@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 8）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 9）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 8：** **本周 · 数据洞察** 的 **专注时长** 格增加 **日记/事件天数** 与 **较上周同期** 天数对比；单元 **373**、浏览器 **17** 全绿。
+**Batch 8 Round 9：** **本周 · 数据洞察** 的 **完成率** 格增加 **较上周同期** 习惯完成率 **百分点** 对比；单元 **374**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 8）— 本周日记天数
+## 本轮（Batch 8 · Round 9）— 本周完成率对比
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | `habitCompletionStatsInRange`：区间内（仅到今天）已计分习惯完成比例；`alignedWeekCompletionCompare` 把 Mon–today 窗口平移 7 天比百分点差。 |
+| **UI** | `#weekCompletionHint` 在 **完成率** 百分比下，如 demo「较上周同期 −57 个百分点」。 |
+| **测试** | `week-insights-completion.test.mjs`；`npm test` **374**；`npm run test:browser` **17**（fakecloud 偶发需清端口）。 |
+| **截图** | `.overnight/shots/b8r9-*`（`node .overnight/capture-batch8-round9.mjs`，端口 **5299**）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **本周** → 滚到 **数据洞察** → 第一格 **完成率** 下见小字（`b8r9-week-completion-hint-zh-light-1440-chromium.png`）。
+2. 英文手机：`b8r9-week-completion-hint-en-light-390-webkit.png`。
+3. 上周同期无可比习惯数据时 caption 隐藏。
+
+**已知：** demo 上周完成率基数与本周差异大，百分点可能很夸张；reduced-motion CSS 大合并仍留 2.2；Round 10 见 `ROUND10-CHECKLIST.md`。
+
+---
+
+## 上一轮（Batch 8 · Round 8）— 本周日记天数
 
 | 项目 | 说明 |
 |------|------|

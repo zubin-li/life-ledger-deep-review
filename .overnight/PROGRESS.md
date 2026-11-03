@@ -1,5 +1,41 @@
 # Overnight progress
 
+## Batch 8 · Round 9 — done
+
+- **REVIEW.md：** 无 HIGH/MED；LOW #2 周度 recurring 已在 `ledger-core.js` 按 ISO 周实现（`transactionFulfillsRecurringOccurrence` + 单测）；LOW #1 CSS 合并仍留 2.2。
+- **Goal 2 — 本周习惯完成率：** `habitCompletionStatsInRange` / `alignedWeekCompletionCompare`（Mon–today 窗口 vs 平移 7 天）；**完成率** 格下 caption（±N 个百分点 / 相同）；三语 `week.completion*`；`#weekCompletionHint`；重构 `renderWeekInsights` 共用区间统计。
+- **文档：** CHANGELOG `[Unreleased]`、`README` EN/ZH/DE；`.overnight/ROUND10-CHECKLIST.md`；截图 `node .overnight/capture-batch8-round9.mjs`（**5299**）→ `b8r9-*`。
+- **测试：** `week-insights-completion.test.mjs`；`npm test` **374**；`npm run test:browser` **17**（首轮 fakecloud 超时，清端口后通过）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- **Batch 8 Round 10（最后一轮）：** 按 `ROUND10-CHECKLIST.md` 做发布整理；可选 demo 习惯名本地化（低优）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- Today 截图需滚到 `.tw-spending` 才看见胶囊与较昨日行（capture 脚本已 scroll）。
+- Week 截图需滚到 `#weekInsightsGrid`；完成率/专注/支出 hint 在各自格内。
+- Review 需滚到 `#reviewLedgerSummary` 才看见支出对比。
+- Week/Review/Today demo 上对比百分比或百分点可能很大（上周/上月/昨日基数小）。
+- `npm run test:browser` 与 fakecloud 并行时偶发超时 — 先清 529x / wrangler。
+
+## npm test
+
+```
+374 pass, 0 fail (batch 8 round 9, unit gate)
+17 pass, 0 fail (test:browser, batch 8 round 9, after port cleanup)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 8 · Round 8 — done
 
 - **REVIEW.md：** 无 HIGH/MED；LOW #1/#2 已在先前轮次处理或留 2.2。
@@ -51,3 +87,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 8
 ℹ tests 373 ℹ pass 373 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 374 ℹ pass 374 ℹ fail 0 
