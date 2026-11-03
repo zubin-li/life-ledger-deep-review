@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 9 · Round 6）
+# Life Ledger 夜间构建总报告（Batch 9 · Round 7）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 9 Round 6：** 时间轴筛选不闪屏 + 习惯/复盘 habit 空态 polish；单元 **381**、浏览器 **22** 全绿。
+**Batch 9 Round 7：** Today 习惯×支出洞察 + 日度 feed stale 叠层；单元 **384**、浏览器 **23** 全绿（fakecloud 与 529x 静态服勿并行）。
 
 ---
 
-## 本轮（Batch 9 · Round 6）— 筛选闪屏与空状态
+## 本轮（Batch 9 · Round 7）— Today 洞察与日度 stale 叠层
+
+| 项目 | 说明 |
+|------|------|
+| **Today** | Demo 下 **今日基础目标** 上方显示近 **30 天** 习惯完成高/低日的平均支出对比，**复盘里看支出关联 →** 跳转复盘（`#todayHabitSpendHint`）。 |
+| **时间轴 feed** | 日度模式换月保留旧条目时加 **`ll-stale-veil`** 顶部 shimmer；照片加载完移除 **`stale` + veil**（不再长期半透明）。 |
+| **测试** | `npm test` **384**；`npm run test:browser` **23**（+1 daily stale veil）。 |
+| **截图** | `.overnight/shots/b9r7-today-habit-spend-hint-*`、`.overnight/shots/b9r7-journal-stale-veil-*`（`node .overnight/capture-batch9-round7.mjs`，端口 **5297**）。 |
+
+**怎么验：**
+
+1. Demo → **今日**：习惯标题下应有一行支出关联文案（见 `b9r7-today-habit-spend-hint-zh-light-1440-chromium.png`）。
+2. **时间轴** → **日度** → 切换 **定位月份**：旧内容略 dim + 顶部 shimmer，加载后恢复正常（`b9r7-journal-stale-veil-*`）。
+3. `npm run test:browser` 应 **23** 条全过；跑 fakecloud 前先停占用 **5296–5298** 的进程。
+
+**未做 / 已知：** `v210.css` reduced-motion 大合并仍 **2.2**；Cloudflare 首次不 seed 账本；对比基线 ≥ €15 时仍 **+999%** 封顶。
+
+---
+
+## 上一轮（Batch 9 · Round 6）— 筛选闪屏与空状态
 
 | 项目 | 说明 |
 |------|------|

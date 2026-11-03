@@ -53,3 +53,36 @@ test(
     }
   },
 );
+
+test(
+  "daily journal month filter clears stale veil when photos finish",
+  { skip: !hasPlaywright },
+  async () => {
+    const server = await startStaticServer();
+    const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+    const browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    try {
+      await page.addInitScript(() => {
+        localStorage.setItem("life-ledger-language", "zh");
+        localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
+      });
+      await page.goto(base, { waitUntil: "domcontentloaded" });
+      await page.locator('.nav-item[data-view="timeline"]').click();
+      await page.locator('[data-journal-mode="timeline"]').click();
+      await page.waitForSelector("#journalFeed.ll-paint-host--ready", { timeout: 15000 });
+      const select = page.locator("#journalMonthFilter");
+      const optionCount = await select.locator("option").count();
+      if (optionCount < 2) return;
+      await select.selectOption({ index: optionCount > 2 ? 2 : 1 });
+      await page.waitForSelector("#journalFeed.ll-paint-host--ready", { timeout: 10000 });
+      const stale = await page.locator("#journalFeed.ll-paint-host--stale").count();
+      assert.equal(stale, 0, "stale class should clear after reload");
+      const veil = await page.locator("#journalFeed .ll-stale-veil").count();
+      assert.equal(veil, 0, "stale veil should be removed when ready");
+    } finally {
+      await browser.close();
+      server.kill("SIGTERM");
+    }
+  },
+);

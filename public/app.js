@@ -194,7 +194,7 @@ const i18n = {
       custom: "自定义", focusMinutes: "专注分钟", breakMinutes: "休息分钟", sound: "声音", notify: "通知", wakeLock: "保持屏幕常亮", start: "开始专注", pause: "暂停", resume: "继续", startBreak: "开始休息", finish: "提前完成", interrupt: "结束本次", skipBreak: "跳过休息", close: "关闭专注计时",
       caveat: "切换到后台后计时仍会按真实时间校准；专注时长会进入你的复盘。", goalAction: "专注此目标", untitled: "自由专注", completed: "专注完成", interrupted: "已记录本次专注", breakReady: "专注完成，休息一下吧。", breakDone: "休息结束，可以重新出发了。", notificationBody: "{label} · 已完成 {minutes} 分钟", confirmEnd: "现在结束这次专注吗？已投入的时间仍会记录。", todaySummary: "今日专注 {minutes} 分钟", reviewKicker: "专注复盘", reviewTitle: "专注时长", reviewScope: "选择专注复盘周期", scopeWeek: "周", scopeMonth: "月", reviewWeek: "选择一周", reviewMonth: "选择月份", reviewUnit: "分钟", reviewChart: "每日专注分钟", noFocus: "这个周期还没有专注记录。", moreThanPrevious: "比前一周多 {minutes} 分钟", lessThanPrevious: "比前一周少 {minutes} 分钟", sameAsPrevious: "与前一周相同", moreThanPreviousMonth: "比上个月多 {minutes} 分钟", lessThanPreviousMonth: "比上个月少 {minutes} 分钟", sameAsPreviousMonth: "与上个月相同", monthTotal: "{month} · 共 {minutes} 分钟", monthActivity: "{days} 天有专注记录 · 日均 {average} 分钟",
     },
-    foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", selectedTitle: "当日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组" },
+    foundations: { kicker: "FOUNDATIONS", title: "今日基础目标", selectedTitle: "当日基础目标", adjust: "调整目标", periodNote: "周期目标 · 不计入今日完成度", carousel: "今日习惯分组", previousPage: "上一组习惯", nextPage: "下一组习惯", page: "第 {page} 组，共 {total} 组", habitSpendReview: "复盘里看支出关联 →" },
     calendar: {
       kicker: "本月",
       title: "{year}年 {month}月",
@@ -875,7 +875,7 @@ const i18n = {
       custom: "Custom", focusMinutes: "Focus minutes", breakMinutes: "Break minutes", sound: "Sound", notify: "Notification", wakeLock: "Keep screen awake", start: "Start focus", pause: "Pause", resume: "Resume", startBreak: "Start break", finish: "Finish now", interrupt: "End session", skipBreak: "Skip break", close: "Close focus timer",
       caveat: "The timer stays accurate in the background. Focused minutes become part of your review.", goalAction: "Focus on this goal", untitled: "Open focus", completed: "Focus complete", interrupted: "Focus time recorded", breakReady: "Focus complete. Take a quiet break.", breakDone: "Break complete. You are ready again.", notificationBody: "{label} · {minutes} focused minutes", confirmEnd: "End this focus now? The time you invested will still be recorded.", todaySummary: "{minutes} min focused today", reviewKicker: "FOCUS REVIEW", reviewTitle: "Focused time", reviewScope: "Choose focus review period", scopeWeek: "Week", scopeMonth: "Month", reviewWeek: "Choose week", reviewMonth: "Choose month", reviewUnit: "min", reviewChart: "Focused minutes by day", noFocus: "No focused time recorded in this period.", moreThanPrevious: "{minutes} min more than the previous week", lessThanPrevious: "{minutes} min less than the previous week", sameAsPrevious: "Same as the previous week", moreThanPreviousMonth: "{minutes} min more than last month", lessThanPreviousMonth: "{minutes} min less than last month", sameAsPreviousMonth: "Same as last month", monthTotal: "{month} · {minutes} min total", monthActivity: "{days} focused days · {average} min daily average",
     },
-    foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", selectedTitle: "Foundations for This Day", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}" },
+    foundations: { kicker: "FOUNDATIONS", title: "Daily Foundations", selectedTitle: "Foundations for This Day", adjust: "Adjust goals", periodNote: "Period target · excluded from daily score", carousel: "Today's habit groups", previousPage: "Previous habit group", nextPage: "Next habit group", page: "Group {page} of {total}", habitSpendReview: "See spending links in Review →" },
     calendar: {
       kicker: "MONTH IN VIEW",
       title: "{monthName} {year}",
@@ -1556,7 +1556,7 @@ const i18n = {
       custom: "Eigene", focusMinutes: "Fokusminuten", breakMinutes: "Pausenminuten", sound: "Ton", notify: "Mitteilung", wakeLock: "Bildschirm aktiv halten", start: "Fokus starten", pause: "Pause", resume: "Fortsetzen", startBreak: "Pause starten", finish: "Jetzt abschließen", interrupt: "Einheit beenden", skipBreak: "Pause überspringen", close: "Fokus-Timer schließen",
       caveat: "Der Timer bleibt im Hintergrund zeitgenau. Fokusminuten fließen in deine Rückschau ein.", goalAction: "Dieses Ziel fokussieren", untitled: "Freier Fokus", completed: "Fokus abgeschlossen", interrupted: "Fokuszeit gespeichert", breakReady: "Fokus abgeschlossen. Zeit für eine ruhige Pause.", breakDone: "Pause beendet. Du kannst neu starten.", notificationBody: "{label} · {minutes} Fokusminuten", confirmEnd: "Diesen Fokus jetzt beenden? Die investierte Zeit wird trotzdem gespeichert.", todaySummary: "Heute {minutes} Fokusminuten", reviewKicker: "FOKUS-RÜCKBLICK", reviewTitle: "Fokuszeit", reviewScope: "Zeitraum für Fokusrückblick wählen", scopeWeek: "Woche", scopeMonth: "Monat", reviewWeek: "Woche wählen", reviewMonth: "Monat wählen", reviewUnit: "Min.", reviewChart: "Fokusminuten pro Tag", noFocus: "Für diesen Zeitraum gibt es noch keine Fokuszeit.", moreThanPrevious: "{minutes} Min. mehr als in der Vorwoche", lessThanPrevious: "{minutes} Min. weniger als in der Vorwoche", sameAsPrevious: "Wie in der Vorwoche", moreThanPreviousMonth: "{minutes} Min. mehr als im Vormonat", lessThanPreviousMonth: "{minutes} Min. weniger als im Vormonat", sameAsPreviousMonth: "Wie im Vormonat", monthTotal: "{month} · insgesamt {minutes} Min.", monthActivity: "{days} Fokustage · Ø {average} Min. pro Tag",
     },
-    foundations: { kicker: "BASIS", title: "Tägliche Basisziele", selectedTitle: "Basisziele dieses Tages", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}" },
+    foundations: { kicker: "BASIS", title: "Tägliche Basisziele", selectedTitle: "Basisziele dieses Tages", adjust: "Ziele anpassen", periodNote: "Periodenziel · nicht im Tagesscore", carousel: "Heutige Gewohnheitsgruppen", previousPage: "Vorige Gewohnheitsgruppe", nextPage: "Nächste Gewohnheitsgruppe", page: "Gruppe {page} von {total}", habitSpendReview: "Ausgaben-Zusammenhänge im Rückblick →" },
     calendar: {
       kicker: "MONATSANSICHT",
       title: "{monthName} {year}",
@@ -4745,6 +4745,65 @@ function renderHabitCarousel(habits, date, completedIds, locked = false) {
 }
 
 
+function spendInsightDailyRows(endIso, dayCount = 30) {
+  const L = globalThis.LifeLedgerLedger;
+  if (!state.ledger || !L) return [];
+  const ledger = L.normalize(state.ledger, { lang: currentLang });
+  if (!ledger.transactions?.length) return [];
+  const cursor = parseDate(endIso);
+  const rows = [];
+  for (let i = 0; i < dayCount; i += 1) {
+    const date = isoDate(cursor);
+    const scored = dailyHabits(date);
+    const done = scored.filter(h => getLog(date).completed.includes(h.id)).length;
+    const completionPercent = scored.length ? Math.round((done / scored.length) * 100) : null;
+    rows.push({
+      date,
+      spendMinor: L.spendingTodayMinor(ledger, date),
+      completionPercent,
+    });
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return rows;
+}
+
+function renderTodayHabitSpendHint(viewingToday, future) {
+  const el = $("#todayHabitSpendHint");
+  if (!el) return;
+  if (!viewingToday || future) {
+    el.hidden = true;
+    el.textContent = "";
+    el.replaceChildren();
+    return;
+  }
+  const L = globalThis.LifeLedgerLedger;
+  const insight = L?.habitCompletionSpendInsight?.(spendInsightDailyRows(isoDate(new Date()), 30));
+  if (!insight) {
+    el.hidden = true;
+    el.textContent = "";
+    el.replaceChildren();
+    return;
+  }
+  const ledger = L.normalize(state.ledger, { lang: currentLang });
+  const locale = i18n[currentLang]?.locale || "de-DE";
+  const cur = ledger.settings.defaultCurrency;
+  const { highCompletionAvg, lowCompletionAvg } = insight;
+  const body = languageText(
+    `近 30 天：习惯完成较高日平均支出 ${L.formatMoney(-highCompletionAvg, cur, locale)}，较低日 ${L.formatMoney(-lowCompletionAvg, cur, locale)}。`,
+    `Last 30 days: on high-completion days you spent ${L.formatMoney(-highCompletionAvg, cur, locale)} on average vs ${L.formatMoney(-lowCompletionAvg, cur, locale)} when completion was lower.`,
+    `Letzte 30 Tage: bei hoher Gewohnheitsquote im Schnitt ${L.formatMoney(-highCompletionAvg, cur, locale)} Ausgaben, bei niedriger ${L.formatMoney(-lowCompletionAvg, cur, locale)}.`,
+  );
+  el.innerHTML = `${escapeHtml(body)} <button type="button" class="text-button today-habit-spend-hint-link">${escapeHtml(tr("foundations.habitSpendReview"))}</button>`;
+  el.hidden = false;
+  if (!el.dataset.boundReview) {
+    el.dataset.boundReview = "1";
+    el.addEventListener("click", (ev) => {
+      if (ev.target.closest(".today-habit-spend-hint-link")) switchToView("review");
+    });
+  }
+}
+
+
 function renderToday() {
   const date = selectedPlanningDate;
   const selected = parseDate(date);
@@ -4811,6 +4870,7 @@ function renderToday() {
   });
   renderMoodReasonSummary("#quickMoodReason", log);
   renderDailyGoals();
+  renderTodayHabitSpendHint(viewingToday, future);
 }
 
 function renderDailyGoals() {
@@ -8199,9 +8259,18 @@ async function renderJournalFeed(version) {
       && Boolean(host.querySelector('.journal-feed-entry, .feed-empty'))
       && journalFeedFilterEntering;
     host.classList.remove('ll-paint-host--stale');
+    host.querySelector('.ll-stale-veil')?.remove();
     if (feedNeedsAsync) {
-      if (keepStaleJournalFeed) host.classList.add('ll-paint-host--stale');
-      else {
+      if (keepStaleJournalFeed) {
+        host.classList.add('ll-paint-host--stale');
+        if (!host.querySelector('.ll-stale-veil')) {
+          host.insertAdjacentHTML(
+            'beforeend',
+            '<div class="ll-stale-veil" aria-hidden="true"><span class="ll-skeleton ll-skeleton--feed-stale"></span></div>',
+          );
+        }
+      } else {
+        host.querySelector('.ll-stale-veil')?.remove();
         host.classList.remove('ll-paint-host--ready');
         host.innerHTML = window.LifeLedgerInteraction?.skeletonMarkup?.('ll-skeleton ll-skeleton--feed')
           || '<div class="ll-skeleton ll-skeleton--feed" aria-hidden="true"></div>';
@@ -8266,6 +8335,8 @@ async function renderJournalFeed(version) {
     return `<article class="journal-feed-entry${appendClass}" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
   }).join('') : `<div class="feed-empty">${hairlineEmptyMarkup('./assets/hairline/empty-journal.svg',languageText('这里，留给以后的回看','Room for the next chapter','Platz für das nächste Kapitel'),languageText('这个范围还没有文字或照片。可以切换月份，或先写下一段复盘。','No writing or photos in this range yet. Try another month, or write a reflection.','Noch keine Texte oder Fotos in diesem Zeitraum. Wähle einen anderen Monat oder schreibe einen Rückblick.'))}</div>`;
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
+  host?.classList.remove('ll-paint-host--stale');
+  host?.querySelector('.ll-stale-veil')?.remove();
   host?.classList.add('ll-paint-host--ready');
   hydrateHairlineMounts(host);
   host?.querySelector(".feed-empty .hairline-empty")?.classList.add("ll-empty");
