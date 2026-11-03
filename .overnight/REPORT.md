@@ -1,4 +1,4 @@
-# Life Ledger 夜间构建总报告（Batch 10 · Round 5）
+# Life Ledger 夜间构建总报告（Batch 10 · Round 6）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
@@ -6,7 +6,26 @@ Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；�
 
 ---
 
-## 本轮（Batch 10 · Round 5）— 本周 / 复盘空态 CTA 对齐
+## 本轮（Batch 10 · Round 6）— Today 组件库引导 + 复盘散点空态
+
+| 项目 | 说明 |
+|------|------|
+| **Today** | 首次进入 Today（未写入 `life-ledger-today-cards-onboarding-dismissed`）时，右下角 **编辑卡片** 上方出现不透明引导条：`layout-edit-hint` 插画 + **打开组件库** / **知道了**；点组件库或进入编辑模式后永久收起。 |
+| **复盘 · Money** | 本月已有支出但心情/习惯/专注散点尚未满足数据门槛时，Money 面板下方 dashed 空态 + **去 Today 记录**。 |
+| **截图** | `.overnight/shots/b10r6-today-onboard-zh-chromium-light-1440-chromium.png` 等 6 张（`node .overnight/capture-batch10-round6.mjs`，端口 **5296**）。 |
+| **测试** | `npm test` **389**；`npm run test:browser` **35**（+2 `today-cards-onboard`，端口 **5294**）。 |
+
+**怎么验：**
+
+1. DevTools → Application → 删除 `life-ledger-today-cards-onboarding-dismissed` → **今日** → 见引导条；点 **打开组件库** 应弹出 `#tcLibrary` 且引导不再出现。
+2. 本地档：仅保留本月 1 笔支出、清空多数 `logs` 心情天数 → **复盘** → Money 区见散点空态（demo 全量数据下通常已有散点，不会显示）。
+3. 全量：`npm test` + `npm run test:browser`（勿与 **5296** capture 并行）。
+
+**仍已知：** Cloudflare 首次不 seed 账本；`v210.css` reduced-motion 未物理合并；demo 日度 feed 可能仍有仅照片行。
+
+---
+
+## 上一轮（Batch 10 · Round 5）— 本周 / 复盘空态 CTA 对齐
 
 | 项目 | 说明 |
 |------|------|

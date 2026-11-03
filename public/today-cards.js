@@ -10,18 +10,21 @@
   const NS = window.LifeLedgerStorageSuffix || "";
   const T = {
     zh: { edit: "编辑卡片", done: "完成", add: "添加卡片", reset: "恢复默认", size: "卡片尺寸", hide: "移除卡片", left: "前移", right: "后移", settings: "卡片设置", hint: "拖动排序 · 点卡片设置",
+      onboardStrong: "今日页可按你的习惯排列", onboardBody: "点右下角「编辑卡片」可拖动排序、改尺寸；「添加卡片」里还有照片墙、频率记录等组件。", onboardLibrary: "打开组件库", onboardDismiss: "知道了",
       libTitle: "让日常，按你的方式展开", libKicker: "组件库", libHint: "只添加你需要的。添加后，可以在编辑卡片中调整位置。", libAdd: "添加", libAdded: "已添加", libClose: "完成",
       setHint: "设置自动保存。只有在编辑卡片时才能移动和设置。", fixed: "这张卡片只有一种尺寸。", sS: "小", sM: "中", sL: "大", sW: "长条", sX: "整行",
       hero: "今日进度", mood: "心情", habits: "今日基础目标", dayplan: "每日日程", tools: "每日复盘", calendar: "月历", weather: "天气", rhythm: "近期节律", heatmap: "习惯热力图", wall: "照片墙", photos: "照片记忆", focus: "专注", freq: "频率记录", spending: "今日支出",
       d_hero: "名言、日期和今日完成度。", d_mood: "记录今天整体的心情。", d_habits: "点完成后自动移到最后；大卡一页 6 个，长条一行 4 个，整行一页 8 个。", d_dayplan: "Google 日历当天日程（只读）。", d_tools: "写下今天发生了什么；可语音记录，也可展开大窗口。", d_calendar: "这个月每天的心情，点某天可补打卡。",
       d_weather: "当前天气，横轴看各时段，雨雪提醒。", d_rhythm: "最近 7 天的完成情况。", d_heatmap: "本月习惯完成的深浅。", d_wall: "照片铺满卡片；在卡片设置里添加、取景和轮播。", d_photos: "这一天的照片（部署版）。", d_focus: "一键开始专注计时。", d_freq: "每周 / 每月计次的目标：看这个月的记录分布。", d_spending: "所选日期的支出与本月累计；点按钮打开记账页。" },
     en: { edit: "Edit cards", done: "Done", add: "Add card", reset: "Reset", size: "Card size", hide: "Remove card", left: "Move earlier", right: "Move later", settings: "Card settings", hint: "Drag to reorder · click a card for settings",
+      onboardStrong: "Shape Today your way", onboardBody: "Tap Edit cards (bottom-right) to drag, resize, or hide widgets. Add card opens the library for photo wall, frequency, and more.", onboardLibrary: "Open widget library", onboardDismiss: "Got it",
       libTitle: "Make room for your day", libKicker: "WIDGET LIBRARY", libHint: "Choose what belongs on your desk. Added cards can be moved in Edit cards.", libAdd: "Add", libAdded: "Added", libClose: "Done",
       setHint: "Changes save automatically. Cards only move and change in edit mode.", fixed: "This card has one size.", sS: "Small", sM: "Medium", sL: "Large", sW: "Wide", sX: "Extra large",
       hero: "Today's progress", mood: "Mood", habits: "Foundations", dayplan: "Daily calendar", tools: "Daily reflection", calendar: "Month", weather: "Weather", rhythm: "Recent rhythm", heatmap: "Habit heatmap", wall: "Photo wall", photos: "Photo memories", focus: "Focus", freq: "By frequency", spending: "Spending today",
       d_hero: "Quote, date and today's progress.", d_mood: "How the whole day felt.", d_habits: "Done habits move to the end; large shows 6, wide 4 in a row, extra large 8.", d_dayplan: "Today's Google Calendar (read-only).", d_tools: "What happened today; dictate or open it larger.", d_calendar: "This month's moods; open a day to catch up.",
       d_weather: "Weather now, hourly curve, rain and snow alerts.", d_rhythm: "The last 7 days at a glance.", d_heatmap: "How full each day of the month was.", d_wall: "Your photo fills the card; add, frame and loop in card settings.", d_photos: "This day's photos (deployed version).", d_focus: "Start a focus session in one tap.", d_freq: "Weekly or monthly habits: how this month is spread.", d_spending: "Spending for the selected day and month total; open the Money page." },
     de: { edit: "Karten bearbeiten", done: "Fertig", add: "Karte hinzufügen", reset: "Zurücksetzen", size: "Kartengröße", hide: "Karte entfernen", left: "Nach vorn", right: "Nach hinten", settings: "Karteneinstellungen", hint: "Ziehen zum Sortieren · Karte anklicken zum Einstellen",
+      onboardStrong: "Heute nach deinem Rhythmus", onboardBody: "Unten rechts „Karten bearbeiten“: ziehen, Größe ändern, ausblenden. „Karte hinzufügen“ öffnet Fotowand, Häufigkeit und mehr.", onboardLibrary: "Widget-Bibliothek", onboardDismiss: "Verstanden",
       libTitle: "Dein Tag. Dein Platz.", libKicker: "WIDGET-BIBLIOTHEK", libHint: "Wähle, was auf deinen Schreibtisch gehört. Karten lassen sich im Bearbeitungsmodus bewegen.", libAdd: "Hinzufügen", libAdded: "Hinzugefügt", libClose: "Fertig",
       setHint: "Wird automatisch gespeichert. Karten lassen sich nur im Bearbeitungsmodus ändern.", fixed: "Diese Karte hat eine Größe.", sS: "Klein", sM: "Mittel", sL: "Groß", sW: "Breit", sX: "Extragroß",
       hero: "Heutiger Fortschritt", mood: "Stimmung", habits: "Grundlagen", dayplan: "Tageskalender", tools: "Tagesreflexion", calendar: "Monat", weather: "Wetter", rhythm: "Letzte Tage", heatmap: "Gewohnheits-Heatmap", wall: "Fotowand", photos: "Fotoerinnerungen", focus: "Fokus", freq: "Nach Häufigkeit", spending: "Ausgaben heute",
@@ -117,6 +120,81 @@
   toggle.type = "button"; toggle.id = "tcEditToggle"; toggle.className = "secondary-button tc-edit-toggle";
   toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg><span></span>';
   document.body.append(toggle);
+
+  const ONBOARD_KEY = "life-ledger-today-cards-onboarding-dismissed" + NS;
+  function onboardDismissed() {
+    try { return localStorage.getItem(ONBOARD_KEY) === "1"; } catch { return false; }
+  }
+  function dismissOnboard() {
+    if (onboardDismissed()) {
+      if (onboardHint) {
+        onboardHint.remove();
+        onboardHint = null;
+      }
+      return;
+    }
+    try { localStorage.setItem(ONBOARD_KEY, "1"); } catch { /* quota */ }
+    if (!onboardHint) return;
+    onboardHint.classList.add("is-dismissed");
+    setTimeout(() => {
+      onboardHint?.remove();
+      onboardHint = null;
+    }, 280);
+  }
+  let onboardHint = null;
+  function ensureOnboardHint() {
+    if (onboardHint || onboardDismissed()) return onboardHint;
+    onboardHint = document.createElement("aside");
+    onboardHint.id = "tcOnboardHint";
+    onboardHint.className = "tc-onboard-hint ll-polished";
+    onboardHint.hidden = true;
+    onboardHint.setAttribute("role", "note");
+    onboardHint.addEventListener("click", e => {
+      if (e.target.closest("[data-tc-onboard-dismiss]")) {
+        dismissOnboard();
+        syncOnboard();
+        toggle.focus({ preventScroll: true });
+        return;
+      }
+      if (e.target.closest("[data-tc-onboard-library]")) {
+        dismissOnboard();
+        syncOnboard();
+        openLibrary();
+      }
+    });
+    document.body.append(onboardHint);
+    return onboardHint;
+  }
+  function renderOnboardCopy() {
+    const hint = ensureOnboardHint();
+    if (!hint) return;
+    hint.innerHTML = `<div class="ll-art" data-art="layout-edit-hint" aria-hidden="true"></div>
+      <div class="tc-onboard-copy">
+        <strong>${tr("onboardStrong")}</strong>
+        <p>${tr("onboardBody")}</p>
+        <div class="tc-onboard-actions">
+          <button type="button" class="secondary-button" data-tc-onboard-library>${tr("onboardLibrary")}</button>
+          <button type="button" class="text-button" data-tc-onboard-dismiss>${tr("onboardDismiss")}</button>
+        </div>
+      </div>`;
+    window.LifeLedgerHairline?.mount(hint.querySelector(".ll-art"), "layout-edit-hint");
+  }
+  function syncOnboard() {
+    if (onboardDismissed()) {
+      if (onboardHint) {
+        onboardHint.remove();
+        onboardHint = null;
+      }
+      return;
+    }
+    const show = view.classList.contains("active") && !editing && !document.querySelector(".day-drawer.open");
+    if (!show) {
+      if (onboardHint) onboardHint.hidden = true;
+      return;
+    }
+    renderOnboardCopy();
+    onboardHint.hidden = false;
+  }
 
   const bar = document.createElement("div");
   bar.className = "tc-bar"; bar.hidden = true; bar.setAttribute("role", "toolbar");
@@ -216,6 +294,7 @@
   function setEditing(on, { focus = true, saved = false } = {}) {
     if (editing === on) return;
     if (!on && editing && saved) pulseEditSaved();
+    if (on) dismissOnboard();
     editing = on;
     view.classList.toggle("tc-editing", on);
     // Card content is inert while editing: no clicks, no tab stops, only the card controls.
@@ -241,9 +320,15 @@
     }
     sortable?.option("disabled", !on);
     if (focus) (on ? view.querySelector(".tc-card:not([hidden]) .tc-controls button:not(:disabled)") : toggle)?.focus({ preventScroll: true });
+    syncOnboard();
   }
   // Leaving Today ends editing, so the toolbar never floats over another view.
-  new MutationObserver(() => { if (editing && !view.classList.contains("active")) setEditing(false, { focus: false }); }).observe(view, { attributes: true, attributeFilter: ["class"] });
+  new MutationObserver(() => {
+    if (editing && !view.classList.contains("active")) setEditing(false, { focus: false });
+    syncOnboard();
+  }).observe(view, { attributes: true, attributeFilter: ["class"] });
+  const drawer = document.getElementById("dayDrawer");
+  if (drawer) new MutationObserver(syncOnboard).observe(drawer, { attributes: true, attributeFilter: ["class"] });
 
   const flash = el => { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("tc-new"); void el.offsetWidth; el.classList.add("tc-new"); setTimeout(() => el.classList.remove("tc-new"), 1600); };
 
@@ -291,10 +376,11 @@
   bar.querySelector(".tc-reset").addEventListener("click", () => { layout = defaults(); save(); apply(); window.renderToday?.(); });
   bar.querySelector(".tc-add-btn").addEventListener("click", openLibrary);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && editing && !document.querySelector("dialog[open], .day-drawer.open")) setEditing(false); });
-  new MutationObserver(() => { refreshControls(); if (sheet.open) renderSettings(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  new MutationObserver(() => { refreshControls(); if (sheet.open) renderSettings(); if (onboardHint && !onboardHint.hidden) renderOnboardCopy(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   let lastCols = 0;
   new ResizeObserver(() => { const before = geo.row; geometry(); if (geo.cols !== lastCols || geo.row !== before) { lastCols = geo.cols; apply(); } }).observe(view);
 
   apply();
+  syncOnboard();
   window.LifeLedgerTodayCards = { reload: () => { layout = load(); apply(); window.renderToday?.(); }, isDefault: () => JSON.stringify(layout) === JSON.stringify(defaults()), get: () => layout.map(r => ({ ...r })), sizes: () => Object.fromEntries(CARDS.map(c => [c.id, [...c.sizes]])), setEditing, openSettings, openLibrary, show: id => { const r = layout.find(x => x.id === id); if (r?.hidden) { r.hidden = false; save(); apply(); } }, reset: () => { layout = defaults(); save(); apply(); } };
 })();

@@ -1,13 +1,14 @@
 # Overnight progress
 
-## Batch 10 · Round 5 — done
+## Batch 10 · Round 6 — done
 
 - **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Goal 2 抛光 — 本周 / 复盘空态 CTA：** `wirePolishedEmptyCtas` + `syncWeekReviewEmptyHint` / `syncReviewReflectionEmptyHint` — **本周** 无目标 → `weekly-goals-empty ll-polished` + **添加第一个本周目标**（聚焦 `#weeklyGoalInput`）；空白本周复盘 → **开始写本周复盘**；长期目标 tab → hairline + **添加长期目标**；**复盘** 空白月度复盘 → **开始写复盘**；无习惯分数 / 指标 / 明细表 → **去习惯页添加** / **去 Today 打卡**。
-- **文档：** README **EN/ZH/DE** 本周与复盘空态一句；`CHANGELOG [Unreleased]` Week & Review empty states。
-- **回归：** `tests/week-review-empty.browser.test.mjs`（Chromium + WebKit，端口 **5297**）；`habit-library-polish.test.mjs` +2 AST。
-- **截图：** `node .overnight/capture-batch10-round5.mjs`（**5296**，滚动至 CTA）→ `b10r5-week-empty-*`、`b10r5-review-empty-*`。
-- **测试：** `npm test` **388**；`npm run test:browser` **33**（+2 week-review-empty，串行 ~99s）。
+- **Goal 2 抛光 — Today 组件库 onboarding：** `today-cards.js` — 首次 Today（`life-ledger-today-cards-onboarding-dismissed`）显示 `#tcOnboardHint`（`layout-edit-hint` 插画 + **打开组件库** / **知道了**）；进入编辑、打开组件库或关闭后从 DOM 移除并持久化；抽屉打开时隐藏。
+- **Goal 2 抛光 — 复盘散点空态：** `renderReviewLedgerSummary` — 本月有支出但三类散点均未生成时 `#reviewScatterEmptyHint` + **去 Today 记录**（`empty-insights.svg`）。
+- **文档：** README **EN/ZH/DE** Today 引导 + Review 散点空态一句；`CHANGELOG [Unreleased]` 同上。
+- **回归：** `tests/today-cards-onboard.browser.test.mjs`（Chromium + WebKit，端口 **5294**）；`habit-library-polish.test.mjs` +1 AST。
+- **截图：** `node .overnight/capture-batch10-round6.mjs`（**5296**）→ `b10r6-today-onboard-*`（6 张；散点空态未单独 capture，demo 数据过满）。
+- **测试：** `npm test` **389**；`npm run test:browser` **35**（+2 today-cards-onboard，串行 ~110s）。
 
 ## Half-done
 
@@ -15,8 +16,8 @@
 
 ## Next
 
-- Batch 10 Round 6：Today 卡片库 onboarding 微提示，或复盘 scatter / 习惯洞察空态再抛光；capture **5296** 与 browser 套件勿并行。
-- **2.2** `v210.css` reduced-motion 物理合并（仍低优先级）。
+- Batch 10 Round 7：复盘散点空态专用 capture（需精简 local 档 logs/ledger）；或 Today 编辑成功动效再抛光；**2.2** reduced-motion 物理合并（低优先级）。
+- capture **5296** 与 browser 套件勿并行（Round 6 fakecloud 曾因此 flake，单跑已通过）。
 
 ## Known bugs / gaps
 
@@ -30,23 +31,22 @@
 ## npm test
 
 ```
-388 pass, 0 fail (batch 10 round 5, unit gate)
-33 pass, 0 fail (test:browser serial, batch 10 round 5)
+389 pass, 0 fail (batch 10 round 6, unit gate)
+35 pass, 0 fail (test:browser serial, batch 10 round 6)
 ```
 
 ## Gate result
 
 _pending (driver appends after commit)_
 
-## Batch 10 · Round 4 — done
+## Batch 10 · Round 5 — done
 
 - **REVIEW.md：** 仍无新 HIGH/MED；Round 1–3 已处理 LOW #1 / #3；**LOW #2** reduced-motion 大合并仍 **2.2**。
-- **Goal 2 抛光 — 时间轴日记 feed：** `journalFeedEmptyMarkup` / `wireJournalFeedEmptyActions` — 无月份筛选时用 `feed-empty ll-polished` + 主 CTA（日度 **去写今日复盘** → Today 日记；周度/月度 **打开本周/月度复盘**）；有月份但无行时用横向 `journal-feed-filter-quiet` + `search-empty.svg`；`journal-feed-pane--empty` 柔化描述行。
-- **Goal 2 抛光 — Today 卡片网格：** `tc-grid` 间距 `clamp(14px, 1.65vw, 22px)`；入场时 `.tc-card` 在 hero 后错开；桌面 fine pointer 轻 hover 抬升（`prefers-reduced-motion` 关闭）。
-- **文档：** README **EN/ZH/DE** 时间轴空态一句；`CHANGELOG [Unreleased]` 日记 feed + Today rhythm。
-- **回归：** `tests/journal-feed-empty.browser.test.mjs`（Chromium + WebKit）；`habit-library-polish.test.mjs` +2 AST。
-- **截图：** `node .overnight/capture-batch10-round4.mjs`（**5296**）→ `b10r4-journal-empty-*`、`b10r4-today-grid-*`。
-- **测试：** `npm test` **386**；`npm run test:browser` **31**（+2 journal-feed-empty，串行 ~94s）。
+- **Goal 2 抛光 — 本周 / 复盘空态 CTA：** `wirePolishedEmptyCtas` + `syncWeekReviewEmptyHint` / `syncReviewReflectionEmptyHint` — **本周** 无目标 → `weekly-goals-empty ll-polished` + **添加第一个本周目标**（聚焦 `#weeklyGoalInput`）；空白本周复盘 → **开始写本周复盘**；长期目标 tab → hairline + **添加长期目标**；**复盘** 空白月度复盘 → **开始写复盘**；无习惯分数 / 指标 / 明细表 → **去习惯页添加** / **去 Today 打卡**。
+- **文档：** README **EN/ZH/DE** 本周与复盘空态一句；`CHANGELOG [Unreleased]` Week & Review empty states。
+- **回归：** `tests/week-review-empty.browser.test.mjs`（Chromium + WebKit，端口 **5297**）；`habit-library-polish.test.mjs` +2 AST。
+- **截图：** `node .overnight/capture-batch10-round5.mjs`（**5296**，滚动至 CTA）→ `b10r5-week-empty-*`、`b10r5-review-empty-*`。
+- **测试：** `npm test` **388**；`npm run test:browser` **33**（+2 week-review-empty，串行 ~99s）。
 
 ## Driver gate after round 1
 ℹ tests 384 ℹ pass 384 ℹ fail 0 
@@ -62,3 +62,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 5
 ℹ tests 388 ℹ pass 388 ℹ fail 0 
+
+## Driver gate after round 6
+ℹ tests 389 ℹ pass 389 ℹ fail 0 

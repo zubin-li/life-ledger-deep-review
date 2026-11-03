@@ -9382,6 +9382,15 @@ function renderReviewLedgerSummary() {
   const scatterSection = scatterParts.length
     ? `<div class="review-scatter-grid is-retargeting">${scatterParts.join("")}<div class="review-scatter-tip" hidden aria-hidden="true"><strong></strong><span></span></div></div>`
     : "";
+  let scatterEmptyBlock = "";
+  if (!scatterParts.length && summary.expenseMinor > 0) {
+    const scatterEmptyCta = languageText("去 Today 记录", "Log on Today", "Auf Heute erfassen");
+    scatterEmptyBlock = `<div class="review-scatter-empty ll-polished" id="reviewScatterEmptyHint">${hairlineEmptyMarkup(
+      "./assets/hairline/empty-insights.svg",
+      languageText("散点图还需要一点数据", "Scatter charts need a few more days", "Streudiagramme brauchen noch Tage"),
+      languageText("连续记录心情、习惯完成与支出后，心情 / 习惯 / 专注与支出的对照图会自动出现。", "Log mood, habit completion, and spending on more days and mood, habit, and focus vs spend charts will appear.", "Erfasse an mehr Tagen Stimmung, Gewohnheiten und Ausgaben — dann erscheinen die Vergleichsdiagramme."),
+    )}<button type="button" class="secondary-button" id="reviewScatterEmptyToday">${escapeHtml(scatterEmptyCta)}</button></div>`;
+  }
   const insightParts = [moodLine, habitLine, focusLine, budgetLine].filter(Boolean);
   const insightSection = insightParts.length
     ? `<div class="review-ledger-insights is-retargeting" id="review-ledger-insights" tabindex="-1">${insightParts.join("")}</div>`
@@ -9446,7 +9455,7 @@ function renderReviewLedgerSummary() {
       <span style="--stat-i:0"><small>${escapeHtml(languageText("支出", "Spending", "Ausgaben"))}</small><strong>${escapeHtml(spendText)}</strong><small class="review-ledger-spend-hint" id="reviewLedgerSpendHint"${spendHint ? "" : " hidden"}>${escapeHtml(spendHint)}</small></span>
       <span style="--stat-i:1"><small>${escapeHtml(languageText("收入", "Income", "Einnahmen"))}</small><strong>${escapeHtml(incomeText)}</strong></span>
       <span style="--stat-i:2"><small>${escapeHtml(languageText("结余", "Net", "Saldo"))}</small><strong>${escapeHtml(netText)}</strong></span>
-    </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${insightSection}</article>`;
+    </div>${recurringDueBlock}${topCategoryLine}${jumpNav}<p class="sr-only review-scatter-live" aria-live="polite" aria-atomic="true"></p>${scatterSection}${scatterEmptyBlock}${insightSection}</article>`;
   host.querySelector("[data-open-ledger]")?.addEventListener("click", () => switchToView("ledger"), { once: true });
   host.querySelector("[data-open-ledger-recurring]")?.addEventListener("click", () => {
     switchToView("ledger");
@@ -9484,6 +9493,12 @@ function renderReviewLedgerSummary() {
   });
   bindReviewScatterDotTips(host);
   bindReviewScatterJumpSpy(host);
+  const scatterEmptyHint = host.querySelector("#reviewScatterEmptyHint");
+  if (scatterEmptyHint) {
+    hydrateHairlineMounts(scatterEmptyHint);
+    scatterEmptyHint.querySelector(".hairline-empty")?.classList.add("ll-empty");
+    host.querySelector("#reviewScatterEmptyToday")?.addEventListener("click", () => switchToView("today"));
+  }
   requestAnimationFrame(() => {
     const retarget = globalThis.LifeLedgerInteraction?.retarget;
     retarget?.(host.querySelector(".review-ledger-stats.is-retargeting"));

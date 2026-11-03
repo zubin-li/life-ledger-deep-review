@@ -58,6 +58,20 @@ test("v210 week and review empty polish styles", () => {
   assert.match(css, /\.review-reflection-empty\.ll-polished/);
 });
 
+test("today cards onboarding and review scatter empty polish", () => {
+  const cards = readFileSync(new URL("../public/today-cards.js", import.meta.url), "utf8");
+  assert.match(cards, /life-ledger-today-cards-onboarding-dismissed/);
+  assert.match(cards, /function syncOnboard\(/);
+  assert.match(cards, /data-tc-onboard-library/);
+  const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(app, /reviewScatterEmptyHint/);
+  assert.match(app, /#reviewScatterEmptyToday/);
+  const css = readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
+  assert.match(css, /Batch 10 r6 — Today widget library onboarding/i);
+  assert.match(css, /\.tc-onboard-hint/);
+  assert.match(css, /\.review-scatter-empty\.ll-polished/);
+});
+
 test("journal feed avoids clearing ready on sync re-render", () => {
   const app = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
   const block = app.slice(app.indexOf("async function renderJournalFeed"), app.indexOf("function journalTextMarkup"));
