@@ -1,5 +1,44 @@
 # Overnight progress
 
+## Batch 11 · Round 10 — done (final)
+
+- **REVIEW.md：** #1–#3 已在 Round 1 关闭并仍有效；#4 `v210.css` reduced-motion 物理合并仍 **2.2**（终轮未做）。
+- **终轮：** `node .overnight/capture-batch11-round10.mjs`（**5292**）→ 7 张 `b11r10-release-*` 截图；`REPORT.md` 终夜收束章节；CHANGELOG r10 QA 行。
+- **Batch 11：** **已完成**（Round 1–10）。
+- **QA：** `npm test` **394** pass / 0 fail；`npm run test:browser` **45** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Owner 明早验收：见 `.overnight/REPORT.md`「一键路线」与 `b11r10-release-*` 截图。
+- **2.2：** 合并 `v210.css` 内分散 `prefers-reduced-motion`（REVIEW #4）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+
+## npm test
+
+```
+394 pass, 0 fail (batch 11 round 10, unit gate)
+45 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
 ## Batch 11 · Round 9 — done
 
 - **REVIEW.md：** 仍无新复审；#1–#3 已在 Round 1 关闭；#4 CSS 合并仍 **2.2**。
@@ -157,4 +196,7 @@ _pending (driver appends after commit)_
 ℹ tests 393 ℹ pass 393 ℹ fail 0 
 
 ## Driver gate after round 9
+ℹ tests 394 ℹ pass 394 ℹ fail 0 
+
+## Driver gate after round 10
 ℹ tests 394 ℹ pass 394 ℹ fail 0 

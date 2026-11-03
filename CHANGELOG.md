@@ -13,6 +13,7 @@ All notable changes are documented here.
 - **QA (Batch 11 r8):** Mac shell **`date:prev` / `date:next`** on **Review** and **Week**; journal timeline mood×spend insight link opens mood scatter.
 - **Polish (Batch 11 r9):** **Week** page header shows the rolling **30-day habit × spend** chip on the current week (links to habit scatter in **Review** with spotlight); Today habit insight link uses the same scatter spotlight.
 - **QA (Batch 11 r9):** Playwright **Week** habit×spend insight → `#review-scatter-habit`.
+- **QA (Batch 11 r10 · final):** Release screenshot set `capture-batch11-round10.mjs` (Today / 记账 / 时间轴 / 复盘 / 本周 / Mac shell **Money**); overnight Batch 11 closed at **394** unit + **45** browser tests.
 
 ### Fixed
 - **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.

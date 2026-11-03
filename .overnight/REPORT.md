@@ -1,3 +1,64 @@
+# Life Ledger 夜间构建 — 2.1.0 / Mac 3.1.0 终夜收束
+
+Web **2.1.0**、Mac **3.1.0**。仓库路径：`/Users/ashan/Documents/Codex/ll-overnight`（无 git remote 的 overnight 克隆）。请在本地用 `public/` 静态服务或已安装的 Mac 应用验收。
+
+## 交付摘要
+
+| 目标 | 状态 |
+|------|------|
+| **Goal 1 — 记账** | 已交付：`state.ledger`、快速录入、月视图/图表/预算/CSV、Today 支出卡、复盘 Money 面板、侧栏 **记账 / Money / Finanzen**；设计见 `.overnight/LEDGER-DESIGN.md`。 |
+| **Goal 2 — 全站打磨** | 多轮动效、空态、洞察文案与跨页导航（Today / 时间轴 / 本周 / 复盘）；样式集中在 `public/v210.css`。 |
+| **Batch 11（Round 1–10）** | 离线 PWA 记账脚本缓存、CSV/−0 修复、复盘散点空态 pill、Mac×fakecloud QA、习惯 streak 网格、时间轴/本周 habit×spend chip 等；**394** 单元 + **45** 浏览器测试全绿。 |
+| **Antigravity REVIEW** | HIGH/MED/LOW #1–#3 已修；#4 CSS 体积合并计划 **2.2**。 |
+
+## 明早一键验收（Demo）
+
+本地：`python3 -m http.server 5291 --bind 127.0.0.1`（cwd=`public`）→  
+`http://127.0.0.1:5291/index.html?mode=local&local-preview=demo-showcase-v1`
+
+1. **今日** — 心情×支出、习惯×支出 hint → 点链接应到复盘对应散点并短暂高亮（`b11r10-release-today-zh-light-1440-chromium.png`）。
+2. **记账** — 月汇总、甜甜圈/趋势/热力图、预算条、交易列表（`b11r10-release-ledger-zh-light-1440-chromium.png`）。
+3. **时间轴** — feed 标题下 mood×spend chip（`b11r10-release-journal-insight-zh-light-1440-chromium.png`）。
+4. **本周** — 当前周标题下 habit×spend chip（de 深色移动：`b11r10-release-week-insight-de-dark-390-webkit.png`）。
+5. **复盘** — Money 散点区（`b11r10-release-review-scatter-zh-light-1440-chromium.png`）；数据不足时空态三 pill 可跳转。
+6. **Mac 窗口感** — shell 注入下 **Money**（`b11r10-release-ledger-mac-en-light-1440-webkit.png`）；菜单 **←/→** 换月在 fakecloud 套件已覆盖。
+
+在线 demo（可选）：`bash .overnight/fakecloud.sh 5298`，同 URL 加 `mode=online` 流程见 Batch 5–7 REPORT。
+
+## 终轮截图（Round 10）
+
+| 文件 | 内容 |
+|------|------|
+| `.overnight/shots/b11r10-release-today-zh-light-1440-chromium.png` | 今日洞察 + 今日支出卡 |
+| `.overnight/shots/b11r10-release-ledger-zh-light-1440-chromium.png` | 记账月视图 |
+| `.overnight/shots/b11r10-release-journal-insight-zh-light-1440-chromium.png` | 时间轴 mood×spend |
+| `.overnight/shots/b11r10-release-review-scatter-zh-light-1440-chromium.png` | 复盘散点 |
+| `.overnight/shots/b11r10-release-week-insight-de-dark-390-webkit.png` | 本周 habit×spend（de/深色/390） |
+| `.overnight/shots/b11r10-release-ledger-de-dark-390-webkit.png` | 记账移动 de 深色 |
+| `.overnight/shots/b11r10-release-ledger-mac-en-light-1440-webkit.png` | Mac shell + Money |
+
+重拍：`node .overnight/capture-batch11-round10.mjs`（端口 **5292**）。
+
+## 已知限制（与 PROGRESS 一致）
+
+- 纯 Cloudflare **首次**访问不会自动 seed 记账（需本地/demo/导入）。
+- `v210.css` 约 5k 行，reduced-motion 规则分散 — **2.2** 再合并。
+- 支出环比：中等涨幅仍显示 **+N%**；极大涨幅或低基线改用 **金额差**（ intentional）。
+
+## 测试
+
+```text
+npm test          → 394 pass, 0 fail
+npm run test:browser → 45 pass, 0 fail
+```
+
+## 下次可做的想法
+
+- 2.2：`v210.css` motion 块合并；记账与习惯/心情的 **同一屏 mini 关联图**。
+- 生产部署前：确认 SW 已缓存 `ledger-core.js` / `ledger-ui.js`（REVIEW #1 已修，部署时再验离线 PWA）。
+
+---
+
 # Life Ledger 夜间构建总报告（Batch 11 · Round 9）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
