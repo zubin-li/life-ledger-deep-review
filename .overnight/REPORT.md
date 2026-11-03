@@ -1,12 +1,31 @@
-# Life Ledger 夜间构建总报告（Batch 8 · Round 3）
+# Life Ledger 夜间构建总报告（Batch 8 · Round 4）
 
 Web **2.1.0** / Mac **3.1.0**。本仓库为无 remote 的 overnight 克隆；请在本地浏览器或 Mac 应用窗口验收。
 
-**Batch 8 Round 3：** Today **今日支出**卡抛光（分类 chip、笔数、空账本侧栏、小屏排版）；单元 **363**、浏览器 **17** 全绿。
+**Batch 8 Round 4：** **本周 · 数据洞察** 增加 **本周支出** 磁贴并链到记账；单元 **366**、浏览器 **17** 全绿。
 
 ---
 
-## 本轮（Batch 8 · Round 3）— Today 支出卡抛光
+## 本轮（Batch 8 · Round 4）— 本周支出洞察
+
+| 项目 | 说明 |
+|------|------|
+| **逻辑** | `rangeSummary(ledger, start, end)` 汇总区间内默认货币收支；本周格只计 **周一～今天**（未来日不计）。 |
+| **UI** | 洞察区第 5 格「**本周支出**」/ *Week spending* / *Ausgaben diese Woche*；有账本可点 → **记账** 并跳到该周月份。 |
+| **测试** | `ledger-core.test.mjs`、`week-insights-spending.test.mjs`；`npm test` **366**；`npm run test:browser` **17**。 |
+| **截图** | `.overnight/shots/b8r4-*`（`node .overnight/capture-batch8-round4.mjs`，端口 **5294**，需滚到洞察区）。 |
+
+**怎么验：**
+
+1. Demo：`?mode=local&local-preview=demo-showcase-v1` → **本周** → 滚到 **数据洞察** → 见第五格 **−992,93 €** 量级（`b8r4-week-spending-zh-light-1440-chromium.png`）。
+2. 点 **本周支出** → 侧栏 **记账** 打开且月份对应该周。
+3. 无 `state.ledger` 交易时第五格为 **—** 且不可点。
+
+**已知：** reduced-motion CSS 大合并仍留 2.2；Week/Today 截图需 scroll 才进镜。
+
+---
+
+## 上一轮（Batch 8 · Round 3）— Today 支出卡抛光
 
 | 项目 | 说明 |
 |------|------|

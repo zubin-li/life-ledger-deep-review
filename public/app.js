@@ -272,6 +272,10 @@ const i18n = {
 ,
 "completionRate": "完成率"
 ,
+"spending": "本周支出"
+,
+"openMoney": "打开记账，查看本周所在月份"
+,
 "habitsProgress": "{done}/{total} 个习惯"
 ,
 "goalsTitleProgress": "本周目标 · {done} / {total}"
@@ -913,6 +917,10 @@ const i18n = {
 ,
 "completionRate": "Completion Rate"
 ,
+"spending": "Week spending"
+,
+"openMoney": "Open Money for this week’s month"
+,
 "habitsProgress": "{done}/{total} habits"
 ,
 "goalsTitleProgress": "Weekly goals · {done} of {total}"
@@ -1553,6 +1561,10 @@ const i18n = {
 "bestDay": "Bester Tag"
 ,
 "completionRate": "Abschlussrate"
+,
+"spending": "Ausgaben diese Woche"
+,
+"openMoney": "Finanzen für den Monat dieser Woche öffnen"
 ,
 "habitsProgress": "{done}/{total} Gewohnheiten"
 ,
@@ -7204,6 +7216,13 @@ function bindEvents() {
   });
   $('#weekCalendarConnect').addEventListener('click',openGoogleCalendarSettings);
   $('#weekArchiveLink').addEventListener('click',()=>{selectedArchiveWeek=selectedWorkspaceWeek;syncJournalMonthOptions();$('#journalMonthFilter').value=isoDate(weekDatesFromKey(selectedWorkspaceWeek).monday).slice(0,7);setJournalMode('weeks');switchToView('timeline');});
+  $("#weekSpendingCard")?.addEventListener("click", () => {
+    if (!state.ledger?.transactions?.length) return;
+    const { monday } = weekDatesFromKey(selectedWorkspaceWeek);
+    const ym = isoDate(monday).slice(0, 7);
+    window.LifeLedgerLedgerUI?.setViewMonth?.(ym);
+    switchToView("ledger");
+  });
   $("#habitInspectorForm")?.addEventListener("submit", saveHabitFromInspector);
   $("#habitInspectorForm")?.elements.frequency?.addEventListener("change", updateHabitInspectorRules);
   $$('#habitInspectorForm input[name="trackingMode"]').forEach(input => input.addEventListener("change", updateHabitInspectorRules));
@@ -7796,14 +7815,40 @@ function renderWeekInsights() {
   const weekFocusMinutes = weekSessions.reduce((acc, s) => acc + Math.round(s.actualMinutes || s.durationMinutes || 0), 0);
   setText("#weekFocusMinutes", languageText(`${weekFocusMinutes} 分钟`, `${weekFocusMinutes} min`, `${weekFocusMinutes} Min.`));
 
+  const L = globalThis.LifeLedgerLedger;
+  let weekExpenseTotal = 0;
+  let weekSpendDisplay = "—";
+  const rangeEnd = endDay > todayKey ? todayKey : endDay;
+  if (state.ledger && L && startDay <= rangeEnd) {
+    const ledger = L.normalize(state.ledger, { lang: currentLang });
+    if (ledger.transactions.length) {
+      const summary = L.rangeSummary(ledger, startDay, rangeEnd);
+      weekExpenseTotal = Math.abs(summary.expenseMinor);
+      const locale = i18n[currentLang]?.locale || "de-DE";
+      const cur = ledger.settings.defaultCurrency;
+      weekSpendDisplay = weekExpenseTotal
+        ? L.formatMoney(-weekExpenseTotal, cur, locale)
+        : L.formatMoney(0, cur, locale);
+    }
+  }
+  setText("#weekSpendingValue", weekSpendDisplay);
+  const spendCard = $("#weekSpendingCard");
+  if (spendCard) {
+    const canOpen = Boolean(state.ledger?.transactions?.length);
+    spendCard.disabled = !canOpen;
+    spendCard.setAttribute("aria-disabled", canOpen ? "false" : "true");
+    setAria("#weekSpendingCard", tr("week.openMoney"));
+  }
+
   setText("#weekRateLabel", tr("week.completionRate"));
   setText("#weekBestDayLabel", tr("week.bestDay"));
   setText("#weekStreakLabel", languageText('最长习惯连续', 'Best habit streak', 'Längste Gewohnheitsserie'));
   setText("#weekFocusMinutesLabel", tr("week.focusTime"));
+  setText("#weekSpendingLabel", tr("week.spending"));
 
   const emptyArt = $("#weekInsightsEmptyArt");
   if (emptyArt) {
-    const hasData = totalDone > 0 || weekFocusMinutes > 0;
+    const hasData = totalDone > 0 || weekFocusMinutes > 0 || weekExpenseTotal > 0;
     emptyArt.hidden = hasData;
     if (!hasData) {
       emptyArt.classList.add("ll-empty-enter");
@@ -9897,6 +9942,7 @@ setText("#weekRateLabel", tr("week.completionRate"));
 setText("#weekBestDayLabel", tr("week.bestDay"));
 setText("#weekStreakLabel", tr("week.streak"));
 setText("#weekFocusMinutesLabel", tr("week.focusTime"));
+setText("#weekSpendingLabel", tr("week.spending"));
 }
 
 function bootApplication() {

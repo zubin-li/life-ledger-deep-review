@@ -1190,5 +1190,8 @@
       if (!viewMonth) viewMonth = ymFromDate(options.iso(new Date()));
       render();
     },
+    setViewMonth(ym) {
+      if (typeof ym === "string" && /^\d{4}-\d{2}$/.test(ym)) viewMonth = ym;
+    },
   };
 })(typeof window !== "undefined" ? window : global);

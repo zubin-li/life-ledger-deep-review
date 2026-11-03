@@ -355,6 +355,28 @@
     };
   }
 
+  function rangeSummary(ledger, startIso, endIso) {
+    const base = normalize(ledger);
+    const start = startIso <= endIso ? startIso : endIso;
+    const end = startIso <= endIso ? endIso : startIso;
+    const inRange = base.transactions.filter(tx => tx.date >= start && tx.date <= end);
+    const rows = inRange.filter(tx => txInReportingCurrency(base, tx));
+    const otherCurrencyCount = inRange.filter(tx => !txInReportingCurrency(base, tx)).length;
+    let income = 0;
+    let expense = 0;
+    rows.forEach(tx => {
+      if (tx.amountMinor >= 0) income += tx.amountMinor;
+      else expense += tx.amountMinor;
+    });
+    return {
+      incomeMinor: income,
+      expenseMinor: expense,
+      netMinor: income + expense,
+      count: rows.length,
+      otherCurrencyCount,
+    };
+  }
+
   function dailySpendHeatmap(ledger, ym) {
     const base = normalize(ledger);
     const map = new Map();
@@ -1960,6 +1982,7 @@
     alignDemoHabitCompletionWithSpend,
     nearestWeekdayIso,
     monthSummary,
+    rangeSummary,
     monthKey,
     transactionsInMonth,
     dailySpendHeatmap,

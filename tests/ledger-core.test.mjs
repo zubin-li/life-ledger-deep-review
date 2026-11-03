@@ -44,6 +44,18 @@ test("monthSummary totals signed amounts", () => {
   assert.equal(summary.netMinor, 199500);
 });
 
+test("rangeSummary totals expenses between inclusive ISO dates", () => {
+  let ledger = L.normalize(null, { lang: "en" });
+  const account = ledger.accounts[0].id;
+  const expenseCat = ledger.categories.find(c => c.kind === "expense").id;
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: expenseCat, amountMinor: -100, currency: "EUR", date: "2026-11-01", note: "a" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: expenseCat, amountMinor: -200, currency: "EUR", date: "2026-11-03", note: "b" }));
+  ({ ledger } = L.addTransaction(ledger, { accountId: account, categoryId: expenseCat, amountMinor: -999, currency: "EUR", date: "2026-11-10", note: "out" }));
+  const summary = L.rangeSummary(ledger, "2026-11-02", "2026-11-03");
+  assert.equal(summary.expenseMinor, -200);
+  assert.equal(summary.count, 1);
+});
+
 test("importGermanBankCsv parses semicolon rows", () => {
   const csv = `Datum;Verwendungszweck;Betrag
 01.11.2026;REWE;-12,50

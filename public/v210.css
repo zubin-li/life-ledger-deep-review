@@ -4313,3 +4313,42 @@ html.motion-reduced .tw-card.tw-spending .tw-spend-top-cat {
 .tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-head {
   gap: 6px 8px;
 }
+
+/* Batch 8 round 4 — week insights spending tile */
+#weekView .week-insights-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 118px), 1fr));
+}
+
+button.week-insight-card.week-insight-card--ledger {
+  width: 100%;
+  cursor: pointer;
+  font: inherit;
+  text-align: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+button.week-insight-card.week-insight-card--ledger:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+button.week-insight-card.week-insight-card--ledger:not(:disabled):active {
+  transform: scale(0.98);
+  transition: transform 0.12s ease;
+}
+
+#weekView .week-insight-card--ledger:nth-child(5) {
+  background: linear-gradient(120deg, rgba(255, 198, 120, 0.18), rgba(255, 149, 128, 0.1));
+}
+
+html.motion-reduced button.week-insight-card.week-insight-card--ledger:not(:disabled):active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.week-insight-card.week-insight-card--ledger:not(:disabled):active {
+    transform: none;
+  }
+}

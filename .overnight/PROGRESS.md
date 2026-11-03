@@ -1,5 +1,39 @@
 # Overnight progress
 
+## Batch 8 · Round 4 — done
+
+- **REVIEW.md：** 无 HIGH/MED；LOW #2 已在 Round 1 修复；LOW #1 reduced-motion 合并仍留 2.2。
+- **Goal 1 + Week 洞察：** `ledger-core.js` 新增 `rangeSummary`（含起止 ISO 日期的收支汇总）；**本周**「数据洞察」第五格 **本周支出**（周一至 min(周日, 今天) 的默认货币支出）；点击打开 **记账** 并 `setViewMonth` 到该周所在月；无账本时按钮禁用。
+- **测试：** `ledger-core.test.mjs` +1、`week-insights-spending.test.mjs` +2；`npm test` **366**；`npm run test:browser` **17**。
+- **文档：** CHANGELOG `[Unreleased]` Changed 一条；截图 `node .overnight/capture-batch8-round4.mjs`（**5294**，需滚到 `#weekInsightsGrid`）→ `b8r4-*`；capture 脚本补 `webkit.close()` 避免挂起。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 8 Round 5：`v210.css` reduced-motion 单表（2.2 候选）或复盘/习惯洞察小抛光；README 三语若需补「本周支出」一行可写。
+- 并行 browser 套件时若 fakecloud 失败，先 `pkill -f 'http.server 529'` / 5298 wrangler 再跑。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- Today 截图需滚到 `.tw-spending` 才看见胶囊（capture 脚本已 scroll）。
+- Week 截图需滚到 `#weekInsightsGrid` 才看见第五格支出。
+
+## npm test
+
+```
+366 pass, 0 fail (batch 8 round 4, unit gate)
+17 pass, 0 fail (test:browser, batch 8 round 4)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
 ## Batch 8 · Round 3 — done
 
 - **REVIEW.md：** 无 HIGH/MED；LOW #2 已在 Round 1 修复；LOW #1 reduced-motion 合并仍留 2.2。
@@ -121,3 +155,6 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 3
 ℹ tests 363 ℹ pass 363 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 366 ℹ pass 366 ℹ fail 0 
