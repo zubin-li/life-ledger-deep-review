@@ -1,4 +1,7 @@
-const STORAGE_KEY = "life-ledger-v1";
+const DEMO_PREVIEW_SLUG = new URLSearchParams(location.search).get("local-preview");
+const STORAGE_KEY = DEMO_PREVIEW_SLUG === "demo-showcase-v1"
+  ? "life-ledger-preview-demo-showcase-v1"
+  : "life-ledger-v1";
 const LANGUAGE_KEY = "life-ledger-language";
 const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
 const THEME_KEY = "life-ledger-theme";
@@ -1188,7 +1191,7 @@ let selectedAnalyticsHabitIds = [];
 let analyticsChartType = "line";
 let calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
 const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
-const previewName = new URLSearchParams(location.search).get("local-preview");
+const previewName = DEMO_PREVIEW_SLUG;
 const dayPlanPrototype = previewName === "day-plan-calendar-v1";
 const searchParams = new URLSearchParams(location.search);
 const requestedMode = searchParams.get("mode");
@@ -1242,6 +1245,7 @@ let reviewCanvasScope = "week";
 let reviewCanvasKey = "";
 let persistenceRequested = false;
 let mobileToolbarOpen = false;
+let demoLanguageSynced = currentLang;
 const HABITS_PER_PAGE = 4;
 let todayHabitPage = 0;
 let habitCarouselScrollFrame = 0;
@@ -1654,6 +1658,14 @@ function applyLanguage() {
   applySidebarState();
   renderIconPicker();
   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
+  if (isDemoWorkspaceActive() && demoLanguageSynced !== currentLang) {
+    const api = demoWorkspaceApi();
+    if (api) {
+      state = api.relocalizeDemoWorkspace(state, currentLang);
+      demoLanguageSynced = currentLang;
+      saveState({ skipCloud: true });
+    }
+  }
 }
 function applyReviewCanvasLanguage() {
   setText("#openWeeklyReviewCanvas", tr("reviewCanvas.openWeekly"));
@@ -1775,6 +1787,163 @@ function loadState() {
   } catch {
     return { ...cloneData(seed), meta: { updatedAt: 0, starterPackVersion: STARTER_PACK_VERSION } };
   }
+}
+
+function demoWorkspaceApi() {
+  return window.LifeLedgerDemoWorkspace;
+}
+
+function demoDismissedStorageKey() {
+  return demoWorkspaceApi()?.resolveDismissedKey(previewName) || "life-ledger-demo-dismissed-v1";
+}
+
+function isDemoWorkspaceActive() {
+  return Boolean(demoWorkspaceApi()?.isDemoActive(state));
+}
+
+function demoPhotoAnchorDate() {
+  const seededAt = state?.meta?.demo?.seededAt;
+  if (seededAt && !Number.isNaN(Date.parse(seededAt))) return new Date(seededAt);
+  return new Date();
+}
+
+function mergeDemoTimelinePhotos(photos, from, to) {
+  const api = demoWorkspaceApi();
+  if (!api?.isDemoActive(state)) return photos;
+  const demoPhotos = api.demoPhotosForRange(from, to, demoPhotoAnchorDate());
+  if (!demoPhotos.length) return photos;
+  return [...photos, ...demoPhotos];
+}
+
+function syncDemoCalendarPhotos(date) {
+  const api = demoWorkspaceApi();
+  if (!api?.isDemoActive(state)) return;
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const from = isoDate(new Date(year, month, 1, 12));
+  const to = isoDate(new Date(year, month + 1, 0, 12));
+  [...calendarPhotosByDate.keys()].filter(day => day >= from && day <= to).forEach(day => {
+    const kept = (calendarPhotosByDate.get(day) || []).filter(photo => !photo.demo);
+    if (kept.length) calendarPhotosByDate.set(day, kept);
+    else calendarPhotosByDate.delete(day);
+  });
+  api.demoPhotosForRange(from, to, demoPhotoAnchorDate()).forEach(photo => {
+    const existing = (calendarPhotosByDate.get(photo.date) || []).filter(item => !item.demo);
+    calendarPhotosByDate.set(photo.date, [...existing, photo]);
+  });
+}
+
+function stripDemoCalendarPhotos() {
+  [...calendarPhotosByDate.keys()].forEach(day => {
+    const kept = (calendarPhotosByDate.get(day) || []).filter(photo => !photo.demo);
+    if (kept.length) calendarPhotosByDate.set(day, kept);
+    else calendarPhotosByDate.delete(day);
+  });
+}
+
+function maybeApplyDemoWorkspace() {
+  const api = demoWorkspaceApi();
+  if (!api) return;
+  const params = new URLSearchParams(location.search);
+  if (previewName === api.DEMO_PREVIEW_ID && params.get("demo-reset") === "1") {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(demoDismissedStorageKey());
+    const url = new URL(location.href);
+    url.searchParams.delete("demo-reset");
+    history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    state = loadState();
+  }
+  const eligible = api.isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured });
+  const dismissed = localStorage.getItem(demoDismissedStorageKey()) === "1";
+  const storedRaw = localStorage.getItem(STORAGE_KEY);
+  if (!api.shouldSeedDemo({ eligible, dismissed, storedRaw, state })) return;
+  const demoState = api.buildDemoWorkspace({
+    now: new Date(),
+    lang: currentLang,
+    seedHabits: cloneData(seed.habits),
+  });
+  state = { ...cloneData(seed), ...demoState };
+  saveState();
+}
+
+function renderDemoNotice() {
+  const notice = $("#demoWorkspaceNotice");
+  if (!notice) return;
+  const api = demoWorkspaceApi();
+  const active = Boolean(api?.isDemoActive(state));
+  notice.hidden = !active;
+  if (!active) return;
+  const copy = api.demoNoticeCopy(currentLang);
+  setText("#demoWorkspaceNoticeText", copy.message);
+  const clearButton = $("#clearDemoWorkspace");
+  if (clearButton) {
+    clearButton.textContent = copy.clear;
+    clearButton.setAttribute("aria-label", copy.clear);
+  }
+  const resetButton = $("#demoPreviewReset");
+  if (resetButton) {
+    const showPreviewReset = previewName === api.DEMO_PREVIEW_ID;
+    resetButton.hidden = !showPreviewReset;
+    resetButton.textContent = copy.previewReset;
+    resetButton.setAttribute("aria-label", copy.previewReset);
+  }
+}
+
+function clearDemoWorkspace() {
+  const api = demoWorkspaceApi();
+  if (!api?.isDemoActive(state)) return;
+  const copy = api.demoNoticeCopy(currentLang);
+  if (!window.confirm(copy.confirm)) return;
+  state = api.buildClearedWorkspace({
+    seedHabits: cloneData(seed.habits),
+    starterPackVersion: STARTER_PACK_VERSION,
+  });
+  localStorage.setItem(demoDismissedStorageKey(), "1");
+  stripDemoCalendarPhotos();
+  saveState();
+  renderDemoNotice();
+  renderAll();
+  showToast(copy.cleared);
+}
+
+function resetPreviewDemoWorkspace() {
+  const api = demoWorkspaceApi();
+  if (!api || previewName !== api.DEMO_PREVIEW_ID) return;
+  const copy = api.demoNoticeCopy(currentLang);
+  if (!window.confirm(copy.confirm)) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(demoDismissedStorageKey());
+  state = loadState();
+  maybeApplyDemoWorkspace();
+  stripDemoCalendarPhotos();
+  renderDemoNotice();
+  renderAll();
+  showToast(copy.cleared);
+}
+
+function cleanStarterWorkspaceBase() {
+  const api = demoWorkspaceApi();
+  if (api) {
+    return api.buildClearedWorkspace({
+      seedHabits: cloneData(seed.habits),
+      starterPackVersion: STARTER_PACK_VERSION,
+    });
+  }
+  return {
+    ...cloneData(seed),
+    meta: { updatedAt: Date.now(), starterPackVersion: STARTER_PACK_VERSION },
+  };
+}
+
+function dismissDemoMetadataAfterRestore() {
+  const api = demoWorkspaceApi();
+  if (!api) return;
+  localStorage.setItem(demoDismissedStorageKey(), "1");
+  if (!api.isDemoActive(state)) return;
+  state.meta = {
+    ...(state.meta || {}),
+    demo: { version: api.DEMO_META_VERSION, active: false },
+  };
 }
 
 function migrateLocalStarterPack(stored) {
@@ -2317,6 +2486,7 @@ function initSelects() {
 
 function renderAll() {
   applyLanguage();
+  renderDemoNotice();
   $("#yearSelect").value = cursor.getFullYear();
   $("#monthSelect").value = cursor.getMonth();
   renderToday();
@@ -2503,6 +2673,7 @@ async function renderTimeline() {
   } catch {
     photos = [];
   }
+  photos = mergeDemoTimelinePhotos(photos, from, to);
   if (version !== timelineRenderVersion) return;
   const photosByDate = new Map();
   photos.forEach(photo => photosByDate.set(photo.date, [...(photosByDate.get(photo.date) || []), photo]));
@@ -3066,6 +3237,7 @@ function setCalendarViewMode(mode) {
 function renderCalendar() {
   const year = cursor.getFullYear(), month = cursor.getMonth();
   $("#calendarTitle").textContent = tr("calendar.title", { year, month: month + 1, monthName: monthName(month) });
+  syncDemoCalendarPhotos(cursor);
   const first = new Date(year, month, 1, 12);
   const offset = (first.getDay() + 6) % 7;
   const start = new Date(year, month, 1 - offset, 12);
@@ -4165,7 +4337,14 @@ async function restorePendingImport() {
   const originalLabel = restoreButton.textContent;
   restoreButton.disabled = true;
   localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
-  state = isComplete ? cloneData(pendingImport.data) : mergeBackupData(state, pendingImport.data);
+  const demoWasActive = isDemoWorkspaceActive();
+  state = isComplete
+    ? cloneData(pendingImport.data)
+    : mergeBackupData(demoWasActive ? cleanStarterWorkspaceBase() : state, pendingImport.data);
+  if (demoWasActive) {
+    dismissDemoMetadataAfterRestore();
+    stripDemoCalendarPhotos();
+  }
   saveState();
   if (media?.entries?.length) {
     restoreButton.textContent = tr("backup.mediaRestoring");
@@ -4641,6 +4820,8 @@ function bindEvents() {
   $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
   $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
+  $("#clearDemoWorkspace")?.addEventListener("click", clearDemoWorkspace);
+  $("#demoPreviewReset")?.addEventListener("click", resetPreviewDemoWorkspace);
   $("#todayButton").addEventListener("click", () => {
     cursor = new Date();
     cursor.setHours(12, 0, 0, 0);
@@ -5067,7 +5248,24 @@ function initDesktopShortcuts() {
     }
   });
 }
-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); renderAll(); armReminderClock(); initDesktopShortcuts(); initWidgetBridge();
+function bootApplication() {
+  maybeApplyDemoWorkspace();
+  syncExportButtonPlacement();
+  syncMobileToolbar();
+  initSelects();
+  initFocusTimer();
+  bindEvents();
+  initVoiceReflection();
+  initPhotoMemories();
+  renderAll();
+  armReminderClock();
+  initDesktopShortcuts();
+  initializeCloudSync();
+}
+document.addEventListener("DOMContentLoaded", () => {
+  bootApplication();
+  initWidgetBridge();
+});
 if (location.protocol === "file:") {
   $$('[data-install-app]').forEach(button => { button.hidden = true; });
 }
@@ -5105,7 +5303,6 @@ async function initializeCloudSync() {
     }
   }
 }
-initializeCloudSync();
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })

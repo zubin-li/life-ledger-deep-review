@@ -6,6 +6,7 @@ All notable changes are documented here.
 
 ### Added
 
+- Added a deterministic local-only demo workspace with fictional sample history, bundled timeline photo illustrations, a dismissible notice with **Clear demo & start fresh**, and an isolated `local-preview=demo-showcase-v1` storage key for safe previews.
 - Added a real native macOS WidgetKit habit widget (systemSmall/systemMedium) with an interactive `AppIntent` checkbox that marks a habit complete directly from the desktop, without opening the app, and keeps working while the app is closed.
 - Bridged the local desktop app to the widget through a versioned, size-bounded JSON contract in a shared App Group container (atomic temp-file-plus-rename writes on both the Rust and Swift sides), with an idempotent, replay-safe pending-mutation queue keyed by habit id + date + desired state so a duplicate tap or intent retry can never double-toggle.
 - Added a Foundation-only `WidgetSharedKit` Swift package (models, palette, mutation-queue coalescing, atomic I/O) with its own `XCTest` suite, kept separate from the Apple-SDK-only WidgetKit extension so the shared logic can be built/tested independently of Xcode.

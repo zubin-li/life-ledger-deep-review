@@ -4,6 +4,7 @@ const APP_SHELL = [
   "./index.html",
   "./styles.css?v=2.0.0",
   "./app.js?v=2.0.0",
+  "./demo-workspace.js?v=2.0.0",
   "./focus-timer.js?v=2.0.0",
   "./voice-checkin.js?v=2.0.0",
   "./photo-memories.js?v=2.0.0",
@@ -14,6 +15,13 @@ const APP_SHELL = [
   "./_init_tcb-env.js?v=2.0.0",
   "./manifest.webmanifest",
   "./assets/weekly-minimal-still-life-v2.jpg",
+  "./assets/demo-memories/morning-light.svg",
+  "./assets/demo-memories/quiet-desk.svg",
+  "./assets/demo-memories/movement.svg",
+  "./assets/demo-memories/city-walk.svg",
+  "./assets/demo-memories/forest-path.svg",
+  "./assets/demo-memories/shared-meal.svg",
+  "./assets/demo-memories/evening-reflection.svg",
   "./assets/app-icon-192.png",
   "./assets/app-icon-512.png",
   "./assets/apple-touch-icon.png",
@@ -58,7 +66,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  const networkFirst = ["/app.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+  const networkFirst = ["/app.js", "/demo-workspace.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
     .some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(

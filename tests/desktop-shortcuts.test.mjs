@@ -12,7 +12,7 @@ function slice(source, startMarker, endMarker) {
   return source.slice(start, end);
 }
 
-const shortcuts = slice(appJs, "function initDesktopShortcuts()", "\nsyncExportButtonPlacement();");
+const shortcuts = slice(appJs, "function initDesktopShortcuts()", "\nfunction bootApplication()");
 
 test("desktop shortcuts are gated to desktop mode only, never active in plain web/PWA mode", () => {
   assert.match(shortcuts, /if \(desktopMode !== "tauri-local" && desktopMode !== "tauri-cloud"\) return;/);
@@ -53,5 +53,6 @@ test("keyboard shortcuts run through withoutMotion so they never animate, unlike
 });
 
 test("initDesktopShortcuts is wired into the app boot sequence", () => {
-  assert.match(appJs, /initDesktopShortcuts\(\); initWidgetBridge\(\);\s*$/m);
+  assert.match(appJs, /function bootApplication\(\)[\s\S]*initDesktopShortcuts\(\);[\s\S]*initializeCloudSync\(\);/);
+  assert.match(appJs, /document\.addEventListener\("DOMContentLoaded", \(\) => \{[\s\S]*bootApplication\(\);[\s\S]*initWidgetBridge\(\);/);
 });

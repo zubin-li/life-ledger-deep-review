@@ -123,6 +123,14 @@
           </div>
         </header>
 
+        <aside class="demo-workspace-notice" id="demoWorkspaceNotice" hidden aria-live="polite">
+          <p id="demoWorkspaceNoticeText"></p>
+          <div class="demo-workspace-actions">
+            <button class="secondary-button" id="demoPreviewReset" type="button" hidden></button>
+            <button class="secondary-button" id="clearDemoWorkspace" type="button"></button>
+          </div>
+        </aside>
+
         <section class="view active" id="todayView">
           <div class="hero-grid">
             <article class="hero-card">
@@ -801,6 +809,7 @@
     <script src="./photo-memories.js?v=2.0.0"></script>
     <script src="./media-backup.js?v=2.0.0"></script>
     <script type="module" src="./widget-contract.js?v=2.0.0"></script>
+    <script type="module" src="./demo-workspace.js?v=2.0.0"></script>
     <script src="./app.js?v=2.0.0"></script>
   </body>
 </html>

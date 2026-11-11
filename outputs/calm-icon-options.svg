@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#18231e" flood-opacity=".09"/></filter>
+    <linearGradient id="leafBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dcf8e8"/><stop offset="1" stop-color="#b9edcf"/></linearGradient>
+    <linearGradient id="windBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ddf8f5"/><stop offset="1" stop-color="#b7eee8"/></linearGradient>
+    <linearGradient id="lotusBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e6f6e8"/><stop offset="1" stop-color="#c6eccc"/></linearGradient>
+    <linearGradient id="cloudBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e8f5f6"/><stop offset="1" stop-color="#c9e9eb"/></linearGradient>
+  </defs>
+  <rect width="1200" height="560" rx="36" fill="#f5f5f7"/>
+  <text x="48" y="62" fill="#1d1d1f" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif" font-size="28" font-weight="700">「平静」图标候选</text>
+  <text x="48" y="92" fill="#6e6e73" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif" font-size="15">统一使用更清晰的 2px 线条与高饱和绿色系，适配日历小尺寸</text>
+
+  <g transform="translate(36 124)" filter="url(#shadow)">
+    <rect width="264" height="386" rx="28" fill="#fff"/>
+    <text x="22" y="38" fill="#1d1d1f" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="15" font-weight="700">A · 叶片</text>
+    <text x="22" y="61" fill="#86868b" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="12">自然 · 恢复 · 平衡</text>
+    <rect x="76" y="92" width="112" height="112" rx="34" fill="url(#leafBg)"/>
+    <g transform="translate(104 120)" fill="none" stroke="#20a765" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M52 5C25 7 8 22 7 48c20 3 42-8 45-43Z"/>
+      <path d="M8 58c10-21 23-32 41-46"/>
+    </g>
+    <text x="132" y="242" text-anchor="middle" fill="#20a765" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="14" font-weight="700">推荐</text>
+    <text x="22" y="278" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">辨识度最高，和太阳、雨伞</text>
+    <text x="22" y="300" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">同属自然意象，最不容易误解。</text>
+    <g transform="translate(54 332)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2">
+      <path d="M0 17A17 17 0 0 1 34 17H0M17 0v29a6 6 0 0 0 12 0" stroke="#3d8fe5"/>
+      <path d="M70 8c-15 1-25 9-25 24 12 2 24-5 25-24ZM45 37c6-12 13-19 24-27" stroke="#20a765"/>
+      <circle cx="109" cy="18" r="7" stroke="#f4a900"/><path d="M109 2v5m0 22v5M93 18h5m22 0h5M98 7l4 4m14 14 4 4m0-22-4 4m-14 14-4 4" stroke="#f4a900"/>
+    </g>
+  </g>
+
+  <g transform="translate(324 124)" filter="url(#shadow)">
+    <rect width="264" height="386" rx="28" fill="#fff"/>
+    <text x="22" y="38" fill="#1d1d1f" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="15" font-weight="700">B · 微风</text>
+    <text x="22" y="61" fill="#86868b" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="12">松弛 · 呼吸 · 流动</text>
+    <rect x="76" y="92" width="112" height="112" rx="34" fill="url(#windBg)"/>
+    <g transform="translate(100 124)" fill="none" stroke="#13a6a0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 17h41c13 0 13-16 2-16-6 0-8 4-8 7"/>
+      <path d="M4 31h53c13 0 13 17 1 17-6 0-8-4-8-8"/>
+      <path d="M4 45h28"/>
+    </g>
+    <text x="22" y="278" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">很有“放松呼吸”的感觉，</text>
+    <text x="22" y="300" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">但也可能被理解为天气有风。</text>
+  </g>
+
+  <g transform="translate(612 124)" filter="url(#shadow)">
+    <rect width="264" height="386" rx="28" fill="#fff"/>
+    <text x="22" y="38" fill="#1d1d1f" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="15" font-weight="700">C · 莲花 / Spa</text>
+    <text x="22" y="61" fill="#86868b" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="12">正念 · 安定 · 内在</text>
+    <rect x="76" y="92" width="112" height="112" rx="34" fill="url(#lotusBg)"/>
+    <g transform="translate(100 121)" fill="none" stroke="#36a56c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M32 48C16 38 13 24 32 5c19 19 16 33 0 43Z"/>
+      <path d="M27 48C11 47 3 38 5 20c17 3 25 12 22 28Z"/>
+      <path d="M37 48c16-1 24-10 22-28-17 3-25 12-22 28Z"/>
+      <path d="M9 51c13 7 33 7 46 0"/>
+    </g>
+    <text x="22" y="278" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">市场上常用于冥想与 wellness，</text>
+    <text x="22" y="300" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">但“平静”会显得更偏冥想。</text>
+  </g>
+
+  <g transform="translate(900 124)" filter="url(#shadow)">
+    <rect width="264" height="386" rx="28" fill="#fff"/>
+    <text x="22" y="38" fill="#1d1d1f" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="15" font-weight="700">D · 柔云</text>
+    <text x="22" y="61" fill="#86868b" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="12">安静 · 中性 · 柔和</text>
+    <rect x="76" y="92" width="112" height="112" rx="34" fill="url(#cloudBg)"/>
+    <g transform="translate(99 126)" fill="none" stroke="#349ca5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 44h38c10 0 14-6 14-13s-6-13-14-13c-3-11-18-15-27-7-4 3-6 7-6 12-10-2-19 5-19 11 0 6 5 10 14 10Z"/>
+    </g>
+    <text x="22" y="278" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">轮廓最柔和，但和“低落”的</text>
+    <text x="22" y="300" fill="#3a3a3c" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="13">天气语义接近，区分度较弱。</text>
+  </g>
+</svg>
