@@ -7,3 +7,7 @@
 - When a visible feature changes, update the fictional English, Simplified Chinese, and German desktop/mobile screenshots and the matching `docs/SHOWCASE*` pages in the same change. Product images must never contain real personal data.
 - Before a stable release, align the package version, lockfile, PWA cache and asset versions, changelog version, and `.github/releases/vX.Y.Z.md`.
 - A release is complete only after tests pass and the tag, GitHub Release, GitHub Pages, and production deployment have been verified.
+
+# Git safety
+
+- Commit and push every completed local change to the current feature branch immediately; work must never exist only on this machine. Never commit to or push `main`, merge, rebase, force-push, rewrite history, tag or release without explicit user authorization.
