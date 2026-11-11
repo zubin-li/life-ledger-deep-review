@@ -4,6 +4,10 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Added a deterministic local-only demo workspace with fictional sample history, bundled timeline photo illustrations, a dismissible notice with **Clear demo & start fresh**, and an isolated `local-preview=demo-showcase-v1` storage key for safe previews.
+
 ## [1.3.0] - 2026-09-26
 
 ### Added

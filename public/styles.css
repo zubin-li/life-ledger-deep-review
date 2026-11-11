@@ -68,6 +68,31 @@ button { cursor: pointer; }
 .eyebrow, .kicker { margin: 0; font: 500 10px/1.2 var(--font-body); letter-spacing: .18em; color: var(--sage); }
 .topbar h1 { max-width: 760px; font: 700 clamp(25px, 2.7vw, 38px)/1.24 var(--font-display); margin: 0; letter-spacing: -.035em; overflow-wrap: anywhere; text-wrap: balance; }
 body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
+
+.demo-workspace-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: color-mix(in srgb, var(--sage-light) 46%, var(--card));
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.demo-workspace-notice[hidden] { display: none !important; }
+.demo-workspace-notice p { margin: 0; flex: 1 1 220px; min-width: min(100%, 220px); }
+.demo-workspace-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.demo-workspace-actions .secondary-button { font-size: 11px; padding: 7px 12px; }
+@media (max-width: 760px) {
+  .demo-workspace-notice { align-items: flex-start; }
+  .demo-workspace-actions { width: 100%; }
+  .demo-workspace-actions .secondary-button { flex: 1 1 auto; min-width: 0; }
+}
 .top-actions, .date-jump { display: flex; align-items: center; gap: 9px; }
 .mobile-toolbar-toggle { display: none; }
 .save-mode { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font: 9px var(--font-body); }

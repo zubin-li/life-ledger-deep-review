@@ -1,0 +1,436 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9f2fabe..3779368 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -6,6 +6,7 @@ All notable changes are documented here.
+ 
+ ### Added
+ 
++- Added a deterministic local-only demo workspace with fictional sample history, bundled timeline photo illustrations, a dismissible notice with **Clear demo & start fresh**, and an isolated `local-preview=demo-showcase-v1` storage key for safe previews.
+ - Added a real native macOS WidgetKit habit widget (systemSmall/systemMedium) with an interactive `AppIntent` checkbox that marks a habit complete directly from the desktop, without opening the app, and keeps working while the app is closed.
+ - Bridged the local desktop app to the widget through a versioned, size-bounded JSON contract in a shared App Group container (atomic temp-file-plus-rename writes on both the Rust and Swift sides), with an idempotent, replay-safe pending-mutation queue keyed by habit id + date + desired state so a duplicate tap or intent retry can never double-toggle.
+ - Added a Foundation-only `WidgetSharedKit` Swift package (models, palette, mutation-queue coalescing, atomic I/O) with its own `XCTest` suite, kept separate from the Apple-SDK-only WidgetKit extension so the shared logic can be built/tested independently of Xcode.
+diff --git a/package.json b/package.json
+index a2b4597..583e71e 100644
+--- a/package.json
++++ b/package.json
+@@ -19,7 +19,7 @@
+     "build:heic-vendor": "node scripts/build-heic-vendor.mjs",
+     "build:cloudbase": "npm run build:cloudbase-sdk && node scripts/build-cloudbase.mjs",
+     "deploy:cloudbase": "node scripts/deploy-cloudbase.mjs",
+-    "check": "node --check public/app.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/widget-contract.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/index.js && node scripts/check.mjs",
++    "check": "node --check public/app.js && node --check public/demo-workspace.js && node --check public/focus-timer.js && node --check public/voice-checkin.js && node --check public/photo-memories.js && node --check public/media-backup.js && node --check public/cloudbase-sync.js && node --check public/widget-contract.js && node --check public/sw.js && node --check src/calendar.js && node --check src/photos.js && node --check src/voice.js && node --check src/index.js && node scripts/check.mjs",
+     "test": "npm run check && node --test tests/*.test.mjs",
+     "db:migrations:apply": "wrangler d1 migrations apply DB --remote",
+     "deploy": "npm run db:migrations:apply && wrangler deploy",
+diff --git a/public/app.js b/public/app.js
+index 7b4c421..efd13e0 100644
+--- a/public/app.js
++++ b/public/app.js
+@@ -1,4 +1,7 @@
+-const STORAGE_KEY = "life-ledger-v1";
++const DEMO_PREVIEW_SLUG = new URLSearchParams(location.search).get("local-preview");
++const STORAGE_KEY = DEMO_PREVIEW_SLUG === "demo-showcase-v1"
++  ? "life-ledger-preview-demo-showcase-v1"
++  : "life-ledger-v1";
+ const LANGUAGE_KEY = "life-ledger-language";
+ const LANGUAGE_PREFERENCE_KEY = "life-ledger-language-preference-set";
+ const THEME_KEY = "life-ledger-theme";
+@@ -1188,7 +1191,7 @@ let selectedAnalyticsHabitIds = [];
+ let analyticsChartType = "line";
+ let calendarViewMode = localStorage.getItem(CALENDAR_VIEW_KEY) === "heatmap" ? "heatmap" : "mood";
+ const cloudBaseConfigured = Boolean(window.LifeLedgerCloudBase?.deploymentConfig().configured);
+-const previewName = new URLSearchParams(location.search).get("local-preview");
++const previewName = DEMO_PREVIEW_SLUG;
+ const dayPlanPrototype = previewName === "day-plan-calendar-v1";
+ const searchParams = new URLSearchParams(location.search);
+ const requestedMode = searchParams.get("mode");
+@@ -1242,6 +1245,7 @@ let reviewCanvasScope = "week";
+ let reviewCanvasKey = "";
+ let persistenceRequested = false;
+ let mobileToolbarOpen = false;
++let demoLanguageSynced = currentLang;
+ const HABITS_PER_PAGE = 4;
+ let todayHabitPage = 0;
+ let habitCarouselScrollFrame = 0;
+@@ -1654,6 +1658,14 @@ function applyLanguage() {
+   applySidebarState();
+   renderIconPicker();
+   setSaveMode(cloudMode ? "cloud" : "", cloudMode ? tr("save.cloudSaved") : tr("save.localPreview"));
++  if (isDemoWorkspaceActive() && demoLanguageSynced !== currentLang) {
++    const api = demoWorkspaceApi();
++    if (api) {
++      state = api.relocalizeDemoWorkspace(state, currentLang);
++      demoLanguageSynced = currentLang;
++      saveState({ skipCloud: true });
++    }
++  }
+ }
+ function applyReviewCanvasLanguage() {
+   setText("#openWeeklyReviewCanvas", tr("reviewCanvas.openWeekly"));
+@@ -1777,6 +1789,163 @@ function loadState() {
+   }
+ }
+ 
++function demoWorkspaceApi() {
++  return window.LifeLedgerDemoWorkspace;
++}
++
++function demoDismissedStorageKey() {
++  return demoWorkspaceApi()?.resolveDismissedKey(previewName) || "life-ledger-demo-dismissed-v1";
++}
++
++function isDemoWorkspaceActive() {
++  return Boolean(demoWorkspaceApi()?.isDemoActive(state));
++}
++
++function demoPhotoAnchorDate() {
++  const seededAt = state?.meta?.demo?.seededAt;
++  if (seededAt && !Number.isNaN(Date.parse(seededAt))) return new Date(seededAt);
++  return new Date();
++}
++
++function mergeDemoTimelinePhotos(photos, from, to) {
++  const api = demoWorkspaceApi();
++  if (!api?.isDemoActive(state)) return photos;
++  const demoPhotos = api.demoPhotosForRange(from, to, demoPhotoAnchorDate());
++  if (!demoPhotos.length) return photos;
++  return [...photos, ...demoPhotos];
++}
++
++function syncDemoCalendarPhotos(date) {
++  const api = demoWorkspaceApi();
++  if (!api?.isDemoActive(state)) return;
++  const year = date.getFullYear();
++  const month = date.getMonth();
++  const from = isoDate(new Date(year, month, 1, 12));
++  const to = isoDate(new Date(year, month + 1, 0, 12));
++  [...calendarPhotosByDate.keys()].filter(day => day >= from && day <= to).forEach(day => {
++    const kept = (calendarPhotosByDate.get(day) || []).filter(photo => !photo.demo);
++    if (kept.length) calendarPhotosByDate.set(day, kept);
++    else calendarPhotosByDate.delete(day);
++  });
++  api.demoPhotosForRange(from, to, demoPhotoAnchorDate()).forEach(photo => {
++    const existing = (calendarPhotosByDate.get(photo.date) || []).filter(item => !item.demo);
++    calendarPhotosByDate.set(photo.date, [...existing, photo]);
++  });
++}
++
++function stripDemoCalendarPhotos() {
++  [...calendarPhotosByDate.keys()].forEach(day => {
++    const kept = (calendarPhotosByDate.get(day) || []).filter(photo => !photo.demo);
++    if (kept.length) calendarPhotosByDate.set(day, kept);
++    else calendarPhotosByDate.delete(day);
++  });
++}
++
++function maybeApplyDemoWorkspace() {
++  const api = demoWorkspaceApi();
++  if (!api) return;
++  const params = new URLSearchParams(location.search);
++  if (previewName === api.DEMO_PREVIEW_ID && params.get("demo-reset") === "1") {
++    localStorage.removeItem(STORAGE_KEY);
++    localStorage.removeItem(demoDismissedStorageKey());
++    const url = new URL(location.href);
++    url.searchParams.delete("demo-reset");
++    history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
++    state = loadState();
++  }
++  const eligible = api.isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured });
++  const dismissed = localStorage.getItem(demoDismissedStorageKey()) === "1";
++  const storedRaw = localStorage.getItem(STORAGE_KEY);
++  if (!api.shouldSeedDemo({ eligible, dismissed, storedRaw, state })) return;
++  const demoState = api.buildDemoWorkspace({
++    now: new Date(),
++    lang: currentLang,
++    seedHabits: cloneData(seed.habits),
++  });
++  state = { ...cloneData(seed), ...demoState };
++  saveState();
++}
++
++function renderDemoNotice() {
++  const notice = $("#demoWorkspaceNotice");
++  if (!notice) return;
++  const api = demoWorkspaceApi();
++  const active = Boolean(api?.isDemoActive(state));
++  notice.hidden = !active;
++  if (!active) return;
++  const copy = api.demoNoticeCopy(currentLang);
++  setText("#demoWorkspaceNoticeText", copy.message);
++  const clearButton = $("#clearDemoWorkspace");
++  if (clearButton) {
++    clearButton.textContent = copy.clear;
++    clearButton.setAttribute("aria-label", copy.clear);
++  }
++  const resetButton = $("#demoPreviewReset");
++  if (resetButton) {
++    const showPreviewReset = previewName === api.DEMO_PREVIEW_ID;
++    resetButton.hidden = !showPreviewReset;
++    resetButton.textContent = copy.previewReset;
++    resetButton.setAttribute("aria-label", copy.previewReset);
++  }
++}
++
++function clearDemoWorkspace() {
++  const api = demoWorkspaceApi();
++  if (!api?.isDemoActive(state)) return;
++  const copy = api.demoNoticeCopy(currentLang);
++  if (!window.confirm(copy.confirm)) return;
++  state = api.buildClearedWorkspace({
++    seedHabits: cloneData(seed.habits),
++    starterPackVersion: STARTER_PACK_VERSION,
++  });
++  localStorage.setItem(demoDismissedStorageKey(), "1");
++  stripDemoCalendarPhotos();
++  saveState();
++  renderDemoNotice();
++  renderAll();
++  showToast(copy.cleared);
++}
++
++function resetPreviewDemoWorkspace() {
++  const api = demoWorkspaceApi();
++  if (!api || previewName !== api.DEMO_PREVIEW_ID) return;
++  const copy = api.demoNoticeCopy(currentLang);
++  if (!window.confirm(copy.confirm)) return;
++  localStorage.removeItem(STORAGE_KEY);
++  localStorage.removeItem(demoDismissedStorageKey());
++  state = loadState();
++  maybeApplyDemoWorkspace();
++  stripDemoCalendarPhotos();
++  renderDemoNotice();
++  renderAll();
++  showToast(copy.cleared);
++}
++
++function cleanStarterWorkspaceBase() {
++  const api = demoWorkspaceApi();
++  if (api) {
++    return api.buildClearedWorkspace({
++      seedHabits: cloneData(seed.habits),
++      starterPackVersion: STARTER_PACK_VERSION,
++    });
++  }
++  return {
++    ...cloneData(seed),
++    meta: { updatedAt: Date.now(), starterPackVersion: STARTER_PACK_VERSION },
++  };
++}
++
++function dismissDemoMetadataAfterRestore() {
++  const api = demoWorkspaceApi();
++  if (!api) return;
++  localStorage.setItem(demoDismissedStorageKey(), "1");
++  if (!api.isDemoActive(state)) return;
++  state.meta = {
++    ...(state.meta || {}),
++    demo: { version: api.DEMO_META_VERSION, active: false },
++  };
++}
++
+ function migrateLocalStarterPack(stored) {
+   const requestedMode = new URLSearchParams(location.search).get("mode");
+   if (requestedMode === "cloudflare" || window.LifeLedgerCloudBase?.deploymentConfig?.().configured) return stored;
+@@ -2317,6 +2486,7 @@ function initSelects() {
+ 
+ function renderAll() {
+   applyLanguage();
++  renderDemoNotice();
+   $("#yearSelect").value = cursor.getFullYear();
+   $("#monthSelect").value = cursor.getMonth();
+   renderToday();
+@@ -2503,6 +2673,7 @@ async function renderTimeline() {
+   } catch {
+     photos = [];
+   }
++  photos = mergeDemoTimelinePhotos(photos, from, to);
+   if (version !== timelineRenderVersion) return;
+   const photosByDate = new Map();
+   photos.forEach(photo => photosByDate.set(photo.date, [...(photosByDate.get(photo.date) || []), photo]));
+@@ -3066,6 +3237,7 @@ function setCalendarViewMode(mode) {
+ function renderCalendar() {
+   const year = cursor.getFullYear(), month = cursor.getMonth();
+   $("#calendarTitle").textContent = tr("calendar.title", { year, month: month + 1, monthName: monthName(month) });
++  syncDemoCalendarPhotos(cursor);
+   const first = new Date(year, month, 1, 12);
+   const offset = (first.getDay() + 6) % 7;
+   const start = new Date(year, month, 1 - offset, 12);
+@@ -4165,7 +4337,14 @@ async function restorePendingImport() {
+   const originalLabel = restoreButton.textContent;
+   restoreButton.disabled = true;
+   localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify({ savedAt: Date.now(), state: cloneData(state) }));
+-  state = isComplete ? cloneData(pendingImport.data) : mergeBackupData(state, pendingImport.data);
++  const demoWasActive = isDemoWorkspaceActive();
++  state = isComplete
++    ? cloneData(pendingImport.data)
++    : mergeBackupData(demoWasActive ? cleanStarterWorkspaceBase() : state, pendingImport.data);
++  if (demoWasActive) {
++    dismissDemoMetadataAfterRestore();
++    stripDemoCalendarPhotos();
++  }
+   saveState();
+   if (media?.entries?.length) {
+     restoreButton.textContent = tr("backup.mediaRestoring");
+@@ -4641,6 +4820,8 @@ function bindEvents() {
+   $("#prevMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() - 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
+   $("#nextMonth").addEventListener("click", () => { cursor.setMonth(cursor.getMonth() + 1); renderAll(); void loadGoogleCalendarMonth(cursor); });
+   $$('[data-calendar-view]').forEach(button => button.addEventListener("click", () => setCalendarViewMode(button.dataset.calendarView)));
++  $("#clearDemoWorkspace")?.addEventListener("click", clearDemoWorkspace);
++  $("#demoPreviewReset")?.addEventListener("click", resetPreviewDemoWorkspace);
+   $("#todayButton").addEventListener("click", () => {
+     cursor = new Date();
+     cursor.setHours(12, 0, 0, 0);
+@@ -5067,7 +5248,24 @@ function initDesktopShortcuts() {
+     }
+   });
+ }
+-syncExportButtonPlacement(); syncMobileToolbar(); initSelects(); initFocusTimer(); bindEvents(); initVoiceReflection(); initPhotoMemories(); renderAll(); armReminderClock(); initDesktopShortcuts(); initWidgetBridge();
++function bootApplication() {
++  maybeApplyDemoWorkspace();
++  syncExportButtonPlacement();
++  syncMobileToolbar();
++  initSelects();
++  initFocusTimer();
++  bindEvents();
++  initVoiceReflection();
++  initPhotoMemories();
++  renderAll();
++  armReminderClock();
++  initDesktopShortcuts();
++  initializeCloudSync();
++}
++document.addEventListener("DOMContentLoaded", () => {
++  bootApplication();
++  initWidgetBridge();
++});
+ if (location.protocol === "file:") {
+   $$('[data-install-app]').forEach(button => { button.hidden = true; });
+ }
+@@ -5105,7 +5303,6 @@ async function initializeCloudSync() {
+     }
+   }
+ }
+-initializeCloudSync();
+ if ("serviceWorker" in navigator && location.protocol !== "file:") {
+   window.addEventListener("load", () => {
+     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
+diff --git a/public/index.html b/public/index.html
+index d405b72..923d4df 100644
+--- a/public/index.html
++++ b/public/index.html
+@@ -123,6 +123,14 @@
+           </div>
+         </header>
+ 
++        <aside class="demo-workspace-notice" id="demoWorkspaceNotice" hidden aria-live="polite">
++          <p id="demoWorkspaceNoticeText"></p>
++          <div class="demo-workspace-actions">
++            <button class="secondary-button" id="demoPreviewReset" type="button" hidden></button>
++            <button class="secondary-button" id="clearDemoWorkspace" type="button"></button>
++          </div>
++        </aside>
++
+         <section class="view active" id="todayView">
+           <div class="hero-grid">
+             <article class="hero-card">
+@@ -801,6 +809,7 @@
+     <script src="./photo-memories.js?v=2.0.0"></script>
+     <script src="./media-backup.js?v=2.0.0"></script>
+     <script type="module" src="./widget-contract.js?v=2.0.0"></script>
++    <script type="module" src="./demo-workspace.js?v=2.0.0"></script>
+     <script src="./app.js?v=2.0.0"></script>
+   </body>
+ </html>
+diff --git a/public/styles.css b/public/styles.css
+index 31e3b64..5ef41cb 100644
+--- a/public/styles.css
++++ b/public/styles.css
+@@ -120,6 +120,31 @@ html.motion-off .sidebar-toggle svg { transition: none; }
+ .eyebrow, .kicker { margin: 0; font: 650 var(--text-caption)/1.3 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--sage-dark, var(--sage)); }
+ .topbar h1 { max-width: 760px; font: 650 var(--text-title)/1.25 var(--font-display); margin: 0; letter-spacing: -.01em; overflow-wrap: anywhere; text-wrap: balance; }
+ body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
++
++.demo-workspace-notice {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  justify-content: space-between;
++  gap: var(--space-3) var(--space-4);
++  margin: 0 0 var(--space-5);
++  padding: var(--space-3) var(--space-4);
++  border: 1px solid var(--line);
++  border-radius: var(--radius-lg);
++  background: color-mix(in srgb, var(--surface-2) 82%, var(--card));
++  color: var(--muted);
++  font-size: var(--text-caption);
++  line-height: 1.45;
++}
++.demo-workspace-notice[hidden] { display: none !important; }
++.demo-workspace-notice p { margin: 0; flex: 1 1 220px; min-width: min(100%, 220px); }
++.demo-workspace-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; }
++.demo-workspace-actions .secondary-button { font-size: var(--text-caption); padding: 7px 12px; }
++@media (max-width: 760px) {
++  .demo-workspace-notice { align-items: flex-start; }
++  .demo-workspace-actions { width: 100%; }
++  .demo-workspace-actions .secondary-button { flex: 1 1 auto; min-width: 0; }
++}
+ .top-actions, .date-jump { display: flex; align-items: center; gap: var(--space-2); }
+ .mobile-toolbar-toggle { display: none; }
+ .save-mode { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font: var(--text-caption) var(--font-body); }
+diff --git a/public/sw.js b/public/sw.js
+index 12b7404..8458403 100644
+--- a/public/sw.js
++++ b/public/sw.js
+@@ -4,6 +4,7 @@ const APP_SHELL = [
+   "./index.html",
+   "./styles.css?v=2.0.0",
+   "./app.js?v=2.0.0",
++  "./demo-workspace.js?v=2.0.0",
+   "./focus-timer.js?v=2.0.0",
+   "./voice-checkin.js?v=2.0.0",
+   "./photo-memories.js?v=2.0.0",
+@@ -14,6 +15,13 @@ const APP_SHELL = [
+   "./_init_tcb-env.js?v=2.0.0",
+   "./manifest.webmanifest",
+   "./assets/weekly-minimal-still-life-v2.jpg",
++  "./assets/demo-memories/morning-light.svg",
++  "./assets/demo-memories/quiet-desk.svg",
++  "./assets/demo-memories/movement.svg",
++  "./assets/demo-memories/city-walk.svg",
++  "./assets/demo-memories/forest-path.svg",
++  "./assets/demo-memories/shared-meal.svg",
++  "./assets/demo-memories/evening-reflection.svg",
+   "./assets/app-icon-192.png",
+   "./assets/app-icon-512.png",
+   "./assets/apple-touch-icon.png",
+@@ -58,7 +66,7 @@ self.addEventListener("fetch", event => {
+     return;
+   }
+ 
+-  const networkFirst = ["/app.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
++  const networkFirst = ["/app.js", "/demo-workspace.js", "/focus-timer.js", "/voice-checkin.js", "/photo-memories.js", "/media-backup.js", "/styles.css", "/deployment-mode.js", "/cloudbase-sync.js", "/_init_tcb-env.js"]
+     .some(path => url.pathname.endsWith(path));
+   if (networkFirst) {
+     event.respondWith(
+diff --git a/tests/desktop-shortcuts.test.mjs b/tests/desktop-shortcuts.test.mjs
+index ea8df8b..318cb54 100644
+--- a/tests/desktop-shortcuts.test.mjs
++++ b/tests/desktop-shortcuts.test.mjs
+@@ -12,7 +12,7 @@ function slice(source, startMarker, endMarker) {
+   return source.slice(start, end);
+ }
+ 
+-const shortcuts = slice(appJs, "function initDesktopShortcuts()", "\nsyncExportButtonPlacement();");
++const shortcuts = slice(appJs, "function initDesktopShortcuts()", "\nfunction bootApplication()");
+ 
+ test("desktop shortcuts are gated to desktop mode only, never active in plain web/PWA mode", () => {
+   assert.match(shortcuts, /if \(desktopMode !== "tauri-local" && desktopMode !== "tauri-cloud"\) return;/);
+@@ -53,5 +53,6 @@ test("keyboard shortcuts run through withoutMotion so they never animate, unlike
+ });
+ 
+ test("initDesktopShortcuts is wired into the app boot sequence", () => {
+-  assert.match(appJs, /initDesktopShortcuts\(\); initWidgetBridge\(\);\s*$/m);
++  assert.match(appJs, /function bootApplication\(\)[\s\S]*initDesktopShortcuts\(\);[\s\S]*initializeCloudSync\(\);/);
++  assert.match(appJs, /document\.addEventListener\("DOMContentLoaded", \(\) => \{[\s\S]*bootApplication\(\);[\s\S]*initWidgetBridge\(\);/);
+ });

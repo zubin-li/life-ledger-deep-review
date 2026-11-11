@@ -1,0 +1,1 @@
+f4daf2a feat(desktop)!: redesign Life Ledger as a native macOS 2.0 calm instrument panel
