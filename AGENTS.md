@@ -24,3 +24,7 @@
 - Tests run silently. Use headless browsers (Playwright WebKit for the Mac app's engine), GitHub Actions, or an isolated app copy with its own bundle id (`*.updatertest`, `*.preview`) and its own data folder.
 - Never open visible windows, take keyboard focus or input-method state, or launch, quit, replace or reconfigure the owner's installed `Life Ledger.app` while testing. Installing or updating the owner's app happens only when they ask, and then the owner opens it.
 - Native AppKit/WebKit probes must not create on-screen or key windows; prefer Playwright WebKit with the Mac shell injected (`desktop/mac/shell.js` + `shell.css`) for Mac-only UI checks.
+
+# Git safety
+
+- Commit and push every completed local change to the current feature branch immediately; work must never exist only on this machine. Never commit to or push `main`, merge, rebase, force-push, rewrite history, tag or release without explicit user authorization.
