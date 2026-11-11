@@ -19,10 +19,11 @@ const copy = {
     localDesc: "Everything stays on this Mac. No account, works offline.",
     openLocal: "Open",
     cloudTitle: "Connected cloud",
-    cloudDesc: "Open your own Life Ledger deployment. Sign-in is handled there.",
+    cloudDesc: "Open your own Life Ledger deployment. Sign in with your email and a one-time code.",
     cloudLabel: "Your deployment URL",
     openCloud: "Connect",
     forgetCloud: "Forget",
+    setupGuide: "How to set up your own cloud",
     invalid: "Use HTTPS. HTTP is allowed only for localhost/127.0.0.1 development.",
   },
   zh: {
@@ -32,10 +33,11 @@ const copy = {
     localDesc: "所有记录只保存在这台 Mac 上，无需账号，离线可用。",
     openLocal: "打开",
     cloudTitle: "连接云端",
-    cloudDesc: "打开你自己部署的 Life Ledger，登录由该部署负责。",
+    cloudDesc: "打开你自己部署的 Life Ledger。用邮箱收验证码登录。",
     cloudLabel: "你的部署 URL",
     openCloud: "连接",
     forgetCloud: "忘记地址",
+    setupGuide: "怎样搭建自己的云端",
     invalid: "生产环境请使用 HTTPS。仅 localhost/127.0.0.1 开发地址可用 HTTP。",
   },
   de: {
@@ -45,10 +47,11 @@ const copy = {
     localDesc: "Alles bleibt auf diesem Mac. Kein Konto, auch offline.",
     openLocal: "Öffnen",
     cloudTitle: "Mit Cloud verbinden",
-    cloudDesc: "Öffnet deine eigene Life-Ledger-Bereitstellung. Die Anmeldung läuft dort.",
+    cloudDesc: "Öffnet deine eigene Life-Ledger-Bereitstellung. Anmeldung per E-Mail-Code.",
     cloudLabel: "Deine Bereitstellungs-URL",
     openCloud: "Verbinden",
     forgetCloud: "Vergessen",
+    setupGuide: "So richtest du deine eigene Cloud ein",
     invalid: "Bitte HTTPS nutzen. HTTP ist nur für localhost/127.0.0.1 in Entwicklung erlaubt.",
   },
 };
@@ -107,3 +110,10 @@ document.getElementById("forgetCloud").addEventListener("click", () => {
   cloudUrlInput.value = "";
   setCloudError("");
 });
+
+// the public setup guide opens in the default browser (the app has no browser window of its own)
+document.getElementById("setupGuide").addEventListener("click", event => {
+  event.preventDefault();
+  void window.__TAURI__?.core?.invoke("open_setup_guide", { lang: document.documentElement.lang }).catch(() => {});
+});
+void window.__TAURI__?.app?.getVersion?.().then(v => { document.getElementById("appVersion").textContent = `Version ${v}`; }).catch(() => {});

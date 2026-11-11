@@ -10,7 +10,7 @@
 
   const copy = {
     en: {
-      title: "Photo memories", help: "Up to three private photos for this day.", add: "Add photo", count: "{count} of 3",
+      title: "Photo memories", help: "Up to three private photos for this day.", helpLocal: "Up to three photos for this day, kept only on this device.", localFull: "This device is out of storage space, so the photo was not saved.", add: "Add photo", count: "{count} of 3",
       processing: "Preparing photo…", uploading: "Saving privately…", saved: "Photo saved", delete: "Remove photo", deleting: "Removing…",
       confirmDelete: "Remove this photo from the day?", unavailable: "Photo memories are available in the deployed Cloudflare app.",
       format: "Choose a supported photo, including JPEG, PNG, WebP, HEIC, or HEIF.", heic: "This HEIC photo could not be decoded. Try the original file again.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
@@ -18,7 +18,7 @@
       dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", monthlyLimit: "The private photo allowance is paused until next month.", generic: "The photo could not be saved. Try again.",
     },
     zh: {
-      title: "照片记忆", help: "为这一天留下最多三张私人照片。", add: "添加照片", count: "{count} / 3",
+      title: "照片记忆", help: "为这一天留下最多三张私人照片。", helpLocal: "为这一天留下最多三张照片，只保存在这台设备上。", localFull: "这台设备的存储空间不足，照片没有保存。", add: "添加照片", count: "{count} / 3",
       processing: "正在处理照片……", uploading: "正在私密保存……", saved: "照片已保存", delete: "删除照片", deleting: "正在删除……",
       confirmDelete: "从这一天删除这张照片吗？", unavailable: "照片记忆仅在已部署的 Cloudflare 版本中开放。",
       format: "请选择支持的照片，包括 JPEG、PNG、WebP、HEIC 或 HEIF。", heic: "这张 HEIC 照片未能解码，请重新选择原始照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
@@ -26,7 +26,7 @@
       dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", monthlyLimit: "本月私人照片额度已暂停，下月自动恢复。", generic: "照片未能保存，请重试。",
     },
     de: {
-      title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", add: "Foto hinzufügen", count: "{count} von 3",
+      title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", helpLocal: "Bis zu drei Fotos für diesen Tag, nur auf diesem Gerät gespeichert.", localFull: "Auf diesem Gerät ist kein Speicherplatz mehr frei. Das Foto wurde nicht gespeichert.", add: "Foto hinzufügen", count: "{count} von 3",
       processing: "Foto wird vorbereitet …", uploading: "Wird privat gespeichert …", saved: "Foto gespeichert", delete: "Foto entfernen", deleting: "Wird entfernt …",
       confirmDelete: "Dieses Foto aus dem Tag entfernen?", unavailable: "Fotoerinnerungen sind in der bereitgestellten Cloudflare-App verfügbar.",
       format: "Wähle ein unterstütztes Foto, einschließlich JPEG, PNG, WebP, HEIC oder HEIF.", heic: "Dieses HEIC-Foto konnte nicht dekodiert werden. Wähle die Originaldatei erneut.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
@@ -210,6 +210,79 @@
     return data;
   }
 
+  // Local editions (web local + Mac app): photos live in this browser's IndexedDB, never on a server.
+  // Same shape as the cloud API rows ({ id, date, url, width, height, contentType, createdAt }); url is an object URL.
+  const LOCAL_DB = "life-ledger-photos";
+  function localStore() {
+    const name = LOCAL_DB + (root.LifeLedgerStorageSuffix || "");
+    const objectUrls = new Map();
+    const open = () => new Promise((resolve, reject) => {
+      const request = indexedDB.open(name, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore("photos", { keyPath: "id" }).createIndex("date", "date");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const run = async (mode, work) => {
+      const db = await open();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction("photos", mode);
+        const request = work(tx.objectStore("photos"));
+        tx.oncomplete = () => { db.close(); resolve(request?.result); };
+        tx.onerror = tx.onabort = () => {
+          db.close();
+          const error = tx.error || new Error("Local photo storage failed");
+          reject(error?.name === "QuotaExceededError" ? Object.assign(new Error("Device storage full"), { code: "PHOTO_LOCAL_FULL" }) : error);
+        };
+      });
+    };
+    // Bytes, not Blobs: WebKit refuses Blobs in IndexedDB in some modes (private windows), ArrayBuffers always work.
+    const row = record => {
+      if (!objectUrls.has(record.id)) objectUrls.set(record.id, URL.createObjectURL(new Blob([record.bytes], { type: record.type })));
+      return { id: record.id, backupId: record.backupId, date: record.date, url: objectUrls.get(record.id), width: record.width, height: record.height, contentType: record.type, createdAt: record.createdAt };
+    };
+    return {
+      async list(from, to) {
+        const records = await run("readonly", store => store.index("date").getAll(IDBKeyRange.bound(from, to)));
+        return (records || []).sort((a, b) => a.date.localeCompare(b.date) || a.createdAt - b.createdAt).map(row);
+      },
+      async save(date, blob, width, height, backupId = "") {
+        const sameDay = await this.list(date, date);
+        if (backupId) { const existing = sameDay.find(photo => photo.backupId === backupId); if (existing) return existing; }
+        if (sameDay.length >= MAX_PER_DAY) throw Object.assign(new Error("Day limit"), { code: "PHOTO_DAY_LIMIT" });
+        const record = { id: `local-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`, backupId: backupId || "", date, bytes: await blob.arrayBuffer(), type: blob.type || "image/jpeg", width: width || 0, height: height || 0, createdAt: Date.now() };
+        record.backupId ||= record.id;
+        await run("readwrite", store => store.add(record));
+        return row(record);
+      },
+      async remove(id) {
+        await run("readwrite", store => store.delete(id));
+        if (objectUrls.has(id)) { URL.revokeObjectURL(objectUrls.get(id)); objectUrls.delete(id); }
+      },
+    };
+  }
+
+  function cloudStore() {
+    return {
+      async list(from, to) {
+        const data = await responseJson(await fetch(`/api/photos?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { credentials: "same-origin" }));
+        return data.photos || [];
+      },
+      async save(date, blob, width, height, backupId = "") {
+        const form = new FormData();
+        form.set("photo", blob, `life-ledger-${date}.${blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg"}`);
+        form.set("date", date);
+        form.set("width", String(width || 1));
+        form.set("height", String(height || 1));
+        if (backupId) form.set("sourceId", backupId);
+        const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
+        return data.photo;
+      },
+      async remove(id) {
+        await responseJson(await fetch(`/api/photos/${encodeURIComponent(id)}`, { method: "DELETE", credentials: "same-origin" }));
+      },
+    };
+  }
+
   function create(options) {
     const section = options.section;
     if (!section) return null;
@@ -222,6 +295,8 @@
     const status = section.querySelector("#moodPhotoStatus");
     let language = options.language || "en";
     let enabled = Boolean(options.enabled);
+    const local = options.storage === "local";
+    const store = local ? localStore() : cloudStore();
     let date = "";
     let photos = [];
     let busy = false;
@@ -239,7 +314,7 @@
     function render() {
       section.hidden = !enabled;
       title.textContent = t("title");
-      help.textContent = enabled ? t("help") : t("unavailable");
+      help.textContent = enabled ? t(local ? "helpLocal" : "help") : t("unavailable");
       add.querySelector("span").textContent = t("add");
       add.disabled = busy || photos.length >= MAX_PER_DAY;
       count.textContent = t("count", { count: photos.length });
@@ -260,6 +335,7 @@
       if (error?.code === "PHOTO_DAY_LIMIT") return t("dayLimit");
       if (error?.code === "PHOTO_LIBRARY_FULL") return t("libraryFull");
       if (error?.code === "PHOTO_MONTHLY_LIMIT") return t("monthlyLimit");
+      if (error?.code === "PHOTO_LOCAL_FULL") return t("localFull");
       if (error?.status === 401 || error?.status === 403) return t("session");
       if (error?.code === "PHOTO_STORAGE_UNAVAILABLE" || error?.code === "PHOTO_FAILED" || error?.status >= 500) return t("service");
       if (error instanceof TypeError) return t("network");
@@ -274,9 +350,9 @@
       render();
       if (!enabled || !date) return [];
       try {
-        const data = await responseJson(await fetch(`/api/photos?date=${encodeURIComponent(date)}`, { credentials: "same-origin" }));
+        const rows = await store.list(date, date);
         if (version !== requestVersion) return photos;
-        photos = data.photos || [];
+        photos = rows;
         render();
         return photos;
       } catch (error) {
@@ -293,17 +369,12 @@
       try {
         const compressed = await compressPhoto(file);
         setStatus(t("uploading"));
-        const form = new FormData();
-        form.set("photo", compressed.blob, `life-ledger-${date}.${compressed.blob.type === "image/webp" ? "webp" : "jpg"}`);
-        form.set("date", date);
-        form.set("width", String(compressed.width));
-        form.set("height", String(compressed.height));
-        const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
-        photos.push(data.photo);
+        photos.push(await store.save(date, compressed.blob, compressed.width, compressed.height));
         setStatus(t("saved"));
         options.onChange?.({ date, photos: [...photos] });
         options.onToast?.(t("saved"));
       } catch (error) {
+        console.warn("Photo save failed", error);
         setStatus(errorText(error), true);
       } finally {
         busy = false;
@@ -318,7 +389,7 @@
       setStatus(t("deleting"));
       render();
       try {
-        await responseJson(await fetch(`/api/photos/${encodeURIComponent(id)}`, { method: "DELETE", credentials: "same-origin" }));
+        await store.remove(id);
         photos = photos.filter(photo => photo.id !== id);
         setStatus("");
         options.onChange?.({ date, photos: [...photos] });
@@ -332,24 +403,17 @@
 
     async function listRange(from, to) {
       if (!enabled) return [];
-      const data = await responseJson(await fetch(`/api/photos?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { credentials: "same-origin" }));
-      return data.photos || [];
+      return store.list(from, to);
     }
 
     async function restorePhoto(photo, blob) {
       if (!enabled) throw new Error(t("unavailable"));
-      const form = new FormData();
-      form.set("photo", blob, `life-ledger-${photo.date}.${blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg"}`);
-      form.set("date", photo.date);
-      form.set("width", String(photo.width || 1));
-      form.set("height", String(photo.height || 1));
-      form.set("sourceId", photo.backupId || photo.id);
-      const data = await responseJson(await fetch("/api/photos", { method: "POST", body: form, credentials: "same-origin" }));
-      if (date === photo.date && !photos.some(item => item.id === data.photo.id)) {
-        photos.push(data.photo);
+      const saved = await store.save(photo.date, blob, photo.width, photo.height, photo.backupId || photo.id);
+      if (date === photo.date && !photos.some(item => item.id === saved.id)) {
+        photos.push(saved);
         render();
       }
-      return data.photo;
+      return saved;
     }
 
     add.addEventListener("click", () => input.click());
@@ -365,5 +429,5 @@
     };
   }
 
-  root.LifeLedgerPhotoMemories = { MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile };
+  root.LifeLedgerPhotoMemories = { LOCAL_DB, MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile };
 })(window);

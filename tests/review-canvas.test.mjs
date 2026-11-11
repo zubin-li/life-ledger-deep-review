@@ -5,25 +5,14 @@ import { readFile } from "node:fs/promises";
 const index = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
 const app = await readFile(new URL("../public/app.js", import.meta.url), "utf8");
 
-test("weekly and monthly reviews open one local evidence canvas", () => {
-  assert.match(index, /id="reviewCanvasDialog"/);
-  assert.match(index, /id="openWeeklyReviewCanvas"/);
-  assert.match(index, /data-review-scope="week"/);
-  assert.match(index, /data-review-scope="month"/);
-  assert.match(app, /function reviewEvidence\(/);
-  assert.match(app, /function buildLocalReviewDraft\(/);
-});
-
-test("weekly review drafts are stored separately from weekly output", () => {
-  assert.match(app, /weeklyReviews: \{\}/);
-  assert.match(app, /reviewCanvasScope === "week" \? state\.weeklyReviews : state\.reviews/);
+test("no generated review canvas: week and month reflections are only what you write (user 10/27)", () => {
+  assert.doesNotMatch(index, /reviewCanvasDialog|openWeeklyReviewCanvas|id="generateReview"/);
+  assert.doesNotMatch(app, /buildLocalReviewDraft|openReviewCanvas|reviewCanvas/);
+  // the week timeline reads the weekly reflection only, never the old generated drafts
+  assert.match(app, /entries = Object\.keys\(state\.weeklyOutputs \|\| \{\}\)/);
+  assert.doesNotMatch(app, /text:state\.weeklyReviews/);
+  // old drafts stay in backups and sync so nothing is lost
   assert.match(app, /weeklyReviews: \{ \.\.\.\(current\.weeklyReviews/);
-});
-
-test("generated reviews summarize focus minutes without session targets", () => {
-  assert.match(app, /statFocus: "Focus minutes"/);
-  assert.match(app, /Focus: \$\{evidence\.focusMinutes\} minutes/);
-  assert.doesNotMatch(app, /evidence\.completedSessions/);
 });
 
 test("daily reminder entry lives in Habit Settings instead of the global toolbar", () => {

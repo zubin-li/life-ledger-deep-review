@@ -1,8 +1,8 @@
-# macOS desktop MVP (Tauri v2)
+# Life Ledger for Mac 3.0 (Tauri v2)
 
-This optional desktop shell packages the existing Life Ledger frontend for macOS.
+The Mac app packages the Life Ledger frontend for macOS: use it on this Mac only, or connect your own cloud deployment and sync with your other devices.
 
-The ready-to-install Apple Silicon package is published on the repository's [latest release](https://github.com/zubin-li/life-ledger-deep-review/releases/latest). It supports M1, M2, M3, and M4 Macs running macOS 12 or later.
+Download: [Mac 3.0.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0) (`Life-Ledger-3.0.0-mac-arm64.zip`, Apple Silicon: M1–M4, macOS 12 or later). The quickest setup is in [Mac online edition](macos-cloud.md) · [中文](macos-cloud.zh-CN.md).
 
 ## Build
 
@@ -17,7 +17,7 @@ Build outputs are generated under `src-tauri/target/release/bundle/macos/` (`.ap
 ## Use modes
 
 - **Local on this Mac**: opens bundled `public/index.html` with local-first storage and no account.
-- **Connected cloud**: opens your own deployed Life Ledger URL in a separate window.
+- **Connected cloud**: opens your own deployed Life Ledger URL in a separate window. Sign-in is by email and a one-time code (Cloudflare Access); setup: [Mac online edition](macos-cloud.md) · [中文](macos-cloud.zh-CN.md).
 
 Connected URL policy:
 

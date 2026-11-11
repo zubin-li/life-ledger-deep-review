@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-show-alert"
+description = "Enables the show_alert command without any pre-configured scope."
+commands.allow = ["show_alert"]
+
+[[permission]]
+identifier = "deny-show-alert"
+description = "Denies the show_alert command without any pre-configured scope."
+commands.deny = ["show_alert"]

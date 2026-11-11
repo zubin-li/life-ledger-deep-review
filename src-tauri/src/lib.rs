@@ -13,6 +13,13 @@ use url::Url;
 const MAX_JSON_IMPORT_BYTES: u64 = 10 * 1024 * 1024;
 const LAST_WORKSPACE_FILE: &str = "last-workspace.txt";
 const MENU_EVENT: &str = "menu://action";
+/// The cloud window says it is Safari: Google refuses OAuth sign-in in embedded web views it does not recognise,
+/// and Cloudflare's login page is written for real browsers. Same engine (WebKit), so the claim is true in practice.
+const SAFARI_UA: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15";
+/// Cloudflare Access ends the session on this path of the deployment itself (all Access apps, cookie cleared).
+const ACCESS_LOGOUT_PATH: &str = "/cdn-cgi/access/logout";
+/// Menu language last reported by the page, so the menu can be rebuilt when the cloud window opens or closes.
+static MENU_LANG: Mutex<String> = Mutex::new(String::new());
 /// Trailing debounce window for coalescing Moved/Resized bursts (e.g. a drag) into one write.
 const WINDOW_STATE_DEBOUNCE: Duration = Duration::from_millis(300);
 
@@ -155,6 +162,24 @@ fn watch_window_lifecycle(app: &AppHandle, window: &WebviewWindow, restore_launc
     });
 }
 
+fn show_launcher(app: &AppHandle) {
+    if let Some(launcher) = app.get_webview_window("launcher") {
+        let _ = launcher.show();
+        let _ = launcher.set_focus();
+    }
+}
+
+/// Settings → "Switch to local / sync mode": forget the remembered workspace (so the next start asks again)
+/// and bring back the start window. The current window stays open until the user picks.
+#[tauri::command]
+fn switch_workspace(app: AppHandle) -> Result<(), String> {
+    if let Some(path) = last_workspace_path(&app) {
+        let _ = fs::remove_file(path);
+    }
+    show_launcher(&app);
+    Ok(())
+}
+
 fn hide_launcher(app: &AppHandle) {
     if let Some(launcher) = app.get_webview_window("launcher") {
         let _ = launcher.hide();
@@ -195,6 +220,12 @@ fn save_last_workspace(app: &AppHandle, workspace: &Workspace) {
     let _ = fs::write(path, contents);
 }
 
+/// Same as `load_last_workspace`, for callbacks without an `AppHandle` (the directory is cached at startup).
+fn cached_last_workspace() -> Option<Workspace> {
+    let dir = WINDOW_STATE_DIR.get()?.clone()?;
+    classify_workspace(&fs::read_to_string(dir.join(LAST_WORKSPACE_FILE)).ok()?)
+}
+
 fn load_last_workspace(app: &AppHandle) -> Option<Workspace> {
     let path = last_workspace_path(app)?;
     let contents = fs::read_to_string(path).ok()?;
@@ -215,11 +246,12 @@ fn focused_main_window(app: &AppHandle) -> Option<WebviewWindow> {
 }
 
 fn emit_menu_action(app: &AppHandle, action: &str) {
+    if action == "cloud:signout" {
+        sign_out_of_cloud(app);
+        return;
+    }
     if action == "workspace:switch" {
-        if let Some(launcher) = app.get_webview_window("launcher") {
-            let _ = launcher.show();
-            let _ = launcher.set_focus();
-        }
+        show_launcher(app);
         return;
     }
     if let Some(window) = focused_main_window(app) {
@@ -234,6 +266,7 @@ fn menu_action_for_id(id: &str) -> Option<&'static str> {
         "export_backup" => Some("export"),
         "import_backup" => Some("import"),
         "workspace_switch" => Some("workspace:switch"),
+        "cloud_sign_out" => Some("cloud:signout"),
         "view_today" => Some("view:today"),
         "view_week" => Some("view:week"),
         "view_longrange" => Some("view:longrange"),
@@ -241,8 +274,6 @@ fn menu_action_for_id(id: &str) -> Option<&'static str> {
         "view_review" => Some("view:review"),
         "view_habits" => Some("view:habits"),
         "sidebar_toggle" => Some("sidebar:toggle"),
-        "inspector_toggle" => Some("inspector:toggle"),
-        "command_palette" => Some("palette"),
         "date_today" => Some("date:today"),
         "date_prev" => Some("date:prev"),
         "date_next" => Some("date:next"),
@@ -265,6 +296,7 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "export_backup" => ["导出备份…", "Export Backup…", "Backup exportieren …"],
         "import_backup" => ["导入备份…", "Import Backup…", "Backup importieren …"],
         "workspace_switch" => ["切换工作区…", "Switch Workspace…", "Arbeitsbereich wechseln …"],
+        "cloud_sign_out" => ["退出云端登录", "Sign Out of Cloud", "Von der Cloud abmelden"],
         "close" => ["关闭窗口", "Close Window", "Fenster schließen"],
         "edit" => ["编辑", "Edit", "Bearbeiten"],
         "undo" => ["撤销", "Undo", "Widerrufen"],
@@ -281,8 +313,6 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "view_review" => ["复盘", "Review", "Rückblick"],
         "view_habits" => ["习惯设置", "Habits", "Gewohnheiten"],
         "sidebar_toggle" => ["显示或隐藏边栏", "Show or Hide Sidebar", "Seitenleiste ein-/ausblenden"],
-        "inspector_toggle" => ["显示或隐藏当日详情", "Show or Hide Day Details", "Tagesdetails ein-/ausblenden"],
-        "command_palette" => ["命令…", "Commands…", "Befehle …"],
         "date_today" => ["回到今天", "Go to Today", "Zu heute"],
         "date_prev" => ["上一天 / 上一页", "Previous", "Zurück"],
         "date_next" => ["下一天 / 下一页", "Next", "Weiter"],
@@ -338,6 +368,7 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
         .item(&item("export_backup", Some("CmdOrCtrl+Shift+E"))?)
         .separator()
         .item(&item("workspace_switch", None)?)
+        .item(&MenuItemBuilder::with_id("cloud_sign_out", t("cloud_sign_out")).enabled(app.get_webview_window("cloud").is_some()).build(app)?)
         .separator()
         .item(&PredefinedMenuItem::close_window(app, Some(t("close")))?)
         .build()?;
@@ -364,10 +395,7 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
         .item(&item("date_prev", Some("CmdOrCtrl+["))?)
         .item(&item("date_next", Some("CmdOrCtrl+]"))?)
         .separator()
-        .item(&item("command_palette", Some("CmdOrCtrl+K"))?)
-        .separator()
         .item(&item("sidebar_toggle", Some("Ctrl+CmdOrCtrl+S"))?)
-        .item(&item("inspector_toggle", Some("Alt+CmdOrCtrl+I"))?)
         .item(&PredefinedMenuItem::fullscreen(app, Some(t("fullscreen")))?)
         .build()?;
 
@@ -388,9 +416,37 @@ fn set_menu_language(app: AppHandle, lang: String) -> Result<(), String> {
         "zh" | "de" => lang,
         _ => "en".to_string(),
     };
-    let menu = build_app_menu(&app, &lang).map_err(|e| e.to_string())?;
-    app.set_menu(menu).map_err(|e| e.to_string())?;
+    *MENU_LANG.lock().unwrap() = lang;
+    refresh_menu(&app);
     Ok(())
+}
+
+/// Rebuilds the menu bar in the last reported language (e.g. "Sign Out of Cloud" follows the cloud window).
+fn refresh_menu(app: &AppHandle) {
+    let lang = MENU_LANG.lock().unwrap().clone();
+    if let Ok(menu) = build_app_menu(app, if lang.is_empty() { "en" } else { &lang }) {
+        let _ = app.set_menu(menu);
+    }
+}
+
+/// Ends the Cloudflare Access session; when the logout page has loaded, `mac_window` sends the window back to
+/// the deployment, which then shows the email-code login again.
+fn sign_out_of_cloud(app: &AppHandle) {
+    let Some(window) = app.get_webview_window("cloud") else { return };
+    let Some(Workspace::Cloud(raw)) = load_last_workspace(app) else { return };
+    let Ok(mut url) = validate_cloud_url(&raw) else { return };
+    url.set_path(ACCESS_LOGOUT_PATH);
+    url.set_query(None);
+    url.set_fragment(None);
+    let _ = window.navigate(url);
+}
+
+/// Public setup guide (Cloudflare Access with email codes), in the launcher's language.
+#[tauri::command]
+fn open_setup_guide(lang: String) -> Result<(), String> {
+    let file = if lang == "zh" { "macos-cloud.zh-CN.md" } else { "macos-cloud.md" };
+    let url = format!("https://github.com/zubin-li/life-ledger-deep-review/blob/main/docs/{file}");
+    std::process::Command::new("/usr/bin/open").arg(url).spawn().map(|_| ()).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -399,6 +455,76 @@ fn forget_workspace(app: AppHandle) -> Result<(), String> {
         let _ = fs::remove_file(path);
     }
     Ok(())
+}
+
+#[cfg(all(feature = "qa", target_os = "macos"))]
+mod qa;
+
+/// Mac glue injected into the app's own windows (local page and the user's cloud deployment).
+/// The web page never contains it; it only fits the unchanged web design into a Mac window.
+const MAC_SHELL_JS: &str = include_str!("../../desktop/mac/shell.js");
+const MAC_SHELL_CSS: &str = include_str!("../../desktop/mac/shell.css");
+
+fn mac_shell_script() -> String {
+    #[cfg(all(feature = "qa", target_os = "macos"))]
+    let qa = if std::env::var("LL_QA_CLOUD").is_ok() { qa::QA_CLOUD_SCRIPT } else { qa::QA_SCRIPT };
+    #[cfg(not(all(feature = "qa", target_os = "macos")))]
+    let qa = "";
+    // `{:?}` gives a double-quoted, escaped literal; the CSS is plain ASCII/UTF-8 text, so it is valid JavaScript.
+    format!(
+        "{}\n(()=>{{if(window.top!==window)return;const s=document.createElement('style');s.id='ll-mac-shell';s.textContent={:?};const put=()=>{{const r=document.head||document.documentElement;if(!r)return false;r.appendChild(s);return true}};if(!put())new MutationObserver((_,o)=>{{if(put())o.disconnect()}}).observe(document,{{childList:true,subtree:true}})}})();\n{}",
+        qa, MAC_SHELL_CSS, MAC_SHELL_JS
+    )
+}
+
+/// Traffic lights sit inside the web sidebar card (card at 16,16; buttons 14 pt, centre y = position.y - 2).
+const TRAFFIC_LIGHTS: (f64, f64) = (34.0, 44.0);
+
+/// Hidden title bar, lights in the sidebar card, hidden until the page paints (no white flash).
+fn mac_window<'a, R: tauri::Runtime, M: tauri::Manager<R>>(
+    builder: WebviewWindowBuilder<'a, R, M>,
+) -> WebviewWindowBuilder<'a, R, M> {
+    let builder = builder
+        .visible(false)
+        .initialization_script(mac_shell_script())
+        // Backups and photo exports are <a download> links; without a handler WebKit drops them silently.
+        // wry saves to ~/Downloads under a free name ("name (1).json"), like Safari.
+        .on_download(|_, _| true)
+        .on_page_load(|window, payload| {
+            // QA build only: record every page the window loads (origin + path, no query) to $LL_QA_NAV.
+            #[cfg(all(feature = "qa", target_os = "macos"))]
+            if let Ok(path) = std::env::var("LL_QA_NAV") {
+                let u = payload.url();
+                let line = format!("{:?} {}://{}{}\n", payload.event(), u.scheme(), u.host_str().unwrap_or(""), u.path());
+                let _ = std::fs::OpenOptions::new().create(true).append(true).open(path).and_then(|mut f| std::io::Write::write_all(&mut f, line.as_bytes()));
+            }
+            // after "Sign Out of Cloud": back to the deployment, which now asks for the email code
+            if window.label() == "cloud"
+                && payload.event() == tauri::webview::PageLoadEvent::Finished
+                && payload.url().path() == ACCESS_LOGOUT_PATH
+            {
+                if let Some(Workspace::Cloud(raw)) = cached_last_workspace() {
+                    if let Ok(url) = validate_cloud_url(&raw) {
+                        let _ = window.navigate(with_desktop_cloud_flag(url));
+                    }
+                }
+            }
+        });
+    #[cfg(target_os = "macos")]
+    let builder = builder
+        .title_bar_style(tauri::TitleBarStyle::Overlay)
+        .hidden_title(true)
+        .traffic_light_position(tauri::LogicalPosition::new(TRAFFIC_LIGHTS.0, TRAFFIC_LIGHTS.1));
+    builder
+}
+
+/// Fallback: show the window even if the page never reported its first paint (e.g. an unreachable cloud URL).
+fn show_soon(window: &WebviewWindow) {
+    let window = window.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(1500));
+        let _ = window.show();
+    });
 }
 
 #[tauri::command]
@@ -410,11 +536,11 @@ fn open_local_window(app: AppHandle) -> Result<(), String> {
         return Ok(());
     }
 
-    let mut builder = WebviewWindowBuilder::new(
+    let mut builder = mac_window(WebviewWindowBuilder::new(
         &app,
         "local",
         WebviewUrl::App("index.html?mode=local&desktop=tauri-local".into()),
-    )
+    ))
     .title("Life Ledger")
     .min_inner_size(980.0, 700.0)
     .initialization_script(
@@ -426,21 +552,13 @@ window.LifeLedgerDesktopBridge = {
 "#,
     );
 
-    #[cfg(target_os = "macos")]
-    {
-        builder = builder.title_bar_style(tauri::TitleBarStyle::Overlay).hidden_title(true);
-    }
-    #[cfg(target_os = "macos")]
-    {
-        builder = builder.traffic_light_position(tauri::LogicalPosition::new(18.0, 20.0));
-    }
-
     builder = match load_window_state(&app, "local") {
         Some((x, y, width, height)) => builder.position(x, y).inner_size(width.max(980.0), height.max(700.0)),
         None => builder.inner_size(1280.0, 860.0),
     };
 
     let window = builder.build().map_err(|e| e.to_string())?;
+    show_soon(&window);
     watch_window_lifecycle(&app, &window, false);
     save_last_workspace(&app, &Workspace::Local);
     hide_launcher(&app);
@@ -489,7 +607,17 @@ fn grant_cloud_shell(app: &AppHandle, url: &Url) -> Result<(), String> {
         .permission("core:event:default")
         .permission("core:window:allow-start-dragging")
         .permission("core:window:allow-internal-toggle-maximize")
-        .permission("core:window:allow-is-fullscreen");
+        .permission("core:window:allow-is-fullscreen")
+        .permission("core:window:allow-show")
+        // the page's confirm/alert use native sheets, and the menu follows the page language; nothing else of the
+        // app (no file access) is reachable from the remote page
+        .permission("allow-ask-confirm")
+        .permission("allow-show-alert")
+        .permission("allow-set-menu-language")
+        .permission("allow-switch-workspace")
+        .permission("core:app:allow-version");
+    #[cfg(all(feature = "qa", target_os = "macos"))]
+    let capability = capability.permission("allow-qa-probe").permission("allow-qa-report").permission("allow-qa-sign-out");
     app.add_capability(capability).map_err(|e| e.to_string())
 }
 
@@ -505,18 +633,10 @@ fn open_cloud_window(app: AppHandle, raw_url: String) -> Result<(), String> {
         return Ok(());
     }
 
-    let mut builder = WebviewWindowBuilder::new(&app, "cloud", WebviewUrl::External(normalized))
+    let mut builder = mac_window(WebviewWindowBuilder::new(&app, "cloud", WebviewUrl::External(normalized)))
         .title("Life Ledger")
+        .user_agent(SAFARI_UA)
         .min_inner_size(980.0, 700.0);
-
-    #[cfg(target_os = "macos")]
-    {
-        builder = builder.title_bar_style(tauri::TitleBarStyle::Overlay).hidden_title(true);
-    }
-    #[cfg(target_os = "macos")]
-    {
-        builder = builder.traffic_light_position(tauri::LogicalPosition::new(18.0, 20.0));
-    }
 
     builder = match load_window_state(&app, "cloud") {
         Some((x, y, width, height)) => builder.position(x, y).inner_size(width.max(980.0), height.max(700.0)),
@@ -524,8 +644,22 @@ fn open_cloud_window(app: AppHandle, raw_url: String) -> Result<(), String> {
     };
 
     let window = builder.build().map_err(|e| e.to_string())?;
+    show_soon(&window);
     watch_window_lifecycle(&app, &window, false);
     save_last_workspace(&app, &Workspace::Cloud(raw_url.trim().to_string()));
+    refresh_menu(&app);
+    let handle = app.clone();
+    window.on_window_event(move |event| {
+        if let WindowEvent::Destroyed = event {
+            let handle = handle.clone();
+            // the window is unregistered after this event; rebuild once it is gone
+            std::thread::spawn(move || {
+                std::thread::sleep(Duration::from_millis(200));
+                let h = handle.clone();
+                let _ = handle.run_on_main_thread(move || refresh_menu(&h));
+            });
+        }
+    });
     hide_launcher(&app);
     Ok(())
 }
@@ -657,17 +791,37 @@ fn open_backup_json() -> Result<OpenBackupResponse, String> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
+    let builder = tauri::Builder::default();
+    #[cfg(all(feature = "qa", target_os = "macos"))]
+    let builder = builder.invoke_handler(tauri::generate_handler![
+        open_local_window,
+        open_cloud_window,
+        forget_workspace,
+            switch_workspace,
+        save_backup_json,
+        open_backup_json,
+        ask_confirm,
+        show_alert,
+        set_menu_language,
+        open_setup_guide,
+        qa::qa_probe,
+        qa::qa_report,
+        qa::qa_sign_out
+    ]);
+    #[cfg(not(all(feature = "qa", target_os = "macos")))]
+    let builder = builder.invoke_handler(tauri::generate_handler![
             open_local_window,
             open_cloud_window,
             forget_workspace,
+            switch_workspace,
             save_backup_json,
             open_backup_json,
             ask_confirm,
             show_alert,
-            set_menu_language
-        ])
+            set_menu_language,
+            open_setup_guide
+        ]);
+    builder
         .setup(|app| {
             let menu = build_app_menu(app.handle(), "en")?;
             app.set_menu(menu)?;
@@ -684,11 +838,10 @@ pub fn run() {
 
                 #[cfg(target_os = "macos")]
                 {
-                    builder = builder.title_bar_style(tauri::TitleBarStyle::Overlay).hidden_title(true);
-                }
-                #[cfg(target_os = "macos")]
-                {
-                    builder = builder.traffic_light_position(tauri::LogicalPosition::new(18.0, 20.0));
+                    builder = builder
+                        .title_bar_style(tauri::TitleBarStyle::Overlay)
+                        .hidden_title(true)
+                        .traffic_light_position(tauri::LogicalPosition::new(20.0, 28.0));
                 }
 
                 builder = match load_window_state(app.handle(), "launcher") {
@@ -747,6 +900,14 @@ mod tests {
     }
 
     #[test]
+    fn mac_shell_script_embeds_css_and_js() {
+        let script = super::mac_shell_script();
+        assert!(script.contains("ll-mac-shell") && script.contains("__llMac") && script.contains(".sidebar"));
+        assert!(!script.contains("\\u{"), "Rust-only escape in injected JS");
+        assert!(super::TRAFFIC_LIGHTS.0 >= 30.0, "lights must sit inside the sidebar card");
+    }
+
+    #[test]
     fn cloud_capability_covers_only_the_deployment_origin() {
         use super::cloud_capability_pattern;
         let u = url::Url::parse("https://life.example.com/app?desktop=tauri-cloud").unwrap();
@@ -758,7 +919,7 @@ mod tests {
     #[test]
     fn menu_labels_cover_every_language() {
         use super::menu_label;
-        for key in ["settings", "file", "new_habit", "view_longrange", "sidebar_toggle", "inspector_toggle", "command_palette", "window", "zoom"] {
+        for key in ["settings", "file", "new_habit", "view_longrange", "sidebar_toggle", "window", "zoom"] {
             for lang in ["zh", "en", "de"] {
                 assert!(!menu_label(lang, key).is_empty(), "{key} {lang}");
             }
@@ -870,8 +1031,6 @@ mod tests {
         assert_eq!(menu_action_for_id("view_today"), Some("view:today"));
         assert_eq!(menu_action_for_id("sidebar_toggle"), Some("sidebar:toggle"));
         assert_eq!(menu_action_for_id("view_longrange"), Some("view:longrange"));
-        assert_eq!(menu_action_for_id("inspector_toggle"), Some("inspector:toggle"));
-        assert_eq!(menu_action_for_id("command_palette"), Some("palette"));
         assert_eq!(menu_action_for_id("export_backup"), Some("export"));
         assert_eq!(menu_action_for_id("unknown_item"), None);
     }

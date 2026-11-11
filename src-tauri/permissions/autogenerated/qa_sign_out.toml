@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-qa-sign-out"
+description = "Enables the qa_sign_out command without any pre-configured scope."
+commands.allow = ["qa_sign_out"]
+
+[[permission]]
+identifier = "deny-qa-sign-out"
+description = "Denies the qa_sign_out command without any pre-configured scope."
+commands.deny = ["qa_sign_out"]

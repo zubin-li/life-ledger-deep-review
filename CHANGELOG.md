@@ -4,6 +4,73 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.4] - 2026-10-28
+
+### Added
+
+- **Settings → Data → Switch to sync mode / Switch to local mode.** In the browser it opens your own deployment (or the local edition) and offers a backup first; in the Mac app it brings back the start window.
+- The app version is shown at the bottom of Settings (in the Mac app also the app version).
+
+### Changed
+
+- **Reviews are only what you write.** Removed "Write review" on the week page, "Start guided review" on Insights and the generated review template. Day, week and month stay separate: the week timeline shows only your weekly reflection, the month only your monthly reflection. Old generated drafts are kept in backups, just no longer shown.
+- The monthly reflection box is taller and grows with your text, with no inner scroll bar or resize grip.
+- Every dropdown (timeline month, Insights week/month, long-range phase, the Mac launcher language) now uses the same glass pill as the language and date controls on Today.
+- Settings → Data now holds both **Import & export** and **Install as app**. The sidebar footer shows only your photo and name.
+- "D1 cloud sync" now reads "Cloud sync".
+- **Profile photo framing:** drag the photo to move it and use the slider (or scroll) to zoom, like the photo wall. The whole photo is kept, not a fixed square crop.
+- **Online edition:** name and photo sync with your records, so every device shows the same. The local edition keeps them on the device.
+
+### Mac app 3.0.0
+
+- **Sync edition:** connect your own deployment and sign in with an email code (Cloudflare Access). Records, photos, name and profile photo are the same on the Mac, in the browser and on the phone. New **File → Sign Out of Cloud**; the start window links to a setup guide ([English](docs/macos-cloud.md), [中文](docs/macos-cloud.zh-CN.md)).
+- **Settings → Switch mode** and **File → Switch Workspace…** go back to the start window to choose this Mac or your cloud.
+- Backups and photo exports from the cloud window are saved to **Downloads**; the cloud window identifies as Safari so Cloudflare's and Google's sign-in pages work.
+- App commands are granted per window: the cloud page can only use native confirm/alert sheets, the menu language and the mode switch, never the file dialogs.
+- The start window shows the app version and uses the same glass language picker as the app.
+
+### Fixed
+
+- The weather card's time is now the chosen city's live local time, not the computer's. The "now" line moves on its own.
+
+## [2.0.3] - 2026-10-27
+
+### Added
+
+- Photo memories in the local web edition and the Mac app: up to three photos a day, kept on the device only (never uploaded), shown in the calendar, timeline and photo card, and included in monthly `.llmedia` backups. **Clear local data** removes them.
+
+### Changed
+
+- Import & export moved into **Settings → Data**; the sidebar icon is gone.
+- Review: the week picker names the whole Monday–Sunday week the numbers cover, sits on one line with the Week/Month switch, and every remaining dropdown has the same flat style as Settings.
+- The monthly reflection uses the full card width and grows with its text instead of scrolling inside a small box.
+- The mood reason field is taller.
+
+### Fixed
+
+- The sidebar stays in the window while you scroll on Week, Horizon, Timeline, Review and Habits; it used to scroll away and leave an empty column. Switching pages opens the new page at its top.
+
+## [2.0.2] - 2026-10-27
+
+### Changed
+
+- Today's mood card drops the seven-day strip; the title stays where it was, the three choices sit in the freed space and still ask for a reason.
+- The daily review card is review only (Focus keeps its own card); it no longer pages sideways, comes in medium, large and full-row sizes, has dictation, and opens in a larger window.
+- The sidebar quote is light text on the dark sidebar in both themes.
+- Week page: weekly review and weekly goals sit side by side at the top.
+- Year, month and language pickers look the same in Safari and Chrome.
+- Every card now responds to the pointer: the Today calendar, the Today header card and the three Habits summary cards lift like the others; habit filters, Timeline view switches and Review's detailed metrics show a hover state.
+
+### Added
+
+- Settings → Quotes: automatic, or your own list (one stays, several rotate daily).
+- Settings → Page order for Today, Week, Horizon, Timeline and Review.
+- Weather shows a default city until one is chosen: Berlin for Germany, London for the UK, Beijing for Chinese.
+
+### Fixed
+
+- The sidebar name and photo can be edited again (click your name). The editor was lost in a rollback on 2026-10-18; name and photo stay on this device only.
+
 ### Changed
 
 - Replaced the local sample's personal-looking German-study storyline and occupation label with three culturally distinct fictional everyday calendars for Simplified Chinese, British English, and German.

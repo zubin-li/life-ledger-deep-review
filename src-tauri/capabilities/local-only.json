@@ -6,7 +6,16 @@
   ],
   "permissions": [
     "core:default",
+    "core:app:allow-version",
     "core:window:allow-start-dragging",
-    "core:window:allow-internal-toggle-maximize"
+    "core:window:allow-internal-toggle-maximize",
+    "core:window:allow-show",
+    "allow-save-backup-json",
+    "allow-open-backup-json",
+    "allow-ask-confirm",
+    "allow-show-alert",
+    "allow-set-menu-language",
+    "allow-switch-workspace",
+    "allow-qa-probe"
   ]
 }

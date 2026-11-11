@@ -24,6 +24,13 @@
 </div>
 
 <p align="center">
+  <strong>交给编码代理部署或升级：</strong>
+  <a href="docs/deploy-with-codex.md">English</a> ·
+  <a href="docs/deploy-with-codex.zh-CN.md">简体中文</a> ·
+  <a href="docs/deploy-with-codex.de-DE.md">Deutsch</a>
+</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/zh-desktop/zh-01-today-v6.png" width="100%" alt="Life Ledger 2.0 今日卡片工作台" />
 </p>
 
@@ -167,7 +174,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 | 方式 | 适合谁 | 必须买域名 | 起步费用 |
 |---|---|---:|---:|
 | 仅本机 PWA | 单设备、无需配置 | 否 | 0 元 |
-| Cloudflare + D1 | 国际网络环境下自托管 | 否 | 免费额度 |
+| 完整 Cloudflare 版 | 国际网络环境下自托管，同步、AI 语音、照片与可选日历 | 否 | 免费额度内 $0；R2 需绑定付款方式 |
 | 腾讯云 CloudBase | 中国大陆访问与跨设备同步 | 个人体验不需要 | 免费体验环境 |
 | macOS 桌面 MVP（Tauri） | 原生 Mac 外壳 + 本机/云端二选一 | 否 | 本地构建 |
 
@@ -210,7 +217,7 @@ npm run dev
 
 ### 4. 使用 Cloudflare 部署
 
-点击上面的 **Deploy to Cloudflare**。Cloudflare 会把公开仓库复制到你的账号，在你的账户中创建 Worker 和 D1 数据库，执行初始化并完成部署。
+点击上面的 **Deploy to Cloudflare**。Cloudflare 会把公开仓库复制到你的账号，引导你创建或绑定完整版本使用的 Worker、D1 数据库和私有 R2 照片桶，再执行初始化并完成部署；已有资源必须复用。第一次启用 R2 会建立按量计费订阅：确认页当前即时费用为 $0，正常个人使用预计可留在免费额度内，但超额后会计费；应用内的容量和操作次数保护并不是 Cloudflare 账户级消费硬上限。
 
 部署完成后启用 Cloudflare Access：
 
@@ -225,9 +232,9 @@ npm run dev
 
 同一次部署会自动包含“快速记录”使用的 Workers AI 绑定。为了让个人免费使用更可控，每个账号每天最多处理 3 段、累计 20 分钟的录音，单次最长 10 分钟。Cloudflare 的免费额度和价格可能调整；如果要开放给多人使用，请先查看自己的 Cloudflare 用量面板。
 
-Cloudflare 版本还可以以只读方式连接 Google 日历，并把压缩后的照片记忆保存在自己的私有 R2 存储中。Google 日历需要使用者创建自己的 OAuth 网页客户端，并配置四个 Cloudflare Secret；仓库不会内置或共享任何 Google 凭据。完整步骤和隐私边界见[自托管说明](docs/self-hosting.zh-CN.md)。
+完整 Cloudflare 版本会把压缩后的照片记忆保存在自己的私有 R2 存储中，并可选择以只读方式连接 Google 日历。Google 日历需要使用者创建自己的 OAuth 网页客户端，并配置四个 Cloudflare Secret；仓库不会内置或共享任何 Google 凭据。完整步骤、R2 费用边界和隐私边界见[自托管说明](docs/self-hosting.zh-CN.md)。
 
-完整步骤请看[自托管说明](docs/self-hosting.zh-CN.md)和[Cloudflare Access 设置](docs/cloudflare-access.zh-CN.md)。
+完整步骤请看[自托管说明](docs/self-hosting.zh-CN.md)和[Cloudflare Access 设置](docs/cloudflare-access.zh-CN.md)。如果交给编码代理部署或升级，直接复制[一次性 Codex 部署提示词](docs/deploy-with-codex.zh-CN.md)；它会先盘点并复用已有资源，在 R2 计费确认处暂停，并在报告成功前逐项验收。
 
 ### 5. 在中国大陆使用腾讯云 CloudBase 部署
 
@@ -246,16 +253,14 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 
 请按[中国大陆 CloudBase 完整部署指南](docs/cloudbase-china.zh-CN.md)操作；英文说明见 [Mainland China deployment guide](docs/cloudbase-china.md)。
 
-### 6. macOS 桌面 MVP（可选外壳）
+### 6. Life Ledger Mac 版 3.0
 
-仓库已包含首个 Tauri v2 的 macOS 外壳，提供两个明确入口：
+从 **[Mac 3.0.0 发布页](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** 下载 `Life-Ledger-3.0.0-mac-arm64.zip`（Apple 芯片），解压后把 **Life Ledger** 拖进"应用程序"。应用没有经过苹果公证，第一次打开时到 **系统设置 → 隐私与安全性 → 仍要打开**。
 
-- **本机模式**：打开内置前端，不需要账号，保持本地优先存储。
-- **连接云端**：只打开你自己填写并通过校验的 Life Ledger 部署地址。
+- **本机模式**：不用账号、不用配置，记录只在这台 Mac 上。
+- **连接云端**：连接你自己的部署（上面第 4 种方式），用邮箱验证码登录。记录、照片、名称和头像在 Mac、浏览器和手机上都一样。
 
-在桌面本机窗口中，JSON 备份导入/导出使用 macOS 原生文件对话框，可直接选择 iCloud Drive 文件夹。这里的能力是“文件备份转移”，不是实时同步、冲突合并或自动双向同步。
-
-构建命令与未签名应用的 Gatekeeper 处理见 [docs/macos-desktop.md](docs/macos-desktop.md)。
+随时可以在 **设置 → 数据 → 切换到同步模式 / 切换到本机模式** 里换模式（网页版也有）。五分钟教程：[Mac 联网版配置](docs/macos-cloud.zh-CN.md)。构建说明：[docs/macos-desktop.md](docs/macos-desktop.md)。
 
 ## 数据归属
 

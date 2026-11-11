@@ -11,7 +11,7 @@
       clear: "晴", cloud: "多云", rain: "下雨", snow: "下雪", storm: "雷雨", rainSoon: "预计降雨", snowSoon: "预计降雪", noRain: "未来 24 小时暂未预报降水", hour: "预报时间",
       rhythmAvg: "7 天完成率", tomorrow: "明天", tomorrowCount: "{n} 个基础目标", less: "少", more: "多", palette: "配色", green: "翡翠绿", blue: "海洋蓝", spectrum: "红到蓝",
       wallEmpty: "留一扇自己的小窗：放入照片、GIF 或视频。", addMedia: "添加媒体", play: "循环播放", pause: "暂停", remove: "移除", prev: "上一项", next: "下一项", wallLocal: "保存在本机浏览器。", invalidMedia: "支持 JPEG、PNG、WebP、GIF 和可播放视频；每个不超过 50 MB，最多 20 项。", storageError: "保存失败，存储空间可能已满。", removeConfirm: "从照片墙移除这一项？",
-      photosLocal: "每日照片保存在你自己部署的版本里（私人存储）。本地版只做展示，部署后即可在这里添加。", photosEmpty: "这一天还没有照片。", openDay: "打开这一天",
+      photosLocal: "照片暂时无法读取，请刷新后重试。", photosEmpty: "这一天还没有照片。", openDay: "打开这一天",
       focusToday: "今日专注", min: "分钟",
       heat26: "近 26 周", heatRate: "完成率", heatFull: "满分天", heatBest: "最长连续", days: "天", focusArt: "专注", wallAddHint: "放一张你喜欢的照片", photosLocalTitle: "这一天的照片", freqEmptyTitle: "还没有频率目标", weatherEmptyTitle: "今天的天气",
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
@@ -21,7 +21,7 @@
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
       rhythmAvg: "7-day completion", tomorrow: "Tomorrow", tomorrowCount: "{n} foundations", less: "Less", more: "More", palette: "Palette", green: "Emerald", blue: "Ocean blue", spectrum: "Red to blue",
       wallEmpty: "Your own little window. Add photos, GIFs or a video.", addMedia: "Add media", play: "Play", pause: "Pause", remove: "Remove", prev: "Previous", next: "Next", wallLocal: "Stored in this browser.", invalidMedia: "JPEG, PNG, WebP, GIF or a playable video, up to 50 MB each, 20 items.", storageError: "Could not save. Storage may be full.", removeConfirm: "Remove this item from the photo wall?",
-      photosLocal: "Daily photos live in your own deployment (private storage). This local version only previews them.", photosEmpty: "No photo for this day yet.", openDay: "Open this day",
+      photosLocal: "Photos could not be read. Refresh and try again.", photosEmpty: "No photo for this day yet.", openDay: "Open this day",
       focusToday: "Focused today", min: "min",
       heat26: "Last 26 weeks", heatRate: "Done", heatFull: "Full days", heatBest: "Best streak", days: "d", focusArt: "Focus", wallAddHint: "Put a photo you love here", photosLocalTitle: "Photos of this day", freqEmptyTitle: "No frequency goals yet", weatherEmptyTitle: "Today's weather",
       freqEmpty: "No weekly or monthly habits yet. Set a habit's frequency to weekly or monthly in Adjust goals.", freqWeek: "This week {done}/{target}", freqMonth: "This month {done}/{target}", freqPick: "Habit shown",
@@ -31,7 +31,7 @@
       clear: "Klar", cloud: "Bewölkt", rain: "Regen", snow: "Schnee", storm: "Gewitter", rainSoon: "Regen erwartet", snowSoon: "Schnee erwartet", noRain: "Kein Niederschlag in den nächsten 24 Stunden", hour: "Vorhersagezeit",
       rhythmAvg: "7-Tage-Quote", tomorrow: "Morgen", tomorrowCount: "{n} Grundlagen", less: "Weniger", more: "Mehr", palette: "Farben", green: "Smaragd", blue: "Ozeanblau", spectrum: "Rot bis Blau",
       wallEmpty: "Dein eigenes Fenster: Fotos, GIFs oder ein Video.", addMedia: "Medien hinzufügen", play: "Abspielen", pause: "Pause", remove: "Entfernen", prev: "Zurück", next: "Weiter", wallLocal: "In diesem Browser gespeichert.", invalidMedia: "JPEG, PNG, WebP, GIF oder abspielbares Video, bis 50 MB, 20 Dateien.", storageError: "Speichern fehlgeschlagen. Speicher voll?", removeConfirm: "Dieses Medium von der Fotowand entfernen?",
-      photosLocal: "Tagesfotos liegen in deiner eigenen Installation (privater Speicher). Diese lokale Version zeigt sie nur als Vorschau.", photosEmpty: "Noch kein Foto für diesen Tag.", openDay: "Diesen Tag öffnen",
+      photosLocal: "Fotos konnten nicht gelesen werden. Bitte neu laden und erneut versuchen.", photosEmpty: "Noch kein Foto für diesen Tag.", openDay: "Diesen Tag öffnen",
       focusToday: "Heute fokussiert", min: "Min.",
       heat26: "Letzte 26 Wochen", heatRate: "Erledigt", heatFull: "Volle Tage", heatBest: "Beste Serie", days: "T.", focusArt: "Fokus", wallAddHint: "Lege ein Lieblingsfoto hierher", photosLocalTitle: "Fotos dieses Tages", freqEmptyTitle: "Noch keine Häufigkeitsziele", weatherEmptyTitle: "Wetter heute",
       freqEmpty: "Noch keine wöchentlichen oder monatlichen Ziele. Stelle die Häufigkeit in „Ziele anpassen“ auf wöchentlich / monatlich.", freqWeek: "Diese Woche {done}/{target}", freqMonth: "Diesen Monat {done}/{target}", freqPick: "Angezeigtes Ziel",
@@ -43,7 +43,8 @@
   const NS = new URLSearchParams(location.search).get("local-preview") ? `-preview-${new URLSearchParams(location.search).get("local-preview")}` : "";
   window.LifeLedgerStorageSuffix = NS;
   const read = k => { try { return JSON.parse(localStorage.getItem(k + NS)); } catch { return null; } };
-  const save = (k, v) => { try { localStorage.setItem(k + NS, JSON.stringify(v)); } catch {} };
+  // Choices listed in LifeLedgerPrefs sync in the cloud edition (layout, city, palette, habit shown).
+  const save = (k, v) => { try { localStorage.setItem(k + NS, JSON.stringify(v)); } catch {} if (!NS && window.LifeLedgerPrefs?.keys().includes(k)) window.LifeLedgerPrefs.changed(); };
   const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Line icons (24px, 1.8 stroke) for card chips — same drawing style as the habit icons.
@@ -172,7 +173,18 @@
   if (city && !(Number.isFinite(city.latitude) && Number.isFinite(city.longitude))) city = null;
   // The sample persona lives in Berlin: the demo shows real Berlin weather until a city is chosen.
   // (checked lazily: the demo is seeded after this script runs)
-  const demoCity = () => { if (!city && typeof state !== "undefined" && window.LifeLedgerDemoWorkspace?.isDemoActive?.(state)) city = { name: "Berlin", latitude: 52.52, longitude: 13.405 }; };
+  // Until a city is chosen (user 10/27): Germany → Berlin, UK → London, Chinese → Beijing, from the system
+  // region first, then the app language. Not saved, so choosing a city always wins.
+  const regionCity = () => {
+    const tag = (navigator.languages?.[0] || navigator.language || "").toLowerCase(), region = tag.split("-").slice(1).find(p => p.length === 2) || "";
+    const by = { de: ["Berlin", 52.52, 13.405], at: ["Berlin", 52.52, 13.405], ch: ["Berlin", 52.52, 13.405], gb: ["London", 51.5072, -0.1276], uk: ["London", 51.5072, -0.1276], cn: ["北京", 39.9042, 116.4074] };
+    const hit = by[region] || (tag.startsWith("zh") ? by.cn : null) || { de: by.de, zh: by.cn, en: by.gb }[lang()] || by.gb;
+    return { name: hit[0] === "北京" && lang() !== "zh" ? "Beijing" : hit[0], latitude: hit[1], longitude: hit[2] };
+  };
+  const demoCity = () => {
+    if (city) return;
+    city = typeof state !== "undefined" && window.LifeLedgerDemoWorkspace?.isDemoActive?.(state) ? { name: "Berlin", latitude: 52.52, longitude: 13.405 } : regionCity();
+  };
   const kind = code => ((code >= 71 && code <= 77) || code === 85 || code === 86) ? "snow" : code >= 95 ? "storm" : ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) ? "rain" : code > 1 ? "cloud" : "clear";
   async function json(url, signal) {
     const ctl = new AbortController(), abort = () => ctl.abort(), timer = setTimeout(abort, 12000);
@@ -194,7 +206,6 @@
     const key = `${city.latitude},${city.longitude},31-16`, cache = read("life-ledger-weather-cache");
     if (!forecast && cache?.city === key && valid(cache.data)) { forecast = cache.data; stamp = cache.stamp; drawWeather(); }
     if (!force && forecast && Date.now() - stamp < 30 * 60 * 1000) { status(`${t("updated")} ${forecast.current.time.slice(11, 16)}`); return; }
-    if (!shown("weather")) return;
     const asked = city; busy = true; status(t("loading"), !forecast);
     try {
       const url = new URL("https://api.open-meteo.com/v1/forecast");
@@ -235,12 +246,63 @@
   // ---- photo wall (from 858ede8 today-extras wall; tiny IndexedDB store) ----
   // Any number of walls (user 10/21): each instance has its own store and prefs (suffix "", "-2", "-3"…).
   function makeWall(W, id, suffix) {
-    const store = (() => {
+    const local = (() => {
       let db;
       const open = () => db ||= new Promise((ok, no) => { const r = indexedDB.open("life-ledger-wall" + suffix + NS, 1); r.onupgradeneeded = () => r.result.createObjectStore("photos", { keyPath: "id" }); r.onsuccess = () => { r.result.onversionchange = () => { r.result.close(); db = null; }; ok(r.result); }; r.onerror = () => no(r.error); });
       const run = (mode, fn) => open().then(d => new Promise((ok, no) => { const tx = d.transaction("photos", mode), q = fn(tx.objectStore("photos")); tx.oncomplete = () => ok(q.result); tx.onerror = tx.onabort = () => no(tx.error || q.error); }));
       return { all: () => run("readonly", s => s.getAll()), put: row => run("readwrite", s => s.put(row)), delete: id => run("readwrite", s => s.delete(id)) };
     })();
+    // Cloud edition (user 10/28): files in your own R2 (/api/wall/<id>), the list in the synced record (state.wallMedia),
+    // so every device shows the same wall. The first device that opens with photos in its browser brings them up.
+    const cloudOn = () => !NS && typeof cloudMode !== "undefined" && cloudMode && typeof cloudProvider !== "undefined" && cloudProvider === "cloudflare";
+    const MEDIA_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const cloud = (() => {
+      const blobs = new Map();
+      const list = () => (Array.isArray(state.wallMedia?.[id]) ? state.wallMedia[id] : null);
+      const writeList = rows => { state.wallMedia = { ...(state.wallMedia || {}), [id]: rows.map(({ blob, ...row }) => row) }; saveState(); };
+      async function upload(row) {
+        const r = await fetch(`/api/wall/${row.id}`, { method: "PUT", headers: { "content-type": row.type }, body: row.blob, credentials: "same-origin" });
+        if (!r.ok) throw new Error(`upload ${r.status}`);
+        blobs.set(row.id, row.blob);
+      }
+      async function blob(row) {
+        if (blobs.has(row.id)) return blobs.get(row.id);
+        const r = await fetch(`/api/wall/${row.id}`, { credentials: "same-origin" });
+        if (!r.ok) throw new Error(`read ${r.status}`);
+        const b = await r.blob(); blobs.set(row.id, b); return b;
+      }
+      return {
+        list,
+        async all() {
+          let rows = list();
+          if (!rows) {
+            // Seed only after the cloud record has been read, so another device's wall is never overwritten.
+            if (!window.LifeLedgerCloudPulled) { waiting = true; return []; }
+            waiting = false;
+            const mine = (await local.all().catch(() => [])).filter(r => MEDIA_ID.test(r.id) && r.blob).sort((a, b) => a.created - b.created);
+            if (!mine.length) return [];
+            for (const row of mine) await upload(row);
+            if (!list()) writeList(mine);
+            rows = list() || [];
+          }
+          const out = [];
+          for (const row of rows) { try { out.push({ ...row, blob: await blob(row) }); } catch {} }
+          return out;
+        },
+        async put(row) {
+          const rows = list() || [], known = rows.some(r => r.id === row.id);
+          if (!known) await upload(row);
+          writeList(known ? rows.map(r => (r.id === row.id ? row : r)) : rows.concat(row));
+        },
+        async delete(mediaId) {
+          const r = await fetch(`/api/wall/${mediaId}`, { method: "DELETE", credentials: "same-origin" });
+          if (!r.ok) throw new Error(`delete ${r.status}`);
+          blobs.delete(mediaId); writeList((list() || []).filter(row => row.id !== mediaId));
+        },
+      };
+    })();
+    const store = { all: () => (cloudOn() ? cloud : local).all(), put: row => (cloudOn() ? cloud : local).put(row), delete: mediaId => (cloudOn() ? cloud : local).delete(mediaId) };
+    let wallSig = "", waiting = false;
     let wall = [], wallAt = 0, wallTimer, wallUrl, wallLoaded = false, wallHold = false;
     const wallPrefs = () => ({ auto: true, fit: "cover", ...(read("life-ledger-wall-prefs" + suffix) || {}) });
     const pos = row => `${row.x ?? 50}% ${row.y ?? 50}%`;
@@ -294,9 +356,9 @@
     }
     function loadWall() {
       if (wallLoaded || !shown(id)) return;
-      wallLoaded = true;
+      wallLoaded = true; wallSig = cloudOn() ? JSON.stringify(cloud.list()) : "";
       store.all().then(rows => {
-        wall = rows.sort((a, b) => a.created - b.created); renderWall();
+        wall = rows.sort((a, b) => a.created - b.created); wallAt = Math.min(wallAt, Math.max(0, wall.length - 1)); renderWall();
       }).catch(() => {});
     }
     // On the card: tap the sides, swipe, or arrow keys switch; tapping an empty wall opens its settings.
@@ -377,7 +439,9 @@
       }
       wallLoaded = false; window.LifeLedgerTodayCards?.show(id); loadWall();
     }
-    return { renderWall, loadWall, wallSettings, seedDemo, W };
+    // Another device changed this wall (cloud edition): load it again.
+    function sync() { if (cloudOn() && wallLoaded && (waiting || JSON.stringify(cloud.list()) !== wallSig)) { wallLoaded = false; loadWall(); } }
+    return { renderWall, loadWall, wallSettings, seedDemo, sync, W };
   }
 
   const walls = { wall: makeWall(cards.wall, "wall", ""), wall2: makeWall(cards.wall2, "wall2", "-2"), wall3: makeWall(cards.wall3, "wall3", "-3") };
@@ -428,13 +492,13 @@
     if (d) openDrawer(d);
   });
 
-  // ---- day photos: deployed version only (O19); local version explains ----
+  // ---- day photos: cloud edition from private storage, local editions from this device (user 10/27) ----
   let photoAsk = 0;
   async function photos() {
     const c = cards.photos, list = $(".tw-photo-list", c), note = $(".tw-photo-note", c), date = selectedPlanningDate;
     const emptyArt = text => { list.innerHTML = `<div class="tw-empty"><div class="tw-art" data-art="photos-day-empty"></div><strong>${escapeHtml(t("photosLocalTitle"))}</strong><p>${escapeHtml(text)}</p></div>`; note.textContent = ""; arts(c); };
     const demo = window.LifeLedgerDemoWorkspace?.isDemoActive?.(state);
-    if (!demo && (!hostedCloudMode || !photoMemories)) { emptyArt(t("photosLocal")); return; }
+    if (!demo && (!photosEnabled || !photoMemories)) { emptyArt(t("photosLocal")); return; }
     const ask = ++photoAsk;
     let rows = [];
     try { rows = await photoMemories?.listRange(date, date) || []; } catch {}
@@ -504,6 +568,16 @@
     { id: "photos", el: cards.photos, sizes: ["M", "L"], hidden: true, onShow: photos },
     { id: "focus", el: cards.focus, sizes: ["S", "M"], hidden: false, onShow: focus },
   ];
-  window.LifeLedgerTodayWidgets = { render, text: t };
+  // Another device changed the city or a card choice (cloud edition): read them again and redraw.
+  function reload() {
+    const next = read("life-ledger-weather-city");
+    if (JSON.stringify(next) !== JSON.stringify(city)) {
+      city = next && Number.isFinite(next.latitude) && Number.isFinite(next.longitude) ? next : null;
+      forecast = null; window.LifeLedgerWeather?.clear(); drawWeather(); void loadWeather(true);
+    }
+    freqPick = read("life-ledger-freq-habit");
+    render();
+  }
+  window.LifeLedgerTodayWidgets = { render, reload, syncWalls: () => Object.values(walls).forEach(w => w.sync()), text: t };
   setTimeout(render);
 })();

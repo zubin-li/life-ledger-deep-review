@@ -24,6 +24,13 @@
 </div>
 
 <p align="center">
+  <strong>Deploy or update with a coding agent:</strong>
+  <a href="docs/deploy-with-codex.md">English</a> ·
+  <a href="docs/deploy-with-codex.zh-CN.md">简体中文</a> ·
+  <a href="docs/deploy-with-codex.de-DE.md">Deutsch</a>
+</p>
+
+<p align="center">
   <img src="docs/images/demo-preview/en-desktop/en-01-today-v6.png" width="100%" alt="Life Ledger 2.0 Today card workspace" />
 </p>
 
@@ -107,7 +114,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 - Optional Cloudflare Access + D1 cross-device synchronization
 - Optional read-only Google Calendar context from up to two accounts
 - Mood-colored calendar days and an optional completion heatmap
-- Private photo memories with JPEG/PNG/WebP/HEIC/HEIF support, a chronological timeline, and portable monthly `.llmedia` backups in the Cloudflare edition
+- Private photo memories with JPEG/PNG/WebP/HEIC/HEIF support, a chronological timeline, and portable monthly `.llmedia` backups (private R2 in the Cloudflare edition, on-device in the local web edition and the Mac app)
 - Compact long-term items in the desktop sidebar
 - Optional Tencent CloudBase sync for mainland China
 - Responsive Apple-inspired interface for desktop and mobile
@@ -163,7 +170,7 @@ Need the previous version? Tag `v1.3.0` stays available — see [Roll back to 1.
 | Path | Best for | Domain required | Starting cost |
 |---|---|---:|---:|
 | Local-only PWA | One device, no setup | No | Free |
-| Cloudflare + D1 | International self-hosting | No | Free tier |
+| Complete Cloudflare edition | International self-hosting with sync, AI voice, photos, and optional Calendar | No | $0 within included allowances; payment method required for R2 |
 | Tencent CloudBase | Mainland China access and private sync | No for personal evaluation | Free environment |
 | macOS desktop MVP (Tauri) | Native Mac app shell with local/cloud choice | No | Local build |
 
@@ -206,7 +213,7 @@ Use GitHub's **Use this template** button. Your new repository has an independen
 
 ### 4. Deploy with Cloudflare
 
-Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository, create a Worker and D1 database in your account, apply the migration, and deploy the app.
+Select **Deploy to Cloudflare** above. Cloudflare will copy the public repository and guide you through provisioning or binding the Worker, D1 database, and private R2 photo bucket used by the complete edition before it applies migrations and deploys the app. Existing resources should be reused. The first R2 setup enables a pay-as-you-go subscription: checkout currently starts at $0 and normal personal use is expected to stay within the included allowances, but overages are billable. The app's storage and operation safeguards are not a Cloudflare account-level spending cap.
 
 After deployment, enable Cloudflare Access:
 
@@ -221,24 +228,22 @@ After deployment, enable Cloudflare Access:
 
 The same deployment automatically includes the Workers AI binding used by **Quick record**. The app limits one account to three recordings and 20 recorded minutes per UTC day, with a maximum of 10 minutes per recording, to keep personal use predictable. Cloudflare allowances and pricing can change; review the provider dashboard before broad multi-user use.
 
-The Cloudflare edition can also connect to Google Calendar in read-only mode and keep compressed photo memories in a private R2 bucket. Google Calendar requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md).
+The complete Cloudflare edition keeps compressed photo memories in a private R2 bucket and can optionally connect to Google Calendar in read-only mode. Google Calendar requires your own Google OAuth web client and four Cloudflare secrets; no Google credential is bundled with the repository. Setup steps, the R2 billing boundary, and the exact privacy boundary are documented in [Self-hosting](docs/self-hosting.md).
 
-See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough.
+See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/cloudflare-access.md) for the complete walkthrough. If a coding agent will perform the setup or upgrade, copy the [one-pass Codex deployment prompt](docs/deploy-with-codex.md); it inventories and reuses existing resources, pauses at the R2 billing decision, and verifies every service before reporting success.
 
 ### 5. Deploy with Tencent CloudBase in mainland China
 
 CloudBase is the recommended mainland-China path. It uses Tencent-hosted static files, email OTP authentication, and a creator-only document collection in **your own** CloudBase environment.
 
-### 6. macOS desktop MVP (optional shell)
+### 6. Life Ledger for Mac 3.0
 
-The repository now includes a first Tauri v2 macOS shell with two explicit choices:
+Download `Life-Ledger-3.0.0-mac-arm64.zip` from the **[Mac 3.0.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** (Apple Silicon), unzip it and move **Life Ledger** to Applications. The app is not notarised: the first time, open **System Settings → Privacy & Security → Open Anyway**.
 
-- **Local on this Mac**: bundled frontend, no account, local-first storage.
-- **Connected cloud**: open only your own validated Life Ledger deployment URL.
+- **Local on this Mac**: no account, no setup; records stay on this Mac.
+- **Connected cloud**: your own deployment (option 4 above), signed in with an email code. Records, photos, your name and profile photo are the same on the Mac, in the browser and on your phone.
 
-JSON backup in the local desktop window uses native macOS file dialogs, including iCloud Drive folder selection as file backup. This is backup transfer, not live sync or conflict resolution.
-
-Build and Gatekeeper notes are in [docs/macos-desktop.md](docs/macos-desktop.md).
+Change mode any time in **Settings → Data → Switch to sync mode / Switch to local mode** (also in the browser editions). Five-minute guide: [Mac online edition](docs/macos-cloud.md). Build notes: [docs/macos-desktop.md](docs/macos-desktop.md).
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 

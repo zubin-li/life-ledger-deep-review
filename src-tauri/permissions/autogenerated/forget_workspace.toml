@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-forget-workspace"
+description = "Enables the forget_workspace command without any pre-configured scope."
+commands.allow = ["forget_workspace"]
+
+[[permission]]
+identifier = "deny-forget-workspace"
+description = "Denies the forget_workspace command without any pre-configured scope."
+commands.deny = ["forget_workspace"]

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-qa-probe"
+description = "Enables the qa_probe command without any pre-configured scope."
+commands.allow = ["qa_probe"]
+
+[[permission]]
+identifier = "deny-qa-probe"
+description = "Denies the qa_probe command without any pre-configured scope."
+commands.deny = ["qa_probe"]

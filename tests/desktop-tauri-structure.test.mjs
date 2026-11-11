@@ -24,8 +24,11 @@ test("cloud url validation exists in rust and cloud window is separate", () => {
   assert.match(libRs, /const MAX_JSON_IMPORT_BYTES: u64 = 10 \* 1024 \* 1024;/);
 });
 
-test("tauri crate version stays aligned with the package version", () => {
-  assert.match(cargoToml, new RegExp(`version = "${packageJson.version.replaceAll(".", "\\.")}"`));
+// The Mac app has its own version line (3.0 = first Mac app with the sync edition); the web page keeps the web version.
+test("mac app version is the same in tauri.conf.json and Cargo.toml", () => {
+  const tauriVersion = JSON.parse(readFileSync(new URL("../src-tauri/tauri.conf.json", import.meta.url), "utf8")).version;
+  assert.match(tauriVersion, /^\d+\.\d+\.\d+$/);
+  assert.ok(cargoToml.includes(`\nversion = "${tauriVersion}"`));
 });
 
 test("desktop preparation includes every launcher module", () => {
