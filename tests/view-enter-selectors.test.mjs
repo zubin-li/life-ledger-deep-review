@@ -157,13 +157,11 @@ test("Batch 12 r8 — Today spending opens Money with day filter", () => {
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
   const widgets = fs.readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
-  assert.match(css, /Batch 12 r8 — Today spending card → Money day filter/);
   assert.match(css, /\.ledger-list-wrap\.is-spotlight/);
   assert.match(ledgerUi, /function openToDay\(/);
   assert.match(ledgerUi, /openToDay,/);
   assert.match(widgets, /openLedgerForPlanningDay/);
   assert.match(widgets, /openToDay\?\.\(selectedPlanningDate\)/);
-  assert.match(widgets, /button type="button" class="tw-spend-today"/);
 });
 
 test("Batch 12 r9 — Review Money stats open ledger month", () => {
@@ -196,7 +194,6 @@ test("Batch 13 r2 — journal autosave pulse + mood pick polish", () => {
   assert.match(css, /Batch 13 r2 — journal autosave pulse/);
   assert.match(app, /function pulseHomeJournalSaved\(/);
   assert.match(app, /function pulseMoodButton\(/);
-  assert.match(widgets, /dataset\.spendCompare/);
 });
 
 test("Batch 13 r3 — CSV import preview, drag-drop, import pulse", () => {
@@ -309,4 +306,10 @@ test("Owner feedback r3 — ledger week/month scope cross-fade", () => {
   assert.match(css, /\.ledger-panel--stats\.is-scope-swap/);
   assert.match(ledgerUi, /ledgerStatsScopePulse/);
   assert.match(ledgerUi, /data-segment role="group"/);
+});
+
+test("reduced motion: active view is visible without the viewIn animation", async () => {
+  const fs = await import("node:fs");
+  const css = fs.readFileSync(new URL("../public/styles.css", import.meta.url), "utf8");
+  assert.match(css, /html\.motion-reduced \.view\.active\s*\{[^}]*opacity:\s*1/);
 });

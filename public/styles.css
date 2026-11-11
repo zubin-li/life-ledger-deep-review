@@ -115,6 +115,7 @@ body[data-active-view="timeline"] .topbar-copy { visibility: hidden; }
 .cloud-account-button[hidden] { display: none !important; }
 .view { display: none; opacity: 0; transform: translateY(10px); }
 .view.active { display: block; animation: viewIn 320ms var(--ease-enter) forwards; }
+html.motion-reduced .view.active { opacity: 1; transform: none; }
 @keyframes viewIn { to { opacity: 1; transform: translateY(0); } }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(280px, .8fr); gap: 18px; }
 .hero-card, .mood-card, .panel, .calendar-card, .daily-goals-card { border: 1px solid rgba(255,255,255,.66); background: var(--card); border-radius: 26px; box-shadow: 0 18px 55px rgba(29,29,31,.075), inset 0 1px 0 rgba(255,255,255,.88); backdrop-filter: blur(24px) saturate(145%); }

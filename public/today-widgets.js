@@ -23,7 +23,7 @@
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
       wallEmptyShort: "在卡片设置里放入照片", wallMedia: "照片与视频", wallAuto: "自动轮播", wallFit: "显示方式", fill: "铺满", fit: "完整显示", wallFocus: "点或拖动预览，选择显示的位置", wallTip: "左右滑动或点两侧切换",
       spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今日暂无新支出。", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", spendingTodayCountOne: "1 笔", spendingTodayCountMany: "{n} 笔", openLedger: "打开记账", spendingOpenDay: "查看所选日期的账目", spendingMonth: "本月累计", spendingSameDay: "与昨日相近", spendingMoreDay: "较昨日 +{pct}%", spendingMoreDayAmount: "较昨日多 {amount}", spendingLessDay: "较昨日 −{pct}%", spendingNewDay: "较昨日有新增支出", spendingZeroDay: "较昨日无新支出", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出", spendingMoodReview: "打开复盘 · 心情与支出对照", spendingRecurringOne: "1 笔固定待记", spendingRecurringMany: "{n} 笔固定待记", spendingRecurringOpen: "打开记账 · 固定收支待记", spendingQuickTitle: "记一笔", spendingQuickRecent: "最近", spendingQuickFull: "完整统计", spendingQuickSave: "添加", spendingQuickOther: "其他", spendingQuickTap: "快速记账", spendingClose: "关闭" },
-    en: { weather: "Weather", weatherK: "WEATHER", rhythm: "Recent rhythm", rhythmK: "LAST 7 DAYS", heatmap: "Habit heatmap", heatmapK: "HABIT RHYTHM", wall: "Photo wall", wallK: "PHOTO WALL", photos: "Photo memories", photosK: "MEMORY", focus: "Focus", focusK: "FOCUS", freq: "By frequency", freqK: "WEEKLY · MONTHLY",
+    en: { weather: "Weather", weatherK: "WEATHER", rhythm: "Recent rhythm", rhythmK: "LAST 7 DAYS", heatmap: "Habit heatmap", heatmapK: "HABIT RHYTHM", wall: "Photo wall", wallK: "PHOTO WALL", photos: "Photo memories", photosK: "MEMORY", focus: "Focus", focusK: "FOCUS", freq: "By frequency", freqK: "WEEKLY · MONTHLY", spending: "Spending today", spendingK: "TODAY",
       chooseCity: "Choose a city to show its weather.", setCity: "Set location", city: "City", search: "Search", noCity: "No matching city found.", loading: "Loading…", unavailable: "Could not refresh. Check your connection.", cached: "Saved forecast · offline", updated: "Updated",
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
       rhythmAvg: "7-day completion", tomorrow: "Tomorrow", tomorrowCount: "{n} foundations", less: "Less", more: "More", palette: "Palette", green: "Emerald", blue: "Ocean blue", spectrum: "Red to blue",
@@ -34,7 +34,7 @@
       freqEmpty: "No weekly or monthly habits yet. Set a habit's frequency to weekly or monthly in Adjust goals.", freqWeek: "This week {done}/{target}", freqMonth: "This month {done}/{target}", freqPick: "Habit shown",
       wallEmptyShort: "Add photos in card settings", wallMedia: "Photos and videos", wallAuto: "Auto-play", wallFit: "Display", fill: "Fill", fit: "Fit", wallFocus: "Tap or drag the preview to choose what shows", wallTip: "Swipe or tap the sides to switch",
       spendingEmpty: "No spending logged today yet.", spendingEmptyQuiet: "Nothing new logged for today.", spendingHint: "Try: 12.50 coffee", spendingToday: "Spending today", spendingTodayCountOne: "1 entry", spendingTodayCountMany: "{n} entries", openLedger: "Open Money", spendingOpenDay: "View entries for this day in Money", spendingMonth: "This month", spendingSameDay: "About the same as yesterday", spendingMoreDay: "+{pct}% vs yesterday", spendingMoreDayAmount: "+{amount} vs yesterday", spendingLessDay: "−{pct}% vs yesterday", spendingNewDay: "New spending vs yesterday", spendingZeroDay: "Nothing logged vs yesterday", moodGood: "Good", moodCalm: "Calm", moodLow: "Low", spendingMoodTip: "Today's mood · compare with spending in Review", spendingMoodReview: "Open Review · mood vs spending", spendingRecurringOne: "1 fixed bill pending", spendingRecurringMany: "{n} fixed bills pending", spendingRecurringOpen: "Open Money · recurring items pending", spendingQuickTitle: "Quick entry", spendingQuickRecent: "Recent", spendingQuickFull: "Full stats", spendingQuickSave: "Add", spendingQuickOther: "Other", spendingQuickTap: "Log spending", spendingClose: "Close" },
-    de: { weather: "Wetter", weatherK: "WETTER", rhythm: "Letzte Tage", rhythmK: "7 TAGE", heatmap: "Gewohnheits-Heatmap", heatmapK: "RHYTHMUS", wall: "Fotowand", wallK: "FOTOWAND", photos: "Fotoerinnerungen", photosK: "ERINNERUNG", focus: "Fokus", focusK: "FOKUS", freq: "Nach Häufigkeit", freqK: "WOCHE · MONAT",
+    de: { weather: "Wetter", weatherK: "WETTER", rhythm: "Letzte Tage", rhythmK: "7 TAGE", heatmap: "Gewohnheits-Heatmap", heatmapK: "RHYTHMUS", wall: "Fotowand", wallK: "FOTOWAND", photos: "Fotoerinnerungen", photosK: "ERINNERUNG", focus: "Fokus", focusK: "FOKUS", freq: "Nach Häufigkeit", freqK: "WOCHE · MONAT", spending: "Ausgaben heute", spendingK: "HEUTE",
       chooseCity: "Wähle eine Stadt für die Wettervorhersage.", setCity: "Ort wählen", city: "Stadt", search: "Suchen", noCity: "Keine passende Stadt gefunden.", loading: "Wird geladen …", unavailable: "Aktualisierung fehlgeschlagen. Verbindung prüfen.", cached: "Gespeicherte Prognose · offline", updated: "Aktualisiert",
       clear: "Klar", cloud: "Bewölkt", rain: "Regen", snow: "Schnee", storm: "Gewitter", rainSoon: "Regen erwartet", snowSoon: "Schnee erwartet", noRain: "Kein Niederschlag in den nächsten 24 Stunden", hour: "Vorhersagezeit",
       rhythmAvg: "7-Tage-Quote", tomorrow: "Morgen", tomorrowCount: "{n} Grundlagen", less: "Weniger", more: "Mehr", palette: "Farben", green: "Smaragd", blue: "Ozeanblau", spectrum: "Rot bis Blau",
@@ -44,7 +44,7 @@
       heat26: "Letzte 26 Wochen", heatRate: "Erledigt", heatFull: "Volle Tage", heatBest: "Beste Serie", days: "T.", focusArt: "Fokus", wallAddHint: "Lege ein Lieblingsfoto hierher", photosLocalTitle: "Fotos dieses Tages", freqEmptyTitle: "Noch keine Häufigkeitsziele", weatherEmptyTitle: "Wetter heute",
       freqEmpty: "Noch keine wöchentlichen oder monatlichen Ziele. Stelle die Häufigkeit in „Ziele anpassen“ auf wöchentlich / monatlich.", freqWeek: "Diese Woche {done}/{target}", freqMonth: "Diesen Monat {done}/{target}", freqPick: "Angezeigtes Ziel",
       wallEmptyShort: "Fotos in den Karteneinstellungen hinzufügen", wallMedia: "Fotos und Videos", wallAuto: "Automatisch wechseln", wallFit: "Darstellung", fill: "Füllen", fit: "Ganz zeigen", wallFocus: "Tippe oder ziehe in der Vorschau, um den Ausschnitt zu wählen", wallTip: "Wischen oder seitlich tippen zum Wechseln",
-      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingEmptyQuiet: "Heute bisher nichts gebucht.", spendingHint: "Z. B.: 12,50 Kaffee", spendingToday: "Ausgaben heute", spendingTodayCountOne: "1 Buchung", spendingTodayCountMany: "{n} Buchungen", openLedger: "Finanzen öffnen", spendingOpenDay: "Buchungen für diesen Tag in Finanzen anzeigen", spendingMonth: "Diesen Monat", spendingSameDay: "Wie gestern", spendingMoreDay: "+{pct} % gg. gestern", spendingMoreDayAmount: "+{amount} gg. gestern", spendingLessDay: "−{pct} % gg. gestern", spendingNewDay: "Neue Ausgaben gg. gestern", spendingZeroDay: "Heute nichts gebucht (gestern schon)", moodGood: "Gut", moodCalm: "Ruhig", moodLow: "Schwer", spendingMoodTip: "Stimmung heute · in der Monatsübersicht mit Ausgaben vergleichen", spendingMoodReview: "Rückblick · Stimmung und Ausgaben", spendingRecurringOne: "1 offener Posten", spendingRecurringMany: "{n} offene Posten", spendingRecurringOpen: "Finanzen · feste Buchungen offen", spendingQuickTitle: "Schnell buchen", spendingQuickRecent: "Zuletzt", spendingQuickFull: "Alle Statistik", spendingQuickSave: "Hinzufügen", spendingQuickOther: "Sonstiges", spendingQuickTap: "Ausgabe erfassen", spendingClose: "Schließen" },
+      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingEmptyQuiet: "Heute bisher nichts gebucht.", spendingHint: "Z. B.: 12,50 Kaffee", spendingToday: "Ausgaben heute", spendingTodayCountOne: "1 Buchung", spendingTodayCountMany: "{n} Buchungen", openLedger: "Finanzen öffnen", spendingOpenDay: "Buchungen für diesen Tag in Finanzen anzeigen", spendingMonth: "Diesen Monat", spendingSameDay: "Wie gestern", spendingMoreDay: "+{pct} % gg. gestern", spendingMoreDayAmount: "+{amount} gg. gestern", spendingLessDay: "−{pct} % gg. gestern", spendingNewDay: "Neue Ausgaben gg. gestern", spendingZeroDay: "Heute nichts gebucht (gestern schon)", moodGood: "Gut", moodCalm: "Ruhig", moodLow: "Schwer", spendingMoodTip: "Stimmung heute · in der Monatsübersicht mit Ausgaben vergleichen", spendingMoodReview: "Rückblick · Stimmung und Ausgaben", spendingRecurringOne: "1 offener Posten", spendingRecurringMany: "{n} offene Posten", spendingRecurringOpen: "Finanzen · feste Buchungen offen", spendingQuickTitle: "Schnell buchen", spendingQuickRecent: "Zuletzt", spendingQuickFull: "Alle Ausgaben", spendingQuickSave: "Hinzufügen", spendingQuickOther: "Sonstiges", spendingQuickTap: "Ausgabe erfassen", spendingClose: "Schließen" },
   };
   const lang = () => (T[currentLang] ? currentLang : "en");
   const t = (k, v = {}) => String(T[lang()][k] ?? T.en[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n] ?? "");
@@ -76,13 +76,26 @@
   const tone = { weather: "blue", rhythm: "sage", heatmap: "sage", focus: "violet", photos: "amber", freq: "coral", spending: "coral", mood: "amber", habits: "sage", calendar: "blue", dayplan: "cyan", tools: "violet" };
   const paint = (el, name) => { const c = colors[name] || colors.sage; el.style.setProperty("--w-solid", c.solid); el.style.setProperty("--w-soft", c.soft); };
   // One card shell, styled by the original .daily-goals-card; chip + kicker + serif title like every card.
-  function shell(id, side = "", body = "") {
+  function shell(id, side = "", body = "", tappable = false) {
     const card = document.createElement("div");
     card.dataset.module = id;
-    card.innerHTML = `<article class="daily-goals-card tw-card tw-${id}"><div class="daily-goals-heading"><div class="ll-head">${chipHtml(id)}<span class="kicker" data-tw="${id}K"></span><h3 data-tw="${id}"></h3></div>${side}</div><div class="tw-body">${body}</div></article>`;
+    const hit = tappable ? `<button type="button" class="tc-card-hit" aria-label="${escapeHtml(t(id))}"></button>` : "";
+    const chev = tappable ? `<span class="tc-card-chevron" aria-hidden="true">›</span>` : "";
+    card.innerHTML = `<article class="daily-goals-card tw-card tw-${id}">${hit}<div class="daily-goals-heading"><div class="ll-head">${chipHtml(id)}<span class="kicker" data-tw="${id}K"></span><h3 data-tw="${id}"></h3></div>${side}${chev}</div><div class="tw-body">${body}</div></article>`;
     paint(card.firstElementChild, tone[id]);
     view.append(card);
     return card;
+  }
+  function setHit(card, parts) {
+    const label = parts.map(s => String(s ?? "").trim()).filter(Boolean).join(", ");
+    const btn = card.querySelector(".tc-card-hit");
+    if (btn && label) btn.setAttribute("aria-label", label);
+  }
+  function wireHit(card, fn) {
+    card.querySelector(".tc-card-hit")?.addEventListener("click", e => {
+      if (view.classList.contains("tc-editing")) return;
+      fn(e);
+    });
   }
   // The original Today cards get the same chip in their heading (additive; their markup is untouched).
   // Not the fixed top row (quote + mood): it stays exactly as approved (user 10/22).
@@ -96,20 +109,20 @@
     view.append(c); return c; }
   const cards = {
     weather: shell("weather", `<span class="tw-side" id="weatherCityName"></span>`,
-      `<div class="weather-empty" hidden><div class="tw-art" data-art="today-morning"></div><strong data-tw="weatherEmptyTitle"></strong><p data-tw="chooseCity"></p><button type="button" class="secondary-button tw-set-city" data-tw="setCity"></button></div>
+      `<div class="weather-empty" hidden><div class="tw-art" data-art="today-morning"></div><strong data-tw="weatherEmptyTitle"></strong><p data-tw="chooseCity"></p></div>
        <div class="weather-current-line"><div id="weatherDetail"></div><span id="weatherDailyRange"></span></div>
        <div id="weatherPlot" tabindex="0" role="group"></div>
        <input id="weatherHour" class="sr-only" type="range" min="0" max="23" value="0" hidden>
        <span id="weatherPrecipHint" class="weather-rain-hint"></span>
-       <div class="weather-footer"><span id="weatherStatus" class="tw-caption" role="status" hidden></span><a class="tw-caption" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo · CC BY 4.0</a></div>`),
-    rhythm: shell("rhythm", `<strong class="tw-side tw-rhythm-pct"></strong>`, `<ol class="tw-rhythm-days"></ol><p class="tw-caption tw-rhythm-tomorrow"></p>`),
+       <div class="weather-footer"><span id="weatherStatus" class="tw-caption" role="status" hidden></span><a class="tw-caption" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo · CC BY 4.0</a></div>`, true),
+    rhythm: shell("rhythm", `<strong class="tw-side tw-rhythm-pct"></strong>`, `<ol class="tw-rhythm-days"></ol><p class="tw-caption tw-rhythm-tomorrow"></p>`, true),
     heatmap: shell("heatmap", `<span class="tw-side tw-heat-month"></span>`, `<div class="tw-heat-stats"></div><div class="tw-heat-box"><div class="tw-heat-weekdays" aria-hidden="true"></div><div class="tw-heat-grid"></div></div><p class="tw-heat-legend"></p>`),
     // Photo wall = the photo itself (user 10/21): thin even frame, no visible buttons; all controls in settings.
     wall: wallShell("wall"), wall2: wallShell("wall2"), wall3: wallShell("wall3"),
     freq: shell("freq", `<span class="tw-side tw-freq-month"></span>`, `<div class="tw-freq-info"><div class="tw-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><b class="tw-freq-count"></b></div><div class="tw-freq-tabs" role="tablist"></div></div><div class="tw-heat-box"><div class="tw-heat-weekdays" aria-hidden="true"></div><div class="tw-freq-grid tw-heat-grid"></div></div>`),
     photos: shell("photos", `<button type="button" class="text-button tw-open-day" data-tw="openDay"></button>`, `<div class="tw-photo-list"></div><p class="tw-caption tw-photo-note"></p>`),
-    focus: shell("focus", "", `<div class="tw-art tw-focus-art"></div><div class="tw-focus-main"><div class="tw-ring tw-focus-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><strong></strong></div><div class="tw-focus-meta"><span class="tw-focus-topic"></span><p class="tw-caption tw-focus-today"></p><button type="button" class="primary-button tw-focus-start"></button></div></div>`),
-    spending: shell("spending", `<strong class="tw-side tw-spend-month"></strong>`, `<div class="tw-spend-main"><div class="tw-spend-head"><button type="button" class="tw-spend-today"></button><span class="tw-spend-top-cat" hidden></span><button type="button" class="tw-spend-mood-pill" hidden></button><button type="button" class="tw-spend-recurring-pill" hidden></button></div><div class="tw-spend-spark" aria-hidden="true"></div><p class="tw-caption tw-spend-note"></p><small class="tw-spend-compare" hidden></small><p class="tw-caption tw-spend-hint" hidden></p><button type="button" class="text-button tw-spend-open" data-tw="openLedger"></button></div>`),
+    focus: shell("focus", "", `<div class="tw-art tw-focus-art"></div><div class="tw-focus-main"><div class="tw-ring tw-focus-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><strong></strong></div><div class="tw-focus-meta"><span class="tw-focus-topic"></span><p class="tw-caption tw-focus-today"></p><button type="button" class="primary-button tw-focus-start"></button></div></div>`, true),
+    spending: shell("spending", `<button type="button" class="text-button tw-spend-open"><span data-tw="spendingQuickFull"></span> →</button>`, `<div class="tw-spend-main"><div class="tw-spend-total"><strong class="tw-spend-amount"></strong><span class="tw-spend-count"></span></div><ul class="tw-spend-cats"></ul><p class="tw-caption tw-spend-empty" data-tw="spendingEmpty"></p></div>`, true),
   };
   // Hero gets the weather chip (weather-widget.js fills #heroWeather).
   const chip = document.createElement("span");
@@ -132,8 +145,25 @@
     $(".tw-rhythm-days", c).innerHTML = days.map(d => `<li><button type="button" data-date="${d.key}" class="${d.key === selectedPlanningDate ? "is-selected" : ""}" ${d.future ? "disabled" : ""}><span>${escapeHtml(d.label)}</span><i style="--fill:${d.total ? d.done / d.total : 0}"></i><b>${d.future ? "—" : `${d.done}/${d.total}`}</b></button></li>`).join("");
     const tm = parseDate(selectedPlanningDate); tm.setDate(tm.getDate() + 1);
     $(".tw-rhythm-tomorrow", c).textContent = `${t("tomorrow")} · ${t("tomorrowCount", { n: dailyHabits(isoDate(tm)).length })}`;
+    setHit(c, [t("rhythm"), $(".tw-rhythm-pct", c).textContent, tr("review.rhythm")]);
   }
-  cards.rhythm.addEventListener("click", e => { const b = e.target.closest("button[data-date]"); if (b) selectPlanningDate(b.dataset.date); });
+  function openRhythmReview() {
+    const show = () => {
+      const details = document.getElementById("reviewDetailedMetrics");
+      if (details) details.open = true;
+      document.querySelector(".chart-panel")?.scrollIntoView({ block: "nearest" });
+    };
+    if (typeof switchToView !== "function") return;
+    Promise.resolve(switchToView("review")).then(() => requestAnimationFrame(show));
+  }
+  cards.rhythm.addEventListener("click", e => {
+    const b = e.target.closest("button[data-date]");
+    if (b) { selectPlanningDate(b.dataset.date); return; }
+    if (e.target.closest(".tc-card-hit, a, input, select, textarea, button")) return;
+    if (view.classList.contains("tc-editing")) return;
+    cards.rhythm.querySelector(".tc-card-hit")?.click();
+  });
+  wireHit(cards.rhythm, openRhythmReview);
 
   // ---- habit heatmap (from 858ede8 today-extras heatmap) ----
   const PAL = { green: "#00ad7c", blue: "#258fe5" };
@@ -210,6 +240,8 @@
     const empty = $(".weather-empty", cards.weather);
     empty.hidden = Boolean(city); cards.weather.classList.toggle("is-empty", !city);
     if (forecast && city) window.LifeLedgerWeather?.update(forecast, city, lang(), t, kind, selectedPlanningDate);
+    const temp = $("#weatherDetail .weather-temp", cards.weather)?.textContent || (city ? "" : t("weatherEmptyTitle"));
+    setHit(cards.weather, [t("weather"), temp, t("setCity")]);
   }
   async function loadWeather(force = false) {
     demoCity();
@@ -251,7 +283,7 @@
       } catch (err) { if (err.name !== "AbortError") out.textContent = t("unavailable"); }
     };
   }
-  $(".tw-set-city", cards.weather).addEventListener("click", e => { e.stopPropagation(); window.LifeLedgerTodayCards?.openSettings("weather"); });
+  wireHit(cards.weather, () => window.LifeLedgerTodayCards?.openSettings("weather"));
   setInterval(() => { if (!document.hidden) void loadWeather(); }, 30 * 60 * 1000);
 
   // ---- photo wall (from 858ede8 today-extras wall; tiny IndexedDB store) ----
@@ -533,168 +565,49 @@
     const running = btn === tr("focus.pause"), paused = btn === tr("focus.resume"), brk = ($("#focusInlinePhase")?.textContent || "") === tr("focus.phaseBreak");
     c.classList.toggle("is-running", running);
     const art = $(".tw-focus-art", c); art.dataset.art = paused ? "focus-paused" : brk ? "focus-break" : p > 0.999 ? "focus-complete" : "focus-idle"; arts(c);
+    setHit(c, [t("focus"), $(".tw-focus-ring strong", c).textContent, tr("focus.overviewTitle")]);
   }
   $(".tw-focus-start", cards.focus).addEventListener("click", () => handleFocusQuickPrimary());
+  wireHit(cards.focus, () => {
+    if (typeof setDailyToolPage === "function") setDailyToolPage("focus");
+    document.querySelector('[data-card="tools"]')?.scrollIntoView({ block: "nearest" });
+  });
   const focusSrc = $("#focusInlineTimer");
   if (focusSrc) new MutationObserver(() => { if (shown("focus")) focus(); }).observe(focusSrc, { subtree: true, characterData: true, childList: true });
 
-  function spendingMoodLabel(mood) {
-    if (mood === "很好") return t("moodGood");
-    if (mood === "平静") return t("moodCalm");
-    if (mood === "低落") return t("moodLow");
-    return mood || "";
-  }
-
+  // Today card = total, top 3 categories, one add button (owner 11-03: no extra stats on Today).
   function spending() {
     const c = cards.spending;
     const L = window.LifeLedgerLedger;
     const ledger = state.ledger ? L?.normalize(state.ledger, { lang: currentLang }) : L?.normalize(null, { lang: currentLang });
     const today = selectedPlanningDate;
-    const dayMood = getLog(today).mood || "";
-    const ym = today.slice(0, 7);
     const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "de-DE");
-    const todayDetail = ledger ? L.spendingTodayDetail(ledger, today, { lang: currentLang }) : { totalMinor: 0, expenseCount: 0, topCategory: null };
-    const todayMinor = todayDetail.totalMinor;
-    const monthSummary = ledger ? L.monthSummary(ledger, ym) : { expenseMinor: 0 };
+    const cur = ledger?.settings?.defaultCurrency || "EUR";
+    const detail = ledger ? L.spendingTodayDetail(ledger, today, { lang: currentLang }) : { totalMinor: 0, expenseCount: 0 };
+    const todayMinor = detail.totalMinor;
     const ledgerHasEntries = Boolean(ledger?.transactions?.length);
-    const todayEl = $(".tw-spend-today", c);
-    const topCatEl = $(".tw-spend-top-cat", c);
-    const moodPill = $(".tw-spend-mood-pill", c);
-    const recurringPill = $(".tw-spend-recurring-pill", c);
-    const note = $(".tw-spend-note", c);
-    const hint = $(".tw-spend-hint", c);
-    const compareEl = $(".tw-spend-compare", c);
-    const monthSide = $(".tw-spend-month", c);
-    const sparkHost = $(".tw-spend-spark", c);
-    const todayText = ledger
-      ? (todayMinor ? L.formatMoney(-todayMinor, ledger.settings.defaultCurrency, locale) : L.formatMoney(0, ledger.settings.defaultCurrency, locale))
-      : "—";
-    const prevToday = c.dataset.spendToday || "";
-    if (todayEl) {
-      todayEl.textContent = todayText;
-      todayEl.setAttribute("aria-label", t("spendingOpenDay"));
-      if (window.LifeLedgerInteraction?.rollText && todayText !== prevToday && prevToday) {
-        window.LifeLedgerInteraction.rollText(todayEl, todayText, prevToday);
-      }
-      c.dataset.spendToday = todayText;
-    }
-    if (moodPill) {
-      const showMood = Boolean(dayMood) && (todayMinor > 0 || ledgerHasEntries);
-      if (showMood) {
-        moodPill.textContent = spendingMoodLabel(dayMood);
-        moodPill.dataset.mood = dayMood;
-        moodPill.title = t("spendingMoodTip");
-        moodPill.setAttribute("aria-label", t("spendingMoodReview"));
-        moodPill.hidden = false;
-      } else {
-        moodPill.hidden = true;
-        moodPill.textContent = "";
-        delete moodPill.dataset.mood;
-      }
-    }
-    if (recurringPill) {
-      const currentYm = typeof isoDate === "function" ? isoDate(new Date()).slice(0, 7) : ym;
-      const pending = ledger && ym === currentYm ? L.recurringPendingForMonth(ledger, ym, { lang: currentLang }) : [];
-      if (pending.length) {
-        const n = L.recurringPendingOccurrenceCount(ledger, ym, { lang: currentLang });
-        recurringPill.textContent = n === 1 ? t("spendingRecurringOne") : t("spendingRecurringMany", { n });
-        recurringPill.setAttribute("aria-label", t("spendingRecurringOpen"));
-        recurringPill.title = t("spendingRecurringOpen");
-        recurringPill.hidden = false;
-      } else {
-        recurringPill.hidden = true;
-        recurringPill.textContent = "";
-      }
-    }
-    if (topCatEl) {
-      const top = todayDetail.topCategory;
-      if (todayMinor > 0 && top?.name) {
-        topCatEl.textContent = top.name;
-        topCatEl.dataset.color = top.color || "";
-        topCatEl.title = top.name;
-        topCatEl.hidden = false;
-      } else {
-        topCatEl.hidden = true;
-        topCatEl.textContent = "";
-        delete topCatEl.dataset.color;
-      }
-    }
-    if (note) {
-      if (todayMinor) {
-        const countLabel = todayDetail.expenseCount === 1
-          ? t("spendingTodayCountOne")
-          : (todayDetail.expenseCount > 1 ? t("spendingTodayCountMany", { n: todayDetail.expenseCount }) : "");
-        note.textContent = countLabel ? `${t("spendingToday")} · ${countLabel}` : t("spendingToday");
-      } else {
-        note.textContent = ledgerHasEntries ? t("spendingEmptyQuiet") : t("spendingEmpty");
-      }
-    }
-    if (hint) {
-      hint.textContent = t("spendingHint");
-      hint.hidden = Boolean(todayMinor) || ledgerHasEntries;
-    }
-    if (compareEl && ledger && ledgerHasEntries) {
-      let compareText = "";
-      const cmp = L.alignedDaySpendCompare(ledger, today);
-      if (cmp) {
-        if (cmp.direction === "same") {
-          compareText = t("spendingSameDay");
-        } else if (cmp.direction === "up") {
-          if (L.preferSpendCompareAmountCaption(cmp)) {
-            compareText = t("spendingMoreDayAmount", {
-              amount: L.formatMoney(Math.abs(cmp.deltaMinor), ledger.settings.defaultCurrency, locale),
-            });
-          } else {
-            const pct = L.displaySpendDeltaPercent(cmp.deltaPercent, "up");
-            compareText = pct != null ? t("spendingMoreDay", { pct }) : t("spendingNewDay");
-          }
-        } else if (cmp.deltaPercent != null) {
-          compareText = t("spendingLessDay", { pct: cmp.deltaPercent });
-        } else if (cmp.currentExpenseMinor === 0 && cmp.previousExpenseMinor > 0) {
-          compareText = t("spendingZeroDay");
-        }
-      }
-      const prevCompare = c.dataset.spendCompare || "";
-      if (window.LifeLedgerInteraction?.rollText && compareText && compareText !== prevCompare && prevCompare) {
-        window.LifeLedgerInteraction.rollText(compareEl, compareText, prevCompare);
-      } else {
-        compareEl.textContent = compareText;
-      }
-      if (compareText) c.dataset.spendCompare = compareText;
-      else delete c.dataset.spendCompare;
-      compareEl.hidden = !compareText;
-    } else if (compareEl) {
-      compareEl.textContent = "";
-      compareEl.hidden = true;
-      delete c.dataset.spendCompare;
-    }
-    if (monthSide) {
-      const monthText = ledger && ledgerHasEntries
-        ? `${t("spendingMonth")} · ${L.formatMoney(Math.abs(monthSummary.expenseMinor), ledger.settings.defaultCurrency, locale)}`
-        : "";
-      monthSide.textContent = monthText;
-      const prevMonth = c.dataset.spendMonth || "";
-      if (window.LifeLedgerInteraction?.rollText && monthText && monthText !== prevMonth && prevMonth) {
-        window.LifeLedgerInteraction.rollText(monthSide, monthText, prevMonth);
-      }
-      if (monthText) c.dataset.spendMonth = monthText;
-      else delete c.dataset.spendMonth;
-    }
-    if (sparkHost && ledger) {
-      const series = L.dailyExpenseSeries(ledger, today, 7);
-      const hasAny = series.some(r => r.spendMinor > 0);
-      sparkHost.innerHTML = hasAny ? L.renderMiniSpendSparklineSvg(series) : "";
-      sparkHost.hidden = !hasAny;
-    } else if (sparkHost) {
-      sparkHost.innerHTML = "";
-      sparkHost.hidden = true;
-    }
+    const amountEl = $(".tw-spend-amount", c);
+    const text = ledger ? L.formatMoney(todayMinor, cur, locale) : "—";
+    const prev = c.dataset.spendToday || "";
+    if (window.LifeLedgerInteraction?.rollText && prev && text !== prev) window.LifeLedgerInteraction.rollText(amountEl, text, prev);
+    else amountEl.textContent = text;
+    c.dataset.spendToday = text;
+    $(".tw-spend-count", c).textContent = !detail.expenseCount ? ""
+      : detail.expenseCount === 1 ? t("spendingTodayCountOne") : t("spendingTodayCountMany", { n: detail.expenseCount });
+    const rows = ledger && todayMinor ? L.categoryBreakdownRange(ledger, today, today).slice(0, 3) : [];
+    $(".tw-spend-cats", c).innerHTML = rows.map(r => {
+      const cat = ledger.categories.find(x => x.id === r.categoryId);
+      const pct = Math.max(4, Math.round((r.amountMinor / todayMinor) * 100));
+      return `<li style="--cat:${escapeHtml(categoryAccentFill(cat?.color))};--pct:${pct}%"><span class="tw-spend-cat-name">${escapeHtml(L.localizedCategoryName(cat, currentLang) || "")}</span><span class="tw-spend-cat-amt">${escapeHtml(L.formatMoney(r.amountMinor, cur, locale))}</span><i aria-hidden="true"></i></li>`;
+    }).join("");
+    $(".tw-spend-empty", c).hidden = Boolean(todayMinor);
     c.classList.toggle("is-empty", !todayMinor);
     c.classList.toggle("has-ledger-history", Boolean(ledgerHasEntries));
     const showSpendEmptyEnter = !todayMinor && !ledgerHasEntries;
     c.classList.toggle("ll-empty-enter", showSpendEmptyEnter);
     if (showSpendEmptyEnter) c.dataset.spendEmptyEnter = "1";
     else delete c.dataset.spendEmptyEnter;
+    setHit(c, [t("spending"), text, t("spendingQuickTitle")]);
   }
   function pulseTodaySpendControl(btn) {
     window.LifeLedgerInteraction?.pressBump?.(btn, "is-spend-press");
@@ -722,7 +635,7 @@
           <h2 id="todayLedgerSheetTitle"></h2>
           <button type="button" class="icon-button" data-tls-close aria-label="">×</button>
         </header>
-        <p class="today-ledger-sheet-total"></p>
+        <p class="today-ledger-sheet-total"><span class="today-ledger-sheet-total-label"></span><b class="today-ledger-sheet-total-amt"></b></p>
         <form class="today-ledger-sheet-form" id="todayLedgerQuickForm">
           <div class="today-ledger-sheet-input-row">
             <input name="quick" type="text" enterkeyhint="done" autocomplete="off" />
@@ -738,7 +651,8 @@
       </div>`;
     document.body.appendChild(rootEl);
     const titleEl = $(".today-ledger-sheet-head h2", rootEl);
-    const totalEl = $(".today-ledger-sheet-total", rootEl);
+    const totalLabel = $(".today-ledger-sheet-total-label", rootEl);
+    const totalAmt = $(".today-ledger-sheet-total-amt", rootEl);
     const form = $("#todayLedgerQuickForm", rootEl);
     const input = $("input[name=quick]", form);
     const catChip = $(".today-ledger-sheet-cat", rootEl);
@@ -784,7 +698,7 @@
       const parsed = L.parseQuickEntry(input.value, ledger, { lang: currentLang, today: selectedPlanningDate });
       if (!parsed.ok || !parsed.draft) return;
       const kind = parsed.draft.amountMinor < 0 ? "expense" : "income";
-      const cats = ledger.categories.filter(c => !c.archived && c.kind === kind);
+      const cats = ledger.categories.filter(c => !c.archived && !c.isGroup && c.kind === kind);
       if (!cats.length) return;
       const currentId = sheetCategoryOverride || parsed.draft.categoryId;
       const idx = Math.max(0, cats.findIndex(c => c.id === currentId));
@@ -819,7 +733,7 @@
     function refreshSheetCopy() {
       titleEl.textContent = t("spendingQuickTitle");
       saveBtn.textContent = t("spendingQuickSave");
-      fullBtn.textContent = t("spendingQuickFull");
+      fullBtn.textContent = `${t("spendingQuickFull")} →`;
       input.placeholder = t("spendingHint");
       input.setAttribute("aria-label", t("spendingQuickTap"));
       rootEl.querySelectorAll("[data-tls-close]").forEach(btn => {
@@ -830,13 +744,15 @@
       const locale = currentLang === "zh" ? "zh-CN" : currentLang === "de" ? "de-DE" : "en-GB";
       const detail = ledger ? L.spendingTodayDetail(ledger, selectedPlanningDate, { lang: currentLang }) : { totalMinor: 0 };
       const cur = ledger?.settings?.defaultCurrency || "EUR";
-      const totalText = `${t("spendingToday")} · ${L.formatMoney(detail.totalMinor ? -detail.totalMinor : 0, cur, locale)}`;
-      const prevTotal = totalEl.dataset.rollValue || "";
+      // Same sign and serif figure as the card, so the sheet reads as the card opened up.
+      totalLabel.textContent = t("spendingToday");
+      const totalText = L.formatMoney(detail.totalMinor, cur, locale);
+      const prevTotal = totalAmt.dataset.rollValue || "";
       if (window.LifeLedgerInteraction?.rollText && prevTotal && prevTotal !== totalText) {
-        window.LifeLedgerInteraction.rollText(totalEl, totalText, prevTotal);
+        window.LifeLedgerInteraction.rollText(totalAmt, totalText, prevTotal);
       } else {
-        totalEl.textContent = totalText;
-        totalEl.dataset.rollValue = totalText;
+        totalAmt.textContent = totalText;
+        totalAmt.dataset.rollValue = totalText;
       }
       refreshRecent();
       refreshCatChip();
@@ -893,27 +809,7 @@
     return todayLedgerSheetApi;
   }
   $(".tw-spend-open", cards.spending).addEventListener("click", openLedgerForPlanningDay);
-  $(".tw-spend-today", cards.spending).addEventListener("click", openTodayLedgerSheet);
-  function scrollReviewMoodScatter() {
-    const target = document.getElementById("review-scatter-mood") || document.getElementById("reviewLedgerSummary");
-    if (!target) return;
-    if (typeof spotlightReviewScatterSection === "function") spotlightReviewScatterSection(target);
-    const reduced = document.documentElement.classList.contains("motion-reduced");
-    target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
-    target.focus?.({ preventScroll: true });
-  }
-  $(".tw-spend-mood-pill", cards.spending)?.addEventListener("click", () => {
-    if (typeof switchToView !== "function") return;
-    switchToView("review");
-    requestAnimationFrame(() => requestAnimationFrame(scrollReviewMoodScatter));
-  });
-  $(".tw-spend-recurring-pill", cards.spending)?.addEventListener("click", () => {
-    if (typeof switchToView !== "function") return;
-    switchToView("ledger");
-    requestAnimationFrame(() => {
-      document.querySelector(".ledger-recurring-due")?.scrollIntoView({ behavior: "auto", block: "nearest" });
-    });
-  });
+  wireHit(cards.spending, openTodayLedgerSheet);
 
   // Mount every hairline placeholder (data-art) inside a card once; hairline.js caches the SVGs.
   function arts(scope) { scope.querySelectorAll(".tw-art[data-art]").forEach(n => window.LifeLedgerHairline?.mount(n, n.dataset.art)); }

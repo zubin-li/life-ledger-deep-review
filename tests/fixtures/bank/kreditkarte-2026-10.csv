@@ -1,0 +1,12 @@
+Kreditkartenumsätze
+Karte;Visa Gold **** 4242
+Abrechnungszeitraum;01.10.2026 - 31.10.2026
+Neuer Saldo;-112,89 EUR
+
+Belegdatum;Buchungsdatum;Beschreibung;Soll;Haben;Status;Referenznummer
+31.10.2026;31.10.2026;HOTEL ZÜRICHSEE ZÜRICH;120,00;;vorgemerkt;VX77005
+29.10.2026;29.10.2026;Zahlung – Danke;;250,00;gebucht;VX77004
+19.10.2026;19.10.2026;ROSSMANN GRÜNWALD;6,45;;gebucht;VX77002
+19.10.2026;19.10.2026;ROSSMANN GRÜNWALD;6,45;;gebucht;VX77003
+14.10.2026;14.10.2026;Spotify P1234ABCD Stockholm;10,99;;gebucht;VX77001
+03.10.2026;03.10.2026;LUFTHANSA 2201234567890 FRANKFURT;189,00;;gebucht;VX77000

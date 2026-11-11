@@ -766,7 +766,7 @@ test("spendingTodayDetail picks top category and counts expenses", () => {
   const detail = L.spendingTodayDetail(ledger, "2026-11-02", { lang: "zh" });
   assert.equal(detail.totalMinor, 1650);
   assert.equal(detail.expenseCount, 2);
-  assert.equal(detail.topCategory?.name, "日用");
+  assert.equal(detail.topCategory?.name, "超市买菜");
   assert.equal(detail.topCategory?.amountMinor, 1200);
 });
 
@@ -1137,10 +1137,10 @@ test("scopeLedgerForBackup filters transactions to export range", () => {
 
 test("localizedCategoryName keeps English after zh seed", () => {
   const ledger = L.normalize(null, { lang: "zh" });
-  const cat = ledger.categories.find(c => c.kind === "expense" && c.nameZh === "日用");
+  const cat = ledger.categories.find(c => c.kind === "expense" && c.nameZh === "超市买菜");
   assert.ok(cat);
   assert.equal(cat.name, "Groceries");
-  assert.equal(L.localizedCategoryName(cat, "zh"), "日用");
+  assert.equal(L.localizedCategoryName(cat, "zh"), "超市买菜");
   assert.equal(L.localizedCategoryName(cat, "en"), "Groceries");
 });
 
@@ -1171,7 +1171,7 @@ test("repairDefaultCategoryNames restores English when name was overwritten with
   const cat = ledger.categories.find(c => c.id === "c1");
   assert.equal(cat.name, "Groceries");
   assert.equal(L.localizedCategoryName(cat, "en"), "Groceries");
-  assert.equal(L.localizedCategoryName(cat, "zh"), "日用");
+  assert.equal(L.localizedCategoryName(cat, "zh"), "超市买菜");
 });
 
 test("dailyExpenseSeries covers seven days ending on selected date", () => {

@@ -1,0 +1,4 @@
+"Booking Date","Value Date","Partner Name","Partner Iban","Type","Payment Reference","Account Name","Amount (EUR)","Original Amount","Original Currency","Exchange Rate"
+"2026-10-30","2026-10-30","Max Müller","","Credit Transfer","Umbuchung auf N26","Hauptkonto","100.00","","",""
+"2026-11-04","2026-11-04","Kino Universum","","Mastercard Payment","Tickets","Hauptkonto","-24.00","","",""
+"2026-11-19","2026-11-19","Bäckerei Müller","","Mastercard Payment","","Hauptkonto","-4.55","","",""

@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="./today-cards.css?v=2.1.0" />
     <link rel="stylesheet" href="./v202.css?v=2.1.0" />
     <link rel="stylesheet" href="./pages-polish.css?v=2.1.0" />
+    <link rel="stylesheet" href="./money.css?v=2.1.0" />
     <link rel="stylesheet" href="./v210.css?v=2.1.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
@@ -140,8 +141,10 @@
             </article>
 
             <article class="mood-card">
+              <button type="button" class="tc-card-hit" id="moodCardHit" aria-label="今天整体感觉如何？, —, 今日心情"></button>
               <div class="section-heading">
                 <div><span class="kicker">MOOD</span><h3>今天整体感觉如何？</h3></div>
+                <span class="tc-card-chevron" aria-hidden="true">›</span>
               </div>
               <div class="mood-options" id="quickMood">
                 <button data-mood="很好"><span>☀</span>很好</button>
@@ -153,8 +156,9 @@
           </div>
 
           <div class="section-heading habits-heading">
+            <button type="button" class="tc-card-hit" id="foundationsCardHit" aria-label="今日基础目标, 0/0, 调整目标"></button>
             <div><span class="kicker">FOUNDATIONS</span><h2>今日基础目标</h2></div>
-            <button class="text-button" data-open-settings>调整目标 <span>→</span></button>
+            <span class="tc-core-wrap"><b class="tc-core" id="foundationsCount">0/0</b><span class="tc-card-chevron" aria-hidden="true">›</span></span>
           </div>
           <section class="habit-carousel" id="todayHabitCarousel" aria-label="今日习惯">
             <div class="habit-carousel-viewport" id="todayHabitViewport" tabindex="0">
@@ -1134,10 +1138,13 @@
     <script src="./interaction.js?v=2.1.0"></script>
     <script src="./long-range.js?v=2.1.0"></script>
     <script src="./ledger-core.js?v=2.1.0"></script>
+    <script src="./bank-import.js?v=2.1.0"></script>
     <script src="./review-metrics-preview.js?v=2.1.0"></script>
     <script src="./review-bars.js?v=2.1.0"></script>
     <script src="./app.js?v=2.1.0"></script>
     <script src="./ledger-ui.js?v=2.1.0"></script>
+    <script src="./vendor/echarts.min.js?v=5"></script>
+    <script src="./money-ui.js?v=2.1.0"></script>
     <script src="./vendor/sortable.min.js"></script>
     <script src="./hairline.js?v=2.1.0"></script>
     <script src="./pages-art.js?v=2.1.0"></script>

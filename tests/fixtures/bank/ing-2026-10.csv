@@ -1,0 +1,22 @@
+Umsatzanzeige;Datei erstellt am: 31.10.2026 09:12
+;Letztes Update: aktuell
+
+IBAN;DE12 5001 0517 0123 4567 89
+Kontoname;Girokonto
+Bank;ING
+Kunde;Max Müller
+Zeitraum;01.10.2026 - 31.10.2026
+Saldo;646,06;EUR
+
+Sortierung;Datum absteigend
+
+In der CSV-Datei finden Sie alle bereits gebuchten Umsätze. Die vorgemerkten Umsätze werden nicht aufgenommen, auch wenn sie in Ihrem Internetbanking angezeigt werden.
+
+Buchung;Wertstellungsdatum;Auftraggeber/Empfänger;Buchungstext;Verwendungszweck;Saldo;Währung;Betrag;Währung
+30.10.2026;30.10.2026;Deutsche Bahn;Vorgemerkt;Fahrkarte;646,06;EUR;-15,00;EUR
+26.10.2026;26.10.2026;Café Größenwahn;Lastschrift;Kartenzahlung;649,86;EUR;-3,80;EUR
+26.10.2026;26.10.2026;Café Größenwahn;Lastschrift;Kartenzahlung;646,06;EUR;-3,80;EUR
+20.10.2026;20.10.2026;Apotheke am Markt;Lastschrift;Kartenzahlung;653,66;EUR;-8,90;EUR
+15.10.2026;15.10.2026;Max Müller;Gutschrift/Dauerauftrag;Sparen DKB;662,56;EUR;-500,00;EUR
+03.10.2026;03.10.2026;Lidl sagt Danke;Lastschrift;Lidl Filiale Düsseldorf;1.162,56;EUR;-23,45;EUR
+01.10.2026;01.10.2026;Netflix International B.V.;Lastschrift;Netflix Monatsabo;1.186,01;EUR;-13,99;EUR

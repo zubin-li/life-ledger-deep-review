@@ -16,6 +16,7 @@ test("mergeBackupData merges ledger via LifeLedgerLedger", () => {
 });
 
 test("Today spending avoids negative zero formatting", () => {
-  assert.match(widgets, /todayMinor\s*\?\s*L\.formatMoney\(-todayMinor/);
-  assert.match(widgets, /:\s*L\.formatMoney\(0,\s*ledger\.settings\.defaultCurrency/);
+  // Slice 1: total is shown as a positive amount, so no sign flip can produce "-0".
+  assert.match(widgets, /L\.formatMoney\(todayMinor, cur, locale\)/);
+  assert.doesNotMatch(widgets, /formatMoney\(-todayMinor/);
 });

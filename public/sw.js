@@ -1,4 +1,4 @@
-const CACHE_NAME = "life-ledger-pwa-2.1.0";
+const CACHE_NAME = "life-ledger-pwa-2.1.0-b2e1";
 
 const HAIRLINE_ASSETS = [
   "./assets/hairline/backup-restore.svg",
@@ -93,9 +93,13 @@ const APP_SHELL = [
   "./pages-858.css?v=2.1.0",
   "./long-range.js?v=2.1.0",
   "./ledger-core.js?v=2.1.0",
+  "./bank-import.js?v=2.1.0",
   "./review-metrics-preview.js?v=2.1.0",
   "./review-bars.js?v=2.1.0",
   "./ledger-ui.js?v=2.1.0",
+  "./money-ui.js?v=2.1.0",
+  "./money.css?v=2.1.0",
+  "./vendor/echarts.min.js?v=5",
   "./habit-analytics.js?v=2.1.0",
   "./interaction.js?v=2.1.0",
   "./vendor/sortable.min.js",
@@ -147,7 +151,9 @@ const NETWORK_FIRST_SUFFIXES = [
   "/long-range.js",
   "/habit-analytics.js",
   "/ledger-core.js",
+  "/bank-import.js",
   "/ledger-ui.js",
+  "/money-ui.js",
 ];
 
 function shouldBypassFetch(url, request) {
@@ -211,7 +217,8 @@ self.addEventListener("fetch", event => {
 
   if (!isManagedStaticAsset(url.pathname)) return;
 
-  const networkFirst = NETWORK_FIRST_SUFFIXES.some(path => url.pathname.endsWith(path));
+  // App code (.js/.css) is always network-first so a new deploy is never hidden behind a cached old file; cache is the offline fallback.
+  const networkFirst = /\.(?:js|css)$/.test(url.pathname) || NETWORK_FIRST_SUFFIXES.some(path => url.pathname.endsWith(path));
   if (networkFirst) {
     event.respondWith(
       fetch(request)
