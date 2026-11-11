@@ -7376,8 +7376,21 @@ function renderDrawerMemory(date) {
   memoryEdit.hidden = isFutureDate(date) || !log.mood;
   memoryEdit.title = memoryPhotos.length ? tr("drawer.photoCount", { count: memoryPhotos.length }) : tr("drawer.memoryEdit");
 }
+// Web: a past day lists every active habit so it can be back-filled, even one set up
+// later (checking it moves the habit's start back to that day). Mac keeps the start-date rule.
+function drawerHabits(date) {
+  return document.documentElement.hasAttribute("data-desktop") ? activeHabits(date) : state.habits.filter(h => h.active);
+}
+function backfillHabitStart(id, date) {
+  const habit = state.habits.find(h => h.id === id);
+  if (!habit || versionFor(habit, date)) return;
+  const first = [...habit.versions].sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate))[0];
+  if (first) first.effectiveDate = date;
+}
 function renderDrawer() {
-  const d = parseDate(selectedDate), log = getLog(selectedDate), habits = activeHabits(selectedDate), scoredHabits = dailyHabits(selectedDate), future = isFutureDate(selectedDate);
+  const d = parseDate(selectedDate), log = getLog(selectedDate), habits = drawerHabits(selectedDate), future = isFutureDate(selectedDate);
+  // Count the listed habits (web lists not-yet-started ones too) by their first version.
+  const scoredHabits = habits.filter(h => { const v = versionFor(h, selectedDate) || [...h.versions].sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate))[0]; return v?.countsTowardDaily ?? v?.frequency === "daily"; });
   $("#drawerWeekday").textContent = weekdayName(d.getDay()).toUpperCase();
   $("#drawerDate").textContent = tr("calendar.dayTitle", { month: d.getMonth() + 1, monthName: monthName(d.getMonth()), day: d.getDate() });
   $("#drawerProgress").textContent = `${log.completed.filter(id => scoredHabits.some(h => h.id === id)).length} / ${scoredHabits.length}`;
@@ -7391,8 +7404,8 @@ function renderDrawer() {
   futureNotice.hidden = !future;
   futureNotice.textContent = future ? tr("drawer.futureLocked") : "";
   $("#drawerHabits").innerHTML = habits.map(h => {
-    const done = log.completed.includes(h.id), v = versionFor(h, selectedDate);
-    const periodNote = countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
+    const done = log.completed.includes(h.id), started = versionFor(h, selectedDate), v = started || [...h.versions].sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate))[0];
+    const periodNote = !started || countsTowardDaily(h, selectedDate) ? "" : `<small class="period-note">${v.frequency === "monthly" ? tr("drawer.periodMonthly") : tr("drawer.periodWeekly")}</small>`;
     const habitNote = String(v?.note || "").trim();
     const target = habitMetaLabel(v);
     return `<details class="drawer-habit ${done ? "done" : ""}" data-id="${h.id}" style="${habitStyle(h)}">
@@ -7400,7 +7413,7 @@ function renderDrawer() {
       <div class="drawer-habit-details"><p>${escapeHtml(target)}</p>${habitNote ? `<p class="drawer-habit-note">${escapeHtml(habitNote)}</p>` : ""}${periodNote}<button class="drawer-habit-toggle" type="button" ${future ? "disabled" : ""}>${done ? tr("drawer.undoComplete") : tr("drawer.markComplete")}</button></div>
     </details>`;
   }).join("");
-  $$(".drawer-habit-toggle").forEach(button => button.addEventListener("click", () => toggleHabit(selectedDate, button.closest(".drawer-habit").dataset.id)));
+  $$(".drawer-habit-toggle").forEach(button => button.addEventListener("click", () => { const id = button.closest(".drawer-habit").dataset.id; backfillHabitStart(id, selectedDate); toggleHabit(selectedDate, id); }));
   const schedule = calendarEventsForDate(selectedDate);
   $("#drawerScheduleCount").textContent = tr("dayPlan.events", { count: schedule.length });
   $("#drawerScheduleList").innerHTML = schedule.map(event => scheduleEventMarkup(event)).join("");

@@ -7,3 +7,7 @@
 - When a visible feature changes, update the fictional English, Simplified Chinese, and German desktop/mobile screenshots and the matching `docs/SHOWCASE*` pages in the same change. Product images must never contain real personal data.
 - Before a stable release, align the package version, lockfile, PWA cache and asset versions, changelog version, and `.github/releases/vX.Y.Z.md`.
 - A release is complete only after tests pass and the tag, GitHub Release, GitHub Pages, and production deployment have been verified.
+
+# Web Today requirements
+
+- Before any Web Today change, read `/Users/ashan/Documents/Codex/ll-361-blank-fix/.hermes/requirements/REQUIREMENTS.md` (the single requirements ledger, every row cites the user's words). New user feedback is added there first; every delivery reports the whole table, not only the latest item.

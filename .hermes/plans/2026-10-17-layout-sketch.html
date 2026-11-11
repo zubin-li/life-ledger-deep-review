@@ -1,0 +1,83 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  .wrap { display: grid; gap: 28px; width: 900px; padding: 4px 0 12px; }
+  h3 { margin: 0 0 4px; font-size: 15px; }
+  p.note { margin: 0 0 10px; font-size: 12px; color: var(--muted-foreground); max-width: 880px; }
+  .shell { display: grid; grid-template-columns: 120px 1fr; gap: 14px; padding: 12px; border-radius: 22px; background: radial-gradient(circle at 82% 4%, rgba(125,174,255,.22), transparent 18rem), radial-gradient(circle at 28% 80%, rgba(126,150,121,.18), transparent 18rem), #eef2f1; }
+  .side { border-radius: 18px; background: linear-gradient(155deg,#29312c,#191d1b); color:#f2f2f2; padding: 14px 10px; font-size: 10px; display: grid; align-content: start; gap: 8px; }
+  .side b { font-size: 11px; margin-bottom: 6px; }
+  .side span { padding: 5px 8px; border-radius: 9px; opacity: .7; }
+  .side span.on { background: rgba(255,255,255,.14); opacity: 1; }
+  .board { display: grid; grid-template-columns: repeat(var(--cols), 1fr); grid-auto-rows: var(--row); gap: 8px; }
+  .c { border-radius: 14px; background: rgba(255,255,255,.86); border: 1px solid rgba(255,255,255,.9); box-shadow: 0 6px 18px rgba(29,29,31,.07); padding: 8px 10px; font-size: 10px; color: #33403a; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+  .c i { font-style: normal; font-size: 9px; color: #7b8780; }
+  .c.dark { background: linear-gradient(135deg,#26312b,#171a18); color: #f3f6f4; }
+  .c.dark i { color: #aab7b0; }
+  .c.band { background: transparent; box-shadow: none; border: 1px dashed rgba(51,64,58,.18); }
+  .S { grid-column: span 1; } .M { grid-column: span 2; } .L { grid-column: span 2; grid-row: span 2; } .XL { grid-column: span 4; grid-row: span 2; }
+  .row1 { grid-row: span 1; } .full { grid-column: 1 / -1; }
+  .hole { border: 1.5px dashed #6f9ad8; background: rgba(111,154,216,.07); color: #3f6fb8; box-shadow: none; align-items: center; justify-content: center; text-align: center; }
+  .edit .c:not(.hole)::before { content: "−"; position: absolute; top: -6px; left: -6px; width: 16px; height: 16px; border-radius: 50%; background: #e5484d; color: #fff; font-size: 12px; line-height: 15px; text-align: center; }
+  .chips { display: flex; gap: 3px; } .chips u { text-decoration: none; padding: 1px 5px; border-radius: 6px; border: 1px solid rgba(51,64,58,.25); font-size: 8px; } .chips u.on { background: #33403a; color: #fff; }
+  .dark .chips u { border-color: rgba(255,255,255,.3); } .dark .chips u.on { background: #fff; color: #222; }
+  .row { display: flex; gap: 24px; align-items: start; }
+  .phone { width: 190px; padding: 10px; border-radius: 26px; background: #eef2f1; }
+  .phone .board { --cols: 1; --row: 60px; }
+  table { border-collapse: collapse; font-size: 12px; } td, th { border-bottom: 1px solid var(--border); padding: 5px 10px 5px 0; text-align: left; }
+</style>
+<div class="wrap">
+  <div>
+    <h3>① Default Web Today at 1440: original 3.5 order on a 4-column grid</h3>
+    <p class="note">One row unit = 250px (diagram scaled down). Each widget can only take S (1 column), M (2 columns), L (2×2) or XL (4×2), so everything lines up on the grid. Same full width as Week and Long-term. The page scrolls as a whole, with no scrollbar of its own. The sidebar is the original floating rounded style.</p>
+    <div class="shell">
+      <div class="side"><b>Life Ledger</b><span class="on">Today</span><span>This week</span><span>Long-term</span><span>Timeline</span><span>Insights</span><span>Habits</span></div>
+      <div class="board" style="--cols:4; --row:62px">
+        <div class="c dark M row1">Hero · greeting / quote / progress ring / weather<i>M 2×1 · original hero card</i></div>
+        <div class="c S row1">Mood<i>S · 3 options + quote</i></div>
+        <div class="c S row1">Focus<i>S · start / today total</i></div>
+        <div class="c band XL row1" style="grid-row: span 1">Foundations · original habit cards, 4 per page, paging<i>XL · full-width band</i></div>
+        <div class="c L">Daily calendar<i>L · 5-day roll + schedule (original)</i></div>
+        <div class="c L">Daily reflection<i>L · Reflection/Focus tabs · quick record · voice</i></div>
+        <div class="c XL" style="grid-row: span 4">Month in view · mood / heatmap toggle (original)<i>XL · month band</i></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3>② Edit mode: remove, change size, move, add</h3>
+    <p class="note">Every card gets a red − button and size chips (only sizes that widget actually supports). Cards move with ← → buttons, the keyboard, or later by dragging. A gap left after rearranging shows a dashed "+ add" slot suggesting widgets that fit there. Undo is available. Settings and normal use do not drag anything.</p>
+    <div class="shell edit">
+      <div class="side"><b>Life Ledger</b><span class="on">Today</span><span>This week</span><span>…</span></div>
+      <div class="board" style="--cols:4; --row:62px">
+        <div class="c dark M row1">Hero<div class="chips"><u class="on">M</u></div></div>
+        <div class="c S row1">Mood<div class="chips"><u class="on">S</u></div></div>
+        <div class="c S row1">Weather<div class="chips"><u class="on">S</u><u>M</u><u>L</u></div></div>
+        <div class="c L">Photo wall<div class="chips"><u class="on">L</u><u>XL</u></div></div>
+        <div class="c S row1">Heatmap<div class="chips"><u class="on">S</u><u>M</u></div></div>
+        <div class="c hole S row1">+ fits here:<br>7-day rhythm · focus · photos (S)</div>
+        <div class="c M row1">Foundations<div class="chips"><u>S</u><u class="on">M</u><u>L</u><u>XL</u></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <h3>③ Phone (&lt;600px): single column</h3>
+      <div class="phone"><div class="board">
+        <div class="c dark row1">Hero</div><div class="c row1">Mood</div><div class="c" style="grid-row: span 2">Foundations (2 per page)</div><div class="c" style="grid-row: span 2">Daily calendar</div><div class="c" style="grid-row: span 2">Reflection</div>
+      </div></div>
+    </div>
+    <div>
+      <h3>④ Size rules: same order on every screen</h3>
+      <table>
+        <tr><th>Screen</th><th>Columns</th><th>Size changes</th></tr>
+        <tr><td>Desktop ≥1100</td><td>4</td><td>as designed</td></tr>
+        <tr><td>Tablet/narrow window 600–1099</td><td>2</td><td>XL shows as L</td></tr>
+        <tr><td>Phone &lt;600</td><td>1</td><td>full width, height per widget</td></tr>
+        <tr><td>Mac app</td><td colspan="2">identical board; only the outer frame is native (traffic lights, toolbar)</td></tr>
+      </table>
+      <p class="note" style="margin-top:10px">Compared with the original 3.5 page: hero 289→250, daily calendar/reflection 477→520, month band ≈1020→1060 (all within about 15%).</p>
+    </div>
+  </div>
+</div>

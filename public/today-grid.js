@@ -12,7 +12,7 @@
   const SIZES = {
     summary: [['std', 2, 2]], mood: [['std', 1, 2]],
     habits: [['h4', 2, 3], ['h8', 4, 3]],
-    dayplan: [['std', 2, 3]], reflection: [['std', 2, 3]], focus: [['std', 1, 2]],
+    dayplan: [['std', 2, 3]], reflection: [['std', 2, 3]], focus: [['s', 2, 2], ['w', 4, 2]], photos: [['std', 2, 2]],
     calendar: [['cs', 2, 3], ['cl', 4, 4]], context: [['std', 2, 2]],
     weather: [['s', 1, 2], ['w', 2, 2]], heatmap: [['s', 1, 2], ['w', 2, 2]],
     wall: [['s', 1, 2], ['w', 2, 2], ['l', 2, 4]],
@@ -25,7 +25,7 @@
   const DEFAULT = [['summary', 'std'], ['mood', 'std'], ['weather', 's'], ['habits', 'h4'], ['dayplan', 'std'], ['reflection', 'std'], ['calendar', 'cs']];
   const $ = s => document.querySelector(s);
   const lang = () => (LABEL[document.documentElement.lang?.slice(0, 2)] ? document.documentElement.lang.slice(0, 2) : 'zh');
-  const read = () => { try { const v = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(v) && v.length) return v.filter(([t, s]) => SIZES[t]?.some(x => x[0] === s)); } catch {} return DEFAULT.map(x => [...x]); };
+  const read = () => { try { const v = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(v) && v.length) return v.filter(([t]) => SIZES[t]).map(([t, s]) => [t, SIZES[t].some(x => x[0] === s) ? s : SIZES[t][0][0]]); } catch {} return DEFAULT.map(x => [...x]); };
   let cards = read();
   const save = () => localStorage.setItem(KEY, JSON.stringify(cards));
 
@@ -41,22 +41,31 @@
       engine._tgSilent = true; engine.writeStoredLayout(layout); engine._tgRender(); engine._tgSilent = false;
     }
     const L = LABEL[lang()];
+    const want = [];
     for (const [type, size] of cards) {
       const card = view.querySelector(`:scope > [data-module="${type}"]`);
       if (!card) continue;
+      want.push(card);
       const [, w, h] = SIZES[type].find(x => x[0] === size);
       card.dataset.tg = type; card.dataset.tgSize = size; card.style.setProperty('--tgw', w); card.style.setProperty('--tgh', h);
-      card.hidden = false; card.removeAttribute('data-tg-off');
+      if (card.hidden) card.hidden = false;
+      card.removeAttribute('data-tg-off');
       let bar = card.querySelector(':scope > .tg-edit');
       if (!bar) { bar = document.createElement('div'); bar.className = 'tg-edit'; card.append(bar); }
       const variants = SIZES[type];
-      bar.innerHTML = (type === 'habits' ? '' : `<button type="button" class="tg-remove" aria-label="${L.remove}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"/></svg></button>`) +
+      const html = (type === 'habits' ? '' : `<button type="button" class="tg-remove" aria-label="${L.remove}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"/></svg></button>`) +
         (variants.length > 1 ? `<div class="tg-sizes" role="radiogroup" aria-label="${L.size}">${variants.map(([k]) => `<button type="button" role="radio" data-size="${k}" aria-checked="${k === size}">${L[k]}</button>`).join('')}</div>` : '') +
         `<span class="tg-grip" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></span>`;
-      view.append(card);
+      if (bar.dataset.k !== html) { bar.innerHTML = html; bar.dataset.k = html; }
     }
-    view.querySelectorAll(':scope > [data-module]').forEach(card => { if (!on.has(card.dataset.module)) { card.dataset.tgOff = ''; card.hidden = true; } });
-    view.querySelectorAll(':scope > :not([data-module])').forEach(n => view.append(n));
+    // Move cards only when the order really changed: re-inserting a node restarts its
+    // entrance animation, which made every habit check-in look like a full page reload.
+    const current = [...view.children].filter(c => want.includes(c));
+    if (current.some((c, i) => c !== want[i])) {
+      want.forEach(c => view.append(c));
+      view.querySelectorAll(':scope > :not([data-module])').forEach(n => view.append(n));
+    }
+    view.querySelectorAll(':scope > [data-module]').forEach(card => { if (!on.has(card.dataset.module)) { card.dataset.tgOff = ''; if (!card.hidden) card.hidden = true; } });
     const habits = view.querySelector('[data-module="habits"]');
     if (habits) habits.dataset.tgHabits = cards.find(c => c[0] === 'habits')?.[1] || 'h4';
     heroTop(); fit();
@@ -118,6 +127,7 @@
       const added = shown.filter(t => SIZES[t] && !cards.some(c => c[0] === t));
       if (added.length) { history.push(copy(cards)); cards = [...cards, ...added.map(t => [t, SIZES[t][0][0]])]; save(); }
       origSet(layout, id);
+      added.forEach(t => { const c = $(`#todayView > [data-module="${t}"]`); if (!c) return; c.dataset.tgNew = ''; setTimeout(() => c.removeAttribute('data-tg-new'), 2400); });
     };
     // Toolbar Undo / Reset / Escape act on the card list, not the engine's x/y layout.
     const origReset = engine.resetLayout.bind(engine), origEdit = engine.setEditMode.bind(engine);
@@ -163,8 +173,68 @@
     }
     // Today's month card shows mood only; the heatmap lives in its own card.
     if (!document.querySelector('#todayMonthViewSwitch [data-calendar-view="mood"].active')) document.querySelector('#todayMonthViewSwitch [data-calendar-view="mood"]')?.click();
-    apply();
+    apply(); shell(); focusOverview('#module-body-focus'); focusOverview('#reflectionFocusPage');
+    setTimeout(() => $('#todayView')?.classList.add('tg-settled'), 1400);
     setTimeout(fit, 300); document.fonts?.ready.then(fit);
+  }
+
+  // Web shell pieces restored from the 3.5 web version: the walker logo and a
+  // back-to-top button (the page scrolls as one; the toolbar is not pinned).
+  function shell() {
+    const mark = $('.sidebar-mark');
+    if (mark && !mark.querySelector('svg')) mark.innerHTML = '<svg viewBox="0 0 32 32" fill="none"><circle cx="16.3" cy="6" r="2.5" fill="currentColor" stroke="none"/><path class="walker-body" d="m15.3 10.1-2.7 6.2 4.1 2.1 1.7 7.3m-3-15.2 5 3.5 3.5-1.8m-11 4.2-5.2 8.1"/><path class="brand-path" d="M4.5 27.2c6.6-3.6 14.5-4.1 23-.9"/></svg>';
+    const pane = $('.workspace-pane'); if (!pane || $('#tgTop')) return;
+    const top = document.createElement('button');
+    top.type = 'button'; top.id = 'tgTop'; top.className = 'tg-top'; top.hidden = true;
+    top.setAttribute('aria-label', { zh: '回到顶部', de: 'Nach oben', en: 'Back to top' }[lang()]);
+    top.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg>';
+    top.addEventListener('click', () => pane.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+    document.body.append(top);
+    pane.addEventListener('scroll', () => { top.hidden = pane.scrollTop < 320; }, { passive: true });
+  }
+
+  // Focus card = the 3.5 web focus overview (ring, big timer, 25/50, settings),
+  // driven by the app's existing focus timer through the toolbar panel's controls.
+  function focusOverview(sel) {
+    const body = $(sel); if (!body || body.querySelector('.tg-focus')) return;
+    [...body.children].forEach(c => c.setAttribute('hidden', ''));
+    body.insertAdjacentHTML('beforeend', `<div class="tg-focus focus-overview-card">
+      <div class="focus-overview-copy"><h2 data-tg-f="title"></h2><p data-tg-f="hint"></p><p class="focus-today-summary" data-tg-f="summary"></p>
+        <div class="focus-quick-settings"><div class="focus-quick-presets" role="group"><button type="button" data-tg-preset="classic">25</button><button type="button" data-tg-preset="deep">50</button></div>
+        <button class="focus-settings-button" type="button" data-tg-f="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span></span></button></div></div>
+      <div class="focus-inline-timer" style="--focus-inline-progress:0"><span class="focus-inline-ring" aria-hidden="true"><i></i></span>
+        <div class="focus-inline-copy"><span data-tg-f="phase"></span><strong data-tg-f="time">25:00</strong></div>
+        <div class="focus-inline-actions"><button class="primary-button" type="button" data-tg-f="primary"></button><button class="secondary-button" type="button" data-tg-f="finish" hidden></button></div></div></div>`);
+    const q = k => body.querySelector(`[data-tg-f="${k}"]`);
+    const T = {
+      zh: { title: '专注时间', hint: '选一件事，全心投入。', settings: '设置' },
+      en: { title: 'Focus Time', hint: 'Choose one thing. Give it your full attention.', settings: 'Settings' },
+      de: { title: 'Fokuszeit', hint: 'Wähle eine Sache. Schenk ihr deine volle Aufmerksamkeit.', settings: 'Einstellungen' },
+    };
+    const sync = () => {
+      const t = T[lang()], src = id => document.getElementById(id);
+      q('title').textContent = t.title; q('hint').textContent = t.hint; q('settings').querySelector('span').textContent = t.settings;
+      q('summary').textContent = src('focusTodaySummary')?.textContent || '';
+      q('time').textContent = src('focusInlineTime')?.textContent || '25:00';
+      q('phase').textContent = src('focusPhase')?.textContent || '';
+      const p = src('focusQuickPrimary'), f = src('focusQuickFinish');
+      body.querySelectorAll(':scope > :not(.tg-focus)').forEach(c => { if (!c.hidden) c.hidden = true; });
+      q('primary').textContent = p?.hidden ? (src('focusPrimary')?.textContent || '') : p?.textContent; q('primary').disabled = !!p?.disabled;
+      q('finish').textContent = f?.textContent || ''; q('finish').hidden = !f || f.hidden;
+      body.querySelector('.focus-inline-timer').style.setProperty('--focus-inline-progress', getComputedStyle(src('focusClock') || body).getPropertyValue('--focus-progress') || 0);
+      body.querySelectorAll('[data-tg-preset]').forEach(b => { const o = document.querySelector(`#focusQuickPresets [data-quick-focus-preset="${b.dataset.tgPreset}"]`); b.classList.toggle('active', !!o?.classList.contains('active')); b.disabled = !!o?.disabled; });
+    };
+    body.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.tgPreset) document.querySelector(`#focusQuickPresets [data-quick-focus-preset="${b.dataset.tgPreset}"]`)?.click();
+      else if (b.dataset.tgF === 'primary') $('#focusQuickPrimary')?.click();
+      else if (b.dataset.tgF === 'finish') $('#focusQuickFinish')?.click();
+      else if (b.dataset.tgF === 'settings') $('#reflectionFocusSettings')?.click();
+      requestAnimationFrame(sync);
+    });
+    // ponytail: mirrors the toolbar focus panel's text once a second; give the focus
+    // timer a change event if this ever needs to be exact to the frame.
+    sync(); setInterval(sync, 1000);
   }
   if (document.readyState === 'complete') boot(); else root.addEventListener('load', boot);
 })(window);

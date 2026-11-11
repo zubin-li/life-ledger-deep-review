@@ -188,3 +188,92 @@ html:not([data-desktop]) #addTodayWidget { white-space: nowrap; flex-shrink: 0; 
 
 @media (min-width: 1280px) { html:not([data-desktop])[data-workspace] .app-toolbar { padding-inline: 36px !important; min-height: 64px !important; } }
 @media (min-width: 761px) and (max-width: 1279px) { html:not([data-desktop])[data-workspace] #todayView.tg.active { padding: 14px 24px 64px !important; column-gap: 20px !important; row-gap: 20px !important; } }
+
+/* ===== Round 3 (user 10/18): reuse the 3.5 web version's shell, type and pieces ===== */
+@media (min-width: 761px) {
+  /* One page scroll like the original: toolbar scrolls away, nothing pinned on top. */
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] .workspace-pane { overflow-y: auto !important; overflow-x: clip; scrollbar-width: none; }
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] .workspace-pane::-webkit-scrollbar { display: none; }
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] .workspace-pane > .content-split,
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] .workspace-pane .main-content { height: auto !important; min-height: 0 !important; overflow: visible !important; }
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] :is(.content-split, .main-content, #todayView.tg.active) { flex: 0 0 auto !important; height: auto !important; max-height: none !important; overflow: visible !important; }
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] .app-toolbar { position: static !important; }
+  /* Breathing room: content column capped and centred, generous side margins (3.5: 42px 72px). */
+  html:not([data-desktop])[data-workspace] #todayView.tg.active { max-width: 1240px !important; margin-inline: auto !important; padding: 26px clamp(28px, 4.6vw, 68px) 72px !important; }
+  html:not([data-desktop])[data-workspace] body[data-active-view="today"] .app-toolbar { padding-inline: clamp(28px, 4.6vw, 68px) !important; }
+
+  /* 3.5 type scale: nav 15–16px, brand in the display face, a real page title. */
+  html:not([data-desktop])[data-workspace] .nav-item { min-height: 44px !important; padding: 10px 12px !important; gap: 12px; border-radius: 15px; font-size: 15px !important; font-weight: 500 !important; }
+  html:not([data-desktop])[data-workspace] .nav-item .nav-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+  html:not([data-desktop])[data-workspace] .nav-item .nav-icon svg { width: 19px; height: 19px; }
+  html:not([data-desktop])[data-workspace] .main-nav { gap: 4px; }
+  html:not([data-desktop])[data-workspace] .sidebar-identity { gap: 12px; padding: 6px 8px 22px !important; }
+  html:not([data-desktop])[data-workspace] .sidebar-identity-copy strong { font: 700 16px/1.2 var(--font-display) !important; letter-spacing: .02em; }
+  html:not([data-desktop])[data-workspace] #viewTitle { font: 700 26px/1.2 var(--font-display) !important; letter-spacing: -.03em; }
+  html:not([data-desktop])[data-workspace] .sidebar-group-heading { font-size: 11px !important; }
+  html:not([data-desktop])[data-workspace] .sidebar-habits { font-size: 13px; }
+
+  /* The walker logo from the 3.5 web version, not a plain "L". */
+  html:not([data-desktop])[data-workspace] body .sidebar-mark { width: 40px !important; height: 40px !important; flex: 0 0 40px; border-radius: 13px !important; border: 1px solid rgba(255,255,255,.24); background: linear-gradient(145deg, #3f5d52, #24362f) !important; color: #fff !important; box-shadow: 0 8px 22px rgba(19,42,34,.24), inset 0 1px 0 rgba(255,255,255,.24) !important; }
+  html[data-theme="dark"]:not([data-desktop])[data-workspace] body .sidebar-mark { background: linear-gradient(145deg, #525a6d, #303641) !important; }
+  html:not([data-desktop]) .sidebar-mark svg { width: 27px; height: 27px; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  html:not([data-desktop]) .sidebar-mark .walker-body { stroke: #fff; stroke-width: 2.45; }
+  html:not([data-desktop]) .sidebar-mark .brand-path { stroke: rgba(255,255,255,.68); }
+
+  /* Day drawer: the floating rounded glass panel of the 3.5 web version. */
+  html:not([data-desktop]) .day-drawer { top: 12px !important; right: 12px !important; height: calc(100dvh - 24px) !important; width: min(480px, calc(100vw - 24px)) !important; border: 1px solid rgba(255,255,255,.74) !important; border-radius: 30px !important; background: rgba(248,248,250,.88) !important; backdrop-filter: blur(30px) saturate(150%) !important; overflow: hidden; transform: translate3d(calc(100% + 24px),0,0); }
+  html:not([data-desktop]) .day-drawer.open { transform: translate3d(0,0,0); }
+  html[data-theme="dark"]:not([data-desktop]) .day-drawer { background: rgba(46,49,56,.94) !important; border-color: var(--edge-strong, rgba(255,255,255,.12)) !important; }
+  html:not([data-desktop]) .day-drawer > header { padding: 30px 32px 22px; }
+  html:not([data-desktop]) .day-drawer h2 { font: 600 28px/1.25 "Noto Serif SC", var(--font-display); }
+  html:not([data-desktop]) .drawer-content { padding: 24px 32px; }
+  html:not([data-desktop]) .drawer-habit { border-radius: 14px; padding: 12px 13px; }
+  html:not([data-desktop]) .day-drawer > footer { padding: 16px 32px 20px; }
+
+  /* Month card: rounded grid inside the rounded card, no hard square block. */
+  html:not([data-desktop]) #todayView.tg [data-module="calendar"] .today-month-card .calendar-grid { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  html:not([data-desktop]) #todayView.tg [data-module="calendar"] .today-month-card .calendar-day:nth-child(-n+7) { border-top: 0 !important; }
+}
+
+/* Back to top: appears after scrolling, never pinned chrome. */
+.tg-top { position: fixed; z-index: 30; right: 28px; bottom: 28px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; background: rgba(248,248,250,.86); color: var(--ink); box-shadow: 0 12px 32px rgba(16,35,29,.16); backdrop-filter: blur(20px); cursor: pointer; transition: transform 160ms ease; }
+.tg-top:hover { transform: translateY(-2px); }
+.tg-top[hidden] { display: none; }
+.tg-top svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+html[data-theme="dark"] .tg-top { background: rgba(46,49,56,.92); border-color: rgba(255,255,255,.12); }
+html[data-desktop] .tg-top { display: none !important; }
+
+/* A card just added from the library glows so it is easy to find. */
+#todayView.tg > [data-tg-new] { animation: tgNew 2.2s cubic-bezier(.2,.8,.2,1); }
+@keyframes tgNew { 0%, 40% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage, #6f8f7d) 70%, transparent), 0 18px 55px rgba(29,29,31,.1); } 100% { box-shadow: 0 0 0 0 transparent, 0 18px 55px rgba(29,29,31,.075); } }
+@media (prefers-reduced-motion: reduce) { #todayView.tg > [data-tg-new] { animation: none; outline: 3px solid var(--sage, #6f8f7d); outline-offset: 2px; } }
+
+/* Focus card = the 3.5 focus overview inside a grid card (ring, big timer, 25/50, settings). */
+#todayView.tg .tg-focus { margin: 0; padding: 0; height: 100%; border: 0; background: transparent; box-shadow: none; backdrop-filter: none; display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 14px; }
+#todayView.tg .tg-focus::after { content: none; }
+#todayView.tg .tg-focus .focus-overview-copy h2 { margin: 0 0 4px; font: 700 20px/1.2 var(--font-display); letter-spacing: -.02em; }
+#todayView.tg .tg-focus .focus-overview-copy p { font-size: 12px; line-height: 1.5; }
+#todayView.tg .tg-focus .focus-quick-settings { margin-top: 10px; }
+#todayView.tg .tg-focus .focus-quick-presets button { font-size: 12px; }
+#todayView.tg .tg-focus .focus-settings-button { font-size: 12px; }
+#todayView.tg .tg-focus .focus-inline-timer { min-height: 0; padding: 12px 14px; grid-template-columns: 60px minmax(0, 1fr) auto; gap: 12px; border-radius: 20px; }
+#todayView.tg .tg-focus .focus-inline-ring { width: 60px; height: 60px; }
+#todayView.tg .tg-focus .focus-inline-ring i { width: 50px; height: 50px; }
+#todayView.tg .tg-focus .focus-inline-copy > span { font-size: 10px; }
+#todayView.tg .tg-focus .focus-inline-copy strong { margin: 3px 0 0; font: 680 34px/1 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+#todayView.tg .tg-focus .focus-inline-actions .primary-button,
+#todayView.tg .tg-focus .focus-inline-actions .secondary-button { min-width: 104px; }
+#todayView.tg [data-module="focus"][data-tg-size="s"] .tg-focus [data-tg-f="hint"] { display: none; }
+#todayView.tg #reflectionFocusPage { height: 100%; }
+#todayView.tg #reflectionFocusPage .tg-focus { align-content: start; padding-top: 8px; gap: 22px; }
+#todayView.tg [data-module="focus"][data-tg-size="w"] .tg-focus { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: center; gap: 28px; }
+#todayView.tg [data-module="focus"][data-tg-size="w"] .tg-focus .focus-overview-copy h2 { font-size: 22px; }
+#todayView.tg [data-module="focus"][data-tg-size="w"] .tg-focus .focus-inline-timer { padding: 16px; grid-template-columns: 76px minmax(0, 1fr) auto; }
+#todayView.tg [data-module="focus"][data-tg-size="w"] .tg-focus .focus-inline-ring { width: 76px; height: 76px; }
+#todayView.tg [data-module="focus"][data-tg-size="w"] .tg-focus .focus-inline-ring i { width: 64px; height: 64px; }
+#todayView.tg [data-module="focus"][data-tg-size="w"] .tg-focus .focus-inline-copy strong { font-size: 42px; }
+#todayView.tg [data-module="focus"] > .module-header { display: none; }
+
+/* Cards rise in once on load; later re-renders (a habit check-in, a size change)
+   must not replay it, or the whole page looks like it reloaded. */
+#todayView.tg.tg-settled > [data-module] { animation: none !important; }

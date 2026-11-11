@@ -1,0 +1,457 @@
+{
+  "meta": {
+    "name": "Life Ledger 2.0 — Today View Direction Design DNA",
+    "description": "Visual and interaction DNA extracted from the primary reference (en-01-today-planning-v2.png) and applied across three distinct architectural variants (Luminous Daily Canvas, Orbit Desk, Editorial Bento) at 1440×900 Mac window resolution. Resolves the stark failure of phase-3-5-1 by restoring atmospheric depth, dark emerald anchor surfaces, tactile island cards, organic bubble silhouettes, rich habit iconography, luminous focus islands, and calm pointer-aware physics.",
+    "source_references": [
+      "/Users/ashan/Desktop/Website/Life-Ledger-Deep-Review/docs/images/demo-preview/en-desktop/en-01-today-planning-v2.png",
+      "/Users/ashan/Documents/Codex/ll-361-blank-fix/docs/phase-3-5-1/screens/today-1440-en-light.png",
+      "/Users/ashan/Documents/Codex/ll-361-blank-fix/docs/design-dna-dashboard-motion.json",
+      "/Users/ashan/Documents/Codex/ll-361-blank-fix/docs/design-dna-macos-v4.md",
+      "/Users/ashan/Downloads/1040g358325o2s03oka005o7c5big8uq149gp330 (1).mp4"
+    ],
+    "created_at": "2026-10-14"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "deep emerald anchor foundation paired with warm luminous parchment, serene sage, sky, coral and amber accents",
+      "primary": {
+        "hex": "#1E2522",
+        "role": "deep ink, primary typography, and dark anchor card surfaces"
+      },
+      "secondary": {
+        "hex": "#5D7D68",
+        "role": "signature Life Ledger sage, completion states, active indicators, and organic accents"
+      },
+      "accent": {
+        "hex": "#E07A5F",
+        "role": "warm coral highlight for energy, exercise, and active focus state"
+      },
+      "neutral": {
+        "scale": [
+          "#FAF8F5",
+          "#F4F1EA",
+          "#EAE5DB",
+          "#D8D2C5",
+          "#8D877B",
+          "#5B574F",
+          "#1E2522"
+        ],
+        "usage": "warm parchment canvas, soft elevated cards, subtle borders, secondary labels, and deep ink typography"
+      },
+      "semantic": {
+        "success": "#5D7D68",
+        "warning": "#D9822B",
+        "error": "#C85A54",
+        "info": "#4A90A4"
+      },
+      "surface": {
+        "background": "#F4F1EA",
+        "card": "#FAF8F5",
+        "elevated": "#FFFFFF",
+        "hero": "#17231E",
+        "hero_secondary": "#1E2C26",
+        "luminous_island": "#EBF3EE",
+        "sidebar": "#161E1A",
+        "sidebar_surface": "#1F2823"
+      },
+      "habit_palette": {
+        "reading": {
+          "hex": "#D9822B",
+          "tint": "#FDF4E7",
+          "label": "Reading",
+          "role": "warm golden amber, knowledge and literary pacing"
+        },
+        "exercise": {
+          "hex": "#E26D5C",
+          "tint": "#FDF0ED",
+          "label": "Exercise",
+          "role": "energetic peach coral, somatic activation"
+        },
+        "sleep": {
+          "hex": "#5C6BC0",
+          "tint": "#EDF0F9",
+          "label": "Sleep",
+          "role": "deep twilight indigo, nocturnal restoration"
+        },
+        "water": {
+          "hex": "#3898EC",
+          "tint": "#EAF4FC",
+          "label": "Hydration",
+          "role": "clarifying sky blue, daily nourishment"
+        },
+        "meditation": {
+          "hex": "#8E63B8",
+          "tint": "#F4EEF9",
+          "label": "Meditation",
+          "role": "serene orchid lavender, mindfulness and breath"
+        },
+        "deep_work": {
+          "hex": "#2E7D5D",
+          "tint": "#EBF5F0",
+          "label": "Deep Work",
+          "role": "grounded forest emerald, sustained intellectual flow"
+        },
+        "language": {
+          "hex": "#1D9A9E",
+          "tint": "#E7F6F6",
+          "label": "Language",
+          "role": "vibrant ocean teal, cross-cultural articulation"
+        }
+      },
+      "contrast_strategy": "dark-emerald anchor cards anchor visual mass; warm parchment canvas relieves eye strain; luminous mint focus island highlights intentional action; habit colors provide immediate distinct identification without sensory overload"
+    },
+    "typography": {
+      "type_scale": {
+        "display": {
+          "size": "34px",
+          "weight": 650,
+          "line_height": 1.05,
+          "tracking": "-0.03em"
+        },
+        "heading_1": {
+          "size": "26px",
+          "weight": 650,
+          "line_height": 1.15,
+          "tracking": "-0.025em"
+        },
+        "heading_2": {
+          "size": "20px",
+          "weight": 600,
+          "line_height": 1.25,
+          "tracking": "-0.015em"
+        },
+        "heading_3": {
+          "size": "16px",
+          "weight": 600,
+          "line_height": 1.35,
+          "tracking": "-0.01em"
+        },
+        "body": {
+          "size": "14px",
+          "weight": 400,
+          "line_height": 1.5,
+          "tracking": "-0.005em"
+        },
+        "body_small": {
+          "size": "13px",
+          "weight": 400,
+          "line_height": 1.45,
+          "tracking": "0"
+        },
+        "caption": {
+          "size": "12px",
+          "weight": 550,
+          "line_height": 1.35,
+          "tracking": "0.01em"
+        },
+        "overline": {
+          "size": "11px",
+          "weight": 700,
+          "line_height": 1.25,
+          "tracking": "0.08em"
+        }
+      },
+      "font_families": {
+        "heading": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Segoe UI', system-ui, sans-serif",
+        "body": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Segoe UI', system-ui, sans-serif",
+        "mono": "SFMono-Regular, Menlo, Monaco, Consolas, ui-monospace, monospace"
+      },
+      "font_style_notes": "Native macOS system stack avoids any remote font requests; high editorial weight contrast between bold dates/quotes and quiet metadata; tabular numerals enabled for timers and progress metrics."
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": ["4px", "8px", "12px", "16px", "20px", "24px", "32px", "40px"],
+      "content_density": "high spatial efficiency calibrated for complete zero-scroll containment at 1440×900 viewport",
+      "section_rhythm": "6–10px inside compact controls, 14–18px inside island cards, 12–16px between functional grid modules"
+    },
+    "layout": {
+      "grid_system": "adaptive 1440×900 desktop canvas with modular pane constraints",
+      "max_content_width": "1440px viewport bounded with 900px vertical envelope",
+      "columns": "sidebar 216–236px; primary work canvas 1204–1224px divided by variant architecture",
+      "gutter": "12–16px",
+      "breakpoints": ["980px", "1180px", "1440px", "1600px"],
+      "alignment_tendency": "asymmetric dynamic balance with strong focal anchors rather than uniform repetitive cards"
+    },
+    "shape": {
+      "border_radius": {
+        "small": "8px",
+        "medium": "12px",
+        "large": "18px",
+        "hero": "22px",
+        "bubble": "28px",
+        "pill": "999px"
+      },
+      "border_usage": "1px hairline tonal borders with subtle rgba opacity matching canvas warmth; avoids harsh bounding boxes",
+      "divider_style": "semi-transparent tonal dividers and soft card spacing rather than heavy horizontal rules"
+    },
+    "elevation": {
+      "shadow_style": "layered multi-stop ambient diffusion with tonal warmth; no harsh black drop-shadows",
+      "levels": {
+        "low": "0 2px 8px rgba(30, 37, 34, 0.04), 0 1px 2px rgba(30, 37, 34, 0.02)",
+        "medium": "0 8px 24px rgba(30, 37, 34, 0.07), 0 2px 6px rgba(30, 37, 34, 0.03)",
+        "high": "0 18px 48px rgba(30, 37, 34, 0.12), 0 4px 12px rgba(30, 37, 34, 0.04)",
+        "luminous_glow": "0 12px 32px rgba(93, 125, 104, 0.18), 0 2px 8px rgba(93, 125, 104, 0.10)"
+      },
+      "depth_cues": "dark emerald anchors recess in perceived depth while light floating bubble cards advance forward; translucent glowing arcs provide celestial layering"
+    },
+    "iconography": {
+      "style": "clean, modern, human-centric SVG line symbols with 1.8px consistent stroke and rounded joins",
+      "stroke_weight": "1.8px",
+      "size_scale": ["14px", "16px", "18px", "20px", "24px"],
+      "preferred_set": "bespoke inline SVG set matching the reference aesthetic",
+      "habit_symbols": {
+        "reading": "open-book-curved-pages",
+        "exercise": "dynamic-runner-silhouette",
+        "sleep": "crescent-moon-with-stars",
+        "water": "water-droplet-with-fluid-ripple",
+        "meditation": "zen-lotus-bloom",
+        "deep_work": "focus-crosshair-terminal",
+        "language": "dialogue-translation-spheres"
+      }
+    },
+    "motion": {
+      "easing": {
+        "enter": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "move": "cubic-bezier(0.25, 1, 0.5, 1)",
+        "pop": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      "duration_scale": {
+        "micro": "120–160ms",
+        "normal": "200–260ms",
+        "macro": "280–360ms"
+      },
+      "entrance_pattern": "opacity and scale(0.98 -> 1) emerging along natural optical flow",
+      "exit_pattern": "opacity and scale(1 -> 0.98) in 140ms",
+      "philosophy": "dynamic feedback is causal, instantaneous, and settled; never perpetual amusement or distracting continuous loops; transforms and opacities only",
+      "reduced_motion_behavior": "collapses transform/motion durations to 0s while preserving instantaneous color, background, border, and state feedback"
+    },
+    "components": {
+      "button_style": "tactile rounded pills with 0.97 active press scale, subtle hover luminescence, and 2px high-visibility focus ring",
+      "input_style": "borderless on writing sheets until focused; clear 1px tonal boundary on focus with soft inner glow",
+      "card_style": "floating island cards with organic bubble corner motifs, layered soft shadows, and subtle pointer-following specular gleam",
+      "navigation_pattern": "macOS dark emerald floating sidebar with active indicator highlight, collapse control, and stoic quote footer",
+      "modal_style": "not present in normal-mode Today viewport; prototype uses floating detached bottom switcher",
+      "list_style": "icon-first interactive horizontal rails and modular bento tiles",
+      "habit_rail_style": "horizontal rail where each habit card displays its own color badge, inline SVG icon, title, target, checkmark button, and reorders to the collection end on completion",
+      "focus_island_style": "luminous pale mint surface with circular progress ring, large tabular timer numerals, preset tags, and Start/Pause toggle",
+      "prototype_switcher_style": "floating glass pill anchored at bottom center, visually isolated from app UI, supporting mouse click and keyboard arrow navigation",
+      "component_notes": "All interactive states are keyboard accessible and have dedicated hover, focus, and press treatments. Today is a user-composable widget canvas: widgets snap to S/M/L sizes, can be reordered, hidden, and restored; the habit rail exposes explicit 4/8-card capacity rather than freeform resizing."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": ["welcoming", "calm", "luminous", "mindful", "tactile", "precise"],
+      "visual_metaphor": "an illuminated personal desk at dawn, combining dark grounding leather anchors with luminous parchment and organic instruments",
+      "era_influence": "contemporary high-end macOS application blending Swiss editorial craft with Scandinavian organic warmth",
+      "genre": "personal mindful productivity and reflective analytics",
+      "personality_traits": [
+        "grounded",
+        "encouraging",
+        "quietly luminous",
+        "serene",
+        "tactile"
+      ],
+      "adjectives": [
+        "atmospheric",
+        "dimensional",
+        "cohesive",
+        "inviting",
+        "restorative"
+      ]
+    },
+    "visual_language": {
+      "complexity": "moderate and purposeful",
+      "ornamentation": "subtle organic bubble cutouts, glowing concentric arcs, and delicate habit badges; zero gratuitous skeuomorphism",
+      "whitespace_usage": "generous breathing room calibrated to eliminate dead grey zones while fitting comfortably in 900px height",
+      "visual_weight_distribution": "60% anchor surfaces (cinematic day hero & focus island), 25% habit rhythm, 15% reflection & memory",
+      "focal_strategy": "tri-anchor hierarchy: dark cinematic hero establishes day context; horizontal habit rail provides immediate somatic momentum; luminous focus island invites deep flow",
+      "contrast_level": "rich dynamic range from deep emerald (#17231E) to crisp elevated white (#FFFFFF) against warm parchment (#F4F1EA)",
+      "texture_usage": "translucent concentric geometric arcs, smooth specular spotlight, and soft layered Gaussian blurs"
+    },
+    "composition": {
+      "hierarchy_method": "scale, tonal contrast, spatial isolation, and color luminance",
+      "balance_type": "dynamic asymmetry anchored by dark emerald focal cards",
+      "flow_direction": "sidebar navigation → top day anchor & mood → horizontal habit foundation → focus action & reflection",
+      "grouping_strategy": "spatial clusters grouped by daily intent (orientation, physical/mental foundations, focused work, mindful reflection)",
+      "negative_space_role": "serves as breathing room that guides optical flow and separates cognitive modes",
+      "variant_comparisons": {
+        "variant_a": "Luminous Daily Canvas: dark emerald sidebar, wide cinematic day hero with layered arcs and progress ring, asymmetric mood/memory card, a 4/8-capacity habit rail, and a composable widget board where Focus, Reflection, Weather, and Calendar snap to S/M/L sizes and can be reordered, hidden, or restored.",
+        "variant_b": "Orbit Desk: central day/progress core with surrounding satellite bubbles (mood, memory, focus, reflection) connected by an icon orbit rail; tactile and organic yet strictly utilitarian.",
+        "variant_c": "Editorial Bento: split composition with a narrow date/narrative journal column on the left and an irregular bento workspace on the right, pairing a dark hero tile with varied-span habit bento modules and an airy focus zone."
+      }
+    },
+    "imagery": {
+      "photo_treatment": "warm personal memory frame with 14px border radius, subtle inner shadow, and contextual time caption",
+      "illustration_style": "bespoke project-owned inline SVG line art depicting a calm autumn studio window with morning tea and notebook; zero stock photography",
+      "graphic_elements": "circular progress rings with stroke dashes, layered translucent concentric arcs, organic corner bubble shapes, and habit status badges",
+      "pattern_usage": "none; clean solid and tonal gradient fills only",
+      "image_shape": "rounded rectangles with 14px corner radius and smooth organic bubble accents"
+    },
+    "interaction_feel": {
+      "feedback_style": "instant tactile response (0.97 scale on active press), spring settling on habit check, and smooth FLIP reordering",
+      "hover_behavior": "subtle 1–4px surface lift, smooth shadow bloom, and pointer-following specular light highlight",
+      "transition_personality": "snappy, responsive, with organic settling easing; no stiff linear transitions",
+      "loading_style": "stable geometry reservation with instantaneous offline prototype rendering",
+      "microinteraction_density": "high quality, calm execution across every button, habit card, mood selector, and timer control"
+    },
+    "brand_voice_in_ui": {
+      "tone": "mindful, clear, reassuring, and dignified",
+      "formality": "approachable professional with quiet literary grace",
+      "cta_style": "short, affirmative verbs: 'Start focus', 'Pause focus', 'Adjust goals →'",
+      "empty_state_approach": "constructive invitations with soothing imagery and actionable hints",
+      "error_tone": "calm, gentle, non-judgmental guidance"
+    }
+  },
+  "visual_effects": {
+    "overview": {
+      "effect_intensity": "refined atmospheric glow and pointer spotlight",
+      "performance_tier": "hardware-accelerated CSS transforms and opacity only",
+      "fallback_strategy": "instantaneous state updates with zero loss of layout or functionality when motion is reduced",
+      "primary_technology": "vanilla CSS custom properties, SVG graphics, and lightweight vanilla DOM scripts"
+    },
+    "background_effects": {
+      "type": "subtle radial spotlight and layered tonal gradients",
+      "description": "Interactive pointer-aware specular highlight tracks cursor position over surface cards; subtle concentric arcs glow behind the dark hero",
+      "technology": "CSS radial-gradient with --mouse-x and --mouse-y CSS variables",
+      "params": {
+        "color_palette": ["rgba(255, 255, 255, 0.08)", "transparent"],
+        "speed": "instant pointer tracking",
+        "density": "single restrained highlight per card",
+        "opacity": "0.08 on dark, 0.04 on light",
+        "blend_mode": "screen"
+      }
+    },
+    "particle_systems": {
+      "enabled": false,
+      "type": "none",
+      "description": "No distracting particles; preserves quiet desktop focus",
+      "technology": "none",
+      "params": {
+        "count": 0,
+        "shape": "none",
+        "size_range": "0",
+        "movement_pattern": "none",
+        "color_behavior": "none",
+        "interaction": "none",
+        "spawn_area": "none"
+      }
+    },
+    "3d_elements": {
+      "enabled": true,
+      "type": "subtle-surface-tilt",
+      "description": "Subtle 1–4px lift and gentle 1–1.5deg perspective tilt on interactive cards for pointer-fine devices",
+      "technology": "CSS transform perspective and rotateX/rotateY",
+      "params": {
+        "renderer": "CSS 3D transforms",
+        "lighting": "specular radial gradient overlay",
+        "camera": "perspective(1200px)",
+        "materials": ["frosted glass", "tonal card", "emerald island"],
+        "geometry": ["rounded rectangular plates"],
+        "post_processing": ["layered box-shadows"],
+        "interaction_model": "pointermove dampening"
+      }
+    },
+    "shader_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "No WebGL shaders required; purely lightweight CSS rendering",
+      "technology": "none",
+      "params": {
+        "uniforms": {},
+        "vertex_manipulation": "none",
+        "fragment_output": "none",
+        "noise_type": "none",
+        "distortion": "none"
+      }
+    },
+    "scroll_effects": {
+      "parallax": {
+        "enabled": false,
+        "layers": 0,
+        "depth_range": "0",
+        "speed_curve": "none"
+      },
+      "scroll_triggered_animations": {
+        "enabled": false,
+        "trigger_points": [],
+        "animation_type": "none",
+        "scrub_behavior": "none"
+      },
+      "scroll_morphing": {
+        "enabled": false,
+        "description": "Completely zero-scroll viewport at 1440×900 Mac window resolution"
+      }
+    },
+    "text_effects": {
+      "type": "tabular-timer-tick-and-state-crossfade",
+      "description": "Focus timer numbers use monospace tabular figures to eliminate layout jitter during countdown; status labels crossfade smoothly",
+      "technology": "CSS font-variant-numeric: tabular-nums and opacity transitions",
+      "params": {
+        "split_strategy": "tabular numerals",
+        "animation_per_unit": "opacity and scale settling",
+        "stagger": "0ms",
+        "effect_style": "crisp and stable"
+      }
+    },
+    "cursor_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "Native macOS cursor is preserved with standard pointer/text affordances",
+      "params": {
+        "shape": "system",
+        "size": "system",
+        "blend_mode": "normal",
+        "trail": false,
+        "interaction_zone": "none"
+      }
+    },
+    "image_effects": {
+      "type": "memory-vignette-hover",
+      "description": "Photo memory illustration subtly warms with gentle 1.02 scale and subtle border glow on hover",
+      "technology": "CSS transform and box-shadow",
+      "params": {
+        "filter_pipeline": "none",
+        "hover_transform": "scale(1.015)",
+        "reveal_animation": "opacity 160ms",
+        "distortion_type": "none"
+      }
+    },
+    "glassmorphism_neumorphism": {
+      "enabled": true,
+      "style": "frosted prototype switcher pill and floating card overlays",
+      "params": {
+        "blur_radius": "16–24px",
+        "transparency": "12–18%",
+        "border_treatment": "1px translucent border rgba(255, 255, 255, 0.25)",
+        "shadow_type": "high diffused elevation",
+        "light_source_angle": "top"
+      }
+    },
+    "canvas_drawings": {
+      "enabled": false,
+      "type": "none",
+      "description": "All progress rings and charts rendered using vector SVGs for crisp HiDPI Retina fidelity",
+      "technology": "inline SVG",
+      "params": {
+        "draw_method": "SVG stroke-dashoffset",
+        "animation_loop": false,
+        "color_scheme": ["#5D7D68", "#E07A5F", "#3898EC", "#D9822B"],
+        "responsiveness": "vector viewBox scalability",
+        "interaction": "click and hover state triggers"
+      }
+    },
+    "svg_animations": {
+      "enabled": true,
+      "type": "check-draw-and-progress-morph",
+      "description": "Checkmark stroke draws dynamically upon habit completion; progress ring circumference updates smoothly; active focus ring pulses gently when running",
+      "params": {
+        "animation_method": "CSS stroke-dashoffset and transform",
+        "path_morphing": false,
+        "stroke_animation": "completion checkmark draw in 180ms",
+        "filter_effects": "restrained drop-shadow on active state"
+      }
+    },
+    "composite_notes": "The DNA unifies all three variants under a single cohesive aesthetic truth: life planning is an intimate, serene practice that demands deep visual warmth, grounded tactile depth, and delightful momentum—banishing the sterile grey administrative dashboard forever."
+  }
+}

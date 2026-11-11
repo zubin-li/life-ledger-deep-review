@@ -1,0 +1,5330 @@
+[
+ {
+  "file": "en-light-1440.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-1440-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-1180.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-1180-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-800.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-800-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-390.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 407,
+    "w": 358,
+    "h": 486,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 909,
+    "w": 358,
+    "h": 116,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1042,
+    "w": 358,
+    "h": 158,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 1215,
+    "w": 358,
+    "h": 185,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 1416,
+    "w": 358,
+    "h": 302,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 1734,
+    "w": 358,
+    "h": 150,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 1900,
+    "w": 358,
+    "h": 297,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 2212,
+    "w": 358,
+    "h": 404,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 2632,
+    "w": 358,
+    "h": 325,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-light-390-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 530,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 632,
+    "w": 358,
+    "h": 754,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 1402,
+    "w": 358,
+    "h": 357,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1775,
+    "w": 358,
+    "h": 398,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 2188,
+    "w": 358,
+    "h": 411,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 2615,
+    "w": 358,
+    "h": 526,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 3157,
+    "w": 358,
+    "h": 390,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 3563,
+    "w": 358,
+    "h": 537,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 4116,
+    "w": 358,
+    "h": 628,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 4760,
+    "w": 358,
+    "h": 549,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-1440.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-1440-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-1180.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-1180-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-800.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-800-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-390.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 407,
+    "w": 358,
+    "h": 486,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 909,
+    "w": 358,
+    "h": 116,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1042,
+    "w": 358,
+    "h": 158,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 1215,
+    "w": 358,
+    "h": 185,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 1416,
+    "w": 358,
+    "h": 302,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 1734,
+    "w": 358,
+    "h": 150,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 1900,
+    "w": 358,
+    "h": 297,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 2212,
+    "w": 358,
+    "h": 404,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 2632,
+    "w": 358,
+    "h": 325,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "en-dark-390-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 530,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 632,
+    "w": 358,
+    "h": 754,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 1402,
+    "w": 358,
+    "h": 357,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1775,
+    "w": 358,
+    "h": 398,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 2188,
+    "w": 358,
+    "h": 411,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 2615,
+    "w": 358,
+    "h": 526,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 3157,
+    "w": 358,
+    "h": 390,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 3563,
+    "w": 358,
+    "h": 537,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 4116,
+    "w": 358,
+    "h": 628,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 4760,
+    "w": 358,
+    "h": 549,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-1440.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-1440-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-1180.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-1180-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 117,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 117,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 280,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 442,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 442,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 768,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 768,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 930,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1093,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1093,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-800.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-800-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-390.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 309,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 411,
+    "w": 358,
+    "h": 497,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 924,
+    "w": 358,
+    "h": 119,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1060,
+    "w": 358,
+    "h": 158,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 1233,
+    "w": 358,
+    "h": 185,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 1434,
+    "w": 358,
+    "h": 302,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 1752,
+    "w": 358,
+    "h": 150,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 1918,
+    "w": 358,
+    "h": 285,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 2218,
+    "w": 358,
+    "h": 404,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 2638,
+    "w": 358,
+    "h": 330,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-light-390-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 542,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 644,
+    "w": 358,
+    "h": 774,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 1434,
+    "w": 358,
+    "h": 368,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1819,
+    "w": 358,
+    "h": 407,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 2241,
+    "w": 358,
+    "h": 419,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 2676,
+    "w": 358,
+    "h": 535,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 3227,
+    "w": 358,
+    "h": 399,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 3642,
+    "w": 358,
+    "h": 534,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 4191,
+    "w": 358,
+    "h": 637,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 4844,
+    "w": 358,
+    "h": 563,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-1440.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-1440-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-1180.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-1180-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 117,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 117,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 280,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 442,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 442,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 768,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 768,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 930,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1093,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1093,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-800.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-800-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-390.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 309,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 411,
+    "w": 358,
+    "h": 497,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 924,
+    "w": 358,
+    "h": 119,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1060,
+    "w": 358,
+    "h": 158,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 1233,
+    "w": 358,
+    "h": 185,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 1434,
+    "w": 358,
+    "h": 302,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 1752,
+    "w": 358,
+    "h": 150,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 1918,
+    "w": 358,
+    "h": 285,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 2218,
+    "w": 358,
+    "h": 404,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 2638,
+    "w": 358,
+    "h": 330,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "zh-dark-390-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 542,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 644,
+    "w": 358,
+    "h": 774,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 1434,
+    "w": 358,
+    "h": 368,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1819,
+    "w": 358,
+    "h": 407,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 2241,
+    "w": 358,
+    "h": 419,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 2676,
+    "w": 358,
+    "h": 535,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 3227,
+    "w": 358,
+    "h": 399,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 3642,
+    "w": 358,
+    "h": 534,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 4191,
+    "w": 358,
+    "h": 637,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 4844,
+    "w": 358,
+    "h": 563,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-1440.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-1440-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-1180.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-1180-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-800.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-800-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-390.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 407,
+    "w": 358,
+    "h": 486,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 909,
+    "w": 358,
+    "h": 116,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1042,
+    "w": 358,
+    "h": 158,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 1215,
+    "w": 358,
+    "h": 185,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 1416,
+    "w": 358,
+    "h": 302,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 1734,
+    "w": 358,
+    "h": 150,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 1900,
+    "w": 358,
+    "h": 281,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 2196,
+    "w": 358,
+    "h": 404,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 2616,
+    "w": 358,
+    "h": 325,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-light-390-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 518,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 620,
+    "w": 358,
+    "h": 743,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 1379,
+    "w": 358,
+    "h": 345,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1740,
+    "w": 358,
+    "h": 386,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 2143,
+    "w": 358,
+    "h": 399,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 2558,
+    "w": 358,
+    "h": 515,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 3088,
+    "w": 358,
+    "h": 379,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 3483,
+    "w": 358,
+    "h": 509,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 4008,
+    "w": 358,
+    "h": 616,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 4641,
+    "w": 358,
+    "h": 537,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-1440.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-1440-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 214,
+    "y": 82,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 1014,
+    "y": 82,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 1014,
+    "y": 282,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 214,
+    "y": 482,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 1014,
+    "y": 482,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 214,
+    "y": 882,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 1014,
+    "y": 882,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 1014,
+    "y": 1082,
+    "w": 380,
+    "h": 180,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 214,
+    "y": 1282,
+    "w": 780,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 1014,
+    "y": 1282,
+    "w": 380,
+    "h": 380,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-1180.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-1180-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 82,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 847,
+    "y": 82,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 847,
+    "y": 245,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 407,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 847,
+    "y": 407,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 733,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 847,
+    "y": 733,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 847,
+    "y": 895,
+    "w": 305,
+    "h": 143,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1058,
+    "w": 631,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 847,
+    "y": 1058,
+    "w": 305,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-800.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-800-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 196,
+    "y": 107,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 196,
+    "y": 405,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 196,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 494,
+    "y": 703,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 196,
+    "y": 852,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 196,
+    "y": 1150,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 494,
+    "y": 1150,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 494,
+    "y": 1299,
+    "w": 278,
+    "h": 129,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 196,
+    "y": 1448,
+    "w": 576,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 196,
+    "y": 1746,
+    "w": 278,
+    "h": 278,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-390.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 305,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 407,
+    "w": 358,
+    "h": 486,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 909,
+    "w": 358,
+    "h": 116,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1042,
+    "w": 358,
+    "h": 158,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 1215,
+    "w": 358,
+    "h": 185,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 1416,
+    "w": 358,
+    "h": 302,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 1734,
+    "w": 358,
+    "h": 150,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 1900,
+    "w": 358,
+    "h": 281,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 2196,
+    "w": 358,
+    "h": 404,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 2616,
+    "w": 358,
+    "h": 325,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ },
+ {
+  "file": "de-dark-390-edit.png",
+  "errors": [],
+  "docOverflowX": false,
+  "geo": [
+   {
+    "m": "summary",
+    "x": 16,
+    "y": 86,
+    "w": 358,
+    "h": 518,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "habits",
+    "x": 16,
+    "y": 620,
+    "w": 358,
+    "h": 743,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "mood",
+    "x": 16,
+    "y": 1379,
+    "w": 358,
+    "h": 345,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "inspectorMoodHeading"
+    ]
+   },
+   {
+    "m": "focus",
+    "x": 16,
+    "y": 1740,
+    "w": 358,
+    "h": 386,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "weather",
+    "x": 16,
+    "y": 2143,
+    "w": 358,
+    "h": 399,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "heatmap",
+    "x": 16,
+    "y": 2558,
+    "w": 358,
+    "h": 515,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "context",
+    "x": 16,
+    "y": 3088,
+    "w": 358,
+    "h": 379,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": [
+     "sr-only"
+    ]
+   },
+   {
+    "m": "reflection",
+    "x": 16,
+    "y": 3483,
+    "w": 358,
+    "h": 509,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "calendar",
+    "x": 16,
+    "y": 4008,
+    "w": 358,
+    "h": 616,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   },
+   {
+    "m": "photos",
+    "x": 16,
+    "y": 4641,
+    "w": 358,
+    "h": 537,
+    "leaks": [],
+    "overlaps": [],
+    "clipped": []
+   }
+  ]
+ }
+]
