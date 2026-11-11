@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "name": "Life Ledger — Reference Dashboard Motion DNA",
+    "description": "Design and motion DNA extracted from the user-provided 188.7-second dashboard-menu reference video. Use principles and interaction behavior, not literal branding or a wholesale copy of all six menu patterns.",
+    "source_references": [
+      "/Users/ashan/Downloads/01eac2408715336e01037001a106d8b8a7_521.mp4",
+      "contact-sheet-10s.jpg",
+      "01-sliding-highlight.jpg",
+      "02-inline-submenu.jpg",
+      "03-mega-panel.jpg",
+      "04-floating-dock.jpg",
+      "05-command-palette.jpg",
+      "06-status-badges.jpg"
+    ],
+    "created_at": "2026-10-05"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "neutral foundation with one contextual accent per state",
+      "primary": {"hex": "#242522", "role": "ink and active chrome"},
+      "secondary": {"hex": "#5D7D68", "role": "calm Life Ledger identity and positive completion"},
+      "accent": {"hex": "#D9EE68", "role": "rare high-attention selection and live-state accent inspired by the reference"},
+      "neutral": {
+        "scale": ["#FAF9F6", "#F4F2ED", "#E9E6DE", "#D7D4CC", "#92958D", "#6F716B", "#242522"],
+        "usage": "warm canvas, quiet cards, separators, secondary labels, primary ink"
+      },
+      "semantic": {"success": "#5D7D68", "warning": "#B7793D", "error": "#B35C50", "info": "#6E8C98"},
+      "surface": {"background": "#F4F2ED", "card": "#FAF9F6", "elevated": "#FFFFFF"},
+      "contrast_strategy": "dark-on-warm-light with a dark navigation rail; accent is sparse and never carries meaning alone"
+    },
+    "typography": {
+      "type_scale": {
+        "display": {"size": "32px", "weight": 650, "line_height": 1.05, "tracking": "-0.025em"},
+        "heading_1": {"size": "26px", "weight": 650, "line_height": 1.15, "tracking": "-0.02em"},
+        "heading_2": {"size": "20px", "weight": 620, "line_height": 1.2, "tracking": "-0.015em"},
+        "heading_3": {"size": "16px", "weight": 600, "line_height": 1.3, "tracking": "-0.01em"},
+        "body": {"size": "14px", "weight": 400, "line_height": 1.55, "tracking": "0"},
+        "body_small": {"size": "13px", "weight": 400, "line_height": 1.45, "tracking": "0"},
+        "caption": {"size": "12px", "weight": 500, "line_height": 1.35, "tracking": "0"},
+        "overline": {"size": "11px", "weight": 650, "line_height": 1.25, "tracking": "0.04em"}
+      },
+      "font_families": {
+        "heading": "-apple-system, BlinkMacSystemFont, SF Pro Display, PingFang SC, sans-serif",
+        "body": "-apple-system, BlinkMacSystemFont, SF Pro Text, PingFang SC, sans-serif",
+        "mono": "SFMono-Regular, ui-monospace, monospace"
+      },
+      "font_style_notes": "Editorial scale contrast with restrained headings; tabular figures for timers and analytics; no tiny decorative uppercase copy."
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": ["4px", "8px", "12px", "16px", "20px", "24px", "32px", "40px"],
+      "content_density": "comfortable but information-efficient",
+      "section_rhythm": "8–12px inside controls, 16–20px inside cards, 24–32px between functional zones"
+    },
+    "layout": {
+      "grid_system": "12-column adaptive dashboard grid",
+      "max_content_width": "none inside the native window; use pane constraints and readable measures",
+      "columns": "sidebar 196–236px; primary canvas 7–8 columns; contextual rail 4–5 columns; stack secondary content below 1080px",
+      "gutter": "12–16px",
+      "breakpoints": ["980px", "1180px", "1440px", "1600px"],
+      "alignment_tendency": "strict grid with asymmetrical emphasis on the current task"
+    },
+    "shape": {
+      "border_radius": {"small": "7px", "medium": "10px", "large": "14px", "pill": "999px"},
+      "border_usage": "subtle 1px separators and state outlines; avoid card soup",
+      "divider_style": "hairline semantic separators, draggable pane dividers with larger invisible hit area"
+    },
+    "elevation": {
+      "shadow_style": "soft diffused only for floating command palette, menus and transient overlays",
+      "levels": {"low": "0 1px 2px rgba(36,37,34,.06)", "medium": "0 10px 28px rgba(36,37,34,.14)", "high": "0 22px 56px rgba(36,37,34,.20)"},
+      "depth_cues": "overlap, scrim/blur for modal command surfaces, borders and tonal surface shifts for inline content"
+    },
+    "iconography": {
+      "style": "consistent rounded outline symbols with filled selected state only where useful",
+      "stroke_weight": "1.7–1.9px",
+      "size_scale": ["14px", "16px", "18px", "20px"],
+      "preferred_set": "existing local Lucide/SF-symbol-like SVG set"
+    },
+    "motion": {
+      "easing": {"enter": "cubic-bezier(0.22,1,0.36,1)", "move": "cubic-bezier(0.25,1,0.5,1)", "drawer": "cubic-bezier(0.32,0.72,0,1)"},
+      "duration_scale": {"micro": "100–160ms", "normal": "180–240ms", "macro": "240–320ms"},
+      "entrance_pattern": "emerge from trigger, transform/opacity only, preserve shared-element continuity",
+      "exit_pattern": "same spatial origin, 60–70% of entrance duration",
+      "philosophy": "dynamic means immediate, causal and continuous—not constant decoration"
+    },
+    "components": {
+      "button_style": "quiet ghost/tonal controls with instant hover, subtle 0.97 press scale, visible focus ring and clear selected state",
+      "input_style": "native-feeling fields with visible labels, compact radius, high-contrast focus and no placeholder-only semantics",
+      "card_style": "few purposeful dashboard modules with varied spans, explicit hierarchy and stable reserved geometry",
+      "navigation_pattern": "persistent macOS sidebar with one sliding active highlight, optional single inline expansion, plus command palette",
+      "modal_style": "anchored popover from trigger or centered command palette with 45–55% scrim and restrained blur",
+      "list_style": "full-row targets with persistent selection, contextual actions on hover/focus and keyboard parity",
+      "component_notes": "Do not combine sidebar, top mega-nav and floating dock at the same hierarchy. Select one coherent navigation system."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": ["alive", "precise", "calm", "contemporary", "approachable"],
+      "visual_metaphor": "a responsive personal control surface whose pieces reorganize around the current task",
+      "era_influence": "contemporary productivity dashboard with editorial Swiss grid discipline",
+      "genre": "personal analytics and reflection workspace",
+      "personality_traits": ["responsive", "clear", "quietly confident", "helpful", "meticulous"],
+      "adjectives": ["fluid", "modular", "tactile", "balanced", "private"]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "subtle state accents only",
+      "whitespace_usage": "functional breathing room; no empty deserts and no cramped inspector",
+      "visual_weight_distribution": "primary task 60–70%, context/analytics 30–40%",
+      "focal_strategy": "single current-task focal zone with secondary modules progressively disclosed",
+      "contrast_level": "clear surface and type hierarchy without harsh black/yellow domination",
+      "texture_usage": "none"
+    },
+    "composition": {
+      "hierarchy_method": "span, scale, density and spatial isolation before color",
+      "balance_type": "asymmetric but mathematically aligned",
+      "flow_direction": "sidebar selection → primary work canvas → contextual action/insight rail",
+      "grouping_strategy": "few large functional zones; related micro-controls share one surface",
+      "negative_space_role": "separates tasks and supports reading, never substitutes for missing content"
+    },
+    "imagery": {
+      "photo_treatment": "personal photos use stable 4:3/1:1 frames, object-fit cover, meaningful empty state and contextual editing",
+      "illustration_style": "none by default; use functional charts and familiar symbols",
+      "graphic_elements": "sparklines, heatmaps, progress marks and restrained status dots",
+      "pattern_usage": "none",
+      "image_shape": "10–14px rounded rectangles aligned to the grid"
+    },
+    "interaction_feel": {
+      "feedback_style": "immediate state change plus short settling motion and reversible feedback",
+      "hover_behavior": "highlight appears instantly; active geometry glides between targets; contextual label/action reveals without reflow",
+      "transition_personality": "snappy start, soft landing, slight spring only for rare emphasis",
+      "loading_style": "reserve geometry; show local skeleton/progress only after 300ms",
+      "microinteraction_density": "moderate and uniform across all primary workflows"
+    },
+    "brand_voice_in_ui": {
+      "tone": "calm and factual",
+      "formality": "friendly professional",
+      "cta_style": "short direct verbs",
+      "empty_state_approach": "explain what will appear and provide one useful next action",
+      "error_tone": "state cause, preserve data, give one recovery action"
+    }
+  },
+  "visual_effects": {
+    "overview": {"effect_intensity": "subtle-accent", "performance_tier": "lightweight", "fallback_strategy": "instant state transitions with no loss of meaning", "primary_technology": "CSS transitions plus small stateful JavaScript"},
+    "background_effects": {"type": "none", "description": "Static semantic surfaces", "technology": "CSS", "params": {"color_palette": ["#F4F2ED", "#FAF9F6"], "speed": "0", "density": "0", "opacity": "1", "blend_mode": "normal"}},
+    "particle_systems": {"enabled": false, "type": "none", "description": "No particles", "technology": "none", "params": {"count": 0, "shape": "none", "size_range": "0", "movement_pattern": "none", "color_behavior": "none", "interaction": "none", "spawn_area": "none"}},
+    "3d_elements": {"enabled": false, "type": "none", "description": "No 3D", "technology": "none", "params": {"renderer": "none", "lighting": "none", "camera": "none", "materials": [], "geometry": [], "post_processing": [], "interaction_model": "none"}},
+    "shader_effects": {"enabled": false, "type": "none", "description": "No shaders", "technology": "none", "params": {"uniforms": {}, "vertex_manipulation": "none", "fragment_output": "none", "noise_type": "none", "distortion": "none"}},
+    "scroll_effects": {"parallax": {"enabled": false, "layers": 0, "depth_range": "0", "speed_curve": "none"}, "scroll_triggered_animations": {"enabled": false, "trigger_points": [], "animation_type": "none", "scrub_behavior": "none"}, "scroll_morphing": {"enabled": false, "description": "No scroll morphing in a productivity tool"}},
+    "text_effects": {"type": "number-roll-and-crossfade", "description": "Only changing counters may roll vertically; changing labels crossfade in place", "technology": "CSS transform/opacity", "params": {"split_strategy": "by-value", "animation_per_unit": "old value up, new value from below", "stagger": "0ms", "effect_style": "restrained"}},
+    "cursor_effects": {"enabled": false, "type": "none", "description": "Use native cursor", "params": {"shape": "system", "size": "system", "blend_mode": "normal", "trail": false, "interaction_zone": "none"}},
+    "image_effects": {"type": "contextual-hover", "description": "Photos gain a quiet overlay and action affordance on hover/focus", "technology": "CSS", "params": {"filter_pipeline": "none", "hover_transform": "scale(1.01) max", "reveal_animation": "opacity 120ms", "distortion_type": "none"}},
+    "glassmorphism_neumorphism": {"enabled": true, "style": "frosted command surface only", "params": {"blur_radius": "12–18px", "transparency": "8–12%", "border_treatment": "1px semantic separator", "shadow_type": "medium diffused", "light_source_angle": "top"}},
+    "canvas_drawings": {"enabled": false, "type": "none", "description": "Charts use existing SVG/DOM implementation", "technology": "none", "params": {"draw_method": "none", "animation_loop": false, "color_scheme": [], "responsiveness": "N/A", "interaction": "none"}},
+    "svg_animations": {"enabled": true, "type": "state-transition", "description": "Chevron rotation, check stroke and selected icon fill only", "params": {"animation_method": "CSS transform/stroke", "path_morphing": false, "stroke_animation": "completion check only", "filter_effects": "none"}},
+    "composite_notes": "The six reference patterns are a menu-design catalogue, not a requirement to ship six concurrent navigations. Life Ledger should borrow the sliding active geometry, inline disclosure, command palette, status feedback and numeric transitions. A floating dock or top mega panel may be prototyped only if it clearly improves a concrete workflow; do not mix them with the persistent sidebar."
+  }
+}
