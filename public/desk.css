@@ -1,0 +1,292 @@
+/* Life Ledger for Mac — desk layout (Codex-style panes). Every rule is scoped to html[data-mac]. */
+
+html[data-mac] {
+  --desk-inspector-w: 360px;
+}
+
+/* ---- day inspector: docked right pane inside the shell ---- */
+html[data-mac] #drawerBackdrop {
+  display: none !important;
+}
+
+html[data-mac] .app-shell {
+  position: relative;
+}
+
+html[data-mac] #dayDrawer {
+  display: none;
+  grid-column: 3;
+  grid-row: 1;
+  position: relative;
+  top: auto;
+  right: auto;
+  width: var(--desk-inspector-w);
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  transform: none;
+  box-shadow: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  overflow: hidden;
+  z-index: 5;
+}
+
+html[data-mac] #dayDrawer.open {
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-mac].desk-inspector .app-shell {
+  grid-template-columns: var(--mac-sidebar) minmax(0, 1fr) var(--desk-inspector-w);
+}
+
+html[data-mac].desk-inspector body.sidebar-collapsed .app-shell {
+  grid-template-columns: 68px minmax(0, 1fr) var(--desk-inspector-w);
+}
+
+html[data-mac] #dayDrawer > header {
+  flex: 0 0 auto;
+}
+
+html[data-mac] #dayDrawer .drawer-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+html[data-mac] #dayDrawer > footer {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1179px) {
+  html[data-mac].desk-inspector .app-shell {
+    grid-template-columns: var(--mac-sidebar) minmax(0, 1fr);
+  }
+
+  html[data-mac].desk-inspector body.sidebar-collapsed .app-shell {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+
+  html[data-mac].desk-inspector #dayDrawer.open {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    box-shadow: -8px 0 28px rgba(24, 40, 56, 0.12);
+  }
+
+  html[data-mac][data-theme="dark"].desk-inspector #dayDrawer.open {
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* ---- main pane: fit-to-window list-detail views ---- */
+html[data-mac] .main-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+html[data-mac] .main-content > .topbar {
+  flex-shrink: 0;
+}
+
+html[data-mac] .main-content:has(#timelineView.active[data-journal-layout="timeline"]),
+html[data-mac] .main-content:has(#habitsView.active) {
+  overflow: hidden;
+}
+
+html[data-mac] #timelineView.active[data-journal-layout="timeline"],
+html[data-mac] #habitsView.active {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Timeline: list + detail */
+html[data-mac] #timelineView .view-scroll-header {
+  display: none;
+}
+
+html[data-mac] #timelineView.active[data-journal-layout="timeline"] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+html[data-mac] #timelineView.active[data-journal-layout="timeline"] #journalFeedPane {
+  display: none;
+}
+
+html[data-mac] #timelineView.active[data-journal-layout="timeline"] .timeline-layout {
+  display: grid !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+
+html[data-mac] #timelineView.active[data-journal-layout="timeline"] .timeline-sidebar {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-right: 1px solid var(--line);
+  padding: 14px 12px 18px;
+}
+
+html[data-mac] #timelineView.active[data-journal-layout="timeline"] #timelineDetail {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 24px 28px;
+}
+
+/* Habits: list + inspector (keep two columns on Mac below the web breakpoint) */
+html[data-mac] #habitsView.active {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, var(--desk-inspector-w)) !important;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  html[data-mac] #habitsView.active {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px) !important;
+  }
+}
+
+html[data-mac] #habitsView.active .habit-settings-table {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-self: stretch;
+}
+
+html[data-mac] #habitsView.active #habitInspectorForm {
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-self: stretch;
+}
+
+html[data-mac] #habitsView .habit-settings-row.selected {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: -2px;
+}
+
+/* ---- sidebar: recent days ---- */
+html[data-mac] .sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-mac] .desk-recent-days {
+  margin: 14px 0 0;
+  padding: 0 4px;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-mac] .desk-recent-heading {
+  margin: 0 0 8px;
+  padding: 0 6px;
+  font: 650 10px/1.3 var(--font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+html[data-mac] .desk-recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+html[data-mac] .desk-recent-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font: 500 12px/1.35 var(--font-body);
+  text-align: left;
+  cursor: default;
+}
+
+html[data-mac] .desk-recent-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html[data-mac] .desk-recent-row[aria-current="date"] {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+html[data-mac] .desk-recent-date {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-mac] .desk-recent-progress {
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+}
+
+html[data-mac] .desk-recent-mood {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+html[data-mac] .desk-recent-mood.mood-good {
+  background: #e8b020;
+}
+
+html[data-mac] .desk-recent-mood.mood-calm {
+  background: #6aab7a;
+}
+
+html[data-mac] .desk-recent-mood.mood-low {
+  background: #5a9fd4;
+}
+
+html[data-mac] body.sidebar-collapsed .desk-recent-days {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-mac] #dayDrawer {
+    transition: none !important;
+  }
+
+  html[data-mac].desk-inspector .app-shell {
+    transition: none;
+  }
+}
