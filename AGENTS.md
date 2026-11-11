@@ -11,3 +11,7 @@
 # Web Today requirements
 
 - Before any Web Today change, read `/Users/ashan/Documents/Codex/ll-361-blank-fix/.hermes/requirements/REQUIREMENTS.md` (the single requirements ledger, every row cites the user's words). New user feedback is added there first; every delivery reports the whole table, not only the latest item.
+
+# Git safety
+
+- Commit and push every completed local change to the current feature branch immediately; work must never exist only on this machine. Never commit to or push `main`, merge, rebase, force-push, rewrite history, tag or release without explicit user authorization.
