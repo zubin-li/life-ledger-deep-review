@@ -28,7 +28,8 @@
     "desktop:check": "node --test tests/desktop-*.test.mjs",
     "desktop:build": "tauri build",
     "desktop:widget:build": "bash scripts/build-widget.sh",
-    "desktop:widget:sanity": "node scripts/swift-static-sanity-check.mjs"
+    "desktop:widget:sanity": "node scripts/swift-static-sanity-check.mjs",
+    "prototype:361": "node scripts/serve-prototype-361.mjs"
   },
   "cloudflare": {
     "bindings": {

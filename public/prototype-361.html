@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN" data-proto-theme="dark" data-variant="a" class="proto-motion-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Life Ledger · 3.6.1 design study</title>
+    <link rel="icon" href="./assets/app-icon.svg" type="image/svg+xml" />
+    <script>
+      (() => {
+        const theme = sessionStorage.getItem("proto-361-theme") || "dark";
+        document.documentElement.dataset.protoTheme = theme;
+        const motion = sessionStorage.getItem("proto-361-motion") || "full";
+        document.documentElement.classList.remove("proto-motion-full", "proto-motion-reduced", "proto-motion-off");
+        if (motion === "reduced") document.documentElement.classList.add("proto-motion-reduced");
+        else if (motion === "off") document.documentElement.classList.add("proto-motion-off");
+        else document.documentElement.classList.add("proto-motion-full");
+        const v = (new URLSearchParams(location.search).get("variant") || "a").toLowerCase();
+        document.documentElement.dataset.variant = ["a", "b", "c"].includes(v) ? v : "a";
+      })();
+    </script>
+    <link rel="stylesheet" href="./prototype-361.css" />
+  </head>
+  <body>
+    <div id="protoApp" class="proto-app" data-saving="false"></div>
+    <div id="protoToast" class="proto-toast" role="status" aria-live="polite" hidden></div>
+    <nav id="protoSwitcher" class="proto-switcher" aria-label="Design variant">
+      <button type="button" class="proto-switcher-btn" data-switch="prev" aria-label="Previous variant">←</button>
+      <span class="proto-switcher-label" id="protoSwitcherLabel"></span>
+      <button type="button" class="proto-switcher-btn" data-switch="next" aria-label="Next variant">→</button>
+    </nav>
+    <aside id="protoState" class="proto-state-panel" hidden>
+      <header>
+        <strong>State</strong>
+        <button type="button" id="protoStateClose" aria-label="Close">×</button>
+      </header>
+      <pre id="protoStateBody"></pre>
+    </aside>
+    <script type="module" src="./prototype-361.js"></script>
+  </body>
+</html>
