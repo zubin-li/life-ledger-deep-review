@@ -1,2 +1,2 @@
-新用户默认首页按你的排版；未写月度复盘时保持空白；时间轴默认日度；照片库显示所有月份；心情照片可粘贴并调整取景；暗色心情图标恢复颜色。
-Default Today layout follows your arrangement; monthly review stays empty until you write one; timeline opens on Daily; all photo months shown; paste and frame day photos; dark-mode mood icons coloured.
+收起侧边栏时，左上角三个窗口按钮完整落在侧栏内并居中，不再压出侧栏边缘。
+With the sidebar collapsed, the three window buttons sit centred inside it instead of hanging over its edge.
