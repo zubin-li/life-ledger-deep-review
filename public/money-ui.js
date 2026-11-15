@@ -310,15 +310,14 @@
       : t("还没有订阅或固定开销", "No subscriptions or fixed costs yet", "Noch keine Abos oder Fixkosten");
     const cands = core().detectRecurringCandidates(ledger, { months: 3, today });
     return `<article class="module-card money-card" data-module="money-fixed">
-      <header class="module-header"><div><span class="kicker">${t("订阅与固定开销", "Subscriptions & fixed costs", "Abos & Fixkosten")}</span><h3 class="module-title">${esc(title)}</h3></div>
-        <button class="secondary-button money-sub-add" type="button" data-recurring-add>＋ ${t("添加", "Add", "Hinzufügen")}</button></header>
+      <header class="module-header"><div><span class="kicker">${t("订阅与固定开销", "Subscriptions & fixed costs", "Abos & Fixkosten")}</span><h3 class="module-title">${esc(title)}</h3></div></header>
       ${recs.length ? `<div class="money-subs">${recs.map(r => `<button type="button" class="money-sub" data-recurring-id="${esc(r.id)}" style="--c:${catColor(ledger, r.categoryId)}">
         <strong>${esc(r.label || r.note || catName(ledger, r.categoryId))}</strong>
         <p class="p money-num">${esc(money(-r.amountMinor, r.currency))}</p>
         <small>${r.cadence === "weekly" ? t("每周", "Weekly", "Wöchentlich") : t("每月", "Monthly", "Monatlich")} · ${t("下次", "next", "nächste")} ${esc(dayLabel(nextDue(r, today), false))}</small>
       </button>`).join("")}</div>
-      <div class="money-sub-total"><span>${t("按月自动计入支出，在每日图中默认不计入。", "Posted monthly; left out of the daily chart by default.", "Monatlich gebucht; im Tagesdiagramm standardmäßig ausgeblendet.")}</span><span>${t("一年合计", "Per year", "Pro Jahr")} <b class="money-num">${esc(money(total * 12, null, 0))}</b></span></div>`
-      : `<p class="money-empty">${t("点「添加」创建房租或订阅。", "Tap Add for rent or a subscription.", "Tippe auf Hinzufügen für Miete oder Abos.")}</p>`}
+      <div class="money-sub-total"><span>${t("点开看收款方和每次扣款", "Open one to see who gets paid and every payment", "Antippen: Empfänger und alle Zahlungen")}</span><span>${t("一年合计", "Per year", "Pro Jahr")} <b class="money-num">${esc(money(total * 12, null, 0))}</b></span></div>`
+      : `<p class="money-empty">${t("导入银行账单后，这里会列出订阅和固定开销。", "Import a bank statement and your subscriptions and fixed costs show up here.", "Nach dem Import eines Kontoauszugs erscheinen hier Abos und Fixkosten.")}</p>`}
       ${cands.length ? `<div class="money-cand-block"><h4 class="money-cand-title">${t("可能的订阅", "Possible subscriptions", "Mögliche Abos")}</h4>
         <ul class="money-cand-list">${cands.map(c => `<li class="money-cand"><span><strong>${esc(c.label)}</strong><small class="money-num">${esc(money(-c.amountMinor, c.currency))}</small></span>
           <span class="money-cand-actions"><button type="button" class="secondary-button" data-cand-add="${esc(c.merchantKey)}">${t("添加", "Add", "Hinzufügen")}</button>
@@ -1497,21 +1496,6 @@
     text.textContent = `1 ${ui.sheet.currency} = ${fx.rate.toFixed(4)} ${target} · ${src} · ${dayLabel(fx.rateDate, false)}${amt ? ` → ${money(Math.round(amt * fx.rate), target)}` : ""}`;
   }
 
-  function recurringCategoryOptions(ledger, selectedId) {
-    const opt = id => {
-      const c = ledger.categories.find(x => x.id === id);
-      return c && !c.isGroup ? `<option value="${esc(id)}" ${id === selectedId ? "selected" : ""}>${esc(catName(ledger, id))}</option>` : "";
-    };
-    let html = "";
-    for (const g of ledger.categories.filter(c => c.isGroup && !c.archived)) {
-      const kids = ledger.categories.filter(c => !c.isGroup && !c.archived && c.parentId === g.id && c.kind === "expense");
-      if (kids.length) html += `<optgroup label="${esc(catName(ledger, g.id))}">${kids.map(c => opt(c.id)).join("")}</optgroup>`;
-    }
-    const rest = ledger.categories.filter(c => !c.isGroup && !c.archived && c.kind === "expense" && !c.parentId);
-    html += rest.map(c => opt(c.id)).join("");
-    return html || opt(selectedId);
-  }
-
   function openEditSheet(txId) {
     closeImportWizard();
     const ledger = ledgerState();
@@ -1576,88 +1560,63 @@
     render();
   }
 
+  // Subscriptions / fixed costs come from bank data: the sheet shows facts (payee, amount, every payment), no editing.
+  function payeeOf(tx) {
+    const note = (tx?.note || "").trim();
+    return note.includes(" — ") ? note.split(" — ")[0].trim() : "";
+  }
+
   function openRecurringSheet(recId) {
     closeImportWizard();
     const ledger = ledgerState();
-    const existing = recId ? ledger.recurring.find(r => r.id === recId) : null;
-    const rec = existing || {
-      id: "", label: "", categoryId: ledger.categories.find(c => c.kind === "expense" && !c.archived && !c.isGroup)?.id || "",
-      amountMinor: -1000, currency: ledger.settings.defaultCurrency, dayOfMonth: 1, cadence: "monthly", weekday: 1, note: "",
-      accountId: ledger.accounts.find(a => !a.archived)?.id || "",
-    };
-    ui.editRecId = rec.id || "new";
+    const rec = ledger.recurring.find(r => r.id === recId);
+    if (!rec) return;
     ui.sheetHost = "recurring";
-    const cadence = rec.cadence === "weekly" ? "weekly" : "monthly";
-    const amountDisplay = (Math.abs(rec.amountMinor) / 100).toFixed(2).replace(".", ",");
     const today = ctx.iso(new Date());
-    const posted = rec.id ? ledger.transactions.filter(tx => tx.recurringId === rec.id || (tx.categoryId === rec.categoryId && tx.amountMinor === rec.amountMinor)) : [];
-    const yr = (cadence === "weekly" ? Math.round((-rec.amountMinor * 52)) : -rec.amountMinor * 12);
+    const posted = ledger.transactions
+      .filter(tx => tx.recurringId === rec.id || (tx.categoryId === rec.categoryId && tx.amountMinor === rec.amountMinor))
+      .sort((x, y) => y.date.localeCompare(x.date));
+    const weekly = rec.cadence === "weekly";
+    const perYear = weekly ? -rec.amountMinor * 52 : -rec.amountMinor * 12;
+    const paidTotal = posted.reduce((sum, tx) => sum - tx.amountMinor, 0);
+    const payee = rec.payee || posted.map(payeeOf).find(Boolean) || "";
+    const account = ledger.accounts.find(x => x.id === (posted[0]?.accountId || rec.accountId))?.name || "";
+    const row = (label, value) => value ? `<div class="money-ios-row"><span class="money-ios-label">${esc(label)}</span><span class="money-ios-control money-num">${esc(value)}</span></div>` : "";
     const root_ = sheetEl();
-    const wdOpts = [0, 1, 2, 3, 4, 5, 6].map(wd => {
-      const names = [t("周日", "Sun", "So"), t("周一", "Mon", "Mo"), t("周二", "Tue", "Di"), t("周三", "Wed", "Mi"), t("周四", "Thu", "Do"), t("周五", "Fri", "Fr"), t("周六", "Sat", "Sa")];
-      return `<option value="${wd}" ${(rec.weekday ?? 1) === wd ? "selected" : ""}>${names[wd]}</option>`;
-    }).join("");
     root_.innerHTML = `<div class="money-scrim" data-close-sheet></div>
-      <div class="money-sheet" role="dialog" aria-modal="true"><h3>${existing ? t("编辑订阅", "Edit subscription", "Abo bearbeiten") : t("新建订阅", "New subscription", "Neues Abo")}</h3>
-        <form class="money-sheet-form" data-rec-form>
-          <label class="money-field"><span>${t("名称", "Name", "Name")}</span><input name="label" value="${esc(rec.label || "")}"></label>
-          <label class="money-field"><span>${t("金额", "Amount", "Betrag")}</span><input name="amount" inputmode="decimal" value="${esc(amountDisplay)}"></label>
-          <label class="money-field"><span>${t("频率", "Cadence", "Rhythmus")}</span><select name="cadence"><option value="monthly" ${cadence === "monthly" ? "selected" : ""}>${t("每月", "Monthly", "Monatlich")}</option><option value="weekly" ${cadence === "weekly" ? "selected" : ""}>${t("每周", "Weekly", "Wöchentlich")}</option></select></label>
-          <label class="money-field money-rec-dom" ${cadence === "weekly" ? "hidden" : ""}><span>${t("每月几号", "Day of month", "Tag im Monat")}</span><input name="day" type="number" min="1" max="28" value="${rec.dayOfMonth || 1}"></label>
-          <label class="money-field money-rec-wd" ${cadence !== "weekly" ? "hidden" : ""}><span>${t("星期几", "Weekday", "Wochentag")}</span><select name="weekday">${wdOpts}</select></label>
-          <label class="money-field"><span>${t("类别", "Category", "Kategorie")}</span><select name="category">${recurringCategoryOptions(ledger, rec.categoryId)}</select></label>
-          <label class="money-field"><span>${t("备注", "Note", "Notiz")}</span><input name="note" value="${esc(rec.note || "")}"></label>
-          ${existing ? `<p class="money-hint">${t("下次", "Next due", "Nächste")}: ${esc(dayLabel(nextDue(rec, today), false))} · ${t("一年", "Per year", "Pro Jahr")} ${esc(money(yr, null, 0))}</p>
-            <ul class="money-rows money-rec-posted">${posted.slice(0, 8).map(tx => txRow(ledger, tx)).join("") || `<li class="money-hint">${t("暂无已入账", "No posted payments yet", "Noch keine Buchungen")}</li>`}</ul>` : ""}
-          <div class="money-sheet-actions">
-            ${existing ? `<button type="button" class="secondary-button" data-rec-delete>${t("删除", "Delete", "Löschen")}</button>` : ""}
-            <button type="button" class="secondary-button" data-close-sheet>${t("取消", "Cancel", "Abbrechen")}</button>
-            <button type="submit" class="primary-button">${t("保存", "Save", "Speichern")}</button>
+      <div class="money-sheet money-sheet--ios money-sheet--rec" role="dialog" aria-modal="true" aria-labelledby="moneyRecTitle">
+        <header class="money-sheet-head"><div><h3 id="moneyRecTitle">${esc(rec.label || rec.note || catName(ledger, rec.categoryId))}</h3>
+          <p class="money-rec-amount money-num">${esc(money(-rec.amountMinor, rec.currency))}<small> / ${weekly ? t("周", "week", "Woche") : t("月", "month", "Monat")}</small></p></div>
+        <button class="icon-button" type="button" data-close-sheet aria-label="${esc(t("关闭", "Close", "Schließen"))}">×</button></header>
+        <div class="money-ios-body">
+          <div class="money-ios-card">
+            ${row(t("收款方", "Paid to", "Empfänger"), payee || t("账单里未写明", "Not on the statement", "Nicht im Auszug"))}
+            ${row(t("类别", "Category", "Kategorie"), catName(ledger, rec.categoryId))}
+            ${row(t("扣款账户", "From account", "Vom Konto"), account)}
+            ${row(t("下次扣款", "Next payment", "Nächste Zahlung"), dayLabel(nextDue(rec, today), false))}
+            ${row(t("一年合计", "Per year", "Pro Jahr"), money(perYear, rec.currency, 0))}
           </div>
-        </form></div>`;
-    const form = root_.querySelector("form");
-    form.querySelector('[name="cadence"]')?.addEventListener("change", () => {
-      const w = form.querySelector('[name="cadence"]').value === "weekly";
-      form.querySelector(".money-rec-dom").hidden = w;
-      form.querySelector(".money-rec-wd").hidden = !w;
-    });
-    root_.querySelectorAll("[data-close-sheet]").forEach(b => b.addEventListener("click", closeSheet));
-    form.addEventListener("submit", e => { e.preventDefault(); saveRecurringSheet(form, rec); });
+          <div>
+            <p class="money-ios-cap">${esc(posted.length
+              ? t(`实际扣款 · ${posted.length} 次 · 共 ${money(paidTotal, rec.currency)}`, `Payments · ${posted.length} · ${money(paidTotal, rec.currency)} in total`, `Zahlungen · ${posted.length} · insgesamt ${money(paidTotal, rec.currency)}`)
+              : t("实际扣款", "Payments", "Zahlungen"))}</p>
+            <div class="money-ios-card">${posted.length
+              ? `<ul class="money-rows money-rec-posted">${posted.map(tx => `<li class="money-ios-row"><span class="money-ios-label">${esc(dayLabel(tx.date, false))}<small>${esc((tx.note || "").trim())}</small></span><span class="money-ios-control money-num">${esc(money(-tx.amountMinor, tx.currency))}</span></li>`).join("")}</ul>`
+              : `<p class="money-ios-empty">${t("账单里还没有这笔扣款。", "No payment on your statements yet.", "Noch keine Zahlung in deinen Auszügen.")}</p>`}</div>
+          </div>
+          <button type="button" class="money-link money-rec-remove" data-rec-delete>${t("这不是固定开销", "Not a fixed cost", "Keine Fixkosten")}</button>
+        </div>
+      </div>`;
+    root_.querySelectorAll("[data-close-sheet]").forEach(btn => btn.addEventListener("click", closeSheet));
     root_.querySelector("[data-rec-delete]")?.addEventListener("click", () => {
       const snap = core().removeRecurringTemplate(ledgerState(), rec.id);
       if (!snap) return;
       commit(snap.ledger);
       closeSheet();
-      ctx.toast?.(t("已删除", "Deleted", "Gelöscht"), { actionLabel: t("撤销", "Undo", "Rückgängig"), onAction: () => { commit(core().restoreRecurringTemplate(ledgerState(), snap.removed, snap.index)); render(); } });
+      ctx.toast?.(t("已移出固定开销", "Removed from fixed costs", "Aus Fixkosten entfernt"), { actionLabel: t("撤销", "Undo", "Rückgängig"), onAction: () => { commit(core().restoreRecurringTemplate(ledgerState(), snap.removed, snap.index)); render(); } });
       render();
     });
     requestAnimationFrame(() => root_.classList.add("money-open"));
-  }
-
-  function saveRecurringSheet(form, prev) {
-    const ledger = ledgerState();
-    const categoryId = form.elements.category.value;
-    const cat = ledger.categories.find(c => c.id === categoryId);
-    const token = core().parseAmountToken(form.elements.amount.value);
-    if (token == null) return;
-    const amountMinor = cat?.kind === "income" ? Math.abs(token) : -Math.abs(token);
-    const cadenceSel = form.elements.cadence.value === "weekly" ? "weekly" : "monthly";
-    const draft = {
-      id: prev.id || core().createId(),
-      label: form.elements.label.value.trim(),
-      categoryId, accountId: prev.accountId || ledger.accounts.find(a => !a.archived)?.id,
-      amountMinor, currency: prev.currency || ledger.settings.defaultCurrency,
-      dayOfMonth: Math.min(28, Math.max(1, Number(form.elements.day?.value) || 1)),
-      cadence: cadenceSel,
-      weekday: cadenceSel === "weekly" ? Math.min(6, Math.max(0, Number(form.elements.weekday?.value) || 0)) : undefined,
-      note: form.elements.note.value.trim(),
-    };
-    const result = core().upsertRecurringTemplate(ledger, draft, { lang: ctx.lang?.() });
-    if (!result) return;
-    commit(result.ledger);
-    closeSheet();
-    ctx.toast?.(t("已保存", "Saved", "Gespeichert"));
-    render();
   }
 
   function addRecurringFromCandidate(key) {
@@ -1665,7 +1624,7 @@
     const cand = core().detectRecurringCandidates(ledger, { months: 3, today: ctx.iso(new Date()) }).find(c => c.merchantKey === key);
     if (!cand) return;
     const draft = {
-      id: core().createId(), label: cand.label, categoryId: cand.categoryId, accountId: cand.accountId,
+      id: core().createId(), label: payeeOf({ note: cand.label }) || cand.label, payee: payeeOf({ note: cand.label }), categoryId: cand.categoryId, accountId: cand.accountId,
       amountMinor: cand.amountMinor, currency: cand.currency, dayOfMonth: Number(cand.transactionIds?.length ? ledger.transactions.find(t => t.id === cand.transactionIds[cand.transactionIds.length - 1])?.date?.slice(8, 10) : 1) || 1,
       cadence: "monthly", note: cand.label,
     };
@@ -1955,7 +1914,6 @@
       row.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
     });
     host.querySelectorAll("[data-recurring-id]").forEach(b => b.addEventListener("click", () => openRecurringSheet(b.dataset.recurringId)));
-    host.querySelector("[data-recurring-add]")?.addEventListener("click", () => openRecurringSheet(""));
     host.querySelectorAll("[data-cand-add]").forEach(b => b.addEventListener("click", () => addRecurringFromCandidate(b.dataset.candAdd)));
     host.querySelectorAll("[data-cand-dismiss]").forEach(b => b.addEventListener("click", () => {
       const l = ledgerState();

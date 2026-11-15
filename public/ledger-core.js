@@ -970,6 +970,7 @@
         ? Math.min(6, Math.max(0, Number.isInteger(raw.weekday) ? raw.weekday : new Date().getDay()))
         : undefined,
       note: typeof raw.note === "string" ? raw.note.slice(0, 500) : "",
+      payee: typeof raw.payee === "string" ? raw.payee.slice(0, 120) : "",
     };
   }
 
@@ -2277,6 +2278,7 @@
           dayOfMonth: 3,
           cadence: "monthly",
           note: lang === "de" ? "Miete" : lang === "zh" ? "房租" : "Rent",
+          payee: "Hausverwaltung Schröder",
         },
         {
           id: createId(),
@@ -2288,6 +2290,7 @@
           dayOfMonth: 15,
           cadence: "monthly",
           note: lang === "de" ? "Streaming-Abo" : lang === "zh" ? "流媒体订阅" : "Streaming",
+          payee: "Netflix International B.V.",
         },
       ];
     }

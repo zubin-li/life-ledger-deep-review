@@ -422,7 +422,6 @@ html[data-theme="dark"] #moneyPickerPanel {
 .money-budget-suf { color: var(--desk-muted); font-size: 13px; }
 .money-ios-account-form { display: grid; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--desk-border); }
 .money-ios-row--imp { flex-wrap: wrap; }
-.money-rec-posted { max-height: 200px; overflow: auto; margin: 8px 0 0; }
 @media (max-width: 650px) {
   .money-filters--calm { flex-wrap: wrap; }
   .money-filter-pop { left: 0; right: 0; width: auto; }
@@ -430,8 +429,12 @@ html[data-theme="dark"] #moneyPickerPanel {
 
 /* round-2 review fixes */
 .money-field[hidden] { display: none; }
-.money-rec-posted { margin: 8px 0 0; padding: 0; list-style: none; }
+.money-rec-posted { margin: 0; padding: 0; list-style: none; max-height: 320px; overflow: auto; }
 @media (max-width: 650px) {
   .money-head-actions { flex-wrap: wrap; justify-content: flex-start; }
   .money-head-actions .money-import-hd { flex: 1 1 auto; }
 }
+.money-rec-amount { margin: 4px 0 0; font: 600 26px/1.1 var(--font-body); color: var(--desk-text); }
+.money-rec-amount small { font-size: 13px; font-weight: 500; color: var(--desk-muted); }
+.money-sheet--rec .money-ios-label small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
+.money-rec-remove { justify-self: center; color: var(--desk-muted); font-size: 13px; }
