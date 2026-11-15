@@ -80,6 +80,8 @@ const APP_SHELL = [
   "./hairline.js?v=2.0.11",
   "./pages-858.css?v=2.0.11",
   "./long-range.js?v=2.0.11",
+  "./insights.js?v=2.0.11",
+  "./insights.css?v=2.0.11",
   "./habit-analytics.js?v=2.0.11",
   "./interaction.js?v=2.0.11",
   "./vendor/sortable.min.js",
@@ -124,6 +126,8 @@ const NETWORK_FIRST_SUFFIXES = [
   "/_init_tcb-env.js",
   "/interaction.js",
   "/long-range.js",
+  "/insights.js",
+  "/insights.css",
   "/habit-analytics.js",
 ];
 

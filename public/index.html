@@ -28,6 +28,7 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="./styles.css?v=2.0.11" />
     <link rel="stylesheet" href="./pages-858.css?v=2.0.11" />
+    <link rel="stylesheet" href="./insights.css?v=2.0.11" />
     <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.11" />
     <link rel="stylesheet" href="./today-cards.css?v=2.0.11" />
     <link rel="stylesheet" href="./v202.css?v=2.0.11" />
@@ -52,6 +53,7 @@
           <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
           <button class="nav-item" data-view="longrange"><span class="nav-icon">⚑</span><span class="nav-label">长期</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
+          <button class="nav-item" data-view="insights"><span class="nav-icon">✦</span><span class="nav-label">洞见</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
           <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
         </nav>
@@ -406,6 +408,7 @@
             </header>
             <div class="module-body" id="module-body-insights">
               <div class="week-insights-empty hairline-mount is-empty" id="weekInsightsEmptyArt" hidden aria-hidden="true"></div>
+              <ol class="week-top-insights" id="weekTopInsights" hidden></ol>
               <div class="week-insights-grid" id="weekInsightsGrid">
                 <div class="week-insight-card">
                   <span class="week-insight-label" id="weekRateLabel">Completion Rate</span>
@@ -430,6 +433,8 @@
         </section>
 
         <section class="view longrange-workspace" id="longrangeView"><div id="longRangeWorkspace"></div></section>
+
+        <section class="view insights-workspace" id="insightsView"><div id="insightsWorkspace"></div></section>
 
         <section class="view timeline-journal" id="timelineView" data-journal-layout="weeks">
           <header class="view-scroll-header">
@@ -1106,6 +1111,7 @@
     <script src="./habit-analytics.js?v=2.0.11"></script>
     <script src="./interaction.js?v=2.0.11"></script>
     <script src="./long-range.js?v=2.0.11"></script>
+    <script src="./insights.js?v=2.0.11"></script>
     <script src="./app.js?v=2.0.11"></script>
     <script src="./vendor/sortable.min.js"></script>
     <script src="./hairline.js?v=2.0.11"></script>

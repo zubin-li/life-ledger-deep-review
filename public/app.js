@@ -19,6 +19,7 @@ function wipeLocalRecords() {
   // delete is never blocked by an open connection (a blocked delete would stall every later one).
   ["", "-2", "-3"].forEach(suffix => indexedDB.deleteDatabase(`life-ledger-wall${suffix}`));
   indexedDB.deleteDatabase(`life-ledger-photos${window.LifeLedgerStorageSuffix || ""}`); // day photos of the local edition
+  indexedDB.deleteDatabase(`life-ledger-insights${window.LifeLedgerStorageSuffix || ""}`); // insight originals of the local edition
 }
 // Mac app: the sample only ever replaces localStorage records; the user's own photo walls (IndexedDB) stay.
 function removeLocalKeys() {
@@ -93,7 +94,7 @@ const i18n = {
     brand: "Life Ledger",
     brandSmall: "深度复盘",
     nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", habits: "习惯设置" ,
-"longrange": "长期"
+"longrange": "长期", "insights": "洞见"
 },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
     profileName: "个人复盘空间",
@@ -133,7 +134,7 @@ const i18n = {
       review: "月度复盘",
       habits: "习惯",
 
-"longrange": "长期"
+"longrange": "长期", "insights": "洞见"
 },
     hero: {
       quote: "不积小流，\n无以成江海。",
@@ -733,7 +734,7 @@ const i18n = {
     brand: "Life Ledger",
     brandSmall: "DEEP REVIEW",
     nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", habits: "Habits" ,
-"longrange": "Horizon"
+"longrange": "Horizon", "insights": "Insights"
 },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
     profileName: "Personal Ledger",
@@ -773,7 +774,7 @@ const i18n = {
       review: "Monthly Review",
       habits: "Habits",
 
-"longrange": "Horizon"
+"longrange": "Horizon", "insights": "Insights"
 },
     hero: {
       quote: "The secret of getting ahead\nis getting started.",
@@ -1373,7 +1374,7 @@ const i18n = {
     brand: "Life Ledger",
     brandSmall: "TIEFE REFLEXION",
     nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", habits: "Gewohnheiten" ,
-"longrange": "Horizont"
+"longrange": "Horizont", "insights": "Erkenntnisse"
 },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
     profileName: "Persönliches Journal",
@@ -1413,7 +1414,7 @@ const i18n = {
       review: "Monatsrückblick",
       habits: "Gewohnheiten",
 
-"longrange": "Horizont"
+"longrange": "Horizont", "insights": "Erkenntnisse"
 },
     hero: {
       quote: "Es ist nicht genug zu wollen,\nman muss auch tun.",
@@ -5805,7 +5806,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), quoteSettings: cloneData(state.quoteSettings || { mode: "auto", items: [] }), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), quoteSettings: cloneData(state.quoteSettings || { mode: "auto", items: [] }), ...(range.scope === "all" && state.insights ? { insights: cloneData(state.insights) } : {}), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -6244,6 +6245,7 @@ function importedPayload(raw) {
       focusSessions: cloneData(payload.focusSessions || []),
       focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
       ...(isRecord(payload.quoteSettings) ? { quoteSettings: cloneData(payload.quoteSettings) } : {}),
+      ...(isRecord(payload.insights) && isRecord(payload.insights.weeks) && isRecord(payload.insights.marks) ? { insights: cloneData(payload.insights) } : {}),
     },
   };
 }
@@ -6323,6 +6325,7 @@ function mergeBackupData(current, incoming) {
     weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
+    ...(current.insights || incoming.insights ? { insights: window.LifeLedgerInsights?.merge(current.insights, incoming.insights) || cloneData(current.insights || incoming.insights) } : {}),
   };
 }
 function syncBackupPreferencesToRuntime() {
@@ -7467,6 +7470,7 @@ function dateLocale() {
 function renderWeekInsights() {
   const grid = $("#weekInsightsGrid");
   if (!grid) return;
+  renderWeekTopInsights();
 
   const key = selectedWorkspaceWeek;
   const { monday } = weekDatesFromKey(key);
@@ -8238,6 +8242,23 @@ function renderInsightTrend(model) {
   $('#insightTrendSvg').addEventListener('click',explore);update(points.length-1);
 }
 
+function renderInsights() {
+  window.LifeLedgerInsights?.render({
+    state: () => state, save: () => saveState(), text: languageText, escape: escapeHtml,
+    toast: showToast, changed: () => renderWeekTopInsights(), lang: dateLocale, currentWeek: () => isoWeekKey(new Date()),
+    // same rule as the photo wall: cloud edition → R2, everything else → this device
+    cloud: () => !window.LifeLedgerStorageSuffix && cloudMode && cloudProvider === "cloudflare", ns: () => window.LifeLedgerStorageSuffix || "",
+  });
+}
+function renderWeekTopInsights() {
+  const list = $("#weekTopInsights");
+  if (!list) return;
+  const items = window.LifeLedgerInsights?.top(state, selectedWorkspaceWeek) || [];
+  list.hidden = !items.length;
+  list.innerHTML = items.map(item => `<li><button type="button" class="week-top-insight" data-insight-open>${escapeHtml(item.title)}</button></li>`).join("");
+  list.onclick = event => { if (event.target.closest("[data-insight-open]")) switchToView("insights"); };
+}
+
 function renderLongRange() {
   window.LifeLedgerLongRange?.render({
     state:()=>state,save:()=>saveState(),text:languageText,escape:escapeHtml,iso:isoDate,
@@ -8686,6 +8707,7 @@ function switchToView(view) {
   $("#viewTitle").textContent = tr(`viewTitles.${view}`);
   if (view === "week") renderWeeklyWorkspace();
   if (view === "longrange") renderLongRange();
+  if (view === "insights") renderInsights();
   if (view === "timeline") void renderTimeline();
   if (view === "review") { renderReview(); requestAnimationFrame(fitReviewText); }
   if (view === "habits") renderHabitSettings();
@@ -8991,7 +9013,7 @@ function initQuoteSettings() {
 
 // Settings → page order (user 10/27): Today, Week, Horizon, Timeline, Review in any order; Habits stays last.
 const NAV_ORDER_KEY = "life-ledger-nav-order";
-const NAV_PAGES = ["today", "week", "longrange", "timeline", "review"];
+const NAV_PAGES = ["today", "week", "longrange", "timeline", "insights", "review"];
 function navOrder() {
   let saved = [];
   try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY) || "[]"); } catch {}

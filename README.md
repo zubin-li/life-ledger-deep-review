@@ -258,6 +258,19 @@ There are three one-time safety settings in the deployer's console: create a Fre
 
 Read the complete [Tencent CloudBase deployment guide](docs/cloudbase-china.md) or the detailed [Chinese guide](docs/cloudbase-china.zh-CN.md).
 
+## Insights import
+
+The **Insights** page holds weekly cards produced by any external tool (for example a script that reads your saved screenshots or notes). Import a JSON file from the page's **Import** button; it syncs like the rest of your data. Each card can be marked *Agree*, *Doubt* or *Acted*; re-importing the same week replaces its cards but keeps your marks. Up to three cards with `"top": true` appear in the Week page's Weekly Insights section.
+
+```json
+{"format": "life-ledger-insights", "version": 1, "week": "2026-W46",
+ "items": [{"id": "w46-01", "title": "…", "core": "…", "category": "Career", "credibility": "Research-backed", "top": true,
+   "quote": "…", "review": {"verdict": "部分成立", "flaws": ["孤例外推"], "generalisation": "…", "boundary": "…"},
+   "fact_check": {"status": "verified", "note": "…", "url": "https://…"}}]}
+```
+
+Only `id` and `title` are required. Each item may carry `"images": [{"name": "…", "data": "data:image/jpeg;base64,…"}]`; images are stored with your photo-wall media (cloud edition: your private storage; local and Mac: this device), and files over 1 MB are shrunk to a few hundred KB on import. The Insights page groups cards by week (newest first, with dates); a switch shows them without weeks.
+
 ## Data ownership
 
 ```text
