@@ -4373,7 +4373,8 @@ async function renderTimeline() {
   const version = ++timelineRenderVersion;
   timelineRendering = true;
   renderJournalCalendar();
-  const { from, to } = timelineRange(timelineCursor);
+  // The photo library reads every month, not only the calendar's month (photos before November were hidden, user 11/15).
+  const { from, to } = journalMode === "photos" ? { from: "1970-01-01", to: isoDate(new Date()) } : timelineRange(timelineCursor);
   let photos = [];
   try {
     photos = await photoMemories?.listRange(from, to) || [];
@@ -4980,6 +4981,23 @@ function saveMoodReason(event) {
   showToast(tr("toast.moodReason"));
 }
 
+// Old builds wrote machine drafts into the monthly review (a facts + habit list, later the week notes copied in).
+// The user never wrote those; show a review only when the text is the user's own (user 11/15).
+const GENERATED_REVIEW_TAILS = [
+  "## My perspective\n- What deserves to continue?\n- What is draining energy?\n- What is the most important next step?",
+  "## 我的理解\n这个月哪些做法值得保留？哪些目标需要调整？\n\n## 下个月的一个关键改变",
+  "## My Understanding\nWhat should I keep? Which goals need to evolve?\n\n## One key change for next month",
+  "## Meine Einordnung\nWas sollte bleiben? Welche Ziele dürfen wachsen?\n\n## Eine zentrale Veränderung für den nächsten Monat",
+];
+function writtenReview(text) {
+  const value = String(text || "");
+  const trimmed = value.trim();
+  return GENERATED_REVIEW_TAILS.some(tail => trimmed.endsWith(tail)) && /^# .+\n\n## /.test(trimmed) ? "" : value;
+}
+
+// A day photo's saved framing (focus point + fit, set in the mood panel), as an inline style.
+function photoFrameStyle(photo) { return escapeHtml(window.LifeLedgerPhotoMemories?.frameStyle?.(photo) || ""); }
+
 function moodCalendarIcon(mood) {
   const paths = moodCalendarIcons[mood];
   return paths ? `<svg viewBox="0 0 24 24" aria-hidden="true">${paths}</svg>` : "";
@@ -5096,7 +5114,7 @@ function renderReview() {
     return `<i class="bar ${p >= 75 ? "high" : ""}" title="${tr("calendar.dayPercent", { day: i + 1, month: month + 1, percent: p })}" style="height:${Math.max(3, p)}%;animation-delay:${Math.min(i * 12, 250)}ms"></i>`;
   }).join("");
   renderPeriodicGoals(monthDates);
-  $("#reviewText").value = state.reviews[key] || "";
+  $("#reviewText").value = writtenReview(state.reviews[key]);
   fitReviewText();
   renderFocusReview(year, month);
   window.LifeLedgerInteraction?.syncSegments(document);
@@ -7405,7 +7423,7 @@ function bindEvents() {
 let weekCalendarReadError = false;
 let selectedTimelineDate = isoDate(new Date());
 let timelineFilter = "all";
-let journalMode = "weeks";
+let journalMode = "timeline";
 let journalVisibleCount = 24;
 let insightView = "trend";
 let analyticsWindow = 30;
@@ -7587,12 +7605,12 @@ async function renderJournalFeed(version) {
       .map(key => { const {monday,sunday} = weekDatesFromKey(key); return {key,from:isoDate(monday),to:isoDate(sunday),text:state.weeklyOutputs?.[key] || '',label:formatWeekRange(key)}; });
   } else if (mode === 'months') {
     entries = Object.entries(state.reviews || {}).filter(([key]) => /^\d{4}-(0[1-9]|1[0-2])$/.test(key))
-      .map(([key,text]) => ({key,from:`${key}-01`,to:isoDate(new Date(Number(key.slice(0,4)),Number(key.slice(5,7)),0,12)),text,label:formatLocalizedDate(parseDate(`${key}-01`),{year:'numeric',month:'long'})}));
+      .map(([key,text]) => ({key,from:`${key}-01`,to:isoDate(new Date(Number(key.slice(0,4)),Number(key.slice(5,7)),0,12)),text:writtenReview(text),label:formatLocalizedDate(parseDate(`${key}-01`),{year:'numeric',month:'long'})}));
   } else {
-    entries = Object.entries(state.logs || {}).filter(([,log]) => log.note || log.mood || log.moodReason)
+    entries = Object.entries(state.logs || {}).filter(([,log]) => String(log.note || log.moodReason || '').trim())
       .map(([date,log]) => ({key:date,from:date,to:date,text:log.note || log.moodReason || '',mood:log.mood,label:formatLocalizedDate(parseDate(date),{weekday:'short',month:'long',day:'numeric',year:'numeric'})}));
   }
-  entries = entries.filter(e => mode === 'timeline' || String(e.text).trim() || String(e.extra || '').trim())
+  entries = entries.filter(e => String(e.text).trim() || String(e.extra || '').trim())
     .filter(e => !month || (e.from.slice(0,7) <= month && e.to.slice(0,7) >= month)).sort((a,b) => b.from.localeCompare(a.from));
   // Only daily mode fetches the month's photos up front. Weekly photos are optional,
   // loaded on request; monthly reviews never duplicate daily media.
@@ -7610,7 +7628,7 @@ async function renderJournalFeed(version) {
     const text = journalTextMarkup(e.text), extra = e.extra && e.extra !== e.text ? journalTextMarkup(e.extra) : '';
     const images = photos.filter(p => p.date === e.key);
     const photoDetails = mode === 'weeks' ? `<details class="feed-week-photos" data-from="${e.from}" data-to="${e.to}"><summary>${escapeHtml(languageText('看看这一周的照片','Photos from this week','Fotos dieser Woche'))}</summary><div class="feed-photo-list"></div></details>` : '';
-    return `<article class="journal-feed-entry" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
+    return `<article class="journal-feed-entry" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood ${moodCalendarClass(e.mood)}" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img style="${photoFrameStyle(p)}" src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
   }).join('') : `<div class="feed-empty">${hairlineEmptyMarkup('./assets/hairline/empty-journal.svg',languageText('这里，留给以后的回看','Room for the next chapter','Platz für das nächste Kapitel'),languageText('这个范围还没有文字或照片。可以切换月份，或先写下一段复盘。','No writing or photos in this range yet. Try another month, or write a reflection.','Noch keine Texte oder Fotos in diesem Zeitraum. Wähle einen anderen Monat oder schreibe einen Rückblick.'))}</div>`;
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
   hydrateHairlineMounts(host);
@@ -7699,7 +7717,7 @@ function renderTimelineEntryList(entries = []) {
 function photoCollageMarkup(photos) {
   const items = (photos || []).filter(photo => photo?.url);
   if (!items.length) return "";
-  const cell = (photo, extra = "") => `<span class="journal-collage-cell ${extra}"><img src="${escapeHtml(photo.url)}" alt="" /></span>`;
+  const cell = (photo, extra = "") => `<span class="journal-collage-cell ${extra}"><img style="${photoFrameStyle(photo)}" src="${escapeHtml(photo.url)}" alt="" /></span>`;
   if (items.length === 1) return `<span class="journal-collage is-single">${cell(items[0])}</span>`;
   if (items.length === 2) return `<span class="journal-collage is-two">${items.map(photo => cell(photo)).join("")}</span>`;
   if (items.length === 3) return `<span class="journal-collage is-mosaic">${cell(items[0], "is-span")}${cell(items[1])}${cell(items[2])}</span>`;
@@ -7771,7 +7789,7 @@ async function renderTimelineDetail() {
   if (photoHost) {
     photoHost.querySelectorAll("[data-photo-add],[data-photo-input],[data-photo-replace]").forEach(node => node.remove());
     const list = photoHost.querySelector("[data-photo-list]"), empty = photoHost.querySelector("[data-photo-empty]");
-    if (list) list.innerHTML = photos.length ? `<div class="memory-entry-photos" data-count="${photos.length}">${photos.map(photo => `<figure class="memory-entry-photo"><img src="${escapeHtml(photo.url)}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" /></figure>`).join("")}</div>` : "";
+    if (list) list.innerHTML = photos.length ? `<div class="memory-entry-photos" data-count="${photos.length}">${photos.map(photo => `<figure class="memory-entry-photo"><img style="${photoFrameStyle(photo)}" src="${escapeHtml(photo.url)}" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" alt="" /></figure>`).join("")}</div>` : "";
     if (empty) { empty.hidden = photos.length > 0; empty.textContent = languageText("这一天没有照片", "No photos this day", "Keine Fotos an diesem Tag"); }
   }
   hydrateHairlineMounts(container);
@@ -7819,7 +7837,7 @@ function renderJournalPhotoLibrary(photos) {
     host.innerHTML = hairlineEmptyMarkup(
       "./assets/hairline/empty-photos.svg",
       languageText("照片", "Photos", "Fotos"),
-      languageText("这个月还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos this month yet. Add one from a day and it will appear here by month.", "Diesen Monat gibt es noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."),
+      languageText("还没有照片。在一天的详情里添加，它们会按月份出现在这里。", "No photos yet. Add one from a day and it will appear here by month.", "Noch keine Fotos. Füge eines bei einem Tag hinzu, dann erscheint es hier nach Monat."),
     );
     hydrateHairlineMounts(host);
     return;
@@ -7832,7 +7850,7 @@ function renderJournalPhotoLibrary(photos) {
   });
   host.innerHTML = [...groups.entries()].sort((a, b) => b[0].localeCompare(a[0])).map(([key, items]) => {
     const label = formatLocalizedDate(parseDate(`${key}-01`), { month: "long", year: "numeric" });
-    return `<section class="journal-library-month"><h3>${escapeHtml(label)}</h3><div class="journal-library-grid">${items.map(photo => `<button type="button" class="journal-library-card" data-date="${escapeHtml(photo.date)}"><img src="${escapeHtml(photo.url)}" alt="" /><span>${escapeHtml(formatLocalizedDate(parseDate(photo.date), { day: "numeric", month: "short" }))}</span></button>`).join("")}</div></section>`;
+    return `<section class="journal-library-month"><h3>${escapeHtml(label)}</h3><div class="journal-library-grid">${items.map(photo => `<button type="button" class="journal-library-card" data-date="${escapeHtml(photo.date)}"><img style="${photoFrameStyle(photo)}" src="${escapeHtml(photo.url)}" alt="" /><span>${escapeHtml(formatLocalizedDate(parseDate(photo.date), { day: "numeric", month: "short" }))}</span></button>`).join("")}</div></section>`;
   }).join("");
   host.querySelectorAll(".journal-library-card").forEach(button => button.addEventListener("click", () => {
     selectedTimelineDate = button.dataset.date;
@@ -9231,7 +9249,7 @@ function initModeSwitch(settings) {
 // Stored as the raw localStorage strings under state.prefs; theme, font and language stay per device.
 function syncedPrefKeys() {
   return ["life-ledger-web-today-cards-v4", "life-ledger-weather-city", "life-ledger-heatmap-palette", "life-ledger-freq-habit", "life-ledger-nav-order", "life-ledger-calendar-view",
-    "life-ledger-wall-prefs", "life-ledger-wall-prefs-2", "life-ledger-wall-prefs-3"];
+    "life-ledger-wall-prefs", "life-ledger-wall-prefs-2", "life-ledger-wall-prefs-3", "life-ledger-photo-frames"];
 }
 function localPrefs({ seed = false } = {}) {
   const prefs = {};

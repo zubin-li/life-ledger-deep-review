@@ -184,7 +184,7 @@ async function listPhotos(url, env, keyHash) {
       FROM photo_attachments
       WHERE key_hash = ? AND entry_date >= ? AND entry_date <= ?
       ORDER BY entry_date DESC, created_at
-      LIMIT 200
+      LIMIT 2000
     `).bind(keyHash, from, to);
   }
   const result = await statement.all();
