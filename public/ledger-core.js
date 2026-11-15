@@ -2218,6 +2218,7 @@
     if (!account) return ledger;
     const groceries = categoryByEnglishName(ledger, "Groceries");
     const dining = categoryByEnglishName(ledger, "Dining");
+    const subs = categoryByEnglishName(ledger, "Subscriptions") || dining;
     const transport = categoryByEnglishName(ledger, "Transport");
     const housing = categoryByEnglishName(ledger, "Housing");
     const shopping = categoryByEnglishName(ledger, "Shopping");
@@ -2279,9 +2280,9 @@
         },
         {
           id: createId(),
-          label: lang === "de" ? "Abonnement" : lang === "zh" ? "订阅" : "Subscriptions",
+          label: "Netflix",
           accountId: account,
-          categoryId: dining.id,
+          categoryId: subs.id,
           amountMinor: -1299,
           currency: "EUR",
           dayOfMonth: 15,
