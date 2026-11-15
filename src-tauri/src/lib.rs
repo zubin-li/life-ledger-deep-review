@@ -498,7 +498,9 @@ fn mac_shell_script() -> String {
 }
 
 /// Traffic lights sit inside the web sidebar card (card at 16,16; buttons 14 pt, centre y = position.y - 2).
-const TRAFFIC_LIGHTS: (f64, f64) = (34.0, 44.0);
+/// Equal 29 pt inset from the card's left and top edge, so the lights sit clear of the 30 pt corner curve and the red
+/// light's left edge lines up with the brand logo below (user 11/15). shell.css moves the brand down to match.
+const TRAFFIC_LIGHTS: (f64, f64) = (45.0, 54.0);
 
 /// Hidden title bar, lights in the sidebar card, hidden until the page paints (no white flash).
 fn mac_window<'a, R: tauri::Runtime, M: tauri::Manager<R>>(

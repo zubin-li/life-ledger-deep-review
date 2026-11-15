@@ -52,14 +52,15 @@
   ];
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const els = Object.fromEntries(CARDS.map(c => [c.id, c.el]));
-  // Default layout fills every row (below the fixed quote + mood row): weather M + heatmap S + focus S | habits L + month L | plan L + review L |
-  // frequency L with rhythm M stacked over heatmap M.
-  const ORDER = ["weather", "habits", "heatmap", "focus", "rhythm", "calendar", "dayplan", "tools", "freq", "wall", "photos"];
+  // Default layout = the owner's own arrangement (user 11/15): habits strip, photo S + rhythm S beside the day plan,
+  // month + tools, a wide photo wall. Other cards wait in the widget library.
+  const ORDER = ["habits", "wall2", "rhythm", "dayplan", "calendar", "tools", "wall", "weather", "focus", "freq", "wall3", "heatmap", "photos"];
+  const START = { habits: ["W"], wall2: ["S"], rhythm: ["S"], dayplan: ["L"], calendar: ["L"], tools: ["L"], wall: ["M"] };
   view.classList.add("tc-grid");
   document.documentElement.classList.add("tc-on");
 
   const defaults = () => ORDER.filter(id => byId[id]).concat(CARDS.map(c => c.id).filter(id => !ORDER.includes(id)))
-    .map(id => ({ id, size: byId[id].sizes[0], hidden: byId[id].hidden === true }));
+    .map(id => ({ id, size: START[id] ? START[id][0] : byId[id].sizes[0], hidden: !START[id] }));
   const KEY = "life-ledger-web-today-cards-v4" + NS, OLD = "life-ledger-web-today-cards-v3" + NS;
   const fit = (id, size) => (byId[id].sizes.includes(size) ? size : byId[id].sizes[0]);
   const load = () => {

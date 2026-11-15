@@ -4,6 +4,26 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.11] - 2026-11-15
+
+Web 2.0.11 and Life Ledger for Mac 3.0.5.
+
+### Changed
+
+- **First-run Today layout** is the owner's own arrangement: the habits strip, a small photo and the rhythm card beside the day plan, the month calendar and tools, and a wide photo wall. Weather, focus, frequency and heatmap wait in the widget library. Saved layouts are untouched.
+- **Timeline opens on Daily.** Days with only a mood (no words, no photo) no longer appear in the daily timeline.
+
+### Fixed
+
+- **Monthly review stays empty until you write one.** Old builds wrote machine drafts (facts, habit lists, and copied week reviews) into the monthly review. Those drafts are no longer shown in Review or in the monthly timeline; reviews you wrote yourself are unchanged and nothing is deleted.
+- **Photo library shows every month**, not only the current one; earlier photos were hidden.
+- **Timeline mood icons in dark mode** use the mood colours instead of rendering solid black.
+- **Mac window:** the traffic lights sit evenly inside the sidebar card, lined up with the logo.
+
+### Added
+
+- **Day photos:** paste a copied photo with ⌘V in the mood note; drag a photo to choose what it shows, and switch between filling the frame and showing the whole photo. The framing is used in the timeline and day details too.
+
 ## [2.0.10] - 2026-11-02
 
 Web 2.0.10 and Life Ledger for Mac 3.0.4.

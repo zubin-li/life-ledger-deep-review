@@ -8,10 +8,10 @@ html.ll-mac body { overscroll-behavior: none; }
 
 /* The OS paints the traffic lights at the top-left. The web sidebar is a floating dark card; the lights sit
    inside its top-left corner, so the brand row moves down below them. */
-html.ll-mac .sidebar { padding-top: 54px; }
-html.ll-mac .sidebar-toggle { top: 56px; }
+html.ll-mac .sidebar { padding-top: 64px; }
+html.ll-mac .sidebar-toggle { top: 66px; }
 @media (min-width: 761px) {
-  html.ll-mac body.sidebar-collapsed .sidebar-toggle { top: 104px; }
+  html.ll-mac body.sidebar-collapsed .sidebar-toggle { top: 114px; }
   html.ll-mac body.sidebar-collapsed .brand { padding-bottom: 72px; }
 }
 /* short windows: give back the height the lights took, so the sidebar's last item is never cut off */
