@@ -172,6 +172,48 @@ test("parseMoneyInput handles de/en decimal styles and rejects junk", () => {
   assert.equal(L.parseMoneyInput(""), null);
 });
 
+test("categoryFilterIds expands expense groups to child leaves", () => {
+  const { ledger, cat } = base();
+  const food = ledger.categories.find(c => c.isGroup && c.defaultSlug === "grp-food")?.id;
+  if (!food) return;
+  const groceries = cat("groceries");
+  const rows = L.filterMoneyRows({
+    ...ledger,
+    transactions: [
+      tx({ id: "g1", categoryId: groceries, amountMinor: -500, date: "2026-10-02" }),
+      tx({ id: "t1", categoryId: cat("transport"), amountMinor: -300, date: "2026-10-03" }),
+    ],
+  }, "2026-10", { categoryId: food }).flatMap(g => g.rows.map(r => r.id));
+  assert.deepEqual(rows, ["g1"]);
+});
+
+test("detectRecurringCandidates: monthly Netflix-like, ignores noise", () => {
+  const { ledger, cat, acc } = base();
+  const dining = cat("dining");
+  ledger.transactions = [
+    tx({ accountId: acc, categoryId: dining, amountMinor: -1599, date: "2026-09-15", note: "NETFLIX.COM" }),
+    tx({ accountId: acc, categoryId: dining, amountMinor: -1599, date: "2026-10-15", note: "NETFLIX.COM" }),
+    tx({ accountId: acc, categoryId: dining, amountMinor: -1599, date: "2026-11-15", note: "NETFLIX.COM" }),
+    tx({ accountId: acc, categoryId: dining, amountMinor: -900, date: "2026-10-20", note: "one cafe" }),
+    tx({ accountId: acc, categoryId: dining, amountMinor: -2200, date: "2026-09-10", note: "NETFLIX.COM jump" }),
+    tx({ accountId: acc, categoryId: dining, amountMinor: -1599, date: "2026-10-12", note: "NETFLIX.COM jump" }),
+  ];
+  ledger.meta.dismissedRecurringKeys = ["netflix jump"];
+  let cands = L.detectRecurringCandidates(ledger, { months: 3, today: "2026-11-15" });
+  assert.ok(cands.some(c => c.merchantKey.includes("netflix")));
+  assert.equal(cands.filter(c => c.merchantKey.includes("cafe")).length, 0);
+  const key = cands.find(c => c.merchantKey.includes("netflix"))?.merchantKey;
+  assert.ok(key);
+  ledger.meta.dismissedRecurringKeys = [key];
+  cands = L.detectRecurringCandidates(ledger, { months: 3, today: "2026-11-15" });
+  assert.equal(cands.length, 0);
+  // a template under another name with the same category and amount already covers it
+  ledger.meta.dismissedRecurringKeys = [];
+  ledger.recurring = [{ id: "r1", label: "My streaming", amountMinor: -1599, categoryId: dining, dayOfMonth: 15, cadence: "monthly" }];
+  cands = L.detectRecurringCandidates(L.normalize(ledger), { months: 3, today: "2026-11-15" });
+  assert.equal(cands.filter(c => c.merchantKey.includes("netflix") && !c.merchantKey.includes("jump")).length, 0);
+});
+
 test("housing is flagged fixed by default until the owner edits the list", () => {
   const { ledger, cat } = base();
   assert.deepEqual(ledger.settings.fixedCategoryIds, [cat("housing")]);

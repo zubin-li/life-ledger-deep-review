@@ -53,7 +53,7 @@
       transactions: [],
       budgets: [],
       recurring: [],
-      meta: { recentCategoryIds: [], lastEntryAt: 0, noteCategoryHints: {}, fxCache: {} },
+      meta: { recentCategoryIds: [], lastEntryAt: 0, noteCategoryHints: {}, fxCache: {}, dismissedRecurringKeys: [] },
     };
   }
   function defaultMoneySettings() {
@@ -358,7 +358,13 @@
             .map(([k, v]) => [k, { closingBalanceMinor: v.closingBalanceMinor, asOfDate: ISO_DATE.test(v.asOfDate || "") ? v.asOfDate : "" }]),
         );
       }
+      if (Array.isArray(raw.meta.dismissedRecurringKeys)) {
+        ledger.meta.dismissedRecurringKeys = raw.meta.dismissedRecurringKeys
+          .filter(k => typeof k === "string" && k.length > 0)
+          .slice(0, 200);
+      }
     }
+    if (!Array.isArray(ledger.meta.dismissedRecurringKeys)) ledger.meta.dismissedRecurringKeys = [];
     ledger.categories = repairDefaultCategoryNames(ledger.categories);
     ledger.categories = seedDefaultCategories(ledger.categories, options.lang);
     supplementDefaultCategories(ledger);
@@ -402,13 +408,16 @@
   }
 
   const NOTE_INFERENCE_RULES = [
-    { slug: "dining", kind: "expense", words: ["咖啡", "kaffee", "coffee", "restaurant", "café", "cafe", "午餐", "晚餐", "外卖", "essen", "lunch", "dinner", "breakfast", "frühstück", "bäckerei", "bakery"] },
-    { slug: "housing", kind: "expense", words: ["miete", "rent", "房租", "wohnung", "nebenkosten"] },
+    { slug: "dining", kind: "expense", words: ["咖啡", "kaffee", "coffee", "restaurant", "café", "cafe", "午餐", "晚餐", "外卖", "essen", "lunch", "dinner", "breakfast", "frühstück", "bäckerei", "bakery", "lieferando", "wolt"] },
+    { slug: "housing", kind: "expense", words: ["miete", "rent", "房租", "wohnung", "nebenkosten", "stadtwerke", "strom", "vattenfall"] },
     { slug: "groceries", kind: "expense", words: ["rewe", "edeka", "aldi", "lidl", "netto", "penny", "kaufland", "dm", "rossmann", "超市", "supermarket", "groceries"] },
+    { slug: "entertainment", kind: "expense", words: ["kino", "cinema", "theater", "konzert", "eventim", "电影"] },
     { slug: "transport", kind: "expense", words: ["u-bahn", "ubahn", "s-bahn", "sbahn", "deutsche bahn", "db vertrieb", "bvg", "mvg", "uber", "tankstelle", "shell", "aral", "地铁", "公交", "ticket", "tanken", "benzin", "fuel", "mvv", "hvv"] },
     { slug: "health", kind: "expense", words: ["apotheke", "pharmacy", "arzt", "doctor", "医院", "health"] },
     { slug: "telecom", kind: "expense", words: ["freenet", "telekom", "vodafone", "telefonica", "o2", "1&1", "congstar", "1und1"] },
-    { slug: "subscriptions", kind: "expense", words: ["netflix", "spotify", "apple.com/bill", "google", "amazon prime", "disney"] },
+    { slug: "subscriptions", kind: "expense", words: ["netflix", "spotify", "apple.com/bill", "google", "amazon prime", "disney", "icloud"] },
+    { slug: "travel", kind: "expense", words: ["lufthansa", "ryanair", "easyjet", "eurowings", "hotel", "airbnb", "booking.com", "flug"] },
+    { slug: "shopping", kind: "expense", words: ["amazon", "zalando", "ikea", "mediamarkt", "saturn", "otto"] },
     { slug: "fees", kind: "expense", words: ["entgelt", "gebühr", "kontoführung", "finanzamt"] },
     { slug: "salary", kind: "income", words: ["工资", "gehalt", "salary", "lohn", "payroll", "einkommen"] },
   ];
@@ -449,7 +458,10 @@
         const cat = categoryByDefaultSlug(base.categories, "insurance", "expense");
         if (cat) return cat;
       }
-      if (/american express|\bamex\b|kreditkartenabrechnung|kreditkarte|visa card|mastercard|barclaycard|advanzia/.test(hay)) {
+      // Card BILL payments only: issuer names, or a card word next to a billing word. A purchase paid by card
+      // ("Mastercard Kaffee") is not a bill.
+      if (/american express|\bamex\b|barclaycard|advanzia|kreditkartenabrechnung/.test(hay)
+        || (/kreditkarte|visa|mastercard/.test(hay) && /abrechnung|ausgleich|rechnungsbetrag|statement|bill payment|saldo/.test(hay))) {
         const cat = categoryByDefaultSlug(base.categories, "credit-card", "expense");
         if (cat) return cat;
       }
@@ -2668,17 +2680,107 @@
     return vals.length % 2 ? vals[mid] : Math.round((vals[mid - 1] + vals[mid]) / 2);
   }
 
+  /** Leaf ids included when filtering by a group category id. */
+  function categoryFilterIds(ledger, categoryId) {
+    if (!categoryId) return null;
+    const base = normalize(ledger);
+    const cat = base.categories.find(c => c.id === categoryId);
+    if (!cat) return new Set([categoryId]);
+    if (cat.isGroup) {
+      const kids = base.categories.filter(c => !c.isGroup && !c.archived && c.parentId === cat.id).map(c => c.id);
+      return new Set(kids.length ? kids : [categoryId]);
+    }
+    return new Set([categoryId]);
+  }
+
+  function recurringMerchantGroupKey(note) {
+    const key = merchantKey(note);
+    const word = key.split(/\s+/).find(w => w.length >= 4);
+    return word || key;
+  }
+
+  /** Expenses with the same merchant key, monthly-ish spacing, not already recurring. */
+  function detectRecurringCandidates(ledger, options = {}) {
+    const months = Math.max(1, Number(options.months) || 3);
+    const base = normalize(ledger);
+    const today = options.today && ISO_DATE.test(options.today) ? options.today : isoDateFromDate(new Date());
+    const dismissed = new Set(Array.isArray(base.meta.dismissedRecurringKeys) ? base.meta.dismissedRecurringKeys : []);
+    const yms = [];
+    let ym = today.slice(0, 7);
+    for (let i = 0; i < months; i += 1) {
+      yms.push(ym);
+      ym = shiftYm(ym, -1);
+    }
+    const existingMerchants = new Set();
+    (base.recurring || []).forEach(rec => {
+      const k = recurringMerchantGroupKey(rec.label || rec.note || "");
+      if (k) existingMerchants.add(k);
+    });
+    const byKey = new Map();
+    base.transactions.forEach(tx => {
+      if (!tx || tx.amountMinor >= 0 || tx.transfer || tx.recurringId) return;
+      if (!yms.some(m => typeof tx.date === "string" && tx.date.startsWith(m))) return;
+      const key = recurringMerchantGroupKey(tx.note || "");
+      if (!key || dismissed.has(key) || existingMerchants.has(key)) return;
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push(tx);
+    });
+    const out = [];
+    byKey.forEach((list, merchantKeyValue) => {
+      if (list.length < 2) return;
+      const sorted = [...list].sort((a, b) => a.date.localeCompare(b.date));
+      const monthSet = new Set(sorted.map(tx => tx.date.slice(0, 7)));
+      if (monthSet.size < 2) return;
+      let matched = false;
+      for (let i = 1; i < sorted.length && !matched; i += 1) {
+        const d0 = new Date(`${sorted[i - 1].date}T12:00:00`);
+        const d1 = new Date(`${sorted[i].date}T12:00:00`);
+        const days = Math.round((d1 - d0) / 86400000);
+        if (days < 25 || days > 35) continue;
+        const a0 = Math.abs(sorted[i - 1].amountMinor);
+        const a1 = Math.abs(sorted[i].amountMinor);
+        if (!a0) continue;
+        const ratio = a1 / a0;
+        if (ratio >= 0.9 && ratio <= 1.1) matched = true;
+      }
+      if (!matched) return;
+      const last = sorted[sorted.length - 1];
+      // Already covered by a template under another name ("每月房租" vs "房租"): same category, amount within 10 %.
+      const avg = Math.abs(sorted.reduce((s, tx) => s + tx.amountMinor, 0) / sorted.length);
+      if ((base.recurring || []).some(rec => rec.categoryId === last.categoryId
+        && Math.abs(Math.abs(rec.amountMinor) - avg) <= avg * 0.1)) return;
+      const amountMinor = Math.round(sorted.reduce((s, tx) => s + tx.amountMinor, 0) / sorted.length);
+      out.push({
+        merchantKey: merchantKeyValue,
+        label: last.note || merchantKeyValue,
+        amountMinor,
+        categoryId: last.categoryId,
+        accountId: last.accountId,
+        currency: last.currency || base.settings.defaultCurrency,
+        transactionIds: sorted.map(tx => tx.id),
+      });
+    });
+    return out;
+  }
+
   /** List rows grouped by day (newest first) with a labelled daily subtotal. */
   function filterMoneyRows(ledger, ym, filters = {}) {
     const base = normalize(ledger);
     const q = String(filters.search || "").trim().toLowerCase();
+    let catSet = null;
+    if (filters.categoryIds instanceof Set) catSet = filters.categoryIds;
+    else if (Array.isArray(filters.categoryIds) && filters.categoryIds.length) catSet = new Set(filters.categoryIds);
+    else if (filters.categoryId) catSet = categoryFilterIds(base, filters.categoryId);
     const catName = id => {
       const c = base.categories.find(x => x.id === id);
       return c ? `${c.name} ${c.nameZh} ${c.nameDe}`.toLowerCase() : "";
     };
     const rows = transactionsInMonth(base, ym).filter(tx => {
       if (filters.hideTransfers && tx.transfer) return false;
-      if (filters.categoryId && tx.categoryId !== filters.categoryId) return false;
+      if (catSet && catSet.size && !catSet.has(tx.categoryId)) return false;
+      if (filters.date && tx.date !== filters.date) return false;
+      if (filters.txKind === "income" && tx.amountMinor <= 0) return false;
+      if (filters.txKind === "expense" && tx.amountMinor >= 0) return false;
       if (filters.currency && (tx.originalCurrency || tx.currency) !== filters.currency) return false;
       if (filters.accountId && tx.accountId !== filters.accountId) return false;
       if (filters.source && (tx.source === "import" ? "import" : "manual") !== filters.source) return false;
@@ -2774,6 +2876,8 @@
     isFixedTx,
     moneyMonth,
     budgetHint,
+    categoryFilterIds,
+    detectRecurringCandidates,
     filterMoneyRows,
     LEDGER_VERSION,
     emptyLedger,

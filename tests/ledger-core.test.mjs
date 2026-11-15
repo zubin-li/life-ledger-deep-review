@@ -1341,3 +1341,14 @@ test("Today quick sheet saves even before the ledger page was rendered", () => {
   const ui = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
   assert.match(ui, /quickAdd\(text, anchorDay, options\) \{\s*\/\/[^\n]*\n\s*if \(!ctx\) root\.renderLedger\?\.\(\);/);
 });
+
+test("guessCategory: a card purchase is not a credit-card bill; real bill payments still are", () => {
+  const ledger = L.normalize(undefined, { lang: "en" });
+  const slug = note => ledger.categories.find(c => c.id === L.guessCategory(ledger, note, -1000).categoryId)?.defaultSlug;
+  assert.equal(slug("Café Einstein — Mastercard Kaffee"), "dining");
+  assert.equal(slug("Kino International — Mastercard Kinotickets"), "entertainment");
+  assert.equal(slug("Zalando SE — Mastercard Bestellung"), "shopping");
+  assert.equal(slug("American Express Europe S.A. — Lastschrift AMEX Kartenabrechnung"), "credit-card");
+  assert.equal(slug("Visa Kreditkartenabrechnung 10/2026"), "credit-card");
+  assert.equal(slug("LUFTHANSA — Flug BER-MUC"), "travel");
+});
