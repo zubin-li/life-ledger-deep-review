@@ -3389,10 +3389,6 @@ html.motion-reduced .tw-card.tw-spending .tw-spend-top-cat {
   opacity: 0.82;
 }
 
-.tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading h3 {
-  display: none;
-}
-
 .tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading {
   align-items: flex-start;
   gap: 2px 8px;
@@ -5294,175 +5290,57 @@ html.motion-reduced .ledger-day-group.is-expanded .ledger-day-rows {
   color: var(--secondaryLabel, var(--muted));
 }
 
-/* Owner feedback pass r2 — Today quick-entry sheet */
-.today-ledger-sheet {
-  position: fixed;
-  inset: 0;
-  z-index: 12050;
-  display: grid;
-  place-items: end center;
-  padding: 12px 12px calc(12px + var(--mobile-nav-safe-bottom, 0px));
-  pointer-events: none;
-}
-
-.today-ledger-sheet:not([hidden]) {
-  pointer-events: auto;
-}
-
-.today-ledger-sheet-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(12, 16, 22, 0.42);
-  opacity: 0;
-  transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.today-ledger-sheet-panel {
-  position: relative;
-  width: min(100%, 420px);
-  padding: 16px 18px 18px;
-  border-radius: 20px;
-  background: var(--ll-surface-float, #ffffff);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
-  transform: translateY(12px);
-  opacity: 0;
-  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
-}
-
-html[data-theme="dark"] .today-ledger-sheet-panel {
-  background: var(--ll-surface-float, #1e2630);
-}
-
-.today-ledger-sheet.is-open .today-ledger-sheet-backdrop {
-  opacity: 1;
-}
-
-.today-ledger-sheet.is-open .today-ledger-sheet-panel {
-  transform: none;
-  opacity: 1;
-}
-
-.today-ledger-sheet.is-closing .today-ledger-sheet-backdrop {
-  opacity: 0;
-}
-
-.today-ledger-sheet.is-closing .today-ledger-sheet-panel {
-  transform: translateY(8px);
-  opacity: 0;
-  transition-duration: 0.18s;
-}
-
-.today-ledger-sheet-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.today-ledger-sheet-head h2 {
-  margin: 0;
-  font-size: 1.05rem;
-}
-
-.today-ledger-sheet-total {
-  margin: 0 0 12px;
-  font-size: 1.35rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.today-ledger-sheet-form {
-  display: grid;
-  gap: 10px;
-}
-
-.today-ledger-sheet-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.today-ledger-sheet-input-row input {
-  flex: 1;
-  min-width: 0;
-  padding: 0.65rem 0.85rem;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  font-size: 1.05rem;
-}
-
-.today-ledger-sheet-cat {
-  flex-shrink: 0;
-  max-width: 38%;
-}
-
-.today-ledger-sheet-recent-label {
-  display: block;
-  margin: 14px 0 6px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.68rem;
-  opacity: 0.65;
-}
-
-.today-ledger-sheet-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 6px;
-}
-
-.today-ledger-sheet-list li {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 8px;
-  align-items: center;
-  font-size: 0.88rem;
-}
-
-.today-ledger-sheet-row-amt {
-  font-variant-numeric: tabular-nums;
-}
-
-.today-ledger-sheet-full {
-  margin-top: 12px;
-  justify-self: start;
-}
-
-.today-ledger-sheet-panel.is-saved {
-  animation: tlsSavedPulse 0.48s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes tlsSavedPulse {
-  0%,
-  100% {
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
-  }
-  50% {
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18), 0 0 0 2px color-mix(in srgb, var(--accent-sage, #3a8f7a) 35%, transparent);
-  }
-}
-
+/* Slice 1 — Today quick-entry sheet: the spending card opened up (same surface, serif total, hairline). */
+.today-ledger-sheet { position: fixed; inset: 0; z-index: 12050; display: grid; place-items: end center; padding: 10px 10px calc(10px + var(--mobile-nav-safe-bottom, 0px)); pointer-events: none; }
+.today-ledger-sheet:not([hidden]) { pointer-events: auto; }
+.today-ledger-sheet-backdrop { position: absolute; inset: 0; background: rgba(20, 22, 26, .28); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; transition: opacity 240ms ease; }
+html[data-theme="dark"] .today-ledger-sheet-backdrop { background: rgba(4, 6, 10, .5); }
+.today-ledger-sheet-panel { position: relative; width: min(100%, 420px); padding: 18px 20px 14px; border-radius: 26px; border: 1px solid var(--line); background: var(--ll-surface-float, #fff); box-shadow: 0 1px 0 rgba(255,255,255,.5) inset, 0 24px 60px rgba(20, 22, 26, .16); opacity: 0; transform: translateY(24px); transition: transform 260ms cubic-bezier(.32, .72, 0, 1), opacity 200ms ease; }
+html[data-theme="dark"] .today-ledger-sheet-panel { box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
+.today-ledger-sheet.is-open .today-ledger-sheet-backdrop { opacity: 1; }
+.today-ledger-sheet.is-open .today-ledger-sheet-panel { opacity: 1; transform: none; }
+/* Exit is quicker than entry. */
+.today-ledger-sheet.is-closing .today-ledger-sheet-backdrop { opacity: 0; transition-duration: 160ms; }
+.today-ledger-sheet.is-closing .today-ledger-sheet-panel { opacity: 0; transform: translateY(12px); transition-duration: 160ms; transition-timing-function: ease; }
+.today-ledger-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.today-ledger-sheet-head h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -.01em; color: var(--ink); }
+.today-ledger-sheet-head .icon-button { width: 30px; height: 30px; border-radius: 50%; font-size: 16px; line-height: 1; color: var(--muted); background: transparent; }
+@media (hover: hover) and (pointer: fine) { .today-ledger-sheet-head .icon-button:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); } }
+.today-ledger-sheet-total { display: flex; align-items: baseline; gap: 10px; margin: 6px 0 14px; }
+.today-ledger-sheet-total-label { color: var(--muted); font-size: 12px; }
+.today-ledger-sheet-total-amt { order: -1; font: 500 30px/1.1 "Noto Serif SC", serif; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.today-ledger-sheet-form { display: grid; gap: 10px; }
+.today-ledger-sheet-input-row { display: flex; gap: 8px; align-items: center; padding: 0 6px 0 0; border: 1px solid var(--line); border-radius: 15px; background: color-mix(in srgb, var(--ink) 3%, transparent); transition: border-color 160ms ease, box-shadow 160ms ease; }
+.today-ledger-sheet-input-row:focus-within { border-color: color-mix(in srgb, var(--sage) 55%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage) 16%, transparent); }
+.today-ledger-sheet-input-row input { flex: 1; min-width: 0; height: 46px; padding: 0 14px; border: 0; background: transparent; color: var(--ink); font-size: 16px; outline: none; box-shadow: none; }
+.today-ledger-sheet-input-row input::placeholder { color: var(--muted); opacity: .8; }
+.today-ledger-sheet-input-row input.is-error { color: var(--coral, #c4553f); }
+.today-ledger-sheet-input-row:has(input.is-error) { animation: tlsShake 280ms cubic-bezier(.36, .07, .19, .97); border-color: color-mix(in srgb, var(--coral, #c4553f) 55%, transparent); }
+.today-ledger-sheet-cat { flex-shrink: 0; max-width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.today-ledger-sheet-form .primary-button { width: 100%; }
+.today-ledger-sheet-recent { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.today-ledger-sheet-recent:has(.today-ledger-sheet-list:empty) { display: none; }
+.today-ledger-sheet-recent-label { display: block; margin: 0 0 8px; color: var(--muted); font-size: 11px; letter-spacing: .04em; }
+.today-ledger-sheet-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.today-ledger-sheet-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-size: 13px; color: var(--ink); }
+.today-ledger-sheet-row-icon { width: 26px; height: 26px; }
+.today-ledger-sheet-row-note { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.today-ledger-sheet-row-amt { font-variant-numeric: tabular-nums; color: var(--muted); }
+.today-ledger-sheet-full { display: block; margin: 12px 0 0 auto; padding: 4px 0; font-size: 12px; color: var(--muted); background: none; border: 0; }
+@media (hover: hover) and (pointer: fine) { .today-ledger-sheet-full:hover { color: var(--ink); } }
+/* Save feedback: the newest row slides in, the button gives one soft sage glow. */
+.today-ledger-sheet-panel.is-saved .today-ledger-sheet-list li:first-child { animation: tlsRowIn 320ms cubic-bezier(.22, 1, .36, 1) both; }
+.today-ledger-sheet-panel.is-saved .primary-button { animation: tlsSaved 480ms cubic-bezier(.22, 1, .36, 1); }
+@keyframes tlsRowIn { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes tlsSaved { 40% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--sage) 28%, transparent); } }
+@keyframes tlsShake { 25% { transform: translateX(-4px); } 75% { transform: translateX(3px); } }
 html.motion-reduced .today-ledger-sheet-panel,
-html.motion-reduced .today-ledger-sheet-backdrop {
-  transition: none !important;
-  animation: none !important;
-}
-
+html.motion-reduced .today-ledger-sheet-backdrop,
+html.motion-reduced .today-ledger-sheet-panel * { transition: none !important; animation: none !important; }
 @media (min-width: 720px) {
-  .today-ledger-sheet {
-    place-items: center;
-    padding: 24px;
-  }
-
-  .today-ledger-sheet-panel {
-    transform: translateY(8px) scale(0.98);
-  }
-
-  .today-ledger-sheet.is-open .today-ledger-sheet-panel {
-    transform: none;
-  }
+  .today-ledger-sheet { place-items: center; padding: 24px; }
+  .today-ledger-sheet-panel { transform: translateY(8px) scale(.97); transition-timing-function: cubic-bezier(.22, 1, .36, 1), ease; }
+  .today-ledger-sheet.is-closing .today-ledger-sheet-panel { transform: scale(.98); }
 }
 
 /* motion: system reduce fallback — html.motion-reduced set in index.html */
@@ -6056,3 +5934,33 @@ html.tc-on .tc-edit-toggle.tc-edit-saved-flash {
     animation: ledger-stats-scope-in 0.42s var(--ease-enter, cubic-bezier(0.22, 1, 0.36, 1)) both;
   }
 }
+
+/* Slice 1 (11-03 redo): Today spending card in 2.0 card language — total, top 3 categories, one add button. */
+.tw-spending .tw-spend-main { display: flex; flex-direction: column; gap: 12px; height: 100%; align-content: initial; }
+.tw-spend-total { display: flex; align-items: baseline; gap: 8px; }
+.tw-spend-amount { font: 500 26px/1.1 "Noto Serif SC", serif; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.tw-spend-count { color: var(--muted); font-size: 11px; }
+.tw-spend-cats { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.tw-spend-cats li { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; font-size: 12px; color: var(--ink); animation: twSpendRow 420ms var(--ease-enter, cubic-bezier(.22,1,.36,1)) both; }
+.tw-spend-cats li:nth-child(2) { animation-delay: 60ms; }
+.tw-spend-cats li:nth-child(3) { animation-delay: 120ms; }
+.tw-spend-cat-amt { color: var(--muted); font-variant-numeric: tabular-nums; }
+.tw-spend-cats i { grid-column: 1 / -1; height: 4px; border-radius: 99px; background: color-mix(in srgb, var(--w-solid) 12%, transparent); overflow: hidden; position: relative; }
+.tw-spend-cats i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--pct); border-radius: inherit; background: var(--cat, var(--w-solid)); transform-origin: left; animation: twSpendBar 600ms var(--ease-enter, cubic-bezier(.22,1,.36,1)) both; }
+.tw-spend-empty { margin: 0; }
+.tw-spending .tw-spend-open { font-size: 11px; color: var(--muted); padding: 0; }
+.tw-spending .tw-spend-open:hover { color: var(--w-solid); }
+.tc-grid > .tc-card[data-size="S"] .tw-spend-cats li:nth-child(n+2) { display: none; }
+.tc-grid > .tc-card[data-size="S"] .tw-spend-amount { font-size: 22px; }
+@keyframes twSpendRow { from { opacity: 0; transform: translateY(4px); } }
+@keyframes twSpendBar { from { transform: scaleX(0); } }
+html.motion-reduced .tw-spend-cats li, html.motion-reduced .tw-spend-cats i::after { animation: none; }
+
+/* Spending card: header link stays one line. The card itself opens the today sheet. */
+.tw-spending .daily-goals-heading { align-items: center; }
+.tw-spending .daily-goals-heading h3 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.tw-spending .tw-spend-open { white-space: nowrap; flex: none; }
+.tc-grid > .tc-card[data-size="S"] .tw-spending .tw-spend-open { display: none; }
+/* S card: long titles (DE "Ausgaben heute") wrap to two lines instead of collapsing to an ellipsis. */
+.tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading h3 { white-space: normal; overflow-wrap: anywhere; line-height: 1.2; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.tw-spend-count { white-space: nowrap; }

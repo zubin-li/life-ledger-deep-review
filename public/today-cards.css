@@ -418,7 +418,6 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 .tc-grid > .tc-card[data-size="S"] .tw-weather .weather-empty .tw-art { width: 70px; }
 .tc-grid > .tc-card[data-size="M"] .tw-weather .weather-empty { display: grid; grid-template-columns: auto minmax(0, 22ch); column-gap: 18px; row-gap: 4px; align-content: center; justify-content: center; text-align: left; }
 .tc-grid > .tc-card[data-size="M"] .tw-weather .weather-empty .tw-art { grid-row: 1 / 4; width: 96px; }
-.tc-grid > .tc-card[data-size="M"] .tw-weather .weather-empty .tw-set-city { justify-self: start; }
 .tw-weather .weather-symbol { display: grid; place-items: center; width: 34px; height: 34px; color: #e4aa23; }
 .tw-weather .weather-symbol svg { width: 100%; height: 100%; }
 .tw-weather #weatherDetail[data-kind="cloud"] .weather-symbol { color: #8fa3b3; }
@@ -476,7 +475,7 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 /* L: stats + month + legend */
 .tc-grid > .tc-card[data-size="L"] .tw-heat-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .tw-heat-stats div { padding: 9px 12px; border-radius: 14px; background: color-mix(in srgb, var(--w-tint) 60%, transparent); }
-.tw-heat-stats b { display: block; font: 500 20px/1.1 "Noto Serif SC", serif; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tw-heat-stats b { display: block; font: 500 28px/1.1 "Noto Serif SC", serif; color: var(--ink); font-variant-numeric: tabular-nums; }
 .tw-heat-stats span { color: var(--muted); font-size: 10.5px; }
 
 /* ---- frequency ---- */
@@ -505,7 +504,7 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 .tw-focus .tw-body { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 18px; }
 .tw-focus-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .tw-focus-ring { width: 104px; height: 104px; }
-.tw-focus-ring strong { font: 500 22px "Noto Serif SC", serif; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.tw-focus-ring strong { font: 500 28px "Noto Serif SC", serif; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
 .tw-focus-meta { display: grid; gap: 6px; justify-items: start; min-width: 0; }
 .tw-focus-topic { max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; }
 .tw-focus .tw-focus-start { margin: 4px 0 0; padding: 8px 16px; }
@@ -515,7 +514,7 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 .tc-grid > .tc-card[data-size="S"] .tw-focus :is(.tw-focus-topic, .tw-focus-today) { display: none; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-main { flex-direction: column; gap: 8px; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring { width: 84px; height: 84px; }
-.tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring strong { font-size: 18px; }
+.tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring strong { font-size: 22px; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-meta { justify-items: center; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-start { margin: 0; padding: 6px 14px; font-size: 12px; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-body { padding-top: 6px; }
@@ -524,7 +523,7 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 /* ---- recent rhythm ---- */
 .tw-rhythm-days i { width: 12px; background: color-mix(in srgb, var(--w-solid) 14%, transparent); }
 .tw-rhythm-days i::after { background: linear-gradient(180deg, color-mix(in srgb, var(--w-solid) 70%, white), var(--w-solid)); }
-.tw-rhythm-pct { font: 500 18px "Noto Serif SC", serif; color: var(--w-solid); }
+.tw-rhythm-pct { font: 500 28px/1 "Noto Serif SC", serif; color: var(--w-solid); }
 
 /* ---- day photos ---- */
 .tc-grid .tw-photos .tw-photo-list:has(.tw-empty) { display: flex; }
@@ -566,7 +565,7 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 /* focus S: ring left, time + start right — fits the 1×1 footprint */
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-main { flex-direction: row; gap: 12px; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring { width: 78px; height: 78px; }
-.tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring strong { font-size: 16px; }
+.tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring strong { font-size: 22px; }
 .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-meta { justify-items: start; }
 /* heatmap M: compact header (no rule) so the 26-week grid gets ~15px cells */
 .tc-grid > .tc-card[data-size="M"] .tw-heatmap { padding-top: 16px; padding-bottom: 14px; }
@@ -641,7 +640,7 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 @media (max-width: 640px) {
   .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-main { flex-direction: row; gap: 10px; }
   .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring { width: 64px; height: 64px; flex: none; }
-  .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring strong { font-size: 15px; }
+  .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-ring strong { font-size: 20px; }
   .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-meta { min-width: 0; }
   .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-focus-start { padding: 7px 11px; font-size: 12px; white-space: nowrap; }
   .tc-grid > .tc-card[data-size="S"] .tw-focus .tw-body { padding-top: 0; }
@@ -748,3 +747,26 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 .tc-dialog form { max-height: calc(100dvh - 24px); overflow-y: auto; }
 /* thumbnail strip scrolls sideways: fade the edge so the 6th photo reads as "more", not as cut off */
 .tc-dialog .tw-wall-thumbs { mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); padding-right: 18px; }
+
+/* Stretched card hit: one button covers the card. Real controls sit above it. */
+.mood-card:has(> .tc-card-hit),
+.tw-card:has(> .tc-card-hit) { position: relative; }
+.tc-card-hit,
+.apple-interactive > .tc-card-hit {
+  position: absolute; inset: 0; z-index: 3; margin: 0; padding: 0; border: 0; border-radius: inherit;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.tc-card-hit:focus { outline: none; }
+.tc-card-hit:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--w-solid, var(--sage, #3a8f7a)) 75%, transparent);
+  outline-offset: 3px;
+}
+.tc-card-hit:active { background: color-mix(in srgb, var(--ink, #1d1d1f) 6%, transparent); }
+.tc-card-chevron { align-self: center; color: var(--muted); font-size: 16px; line-height: 1; pointer-events: none; }
+.tc-core-wrap { display: inline-flex; align-items: center; gap: 4px; flex: none; }
+#foundationsCount { font: 500 30px/1 "Noto Serif SC", serif; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.mood-card:has(> .tc-card-hit) :is(button:not(.tc-card-hit), a, .mood-options),
+.tw-card:has(> .tc-card-hit) :is(button:not(.tc-card-hit), a, input:not(.sr-only), select, textarea, #weatherPlot, .tw-rhythm-days),
+.tc-grid > [data-card="habits"] :is(button:not(.tc-card-hit), a, .habit-card, #todayHabitViewport, .habit-carousel-nav) {
+  position: relative; z-index: 4;
+}

@@ -1,4 +1,4 @@
-import { webkit } from "/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright/index.mjs";
+import { webkit } from "/Users/ashan/Documents/Codex/ll-overnight/node_modules/playwright/index.mjs";
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";

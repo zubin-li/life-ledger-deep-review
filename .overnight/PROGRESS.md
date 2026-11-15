@@ -532,3 +532,41 @@ _pending (driver appends after commit)_
 
 ## Driver gate after round 10
 ℹ tests 417 ℹ pass 417 ℹ fail 0 
+07:59 重新开始 B1（接着昨晚中断处）
+08:05 已确认 4→3 个失败全因 money-ui.js/money.css 未建；样式表顺序已修。下一步：写 money.css 和 money-ui.js
+08:17 恢复上下文：确认核心模型已完成，剩 3 个失败均因 money-ui.js / money.css 尚未创建；下一步写 Money 页 UI。
+08:26 money-ui.js + money.css 已写完并接上核心；npm test 443/443 通过；下一步无头截图并逐张检查。
+08:33 B1 完成：截图 6 张逐张检查并修完，测试 445/445，报告已写；下一步 B2 银行导入（等安排）。
+08:34 开始 B2 银行导入：读规格与 B1 报告
+08:44 恢复上下文：B2 代码尚未开始，先写核心解析/匹配与夹具测试
+09:12 Opus B2 会话停止（省 token）：解析/对账逻辑改交 Cursor 写、Gemini 审；fixtures 已就绪
+09:15 B2a 开始：Cursor 写导入逻辑
+09:22 B2a 完成：`public/bank-import.js` 解析/指纹/对账/提交/撤销/余额 + `tests/bank-import.test.mjs`，已接入 `index.html` 与 `sw.js`（`importGermanBankCsv` 未动）
+09:32 B2a 结束：cursor=0 npm_test=1 review=0
+09:32 B2a 第二轮：Cursor 修 7 个失败测试 + 审核问题
+09:45 B2a-fix：bank-import 预设/对账/提交性能/原子转账已修，新增 High 回归测，待本地 `npm test` 验收
+09:34 B2a 第二轮结束：cursor=0 npm_test=1
+09:35 B2a 通过：Hermes 修 2 处（金额带 EUR 后缀、测试里 Map 判断），全部测试见下次汇报
+09:59 B2b 开始：Cursor 写导入界面
+09:59 B2b 结束：cursor=1 npm_test=0
+10:00 B2b 开始：Cursor 写导入界面
+10:15 B2b：`money-ui.js` 四步导入向导 + 设置里历史/余额/列映射持久化（`ledger-core` meta）；`.overnight/capture-b2-import.mjs` 截图脚本；待本地 `npm test` + 跑截图
+10:07 B2b 结束：cursor=0 npm_test=0
+06:50 B2c 开始：Cursor 写 AI 提示词导入 + 分类修复
+06:52 B2c 结束：cursor=0 npm_test=1
+06:56 B2c 验收：修 3 处（转账被覆盖、新增分类重复添加、提示词中英混杂）+ 转账计数/说明；473/473；截图 b2c-*.png
+07:10 B2d 开始：Cursor 写 多卡联动+信用卡语义+CSV 基础
+07:57 B2d 开始：Cursor 写 多卡联动+信用卡语义+CSV 基础
+08:17 B2d 结束：cursor=143 npm_test=0
+08:18 B2d1 开始
+08:41 B2d1 结束：cursor=0 npm_test=1 改动= 13 files changed, 592 insertions(+), 417 deletions(-)
+08:41 B2d2 开始
+09:06 B2d2 结束：cursor=0 npm_test=0 改动= 13 files changed, 594 insertions(+), 417 deletions(-)
+09:07 B2d 验收：修 AMEX↔American Express 匹配；482/482；三账户截图 b2d-*.png
+09:27 B2e 开始
+09:51 B2e 结束：cursor=0 npm_test=1 改动= 13 files changed, 597 insertions(+), 417 deletions(-)
+09:55 B2e 验收：修来源配对测试/ledger 配对提交/转账计入今日支出；490/490；截图 b2e-*.png
+21:06 C1 开始
+21:36 C1 结束：cursor=0 npm_test=1 改动= 18 files changed, 764 insertions(+), 455 deletions(-)
+21:36 C2 开始
+21:56 C2 结束：cursor=0 npm_test=0 改动= 19 files changed, 867 insertions(+), 474 deletions(-)

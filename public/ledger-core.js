@@ -4,11 +4,19 @@
   const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
   const DEFAULT_EXPENSE_CATEGORIES = [
-    { slug: "groceries", name: "Groceries", icon: "shopping", color: "sage", zh: "日用", de: "Lebensmittel" },
+    { slug: "groceries", name: "Groceries", icon: "shopping", color: "sage", zh: "超市买菜", de: "Lebensmittel", old: { zh: ["日用"] } },
     { slug: "dining", name: "Dining", icon: "coffee", color: "amber", zh: "餐饮", de: "Essen" },
     { slug: "transport", name: "Transport", icon: "car", color: "blue", zh: "交通", de: "Mobilität" },
     { slug: "housing", name: "Housing", icon: "home", color: "coral", zh: "住房", de: "Wohnen" },
-    { slug: "health", name: "Health", icon: "heart", color: "violet", zh: "健康", de: "Gesundheit" },
+    { slug: "health", name: "Medical", icon: "heart", color: "violet", zh: "医疗", de: "Arzt & Apotheke", old: { name: ["Health"], zh: ["健康"], de: ["Gesundheit"] } },
+    { slug: "health-insurance", name: "Health insurance", icon: "heart", color: "violet", zh: "医疗保险", de: "Krankenversicherung" },
+    { slug: "insurance", name: "Other insurance", icon: "heart", color: "blue", zh: "其他保险", de: "Sonstige Versicherungen", old: { name: ["Insurance"], zh: ["保险"], de: ["Versicherungen"] } },
+    { slug: "telecom", name: "Phone & internet", icon: "home", color: "cyan", zh: "通讯网络", de: "Telefon & Internet" },
+    { slug: "subscriptions", name: "Subscriptions", icon: "music", color: "amber", zh: "订阅", de: "Abos" },
+    { slug: "travel", name: "Travel", icon: "car", color: "blue", zh: "旅行", de: "Reisen" },
+    { slug: "education", name: "Education", icon: "sparkles", color: "coral", zh: "学习", de: "Bildung" },
+    { slug: "fees", name: "Bank fees & taxes", icon: "wallet", color: "sage", zh: "手续费与税", de: "Gebühren & Steuern" },
+    { slug: "credit-card", name: "Credit card bill", icon: "wallet", color: "coral", zh: "信用卡还款", de: "Kreditkartenabrechnung" },
     { slug: "shopping", name: "Shopping", icon: "shopping", color: "cyan", zh: "购物", de: "Einkauf" },
     { slug: "entertainment", name: "Entertainment", icon: "music", color: "amber", zh: "娱乐", de: "Freizeit" },
     { slug: "other", name: "Other", icon: "more", color: "sage", zh: "其他", de: "Sonstiges" },
@@ -17,6 +25,14 @@
     { slug: "salary", name: "Salary", icon: "wallet", color: "sage", zh: "工资", de: "Gehalt" },
     { slug: "side-income", name: "Side income", icon: "sparkles", color: "amber", zh: "副业", de: "Nebeneinkommen" },
     { slug: "other-income", name: "Other income", icon: "plus", color: "blue", zh: "其他收入", de: "Sonstige Einnahmen" },
+  ];
+  /** Headings only. Leaves keep their ids; parentId points here. */
+  const DEFAULT_CATEGORY_GROUPS = [
+    { slug: "grp-food", name: "Food", zh: "饮食", de: "Essen", icon: "shopping", color: "cat-1", children: ["groceries", "dining"] },
+    { slug: "grp-home", name: "Home", zh: "居住", de: "Wohnen", icon: "home", color: "cat-2", children: ["housing", "telecom"] },
+    { slug: "grp-health", name: "Health & insurance", zh: "健康与保险", de: "Gesundheit & Versicherung", icon: "heart", color: "cat-3", children: ["health", "health-insurance", "insurance"] },
+    { slug: "grp-leisure", name: "Leisure & subscriptions", zh: "休闲与订阅", de: "Freizeit & Abos", icon: "music", color: "cat-4", children: ["entertainment", "subscriptions"] },
+    { slug: "grp-finance", name: "Finance", zh: "金融", de: "Finanzen", icon: "wallet", color: "cat-5", children: ["fees", "credit-card"] },
   ];
 
   function clone(value) {
@@ -31,13 +47,25 @@
   function emptyLedger() {
     return {
       version: LEDGER_VERSION,
-      settings: { defaultCurrency: "EUR", secondaryCurrency: "CNY" },
+      settings: defaultMoneySettings(),
       accounts: [],
       categories: [],
       transactions: [],
       budgets: [],
       recurring: [],
-      meta: { recentCategoryIds: [], lastEntryAt: 0, noteCategoryHints: {} },
+      meta: { recentCategoryIds: [], lastEntryAt: 0, noteCategoryHints: {}, fxCache: {} },
+    };
+  }
+  function defaultMoneySettings() {
+    return {
+      defaultCurrency: "EUR",
+      secondaryCurrency: "CNY",
+      perEntryCurrency: true,
+      autoFx: true,
+      monthlyBudgetMinor: 0,
+      fixedCategoryIds: [],
+      hideTransfers: true,
+      ownerNames: [],
     };
   }
 
@@ -88,6 +116,24 @@
     return out;
   }
 
+  /** Add any default categories missing from an existing ledger (match slug or localized names). */
+  // Defaults added in 2.1. Supplement each once per ledger (meta.supplementedSlugs) so a later archive/delete sticks.
+  const SUPPLEMENT_SLUGS = ["health-insurance", "insurance", "telecom", "subscriptions", "travel", "education", "fees", "credit-card"];
+
+  function supplementDefaultCategories(ledger) {
+    const done = new Set(Array.isArray(ledger.meta.supplementedSlugs) ? ledger.meta.supplementedSlugs : []);
+    for (const def of DEFAULT_EXPENSE_CATEGORIES.filter(d => SUPPLEMENT_SLUGS.includes(d.slug) && !done.has(d.slug))) {
+      done.add(def.slug);
+      if (ledger.categories.some(c => c.kind === "expense" && categoryMatchesDefault(c, def))) continue;
+      ledger.categories.push({
+        id: createId(), defaultSlug: def.slug, name: def.name, nameZh: def.zh, nameDe: def.de,
+        kind: "expense", icon: def.icon, color: def.color, parentId: "", archived: false,
+      });
+    }
+    ledger.meta.supplementedSlugs = [...done];
+    return ledger;
+  }
+
   function categoryMatchesDefault(cat, def) {
     if (cat.defaultSlug && def.slug && cat.defaultSlug === def.slug) return true;
     if (cat.name === def.name) return true;
@@ -99,27 +145,67 @@
   }
 
   function defaultDefForCategory(cat) {
-    if (!cat || cat.archived) return null;
+    if (!cat || cat.archived || cat.isGroup) return null;
     const pool = cat.kind === "income" ? DEFAULT_INCOME_CATEGORIES : DEFAULT_EXPENSE_CATEGORIES;
     return pool.find(def => categoryMatchesDefault(cat, def)) || null;
   }
 
-  /** One-time repair when old seeds overwrote English `name` with zh/de. */
+  /** One-time repair when old seeds overwrote English `name` with zh/de, plus default-label renames when the field still equals a shipped label. */
   function repairDefaultCategoryNames(categories) {
     if (!Array.isArray(categories)) return categories;
     return categories.map(cat => {
       const def = defaultDefForCategory(cat);
       if (!def) return cat;
       const next = { ...cat };
-      const nameWasLocalized = next.name === def.zh || next.name === def.de;
+      const old = def.old || {};
+      const nameWasLocalized = next.name === def.zh || next.name === def.de
+        || (old.name || []).includes(next.name)
+        || (old.zh || []).includes(next.name)
+        || (old.de || []).includes(next.name);
       const localizedFieldsMatch = next.nameZh === def.zh || next.nameDe === def.de;
-      if (nameWasLocalized || (next.name !== def.name && localizedFieldsMatch)) {
-        next.name = def.name;
-      }
-      if (!next.nameZh) next.nameZh = def.zh;
-      if (!next.nameDe) next.nameDe = def.de;
+      if (nameWasLocalized || (next.name !== def.name && localizedFieldsMatch)) next.name = def.name;
+      if (!next.nameZh || (old.zh || []).includes(next.nameZh)) next.nameZh = def.zh;
+      if (!next.nameDe || (old.de || []).includes(next.nameDe)) next.nameDe = def.de;
       return next;
     });
+  }
+
+  /** Parent must be a group, one level, no cycles. Groups stay top-level. */
+  function sanitizeCategoryParents(categories) {
+    const byId = new Map(categories.map(c => [c.id, { ...c, isGroup: c.isGroup === true, parentId: c.isGroup ? "" : (typeof c.parentId === "string" ? c.parentId : "") }]));
+    for (const c of byId.values()) {
+      if (!c.parentId || c.isGroup) { c.parentId = ""; continue; }
+      const parent = byId.get(c.parentId);
+      if (!parent || !parent.isGroup || parent.id === c.id) c.parentId = "";
+    }
+    return [...byId.values()];
+  }
+
+  /** Once per ledger: create grp-* headings and parent untouched default leaves. Custom rows, ids, transactions stay. */
+  function applyCategoryGroups(ledger) {
+    ledger.categories = ledger.categories.map(c => {
+      const def = DEFAULT_CATEGORY_GROUPS.find(g => g.slug && c.defaultSlug === g.slug);
+      return def ? { ...c, isGroup: true, parentId: "" } : c;
+    });
+    if (ledger.meta.categoryGroupsV1 !== true) {
+      for (const g of DEFAULT_CATEGORY_GROUPS) {
+        let group = ledger.categories.find(c => c.defaultSlug === g.slug);
+        if (!group) {
+          group = {
+            id: createId(), defaultSlug: g.slug, name: g.name, nameZh: g.zh, nameDe: g.de,
+            kind: "expense", icon: g.icon, color: g.color, parentId: "", archived: false, isGroup: true,
+          };
+          ledger.categories.push(group);
+        }
+        for (const slug of g.children) {
+          const leaf = ledger.categories.find(c => c.defaultSlug === slug && !c.isGroup);
+          if (leaf && !leaf.parentId) leaf.parentId = group.id;
+        }
+      }
+      ledger.meta.categoryGroupsV1 = true;
+    }
+    ledger.categories = sanitizeCategoryParents(ledger.categories);
+    return ledger;
   }
 
   function ensurePrimaryAccount(ledger) {
@@ -151,15 +237,26 @@
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
       const fresh = emptyLedger();
       fresh.categories = seedDefaultCategories(fresh.categories, options.lang);
+      defaultFixedCategories(fresh);
       ensurePrimaryAccount(fresh);
+      applyCategoryGroups(fresh);
       return fresh;
     }
     const ledger = emptyLedger();
     ledger.version = raw.version === LEDGER_VERSION ? LEDGER_VERSION : LEDGER_VERSION;
     if (raw.settings && typeof raw.settings === "object") {
+      const s = raw.settings;
       ledger.settings = {
-        defaultCurrency: typeof raw.settings.defaultCurrency === "string" ? raw.settings.defaultCurrency : "EUR",
-        secondaryCurrency: typeof raw.settings.secondaryCurrency === "string" ? raw.settings.secondaryCurrency : "CNY",
+        defaultCurrency: typeof s.defaultCurrency === "string" ? s.defaultCurrency : "EUR",
+        secondaryCurrency: typeof s.secondaryCurrency === "string" ? s.secondaryCurrency : "CNY",
+        perEntryCurrency: s.perEntryCurrency !== false,
+        autoFx: s.autoFx !== false,
+        monthlyBudgetMinor: Number.isInteger(s.monthlyBudgetMinor) && s.monthlyBudgetMinor > 0 ? s.monthlyBudgetMinor : 0,
+        fixedCategoryIds: Array.isArray(s.fixedCategoryIds) ? s.fixedCategoryIds.filter(id => typeof id === "string").slice(0, 60) : [],
+        hideTransfers: s.hideTransfers !== false,
+        ownerNames: Array.isArray(s.ownerNames)
+          ? s.ownerNames.filter(n => typeof n === "string").map(n => n.trim()).filter(Boolean).slice(0, 8).map(n => n.slice(0, 80))
+          : [],
       };
     }
     if (Array.isArray(raw.accounts)) {
@@ -167,10 +264,13 @@
         id: a.id,
         name: a.name.slice(0, 120),
         currency: typeof a.currency === "string" ? a.currency : ledger.settings.defaultCurrency,
-        kind: ["cash", "checking", "savings"].includes(a.kind) ? a.kind : "checking",
+        kind: ["cash", "checking", "savings", "credit"].includes(a.kind) ? a.kind : "checking",
         icon: typeof a.icon === "string" ? a.icon : "wallet",
         color: typeof a.color === "string" ? a.color : "sage",
         archived: a.archived === true,
+        openingBalanceMinor: Number.isInteger(a.openingBalanceMinor) ? a.openingBalanceMinor : 0,
+        openingDate: ISO_DATE.test(a.openingDate || "") ? a.openingDate : "",
+        ...(String(a.iban || "").replace(/\s/g, "") ? { iban: String(a.iban).replace(/\s/g, "").toUpperCase().slice(0, 34) } : {}),
       }));
     }
     if (Array.isArray(raw.categories)) {
@@ -184,6 +284,8 @@
         color: typeof c.color === "string" ? c.color : "sage",
         parentId: typeof c.parentId === "string" ? c.parentId : "",
         archived: c.archived === true,
+        defaultSlug: typeof c.defaultSlug === "string" ? c.defaultSlug : "",
+        isGroup: c.isGroup === true,
       }));
     }
     if (Array.isArray(raw.transactions)) {
@@ -216,10 +318,61 @@
             .slice(0, 240),
         );
       }
+      if (raw.meta.fxCache && typeof raw.meta.fxCache === "object" && !Array.isArray(raw.meta.fxCache)) {
+        ledger.meta.fxCache = Object.fromEntries(
+          Object.entries(raw.meta.fxCache)
+            .filter(([k, v]) => /^[A-Z]{3}:\d{4}-\d{2}-\d{2}$/.test(k) && Number.isFinite(v) && v > 0)
+            .slice(-400),
+        );
+      }
+      if (Array.isArray(raw.meta.supplementedSlugs)) {
+        ledger.meta.supplementedSlugs = raw.meta.supplementedSlugs.filter(x => typeof x === "string");
+      }
+      if (raw.meta.categoryGroupsV1 === true) ledger.meta.categoryGroupsV1 = true;
+      if (Array.isArray(raw.meta.importBatches)) {
+        ledger.meta.importBatches = raw.meta.importBatches
+          .filter(b => b && typeof b.id === "string")
+          .map(b => ({
+            id: b.id,
+            accountId: typeof b.accountId === "string" ? b.accountId : "",
+            createdAt: Number(b.createdAt) || 0,
+            newTxIds: Array.isArray(b.newTxIds) ? b.newTxIds.filter(id => typeof id === "string") : [],
+            merges: Array.isArray(b.merges) ? b.merges.filter(m => m && typeof m.txId === "string" && m.before) : [],
+            transferLinks: Array.isArray(b.transferLinks) ? b.transferLinks : [],
+          }))
+          .slice(-80);
+      }
+      if (raw.meta.bankImportByAccount && typeof raw.meta.bankImportByAccount === "object" && !Array.isArray(raw.meta.bankImportByAccount)) {
+        ledger.meta.bankImportByAccount = Object.fromEntries(
+          Object.entries(raw.meta.bankImportByAccount)
+            .filter(([k, v]) => typeof k === "string" && v && typeof v === "object")
+            .slice(0, 40)
+            .map(([k, v]) => [k, { presetId: typeof v.presetId === "string" ? v.presetId : "", mapping: v.mapping && typeof v.mapping === "object" ? v.mapping : {} }]),
+        );
+      }
+      if (raw.meta.bankStatementClosing && typeof raw.meta.bankStatementClosing === "object" && !Array.isArray(raw.meta.bankStatementClosing)) {
+        ledger.meta.bankStatementClosing = Object.fromEntries(
+          Object.entries(raw.meta.bankStatementClosing)
+            .filter(([k, v]) => typeof k === "string" && v && Number.isInteger(v.closingBalanceMinor))
+            .slice(0, 40)
+            .map(([k, v]) => [k, { closingBalanceMinor: v.closingBalanceMinor, asOfDate: ISO_DATE.test(v.asOfDate || "") ? v.asOfDate : "" }]),
+        );
+      }
     }
     ledger.categories = repairDefaultCategoryNames(ledger.categories);
     ledger.categories = seedDefaultCategories(ledger.categories, options.lang);
+    supplementDefaultCategories(ledger);
+    applyCategoryGroups(ledger);
+    if (!Array.isArray(raw.settings?.fixedCategoryIds)) defaultFixedCategories(ledger);
     ensurePrimaryAccount(ledger);
+    return ledger;
+  }
+
+  /** Until the owner edits the list, rent-like "housing" counts as fixed. */
+  function defaultFixedCategories(ledger) {
+    const def = DEFAULT_EXPENSE_CATEGORIES.find(d => d.slug === "housing");
+    const housing = ledger.categories.find(c => c.kind === "expense" && !c.archived && categoryMatchesDefault(c, def));
+    ledger.settings.fixedCategoryIds = housing ? [housing.id] : [];
     return ledger;
   }
 
@@ -251,9 +404,12 @@
   const NOTE_INFERENCE_RULES = [
     { slug: "dining", kind: "expense", words: ["咖啡", "kaffee", "coffee", "restaurant", "café", "cafe", "午餐", "晚餐", "外卖", "essen", "lunch", "dinner", "breakfast", "frühstück", "bäckerei", "bakery"] },
     { slug: "housing", kind: "expense", words: ["miete", "rent", "房租", "wohnung", "nebenkosten"] },
-    { slug: "groceries", kind: "expense", words: ["rewe", "lidl", "aldi", "edeka", "penny", "netto", "超市", "supermarket", "groceries", "dm", "rossmann", "kaufland"] },
-    { slug: "transport", kind: "expense", words: ["u-bahn", "ubahn", "s-bahn", "sbahn", "deutsche bahn", "地铁", "公交", "ticket", "tanken", "benzin", "fuel", "bvg", "mvv", "hvv"] },
+    { slug: "groceries", kind: "expense", words: ["rewe", "edeka", "aldi", "lidl", "netto", "penny", "kaufland", "dm", "rossmann", "超市", "supermarket", "groceries"] },
+    { slug: "transport", kind: "expense", words: ["u-bahn", "ubahn", "s-bahn", "sbahn", "deutsche bahn", "db vertrieb", "bvg", "mvg", "uber", "tankstelle", "shell", "aral", "地铁", "公交", "ticket", "tanken", "benzin", "fuel", "mvv", "hvv"] },
     { slug: "health", kind: "expense", words: ["apotheke", "pharmacy", "arzt", "doctor", "医院", "health"] },
+    { slug: "telecom", kind: "expense", words: ["freenet", "telekom", "vodafone", "telefonica", "o2", "1&1", "congstar", "1und1"] },
+    { slug: "subscriptions", kind: "expense", words: ["netflix", "spotify", "apple.com/bill", "google", "amazon prime", "disney"] },
+    { slug: "fees", kind: "expense", words: ["entgelt", "gebühr", "kontoführung", "finanzamt"] },
     { slug: "salary", kind: "income", words: ["工资", "gehalt", "salary", "lohn", "payroll", "einkommen"] },
   ];
 
@@ -269,7 +425,7 @@
     const key = normalizeNoteHintKey(note);
     const hints = base.meta?.noteCategoryHints;
     if (key && hints && hints[key]) {
-      const hinted = base.categories.find(c => c.id === hints[key] && !c.archived);
+      const hinted = base.categories.find(c => c.id === hints[key] && !c.archived && !c.isGroup);
       if (hinted) return hinted;
     }
     const hay = key;
@@ -277,6 +433,27 @@
     const rawText = String(options.rawText || note || "");
     const explicitIncome = /^\+\s*\d/.test(rawText.trim());
     const kind = explicitIncome || amountMinor > 0 ? "income" : "expense";
+    if (kind === "expense") {
+      const pad = ` ${hay} `;
+      const healthIns = ["krankenkasse", "krankenvers", "techniker", " tk", " aok", "barmer", " dak", "dkv", "private krankenversicherung"];
+      if (healthIns.some(w => pad.includes(w)) || /^tk$/.test(hay) || /\btk\b/.test(hay)) {
+        const cat = categoryByDefaultSlug(base.categories, "health-insurance", "expense");
+        if (cat) return cat;
+      }
+      const insCue = /versicherung/.test(hay)
+        || (/\ballianz\b/.test(hay) && !/kranken/.test(hay))
+        || /\bhuk\b/.test(hay)
+        || /\bergo\b/.test(hay)
+        || /haftpflicht/.test(hay);
+      if (insCue) {
+        const cat = categoryByDefaultSlug(base.categories, "insurance", "expense");
+        if (cat) return cat;
+      }
+      if (/american express|\bamex\b|kreditkartenabrechnung|kreditkarte|visa card|mastercard|barclaycard|advanzia/.test(hay)) {
+        const cat = categoryByDefaultSlug(base.categories, "credit-card", "expense");
+        if (cat) return cat;
+      }
+    }
     for (const rule of NOTE_INFERENCE_RULES) {
       if (rule.kind !== kind) continue;
       if (rule.words.some(w => hay.includes(w))) {
@@ -344,7 +521,7 @@
     }
     if (amountMinor === null) return { ok: false, error: "amount" };
 
-    const activeCategories = base.categories.filter(c => !c.archived);
+    const activeCategories = base.categories.filter(c => !c.archived && !c.isGroup);
     const hint = notePart.toLowerCase();
     // Unsigned amounts are spending ("4,20 Kaffee"); infer with the expense sign first, then fall back.
     const signedIncome = /^\+\s*\d/.test(String(text || "").trim());
@@ -357,7 +534,10 @@
       category = activeCategories.find(c => localizedCategoryName(c, lang).toLowerCase().includes(hint) || hint.includes(localizedCategoryName(c, lang).toLowerCase()));
     }
     if (!category) {
-      category = activeCategories.find(c => c.kind === (amountMinor < 0 ? "expense" : "income") && /other|sonst|其他/i.test(c.name));
+      const kind = amountMinor < 0 ? "expense" : "income";
+      const slug = kind === "income" ? "other-income" : "other";
+      category = activeCategories.find(c => c.kind === kind && c.defaultSlug === slug)
+        || activeCategories.find(c => c.kind === kind && /^(other|sonstiges|其他)$/i.test(c.name));
     }
     if (!category) {
       category = activeCategories.find(c => c.kind === (amountMinor < 0 ? "expense" : "income"));
@@ -687,7 +867,19 @@
       updatedAt: Date.now(),
     };
     if (typeof draft.recurringId === "string" && draft.recurringId) tx.recurringId = draft.recurringId;
+    if (Number.isInteger(draft.originalAmountMinor) && /^[A-Z]{3}$/.test(draft.originalCurrency || "")) {
+      Object.assign(tx, {
+        originalAmountMinor: draft.originalAmountMinor,
+        originalCurrency: draft.originalCurrency,
+        fxRate: Number(draft.fxRate) || 0,
+        fxSource: ["ecb", "manual", "bank"].includes(draft.fxSource) ? draft.fxSource : "estimate",
+        fxDate: draft.fxDate || draft.date,
+      });
+    }
+    if (draft.transfer === true) tx.transfer = true;
+    tx.source = draft.source === "import" ? "import" : "manual";
     if (!validTransaction(tx)) throw new Error("invalid-transaction");
+    if (base.categories.some(c => c.id === tx.categoryId && c.isGroup)) throw new Error("group-not-selectable");
     base.transactions.push(tx);
     const recent = [tx.categoryId, ...base.meta.recentCategoryIds.filter(id => id !== tx.categoryId)].slice(0, 8);
     base.meta.recentCategoryIds = recent;
@@ -743,6 +935,7 @@
       updatedAt: Date.now(),
     };
     if (!validTransaction(next)) return null;
+    if (base.categories.some(c => c.id === next.categoryId && c.isGroup)) return null;
     base.transactions[index] = next;
     return { ledger: base, transaction: next };
   }
@@ -1521,7 +1714,7 @@
     if (cols.length < 3) return null;
     const account = base.accounts.find(a => !a.archived);
     if (!account) return null;
-    const defaultExpense = base.categories.find(c => c.kind === "expense" && !c.archived);
+    const defaultExpense = base.categories.find(c => c.kind === "expense" && !c.archived && !c.isGroup);
     const date = parseGermanDate(cols[0].replace(/"/g, ""));
     let amountMinor = null;
     let note = "";
@@ -1533,7 +1726,7 @@
       note = cols.slice(1, -1).join(" ").replace(/"/g, "").trim();
     }
     if (!date || amountMinor === null || amountMinor === 0) return null;
-    const incomeCat = base.categories.find(c => c.kind === "income" && !c.archived);
+    const incomeCat = base.categories.find(c => c.kind === "income" && !c.archived && !c.isGroup);
     const categoryId = amountMinor >= 0
       ? (incomeCat?.id || defaultExpense?.id || base.categories[0]?.id)
       : (defaultExpense?.id || base.categories[0]?.id);
@@ -1615,7 +1808,7 @@
     const base = normalize(ledger, options);
     const lang = options.lang || "en";
     const txs = base.transactions.filter(
-      tx => tx.date === isoDate && tx.amountMinor < 0 && txInReportingCurrency(base, tx),
+      tx => tx.date === isoDate && tx.amountMinor < 0 && !tx.transfer && txInReportingCurrency(base, tx),
     );
     const byCat = new Map();
     txs.forEach(tx => {
@@ -1884,12 +2077,13 @@
   }
 
   function categoryByEnglishName(ledger, enName, kind = "expense") {
-    const def = kind === "income"
-      ? DEFAULT_INCOME_CATEGORIES.find(c => c.name === enName)
-      : DEFAULT_EXPENSE_CATEGORIES.find(c => c.name === enName);
-    if (!def) return ledger.categories.find(c => c.kind === kind && !c.archived);
-    return ledger.categories.find(c => c.kind === kind && !c.archived && (c.name === def.name || c.nameZh === def.zh || c.nameDe === def.de))
-      || ledger.categories.find(c => c.kind === kind && !c.archived);
+    const pool = kind === "income" ? DEFAULT_INCOME_CATEGORIES : DEFAULT_EXPENSE_CATEGORIES;
+    const def = pool.find(d => d.name === enName || (d.old?.name || []).includes(enName));
+    const leaves = ledger.categories.filter(c => c.kind === kind && !c.archived && !c.isGroup);
+    if (!def) return leaves[0];
+    return leaves.find(c => c.defaultSlug === def.slug)
+      || leaves.find(c => c.name === def.name || c.nameZh === def.zh || c.nameDe === def.de || (def.old?.name || []).includes(c.name))
+      || leaves[0];
   }
 
   function ensureDemoBudgets(ledger, ym) {
@@ -1984,7 +2178,7 @@
           amountMinor: cents,
           currency: "EUR",
           date: iso,
-          note: cat.name,
+          note: localizedCategoryName(cat, lang),
         }, { lang }));
       }
     }
@@ -1997,11 +2191,11 @@
   }
 
   function expenseCountInMonth(ledger, ym) {
-    return transactionsInMonth(ledger, ym).filter(tx => tx.amountMinor < 0).length;
+    return transactionsInMonth(ledger, ym).filter(tx => tx.amountMinor < 0 && !tx.transfer).length;
   }
 
   function hasExpenseOn(ledger, iso) {
-    return ledger.transactions.some(tx => tx.date === iso && tx.amountMinor < 0);
+    return ledger.transactions.some(tx => tx.date === iso && tx.amountMinor < 0 && !tx.transfer);
   }
 
   /** Demo-only: early-month views still show donut, heatmap, and Today card spend. */
@@ -2014,11 +2208,14 @@
     const dining = categoryByEnglishName(ledger, "Dining");
     const transport = categoryByEnglishName(ledger, "Transport");
     const housing = categoryByEnglishName(ledger, "Housing");
+    const shopping = categoryByEnglishName(ledger, "Shopping");
+    const health = categoryByEnglishName(ledger, "Health");
+    const entertainment = categoryByEnglishName(ledger, "Entertainment");
     const dayNum = now.getDate();
     const picks = [
-      { day: 1, cat: groceries, amountMinor: -(3800 + Math.round(rng() * 1200)), note: lang === "de" ? "REWE" : lang === "zh" ? "超市" : "Groceries" },
-      { day: Math.max(1, dayNum - 1), cat: dining, amountMinor: -(850 + Math.round(rng() * 900)), note: lang === "de" ? "Kaffee" : lang === "zh" ? "咖啡" : "Coffee" },
-      { day: dayNum, cat: transport, amountMinor: -(280 + Math.round(rng() * 420)), note: lang === "de" ? "BVG" : lang === "zh" ? "地铁" : "Transit" },
+      { day: 1, cat: groceries, amountMinor: -(3800 + Math.round(rng() * 1200)), note: lang === "de" ? "REWE Einkauf" : lang === "zh" ? "超市采购" : "Groceries" },
+      { day: Math.max(1, dayNum - 1), cat: dining, amountMinor: -(850 + Math.round(rng() * 900)), note: lang === "de" ? "Kaffee & Kuchen" : lang === "zh" ? "手冲咖啡" : "Coffee" },
+      { day: dayNum, cat: transport, amountMinor: -(280 + Math.round(rng() * 420)), note: lang === "de" ? "U-Bahn" : lang === "zh" ? "市内交通" : "Transit" },
     ];
     picks.forEach(row => {
       if (!row.cat || row.day > dayNum) return;
@@ -2077,7 +2274,7 @@
           currency: "EUR",
           dayOfMonth: 15,
           cadence: "monthly",
-          note: "Streaming",
+          note: lang === "de" ? "Streaming-Abo" : lang === "zh" ? "流媒体订阅" : "Streaming",
         },
       ];
     }
@@ -2088,10 +2285,82 @@
         amountMinor: -2400,
         currency: "EUR",
         date: today,
-        note: lang === "de" ? "Einkauf" : lang === "zh" ? "采购" : "Shop",
+        note: lang === "de" ? "Wocheneinkauf" : lang === "zh" ? "日用补货" : "Shop",
       }, { lang }));
     }
-    return ledger;
+    if (dayNum >= 4 && expenseCountInMonth(ledger, ym) < 14) {
+      const extras = [
+        { day: Math.min(dayNum, 2), cat: dining, amountMinor: -920, en: "Bakery & breakfast", zh: "烘焙早餐", de: "Bäckerei Frühstück" },
+        { day: Math.min(dayNum, 2), cat: shopping, amountMinor: -2650, en: "Household essentials", zh: "家居日用品", de: "Haushaltswaren" },
+        { day: Math.min(dayNum, 3), cat: transport, amountMinor: -4900, en: "City rail pass", zh: "城市交通卡", de: "Deutschlandticket" },
+        { day: Math.min(dayNum, 4), cat: groceries, amountMinor: -4680, en: "Supermarket weekly", zh: "周末生鲜超市", de: "Wochenmarkt & Bio" },
+        { day: Math.min(dayNum, 4), cat: health, amountMinor: -1840, en: "Pharmacy & vitamins", zh: "药房与维生素", de: "Apotheke" },
+        { day: Math.min(dayNum, 5), cat: entertainment, amountMinor: -1499, en: "Streaming & music", zh: "影音会员订阅", de: "Streaming & Musik" },
+        { day: Math.min(dayNum, 6), cat: dining, amountMinor: -3450, en: "Weekend dinner", zh: "周末聚餐", de: "Abendessen" },
+        { day: dayNum, cat: entertainment, amountMinor: -2200, en: "Cinema & books", zh: "电影与图书", de: "Kino & Bücher" },
+      ];
+      extras.forEach(row => {
+        if (!row.cat || row.day > dayNum) return;
+        const iso = `${ym}-${String(row.day).padStart(2, "0")}`;
+        ({ ledger } = addTransaction(ledger, {
+          accountId: account,
+          categoryId: row.cat.id,
+          amountMinor: row.amountMinor,
+          currency: "EUR",
+          date: iso,
+          note: lang === "de" ? row.de : lang === "zh" ? row.zh : row.en,
+        }, { lang }));
+      });
+    }
+    return relocalizeDemoLedger(ledger, lang);
+  }
+
+  const DEMO_NOTE_GROUPS = [
+    { en: "Salary", zh: "工资", de: "Gehalt", alts: [] },
+    { en: "Rent", zh: "房租", de: "Miete", alts: [] },
+    { en: "Rent monthly", zh: "每月房租", de: "Miete monatlich", alts: [] },
+    { en: "Subscriptions", zh: "订阅", de: "Abonnement", alts: [] },
+    { en: "Streaming", zh: "流媒体订阅", de: "Streaming-Abo", alts: [] },
+    { en: "Groceries", zh: "超市采购", de: "REWE Einkauf", alts: ["超市", "REWE", "日用", "Lebensmittel"] },
+    { en: "Dining", zh: "工作午餐", de: "Mittagessen", alts: ["餐饮", "Essen"] },
+    { en: "Transport", zh: "地铁通勤", de: "BVG Ticket", alts: ["交通", "Mobilität"] },
+    { en: "Shopping", zh: "生活百货", de: "Drogerie dm", alts: ["购物", "Einkauf"] },
+    { en: "Coffee", zh: "手冲咖啡", de: "Kaffee & Kuchen", alts: ["咖啡", "Kaffee"] },
+    { en: "Transit", zh: "市内交通", de: "U-Bahn", alts: ["地铁", "BVG"] },
+    { en: "Lunch", zh: "轻食午餐", de: "Mittagstisch", alts: ["午餐", "Mittag"] },
+    { en: "Shop", zh: "日用补货", de: "Wocheneinkauf", alts: ["采购"] },
+    { en: "Bakery & breakfast", zh: "烘焙早餐", de: "Bäckerei Frühstück", alts: [] },
+    { en: "Household essentials", zh: "家居日用品", de: "Haushaltswaren", alts: [] },
+    { en: "City rail pass", zh: "城市交通卡", de: "Deutschlandticket", alts: [] },
+    { en: "Supermarket weekly", zh: "周末生鲜超市", de: "Wochenmarkt & Bio", alts: [] },
+    { en: "Pharmacy & vitamins", zh: "药房与维生素", de: "Apotheke", alts: [] },
+    { en: "Streaming & music", zh: "影音会员订阅", de: "Streaming & Musik", alts: [] },
+    { en: "Weekend dinner", zh: "周末聚餐", de: "Abendessen", alts: [] },
+    { en: "Cinema & books", zh: "电影与图书", de: "Kino & Bücher", alts: [] },
+  ];
+
+  function translateDemoText(text, lang) {
+    const s = String(text || "").trim();
+    if (!s) return s;
+    const code = String(lang || "en").slice(0, 2);
+    const hit = DEMO_NOTE_GROUPS.find(g => g.en === s || g.zh === s || g.de === s || g.alts.includes(s));
+    if (!hit) return s;
+    return code === "de" ? hit.de : code === "zh" ? hit.zh : hit.en;
+  }
+
+  function relocalizeDemoLedger(ledger, lang) {
+    if (!ledger || typeof ledger !== "object") return ledger;
+    const base = { ...ledger, categories: repairDefaultCategoryNames(ledger.categories) };
+    base.transactions = (base.transactions || []).map(tx => ({
+      ...tx,
+      note: translateDemoText(tx.note, lang),
+    }));
+    base.recurring = (base.recurring || []).map(rec => ({
+      ...rec,
+      label: translateDemoText(rec.label, lang),
+      note: translateDemoText(rec.note, lang),
+    }));
+    return base;
   }
 
   /** Demo-only: high habit completion on lower-spend days (and the reverse) for review habit × spend insight. */
@@ -2276,7 +2545,236 @@
     return sessions;
   }
 
+  /* ---- Money page (2.1 Slice 2 B1): fixed/variable split, FX, learned rules, filters. ---- */
+
+  /** Merchant key for learned rules: lowercase, drop dates, card refs and digits. */
+  function merchantKey(text) {
+    return String(text || "")
+      .toLowerCase()
+      .replace(/\d{1,4}[./-]\d{1,2}[./-]\d{2,4}/g, " ")
+      .replace(/\*+\s*\d+/g, " ")
+      .replace(/\d+/g, " ")
+      .replace(/[^\p{L}\s&'-]/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120);
+  }
+
+  /** Category guess: learned rule → keyword table → none. Guess only preselects. */
+  function guessCategory(ledger, note, amountMinor = -1) {
+    const base = normalize(ledger);
+    const hints = base.meta.noteCategoryHints || {};
+    const live = id => base.categories.some(c => c.id === id && !c.archived && !c.isGroup);
+    for (const key of [merchantKey(note), normalizeNoteHintKey(note)]) {
+      if (key && hints[key] && live(hints[key])) return { categoryId: hints[key], source: "rule" };
+    }
+    const kw = inferCategoryFromNote(note, { ...base, meta: { ...base.meta, noteCategoryHints: {} } }, amountMinor);
+    return kw ? { categoryId: kw.id, source: "keyword" } : { categoryId: "", source: "none" };
+  }
+
+  function learnCategoryRule(ledger, note, categoryId) {
+    const base = normalize(ledger);
+    const key = merchantKey(note);
+    if (!key || !categoryId) return base;
+    base.meta.noteCategoryHints[key] = categoryId;
+    return base;
+  }
+
+  function forgetCategoryRule(ledger, key) {
+    const base = normalize(ledger);
+    delete base.meta.noteCategoryHints[key];
+    return base;
+  }
+
+  /** ECB publishes on business days; weekends ask for the previous Friday. */
+  function fxRequestDate(iso) {
+    const d = new Date(`${iso}T12:00:00Z`);
+    const day = d.getUTCDay();
+    if (day === 6) d.setUTCDate(d.getUTCDate() - 1);
+    if (day === 0) d.setUTCDate(d.getUTCDate() - 2);
+    return d.toISOString().slice(0, 10);
+  }
+
+  /** Exact cached rate for that date, else the newest earlier one marked as estimate. */
+  function cachedFxRate(cache, currency, iso) {
+    const exact = cache?.[`${currency}:${iso}`];
+    if (exact) return { rate: exact, rateDate: iso, source: "ecb" };
+    const prior = Object.keys(cache || {})
+      .filter(k => k.startsWith(`${currency}:`) && k.slice(4) <= iso)
+      .sort();
+    const any = prior.length ? prior : Object.keys(cache || {}).filter(k => k.startsWith(`${currency}:`)).sort();
+    if (!any.length) return null;
+    const key = any[any.length - 1];
+    return { rate: cache[key], rateDate: key.slice(4), source: "estimate" };
+  }
+
+  /** Foreign entry: amountMinor/currency hold the reporting-currency value; original kept alongside. */
+  function foreignEntryDraft(draft, fx, reportingCurrency) {
+    return {
+      ...draft,
+      amountMinor: Math.round(draft.amountMinor * fx.rate),
+      currency: reportingCurrency,
+      originalAmountMinor: draft.amountMinor,
+      originalCurrency: draft.currency,
+      fxRate: fx.rate,
+      fxSource: fx.source,
+      fxDate: fx.rateDate,
+    };
+  }
+
+  function isFixedTx(ledger, tx) {
+    return Boolean(tx.recurringId) || ledger.settings.fixedCategoryIds.includes(tx.categoryId);
+  }
+
+  function isSpendTx(ledger, tx) {
+    return tx.amountMinor < 0 && !tx.transfer && txInReportingCurrency(ledger, tx);
+  }
+
+  function moneyMonth(ledger, ym) {
+    const base = normalize(ledger);
+    const [y, m] = ym.split("-").map(Number);
+    const dayCount = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const days = Array.from({ length: dayCount }, (_, i) => ({
+      date: `${ym}-${String(i + 1).padStart(2, "0")}`, variableMinor: 0, fixedMinor: 0,
+    }));
+    let incomeMinor = 0;
+    let fixedMinor = 0;
+    let variableMinor = 0;
+    const byCat = new Map();
+    transactionsInMonth(base, ym).forEach(tx => {
+      if (tx.transfer || !txInReportingCurrency(base, tx)) return;
+      if (tx.amountMinor > 0) { incomeMinor += tx.amountMinor; return; }
+      const mag = -tx.amountMinor;
+      const day = days[Number(tx.date.slice(8, 10)) - 1];
+      if (isFixedTx(base, tx)) { fixedMinor += mag; if (day) day.fixedMinor += mag; }
+      else { variableMinor += mag; if (day) day.variableMinor += mag; }
+      byCat.set(tx.categoryId, (byCat.get(tx.categoryId) || 0) + mag);
+    });
+    const categories = [...byCat.entries()]
+      .map(([categoryId, amountMinor]) => ({ categoryId, amountMinor }))
+      .sort((a, b) => b.amountMinor - a.amountMinor);
+    return { ym, incomeMinor, fixedMinor, variableMinor, expenseMinor: fixedMinor + variableMinor, days, categories };
+  }
+
+  /** Median variable spend of the last 3 full months; 0 unless ≥2 of them have spending. Never auto-applied. */
+  function budgetHint(ledger, ym) {
+    const vals = [1, 2, 3]
+      .map(k => moneyMonth(ledger, shiftYm(ym, -k)))
+      .filter(m => m.expenseMinor > 0)
+      .map(m => m.variableMinor)
+      .sort((a, b) => a - b);
+    if (vals.length < 2) return 0;
+    const mid = Math.floor(vals.length / 2);
+    return vals.length % 2 ? vals[mid] : Math.round((vals[mid - 1] + vals[mid]) / 2);
+  }
+
+  /** List rows grouped by day (newest first) with a labelled daily subtotal. */
+  function filterMoneyRows(ledger, ym, filters = {}) {
+    const base = normalize(ledger);
+    const q = String(filters.search || "").trim().toLowerCase();
+    const catName = id => {
+      const c = base.categories.find(x => x.id === id);
+      return c ? `${c.name} ${c.nameZh} ${c.nameDe}`.toLowerCase() : "";
+    };
+    const rows = transactionsInMonth(base, ym).filter(tx => {
+      if (filters.hideTransfers && tx.transfer) return false;
+      if (filters.categoryId && tx.categoryId !== filters.categoryId) return false;
+      if (filters.currency && (tx.originalCurrency || tx.currency) !== filters.currency) return false;
+      if (filters.accountId && tx.accountId !== filters.accountId) return false;
+      if (filters.source && (tx.source === "import" ? "import" : "manual") !== filters.source) return false;
+      if (q && !`${tx.note} ${catName(tx.categoryId)}`.toLowerCase().includes(q)) return false;
+      return true;
+    });
+    const groups = new Map();
+    rows
+      .sort((a, b) => (b.date.localeCompare(a.date)) || ((b.createdAt || 0) - (a.createdAt || 0)))
+      .forEach(tx => {
+        if (!groups.has(tx.date)) groups.set(tx.date, { date: tx.date, expenseMinor: 0, rows: [] });
+        const g = groups.get(tx.date);
+        g.rows.push(tx);
+        if (isSpendTx(base, tx)) g.expenseMinor += -tx.amountMinor;
+      });
+    return [...groups.values()];
+  }
+
+  /** "12,80" / "1.234,56" / "1,234.56" → minor units (positive), null when not a number. */
+  function parseMoneyInput(text) {
+    let s = String(text || "").replace(/[\s€$¥]/g, "");
+    if (!/^\d[\d.,]*$/.test(s)) return null;
+    const lastSep = Math.max(s.lastIndexOf(","), s.lastIndexOf("."));
+    if (lastSep >= 0 && s.length - lastSep - 1 <= 2) {
+      s = `${s.slice(0, lastSep).replace(/[.,]/g, "")}.${s.slice(lastSep + 1)}`;
+    } else {
+      s = s.replace(/[.,]/g, "");
+    }
+    const v = Math.round(Number(s) * 100);
+    return Number.isFinite(v) && v > 0 ? v : null;
+  }
+
+  function categoryUsed(ledger, id) {
+    return ledger.transactions.some(tx => tx.categoryId === id)
+      || ledger.budgets.some(b => b.categoryId === id)
+      || ledger.recurring.some(r => r.categoryId === id);
+  }
+
+  /** Leaf create/update. Parent must be a group or empty. Groups are not created here. */
+  function upsertCategory(ledger, draft) {
+    const base = normalize(ledger);
+    const name = String(draft?.name || "").trim().slice(0, 80);
+    if (!name) return null;
+    const id = typeof draft?.id === "string" ? draft.id : "";
+    const existing = id ? base.categories.find(c => c.id === id) : null;
+    if (id && !existing) return null;
+    if (existing?.isGroup) return null;
+    const kind = existing?.kind || (draft?.kind === "income" ? "income" : "expense");
+    let parentId = kind === "income" ? "" : (typeof draft?.parentId === "string" ? draft.parentId : (existing?.parentId || ""));
+    if (parentId && !base.categories.some(c => c.id === parentId && c.isGroup)) return null;
+    const color = typeof draft?.color === "string" && draft.color ? draft.color.slice(0, 40) : (existing?.color || "cat-6");
+    if (existing) {
+      existing.name = name;
+      if (typeof draft.nameZh === "string") existing.nameZh = draft.nameZh.slice(0, 80);
+      if (typeof draft.nameDe === "string") existing.nameDe = draft.nameDe.slice(0, 80);
+      existing.color = color;
+      existing.parentId = parentId;
+      if (draft.archived === true) existing.archived = true;
+      if (draft.archived === false) existing.archived = false;
+    } else {
+      base.categories.push({
+        id: createId(), name,
+        nameZh: typeof draft.nameZh === "string" ? draft.nameZh.slice(0, 80) : "",
+        nameDe: typeof draft.nameDe === "string" ? draft.nameDe.slice(0, 80) : "",
+        kind, icon: "more", color,
+        parentId, archived: false, defaultSlug: "", isGroup: false,
+      });
+    }
+    base.categories = sanitizeCategoryParents(base.categories);
+    const category = base.categories.find(c => c.id === (existing?.id || base.categories[base.categories.length - 1].id));
+    return { ledger: base, category };
+  }
+
+  /** Refuse when the category is a group or still referenced. Archive covers history. */
+  function deleteCategory(ledger, id) {
+    const base = normalize(ledger);
+    const cat = base.categories.find(c => c.id === id);
+    if (!cat || cat.isGroup || categoryUsed(base, id)) return null;
+    base.categories = base.categories.filter(c => c.id !== id);
+    base.settings.fixedCategoryIds = base.settings.fixedCategoryIds.filter(x => x !== id);
+    return base;
+  }
+
   root.LifeLedgerLedger = {
+    parseMoneyInput,
+    merchantKey,
+    guessCategory,
+    learnCategoryRule,
+    forgetCategoryRule,
+    fxRequestDate,
+    cachedFxRate,
+    foreignEntryDraft,
+    isFixedTx,
+    moneyMonth,
+    budgetHint,
+    filterMoneyRows,
     LEDGER_VERSION,
     emptyLedger,
     normalize,
@@ -2352,6 +2850,9 @@
     dailyExpenseSeries,
     renderMiniSpendSparklineSvg,
     repairDefaultCategoryNames,
+    upsertCategory,
+    deleteCategory,
+    categoryUsed,
     budgetProgress,
     budgetOverspendList,
     moodOverspendCategoryInsight,
@@ -2362,6 +2863,7 @@
     filterTransactions,
     shiftYm,
     buildDemoSample,
+    relocalizeDemoLedger,
     alignDemoMoodWithSpend,
     alignDemoMoodWithBudgetOverspend,
     alignDemoFocusWithSpend,

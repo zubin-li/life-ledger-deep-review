@@ -394,7 +394,7 @@
   }
 
   function expenseCategoryOptions(ledger, selectedId) {
-    return ledger.categories.filter(c => c.kind === "expense" && !c.archived).map(c => {
+    return ledger.categories.filter(c => c.kind === "expense" && !c.archived && !c.isGroup).map(c => {
       const name = core().localizedCategoryName(c, ctx.lang?.());
       const sel = c.id === selectedId ? " selected" : "";
       return `<option value="${ctx.escape(c.id)}"${sel}>${ctx.escape(name)}</option>`;
@@ -403,7 +403,7 @@
 
   function openBudgetPopover(ledger, ym, existing) {
     closeLedgerPopovers();
-    const expenseCat = ledger.categories.find(c => c.kind === "expense" && !c.archived);
+    const expenseCat = ledger.categories.find(c => c.kind === "expense" && !c.archived && !c.isGroup);
     const budget = existing || {
       id: "",
       categoryId: expenseCat?.id || "",
@@ -882,7 +882,7 @@
 
   function recurringCategoryOptions(ledger, selectedId) {
     const renderGroup = (kind, labelZh, labelEn, labelDe) => {
-      const cats = ledger.categories.filter(c => c.kind === kind && !c.archived);
+      const cats = ledger.categories.filter(c => c.kind === kind && !c.archived && !c.isGroup);
       if (!cats.length) return "";
       const label = t(labelZh, labelEn, labelDe);
       return `<optgroup label="${ctx.escape(label)}">${cats.map(c => {
@@ -902,7 +902,7 @@
     const rec = existing || {
       id: "",
       label: "",
-      categoryId: ledger.categories.find(c => c.kind === "expense" && !c.archived)?.id
+      categoryId: ledger.categories.find(c => c.kind === "expense" && !c.archived && !c.isGroup)?.id
         || ledger.categories.find(c => !c.archived)?.id
         || "",
       amountMinor: -1000,
@@ -1653,6 +1653,12 @@
       viewMonth = listDayFilter.slice(0, 7);
       viewDay = listDayFilter;
     }
+    // 2.1 Slice 2: the Money page (money-ui.js) owns the page when loaded; old renderer stays as fallback.
+    if (root.LifeLedgerMoneyUI?.render(host, ctx, {
+      month: viewMonth,
+      day: listDayFilter,
+      setMonth: next => { viewMonth = next; viewDay = `${next}-01`; listDayFilter = ""; render(); },
+    })) return;
     const summary = core().monthSummary(ledger, ym);
     const breakdown = core().categoryBreakdown(ledger, ym, "expense");
     const cur = ledger.settings.defaultCurrency;

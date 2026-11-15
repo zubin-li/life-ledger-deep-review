@@ -2,7 +2,7 @@
  * Record nav switch long tasks + layout shift proxy (owner feedback D3).
  * Usage: node .overnight/perf-nav-trace.mjs [--port 5298]
  */
-import { chromium } from "/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright/index.mjs";
+import { chromium } from "/Users/ashan/Documents/Codex/ll-overnight/node_modules/playwright/index.mjs";
 import { writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";

@@ -2,7 +2,7 @@
  * Parametrised headless screenshots for owner feedback / release checks.
  * Usage: node .overnight/capture.mjs [--port 5294] [--prefix fb-r1] [--only ledger,today] [--publicDir public]
  */
-import { chromium, webkit } from "/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright/index.mjs";
+import { chromium, webkit } from "/Users/ashan/Documents/Codex/ll-overnight/node_modules/playwright/index.mjs";
 import { mkdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";

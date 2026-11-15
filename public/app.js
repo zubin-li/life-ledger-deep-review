@@ -2452,8 +2452,6 @@ function applyLanguage() {
   setAria("#timelineNextMonth", tr("timeline.next"));
   setText(".habits-heading .kicker", tr("foundations.kicker"));
   setText(".habits-heading h2", tr("foundations.title"));
-  const settingsButton = $("[data-open-settings]");
-  if (settingsButton) settingsButton.innerHTML = `${tr("foundations.adjust")} <span>→</span>`;
   setAria("#todayHabitCarousel", tr("foundations.carousel"));
   setAria("#todayHabitViewport", tr("foundations.carousel"));
   setAria("#habitCarouselNav", tr("foundations.carousel"));
@@ -2613,6 +2611,9 @@ function applyLanguage() {
     const api = demoWorkspaceApi();
     if (api) {
       state = api.relocalizeDemoWorkspace(state, currentLang);
+      if (window.LifeLedgerLedger?.relocalizeDemoLedger) {
+        state.ledger = window.LifeLedgerLedger.relocalizeDemoLedger(state.ledger, currentLang);
+      }
       demoLanguageSynced = currentLang;
       saveState({ skipCloud: true });
     }
@@ -4873,7 +4874,14 @@ function renderToday() {
   $(".mood-card")?.setAttribute("data-future-hint", future ? languageText("当天再记录心情", "Mood opens on the day", "Stimmung am Tag selbst") : "");
   setText(".progress-orbit-label", tr(viewingToday ? "hero.progress" : "hero.selectedProgress"));
   setText(".mood-card h3", tr(viewingToday ? "mood.title" : "mood.selectedTitle"));
+  const moodHit = $("#moodCardHit");
+  if (moodHit) moodHit.setAttribute("aria-label", `${tr(viewingToday ? "mood.title" : "mood.selectedTitle")}, ${log.mood ? moodLabel(log.mood) : "—"}, ${tr("drawer.moodTitle")}`);
   setText(".habits-heading h2", tr(viewingToday ? "foundations.title" : "foundations.selectedTitle"));
+  const foundationsCount = `${complete}/${scoredHabits.length}`;
+  const foundationsCountEl = $("#foundationsCount");
+  if (foundationsCountEl) foundationsCountEl.textContent = foundationsCount;
+  const foundationsHit = $("#foundationsCardHit");
+  if (foundationsHit) foundationsHit.setAttribute("aria-label", `${tr(viewingToday ? "foundations.title" : "foundations.selectedTitle")}, ${foundationsCount}, ${tr("foundations.adjust")}`);
   const progressNumber = $("#progressNumber");
   const progressCount = `${complete} / ${scoredHabits.length}`;
   if (progressNumber.dataset.value !== progressCount) {
@@ -7727,6 +7735,25 @@ function bindEvents() {
   $("#todayHabitViewport").addEventListener("pointerup", finishHabitDrag);
   $("#todayHabitViewport").addEventListener("pointercancel", finishHabitDrag);
   $$("#quickMood button").forEach(b => b.addEventListener("click", () => setMood(selectedPlanningDate, b.dataset.mood, true, b)));
+  $("#moodCardHit")?.addEventListener("click", () => {
+    if ($("#todayView")?.classList.contains("tc-editing")) return;
+    openDrawer(selectedPlanningDate);
+  });
+  $("#quickMood")?.addEventListener("click", event => {
+    if (event.target.closest("button")) return;
+    if ($("#todayView")?.classList.contains("tc-editing")) return;
+    $("#moodCardHit")?.click();
+  });
+  $("#foundationsCardHit")?.addEventListener("click", () => {
+    if ($("#todayView")?.classList.contains("tc-editing")) return;
+    switchToView("habits");
+  });
+  $("#todayHabitViewport")?.addEventListener("click", event => {
+    if (suppressHabitCardClick) return;
+    if (event.target.closest(".habit-card, button, a, input, select, textarea")) return;
+    if ($("#todayView")?.classList.contains("tc-editing")) return;
+    $("#foundationsCardHit")?.click();
+  });
   $$("#drawerMood button").forEach(b => b.addEventListener("click", () => setMood(selectedDate, b.dataset.mood, true, b)));
   $("#quickMoodReason").addEventListener("click", () => {
     const date = selectedPlanningDate;
@@ -7785,7 +7812,6 @@ function bindEvents() {
     event.preventDefault();
     closeHabitDialog();
   });
-  $$("[data-open-settings]").forEach(b => b.addEventListener("click", () => $(".nav-item[data-view='habits']").click()));
   $("#habitForm").elements.frequency.addEventListener("change", updateHabitFormRules);
   $$('#habitForm input[name="trackingMode"]').forEach(input => input.addEventListener("change", updateHabitFormRules));
   $("#habitForm").addEventListener("input", updateHabitFormPreview);
@@ -10959,7 +10985,19 @@ async function initializeCloudSync() {
     }
   }
 }
-if ("serviceWorker" in navigator && location.protocol !== "file:" && !window.__TAURI__) {
+// Local preview (localhost): no service worker, so every open shows the files on disk.
+// An old worker left from an earlier preview is removed and the page reloads once by itself.
+// Same as Vite/vite-plugin-pwa: the worker only runs on the deployed site.
+const isLocalPreview = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+if ("serviceWorker" in navigator && isLocalPreview) {
+  navigator.serviceWorker.getRegistrations().then(async regs => {
+    if (!regs.length) return;
+    await Promise.all(regs.map(r => r.unregister()));
+    if (window.caches) await Promise.all((await caches.keys()).map(k => caches.delete(k)));
+    if (navigator.serviceWorker.controller) location.reload();
+  });
+}
+if ("serviceWorker" in navigator && location.protocol !== "file:" && !window.__TAURI__ && !isLocalPreview) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
       .then(registration => registration.update())

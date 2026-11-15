@@ -2,7 +2,7 @@
  * Pixel-compare HEAD vs v2.0.10 worktree for pages that existed in 2.0.10 (no ledger).
  * Usage: node .overnight/compare-v2010.mjs [--port 5293]
  */
-import { chromium } from "/Users/ashan/Documents/Codex/ll-web-cards/node_modules/playwright/index.mjs";
+import { chromium } from "/Users/ashan/Documents/Codex/ll-overnight/node_modules/playwright/index.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";

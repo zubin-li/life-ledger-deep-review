@@ -4,57 +4,21 @@ import { readFileSync } from "node:fs";
 
 const widgets = readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
 
-test("Today spending hint hides once the ledger has any transaction", () => {
-  assert.match(widgets, /ledgerHasEntries\s*=\s*Boolean\(ledger\?\.transactions\?\.length\)/);
-  assert.match(widgets, /hint\.hidden\s*=\s*Boolean\(todayMinor\)\s*\|\|\s*ledgerHasEntries/);
+test("Slice 1 — Today spending card is total + top 3 categories; the card opens the sheet", () => {
+  assert.match(widgets, /class="tw-spend-amount"/);
+  assert.match(widgets, /categoryBreakdownRange\(ledger, today, today\)\.slice\(0, 3\)/);
+  assert.match(widgets, /class="tw-spend-cats"/);
+  assert.match(widgets, /wireHit\(cards\.spending, openTodayLedgerSheet\)/);
+  assert.doesNotMatch(widgets, /tw-spend-add|tw-spend-mood-pill|tw-spend-recurring-pill|tw-spend-compare|tw-spend-sparkline/);
 });
 
-test("Today spending note uses quiet copy when ledger has history but today is zero", () => {
-  assert.match(widgets, /spendingEmptyQuiet/);
-  assert.match(widgets, /ledgerHasEntries\s*\?\s*t\("spendingEmptyQuiet"\)\s*:\s*t\("spendingEmpty"\)/);
-});
-
-test("ledgerHasEntries is declared before spending note reads it", () => {
+test("Today spending empty state is quiet once the ledger has any transaction", () => {
   const decl = widgets.indexOf("const ledgerHasEntries = Boolean(ledger?.transactions?.length)");
-  const note = widgets.indexOf('t("spendingEmptyQuiet")');
-  assert.ok(decl > 0 && note > decl, "avoid temporal dead zone in spending()");
+  assert.ok(decl > 0, "ledgerHasEntries declared in spending()");
+  assert.match(widgets, /showSpendEmptyEnter = !todayMinor && !ledgerHasEntries/);
 });
 
-test("Today spending card shows localized mood pill when mood is logged", () => {
-  assert.match(widgets, /tw-spend-mood-pill/);
-  assert.match(widgets, /spendingMoodLabel/);
-  assert.match(widgets, /moodPill\.dataset\.mood = dayMood/);
-  assert.match(widgets, /t\("moodGood"\)/);
-});
-
-test("Today spending mood pill opens Review mood scatter", () => {
-  assert.match(widgets, /switchToView\("review"\)/);
-  assert.match(widgets, /review-scatter-mood/);
-  assert.match(widgets, /spendingMoodReview/);
-});
-
-test("Today spending recurring pill uses pending templates for current month", () => {
-  assert.match(widgets, /tw-spend-recurring-pill/);
-  assert.match(widgets, /recurringPendingForMonth/);
-  assert.match(widgets, /spendingRecurringOne/);
-  assert.match(widgets, /switchToView\("ledger"\)/);
-});
-
-test("Today spending card shows top category chip when today has expenses", () => {
-  assert.match(widgets, /tw-spend-top-cat/);
-  assert.match(widgets, /spendingTodayDetail/);
-  assert.match(widgets, /spendingTodayCountMany/);
-});
-
-test("Today spending card compares today vs yesterday when ledger has history", () => {
-  assert.match(widgets, /tw-spend-compare/);
-  assert.match(widgets, /alignedDaySpendCompare/);
-  assert.match(widgets, /spendingMoreDayAmount/);
-  assert.match(widgets, /displaySpendDeltaPercent/);
-});
-
-test("Today spending amount opens Money filtered to the planning day", () => {
-  assert.match(widgets, /openLedgerForPlanningDay/);
-  assert.match(widgets, /spendingOpenDay/);
-  assert.match(widgets, /button type="button" class="tw-spend-today"/);
+test("Today spending header link opens Money filtered to the planning day", () => {
+  assert.match(widgets, /\.tw-spend-open", cards\.spending\)\.addEventListener\("click", openLedgerForPlanningDay\)/);
+  assert.match(widgets, /openToDay\?\.\(selectedPlanningDate\)/);
 });
