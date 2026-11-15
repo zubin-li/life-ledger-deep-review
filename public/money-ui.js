@@ -4,7 +4,7 @@
   const FX_API = "https://api.frankfurter.dev/v1/";
   const CURRENCIES = ["EUR", "CNY", "USD", "GBP", "CHF", "JPY"];
   const ui = {
-    drill: "", pickedDay: "", includeFixed: false, showSettings: false,
+    drill: "", pickedDay: "", includeFixed: false, showSettings: false, listExpanded: false,
     filters: { categoryId: "", currency: "", accountId: "", source: "", search: "" },
     sheet: null, catTouched: false, import: null,
   };
@@ -124,10 +124,9 @@
     const amount = tx.originalCurrency ? money(tx.originalAmountMinor, tx.originalCurrency) : money(tx.amountMinor, tx.currency);
     const badge = tx.originalCurrency ? `<span class="money-fx">${esc(tx.originalCurrency)}</span>` : "";
     const meta = [tx.source === "import" ? t("导入", "Imported", "Importiert") : "", tx.transfer ? t("转账", "Transfer", "Umbuchung") : "", core().isFixedTx(ledger, tx) ? t("固定", "Fixed", "Fix") : ""].filter(Boolean).join(" · ");
-    return `<li class="money-tx" data-id="${esc(tx.id)}">
-      <span class="d">${showDate ? esc(dayLabel(tx.date, false)) : ""}</span>
+    return `<li class="money-tx money-tx--compact" data-id="${esc(tx.id)}">
+      <span class="money-chip money-chip--quiet" style="--c:${catColor(ledger, tx.categoryId)}"><i class="money-dot"></i><span class="money-cat-label">${esc(catName(ledger, tx.categoryId))}</span></span>
       <span class="m">${esc(tx.note || catName(ledger, tx.categoryId))}${badge}${meta ? `<small>${esc(meta)}</small>` : ""}</span>
-      <span class="money-chip" style="--c:${catColor(ledger, tx.categoryId)}"><i class="money-dot"></i>${esc(catName(ledger, tx.categoryId))}</span>
       <span class="a money-num ${tx.amountMinor > 0 ? "in" : ""}">${esc(amount)}${fx}</span>
       <button class="money-del" type="button" data-del="${esc(tx.id)}" aria-label="${esc(t("删除", "Delete", "Löschen"))}">×</button>
     </li>`;
@@ -141,7 +140,7 @@
         <p class="money-lede">${t("收入、支出与固定开销，一屏看清；点任意类别或日期查看明细。", "Income, spending and fixed costs at a glance — tap any category or day for details.", "Einnahmen, Ausgaben und Fixkosten auf einen Blick – Kategorie oder Tag antippen für Details.")}</p></div>
       <div class="money-head-actions">
         <div class="money-nav"><button class="icon-button" type="button" data-month="-1" aria-label="${esc(t("上个月", "Previous month", "Vormonat"))}">‹</button><button class="secondary-button" type="button" data-month="0" ${isCurrent ? "aria-current=\"true\"" : ""}>${t("本月", "This month", "Dieser Monat")}</button><button class="icon-button" type="button" data-month="1" ${isCurrent ? "disabled" : ""} aria-label="${esc(t("下个月", "Next month", "Nächster Monat"))}">›</button></div>
-        <button class="icon-button money-gear" type="button" data-money-settings aria-label="${esc(t("记账设置", "Money settings", "Einstellungen"))}">⚙</button>
+        <button class="secondary-button money-settings-btn" type="button" data-money-settings>${t("设置", "Settings", "Einstellungen")}</button>
         <button class="secondary-button money-import-hd" type="button" data-money-import>${t("导入银行账单", "Import bank statement", "Kontoauszug importieren")}</button>
         <button class="primary-button money-add" type="button" data-money-add>＋ ${t("记一笔", "Add entry", "Eintrag")}</button>
       </div>
@@ -265,14 +264,14 @@
       const g = core().filterMoneyRows(ledger, ym, { hideTransfers: ledger.settings.hideTransfers }).find(x => x.date === ui.pickedDay);
       panel = `<h4>${esc(dayLabel(ui.pickedDay))} · ${esc(money(g?.expenseMinor || 0))}</h4><ul class="money-rows">${g ? g.rows.map(tx => txRow(ledger, tx, false)).join("") : `<li class="money-hint">${t("这天没有记录", "Nothing that day", "Keine Einträge an diesem Tag")}</li>`}</ul>`;
     } else {
-      panel = `<p class="money-hint">${t("点任意一天，看那天记了什么。", "Tap a day to see its entries.", "Tag antippen, um Einträge zu sehen.")}</p>`;
+      panel = "";
     }
     return `<article class="module-card money-card" data-module="money-daily">
       <header class="module-header"><div><span class="kicker">${t("每日支出", "Daily spending", "Tägliche Ausgaben")}</span><h3 class="module-title">${esc(title)}</h3></div>
         <label class="money-toggle"><span>${t("包含固定开销", "Include fixed costs", "Fixkosten einbeziehen")}</span><button class="money-switch" type="button" role="switch" aria-checked="${ui.includeFixed}" data-toggle-fixed></button></label></header>
       <div class="money-daily" id="moneyDaily" role="img" aria-label="${esc(title)}"></div>
       ${!ui.includeFixed && mm.fixedMinor ? `<p class="money-fixed-note">${t(`+ ${money(mm.fixedMinor)} 固定开销未计入`, `+ ${money(mm.fixedMinor)} fixed costs not shown`, `+ ${money(mm.fixedMinor)} Fixkosten nicht enthalten`)}</p>` : ""}
-      <div class="money-day-panel">${panel}</div>
+      ${panel ? `<div class="money-day-panel">${panel}</div>` : ""}
     </article>`;
   }
 
@@ -311,8 +310,9 @@
 
   function listHtml(ledger, ym) {
     const f = ui.filters;
-    const groups = core().filterMoneyRows(ledger, ym, { ...f, hideTransfers: ledger.settings.hideTransfers });
-    const count = groups.reduce((n, g) => n + g.rows.length, 0);
+    const groupsAll = core().filterMoneyRows(ledger, ym, { ...f, hideTransfers: ledger.settings.hideTransfers });
+    const groups = ui.listExpanded ? groupsAll : groupsAll.slice(0, 7);
+    const count = groupsAll.reduce((n, g) => n + g.rows.length, 0);
     const monthTx = core().transactionsInMonth(ledger, ym);
     const currencies = [...new Set(monthTx.map(tx => tx.originalCurrency || tx.currency))];
     const opt = (v, label, sel) => `<option value="${esc(v)}" ${v === sel ? "selected" : ""}>${esc(label)}</option>`;
@@ -331,6 +331,7 @@
         <h4><span>${esc(dayLabel(g.date))}</span><span class="money-num">${g.expenseMinor ? esc(t(`当日支出 ${money(g.expenseMinor)}`, `Spent ${money(g.expenseMinor)}`, `Ausgaben ${money(g.expenseMinor)}`)) : ""}</span></h4>
         <ul class="money-rows">${g.rows.map(tx => txRow(ledger, tx, false)).join("")}</ul>
       </section>`).join("") : `<p class="money-empty">${Object.values(f).some(Boolean) ? t("没有符合筛选的记录。", "No entries match these filters.", "Keine passenden Einträge.") : t("这个月还没有记录。", "No entries this month.", "Noch keine Einträge in diesem Monat.")}</p>`}
+      ${!ui.listExpanded && groupsAll.length > 7 ? `<button class="secondary-button money-list-more" type="button" data-money-list-more>${t("显示更多", "Show more", "Mehr anzeigen")}</button>` : ""}
       <div class="money-list-foot"><span>${t("外币按记账当日汇率折算", "Foreign amounts converted at the entry-date rate", "Fremdwährungen zum Kurs am Buchungstag umgerechnet")}</span></div>
     </article>`;
   }
@@ -1382,8 +1383,26 @@
     el.classList.remove("money-open");
     ui.sheet = null;
     ui.sheetHost = "";
+    ui.showSettings = false;
     setTimeout(() => { if (!ui.sheetHost) el.innerHTML = ""; }, 220);
     document.querySelector("#ledgerView [data-money-add]")?.focus();
+  }
+
+  function openSettingsSheet() {
+    closeImportWizard();
+    ui.sheetHost = "settings";
+    ui.showSettings = true;
+    const ledger = ledgerState();
+    const root_ = sheetEl();
+    root_.innerHTML = `<div class="money-scrim" data-close-sheet></div>
+      <div class="money-sheet money-sheet--settings" role="dialog" aria-modal="true" aria-labelledby="moneySettingsTitle">
+        <header class="money-sheet-head"><h3 id="moneySettingsTitle">${t("记账设置", "Money settings", "Einstellungen")}</h3>
+        <button class="icon-button" type="button" data-close-sheet aria-label="${esc(t("关闭", "Close", "Schließen"))}">×</button></header>
+        ${settingsHtml(ledger)}
+      </div>`;
+    root_.querySelectorAll("[data-close-sheet]").forEach(b => b.addEventListener("click", closeSheet));
+    bind(root_, ledger);
+    requestAnimationFrame(() => root_.classList.add("money-open"));
   }
 
   async function lookupRate(currency, iso) {
@@ -1682,11 +1701,8 @@
         render();
       }
     }));
-    host.querySelectorAll("[data-money-settings]").forEach(b => b.addEventListener("click", () => {
-      ui.showSettings = true;
-      render();
-      host.querySelector("#moneySettings")?.scrollIntoView({ block: "start", behavior: document.documentElement.classList.contains("motion-reduced") ? "auto" : "smooth" });
-    }));
+    host.querySelectorAll("[data-money-settings]").forEach(b => b.addEventListener("click", () => openSettingsSheet()));
+    host.querySelector("[data-money-list-more]")?.addEventListener("click", () => { ui.listExpanded = true; render(); });
     host.querySelectorAll("[data-drill]").forEach(b => b.addEventListener("click", () => { ui.drill = b.dataset.drill; render(); }));
     host.querySelector("[data-drill-back]")?.addEventListener("click", () => {
       const cat = ledger.categories.find(c => c.id === ui.drill);
@@ -1761,14 +1777,21 @@
     disposeCharts();
     host.classList.add("money-page");
     host.innerHTML = `${headerHtml(ym, ym >= today.slice(0, 7))}
-      ${overviewHtml(ledger, mm, prev, ym)}
-      ${categoriesHtml(ledger, mm, ym)}
-      ${dailyHtml(ledger, mm, ym)}
-      ${fixedHtml(ledger)}
-      ${listHtml(ledger, ym)}
-      ${settingsHtml(ledger)}`;
+      <div class="money-dashboard">
+        <div class="money-dashboard-main">
+          ${overviewHtml(ledger, mm, prev, ym)}
+          ${dailyHtml(ledger, mm, ym)}
+          ${listHtml(ledger, ym)}
+        </div>
+        <aside class="money-dashboard-side">
+          ${categoriesHtml(ledger, mm, ym)}
+          ${fixedHtml(ledger)}
+        </aside>
+      </div>`;
     bind(host, ledger);
     drawCharts(host, ledger, mm);
+    root.dispatchEvent?.(new CustomEvent("money-rendered"));
+    root.LifeLedgerViewHeaders?.mountViewArt?.("ledger");
     if (ui.import?.open) mountImportSheet();
     if (!resizeBound) {
       resizeBound = true;

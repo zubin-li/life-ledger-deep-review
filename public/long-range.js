@@ -102,7 +102,20 @@
   }
   function goalCard(goal,readOnly=false){
     const steps=Array.isArray(goal.steps)?goal.steps:[],done=steps.filter(s=>s.done).length,overdue=goal.reviewDate && goal.reviewDate<today() && (goal.status||'active')==='active';
-    return `<article class="horizon-goal ${goal.status==='completed'?'is-complete':''}" data-goal="${e(goal.id)}"><header><span class="horizon-area-icon">${ctx.icon(areaIcon(goal.area))}</span><div><span class="horizon-area-label">${e(areaName(goal.area))}</span><h3>${e(goal.name)}</h3></div><span class="horizon-status">${e(ctx.status(goal.status||'active'))}</span></header>${goal.nextAction?`<p class="horizon-next"><span>${e(t('下一小步','NEXT SMALL STEP','NÄCHSTER KLEINER SCHRITT'))}</span>${e(goal.nextAction)}</p>`:''}${steps.length?`<div class="horizon-step-progress"><span>${done} / ${steps.length} ${e(t('步','steps','Schritte'))}</span><div aria-hidden="true"><i style="width:${done/steps.length*100}%"></i></div></div><ul class="horizon-steps">${steps.map(s=>`<li><button type="button" data-step="${e(s.id)}" aria-pressed="${Boolean(s.done)}" ${readOnly?'disabled':''}><span class="horizon-step-check" aria-hidden="true">${s.done?'✓':''}</span><span>${e(s.text)}</span>${s.doneAt?`<time>${e(dateLabel(s.doneAt.slice(0,10)))}</time>`:''}</button></li>`).join('')}</ul>`:''}<footer><span class="${overdue?'is-due':''}">${overdue?e(t('该回看一下了 · ','Time to review · ','Zeit für einen Rückblick · ')):''}${e(goal.reviewDate?dateLabel(goal.reviewDate):t('按自己的节奏推进','At your own pace','Im eigenen Tempo'))}</span>${readOnly?'':`<button type="button" class="text-button" data-edit-goal="${e(goal.id)}">${e(t('编辑','Edit','Bearbeiten'))}</button>`}</footer>${(goal.events||[]).length?`<details class="horizon-goal-history"><summary>${e(t('推进记录','Progress history','Fortschrittsverlauf'))}</summary>${[...goal.events].reverse().map(event=>`<p><time>${e(dateLabel(String(event.date).slice(0,10)))}</time> · ${e(eventText(event))}${event.detail?` · ${e(event.detail)}`:''}</p>`).join('')}</details>`:''}</article>`;
+    const nextOpen=steps.find(s=>!s.done);
+    const stepBtn=s=>`<li><button type="button" data-step="${e(s.id)}" aria-pressed="${Boolean(s.done)}" ${readOnly?'disabled':''}><span class="horizon-step-check" aria-hidden="true">${s.done?'✓':''}</span><span>${e(s.text)}</span>${s.doneAt?`<time>${e(dateLabel(s.doneAt.slice(0,10)))}</time>`:''}</button></li>`;
+    const progress=steps.length?`<div class="horizon-step-progress"><span>${done} / ${steps.length}</span><div aria-hidden="true"><i style="width:${done/steps.length*100}%"></i></div></div>`:'';
+    const expanded=steps.length?`<div class="horizon-goal-expanded" hidden><ul class="horizon-steps">${steps.map(stepBtn).join('')}</ul>${goal.nextAction?`<p class="horizon-next"><span>${e(t('下一小步','NEXT SMALL STEP','NÄCHSTER KLEINER SCHRITT'))}</span>${e(goal.nextAction)}</p>`:''}<footer><span class="${overdue?'is-due':''}">${overdue?e(t('该回看一下了 · ','Time to review · ','Zeit für einen Rückblick · ')):''}${e(goal.reviewDate?dateLabel(goal.reviewDate):t('按自己的节奏推进','At your own pace','Im eigenen Tempo'))}</span>${readOnly?'':`<button type="button" class="text-button" data-edit-goal="${e(goal.id)}">${e(t('编辑','Edit','Bearbeiten'))}</button>`}</footer>${(goal.events||[]).length?`<details class="horizon-goal-history"><summary>${e(t('推进记录','Progress history','Fortschrittsverlauf'))}</summary>${[...goal.events].reverse().map(event=>`<p><time>${e(dateLabel(String(event.date).slice(0,10)))}</time> · ${e(eventText(event))}${event.detail?` · ${e(event.detail)}`:''}</p>`).join('')}</details>`:''}</div>`:'';
+    return `<article class="horizon-goal horizon-goal--collapsed ll-scroll-reveal ${goal.status==='completed'?'is-complete':''}" data-goal="${e(goal.id)}">
+      <header class="horizon-goal-head" data-goal-toggle tabindex="0" role="button" aria-expanded="false">
+        <span class="horizon-area-icon">${ctx.icon(areaIcon(goal.area))}</span>
+        <div class="horizon-goal-head-copy"><span class="horizon-area-label">${e(areaName(goal.area))}</span><h3>${e(goal.name)}</h3></div>
+        ${progress}
+      </header>
+      ${nextOpen?`<ul class="horizon-steps horizon-steps--next">${stepBtn(nextOpen)}</ul>`:''}
+      ${expanded}
+      ${steps.length?`<button type="button" class="text-button horizon-goal-steps-toggle" data-goal-steps-toggle>${e(t('全部步骤','All steps','Alle Schritte'))}</button>`:''}
+    </article>`;
   }
   function render(options){
     if(options)ctx=options;if(!ctx)return;const host=$('#longRangeWorkspace');if(!host)return;
@@ -151,6 +164,25 @@
       step.done=!step.done;step.doneAt=step.done?stamp():'';goal.updatedAt=Date.now();goal.events=[...(goal.events||[]),{type:'step',date:stamp(),detail:`${step.done?'✓':'↩'} ${step.text}`}];const stepId=step.id;commit();host.querySelector(`[data-step="${CSS.escape(stepId)}"]`)?.focus({preventScroll:true});
     });
     $('#horizonNoteText').oninput=event=>{state().planning={...plan(),note:event.target.value,updatedAt:Date.now()};ctx.save();};
+    const toggleGoal=card=>{
+      const expanded=card.querySelector('.horizon-goal-expanded');
+      const head=card.querySelector('.horizon-goal-head');
+      if(!expanded||!head)return;
+      const open=expanded.hidden;
+      expanded.hidden=!open;
+      card.classList.toggle('horizon-goal--collapsed',open);
+      card.classList.toggle('horizon-goal--expanded',!open);
+      head.setAttribute('aria-expanded',open?'true':'false');
+    };
+    host.querySelectorAll('[data-goal-toggle]').forEach(head=>{
+      const card=head.closest('.horizon-goal');
+      const pick=ev=>{if(ev.target.closest('[data-step],[data-edit-goal],[data-goal-steps-toggle]'))return;ev.preventDefault();toggleGoal(card);};
+      head.addEventListener('click',pick);
+      head.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();pick(ev);}});
+    });
+    host.querySelectorAll('[data-goal-steps-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleGoal(btn.closest('.horizon-goal'))));
+    window.LifeLedgerViewHeaders?.observeScrollReveal?.(host);
+    window.dispatchEvent?.(new CustomEvent('longrange-rendered'));
   }
   const showMonth=key=>{month=key;render();const field=$('#horizonMonthlyText');field?.scrollIntoView({block:'center'});field?.focus({preventScroll:true});field?.closest('section')?.classList.add('tl-pop');};
   root.LifeLedgerLongRange={empty,valid,merge,carry,render,showMonth};

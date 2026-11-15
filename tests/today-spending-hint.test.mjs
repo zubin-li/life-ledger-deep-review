@@ -4,10 +4,10 @@ import { readFileSync } from "node:fs";
 
 const widgets = readFileSync(new URL("../public/today-widgets.js", import.meta.url), "utf8");
 
-test("Slice 1 — Today spending card is total + top 3 categories; the card opens the sheet", () => {
+test("Slice 1 — Today spending card is total + 7-day bars; the card opens the sheet", () => {
   assert.match(widgets, /class="tw-spend-amount"/);
-  assert.match(widgets, /categoryBreakdownRange\(ledger, today, today\)\.slice\(0, 3\)/);
-  assert.match(widgets, /class="tw-spend-cats"/);
+  assert.match(widgets, /class="tw-spend-week-bars"/);
+  assert.match(widgets, /rangeSummary\(ledger, key, key\)/);
   assert.match(widgets, /wireHit\(cards\.spending, openTodayLedgerSheet\)/);
   assert.doesNotMatch(widgets, /tw-spend-add|tw-spend-mood-pill|tw-spend-recurring-pill|tw-spend-compare|tw-spend-sparkline/);
 });

@@ -5396,12 +5396,6 @@ html[data-theme="dark"] :is(.review-page-art, .journal-page-art, .habits-page-ar
   pointer-events: none;
 }
 
-@media (max-width: 719px) {
-  .review-intro .review-page-art,
-  .journal-feed-heading .journal-page-art {
-    display: none;
-  }
-}
 
 .view {
   view-transition-name: none;
@@ -5935,26 +5929,20 @@ html.tc-on .tc-edit-toggle.tc-edit-saved-flash {
   }
 }
 
-/* Slice 1 (11-03 redo): Today spending card in 2.0 card language — total, top 3 categories, one add button. */
-.tw-spending .tw-spend-main { display: flex; flex-direction: column; gap: 12px; height: 100%; align-content: initial; }
+/* Redesign 2026-11-15 — Today spending: total + 7-day strip */
+.tw-spending .tw-spend-main { display: flex; flex-direction: column; gap: 10px; height: 100%; align-content: initial; justify-content: space-between; }
 .tw-spend-total { display: flex; align-items: baseline; gap: 8px; }
 .tw-spend-amount { font: 500 26px/1.1 "Noto Serif SC", serif; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
 .tw-spend-count { color: var(--muted); font-size: 11px; }
-.tw-spend-cats { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.tw-spend-cats li { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; font-size: 12px; color: var(--ink); animation: twSpendRow 420ms var(--ease-enter, cubic-bezier(.22,1,.36,1)) both; }
-.tw-spend-cats li:nth-child(2) { animation-delay: 60ms; }
-.tw-spend-cats li:nth-child(3) { animation-delay: 120ms; }
-.tw-spend-cat-amt { color: var(--muted); font-variant-numeric: tabular-nums; }
-.tw-spend-cats i { grid-column: 1 / -1; height: 4px; border-radius: 99px; background: color-mix(in srgb, var(--w-solid) 12%, transparent); overflow: hidden; position: relative; }
-.tw-spend-cats i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--pct); border-radius: inherit; background: var(--cat, var(--w-solid)); transform-origin: left; animation: twSpendBar 600ms var(--ease-enter, cubic-bezier(.22,1,.36,1)) both; }
-.tw-spend-empty { margin: 0; }
+.tw-spend-week-bars { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; align-items: end; min-height: 56px; }
+.tw-spend-week-bars li { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); }
+.tw-spend-week-bars i { display: block; width: 100%; max-width: 22px; height: max(4px, calc(var(--h, 8) * 0.38px)); max-height: 40px; border-radius: 6px 6px 3px 3px; background: color-mix(in srgb, var(--w-solid, var(--coral)) 22%, transparent); transition: background-color 160ms ease; }
+.tw-spend-week-bars li.is-today i { background: var(--w-solid, var(--accent, var(--coral))); }
+.tw-spend-empty { margin: 0; font-size: 11px; }
 .tw-spending .tw-spend-open { font-size: 11px; color: var(--muted); padding: 0; }
 .tw-spending .tw-spend-open:hover { color: var(--w-solid); }
-.tc-grid > .tc-card[data-size="S"] .tw-spend-cats li:nth-child(n+2) { display: none; }
 .tc-grid > .tc-card[data-size="S"] .tw-spend-amount { font-size: 22px; }
-@keyframes twSpendRow { from { opacity: 0; transform: translateY(4px); } }
-@keyframes twSpendBar { from { transform: scaleX(0); } }
-html.motion-reduced .tw-spend-cats li, html.motion-reduced .tw-spend-cats i::after { animation: none; }
+html.motion-reduced .tw-spend-week-bars i { transition: none; }
 
 /* Spending card: header link stays one line. The card itself opens the today sheet. */
 .tw-spending .daily-goals-heading { align-items: center; }
@@ -5964,3 +5952,47 @@ html.motion-reduced .tw-spend-cats li, html.motion-reduced .tw-spend-cats i::aft
 /* S card: long titles (DE "Ausgaben heute") wrap to two lines instead of collapsing to an ellipsis. */
 .tc-grid > .tc-card[data-size="S"] .tw-spending .daily-goals-heading h3 { white-space: normal; overflow-wrap: anywhere; line-height: 1.2; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .tw-spend-count { white-space: nowrap; }
+
+/* Redesign 2026-11-15 — page hairline art, scroll reveal, timeline / long-range polish */
+.page-art { flex: none; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.page-art .ll-art { width: min(120px, 24vw); max-height: 110px; color: var(--muted); }
+.page-art .ll-art svg { width: 100%; height: auto; display: block; }
+.hero-card { position: relative; }
+.page-art--hero { position: absolute; right: 28px; bottom: 26px; pointer-events: none; }
+.page-art--hero .ll-art { width: 110px; color: rgba(255, 255, 255, 0.5); }
+@media (max-width: 900px) { .page-art--hero { display: none; } }
+#weekView .week-page-header { position: relative; }
+#weekView .week-page-header .page-art { position: absolute; right: 0; top: 0; }
+.horizon-heading { position: relative; flex-wrap: wrap; }
+.horizon-heading .page-art { margin-left: auto; align-self: flex-start; }
+.journal-feed-heading { align-items: flex-start; }
+.journal-feed-heading .page-art { flex: none; width: 88px; }
+.money-head { flex-wrap: wrap; }
+.money-head .page-art { margin-left: auto; width: 96px; }
+.review-intro .page-art { position: absolute; top: 0; right: 0; width: 88px; }
+@media (max-width: 899px) {
+  .journal-feed-heading .page-art,
+  .review-intro .page-art { width: 64px; display: flex; }
+  .journal-feed-heading .page-art .ll-art,
+  .review-intro .page-art .ll-art { width: 64px; max-height: 64px; }
+}
+@media (min-width: 900px) {
+}
+.ll-scroll-reveal { opacity: 0; transform: translateY(12px); transition: opacity 480ms var(--ease-enter, cubic-bezier(.22, 1, .36, 1)), transform 480ms var(--ease-enter, cubic-bezier(.22, 1, .36, 1)); transition-delay: var(--reveal-delay, 0ms); }
+.ll-scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
+html.motion-reduced .ll-scroll-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+.journal-feed-entry .feed-paper { transition: transform 160ms ease, box-shadow 160ms ease; }
+.journal-feed-entry:hover .feed-paper { transform: translateY(-2px); box-shadow: 0 14px 36px #314d7014; }
+.feed-body-clamp:not(.is-expanded) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.feed-body-expand { margin: 4px 0 0; padding: 0; font-size: 12px; }
+.feed-axis-dot.mood-good { --feed-mood: #f4a900; background: var(--feed-mood); box-shadow: 0 0 0 4px color-mix(in srgb, var(--feed-mood) 22%, transparent); }
+.feed-axis-dot.mood-calm { --feed-mood: #1fb76a; background: var(--feed-mood); box-shadow: 0 0 0 4px color-mix(in srgb, var(--feed-mood) 22%, transparent); }
+.feed-axis-dot.mood-low { --feed-mood: #2f80ed; background: var(--feed-mood); box-shadow: 0 0 0 4px color-mix(in srgb, var(--feed-mood) 22%, transparent); }
+.horizon-goal { transition: transform 160ms ease, box-shadow 160ms ease; }
+.horizon-goal:hover { transform: translateY(-2px); box-shadow: 0 12px 32px #314d7012; }
+html.motion-reduced .journal-feed-entry:hover .feed-paper,
+html.motion-reduced .horizon-goal:hover { transform: none; box-shadow: none; }
+.horizon-goal-head { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+.horizon-goal-expanded[hidden] { display: none !important; }
+.horizon-goal-steps-toggle { margin-top: 8px; font-size: 12px; }
+.horizon-steps--next { margin: 0 0 4px; }

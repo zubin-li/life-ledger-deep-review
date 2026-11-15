@@ -22,7 +22,7 @@
       heat26: "近 26 周", heatRate: "完成率", heatFull: "满分天", heatBest: "最长连续", days: "天", focusArt: "专注", wallAddHint: "放一张你喜欢的照片", photosLocalTitle: "这一天的照片", freqEmptyTitle: "还没有频率目标", weatherEmptyTitle: "今天的天气",
       freqEmpty: "还没有按每周或每月计次的目标。在“调整目标”里把频率设为每周 / 每月即可。", freqWeek: "本周 {done}/{target}", freqMonth: "本月 {done}/{target}", freqPick: "显示的目标",
       wallEmptyShort: "在卡片设置里放入照片", wallMedia: "照片与视频", wallAuto: "自动轮播", wallFit: "显示方式", fill: "铺满", fit: "完整显示", wallFocus: "点或拖动预览，选择显示的位置", wallTip: "左右滑动或点两侧切换",
-      spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今日暂无新支出。", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", spendingTodayCountOne: "1 笔", spendingTodayCountMany: "{n} 笔", openLedger: "打开记账", spendingOpenDay: "查看所选日期的账目", spendingMonth: "本月累计", spendingSameDay: "与昨日相近", spendingMoreDay: "较昨日 +{pct}%", spendingMoreDayAmount: "较昨日多 {amount}", spendingLessDay: "较昨日 −{pct}%", spendingNewDay: "较昨日有新增支出", spendingZeroDay: "较昨日无新支出", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出", spendingMoodReview: "打开复盘 · 心情与支出对照", spendingRecurringOne: "1 笔固定待记", spendingRecurringMany: "{n} 笔固定待记", spendingRecurringOpen: "打开记账 · 固定收支待记", spendingQuickTitle: "记一笔", spendingQuickRecent: "最近", spendingQuickFull: "完整统计", spendingQuickSave: "添加", spendingQuickOther: "其他", spendingQuickTap: "快速记账", spendingClose: "关闭" },
+      spendingEmpty: "今天还没有支出记录。", spendingEmptyQuiet: "今天还没有支出", spendingHint: "试试：12,50 咖啡", spendingToday: "今日支出", spendingTodayCountOne: "1 笔", spendingTodayCountMany: "{n} 笔", openLedger: "打开记账", spendingOpenDay: "查看所选日期的账目", spendingMonth: "本月累计", spendingSameDay: "与昨日相近", spendingMoreDay: "较昨日 +{pct}%", spendingMoreDayAmount: "较昨日多 {amount}", spendingLessDay: "较昨日 −{pct}%", spendingNewDay: "较昨日有新增支出", spendingZeroDay: "较昨日无新支出", moodGood: "很好", moodCalm: "平静", moodLow: "低落", spendingMoodTip: "今日心情 · 可在复盘中对照支出", spendingMoodReview: "打开复盘 · 心情与支出对照", spendingRecurringOne: "1 笔固定待记", spendingRecurringMany: "{n} 笔固定待记", spendingRecurringOpen: "打开记账 · 固定收支待记", spendingQuickTitle: "记一笔", spendingQuickRecent: "最近", spendingQuickFull: "完整统计", spendingQuickSave: "添加", spendingQuickOther: "其他", spendingQuickTap: "快速记账", spendingClose: "关闭" },
     en: { weather: "Weather", weatherK: "WEATHER", rhythm: "Recent rhythm", rhythmK: "LAST 7 DAYS", heatmap: "Habit heatmap", heatmapK: "HABIT RHYTHM", wall: "Photo wall", wallK: "PHOTO WALL", photos: "Photo memories", photosK: "MEMORY", focus: "Focus", focusK: "FOCUS", freq: "By frequency", freqK: "WEEKLY · MONTHLY", spending: "Spending today", spendingK: "TODAY",
       chooseCity: "Choose a city to show its weather.", setCity: "Set location", city: "City", search: "Search", noCity: "No matching city found.", loading: "Loading…", unavailable: "Could not refresh. Check your connection.", cached: "Saved forecast · offline", updated: "Updated",
       clear: "Clear", cloud: "Cloudy", rain: "Rain", snow: "Snow", storm: "Thunderstorm", rainSoon: "Rain expected", snowSoon: "Snow expected", noRain: "No precipitation in the next 24 hours", hour: "Forecast hour",
@@ -33,7 +33,7 @@
       heat26: "Last 26 weeks", heatRate: "Done", heatFull: "Full days", heatBest: "Best streak", days: "d", focusArt: "Focus", wallAddHint: "Put a photo you love here", photosLocalTitle: "Photos of this day", freqEmptyTitle: "No frequency goals yet", weatherEmptyTitle: "Today's weather",
       freqEmpty: "No weekly or monthly habits yet. Set a habit's frequency to weekly or monthly in Adjust goals.", freqWeek: "This week {done}/{target}", freqMonth: "This month {done}/{target}", freqPick: "Habit shown",
       wallEmptyShort: "Add photos in card settings", wallMedia: "Photos and videos", wallAuto: "Auto-play", wallFit: "Display", fill: "Fill", fit: "Fit", wallFocus: "Tap or drag the preview to choose what shows", wallTip: "Swipe or tap the sides to switch",
-      spendingEmpty: "No spending logged today yet.", spendingEmptyQuiet: "Nothing new logged for today.", spendingHint: "Try: 12.50 coffee", spendingToday: "Spending today", spendingTodayCountOne: "1 entry", spendingTodayCountMany: "{n} entries", openLedger: "Open Money", spendingOpenDay: "View entries for this day in Money", spendingMonth: "This month", spendingSameDay: "About the same as yesterday", spendingMoreDay: "+{pct}% vs yesterday", spendingMoreDayAmount: "+{amount} vs yesterday", spendingLessDay: "−{pct}% vs yesterday", spendingNewDay: "New spending vs yesterday", spendingZeroDay: "Nothing logged vs yesterday", moodGood: "Good", moodCalm: "Calm", moodLow: "Low", spendingMoodTip: "Today's mood · compare with spending in Review", spendingMoodReview: "Open Review · mood vs spending", spendingRecurringOne: "1 fixed bill pending", spendingRecurringMany: "{n} fixed bills pending", spendingRecurringOpen: "Open Money · recurring items pending", spendingQuickTitle: "Quick entry", spendingQuickRecent: "Recent", spendingQuickFull: "Full stats", spendingQuickSave: "Add", spendingQuickOther: "Other", spendingQuickTap: "Log spending", spendingClose: "Close" },
+      spendingEmpty: "No spending logged today yet.", spendingEmptyQuiet: "No spending today yet", spendingHint: "Try: 12.50 coffee", spendingToday: "Spending today", spendingTodayCountOne: "1 entry", spendingTodayCountMany: "{n} entries", openLedger: "Open Money", spendingOpenDay: "View entries for this day in Money", spendingMonth: "This month", spendingSameDay: "About the same as yesterday", spendingMoreDay: "+{pct}% vs yesterday", spendingMoreDayAmount: "+{amount} vs yesterday", spendingLessDay: "−{pct}% vs yesterday", spendingNewDay: "New spending vs yesterday", spendingZeroDay: "Nothing logged vs yesterday", moodGood: "Good", moodCalm: "Calm", moodLow: "Low", spendingMoodTip: "Today's mood · compare with spending in Review", spendingMoodReview: "Open Review · mood vs spending", spendingRecurringOne: "1 fixed bill pending", spendingRecurringMany: "{n} fixed bills pending", spendingRecurringOpen: "Open Money · recurring items pending", spendingQuickTitle: "Quick entry", spendingQuickRecent: "Recent", spendingQuickFull: "Full stats", spendingQuickSave: "Add", spendingQuickOther: "Other", spendingQuickTap: "Log spending", spendingClose: "Close" },
     de: { weather: "Wetter", weatherK: "WETTER", rhythm: "Letzte Tage", rhythmK: "7 TAGE", heatmap: "Gewohnheits-Heatmap", heatmapK: "RHYTHMUS", wall: "Fotowand", wallK: "FOTOWAND", photos: "Fotoerinnerungen", photosK: "ERINNERUNG", focus: "Fokus", focusK: "FOKUS", freq: "Nach Häufigkeit", freqK: "WOCHE · MONAT", spending: "Ausgaben heute", spendingK: "HEUTE",
       chooseCity: "Wähle eine Stadt für die Wettervorhersage.", setCity: "Ort wählen", city: "Stadt", search: "Suchen", noCity: "Keine passende Stadt gefunden.", loading: "Wird geladen …", unavailable: "Aktualisierung fehlgeschlagen. Verbindung prüfen.", cached: "Gespeicherte Prognose · offline", updated: "Aktualisiert",
       clear: "Klar", cloud: "Bewölkt", rain: "Regen", snow: "Schnee", storm: "Gewitter", rainSoon: "Regen erwartet", snowSoon: "Schnee erwartet", noRain: "Kein Niederschlag in den nächsten 24 Stunden", hour: "Vorhersagezeit",
@@ -44,7 +44,7 @@
       heat26: "Letzte 26 Wochen", heatRate: "Erledigt", heatFull: "Volle Tage", heatBest: "Beste Serie", days: "T.", focusArt: "Fokus", wallAddHint: "Lege ein Lieblingsfoto hierher", photosLocalTitle: "Fotos dieses Tages", freqEmptyTitle: "Noch keine Häufigkeitsziele", weatherEmptyTitle: "Wetter heute",
       freqEmpty: "Noch keine wöchentlichen oder monatlichen Ziele. Stelle die Häufigkeit in „Ziele anpassen“ auf wöchentlich / monatlich.", freqWeek: "Diese Woche {done}/{target}", freqMonth: "Diesen Monat {done}/{target}", freqPick: "Angezeigtes Ziel",
       wallEmptyShort: "Fotos in den Karteneinstellungen hinzufügen", wallMedia: "Fotos und Videos", wallAuto: "Automatisch wechseln", wallFit: "Darstellung", fill: "Füllen", fit: "Ganz zeigen", wallFocus: "Tippe oder ziehe in der Vorschau, um den Ausschnitt zu wählen", wallTip: "Wischen oder seitlich tippen zum Wechseln",
-      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingEmptyQuiet: "Heute bisher nichts gebucht.", spendingHint: "Z. B.: 12,50 Kaffee", spendingToday: "Ausgaben heute", spendingTodayCountOne: "1 Buchung", spendingTodayCountMany: "{n} Buchungen", openLedger: "Finanzen öffnen", spendingOpenDay: "Buchungen für diesen Tag in Finanzen anzeigen", spendingMonth: "Diesen Monat", spendingSameDay: "Wie gestern", spendingMoreDay: "+{pct} % gg. gestern", spendingMoreDayAmount: "+{amount} gg. gestern", spendingLessDay: "−{pct} % gg. gestern", spendingNewDay: "Neue Ausgaben gg. gestern", spendingZeroDay: "Heute nichts gebucht (gestern schon)", moodGood: "Gut", moodCalm: "Ruhig", moodLow: "Schwer", spendingMoodTip: "Stimmung heute · in der Monatsübersicht mit Ausgaben vergleichen", spendingMoodReview: "Rückblick · Stimmung und Ausgaben", spendingRecurringOne: "1 offener Posten", spendingRecurringMany: "{n} offene Posten", spendingRecurringOpen: "Finanzen · feste Buchungen offen", spendingQuickTitle: "Schnell buchen", spendingQuickRecent: "Zuletzt", spendingQuickFull: "Alle Ausgaben", spendingQuickSave: "Hinzufügen", spendingQuickOther: "Sonstiges", spendingQuickTap: "Ausgabe erfassen", spendingClose: "Schließen" },
+      spendingEmpty: "Heute noch keine Ausgaben erfasst.", spendingEmptyQuiet: "Heute noch keine Ausgaben", spendingHint: "Z. B.: 12,50 Kaffee", spendingToday: "Ausgaben heute", spendingTodayCountOne: "1 Buchung", spendingTodayCountMany: "{n} Buchungen", openLedger: "Finanzen öffnen", spendingOpenDay: "Buchungen für diesen Tag in Finanzen anzeigen", spendingMonth: "Diesen Monat", spendingSameDay: "Wie gestern", spendingMoreDay: "+{pct} % gg. gestern", spendingMoreDayAmount: "+{amount} gg. gestern", spendingLessDay: "−{pct} % gg. gestern", spendingNewDay: "Neue Ausgaben gg. gestern", spendingZeroDay: "Heute nichts gebucht (gestern schon)", moodGood: "Gut", moodCalm: "Ruhig", moodLow: "Schwer", spendingMoodTip: "Stimmung heute · in der Monatsübersicht mit Ausgaben vergleichen", spendingMoodReview: "Rückblick · Stimmung und Ausgaben", spendingRecurringOne: "1 offener Posten", spendingRecurringMany: "{n} offene Posten", spendingRecurringOpen: "Finanzen · feste Buchungen offen", spendingQuickTitle: "Schnell buchen", spendingQuickRecent: "Zuletzt", spendingQuickFull: "Alle Ausgaben", spendingQuickSave: "Hinzufügen", spendingQuickOther: "Sonstiges", spendingQuickTap: "Ausgabe erfassen", spendingClose: "Schließen" },
   };
   const lang = () => (T[currentLang] ? currentLang : "en");
   const t = (k, v = {}) => String(T[lang()][k] ?? T.en[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n] ?? "");
@@ -122,7 +122,7 @@
     freq: shell("freq", `<span class="tw-side tw-freq-month"></span>`, `<div class="tw-freq-info"><div class="tw-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><b class="tw-freq-count"></b></div><div class="tw-freq-tabs" role="tablist"></div></div><div class="tw-heat-box"><div class="tw-heat-weekdays" aria-hidden="true"></div><div class="tw-freq-grid tw-heat-grid"></div></div>`),
     photos: shell("photos", `<button type="button" class="text-button tw-open-day" data-tw="openDay"></button>`, `<div class="tw-photo-list"></div><p class="tw-caption tw-photo-note"></p>`),
     focus: shell("focus", "", `<div class="tw-art tw-focus-art"></div><div class="tw-focus-main"><div class="tw-ring tw-focus-ring"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5"/><circle class="on" cx="18" cy="18" r="15.5"/></svg><strong></strong></div><div class="tw-focus-meta"><span class="tw-focus-topic"></span><p class="tw-caption tw-focus-today"></p><button type="button" class="primary-button tw-focus-start"></button></div></div>`, true),
-    spending: shell("spending", `<button type="button" class="text-button tw-spend-open"><span data-tw="spendingQuickFull"></span> →</button>`, `<div class="tw-spend-main"><div class="tw-spend-total"><strong class="tw-spend-amount"></strong><span class="tw-spend-count"></span></div><ul class="tw-spend-cats"></ul><p class="tw-caption tw-spend-empty" data-tw="spendingEmpty"></p></div>`, true),
+    spending: shell("spending", `<button type="button" class="text-button tw-spend-open"><span data-tw="spendingQuickFull"></span> →</button>`, `<div class="tw-spend-main"><div class="tw-spend-total"><strong class="tw-spend-amount"></strong><span class="tw-spend-count"></span></div><p class="tw-caption tw-spend-empty" data-tw="spendingEmptyQuiet"></p><ol class="tw-spend-week-bars" aria-hidden="true"></ol></div>`, true),
   };
   // Hero gets the weather chip (weather-widget.js fills #heroWeather).
   const chip = document.createElement("span");
@@ -561,10 +561,12 @@
     $(".tw-focus-today", c).textContent = `${t("focusToday")} · ${focusTodayStats().minutes} ${t("min")}`;
     $(".tw-focus-start", c).textContent = btn;
     const p = Number(src?.style.getPropertyValue("--focus-inline-progress")) || 0;
-    c.firstElementChild.style.setProperty("--p", p);
     const running = btn === tr("focus.pause"), paused = btn === tr("focus.resume"), brk = ($("#focusInlinePhase")?.textContent || "") === tr("focus.phaseBreak");
     c.classList.toggle("is-running", running);
-    const art = $(".tw-focus-art", c); art.dataset.art = paused ? "focus-paused" : brk ? "focus-break" : p > 0.999 ? "focus-complete" : "focus-idle"; arts(c);
+    if (c.firstElementChild) c.firstElementChild.style.setProperty("--p", String(p));
+    const art = $(".tw-focus-art", c);
+    if (art) art.dataset.art = paused ? "focus-paused" : brk ? "focus-break" : p > 0.999 ? "focus-complete" : "focus-idle";
+    arts(c);
     setHit(c, [t("focus"), $(".tw-focus-ring strong", c).textContent, tr("focus.overviewTitle")]);
   }
   $(".tw-focus-start", cards.focus).addEventListener("click", () => handleFocusQuickPrimary());
@@ -575,7 +577,7 @@
   const focusSrc = $("#focusInlineTimer");
   if (focusSrc) new MutationObserver(() => { if (shown("focus")) focus(); }).observe(focusSrc, { subtree: true, characterData: true, childList: true });
 
-  // Today card = total, top 3 categories, one add button (owner 11-03: no extra stats on Today).
+  // Today card = today's total, count, and a Mon–today spend strip (owner 11-15).
   function spending() {
     const c = cards.spending;
     const L = window.LifeLedgerLedger;
@@ -594,11 +596,19 @@
     c.dataset.spendToday = text;
     $(".tw-spend-count", c).textContent = !detail.expenseCount ? ""
       : detail.expenseCount === 1 ? t("spendingTodayCountOne") : t("spendingTodayCountMany", { n: detail.expenseCount });
-    const rows = ledger && todayMinor ? L.categoryBreakdownRange(ledger, today, today).slice(0, 3) : [];
-    $(".tw-spend-cats", c).innerHTML = rows.map(r => {
-      const cat = ledger.categories.find(x => x.id === r.categoryId);
-      const pct = Math.max(4, Math.round((r.amountMinor / todayMinor) * 100));
-      return `<li style="--cat:${escapeHtml(categoryAccentFill(cat?.color))};--pct:${pct}%"><span class="tw-spend-cat-name">${escapeHtml(L.localizedCategoryName(cat, currentLang) || "")}</span><span class="tw-spend-cat-amt">${escapeHtml(L.formatMoney(r.amountMinor, cur, locale))}</span><i aria-hidden="true"></i></li>`;
+    const end = parseDate(today);
+  const weekBars = [];
+    for (let off = 6; off >= 0; off -= 1) {
+      const d = new Date(end);
+      d.setDate(end.getDate() - off);
+      const key = isoDate(d);
+      const minor = ledger ? Math.abs(L.rangeSummary(ledger, key, key).expenseMinor) : 0;
+      weekBars.push({ key, minor, label: weekdayShortName(d.getDay()), isToday: key === today });
+    }
+    const maxMinor = Math.max(1, ...weekBars.map(b => b.minor));
+    $(".tw-spend-week-bars", c).innerHTML = weekBars.map(b => {
+      const h = Math.max(4, Math.round((b.minor / maxMinor) * 100));
+      return `<li class="${b.isToday ? "is-today" : ""}" style="--h:${h}"><i aria-hidden="true"></i><span>${escapeHtml(b.label)}</span></li>`;
     }).join("");
     $(".tw-spend-empty", c).hidden = Boolean(todayMinor);
     c.classList.toggle("is-empty", !todayMinor);

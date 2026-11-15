@@ -4884,7 +4884,7 @@ function renderToday() {
   if (foundationsHit) foundationsHit.setAttribute("aria-label", `${tr(viewingToday ? "foundations.title" : "foundations.selectedTitle")}, ${foundationsCount}, ${tr("foundations.adjust")}`);
   const progressNumber = $("#progressNumber");
   const progressCount = `${complete} / ${scoredHabits.length}`;
-  if (progressNumber.dataset.value !== progressCount) {
+  if (progressNumber && progressNumber.dataset.value !== progressCount) {
     progressNumber.dataset.value = progressCount;
     const prevComplete = progressNumber.dataset.complete || "";
     const nextComplete = String(complete);
@@ -8438,6 +8438,42 @@ function syncJournalMonthOptions() {
   select.value = months.includes(current) ? current : '';
 }
 
+function dominantMoodBetween(fromIso, toIso) {
+  const counts = { 很好: 0, 平静: 0, 低落: 0 };
+  Object.entries(state.logs || {}).forEach(([date, log]) => {
+    if (date < fromIso || date > toIso || !log?.mood) return;
+    if (counts[log.mood] != null) counts[log.mood] += 1;
+  });
+  const best = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  return best?.[1] ? best[0] : "";
+}
+
+function feedMoodClass(mood) {
+  if (mood === "很好") return "mood-good";
+  if (mood === "平静") return "mood-calm";
+  if (mood === "低落") return "mood-low";
+  return "";
+}
+
+function wireJournalFeedExpand(host) {
+  if (!host) return;
+  const measure = () => host.querySelectorAll("[data-feed-body]").forEach(body => {
+    const btn = body.parentElement?.querySelector("[data-feed-expand]");
+    if (!btn) return;
+    body.classList.remove("is-expanded");
+    const needsClamp = body.scrollHeight > body.clientHeight + 4;
+    btn.hidden = !needsClamp;
+    btn.textContent = languageText("展开", "Expand", "Ausklappen");
+    btn.onclick = () => {
+      const open = body.classList.toggle("is-expanded");
+      btn.textContent = open
+        ? languageText("收起", "Collapse", "Einklappen")
+        : languageText("展开", "Expand", "Ausklappen");
+    };
+  });
+  requestAnimationFrame(measure);
+}
+
 function journalFeedEmptyMarkup(mode, month) {
   if (month) {
     const title = languageText("这个月没有记录", "Nothing this month", "Nichts in diesem Monat");
@@ -8649,7 +8685,17 @@ async function renderJournalFeed(version) {
   if (mode === 'weeks') {
     entries = Object.keys(state.weeklyOutputs || {})
       .filter(key => /^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$/.test(key))
-      .map(key => { const {monday,sunday} = weekDatesFromKey(key); return {key,from:isoDate(monday),to:isoDate(sunday),text:state.weeklyOutputs?.[key] || '',label:formatWeekRange(key)}; });
+      .map(key => {
+        const { monday, sunday } = weekDatesFromKey(key);
+        const from = isoDate(monday);
+        const to = isoDate(sunday);
+        return {
+          key, from, to,
+          text: state.weeklyOutputs?.[key] || "",
+          mood: dominantMoodBetween(from, to),
+          label: formatWeekRange(key),
+        };
+      });
   } else if (mode === 'months') {
     entries = Object.entries(state.reviews || {}).filter(([key]) => /^\d{4}-(0[1-9]|1[0-2])$/.test(key))
       .map(([key,text]) => ({key,from:`${key}-01`,to:isoDate(new Date(Number(key.slice(0,4)),Number(key.slice(5,7)),0,12)),text,label:formatLocalizedDate(parseDate(`${key}-01`),{year:'numeric',month:'long'})}));
@@ -8681,7 +8727,8 @@ async function renderJournalFeed(version) {
     const images = photos.filter(p => p.date === e.key);
     const photoDetails = mode === 'weeks' ? `<details class="feed-week-photos" data-from="${e.from}" data-to="${e.to}"><summary>${escapeHtml(languageText('看看这一周的照片','Photos from this week','Fotos dieser Woche'))}</summary><div class="feed-photo-list"></div></details>` : '';
     const appendClass = appendFrom > 0 && index >= appendFrom ? " journal-feed-entry--append" : "";
-    return `<article class="journal-feed-entry${appendClass}" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot" aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ''}</header><div class="archive-writing">${text}${extra}</div>${images.length ? `<div class="feed-photo-list">${images.map(p=>`<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join('')}</div>` : ''}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText('打开记录 →','Open entry →','Eintrag öffnen →'))}</button></footer></section></article>`;
+    const moodDot = feedMoodClass(e.mood);
+    return `<article class="journal-feed-entry ll-scroll-reveal${appendClass}" data-key="${escapeHtml(e.key)}"><div class="feed-date"><time datetime="${e.from}">${escapeHtml(e.key)}</time><span class="feed-axis-dot ${moodDot}" ${e.mood ? `data-mood="${escapeHtml(e.mood)}"` : ""} aria-hidden="true"></span></div><section class="feed-paper"><header><h3>${escapeHtml(e.label)}</h3>${e.mood ? `<span class="feed-mood" aria-label="${escapeHtml(moodLabel(e.mood))}">${moodCalendarIcon(e.mood)}</span>` : ""}</header><div class="archive-writing feed-body-clamp" data-feed-body>${text}${extra}</div><button type="button" class="text-button feed-body-expand" data-feed-expand hidden>${escapeHtml(languageText("展开", "Expand", "Ausklappen"))}</button>${images.length ? `<div class="feed-photo-list">${images.map(p => `<button type="button" data-feed-day="${p.date}" aria-label="${escapeHtml(e.label)}"><img src="${escapeHtml(p.url)}" loading="lazy" alt=""></button>`).join("")}</div>` : ""}${photoDetails}<footer><button class="text-button" type="button" data-feed-open="${escapeHtml(e.key)}">${escapeHtml(languageText("打开记录 →", "Open entry →", "Eintrag öffnen →"))}</button></footer></section></article>`;
   }).join('') : journalFeedEmptyMarkup(mode, month);
   if (photoError) host.insertAdjacentHTML('afterbegin',`<p role="status">${escapeHtml(languageText('照片暂时无法读取，文字仍可浏览。','Photos could not be loaded. Your writing is still available.','Fotos konnten nicht geladen werden. Die Texte sind weiterhin verfügbar.'))}</p>`);
   host?.classList.remove('ll-paint-host--stale');
@@ -8702,6 +8749,8 @@ async function renderJournalFeed(version) {
     else openDrawer(key);
   }));
   host.querySelectorAll('[data-feed-day]').forEach(button=>button.addEventListener('click',()=>openDrawer(button.dataset.feedDay)));
+  wireJournalFeedExpand(host);
+  window.LifeLedgerViewHeaders?.observeScrollReveal?.(host);
   host.querySelectorAll('.feed-week-photos').forEach(details=>details.addEventListener('toggle',async()=>{
     if(!details.open || details.dataset.loaded==='true') return;
     details.dataset.loaded='true';const list=details.querySelector('.feed-photo-list');
