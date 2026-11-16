@@ -35,13 +35,24 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      await page.waitForSelector(".tw-card.tw-spending .tw-spend-today");
+      await page.evaluate(() => {
+        localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1");
+        document.getElementById("tcOnboardHint")?.remove();
+        document.documentElement.classList.remove("tc-onboard-open");
+        window.LifeLedgerTodayCards?.show?.("spending");
+        const card = document.querySelector('[data-card="spending"]');
+        if (card) {
+          card.dataset.size = "M";
+          card.hidden = false;
+          card.style.gridColumn = "span 2";
+        }
+      });
+      await page.waitForSelector(".tw-spend-open");
       await page.locator(".tw-spend-open").click();
       await page.waitForSelector("#ledgerView.view.active", { timeout: 10000 });
-      await page.waitForSelector("[data-ledger-clear-day]", { timeout: 8000 });
-      const selectedHeat = await page.locator(".ledger-heat.is-selected").getAttribute("data-ledger-day");
-      assert.ok(selectedHeat && /^\d{4}-\d{2}-\d{2}$/.test(selectedHeat), "expected heatmap day selection");
-      await page.waitForSelector(".ledger-day-filter-chip", { timeout: 3000 });
+      await page.waitForSelector("[data-chip-clear=day]", { timeout: 8000 });
+      const selected = await page.evaluate(() => window.LifeLedgerMoneyUI?._ui?.pickedDay || "");
+      assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(selected), "expected Money day filter");
     } finally {
       await browser.close();
       server.kill("SIGTERM");

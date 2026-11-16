@@ -35,8 +35,9 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      await page.waitForSelector(".tw-card.tw-spending .tw-spend-today");
-      await page.locator(".tw-spend-today").click();
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
+      await page.waitForSelector(".tw-card.tw-spending .tc-card-hit");
+      await page.locator(".tw-card.tw-spending .tc-card-hit").click();
       await page.waitForSelector("#todayLedgerSheet.is-open");
       await page.waitForSelector("#todayLedgerQuickForm input[name=quick]");
       const visible = await page.locator("#todayLedgerSheet .today-ledger-sheet-panel").isVisible();

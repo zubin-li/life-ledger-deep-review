@@ -90,43 +90,43 @@ test(
 
         await page.locator('.nav-item[data-view="ledger"]').click();
         await page.waitForSelector("#ledgerView.view.active", { timeout: 45_000 });
-        await page.waitForSelector("#ledgerQuickInput", { timeout: 45_000 });
-        const txCount = await page.locator(".ledger-tx").count();
-        const dayGroups = await page.locator(".ledger-day-group").count();
+        await page.waitForSelector(".money-tx", { timeout: 45_000 });
+        const txCount = await page.locator(".money-tx").count();
+        const dayGroups = await page.locator(".money-day-group").count();
         assert.ok(txCount >= 1 && dayGroups >= 1, `expected demo ledger UI (${txCount} txs, ${dayGroups} days)`);
 
         const navLabel = await page.locator('.nav-item[data-view="ledger"]').textContent();
         assert.match(navLabel || "", /Finanzen|Geld|记账/i);
 
-        await page.waitForSelector('[data-ledger-sum="expense"]', { timeout: 15_000 });
-        const expense = await page.locator('[data-ledger-sum="expense"]').textContent();
-        assert.ok(expense && expense.trim().length > 2, "month expense summary should render");
+        await page.waitForSelector(".money-overview", { timeout: 15_000 });
+        const expense = await page.locator(".money-overview").textContent();
+        assert.ok(expense && /\d/.test(expense), "month expense summary should render");
 
-        const titleBefore = await page.locator(".ledger-day-title").textContent();
+        const titleBefore = await page.locator(".money-title").textContent();
         await page.keyboard.press("ArrowLeft");
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-day-title");
+            const el = document.querySelector(".money-title");
             return el && el.textContent !== prev;
           },
           titleBefore,
           { timeout: 8000 },
         );
-        const titleAfterLeft = await page.locator(".ledger-day-title").textContent();
+        const titleAfterLeft = await page.locator(".money-title").textContent();
         await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:next"));
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-day-title");
+            const el = document.querySelector(".money-title");
             return el && el.textContent !== prev;
           },
           titleAfterLeft,
           { timeout: 8000 },
         );
-        const titleBeforePrev = await page.locator(".ledger-day-title").textContent();
+        const titleBeforePrev = await page.locator(".money-title").textContent();
         await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:prev"));
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-day-title");
+            const el = document.querySelector(".money-title");
             return el && el.textContent !== prev;
           },
           titleBeforePrev,
@@ -134,15 +134,15 @@ test(
         );
         await page.evaluate(() => document.activeElement?.blur?.());
         await page.keyboard.press("n");
-        await page.waitForFunction(() => document.activeElement?.id === "ledgerQuickInput", null, {
+        await page.waitForFunction(() => document.querySelector("#moneySheetRoot.money-open input[name=amount]") === document.activeElement, null, {
           timeout: 5000,
         });
 
-        const titleMid = await page.locator(".ledger-day-title").textContent();
+        const titleMid = await page.locator(".money-title").textContent();
         await page.evaluate(() => window.LifeLedgerMac?.handle?.("date:next"));
         await page.waitForFunction(
           prev => {
-            const el = document.querySelector(".ledger-day-title");
+            const el = document.querySelector(".money-title");
             return el && el.textContent !== prev;
           },
           titleMid,

@@ -8543,7 +8543,7 @@ function wireJournalFeedEmptyActions() {
   const goTodayJournal = () => {
     switchToView("today");
     setDailyToolPage("journal", { smooth: false });
-    requestAnimationFrame(() => $("#dayNote")?.focus({ preventScroll: true }));
+    requestAnimationFrame(() => ($("#homeDayNote") || $("#dayNote"))?.focus({ preventScroll: true }));
   };
   ["journalEmptyWriteToday", "timelineEmptyWriteToday", "timelineCalendarEmptyWriteToday"].forEach(id => {
     const btn = document.getElementById(id);

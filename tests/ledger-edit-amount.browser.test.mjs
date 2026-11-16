@@ -52,25 +52,26 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector(".ledger-tx-edit");
+      await page.waitForSelector(".money-tx");
 
       const before = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
         const state = JSON.parse(localStorage.getItem(key));
-        const id = document.querySelector(".ledger-tx")?.dataset?.id;
+        const id = document.querySelector(".money-tx")?.dataset?.id;
         const tx = state.ledger.transactions.find(t => t.id === id);
         return { id, amountMinor: tx?.amountMinor, note: tx?.note ?? "" };
       });
 
-      await page.locator(".ledger-tx-edit").first().click();
-      await page.waitForSelector(".ledger-edit-popover");
-      const amount = page.locator('.ledger-edit-popover input[name="amount"]');
+      await page.locator(".money-tx").first().click();
+      await page.waitForSelector("[data-edit-form]");
+      const amount = page.locator('#moneySheetRoot input[name="amount"]');
       await amount.fill("not-a-number");
-      await page.evaluate(() => document.querySelector(".ledger-edit-popover form")?.requestSubmit());
+      await page.locator("[data-edit-form] button[type=submit]").click();
       await page.waitForTimeout(120);
 
-      assert.equal(await amount.evaluate(el => el.classList.contains("is-error")), true);
-      assert.equal(await page.locator(".ledger-edit-popover").count(), 1);
+      const err = await page.locator("#moneySheetRoot [data-error]").textContent();
+      assert.match(err || "", /amount|Betrag|金额/i);
+      assert.equal(await page.locator("[data-edit-form]").count(), 1);
 
       const after = await page.evaluate(({ id }) => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));

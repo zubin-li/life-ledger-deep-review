@@ -12,6 +12,8 @@
   const charts = {};
   let ctx = null;
   let nav = null;
+  let appliedNavDay = "";
+  let escapeBound = false;
 
   const core = () => root.LifeLedgerLedger;
   const bank = () => root.LifeLedgerBankImport;
@@ -1967,6 +1969,10 @@
     const ledger = ledgerState();
     const ym = nav.month;
     const today = ctx.iso(new Date());
+    if ((nav.day || "") !== appliedNavDay) {
+      appliedNavDay = nav.day || "";
+      ui.pickedDay = appliedNavDay;
+    }
     const mm = core().moneyMonth(ledger, ym);
     const prev = core().moneyMonth(ledger, core().shiftYm(ym, -1));
     if (ui.drill) {
@@ -2004,7 +2010,34 @@
       resizeBound = true;
       root.addEventListener?.("resize", () => Object.values(charts).forEach(c => c?.resize?.()));
     }
+    bindFilterEscape();
     return true;
+  }
+
+  function bindFilterEscape() {
+    if (escapeBound) return;
+    escapeBound = true;
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape") return;
+      if (pickerOpen) return;
+      if (ui.import?.open) {
+        e.preventDefault();
+        closeImportWizard();
+        return;
+      }
+      if (document.body.dataset.activeView !== "ledger") return;
+      if (ui.sheetHost) return;
+      const active = listFilterChips(ledgerState()).length || ui.filters.search || ui.filterOpen;
+      if (!active) return;
+      e.preventDefault();
+      ui.drill = "";
+      ui.chartDrill = "";
+      ui.pickedDay = "";
+      ui.listKind = "";
+      ui.filterOpen = false;
+      ui.filters = { categoryId: "", currency: "", accountId: "", source: "", search: "" };
+      render();
+    });
   }
 
   root.LifeLedgerMoneyUI = {

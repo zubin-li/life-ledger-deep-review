@@ -24,6 +24,24 @@ const sampleCsv = `Datum;Verwendungszweck;Betrag
 01.11.2026;REWE;-12,50
 02.11.2026;Gehalt;2500,00`;
 
+async function openCsvPreview(page) {
+  await page.locator("[data-money-import]").first().click();
+  await page.locator("[data-import-file]").setInputFiles({
+    name: "sparkasse.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(sampleCsv, "utf8"),
+  });
+  await page.waitForSelector(".money-import-files li");
+  await page.click("[data-import-next]");
+  const dateMap = page.locator("[data-map-field=date]");
+  if (await dateMap.count()) {
+    await dateMap.selectOption("0");
+    await page.locator("[data-map-field=amount]").selectOption("2");
+    await page.click("[data-import-next]");
+  }
+  await page.waitForSelector("[data-import-commit]");
+}
+
 test(
   "ledger CSV import uses in-app confirm; cancel keeps empty ledger",
   { skip: !hasPlaywright },
@@ -54,22 +72,14 @@ test(
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
       await page.waitForSelector("#ledgerView.active");
-      await page.locator("[data-ledger-more-toggle]").click();
-      await page.waitForSelector("[data-ledger-import]");
-
-      await page.locator("#ledgerCsvFile").setInputFiles({
-        name: "sparkasse.csv",
-        mimeType: "text/csv",
-        buffer: Buffer.from(sampleCsv, "utf8"),
-      });
-      await page.waitForSelector(".ledger-import-popover");
-      const title = await page.locator("#ledgerImportConfirmTitle").textContent();
-      assert.match(title || "", /CSV importieren/i);
-      await page.waitForSelector(".ledger-import-preview tbody tr");
-      const previewRows = await page.locator(".ledger-import-preview tbody tr").count();
+      await openCsvPreview(page);
+      const title = await page.locator("#moneyImportTitle").textContent();
+      assert.match(title || "", /Kontoauszug|importieren/i);
+      await page.waitForSelector(".money-import-row");
+      const previewRows = await page.locator(".money-import-row").count();
       assert.equal(previewRows, 2);
-      await page.click("[data-import-cancel]");
-      await page.waitForSelector(".ledger-import-popover", { state: "detached" });
+      await page.locator("#moneyImportSheetRoot").press("Escape");
+      await page.waitForSelector("#moneyImportTitle", { state: "detached" });
 
       const countAfterCancel = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
@@ -78,14 +88,9 @@ test(
       });
       assert.equal(countAfterCancel, 0);
 
-      await page.locator("#ledgerCsvFile").setInputFiles({
-        name: "sparkasse.csv",
-        mimeType: "text/csv",
-        buffer: Buffer.from(sampleCsv, "utf8"),
-      });
-      await page.waitForSelector(".ledger-import-popover");
-      await page.click("[data-import-confirm]");
-      await page.waitForSelector(".ledger-import-popover", { state: "detached" });
+      await openCsvPreview(page);
+      await page.click("[data-import-commit]");
+      await page.waitForSelector("#moneyImportTitle", { state: "detached" });
       await page.waitForFunction(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
         const state = JSON.parse(localStorage.getItem(key));

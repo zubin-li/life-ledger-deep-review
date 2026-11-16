@@ -37,21 +37,21 @@ test(
       await page.goto(base, { waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
       await page.waitForSelector("#ledgerView.active", { timeout: 15000 });
-      const titleBefore = await page.locator(".ledger-day-title").textContent();
+      const titleBefore = await page.locator(".money-title").textContent();
       await page.keyboard.press("ArrowLeft");
       await page.waitForFunction(
         (prev) => {
-          const el = document.querySelector(".ledger-day-title");
+          const el = document.querySelector(".money-title");
           return el && el.textContent !== prev;
         },
         titleBefore,
         { timeout: 8000 },
       );
       await page.keyboard.press("/");
-      await page.waitForFunction(() => document.activeElement?.id === "ledgerFilter");
+      await page.waitForFunction(() => document.activeElement?.matches?.("[data-filter=search]"));
       await page.evaluate(() => document.activeElement?.blur?.());
       await page.keyboard.press("n");
-      await page.waitForFunction(() => document.activeElement?.id === "ledgerQuickInput");
+      await page.waitForFunction(() => document.querySelector("#moneySheetRoot input[name=amount]") === document.activeElement);
     } finally {
       await browser.close();
       server.kill("SIGTERM");

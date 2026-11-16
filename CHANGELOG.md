@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Money again opens on the day you came from (Today’s spending link, review month) and M / N open the add-entry sheet. The empty journal button focuses the visible reflection field. Browser tests follow the 2.1 Money page and Today cards, and the suite can no longer hang forever.
+
 ## [2.1.0] - 2026-11-15
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Includes every 2.0.11 / Mac 3.0.5 fix.

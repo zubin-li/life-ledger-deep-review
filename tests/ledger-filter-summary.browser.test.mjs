@@ -37,29 +37,26 @@ test(
       });
       await page.goto(base, { waitUntil: "networkidle" });
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-heat-grid [data-ledger-day]", { timeout: 10000 });
-      const hot = page.locator("[data-ledger-day].ledger-heat-1, [data-ledger-day].ledger-heat-2, [data-ledger-day].ledger-heat-3, [data-ledger-day].ledger-heat-4").first();
-      await hot.click();
-      await page.waitForSelector(".ledger-day-filter-chip", { timeout: 3000 });
-      const seg = page.locator(".ledger-donut-segments .ledger-cat-seg").first();
-      await seg.evaluate(el => {
-        el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-      });
-      await page.waitForSelector(".ledger-category-filter-chip", { timeout: 3000 });
-      const sum = page.locator(".ledger-list-filter-sum");
-      const sumCount = await sum.count();
-      if (sumCount === 0) {
-        await page.waitForSelector(".ledger-list-empty--combo", { timeout: 3000 });
-        await page.locator("#ledgerListEmptyClearAll").click();
-      } else {
-        await sum.waitFor({ timeout: 3000 });
-        const copy = await sum.locator(".ledger-list-filter-sum-copy").textContent();
-        assert.match(copy || "", /\d/);
-        await page.locator("[data-ledger-clear-all-filters]").click();
+      await page.waitForFunction(() => !document.documentElement.classList.contains("ll-view-transition"));
+      await page.waitForSelector("#moneyDaily canvas", { timeout: 10000 });
+      const chart = page.locator("#moneyDaily canvas");
+      await chart.evaluate(el => el.scrollIntoView({ block: "center" }));
+      const box = await chart.boundingBox();
+      assert.ok(box, "daily chart visible");
+      let picked = false;
+      for (const x of [0.35, 0.5, 0.7]) {
+        await page.mouse.click(box.x + box.width * x, box.y + box.height * 0.45);
+        if (await page.locator("[data-chip-clear=day]").count()) { picked = true; break; }
       }
-      await page.waitForSelector(".ledger-day-filter-chip", { state: "detached", timeout: 5000 });
-      await page.waitForSelector(".ledger-category-filter-chip", { state: "detached", timeout: 5000 });
-      const txs = await page.locator(".ledger-tx").count();
+      assert.equal(picked, true);
+      await page.locator(".money-cat-row").first().click();
+      await page.waitForSelector("[data-chip-clear=drill]", { timeout: 3000 });
+      const head = await page.locator("#moneyListCard .module-title").textContent();
+      assert.match(head || "", /\d/);
+      await page.keyboard.press("Escape");
+      await page.waitForSelector("[data-chip-clear=day]", { state: "detached", timeout: 5000 });
+      await page.waitForSelector("[data-chip-clear=drill]", { state: "detached", timeout: 5000 });
+      const txs = await page.locator(".money-tx").count();
       assert.ok(txs > 0);
     } finally {
       await browser.close();

@@ -45,12 +45,10 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.click("[data-ledger-more-toggle]");
-      await page.waitForSelector(".ledger-budget-add");
-      await page.click(".ledger-budget-add");
-      await page.waitForSelector(".ledger-budget-form header strong");
-      const title = await page.locator(".ledger-budget-form header strong").textContent();
-      assert.equal(title?.trim(), "设置预算");
+      await page.click("[data-money-settings]");
+      await page.waitForSelector("#moneySettings");
+      const title = await page.locator("#moneySettings").textContent();
+      assert.match(title || "", /预算/);
       const pageTitle = await page.locator("#ledgerScrollTitle").textContent();
       assert.match(pageTitle || "", /记账/);
     } finally {

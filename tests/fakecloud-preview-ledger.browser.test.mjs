@@ -64,7 +64,8 @@ test(
         });
         assert.ok(cloudLedgerTx > 5, `expected demo ledger on cloud, got ${cloudLedgerTx}`);
 
-        const todaySpend = await page.locator(".tw-card.tw-spending .tw-spend-today").textContent();
+        await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
+        const todaySpend = await page.locator(".tw-card.tw-spending .tw-spend-amount").textContent();
         assert.ok(todaySpend && todaySpend.trim().length > 0, "Today spending card should show an amount");
 
         await page.locator('.nav-item[data-view="week"]').click();
@@ -83,13 +84,13 @@ test(
 
         await page.locator('.nav-item[data-view="ledger"]').click();
         await page.waitForSelector("#ledgerView.view.active", { timeout: 45_000 });
-        await page.waitForSelector("#ledgerQuickInput", { timeout: 45_000 });
-        const ledgerTxRows = await page.locator(".ledger-tx").count();
-        const dayGroups = await page.locator(".ledger-day-group").count();
+        await page.waitForSelector(".money-tx", { timeout: 45_000 });
+        const ledgerTxRows = await page.locator(".money-tx").count();
+        const dayGroups = await page.locator(".money-day-group").count();
         assert.ok(ledgerTxRows >= 1 && dayGroups >= 1, `ledger list should render (${ledgerTxRows} txs, ${dayGroups} days)`);
-        const summaryExpense = await page.locator('[data-ledger-sum="expense"]').textContent();
-        assert.ok(summaryExpense && summaryExpense.trim().length > 2, "ledger month expense summary should render");
-        await page.waitForSelector(".ledger-category-viz, .ledger-donut", { timeout: 45_000 });
+        const summaryExpense = await page.locator(".money-overview").textContent();
+        assert.match(summaryExpense || "", /\d/);
+        await page.waitForSelector("#moneyDonut canvas", { timeout: 45_000 });
       } finally {
         await context.close();
         await browser.close();

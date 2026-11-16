@@ -50,14 +50,11 @@ test(
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "networkidle" });
-      const pill = page.locator(".tw-spend-recurring-pill");
-      await pill.waitFor({ state: "visible", timeout: 8000 });
-      const label = (await pill.textContent())?.trim() || "";
-      assert.match(label, /固定待记|1 笔/);
-      await pill.click();
+      await page.locator('.nav-item[data-view="ledger"]').click();
       await page.waitForSelector("#ledgerView.view.active", { timeout: 8000 });
-      await page.waitForSelector(".ledger-sub-list .ledger-sub-row", { timeout: 8000 });
-      await assert.doesNotReject(pill.waitFor({ state: "hidden", timeout: 8000 }));
+      await page.waitForSelector(".money-sub", { timeout: 8000 });
+      const label = (await page.locator(".money-sub").first().textContent()) || "";
+      assert.match(label, /订阅|固定|月|€|¥/);
     } finally {
       await browser.close();
       server.kill("SIGTERM");

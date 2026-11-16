@@ -68,6 +68,7 @@ test(
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     try {
       await page.goto(baseDemo, { waitUntil: "networkidle" });
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
       await page.waitForSelector(".tw-spend-week-bars li", { timeout: 12000 });
       const count = await page.locator(".tw-spend-week-bars li").count();
       assert.equal(count, 7);

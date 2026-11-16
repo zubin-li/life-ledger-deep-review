@@ -40,15 +40,19 @@ test(
       });
       await page.goto(base, { waitUntil: "networkidle" });
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-daily-strip [data-ledger-day], .ledger-heat-grid [data-ledger-day]", { timeout: 10000 });
-      const hot = page.locator("[data-ledger-day].ledger-heat-1, [data-ledger-day].ledger-heat-2, [data-ledger-day].ledger-heat-3, [data-ledger-day].ledger-heat-4").first();
-      await hot.scrollIntoViewIfNeeded();
-      await hot.click({ force: true });
-      await page.waitForSelector(".ledger-day-filter-chip", { timeout: 3000 });
-      const after = await page.locator(".ledger-tx").count();
-      assert.ok(after >= 1);
-      await page.locator("[data-ledger-clear-day]").click();
-      await page.waitForSelector(".ledger-day-filter-chip", { state: "detached", timeout: 3000 });
+      await page.waitForSelector("#moneyDaily canvas", { timeout: 10000 });
+      const chart = page.locator("#moneyDaily canvas");
+      await chart.scrollIntoViewIfNeeded();
+      const box = await chart.boundingBox();
+      assert.ok(box, "daily chart visible");
+      let picked = false;
+      for (const x of [0.35, 0.5, 0.7]) {
+        await page.mouse.click(box.x + box.width * x, box.y + box.height * 0.45);
+        if (await page.locator("[data-chip-clear=day]").count()) { picked = true; break; }
+      }
+      assert.equal(picked, true);
+      await page.locator("[data-chip-clear=day]").click();
+      await page.waitForSelector("[data-chip-clear=day]", { state: "detached", timeout: 3000 });
     } finally {
       await browser.close();
       server.kill("SIGTERM");

@@ -38,9 +38,7 @@ test(
       await page.waitForSelector("#todayView.active");
       await page.keyboard.press("m");
       await page.waitForSelector("#ledgerView.active", { timeout: 8000 });
-      await page.waitForFunction(() => document.activeElement?.id === "ledgerQuickInput", { timeout: 8000 });
-      const hints = await page.locator(".ledger-kbd-hints").count();
-      assert.ok(hints >= 1, "desktop workspace should show ledger keyboard hints");
+      await page.waitForFunction(() => document.querySelector("#moneySheetRoot.money-open input[name=amount]") === document.activeElement, { timeout: 8000 });
     } finally {
       await browser.close();
       server.kill("SIGTERM");

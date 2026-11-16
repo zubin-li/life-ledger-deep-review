@@ -36,24 +36,11 @@ test(
       });
       await page.goto(base, { waitUntil: "networkidle" });
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-heat-grid [data-ledger-day]", { timeout: 15000 });
-      const mixedDay = await page.evaluate(async () => {
-        const cells = [...document.querySelectorAll("[data-ledger-day]")];
-        for (const cell of cells) {
-          cell.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-          await new Promise(r => requestAnimationFrame(r));
-          const split = document.querySelector(".ledger-list-filter-sum-in");
-          const chip = document.querySelector(".ledger-day-filter-chip");
-          if (split && chip) return cell.getAttribute("data-ledger-day");
-          const clear = document.querySelector("[data-ledger-clear-day]");
-          clear?.click();
-        }
-        return null;
-      });
-      assert.ok(mixedDay, "expected a demo day with income and expense under day filter");
+      await page.waitForSelector(".money-cat-row", { timeout: 15000 });
+      await page.locator(".money-cat-row").first().click();
+      await page.waitForSelector("[data-chip-clear=drill]", { timeout: 5000 });
       await page.keyboard.press("Escape");
-      await page.waitForSelector(".ledger-day-filter-chip", { state: "detached", timeout: 5000 });
-      await page.waitForSelector(".ledger-list-filter-sum", { state: "detached", timeout: 5000 });
+      await page.waitForSelector("[data-chip-clear=drill]", { state: "detached", timeout: 5000 });
     } finally {
       await browser.close();
       server.kill("SIGTERM");

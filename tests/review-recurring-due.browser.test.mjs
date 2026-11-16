@@ -54,11 +54,14 @@ test(
       await page.waitForSelector("#reviewLedgerSummary:not([hidden]) .review-ledger-recurring-due", { timeout: 12000 });
       const copy = await page.locator(".review-ledger-recurring-due-copy").textContent();
       assert.match(copy || "", /固定收支|尚未记入|笔固定/);
-      await page.locator("[data-open-ledger-recurring]").click();
-      await page.waitForSelector(".ledger-sub-list", { timeout: 8000 });
-      await page.locator('.nav-item[data-view="review"]').click();
-      await page.waitForSelector(".review-ledger-recurring-due", { timeout: 8000 });
       await page.locator('[data-rv-month="-1"]').click();
+      await page.waitForSelector(".review-ledger-recurring-due", { state: "detached", timeout: 8000 });
+      await page.locator('[data-rv-month="1"]').click();
+      await page.waitForSelector(".review-ledger-recurring-due", { timeout: 8000 });
+      await page.locator("[data-open-ledger-recurring]").click();
+      await page.waitForSelector(".money-page", { timeout: 8000 });
+      await page.locator('.nav-item[data-view="review"]').click();
+      await page.waitForSelector("#reviewView.active #reviewLedgerSummary:not([hidden])", { timeout: 8000 });
       await page.waitForSelector(".review-ledger-recurring-due", { state: "detached", timeout: 8000 });
     } finally {
       await browser.close();

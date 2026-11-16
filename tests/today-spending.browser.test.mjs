@@ -48,13 +48,14 @@ test(
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "networkidle" });
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
       await page.waitForSelector(".tw-card.tw-spending");
-      const hint = page.locator(".tw-spend-hint");
-      await assert.doesNotReject(hint.waitFor({ state: "visible", timeout: 8000 }));
-      const text = await hint.textContent();
-      assert.match(text || "", /12,50|咖啡/);
-      const note = await page.locator(".tw-spend-note").textContent();
+      const note = await page.locator(".tw-spend-empty").textContent();
       assert.match(note || "", /还没有支出/);
+      await page.locator(".tw-card.tw-spending .tc-card-hit").click();
+      await page.waitForSelector("#todayLedgerSheet.is-open");
+      const placeholder = await page.locator("#todayLedgerQuickForm input[name=quick]").getAttribute("placeholder");
+      assert.match(placeholder || "", /12,50|咖啡/);
     } finally {
       await browser.close();
       server.kill("SIGTERM");
@@ -75,7 +76,7 @@ test(
         localStorage.setItem("life-ledger-language", "zh");
         localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
       });
-      await page.goto(baseDemo, { waitUntil: "networkidle" });
+      await page.goto(baseLocal, { waitUntil: "networkidle" });
       await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
         if (!key) return;
@@ -116,10 +117,11 @@ test(
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "networkidle" });
-      await page.waitForSelector(".tw-spend-compare:not([hidden])", { timeout: 15000 });
-      const compare = await page.locator(".tw-spend-compare").textContent();
-      assert.match(compare || "", /480|947|€|多/);
-      assert.doesNotMatch(compare || "", /999%/);
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
+      await page.waitForSelector(".tw-spend-amount", { timeout: 15000 });
+      const amount = await page.locator(".tw-spend-amount").textContent();
+      assert.match(amount || "", /500|500,00|500.00/);
+      assert.doesNotMatch(amount || "", /999%/);
     } finally {
       await browser.close();
       server.kill("SIGTERM");
