@@ -1,2 +1,2 @@
-修复习惯设置：强调色可以正常更换，不会再跳回第一个颜色；图标选择框不再透出下面的内容，可以正常点选。
-Habit settings: the accent colour keeps the colour you choose, and the icon picker is solid and clickable again.
+新用户默认首页按你的排版；未写月度复盘时保持空白；时间轴默认日度；照片库显示所有月份；心情照片可粘贴并调整取景；暗色心情图标恢复颜色。
+Default Today layout follows your arrangement; monthly review stays empty until you write one; timeline opens on Daily; all photo months shown; paste and frame day photos; dark-mode mood icons coloured.

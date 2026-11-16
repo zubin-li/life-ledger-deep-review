@@ -7,10 +7,28 @@
   const MAX_PER_DAY = 3;
   const HEIC_CONVERTER_URL = "./vendor/heic2any.min.js?v=0.0.4";
   let heicConverterPromise = null;
+  // Per-photo framing (user 11/15): focus point x/y (%) and fit (cover = fill, contain = whole photo).
+  // One small map keyed by photo id; app.js syncs it with the other view prefs in the cloud edition.
+  const FRAMES_KEY = "life-ledger-photo-frames";
+  const readFrames = () => { try { const v = JSON.parse(root.localStorage.getItem(FRAMES_KEY)); return v && typeof v === "object" && !Array.isArray(v) ? v : {}; } catch { return {}; } };
+  function frameOf(photo) {
+    const f = readFrames()[photo?.backupId || photo?.id] || {};
+    const clamp = n => (Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : 50);
+    return { x: clamp(f.x), y: clamp(f.y), fit: f.fit === "contain" ? "contain" : "cover" };
+  }
+  function saveFrame(photo, frame) {
+    const frames = readFrames();
+    const f = { ...frameOf(photo), ...frame };
+    if (f.x === 50 && f.y === 50 && f.fit === "cover") delete frames[photo.backupId || photo.id];
+    else frames[photo.backupId || photo.id] = f;
+    try { root.localStorage.setItem(FRAMES_KEY, JSON.stringify(frames)); } catch {}
+    root.LifeLedgerPrefs?.changed?.();
+  }
+  const frameStyle = photo => { const f = frameOf(photo); return `object-position:${f.x}% ${f.y}%;object-fit:${f.fit}`; };
 
   const copy = {
     en: {
-      title: "Photo memories", help: "Up to three private photos for this day.", helpLocal: "Up to three photos for this day, kept only on this device.", localFull: "This device is out of storage space, so the photo was not saved.", add: "Add photo", count: "{count} of 3",
+      title: "Photo memories", help: "Up to three private photos for this day.", helpLocal: "Up to three photos for this day, kept only on this device.", localFull: "This device is out of storage space, so the photo was not saved.", fitWhole: "Show whole photo", fitFill: "Fill the frame", frameHint: "Drag a photo to choose what it shows. Paste with ⌘V.", add: "Add photo", count: "{count} of 3",
       processing: "Preparing photo…", uploading: "Saving privately…", saved: "Photo saved", delete: "Remove photo", deleting: "Removing…",
       confirmDelete: "Remove this photo from the day?", unavailable: "Photo memories are available in the deployed Cloudflare app.",
       format: "Choose a supported photo, including JPEG, PNG, WebP, HEIC, or HEIF.", heic: "This HEIC photo could not be decoded. Try the original file again.", sourceLarge: "This original photo is too large to process.", outputLarge: "The photo could not be compressed enough.",
@@ -18,7 +36,7 @@
       dayLimit: "This day already has three photos.", libraryFull: "The private photo library has reached its storage limit.", monthlyLimit: "The private photo allowance is paused until next month.", generic: "The photo could not be saved. Try again.",
     },
     zh: {
-      title: "照片记忆", help: "为这一天留下最多三张私人照片。", helpLocal: "为这一天留下最多三张照片，只保存在这台设备上。", localFull: "这台设备的存储空间不足，照片没有保存。", add: "添加照片", count: "{count} / 3",
+      title: "照片记忆", help: "为这一天留下最多三张私人照片。", helpLocal: "为这一天留下最多三张照片，只保存在这台设备上。", localFull: "这台设备的存储空间不足，照片没有保存。", fitWhole: "显示完整照片", fitFill: "填满画框", frameHint: "拖动照片调整显示位置；也可以直接 ⌘V 粘贴。", add: "添加照片", count: "{count} / 3",
       processing: "正在处理照片……", uploading: "正在私密保存……", saved: "照片已保存", delete: "删除照片", deleting: "正在删除……",
       confirmDelete: "从这一天删除这张照片吗？", unavailable: "照片记忆仅在已部署的 Cloudflare 版本中开放。",
       format: "请选择支持的照片，包括 JPEG、PNG、WebP、HEIC 或 HEIF。", heic: "这张 HEIC 照片未能解码，请重新选择原始照片。", sourceLarge: "原始照片过大，无法安全处理。", outputLarge: "照片压缩后仍然过大。",
@@ -26,7 +44,7 @@
       dayLimit: "这一天已经保存了三张照片。", libraryFull: "私人照片库已达到存储上限。", monthlyLimit: "本月私人照片额度已暂停，下月自动恢复。", generic: "照片未能保存，请重试。",
     },
     de: {
-      title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", helpLocal: "Bis zu drei Fotos für diesen Tag, nur auf diesem Gerät gespeichert.", localFull: "Auf diesem Gerät ist kein Speicherplatz mehr frei. Das Foto wurde nicht gespeichert.", add: "Foto hinzufügen", count: "{count} von 3",
+      title: "Fotoerinnerungen", help: "Bis zu drei private Fotos für diesen Tag.", helpLocal: "Bis zu drei Fotos für diesen Tag, nur auf diesem Gerät gespeichert.", localFull: "Auf diesem Gerät ist kein Speicherplatz mehr frei. Das Foto wurde nicht gespeichert.", fitWhole: "Ganzes Foto zeigen", fitFill: "Rahmen füllen", frameHint: "Foto ziehen, um den Ausschnitt zu wählen. Mit ⌘V einfügen.", add: "Foto hinzufügen", count: "{count} von 3",
       processing: "Foto wird vorbereitet …", uploading: "Wird privat gespeichert …", saved: "Foto gespeichert", delete: "Foto entfernen", deleting: "Wird entfernt …",
       confirmDelete: "Dieses Foto aus dem Tag entfernen?", unavailable: "Fotoerinnerungen sind in der bereitgestellten Cloudflare-App verfügbar.",
       format: "Wähle ein unterstütztes Foto, einschließlich JPEG, PNG, WebP, HEIC oder HEIF.", heic: "Dieses HEIC-Foto konnte nicht dekodiert werden. Wähle die Originaldatei erneut.", sourceLarge: "Das Originalfoto ist zu groß für die Verarbeitung.", outputLarge: "Das Foto konnte nicht ausreichend komprimiert werden.",
@@ -318,11 +336,20 @@
       add.querySelector("span").textContent = t("add");
       add.disabled = busy || photos.length >= MAX_PER_DAY;
       count.textContent = t("count", { count: photos.length });
-      list.innerHTML = photos.map(photo => `<figure class="mood-photo-thumb" data-photo-id="${photo.id}">
-        <img src="${photo.url}" alt="" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" />
-        <button type="button" aria-label="${t("delete")}" title="${t("delete")}">×</button>
-      </figure>`).join("");
-      list.querySelectorAll("button").forEach(button => button.addEventListener("click", () => removePhoto(button.closest("figure").dataset.photoId)));
+      list.innerHTML = photos.map(photo => { const f = frameOf(photo); return `<figure class="mood-photo-thumb${f.fit === "contain" ? " is-fit" : ""}" data-photo-id="${photo.id}" title="${t("frameHint")}">
+        <img src="${photo.url}" alt="" width="${photo.width || 720}" height="${photo.height || 720}" loading="lazy" draggable="false" style="${frameStyle(photo)}" />
+        <button type="button" class="mood-photo-fit" aria-label="${t(f.fit === "contain" ? "fitFill" : "fitWhole")}" title="${t(f.fit === "contain" ? "fitFill" : "fitWhole")}">${f.fit === "contain" ? "⤢" : "⤡"}</button>
+        <button type="button" class="mood-photo-remove" aria-label="${t("delete")}" title="${t("delete")}">×</button>
+      </figure>`; }).join("");
+      list.querySelectorAll(".mood-photo-remove").forEach(button => button.addEventListener("click", () => removePhoto(button.closest("figure").dataset.photoId)));
+      list.querySelectorAll(".mood-photo-fit").forEach(button => button.addEventListener("click", () => {
+        const photo = photos.find(p => p.id === button.closest("figure").dataset.photoId);
+        if (!photo) return;
+        saveFrame(photo, { fit: frameOf(photo).fit === "contain" ? "cover" : "contain" });
+        render();
+        options.onChange?.({ date, photos: [...photos] });
+      }));
+      list.querySelectorAll("figure img").forEach(img => img.addEventListener("pointerdown", event => dragFocus(event, img)));
     }
 
     function errorText(error) {
@@ -359,6 +386,36 @@
         if (version === requestVersion) setStatus(errorText(error), true);
         return [];
       }
+    }
+
+    // Drag inside a thumbnail to move what the frame shows (same model as the Today photo wall's focus point).
+    function dragFocus(event, img) {
+      const photo = photos.find(p => p.id === img.closest("figure").dataset.photoId);
+      if (!photo || event.button !== 0) return;
+      event.preventDefault();
+      img.setPointerCapture?.(event.pointerId);
+      const start = { cx: event.clientX, cy: event.clientY, ...frameOf(photo) };
+      const box = img.getBoundingClientRect();
+      let moved = false;
+      const move = e => {
+        // dragging right reveals more of the left side, like moving the photo under the frame
+        const x = Math.min(100, Math.max(0, start.x - (e.clientX - start.cx) / box.width * 100));
+        const y = Math.min(100, Math.max(0, start.y - (e.clientY - start.cy) / box.height * 100));
+        moved = true;
+        img.style.objectPosition = `${x}% ${y}%`;
+        img.dataset.x = x; img.dataset.y = y;
+      };
+      const up = () => {
+        img.removeEventListener("pointermove", move);
+        img.removeEventListener("pointerup", up);
+        img.removeEventListener("pointercancel", up);
+        if (!moved) return;
+        saveFrame(photo, { x: Number(img.dataset.x), y: Number(img.dataset.y) });
+        options.onChange?.({ date, photos: [...photos] });
+      };
+      img.addEventListener("pointermove", move);
+      img.addEventListener("pointerup", up);
+      img.addEventListener("pointercancel", up);
     }
 
     async function upload(file) {
@@ -417,6 +474,14 @@
     }
 
     add.addEventListener("click", () => input.click());
+    // ⌘V / Ctrl+V a copied photo while the day's mood panel is open (user 11/15). Text pastes are left alone.
+    root.document.addEventListener("paste", event => {
+      if (section.hidden || !section.offsetParent || !enabled || busy) return;
+      const file = [...(event.clipboardData?.items || [])].find(item => item.kind === "file" && item.type.startsWith("image/"))?.getAsFile();
+      if (!file) return;
+      event.preventDefault();
+      upload(file);
+    });
     input.addEventListener("change", () => input.files?.[0] && upload(input.files[0]));
     render();
     return {
@@ -429,5 +494,5 @@
     };
   }
 
-  root.LifeLedgerPhotoMemories = { LOCAL_DB, MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile };
+  root.LifeLedgerPhotoMemories = { frameStyle, LOCAL_DB, MAX_EDGE, MAX_OUTPUT_BYTES, MAX_PER_DAY, compressPhoto, create, isHeicFile, isPhotoFile };
 })(window);

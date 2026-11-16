@@ -319,6 +319,11 @@ dialog form > footer:where(#weekView, #weekView *, #longrangeView, #longrangeVie
 .mood-photo-thumb img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .mood-photo-thumb button { position: absolute; top: 7px; right: 7px; width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid rgba(255, 255, 255, 0.42); border-radius: var(--radius-sm); background: rgba(22, 24, 27, 0.68); color: white; backdrop-filter: blur(12px); }
 .mood-photo-thumb button svg { width: 14px; height: 14px; fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* Framing (user 11/15): drag the photo to move what shows; the left button toggles fill / whole photo. */
+.mood-photo-thumb img { cursor: grab; touch-action: none; user-select: none; -webkit-user-drag: none; }
+.mood-photo-thumb img:active { cursor: grabbing; }
+.mood-photo-thumb .mood-photo-fit { right: auto; left: 7px; font-size: 15px; }
+.mood-photo-thumb.is-fit img { background: var(--paper-deep); }
 .mood-photo-add:where(#weekView, #weekView *, #longrangeView, #longrangeView *, #timelineView, #timelineView *, #reviewView, #reviewView *, #habitsView, #habitsView *, #longTermGoalDialog, #longTermGoalDialog *, #reviewCanvasDialog, #reviewCanvasDialog *, #habitContextMenu, #habitContextMenu *, #horizonEditDialog, #horizonEditDialog *) { min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 1px dashed color-mix(in srgb, var(--sage) 38%, var(--line)); border-radius: var(--radius-lg); background: color-mix(in srgb, var(--sage-light) 28%, transparent); color: var(--sage-dark); font-size: 10px; font-weight: 700; }
 .mood-photo-add svg:where(#weekView, #weekView *, #longrangeView, #longrangeView *, #timelineView, #timelineView *, #reviewView, #reviewView *, #habitsView, #habitsView *, #longTermGoalDialog, #longTermGoalDialog *, #reviewCanvasDialog, #reviewCanvasDialog *, #habitContextMenu, #habitContextMenu *, #horizonEditDialog, #horizonEditDialog *) { width: 19px; height: 19px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 .mood-photo-add:disabled:where(#weekView, #weekView *, #longrangeView, #longrangeView *, #timelineView, #timelineView *, #reviewView, #reviewView *, #habitsView, #habitsView *, #longTermGoalDialog, #longTermGoalDialog *, #reviewCanvasDialog, #reviewCanvasDialog *, #habitContextMenu, #habitContextMenu *, #horizonEditDialog, #horizonEditDialog *) { cursor: default; opacity: 0.46; }
@@ -2471,7 +2476,14 @@ html[data-workspace] #timelineView.active:is([data-journal-layout="weeks"], [dat
 .feed-paper footer { display: flex; justify-content: flex-end; margin-top: 8px; border-top: 1px solid var(--desk-border); }
 .feed-paper footer button { min-height: 44px; color: var(--desk-accent); font-size: 12px; }
 .feed-mood { display: inline-grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; }
-.feed-mood svg { width: 28px; height: 28px; }
+.feed-mood svg { width: 26px; height: 26px; fill: none; stroke: currentcolor; stroke-width: 2.05; stroke-linecap: round; stroke-linejoin: round; }
+/* Timeline mood icons use the calendar's mood colours; without them the SVG fell back to solid black (dark mode, user 11/15). */
+.feed-mood.mood-low { color: rgb(47, 128, 237); }
+.feed-mood.mood-calm { color: rgb(31, 183, 106); }
+.feed-mood.mood-good { color: rgb(244, 169, 0); }
+html[data-theme="dark"] .feed-mood.mood-low { color: #5aa4ff; }
+html[data-theme="dark"] .feed-mood.mood-calm { color: #43d785; }
+html[data-theme="dark"] .feed-mood.mood-good { color: #ffc13a; }
 .feed-week-photos { color: var(--desk-muted); border-top: 1px solid var(--desk-border); font-size: 12px; margin-top: 18px; }
 .feed-week-photos summary { cursor: pointer; min-height: 44px; padding: 13px 0px; }
 .feed-photo-list { display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 10px; padding-bottom: 14px; }

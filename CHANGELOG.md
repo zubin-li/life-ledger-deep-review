@@ -4,6 +4,17 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-15
+
+Web 2.1.0 and Life Ledger for Mac 3.1.0. Includes every 2.0.11 / Mac 3.0.5 fix.
+
+### Money page
+- Picking a category in the chart shows that category's entries in the list, with its count and total; × clears it.
+- The entry list is calm: one date line per day, no weekday or daily totals; filters sit behind one Filter button; tapping an entry edits or deletes it.
+- Subscriptions and fixed costs open a read-only detail: who gets paid, account, next payment, yearly total and every payment found in your statements. Statements suggest likely subscriptions; manual editing is gone because the bank data is the source.
+- Settings is a grouped list (currency, budget, categories, accounts, import, name).
+- Card purchases that mention Mastercard/Visa are no longer filed as credit-card bills.
+
 - Today cards open from the card itself: one stretched `tc-card-hit` (spending sheet, focus page without starting, weather settings, foundations editor, rhythm chart, mood drawer). Habit checks, heatmap cells, mood options and the focus start button stay separate. The spending quick-add pill and the foundations “Adjust goals” link are gone because the card now does that.
 - Money categories are grouped (food, home, health & insurance, leisure, finance) through `parentId`. Existing category ids, transactions, budgets and rules stay put. One category picker replaces chip walls; the filter bar keeps a native `<select>` with `<optgroup>`. Settings opens a category manager for name, colour, group, fixed cost, archive and learned rules.
 - Owner feedback pass **r17 FINAL** (2026-11-03): Antigravity review — **`spending`** in backup card sizes; ledger stats compare **no `+null%` / missing `%`**; Today quick-sheet **category chip** cycles + learned hint on save; **remove mobile ledger keypad**; subscription total **month-only expenses**; `v210.css` **5968** lines; **`.overnight/CHANGES-zh.md`**; **434** unit + **23** desktop tests.
@@ -22,7 +33,6 @@ All notable changes are documented here.
 - Owner feedback pass r4 (2026-11-03): **FLIP** day-group expand on **Money** transaction list (`captureFlip`); dead ledger enter CSS trimmed; **habits-library-quiet** hairline asset; `pressBump` + subscription empty state (see r3 for stats cross-fade).
 - Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
 
-## [2.1.0] - 2026-11-03
 
 Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
 
@@ -143,6 +153,26 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Review — Money scatter empty:** empty-state gate used `expenseMinor > 0` but expenses are negative minor units; corrected to **`expenseMinor < 0`** so the CTA appears when data is thin.
 - **Timeline — Calendar CTA:** calendar and sidebar empty buttons no longer share one `id`; calendar **Write today's reflection** works when the sidebar is hidden.
 - **Suite size:** `npm test` **389** unit checks; `npm run test:browser` **39** Playwright cases (Chromium + WebKit, serial **529x** ports).
+
+## [2.0.11] - 2026-11-15
+
+Web 2.0.11 and Life Ledger for Mac 3.0.5.
+
+### Changed
+
+- **First-run Today layout** is the owner's own arrangement: the habits strip, a small photo and the rhythm card beside the day plan, the month calendar and tools, and a wide photo wall. Weather, focus, frequency and heatmap wait in the widget library. Saved layouts are untouched.
+- **Timeline opens on Daily.** Days with only a mood (no words, no photo) no longer appear in the daily timeline.
+
+### Fixed
+
+- **Monthly review stays empty until you write one.** Old builds wrote machine drafts (facts, habit lists, and copied week reviews) into the monthly review. Those drafts are no longer shown in Review or in the monthly timeline; reviews you wrote yourself are unchanged and nothing is deleted.
+- **Photo library shows every month**, not only the current one; earlier photos were hidden.
+- **Timeline mood icons in dark mode** use the mood colours instead of rendering solid black.
+- **Mac window:** the traffic lights sit evenly inside the sidebar card, lined up with the logo.
+
+### Added
+
+- **Day photos:** paste a copied photo with ⌘V in the mood note; drag a photo to choose what it shows, and switch between filling the frame and showing the whole photo. The framing is used in the timeline and day details too.
 
 ## [2.0.10] - 2026-11-02
 

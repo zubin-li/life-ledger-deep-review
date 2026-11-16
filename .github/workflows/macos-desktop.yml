@@ -58,7 +58,8 @@ jobs:
         run: cargo test --manifest-path src-tauri/Cargo.toml
 
       - name: Build unsigned macOS desktop bundles
-        run: npm run desktop:build
+        # Verification build: no updater signature (the signing key lives only in release.yml).
+        run: npm run desktop:build -- --config '{"bundle":{"createUpdaterArtifacts":false}}'
 
       - name: Package app bundle zip
         env:
