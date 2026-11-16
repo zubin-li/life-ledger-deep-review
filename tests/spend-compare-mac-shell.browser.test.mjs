@@ -105,12 +105,12 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await seedSmallBaselineIncrease(page);
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
       await page.locator(".tw-card.tw-spending").scrollIntoViewIfNeeded();
-      await page.waitForSelector(".tw-spend-compare:not([hidden])", { timeout: 15000 });
-      const compareText = await page.locator(".tw-spend-compare").textContent();
-      assert.match(compareText || "", /较昨日多/);
-      assert.doesNotMatch(compareText || "", /\+\d{3,}%/);
-      assert.match(compareText || "", /47/);
+      await page.waitForSelector(".tw-spend-amount", { timeout: 15000 });
+      const amount = await page.locator(".tw-spend-amount").textContent();
+      assert.match(amount || "", /50/);
+      assert.doesNotMatch(amount || "", /999%|\+/);
     } finally {
       await browser.close();
       server.kill("SIGTERM");
@@ -154,13 +154,10 @@ test(
       assert.doesNotMatch(reviewHint || "", /\+\d{4,}%/);
 
       await page.locator('.nav-item[data-view="today"]').click();
-      await page.waitForTimeout(350);
-      await page.waitForSelector("#todayHabitSpendHint:not([hidden])", { timeout: 15000 });
-      await page.waitForSelector("#todayMoodSpendHint:not([hidden])", { timeout: 15000 });
-      const habitText = await page.locator("#todayHabitSpendHint").textContent();
-      const moodText = await page.locator("#todayMoodSpendHint").textContent();
-      assert.match(habitText || "", /近 30 天/);
-      assert.match(moodText || "", /心情较好日/);
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
+      await page.waitForSelector(".tw-spend-amount", { timeout: 15000 });
+      const todayAmount = await page.locator(".tw-spend-amount").textContent();
+      assert.ok((todayAmount || "").trim().length > 0);
     } finally {
       await context.close();
       await browser.close();

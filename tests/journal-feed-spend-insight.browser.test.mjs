@@ -39,8 +39,8 @@ test(
       await page.waitForSelector(".tc-grid", { timeout: 45000 });
       await page.locator('.nav-item[data-view="timeline"]').click();
       await page.waitForSelector("#journalFeed.ll-paint-host.ll-paint-host--ready", { timeout: 60000 });
-      await page.waitForSelector(".journal-feed-spend-insight", { timeout: 15000 });
-      await page.locator(".journal-feed-spend-link").click();
+      assert.equal(await page.locator(".journal-feed-spend-insight").count(), 0);
+      await page.locator('.nav-item[data-view="review"]').click();
       await page.waitForSelector("#reviewView.view.active", { timeout: 10000 });
       await page.waitForSelector("#review-scatter-mood", { timeout: 12000 });
     } finally {

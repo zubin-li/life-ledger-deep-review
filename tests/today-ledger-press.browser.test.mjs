@@ -36,14 +36,15 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.locator('.nav-item[data-view="today"]').click();
-      const todayBtn = page.locator("button.tw-spend-today");
+      await page.evaluate(() => { localStorage.setItem("life-ledger-today-cards-onboarding-dismissed" + (window.LifeLedgerStorageSuffix || ""), "1"); document.getElementById("tcOnboardHint")?.remove(); document.documentElement.classList.remove("tc-onboard-open"); window.LifeLedgerTodayCards?.show?.("spending"); });
+      const todayBtn = page.locator(".tw-card.tw-spending .tc-card-hit");
       await todayBtn.waitFor({ state: "visible" });
       await todayBtn.click({ noWaitAfter: true });
       const pressed = await page.waitForFunction(
-        () => document.querySelector("button.tw-spend-today.is-spend-press"),
+        () => document.querySelector(".tw-card.tw-spending .tc-card-hit.is-spend-press"),
         { timeout: 2000 },
       );
-      assert.ok(pressed, "tw-spend-today should pulse");
+      assert.ok(pressed, "spending card should pulse");
     } finally {
       await browser.close();
       server.kill("SIGTERM");
@@ -67,14 +68,9 @@ test(
         localStorage.setItem("life-ledger-ledger-onboarding-dismissed", "1");
       });
       await page.locator('.nav-item[data-view="ledger"]').click();
-      await page.waitForSelector(".ledger-daily-strip [data-ledger-day]");
-      const heat = page.locator(".ledger-daily-strip [data-ledger-day]").first();
-      await heat.click({ noWaitAfter: true });
-      const heatPressed = await page.waitForFunction(
-        () => document.querySelector("button.ledger-heat.is-heat-press"),
-        { timeout: 2000 },
-      );
-      assert.ok(heatPressed, "heatmap day should pulse");
+      await page.waitForSelector(".money-cat-row");
+      await page.locator(".money-cat-row").first().click();
+      await page.waitForSelector("[data-chip-clear=drill]", { timeout: 8000 });
     } finally {
       await browser.close();
       server.kill("SIGTERM");

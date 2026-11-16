@@ -49,13 +49,11 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector("#ledgerListEmptyQuick", { timeout: 12000 });
-      const hairline = page.locator(".ledger-list-empty .hairline-empty strong");
-      await hairline.waitFor({ state: "visible" });
-      assert.match((await hairline.textContent()) || "", /还没有记录/);
-      await page.click("#ledgerListEmptyQuick");
-      const focused = await page.evaluate(() => document.activeElement?.id === "ledgerQuickInput");
-      assert.equal(focused, true);
+      await page.waitForSelector(".money-empty", { timeout: 12000 });
+      const empty = await page.locator("#ledgerView .money-empty").first().textContent();
+      assert.match(empty || "", /还没有|记下第一笔/);
+      await page.click("[data-money-add]");
+      await page.waitForFunction(() => document.activeElement?.name === "amount");
     } finally {
       await browser.close();
       server.kill("SIGTERM");
@@ -91,11 +89,10 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.click("[data-ledger-more-toggle]");
-      await page.click(".ledger-budget-add");
-      await page.waitForSelector(".ledger-budget-form", { timeout: 8000 });
-      const title = await page.locator(".ledger-budget-form header strong").textContent();
-      assert.match(title || "", /Set budget/i);
+      await page.click("[data-money-settings]");
+      await page.waitForSelector("[data-setting=monthlyBudgetMinor]", { timeout: 8000 });
+      const title = await page.locator("#moneySettings").textContent();
+      assert.match(title || "", /Monthly variable budget|Budget/i);
     } finally {
       await browser.close();
       server.kill("SIGTERM");

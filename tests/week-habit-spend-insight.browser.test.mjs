@@ -39,12 +39,8 @@ test(
       await page.waitForSelector(".tc-grid", { timeout: 45000 });
       await page.locator('.nav-item[data-view="week"]').click();
       await page.waitForSelector("#weekView.view.active", { timeout: 15000 });
-      const hint = page.locator("#weekHabitSpendHint:not([hidden])");
-      await hint.waitFor({ timeout: 12000 });
-      const text = await hint.textContent();
-      assert.match(text || "", /近 30 天/);
-      assert.match(text || "", /复盘里看支出关联/);
-      await hint.locator(".week-page-spend-link").click();
+      assert.equal(await page.locator("#weekHabitSpendHint").count(), 0);
+      await page.locator('.nav-item[data-view="review"]').click();
       await page.waitForSelector("#reviewView.view.active", { timeout: 10000 });
       await page.waitForSelector("#review-scatter-habit", { timeout: 12000 });
     } finally {

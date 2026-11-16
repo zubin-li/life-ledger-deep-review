@@ -47,6 +47,13 @@
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const typing = isLedgerTypingTarget(event.target);
       if (event.key === "/" && !typing) {
+        const search = $("#ledgerView [data-filter=search]");
+        if (search) {
+          event.preventDefault();
+          search.focus();
+          search.select?.();
+          return;
+        }
         event.preventDefault();
         ledgerMenuOpen = true;
         render();
@@ -58,6 +65,11 @@
         return;
       }
       if ((event.key === "n" || event.key === "N") && !typing) {
+        if (root.LifeLedgerMoneyUI?.openSheet && $("#ledgerView .money-page")) {
+          event.preventDefault();
+          root.LifeLedgerMoneyUI.openSheet();
+          return;
+        }
         const quick = $("#ledgerQuickInput");
         if (quick) {
           event.preventDefault();
@@ -77,6 +89,18 @@
       }
       if (typing) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      if ($("#ledgerView .money-page")) {
+        event.preventDefault();
+        const todayYm = (ctx?.iso(new Date()) || "").slice(0, 7);
+        const cur = viewMonth || todayYm;
+        const next = core().shiftYm(cur, event.key === "ArrowLeft" ? -1 : 1);
+        if (!next || (event.key === "ArrowRight" && todayYm && next > todayYm)) return;
+        viewMonth = next;
+        viewDay = next === todayYm ? (ctx?.iso(new Date()) || `${next}-01`) : `${next}-01`;
+        listDayFilter = "";
+        render();
+        return;
+      }
       const today = ctx?.iso(new Date()) || "";
       if (!viewDay) viewDay = today;
       event.preventDefault();
@@ -1512,6 +1536,10 @@
   }
 
   function focusQuickEntry() {
+    if (root.LifeLedgerMoneyUI?.openSheet && $("#ledgerView .money-page")) {
+      root.LifeLedgerMoneyUI.openSheet();
+      return;
+    }
     const input = $("#ledgerQuickInput");
     if (!input) return;
     input.focus();

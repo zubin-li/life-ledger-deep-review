@@ -49,9 +49,11 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector("[data-ledger-sample-entry]", { timeout: 12000 });
-      await page.click("[data-ledger-sample-entry]");
-      await page.waitForSelector(".ledger-tx.is-enter", { timeout: 12000 });
+      await page.click("[data-money-add]");
+      await page.fill("#moneySheetRoot input[name=amount]", "1,00");
+      await page.fill("#moneySheetRoot input[name=note]", "示例");
+      await page.locator("#moneySheetRoot button[type=submit]").click();
+      await page.waitForSelector(".money-tx", { timeout: 12000 });
 
       const count = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));

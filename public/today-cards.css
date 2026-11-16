@@ -770,3 +770,13 @@ html.motion-reduced .tw-art.is-drawn svg * { animation: none !important; stroke-
 .tc-grid > [data-card="habits"] :is(button:not(.tc-card-hit), a, .habit-card, #todayHabitViewport, .habit-carousel-nav) {
   position: relative; z-index: 4;
 }
+/* apple-interactive gives the heading z-index 1, which traps the open link under the card hit. */
+.tw-card.apple-interactive:has(> .tc-card-hit) > .daily-goals-heading,
+.mood-card.apple-interactive:has(> .tc-card-hit) > .daily-goals-heading {
+  z-index: 4;
+  pointer-events: none;
+}
+.tw-card.apple-interactive:has(> .tc-card-hit) > .daily-goals-heading :is(button, a, input, select, textarea),
+.mood-card.apple-interactive:has(> .tc-card-hit) > .daily-goals-heading :is(button, a, input, select, textarea) {
+  pointer-events: auto;
+}

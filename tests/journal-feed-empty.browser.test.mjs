@@ -62,7 +62,7 @@ test(
       });
       await page.locator("#journalEmptyWriteToday").click();
       await page.waitForSelector("#todayView.view.active", { timeout: 8000 });
-      await page.waitForSelector("#dayNote", { timeout: 8000 });
+      await page.waitForSelector("#homeDayNote", { timeout: 8000 });
       assert.equal(await page.locator("#journalToolPanel:not([hidden])").count(), 1);
     } finally {
       await browser.close();
@@ -83,11 +83,11 @@ test(
       await page.addInitScript(() => {
         localStorage.setItem("life-ledger-language", "de");
       });
-      await page.goto(`${base}&local-preview=demo-showcase-v1`, { waitUntil: "domcontentloaded" });
+      await page.goto(base, { waitUntil: "domcontentloaded" });
       await page.waitForFunction(
         () => {
           const key = Object.keys(localStorage).find(
-            k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1") || k.startsWith("life-ledger-preview-"),
+            k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"),
           );
           return Boolean(key);
         },
@@ -96,11 +96,13 @@ test(
       );
       await page.evaluate(() => {
         const key = Object.keys(localStorage).find(
-          k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1") || k.startsWith("life-ledger-preview-"),
+          k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"),
         );
         if (!key) return;
         const state = JSON.parse(localStorage.getItem(key));
+        state.logs = { "2020-03-04": { completed: [], note: "" } };
         state.weeklyOutputs = {};
+        state.reviews = {};
         localStorage.setItem(key, JSON.stringify(state));
       });
       await page.reload({ waitUntil: "domcontentloaded" });

@@ -41,16 +41,12 @@ test(
       });
       await page.goto(base, { waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector(".ledger-tx", { timeout: 15000 });
-      const row = page.locator(".ledger-tx").first();
+      await page.waitForSelector(".money-tx", { timeout: 15000 });
+      const row = page.locator(".money-tx").first();
       const box = await row.boundingBox();
       assert.ok(box, "transaction row visible");
-      const cx = box.x + box.width / 2;
-      const cy = box.y + box.height / 2;
-      await row.dispatchEvent("pointerdown", { pointerId: 9, pointerType: "touch", clientX: cx, clientY: cy, bubbles: true });
-      await page.waitForTimeout(560);
-      await row.dispatchEvent("pointerup", { pointerId: 9, pointerType: "touch", clientX: cx, clientY: cy, bubbles: true });
-      await page.waitForSelector(".ledger-edit-popover", { timeout: 8000 });
+      await row.click();
+      await page.waitForSelector("#moneyEditTitle", { timeout: 8000 });
     } finally {
       await context.close();
       await browser.close();

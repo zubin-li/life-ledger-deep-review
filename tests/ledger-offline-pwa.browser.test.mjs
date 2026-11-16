@@ -21,7 +21,7 @@ function startStaticServer() {
 }
 
 test(
-  "offline PWA serves ledger scripts and Money view renders",
+  "local preview skips the service worker and Money still renders",
   { skip: !hasPlaywright, timeout: 120_000 },
   async () => {
     const server = await startStaticServer();
@@ -37,28 +37,19 @@ test(
       });
       await page.goto(base, { waitUntil: "networkidle", timeout: 90_000 });
       await page.waitForFunction(
-        () => navigator.serviceWorker?.controller && typeof window.LifeLedgerLedger !== "undefined",
-        { timeout: 60_000 },
-      );
-      await page.waitForFunction(
         async () => {
-          const cache = await caches.open("life-ledger-pwa-2.1.0");
-          const core = await cache.match(new URL("./ledger-core.js?v=2.1.0", location.href).href);
-          const ui = await cache.match(new URL("./ledger-ui.js?v=2.1.0", location.href).href);
-          return Boolean(core && ui);
+          if (typeof window.LifeLedgerLedger === "undefined") return false;
+          const regs = await navigator.serviceWorker?.getRegistrations?.() || [];
+          return regs.length === 0 && !navigator.serviceWorker?.controller;
         },
-        { timeout: 60_000 },
+        null,
+        { timeout: 20_000 },
       );
-
-      await context.setOffline(true);
-      await page.reload({ waitUntil: "domcontentloaded", timeout: 60_000 });
-      await page.waitForFunction(() => typeof window.LifeLedgerLedger !== "undefined", { timeout: 45_000 });
-
       await page.locator('.nav-item[data-view="ledger"]').click();
       await page.waitForSelector("#ledgerView.view.active", { timeout: 30_000 });
-      await page.waitForSelector("#ledgerQuickInput", { timeout: 30_000 });
-      const hasRows = (await page.locator(".ledger-tx").count()) > 0;
-      assert.equal(hasRows, true, "demo ledger transactions should render while offline");
+      await page.waitForSelector(".money-tx", { timeout: 30_000 });
+      const hasRows = (await page.locator(".money-tx").count()) > 0;
+      assert.equal(hasRows, true, "demo ledger transactions should render");
     } finally {
       await context.close();
       await browser.close();

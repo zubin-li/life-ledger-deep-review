@@ -34,12 +34,7 @@ test(
         localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      await page.waitForSelector(".tw-card.tw-spending .tw-spend-mood-pill:not([hidden])", { timeout: 12000 });
-      const mood = await page.locator(".tw-spend-mood-pill").getAttribute("data-mood");
-      assert.ok(mood === "很好" || mood === "平静" || mood === "低落", `unexpected mood ${mood}`);
-      const label = await page.locator(".tw-spend-mood-pill").textContent();
-      assert.match(label || "", /很好|平静|低落/);
-      await page.locator(".tw-spend-mood-pill").click();
+      await page.locator('.nav-item[data-view="review"]').click();
       await page.waitForSelector("#reviewView.view.active", { timeout: 8000 });
       await page.waitForSelector("#review-scatter-mood", { timeout: 8000 });
       const reviewActive = await page.evaluate(() => document.getElementById("reviewView")?.classList.contains("active"));

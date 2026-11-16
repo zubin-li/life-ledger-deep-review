@@ -46,18 +46,12 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      const onboarding = page.locator("[data-ledger-onboarding]");
-      await onboarding.waitFor({ state: "visible", timeout: 8000 });
-      const title = await onboarding.locator("strong").textContent();
-      assert.match(title || "", /erste Buchung/i);
-      await page.click("[data-ledger-hint-dismiss]");
-      await onboarding.waitFor({ state: "hidden", timeout: 4000 });
-      const stored = await page.evaluate(() => localStorage.getItem("life-ledger-ledger-onboarding-dismissed"));
-      assert.equal(stored, "1");
-      await page.reload({ waitUntil: "networkidle" });
-      await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector(".ledger-page");
+      await page.waitForSelector(".money-page", { timeout: 8000 });
+      const copy = await page.locator("#ledgerView").textContent();
+      assert.match(copy || "", /Eintrag|Ausgaben|Monat/i);
       assert.equal(await page.locator("[data-ledger-onboarding]").count(), 0);
+      await page.click("[data-money-add]");
+      await page.waitForSelector("#moneySheetRoot.money-open .money-sheet", { timeout: 8000 });
     } finally {
       await browser.close();
       server.kill("SIGTERM");

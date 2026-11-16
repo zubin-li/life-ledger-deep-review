@@ -68,7 +68,7 @@ test(
         return JSON.parse(localStorage.getItem(key)).ledger.transactions.length;
       });
       await page.locator('.nav-item[data-view="ledger"]').first().click({ timeout: 8000 });
-      await page.waitForSelector(".ledger-sub-list .ledger-sub-row", { timeout: 8000 });
+      await page.waitForSelector(".money-sub", { timeout: 8000 });
       const after = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
         const state = JSON.parse(localStorage.getItem(key));

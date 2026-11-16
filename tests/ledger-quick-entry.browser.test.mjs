@@ -49,11 +49,12 @@ test(
       });
       await page.reload({ waitUntil: "networkidle" });
       await page.click('.nav-item[data-view="ledger"]');
-      await page.waitForSelector("#ledgerQuickInput", { timeout: 12000 });
-
-      await page.fill("#ledgerQuickInput", "-4,20 午餐");
-      await page.locator("#ledgerQuickForm button[type=submit]").click();
-      await page.waitForSelector(".ledger-tx.is-enter", { timeout: 12000 });
+      await page.click("[data-money-add]");
+      await page.waitForSelector("#moneySheetRoot input[name=amount]", { timeout: 12000 });
+      await page.fill("#moneySheetRoot input[name=amount]", "4,20");
+      await page.fill("#moneySheetRoot input[name=note]", "午餐");
+      await page.locator("#moneySheetRoot button[type=submit]").click();
+      await page.waitForSelector(".money-tx", { timeout: 12000 });
 
       const count = await page.evaluate(() => {
         const key = Object.keys(localStorage).find(k => k === "life-ledger-v1" || k.startsWith("life-ledger-v1"));
@@ -62,7 +63,7 @@ test(
       });
       assert.equal(count, 1);
 
-      const note = await page.locator(".ledger-tx.is-enter .ledger-tx-note").first().textContent();
+      const note = await page.locator(".money-tx").first().textContent();
       assert.match(note || "", /午餐/);
     } finally {
       await browser.close();
