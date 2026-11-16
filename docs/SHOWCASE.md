@@ -2,7 +2,7 @@
 
 [English](SHOWCASE.md) · [简体中文](SHOWCASE.zh-CN.md) · [Deutsch](SHOWCASE.de-DE.md) · [Back to README](../README.md)
 
-Life Ledger 2.0 turns Today into a card workspace and redesigns every page. All screenshots use the fictional three-month sample workspace that the local edition opens with.
+Life Ledger 2.1 adds **Money** (bookkeeping) alongside the 2.0 card workspace. All screenshots use the fictional three-month sample workspace that the local edition opens with.
 
 ## Desktop
 
@@ -48,6 +48,12 @@ Days, weeks and months read downward; the photo and calendar views open any day 
 
 Targets, colors, icons and frequency (daily, weekly, monthly) for every habit.
 
+### Money (bookkeeping)
+
+<img src="images/demo-preview/en-desktop/en-08-ledger-v21.png" alt="Money: quick entry, charts, and budgets" />
+
+Open **Money** in the sidebar (between Review and Habit settings). Quick entry, category charts, budgets, and CSV import/export live there; the fictional demo workspace also includes sample transactions when you use local preview.
+
 ## Mobile
 
 <table>
@@ -73,8 +79,10 @@ Targets, colors, icons and frequency (daily, weekly, monthly) for every habit.
   </tr>
   <tr>
     <td width="33%"><img src="images/demo-preview/en-mobile/en-05-habits-v6.png" alt="Habit settings" /></td>
+    <td width="33%"><img src="images/demo-preview/en-mobile/en-08-ledger-v21.png" alt="Money" /></td>
   </tr>
   <tr>
     <td><strong>Habit settings</strong></td>
+    <td><strong>Money</strong></td>
   </tr>
 </table>

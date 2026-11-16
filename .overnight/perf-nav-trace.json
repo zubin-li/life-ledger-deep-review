@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-11-03T11:24:56.052Z",
+  "port": 5297,
+  "samples": [
+    {
+      "view": "week",
+      "ms": 633,
+      "longTasks": [],
+      "cls": 0,
+      "active": true
+    },
+    {
+      "view": "ledger",
+      "ms": 595,
+      "longTasks": [],
+      "cls": 0,
+      "active": true
+    },
+    {
+      "view": "review",
+      "ms": 617,
+      "longTasks": [
+        62
+      ],
+      "cls": 0,
+      "active": true
+    },
+    {
+      "view": "today",
+      "ms": 640,
+      "longTasks": [],
+      "cls": 0,
+      "active": true
+    }
+  ],
+  "maxLongTaskMs": 62,
+  "maxCls": 0
+}

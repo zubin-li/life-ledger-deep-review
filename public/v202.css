@@ -231,6 +231,6 @@ html.ll-mac #settingsInstallApp { display: none !important; }
 .mode-dialog [hidden] { display: none !important; }
 .mode-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 
-/* 2.0.10 — pickers are solid: the translucent card colour let the form below show through the icon grid. */
+/* 2.1.0 — pickers are solid: the translucent card colour let the form below show through the icon grid. */
 :is(.icon-picker-popover, .color-picker-popover) { background: #fff; }
 html[data-theme="dark"] :is(.icon-picker-popover, .color-picker-popover) { background: #2d3037; }

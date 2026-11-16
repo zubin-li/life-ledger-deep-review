@@ -1,7 +1,9 @@
 // Deterministic local-only demo workspace builders. DOM-free so node:test can execute the real logic.
 
 export const DEMO_META_VERSION = 1;
-export const DEMO_PERSONA_VERSION = 10; // bump to refresh an active older demo
+export const DEMO_PERSONA_VERSION = 11; // bump to refresh an active older demo
+/** Bump when demo logs need re-alignment with ledger insight helpers (no full re-seed). */
+export const DEMO_INSIGHT_ALIGN_VERSION = 1;
 import { personaPack, demoScheduleFor } from "./demo-persona.js?v=10";
 import { demoDayContent, DEMO_EVENTS } from "./demo-life.js?v=10";
 export const DEMO_CONTENT_SEED = 0x6d656d6f; // "memo"
@@ -12,6 +14,52 @@ export const DEMO_PREVIEW_ID = "demo-showcase-v1";
 const STARTER_HABIT_IDS = [
   "exercise", "reading", "sleep2330", "hydration", "meditation", "deepwork", "language", "strength",
 ];
+
+const DEMO_HABIT_DISPLAY_NAMES = {
+  en: {
+    exercise: "Exercise",
+    reading: "Reading",
+    sleep2330: "Sleep before 23:30",
+    hydration: "Drink enough water",
+    meditation: "Meditation",
+    deepwork: "Deep work",
+    language: "Language learning",
+    strength: "Strength training",
+  },
+  zh: {
+    exercise: "运动",
+    reading: "阅读",
+    sleep2330: "23:30 前睡",
+    hydration: "饮水",
+    meditation: "冥想",
+    deepwork: "深度工作",
+    language: "语言学习",
+    strength: "力量训练",
+  },
+  de: {
+    exercise: "Bewegung",
+    reading: "Lesen",
+    sleep2330: "Vor 23:30 Uhr schlafen",
+    hydration: "Genug Wasser trinken",
+    meditation: "Meditation",
+    deepwork: "Deep Work",
+    language: "Sprachen lernen",
+    strength: "Krafttraining",
+  },
+};
+
+function applyDemoHabitDisplayNames(habits, lang) {
+  if (!Array.isArray(habits)) return;
+  const table = DEMO_HABIT_DISPLAY_NAMES[lang] || DEMO_HABIT_DISPLAY_NAMES.en;
+  const canonical = new Set(
+    ["en", "zh", "de"].flatMap(l => Object.values(DEMO_HABIT_DISPLAY_NAMES[l] || {})),
+  );
+  habits.forEach(habit => {
+    const label = table[habit.id];
+    if (!label) return;
+    if (!habit.name || canonical.has(habit.name)) habit.name = label;
+  });
+}
 
 export const DEMO_MEMORY_ASSETS = [
   // AI-generated photos for the fictional sample workspace.
@@ -55,6 +103,11 @@ export function isLocalOnlyEligible({ deploymentMode, cloudBaseConfigured }) {
   return deploymentMode === "local" || !deploymentMode;
 }
 
+/** Showcase URL (`?local-preview=demo-showcase-v1`) seeds fiction demo even in online editions. */
+export function isPreviewShowcaseEligible(previewParam) {
+  return previewParam === DEMO_PREVIEW_ID;
+}
+
 export function isDemoActive(state) {
   return Boolean(state?.meta?.demo?.version === DEMO_META_VERSION && state.meta.demo.active);
 }
@@ -75,6 +128,7 @@ export function hasMeaningfulUserData(state) {
   if (Object.values(state.weeklyGoals || {}).some(goals => Array.isArray(goals) && goals.length)) return true;
   if ((state.longTermGoals || []).length) return true;
   if ((state.focusSessions || []).length) return true;
+  if ((state.ledger?.transactions || []).length) return true;
   return false;
 }
 
@@ -82,6 +136,41 @@ export function shouldSeedDemo({ eligible, dismissed, storedRaw, state }) {
   if (!eligible || dismissed) return false;
   if (isDemoActive(state)) return (state.meta.demo.persona || 1) < DEMO_PERSONA_VERSION; // older sample data → new persona
   return storedRaw == null;
+}
+
+export function needsDemoInsightAlign(state) {
+  if (!isDemoActive(state)) return false;
+  if (!(state.ledger?.transactions?.length)) return false;
+  return (state.meta?.demo?.insightAlign ?? 0) < DEMO_INSIGHT_ALIGN_VERSION;
+}
+
+/** Re-run ledger↔mood demo alignment on an active workspace (e.g. ledger added without re-seed). */
+export function realignDemoInsights(state, ledgerApi, now = new Date()) {
+  if (!needsDemoInsightAlign(state) || !ledgerApi) return null;
+  const logs = { ...(state.logs || {}) };
+  const ledger = state.ledger;
+  const anchor = demoSeedAnchor?.(now) ?? now;
+  const habitIds = (state.habits || []).map(habit => habit.id);
+  ledgerApi.alignDemoMoodWithSpend?.(logs, ledger, anchor);
+  ledgerApi.alignDemoMoodWithBudgetOverspend?.(logs, ledger, anchor);
+  ledgerApi.alignDemoHabitCompletionWithSpend?.(logs, ledger, habitIds, anchor);
+  const focusSessions = ledgerApi.alignDemoFocusWithSpend?.(
+    state.focusSessions,
+    ledger,
+    anchor,
+  ) ?? state.focusSessions;
+  return {
+    logs,
+    focusSessions,
+    meta: {
+      ...state.meta,
+      updatedAt: Date.now(),
+      demo: {
+        ...state.meta.demo,
+        insightAlign: DEMO_INSIGHT_ALIGN_VERSION,
+      },
+    },
+  };
 }
 
 export function demoNoticeCopy(lang) {
@@ -475,6 +564,16 @@ function pickMood(rng, moods) {
   return moods[2];
 }
 
+/** Seed demo through at least mid-month so review money × habit insights exist early in the month. */
+export function demoSeedAnchor(now = new Date()) {
+  const d = new Date(now);
+  d.setHours(12, 0, 0, 0);
+  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  const targetDay = Math.min(18, lastDay);
+  if (d.getDate() < targetDay) d.setDate(targetDay);
+  return d;
+}
+
 export function buildDemoPhotoSchedule(now = new Date()) {
   const end = isoDateAt(now);
   const start = isoDateAt(addDays(now, -89));
@@ -682,6 +781,7 @@ export function buildDemoWorkspace({
 
   const habits = seedHabits ? JSON.parse(JSON.stringify(seedHabits)) : [];
   const habitNotes = pack.habitNotes || {};
+  applyDemoHabitDisplayNames(habits, lang);
   habits.forEach(habit => {
     (habit.versions || []).forEach(version => {
       if (!version.effectiveDate || version.effectiveDate > start) version.effectiveDate = start;
@@ -717,6 +817,7 @@ export function buildDemoWorkspace({
         contentSeed,
         seededAt: new Date(now).toISOString(),
         persona: DEMO_PERSONA_VERSION,
+        insightAlign: DEMO_INSIGHT_ALIGN_VERSION,
         lang,
       },
     },
@@ -799,9 +900,13 @@ if (typeof window !== "undefined") {
     DEMO_PREVIEW_ID,
     DEMO_MEMORY_ASSETS,
     DEMO_PERSONA_VERSION,
+    DEMO_INSIGHT_ALIGN_VERSION,
+    needsDemoInsightAlign,
+    realignDemoInsights,
     resolveStorageKey,
     resolveDismissedKey,
     isLocalOnlyEligible,
+    isPreviewShowcaseEligible,
     isDemoActive,
     isStarterHabitSet,
     hasMeaningfulUserData,
@@ -813,5 +918,6 @@ if (typeof window !== "undefined") {
     buildClearedWorkspace,
     relocalizeDemoWorkspace,
     demoScheduleFor,
+    demoSeedAnchor,
   };
 }

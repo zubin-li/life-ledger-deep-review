@@ -57,11 +57,13 @@ test("deploy applies remote migrations before wrangler deploy", () => {
     if (args.includes("deploy")) return { status: 0, stdout: "", stderr: "" };
     return { status: 0, stdout: "[]", stderr: "" };
   };
+  const manifestDir = mkdtempSync(join(tmpdir(), "ll-deploy-manifest-"));
   const result = runDeploy({
     confirm: true,
     skipRemote: true,
     runner,
     buildSha: "sha1",
+    manifestDir,
   });
   assert.equal(result.ok, true);
   const migrationIndex = calls.findIndex(line => line.includes("migrations") && line.includes("apply"));
@@ -304,6 +306,7 @@ test("preflight local gates can run with injected runner", () => {
 test("CI workflow stays local-only", () => {
   const ci = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
   assert.match(ci, /npm test/);
+  assert.match(ci, /npm run test:browser/);
   assert.match(ci, /wrangler deploy --dry-run/);
   assert.doesNotMatch(ci, /migrations apply.*--remote/);
   assert.doesNotMatch(ci, /cloudflare-release\.mjs deploy/);

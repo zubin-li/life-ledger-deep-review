@@ -1,0 +1,42 @@
+[
+  {
+    "label": "HEAD",
+    "coldStart": {
+      "isEmptyClass": false,
+      "emptyHidden": true,
+      "detailChildCount": 0,
+      "tempText": "",
+      "statusText": "Could not refresh. Check your connection.",
+      "plotChildCount": 0
+    },
+    "cached": {
+      "isEmptyClass": false,
+      "emptyHidden": true,
+      "detailChildCount": 3,
+      "tempText": "11°",
+      "statusText": "Updated 14:00",
+      "plotChildCount": 1
+    },
+    "cacheFormatValid": true
+  },
+  {
+    "label": "v2.0.10",
+    "coldStart": {
+      "isEmptyClass": false,
+      "emptyHidden": true,
+      "detailChildCount": 0,
+      "tempText": "",
+      "statusText": "Could not refresh. Check your connection.",
+      "plotChildCount": 0
+    },
+    "cached": {
+      "isEmptyClass": false,
+      "emptyHidden": true,
+      "detailChildCount": 3,
+      "tempText": "11°",
+      "statusText": "Updated 14:00",
+      "plotChildCount": 1
+    },
+    "cacheFormatValid": true
+  }
+]

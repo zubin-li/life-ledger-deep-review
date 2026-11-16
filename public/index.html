@@ -23,14 +23,20 @@
         document.documentElement.dataset.theme = dark ? "dark" : "light";
         const font = localStorage.getItem("life-ledger-font");
         if (font === "rounded" || font === "serif") document.documentElement.dataset.font = font;
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("motion-reduced");
+        }
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=2.0.12" />
-    <link rel="stylesheet" href="./pages-858.css?v=2.0.12" />
-    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.0.12" />
-    <link rel="stylesheet" href="./today-cards.css?v=2.0.12" />
-    <link rel="stylesheet" href="./v202.css?v=2.0.12" />
+    <link rel="stylesheet" href="./styles.css?v=2.1.0" />
+    <link rel="stylesheet" href="./pages-858.css?v=2.1.0" />
+    <link rel="stylesheet" href="./vendor/widget-ui.css?v=2.1.0" />
+    <link rel="stylesheet" href="./today-cards.css?v=2.1.0" />
+    <link rel="stylesheet" href="./v202.css?v=2.1.0" />
+    <link rel="stylesheet" href="./pages-polish.css?v=2.1.0" />
+    <link rel="stylesheet" href="./money.css?v=2.1.0" />
+    <link rel="stylesheet" href="./v210.css?v=2.1.0" />
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -52,6 +58,7 @@
           <button class="nav-item" data-view="week"><span class="nav-icon">✓</span><span class="nav-label">本周</span></button>
           <button class="nav-item" data-view="longrange"><span class="nav-icon">⚑</span><span class="nav-label">长期</span></button>
           <button class="nav-item" data-view="timeline"><span class="nav-icon">⋮</span><span class="nav-label">时间轴</span></button>
+          <button class="nav-item" data-view="ledger"><span class="nav-icon">€</span><span class="nav-label">记账</span></button>
           <button class="nav-item" data-view="review"><span class="nav-icon">↗</span><span class="nav-label">复盘</span></button>
           <button class="nav-item" data-view="habits"><span class="nav-icon">⌁</span><span class="nav-label">习惯设置</span></button>
         </nav>
@@ -134,8 +141,10 @@
             </article>
 
             <article class="mood-card">
+              <button type="button" class="tc-card-hit" id="moodCardHit" aria-label="今天整体感觉如何？, —, 今日心情"></button>
               <div class="section-heading">
                 <div><span class="kicker">MOOD</span><h3>今天整体感觉如何？</h3></div>
+                <span class="tc-card-chevron" aria-hidden="true">›</span>
               </div>
               <div class="mood-options" id="quickMood">
                 <button data-mood="很好"><span>☀</span>很好</button>
@@ -147,8 +156,9 @@
           </div>
 
           <div class="section-heading habits-heading">
+            <button type="button" class="tc-card-hit" id="foundationsCardHit" aria-label="今日基础目标, 0/0, 调整目标"></button>
             <div><span class="kicker">FOUNDATIONS</span><h2>今日基础目标</h2></div>
-            <button class="text-button" data-open-settings>调整目标 <span>→</span></button>
+            <span class="tc-core-wrap"><b class="tc-core" id="foundationsCount">0/0</b><span class="tc-card-chevron" aria-hidden="true">›</span></span>
           </div>
           <section class="habit-carousel" id="todayHabitCarousel" aria-label="今日习惯">
             <div class="habit-carousel-viewport" id="todayHabitViewport" tabindex="0">
@@ -410,6 +420,7 @@
                 <div class="week-insight-card">
                   <span class="week-insight-label" id="weekRateLabel">Completion Rate</span>
                   <strong class="week-insight-value" id="weekCompletionRate">0%</strong>
+                  <small class="week-insight-hint" id="weekCompletionHint" hidden></small>
                 </div>
                 <div class="week-insight-card">
                   <span class="week-insight-label" id="weekBestDayLabel">Best Day</span>
@@ -422,7 +433,13 @@
                 <div class="week-insight-card">
                   <span class="week-insight-label" id="weekFocusMinutesLabel">Focus Time</span>
                   <strong class="week-insight-value" id="weekFocusMinutes">0 min</strong>
+                  <small class="week-insight-hint" id="weekJournalHint" hidden></small>
                 </div>
+                <button type="button" class="week-insight-card week-insight-card--ledger" id="weekSpendingCard" aria-label="">
+                  <span class="week-insight-label" id="weekSpendingLabel">Week spending</span>
+                  <strong class="week-insight-value" id="weekSpendingValue">—</strong>
+                  <small class="week-insight-hint" id="weekSpendingHint" hidden></small>
+                </button>
               </div>
             </div>
           </article>
@@ -444,8 +461,8 @@
             <button type="button" role="tab" data-journal-mode="calendar" aria-selected="false" id="journalModeCalendar">Calendar</button>
           </div>
           <section id="journalFeedPane" aria-label="Timeline">
-            <header class="journal-feed-heading"><div><span class="kicker" id="journalFeedKicker"></span><h2 id="journalFeedTitle"></h2><p id="journalFeedDescription"></p></div><div class="journal-feed-filter"><label for="journalMonthFilter" id="journalMonthFilterLabel">Month</label><select id="journalMonthFilter"><option value="">All months</option></select><button type="button" id="journalAllMonths" class="text-button" hidden>All months</button></div></header>
-            <div id="journalFeed" aria-live="polite"></div>
+            <header class="journal-feed-heading"><div><span class="kicker" id="journalFeedKicker"></span><h2 id="journalFeedTitle"></h2><p id="journalFeedDescription"></p></div><img class="journal-page-art" src="./assets/hairline/journal-section-quiet.svg" alt="" aria-hidden="true"><div class="journal-feed-filter"><label for="journalMonthFilter" id="journalMonthFilterLabel">Month</label><select id="journalMonthFilter"><option value="">All months</option></select><button type="button" id="journalAllMonths" class="text-button" hidden>All months</button></div></header>
+            <div id="journalFeed" class="ll-paint-host" aria-live="polite"></div>
             <button type="button" id="journalLoadMore" class="secondary-button" hidden>Load more</button>
           </section>
           <div class="timeline-layout" data-journal-layout="timeline">
@@ -464,7 +481,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="calendar-card timeline-calendar-card">
+                <div class="calendar-card timeline-calendar-card ll-paint-host ll-paint-host--ready">
+                  <div class="ll-skeleton ll-skeleton--calendar" aria-hidden="true"></div>
                   <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
                   <div class="calendar-grid" id="journalCalendarGrid"></div>
                 </div>
@@ -506,6 +524,7 @@
             <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
           </header>
           <div class="review-intro quiet-intro">
+            <img class="review-page-art" src="./assets/hairline/review-section-quiet.svg" alt="" aria-hidden="true">
             <h2 id="reviewTitle">June 2026</h2>
             <div class="insight-view-switch" id="insightViewSwitch" role="tablist" aria-label="Report view">
               <button type="button" class="active" role="tab" data-insight-view="trend" aria-selected="true" id="insightViewTrend">Trend</button>
@@ -520,6 +539,7 @@
             </div>
           </div>
           <div class="review-insights" id="reviewInsights" aria-live="polite"></div>
+          <section class="review-ledger-summary" id="reviewLedgerSummary" hidden></section>
           <section id="reviewObservations" class="insight-observations" aria-live="polite"></section>
           <div class="review-trend-chart" id="reviewTrendChart" aria-label="Monthly completion trend"></div>
           <div class="review-heatmap-card" id="reviewHeatmap"></div>
@@ -583,6 +603,15 @@
           </details>
         </section>
 
+        <section class="view ledger-view" id="ledgerView">
+          <header class="view-scroll-header">
+            <h2 class="view-large-title" id="ledgerScrollTitle">Money</h2>
+            <span class="view-scroll-sentinel" data-scroll-title-sentinel aria-hidden="true"></span>
+          </header>
+          <div class="ledger-page"></div>
+          <div class="ledger-csv-drop-hint" id="ledgerCsvDropHint" aria-hidden="true"></div>
+        </section>
+
         <section class="view habit-library" id="habitsView">
           <header class="view-scroll-header">
             <h2 class="view-large-title" id="habitsScrollTitle">Habits</h2>
@@ -590,6 +619,7 @@
           </header>
           <header class="habits-view-header">
             <div><span class="kicker" id="habitLibraryKicker">YOUR DAILY RHYTHM</span><h2 id="habitLibraryTitle">Small habits, your own rhythm.</h2><p class="habits-view-summary" id="habitSummary">4 active habits</p></div>
+            <img class="habits-page-art" src="./assets/hairline/habits-library-quiet.svg" alt="" aria-hidden="true">
             <button class="primary-button" id="addHabitButton">＋ Add habit</button>
           </header>
           <button class="habit-reminder-card" id="habitReminderCard" type="button">
@@ -1022,6 +1052,7 @@
             <div class="conflict-recovery-copy">
               <strong id="conflictRecoveryTitle">同步冲突后已保留本机副本</strong>
               <small id="conflictRecoveryHelp">同步冲突后保留了这台设备的副本；决定是否恢复前请先下载。</small>
+              <div class="conflict-ledger-preview" id="conflictLedgerPreview" hidden></div>
             </div>
             <div class="conflict-recovery-actions">
               <button class="secondary-button" id="downloadConflictRecovery" type="button">下载保留副本</button>
@@ -1095,23 +1126,32 @@
     </div>
     <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="./deployment-mode.js?v=2.0.12"></script>
-    <script src="./_init_tcb-env.js?v=2.0.12"></script>
-    <script src="./cloudbase-sync.js?v=2.0.12"></script>
-    <script src="./focus-timer.js?v=2.0.12"></script>
-    <script src="./voice-checkin.js?v=2.0.12"></script>
-    <script src="./photo-memories.js?v=2.0.12"></script>
-    <script src="./media-backup.js?v=2.0.12"></script>
+    <script src="./deployment-mode.js?v=2.1.0"></script>
+    <script src="./_init_tcb-env.js?v=2.1.0"></script>
+    <script src="./cloudbase-sync.js?v=2.1.0"></script>
+    <script src="./focus-timer.js?v=2.1.0"></script>
+    <script src="./voice-checkin.js?v=2.1.0"></script>
+    <script src="./photo-memories.js?v=2.1.0"></script>
+    <script src="./media-backup.js?v=2.1.0"></script>
     <script type="module" src="./demo-workspace.js?v=demo10"></script>
-    <script src="./habit-analytics.js?v=2.0.12"></script>
-    <script src="./interaction.js?v=2.0.12"></script>
-    <script src="./long-range.js?v=2.0.12"></script>
-    <script src="./app.js?v=2.0.12"></script>
+    <script src="./habit-analytics.js?v=2.1.0"></script>
+    <script src="./interaction.js?v=2.1.0"></script>
+    <script src="./long-range.js?v=2.1.0"></script>
+    <script src="./ledger-core.js?v=2.1.0"></script>
+    <script src="./bank-import.js?v=2.1.0"></script>
+    <script src="./review-metrics-preview.js?v=2.1.0"></script>
+    <script src="./review-bars.js?v=2.1.0"></script>
+    <script src="./app.js?v=2.1.0"></script>
+    <script src="./ledger-ui.js?v=2.1.0"></script>
+    <script src="./vendor/echarts.min.js?v=5"></script>
+    <script src="./money-ui.js?v=2.1.0"></script>
     <script src="./vendor/sortable.min.js"></script>
-    <script src="./hairline.js?v=2.0.12"></script>
-    <script src="./vendor/widget-ui.js?v=2.0.12"></script>
-    <script src="./today-widgets.js?v=2.0.12"></script>
-    <script src="./weather-widget.js?v=2.0.12"></script>
-    <script src="./today-cards.js?v=2.0.12"></script>
+    <script src="./hairline.js?v=2.1.0"></script>
+    <script src="./pages-art.js?v=2.1.0"></script>
+    <script src="./view-headers-art.js?v=2.1.0"></script>
+    <script src="./vendor/widget-ui.js?v=2.1.0"></script>
+    <script src="./today-widgets.js?v=2.1.0"></script>
+    <script src="./weather-widget.js?v=2.1.0"></script>
+    <script src="./today-cards.js?v=2.1.0"></script>
   </body>
 </html>

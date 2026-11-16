@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-desktop/en-01-today-v6.png" width="100%" alt="Life Ledger 2.0 Today card workspace" />
+  <img src="docs/images/demo-preview/en-desktop/en-08-ledger-v21.png" width="100%" alt="Life Ledger 2.1 Money: month overview, categories, and quick entry" />
 </p>
 
 <p align="center">
@@ -102,10 +102,12 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 ## Highlights
 
 - Daily habits with adjustable targets and effective dates
-- Read-only daily calendar, mood, journal, and event notes
+- Read-only daily calendar, mood, journal, and event notes; **Daily** timeline mode shows a consecutive **reflection streak** when journal notes or mood reasons land on back-to-back days, and (when Money + mood data allow) a **30-day mood vs spending** chip linking to the mood scatter in **Review**; an empty feed uses hairline art with **Write today's reflection** (month filter miss shows a quiet search-empty strip); **Calendar** mode on an empty month uses the same CTA, and the sidebar entry list adds a filter-miss quiet card
+- **Today cross-insights (demo showcase):** **Daily foundations** can show a rolling **30-day** average spend on high- vs low-habit-completion days with a link to the habit-vs-spend scatter in **Review**; **Mood** shows better- vs lower-mood day averages with a link to the mood-vs-spend scatter (same data family as Review scatters)
 - AI-assisted voice-to-journal reflection with editable review before saving
-- Weekly goals, checklist behavior, outputs, and archived notes
-- Monthly review with habit comparisons and line/bar charts
+- Weekly goals, checklist behavior, outputs, and archived notes; empty weekly goals and blank weekly reflection show hairline art with **Add your first weekly goal** / **Start weekly reflection** CTAs (long-term tab: **Add a long-term goal**); on the **current week** only, the page header can show the same rolling **30-day habit vs spending** chip as Today (links to the habit scatter in **Review**); **Week — Insights** includes a fifth **week spending** tile (Mon–today, opens Money) with a same-days-last-week comparison hint; the **focus time** tile captions journal/event days vs the same span last week; the **completion rate** tile captions habit completion in percentage points vs the same span last week
+- Monthly review with habit comparisons and line/bar charts; empty habit scores, metrics, inspector table, and blank monthly reflection use hairline art with CTAs to **Add habits**, **Check in on Today**, or **Start writing**; **Money** summary spending stat includes a same-days-last-month comparison hint; tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month; when the month has spending but scatter charts need more logged days, a quiet empty card shows three tappable pills (**Log mood** / **Complete habits** / **Log spending**) plus **Log on Today**
+- **Bookkeeping (Money):** **Today → Spending today** — tap the amount for a **quick-entry sheet** (note + inferred category chip, recent lines, link to full stats); the **Money** page focuses **Week / Month** stats with day switcher, quick entry, donut, subscriptions, and slim transaction list (**day groups FLIP** when you expand another day); **sidebar page changes** use the **View Transitions API** where supported (directional cross-fade, reduced-motion fallback); categories **inferred from the note** (zh/en/de keywords, learning from corrections) and **grouped** (food, home, health & insurance, leisure, finance) with one picker and a category manager; nav order Today → Week → Horizon → Timeline → **Money** → Review → Habits (**⌘5** on Mac); **M** focuses quick entry — `state.ledger` with backup/cloud sync
 - Validated JSON backup and guided restore, including earlier export formats
 - English, Simplified Chinese, and German interfaces
 - Light, dark, and system appearance
@@ -122,7 +124,7 @@ AI is not here to replace reflection. It is here to make reflection more meaning
 <details open>
 <summary><strong>What's new in Life Ledger 2.0</strong></summary>
 
-- **Today becomes a card workspace.** Weather with an hourly curve, mood, daily foundations, habit heatmap, focus, recent rhythm, month, photo wall and day calendar are cards you can add, remove, drag and resize in **Edit cards**. The layout is saved.
+- **Today becomes a card workspace.** Weather with an hourly curve, mood, daily foundations, habit heatmap, focus, recent rhythm, month, photo wall and day calendar are cards you can add, remove, drag and resize in **Edit cards**. The layout is saved; first visit shows a dismissible hint above **Edit cards** with a shortcut to the widget library. Tapping **Done** after editing plays a brief success pulse on the bar and **Edit cards** button.
 - **Every page redesigned.** Week (review, completed work, goals), Horizon (long-term phases side by side), Timeline (daily/weekly/monthly, photos, calendar — any day opens for editing), monthly Review and Habit settings share one design family with matching motion.
 - **A local edition that shows itself.** The local-only web app opens with three months of fictional sample life (habits, weekly and monthly reviews, plans, photos). **Settings → Clear local data** starts blank; **Load sample data** brings it back. Used the local edition before? Your earlier records are kept in a backup in that browser — **Settings → Restore earlier records** brings them back.
 - **Language switching is complete.** Interface, dialogs, accessibility labels and the sample data follow English, Simplified Chinese and German instantly.
@@ -154,9 +156,15 @@ Need the previous version? Tag `v1.3.0` stays available — see [Roll back to 1.
 <p align="center"><strong>A private memory line.</strong> Read days, weeks and months downward; any day opens for editing, photos stay footnotes.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/en-mobile/en-01-today-v6.png" width="30%" alt="Today cards on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v6.png" width="30%" alt="Timeline on mobile" />
-  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v6.png" width="30%" alt="Monthly review on mobile" />
+  <img src="docs/images/demo-preview/en-desktop/en-08-ledger-v21.png" width="78%" alt="Money: month overview, categories and quick entry" />
+</p>
+<p align="center"><strong>Bookkeeping built in.</strong> Quick entry, German CSV import, budgets, and spending woven into Today and monthly Review.</p>
+
+<p align="center">
+  <img src="docs/images/demo-preview/en-mobile/en-01-today-v6.png" width="22%" alt="Today cards on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-08-ledger-v21.png" width="22%" alt="Money on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-07-timeline-v6.png" width="22%" alt="Timeline on mobile" />
+  <img src="docs/images/demo-preview/en-mobile/en-04-monthly-review-v6.png" width="22%" alt="Monthly review on mobile" />
 </p>
 
 <p align="center"><strong>Responsive by design.</strong> Cards reflow to one column, the bottom bar carries navigation, and edit mode works with touch.</p>
@@ -236,14 +244,16 @@ See [Self-hosting](docs/self-hosting.md) and [Cloudflare Access setup](docs/clou
 
 CloudBase is the recommended mainland-China path. It uses Tencent-hosted static files, email OTP authentication, and a creator-only document collection in **your own** CloudBase environment.
 
-### 6. Life Ledger for Mac 3.0
+### 6. Life Ledger for Mac 3.1
 
-Download `Life-Ledger-3.0.0-mac-arm64.zip` from the **[Mac 3.0.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** (Apple Silicon), unzip it and move **Life Ledger** to Applications. The app is not notarised: the first time, open **System Settings → Privacy & Security → Open Anyway**.
+Download `Life-Ledger-3.1.0-mac-arm64.zip` from the **[Mac 3.1.0 release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.1.0)** (Apple Silicon), unzip it and move **Life Ledger** to Applications. The app is not notarised: the first time, open **System Settings → Privacy & Security → Open Anyway**.
 
 - **Local on this Mac**: no account, no setup; records stay on this Mac.
 - **Connected cloud**: your own deployment (option 4 above), signed in with an email code. Records, photos, your name and profile photo are the same on the Mac, in the browser and on your phone.
 
 Change mode any time in **Settings → Data → Switch to sync mode / Switch to local mode** (also in the browser editions). Five-minute guide: [Mac online edition](docs/macos-cloud.md). Build notes: [docs/macos-desktop.md](docs/macos-desktop.md).
+
+**Keyboard:** the menu bar **View** menu includes **Money** (**⌘5**); from any page press **M** to open **Money** and focus quick entry (same as the web local edition).
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 
@@ -276,7 +286,8 @@ Cloud synchronization is optional. A local-only installation has separate data p
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Apply local migrations and start Wrangler development mode |
-| `npm test` | Run syntax, privacy-marker, structure, and Worker tests |
+| `npm test` | Run syntax, privacy-marker, structure, and Worker tests (no Playwright) |
+| `npm run test:browser` | Playwright WebKit/Chromium checks for Money, Today, and review UI |
 | `npm run check` | Run fast repository checks |
 | `npm run build:cloudbase` | Build a CloudBase artifact using `TCB_ENV_ID` and `TCB_ACCESS_KEY` |
 | `npm run deploy:cloudbase` | Build and deploy to Tencent CloudBase Static Hosting |

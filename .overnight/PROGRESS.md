@@ -1,0 +1,572 @@
+# Overnight progress
+
+## Batch 13 · Round 10 — done (final)
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（终轮未动 6120 行 CSS）。
+- **收尾：** `CHANGELOG [Unreleased]` → 已并入 **`[2.1.0]`**（含 Batch 11–13 条目）；`.overnight/REPORT.md` **Batch 13 全夜总览**；`capture-batch13-round10.mjs`（**5294**）→ `b13r10-release-*`（5 张，已目视 Today→记账日 chip 截图）。
+- **QA：** `npm test` **417** pass / 0 fail；`npm run test:browser` **71** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- 主人本地验收（见 REPORT 全夜总览 **5 分钟**清单）。
+- **2.2：** `v210.css` reduced-motion 物理合并（REVIEW #1）；可选中等环比文案（REVIEW #2）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+417 pass, 0 fail (batch 13 round 10, unit gate)
+71 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 9 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 CSS 合并块）。
+- **Goal 2：** **Today → 今日支出** 金额 / **打开记账** 点击 **`is-spend-press`**（`pulseTodaySpendControl`）；**记账** **圆环/树图** 切换 **`is-mode-press`**（重绘后对 active 按钮脉冲）；**每日支出热力图** 格 **`is-heat-press`**。
+- **QA：** `view-enter-selectors` Batch 13 r9；`today-ledger-press.browser`（Chromium Today + WebKit 记账图表/热力）。
+- **文档：** CHANGELOG `[Unreleased]` r9。
+- **截图：** `node .overnight/capture-batch13-round9.mjs`（**5293**）→ `b13r9-spend-press-zh-light-1440-chromium.png`、`b13r9-ledger-heat-press-de-dark-390-webkit.png`。
+- **QA：** `npm test` **417** pass / 0 fail；`npm run test:browser` **71** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- **Batch 13 Round 10（终轮）：** 合并 `CHANGELOG [Unreleased]` → **2.1.0**、`.overnight/REPORT.md` 全夜总览、`capture-batch13-round10.mjs` 发布截图；`v210.css` reduced-motion 物理合并仍留 **2.2**。
+- 主人验收：**Today** 点 **今日支出** 金额 → 短暂按压再进记账（`b13r9-spend-press-*`）；**记账** 点热力格 / 切换 **Ring/Baum** → 描边/缩放反馈（`b13r9-ledger-heat-press-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+417 pass, 0 fail (batch 13 round 9, unit gate)
+71 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 8 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 CSS 合并块）。
+- **Goal 2：** 侧边栏 **nav-item** 切页 **`is-nav-press`**（`pulseNavItemPress` / `switchToView`）；**记账** 快速录入 **分类 chip** **`is-chip-press`**（`pulseLedgerCategoryChip`）。
+- **QA：** `view-enter-selectors` Batch 13 r8；`nav-ledger-chip-press.browser`（Chromium 1440 + WebKit 390）。
+- **文档：** CHANGELOG `[Unreleased]` r8。
+- **截图：** `node .overnight/capture-batch13-round8.mjs`（**5292**）→ `b13r8-nav-press-zh-light-1440-chromium.png`、`b13r8-ledger-chip-press-de-dark-390-webkit.png`。
+- **QA：** `npm test` **416** pass / 0 fail；`npm run test:browser` **69** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 9+：`v210.css` reduced-motion 物理合并（2.2）；其它页面 micro-interaction 或 insight 小步。
+- 主人验收：侧栏点 **本周/记账** 等 → 短暂 **is-nav-press**（`b13r8-nav-press-*`）；**记账** 点 **餐饮/Mobilität** chip → **is-chip-press** + 快速录入框填分类（`b13r8-ledger-chip-press-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+416 pass, 0 fail (batch 13 round 8, unit gate)
+69 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 7 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**（本轮未动 6120 行 CSS，避免回归）。
+- **Goal 2：** 复盘 **Money** 区 **jump chips**（心情/习惯/专注/洞察，**≤959px**）点击前 **`is-jump-press`**（`pulseReviewScatterJumpChip`）。
+- **Goal 1 / Mac：** 原生菜单 **显示 → 记账/Geld**（**⌘7** → `view:ledger`）；README EN/ZH/DE 补充 **⌘7** 与全局 **M** 说明。
+- **QA：** `view-enter-selectors` Batch 13 r7；`review-scatter-jump-press.browser`（WebKit 390）；Rust `menu_action_for_id` **view_ledger**。
+- **文档：** CHANGELOG `[Unreleased]` r7；README Mac 快捷键三语。
+- **截图：** `node .overnight/capture-batch13-round7.mjs`（**5291**）→ `b13r7-review-jump-press-zh-light-390-chromium.png`、`b13r7-review-jump-press-de-dark-390-webkit.png`。
+- **QA：** `npm test` **415** pass / 0 fail；`npm run test:browser` **67** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 8+：`v210.css` reduced-motion 物理合并（2.2）；其它页面 micro-interaction 或 insight 小步。
+- 主人验收：**复盘** 手机宽 → 点 **习惯/心情** jump chip → 短暂按压高亮再滚动（`b13r7-review-jump-press-*`）；Mac **显示 → 记账 ⌘7**；任意页 **M** 仍进记账快速录入。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动 friction）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+- 复盘 **jump chips** 仅在 **≤959px** 显示（桌面宽无 chip 条；散点仍可直接滚动）。
+
+## npm test
+
+```
+415 pass, 0 fail (batch 13 round 7, unit gate)
+67 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 6 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 1 / 键盘：** 任意页 **M** → **记账** + 聚焦 `#ledgerQuickInput`（`bindGlobalKeyboardShortcuts` / `LifeLedgerLedgerUI.focusQuickEntry`）；桌面 **ledger-kbd-hints**（M/N///←→）；触控 **长按** 交易行 → 编辑（Pointer Events，保留左滑删除）。
+- **Goal 2：** 复盘 **打开记账** / **待记 recurring** 按钮复用 **`is-stat-press`**（`pulseReviewLedgerStatBtn`）。
+- **QA：** `view-enter-selectors` Batch 13 r6；`global-ledger-shortcut.browser`；`ledger-long-press-edit.browser`；`review-open-press.browser`。
+- **文档：** CHANGELOG `[Unreleased]` r6。
+- **截图：** `node .overnight/capture-batch13-round6.mjs`（**5299**）→ `b13r6-ledger-kbd-hints-en-light-1440-chromium.png`、`b13r6-global-m-review-de-dark-390-webkit.png`。
+- **QA：** `npm test` **414** pass / 0 fail；`npm run test:browser` **66** pass / 0 fail（首轮 `fakecloud-conflict` 偶发超时，单测重跑通过）。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 7+：`v210.css` reduced-motion 物理合并（2.2）；复盘 scatter jump chip 按压；Mac 菜单 **Money** 快捷键说明等。
+- 主人验收：**任意页** 按 **M** → 记账且光标在快速录入（`b13r6-global-m-*`）；**记账** 桌面见 **M/N///←→** 提示（`b13r6-ledger-kbd-hints-*`）；手机 **长按** 一笔 → 编辑弹层。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+414 pass, 0 fail (batch 13 round 6, unit gate)
+66 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 5 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 2：** 今日计入习惯 **全部完成** 时 `showCelebration` 联动 **#progressOrbit.is-all-complete-orbit** + **`[data-card="habits"].is-all-complete`**；复盘 **Money** 三项统计按钮 **`is-stat-press`** 再跳转记账月。
+- **QA：** `view-enter-selectors` Batch 13 r5；`habit-all-complete-celebration.browser`（WebKit）；`review-ledger-stat-press.browser`（Chromium）。
+- **文档：** CHANGELOG `[Unreleased]` r5。
+- **截图：** `node .overnight/capture-batch13-round5.mjs`（**5298**）→ `b13r5-habit-all-complete-zh-light-1440-webkit.png`、`b13r5-review-stat-press-de-dark-390-chromium.png`。
+- **QA：** `npm test` **413** pass / 0 fail；`npm run test:browser` **63** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 6+：`v210.css` reduced-motion 物理合并（2.2）；复盘页其它 micro-interaction；长按/键盘记账快捷等。
+- 主人验收：**今日** 勾完所有计入习惯 → 庆祝层 + 进度环/习惯卡高亮（`b13r5-habit-all-complete-*`）；**复盘** 点 Money 支出/收入/结余数字 → 短暂按压反馈再进记账（`b13r5-review-stat-press-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+413 pass, 0 fail (batch 13 round 5, unit gate)
+63 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 4 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 2：** Today 习惯 `applyHabitCardPulse`（**just-checked / just-unchecked**）；完成时 `pulseProgressOrbit`（**is-progress-bump**）；**Week** 周目标 `pulseWeeklyGoalRow`（**just-toggled** + 延迟重绘）。
+- **QA：** `view-enter-selectors` Batch 13 r4；`habit-toggle-pulse.browser`（WebKit 习惯 + Chromium 周目标）。
+- **文档：** CHANGELOG `[Unreleased]` r4。
+- **截图：** `node .overnight/capture-batch13-round4.mjs`（**5297**）→ `b13r4-habit-check-zh-light-1440-webkit.png`、`b13r4-week-goal-de-dark-390-chromium.png`。
+- **QA：** `npm test` **412** pass / 0 fail；`npm run test:browser` **61** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 5+：`v210.css` reduced-motion 物理合并（2.2）；复盘页其它 micro-interaction；习惯「全部完成」celebration 与 orbit 联动等。
+- 主人验收：**今日** 点习惯（`b13r4-habit-check-*`）；**本周** 勾选目标（`b13r4-week-goal-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+412 pass, 0 fail (batch 13 round 4, unit gate)
+61 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 3 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**。
+- **Goal 1 / 记账 CSV UX：** `previewGermanBankCsv` 返回 **samples**（最多 5 笔）；确认层 **预览表**（日期/备注/金额）；**拖放 `.csv`** 到 `#ledgerView`（`ledgerCsvDropHint`）；导入成功后 **`.ledger-list-wrap.is-import-pulse`** + `retarget`。
+- **QA：** `view-enter-selectors` Batch 13 r3；`ledger-core` preview samples；`ledger-csv-import-confirm.browser` 断言预览行。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r3。
+- **截图：** `node .overnight/capture-batch13-round3.mjs`（**5295**）→ `b13r3-csv-preview-de-light-1440-chromium.png`、`b13r3-csv-import-zh-dark-390-webkit.png`。
+- **QA：** `npm test` **411** pass / 0 fail；`npm run test:browser` **59** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 4+：`v210.css` reduced-motion 物理合并（2.2）；复盘/Week 其它 micro-interaction；习惯完成反馈等。
+- 主人验收：**记账** → **导入 CSV** 或拖放银行 `.csv` → 确认层见预览表（`b13r3-csv-preview-*`）；确认后列表短暂描边（`b13r3-csv-import-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+411 pass, 0 fail (batch 13 round 3, unit gate)
+59 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 2 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 reduced-motion 物理合并仍留 **2.2**；#3/#4 Round 1 已部分采纳。
+- **Goal 2：** **Today** 每日复盘 `#homeJournalSave` 防抖后 **is-saved** 脉冲；**心情** Today/抽屉 `just-picked` + `retarget`；**今日支出** 环比行 `rollText`（`dataset.spendCompare`）。
+- **QA：** `view-enter-selectors` Batch 13 r2；`journal-home-autosave-pulse.browser`（WebKit + Chromium）；`day-plan.test` 绑定新 `setMood(..., b)` 签名。
+- **文档：** CHANGELOG `[Unreleased]` r2。
+- **截图：** `node .overnight/capture-batch13-round2.mjs`（**5294**）→ `b13r2-journal-autosave-en-light-1440-webkit.png`、`b13r2-mood-pick-zh-light-390-chromium.png`。
+- **QA：** `npm test` **409** pass / 0 fail；`npm run test:browser` **59** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 3+：`v210.css` reduced-motion 物理合并（2.2）；复盘/Week 其它 micro-interaction；或记账 CSV 导入 UX 小步。
+- 主人验收：Today **每日复盘** 输入 → `#homeJournalSave` 短暂高亮（`b13r2-journal-autosave-*`）；点 **心情** → 按钮缩放反馈（`b13r2-mood-pick-*`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+409 pass, 0 fail (batch 13 round 2, unit gate)
+59 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 13 · Round 1 — done
+
+- **REVIEW.md：** 无 HIGH/MED；#1 浏览器套件本机 **57** pass；#2 reduced-motion 合并仍留 **2.2**；#3 部分采纳（绝对差额 **≥ €100** 也显示金额）；#4 部分采纳（空账本 onboarding **记一笔示例** + 撤销，说明默认分类已就绪）。
+- **Goal 1 / 记账：** `preferSpendCompareAmountCaption` 增加 `SPEND_COMPARE_AMOUNT_DELTA_MINOR`（10000）；onboarding 文案 + `postSampleEntry` / `data-ledger-sample-entry`（toast 撤销）。
+- **Goal 2：** `v210.css` Batch 13 r1（`.ledger-onboarding-actions`）。
+- **QA：** `view-enter-selectors` Batch 13 r1；`ledger-core` €100 差额用例；`ledger-sample-entry.browser`（Chromium 1440）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r1。
+- **截图：** `node .overnight/capture-batch13-round1.mjs`（**5292**）→ `b13r1-ledger-onboarding-zh-light-1440-chromium.png`、`b13r1-ledger-sample-de-dark-390-webkit.png`。
+- **QA：** `npm test` **408** pass / 0 fail；`npm run test:browser` **57** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- Batch 13 Round 2+：`v210.css` reduced-motion 物理合并（2.2）；习惯/日记其它 micro-interaction；或 Today 环比文案也统一 **≥ €100** 金额规则（若产品要一致）。
+- 主人验收：清 `life-ledger-v1` 或空 `ledger` → **记账** → 见 onboarding **记一笔示例**（`b13r1-ledger-onboarding-zh-light-1440-chromium.png`）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问仍不自动 seed 虚构流水（ intentional；现用 **示例一笔** 降低冷启动摩擦）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500% 且差额 **< €100**）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+408 pass, 0 fail (batch 13 round 1, unit gate)
+57 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 12 · Round 10 — done (final)
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件已在本仓库实测全绿（**56**）。
+- **收尾：** `.overnight/REPORT.md` 顶部 **全夜总览**（Goal 1/2、验收路径、Batch 12 表、已知限制、测试数）；`CHANGELOG` Batch 12 r10 final；发布截图 `capture-batch12-round10.mjs`（**5296**）→ `b12r10-release-*`（Today 日筛选 / Review 月跳转 / 日+分类合计 / de390 / Mac shell）。
+- **QA：** `npm test` **407** pass / 0 fail；`npm run test:browser` **56** pass / 0 fail。
+
+## Half-done
+
+- （无）
+
+## Next
+
+- 主人本地验收（见 REPORT 全夜总览 **5 分钟**清单）。
+- **2.2：** `v210.css` reduced-motion 物理合并（REVIEW #1）；可选中等环比文案优化（REVIEW #2）。
+
+## Known bugs / gaps
+
+- 纯 Cloudflare 首次访问不自动 seed 记账（ intentional）。
+- `v210.css` 分散 `@media (prefers-reduced-motion)` 未物理合并（留 2.2）。
+- 中等增幅（如 +80%～+500%）仍用 **+N%** 文案（ intentional）。
+- 旧 demo 若 `persona` 仍低于 `DEMO_PERSONA_VERSION` 仍会全量 re-seed（非 insightAlign 路径）；极低概率需 `?demo-reset=1`。
+- 旧 demo 缓存未 re-seed 时，`habit.name` 可能仍为英文，但 UI 经 `displayHabitName` 仍本地化。
+- Demo 激活时日度 feed 仍可能因虚构照片出现仅照片行（ intentional）；真空白态验本地档并 `meta.demo.active = false` 或清 logs。
+- 日历模式下侧栏筛选条默认 CSS 隐藏；筛选无匹配 quiet 条主要在 **照片** 等布局侧栏可见时出现（逻辑已就绪）。
+- 本地 seed 仅有支出时，**复盘** 与 **记账** 会同时出现散点空态（相同 copy；测试须 scoped 选择器）。
+
+## npm test
+
+```
+407 pass, 0 fail (batch 12 round 10, unit gate)
+56 pass, 0 fail (npm run test:browser, full suite)
+```
+
+## Gate result
+
+_pending (driver appends after commit)_
+
+---
+
+## Batch 12 · Round 9 — done
+
+- **REVIEW.md：** 仍无 HIGH/MED；#1 CSS reduced-motion 合并留 **2.2**；#2 intentional；#3 浏览器套件本轮全绿（56）。
+- **Goal 2 / 复盘 ↔ 记账：** **Review** 月度 **Money** 摘要三项 **支出 / 收入 / 结余** 与 **打开记账** → `openLedgerForReviewMonth` + `LifeLedgerLedgerUI.openToMonth`（清除日/分类筛选；月份 summary retarget；固定待记仍 `openToMonth` 后滚横幅）。
+- **实现：** `ledger-ui.js` `openToMonth`；`app.js` `openLedgerForReviewMonth`、`.review-ledger-stat-btn`；`v210.css` Batch 12 r9；`review-scatter.browser` 选择器更新。
+- **QA：** `view-enter-selectors` Batch 12 r9；`review-spending-ledger-month.browser`（WebKit 1440）。
+- **文档：** README EN/ZH/DE + CHANGELOG `[Unreleased]` r9。
+- **截图：** `node .overnight/capture-batch12-round9.mjs`（**5295**）→ `b12r9-review-spend-ledger-month-*`。
+- **QA：** `npm test` **407** pass / 0 fail；`npm run test:browser` **56** pass / 0 fail。
+
+## Driver gate after round 1
+ℹ tests 395 ℹ pass 395 ℹ fail 0 
+
+## Driver gate after round 2
+ℹ tests 396 ℹ pass 396 ℹ fail 0 
+
+## Driver gate after round 3
+ℹ tests 397 ℹ pass 397 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 398 ℹ pass 398 ℹ fail 0 
+
+## Driver gate after round 5
+ℹ tests 400 ℹ pass 400 ℹ fail 0 
+
+## Driver gate after round 6
+ℹ tests 402 ℹ pass 402 ℹ fail 0 
+
+## Driver gate after round 7
+ℹ tests 404 ℹ pass 404 ℹ fail 0 
+
+## Driver gate after round 8
+ℹ tests 406 ℹ pass 406 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 407 ℹ pass 407 ℹ fail 0 
+
+## Driver gate after round 10
+ℹ tests 407 ℹ pass 407 ℹ fail 0 
+
+## Driver gate after round 1
+ℹ tests 408 ℹ pass 408 ℹ fail 0 
+
+## Driver gate after round 2
+ℹ tests 409 ℹ pass 409 ℹ fail 0 
+
+## Driver gate after round 3
+ℹ tests 411 ℹ pass 411 ℹ fail 0 
+
+## Driver gate after round 4
+ℹ tests 412 ℹ pass 412 ℹ fail 0 
+
+## Driver gate after round 5
+ℹ tests 413 ℹ pass 413 ℹ fail 0 
+
+## Driver gate after round 6
+ℹ tests 414 ℹ pass 414 ℹ fail 0 
+
+## Driver gate after round 7
+ℹ tests 415 ℹ pass 415 ℹ fail 0 
+
+## Driver gate after round 8
+ℹ tests 416 ℹ pass 416 ℹ fail 0 
+
+## Driver gate after round 9
+ℹ tests 417 ℹ pass 417 ℹ fail 0 
+
+## Driver gate after round 10
+ℹ tests 417 ℹ pass 417 ℹ fail 0 
+07:59 重新开始 B1（接着昨晚中断处）
+08:05 已确认 4→3 个失败全因 money-ui.js/money.css 未建；样式表顺序已修。下一步：写 money.css 和 money-ui.js
+08:17 恢复上下文：确认核心模型已完成，剩 3 个失败均因 money-ui.js / money.css 尚未创建；下一步写 Money 页 UI。
+08:26 money-ui.js + money.css 已写完并接上核心；npm test 443/443 通过；下一步无头截图并逐张检查。
+08:33 B1 完成：截图 6 张逐张检查并修完，测试 445/445，报告已写；下一步 B2 银行导入（等安排）。
+08:34 开始 B2 银行导入：读规格与 B1 报告
+08:44 恢复上下文：B2 代码尚未开始，先写核心解析/匹配与夹具测试
+09:12 Opus B2 会话停止（省 token）：解析/对账逻辑改交 Cursor 写、Gemini 审；fixtures 已就绪
+09:15 B2a 开始：Cursor 写导入逻辑
+09:22 B2a 完成：`public/bank-import.js` 解析/指纹/对账/提交/撤销/余额 + `tests/bank-import.test.mjs`，已接入 `index.html` 与 `sw.js`（`importGermanBankCsv` 未动）
+09:32 B2a 结束：cursor=0 npm_test=1 review=0
+09:32 B2a 第二轮：Cursor 修 7 个失败测试 + 审核问题
+09:45 B2a-fix：bank-import 预设/对账/提交性能/原子转账已修，新增 High 回归测，待本地 `npm test` 验收
+09:34 B2a 第二轮结束：cursor=0 npm_test=1
+09:35 B2a 通过：Hermes 修 2 处（金额带 EUR 后缀、测试里 Map 判断），全部测试见下次汇报
+09:59 B2b 开始：Cursor 写导入界面
+09:59 B2b 结束：cursor=1 npm_test=0
+10:00 B2b 开始：Cursor 写导入界面
+10:15 B2b：`money-ui.js` 四步导入向导 + 设置里历史/余额/列映射持久化（`ledger-core` meta）；`.overnight/capture-b2-import.mjs` 截图脚本；待本地 `npm test` + 跑截图
+10:07 B2b 结束：cursor=0 npm_test=0
+06:50 B2c 开始：Cursor 写 AI 提示词导入 + 分类修复
+06:52 B2c 结束：cursor=0 npm_test=1
+06:56 B2c 验收：修 3 处（转账被覆盖、新增分类重复添加、提示词中英混杂）+ 转账计数/说明；473/473；截图 b2c-*.png
+07:10 B2d 开始：Cursor 写 多卡联动+信用卡语义+CSV 基础
+07:57 B2d 开始：Cursor 写 多卡联动+信用卡语义+CSV 基础
+08:17 B2d 结束：cursor=143 npm_test=0
+08:18 B2d1 开始
+08:41 B2d1 结束：cursor=0 npm_test=1 改动= 13 files changed, 592 insertions(+), 417 deletions(-)
+08:41 B2d2 开始
+09:06 B2d2 结束：cursor=0 npm_test=0 改动= 13 files changed, 594 insertions(+), 417 deletions(-)
+09:07 B2d 验收：修 AMEX↔American Express 匹配；482/482；三账户截图 b2d-*.png
+09:27 B2e 开始
+09:51 B2e 结束：cursor=0 npm_test=1 改动= 13 files changed, 597 insertions(+), 417 deletions(-)
+09:55 B2e 验收：修来源配对测试/ledger 配对提交/转账计入今日支出；490/490；截图 b2e-*.png
+21:06 C1 开始
+21:36 C1 结束：cursor=0 npm_test=1 改动= 18 files changed, 764 insertions(+), 455 deletions(-)
+21:36 C2 开始
+21:56 C2 结束：cursor=0 npm_test=0 改动= 19 files changed, 867 insertions(+), 474 deletions(-)

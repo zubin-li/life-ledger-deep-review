@@ -92,6 +92,20 @@
     });
     return { ...totals, rows, points, weekdays, recordedDays: points.filter(p=>p.recorded).length, eligibleDays: points.filter(p=>p.eligible).length };
   }
+  function reflectionStreak(logs, endIso) {
+    const end = parseIso(endIso || toIso(new Date()));
+    let streak = 0;
+    for (let i = 0; i < 500; i += 1) {
+      const d = new Date(end);
+      d.setDate(end.getDate() - i);
+      const iso = toIso(d);
+      const log = logs?.[iso];
+      const has = Boolean(String(log?.note || "").trim() || String(log?.moodReason || "").trim());
+      if (has) streak += 1;
+      else break;
+    }
+    return streak;
+  }
   root.LifeLedgerAnalytics = {
     windowDates,
     previousWindow,
@@ -101,5 +115,6 @@
     chartMode,
     pluralEn,
     dailySummary,
+    reflectionStreak,
   };
 })(typeof globalThis !== "undefined" ? globalThis : window);

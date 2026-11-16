@@ -4,6 +4,155 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-15
+
+Web 2.1.0 and Life Ledger for Mac 3.1.0. Includes every 2.0.11 / Mac 3.0.5 fix.
+
+### Money page
+- Picking a category in the chart shows that category's entries in the list, with its count and total; × clears it.
+- The entry list is calm: one date line per day, no weekday or daily totals; filters sit behind one Filter button; tapping an entry edits or deletes it.
+- Subscriptions and fixed costs open a read-only detail: who gets paid, account, next payment, yearly total and every payment found in your statements. Statements suggest likely subscriptions; manual editing is gone because the bank data is the source.
+- Settings is a grouped list (currency, budget, categories, accounts, import, name).
+- Card purchases that mention Mastercard/Visa are no longer filed as credit-card bills.
+
+- Today cards open from the card itself: one stretched `tc-card-hit` (spending sheet, focus page without starting, weather settings, foundations editor, rhythm chart, mood drawer). Habit checks, heatmap cells, mood options and the focus start button stay separate. The spending quick-add pill and the foundations “Adjust goals” link are gone because the card now does that.
+- Money categories are grouped (food, home, health & insurance, leisure, finance) through `parentId`. Existing category ids, transactions, budgets and rules stay put. One category picker replaces chip walls; the filter bar keeps a native `<select>` with `<optgroup>`. Settings opens a category manager for name, colour, group, fixed cost, archive and learned rules.
+- Owner feedback pass **r17 FINAL** (2026-11-03): Antigravity review — **`spending`** in backup card sizes; ledger stats compare **no `+null%` / missing `%`**; Today quick-sheet **category chip** cycles + learned hint on save; **remove mobile ledger keypad**; subscription total **month-only expenses**; `v210.css` **5968** lines; **`.overnight/CHANGES-zh.md`**; **434** unit + **23** desktop tests.
+- Owner feedback pass r16 (2026-11-03): Review Money **insight copy defers to `requestIdleCallback`** (`buildReviewLedgerInsightLines` / `is-insights-pending` skeleton); scatter hydrate also idle-scheduled; capture waits for hydrate; `fb-r16-*`; perf **maxLongTaskMs 62** (first scatter SVG); **434** unit + **76** browser tests.
+- Owner feedback pass r15 (2026-11-03): Review Money scatter charts **hydrate one chart per animation frame** (`reviewScatterChartBlockJobs`); **`aria-busy` / `is-scatter-pending`** stay until all three SVG blocks mount (fixes jump-chip race); `fb-r15-*` + `fb-r15-mac-*`; perf **maxLongTaskMs 0–65** (review SVG still spikes on cold trace); **434** unit + **76** browser tests.
+- Owner feedback pass r14 (2026-11-03): **D3** week insight **「最佳日」** joins KPI **`rollText`** roll-up; Review scatter **jump chips** queue focus while charts hydrate (fixes flaky browser test); dark **`motion-reduced`** ledger donut segment selector fix; **`compare-v2010.mjs`** re-run → `diff-v2010.json` (64–79% = 2.1 surface); `fb-r14-*`; perf **maxLongTaskMs 50** (review hydrate), CLS **0**; **434** unit + **76** browser tests.
+- Owner feedback pass r13 (2026-11-03): **C5** dead ledger CSS removed (`.ledger-tx-date`, `.ledger-edit-cat`, swipe-hint, `.ledger-quiet`) → **6031** lines; **C1** Today card settings inputs on **`--ll-surface-float`** (v210 override); **Mac QA** `capture-mac.mjs` adds **ledger-nav** shot; `fb-r13-*` + `fb-r13-mac-*`; perf **maxLongTaskMs 0**, CLS **0**.
+- Owner feedback pass r12 (2026-11-03): **D3** defer Review Money scatter SVG to the next animation frame (summary shell first, then charts) — nav perf **maxLongTaskMs 0**, CLS **0**; **C1** opaque **`dialog.tc-dialog`** (Today card library/settings) + browser test; fix duplicate dark-theme **ledger-tx-cat-chip** selector; scatter pending skeleton CSS; `fb-r12-*` screenshots.
+- Owner feedback pass r11 (2026-11-03): **C5** repair corrupted **v230** CSS merge (stray `}` broke reduced-motion donut/heat rules); remove dead inline **ledger-budget** list styles → **6018** lines; **C1** Today **编辑卡片** / edit toolbar / **tc-bar** use opaque **`--ll-surface-float`** (no glass blur); browser test for edit toggle; **`compare-v2010.mjs`** re-run (64–81% diff = 2.1 feature surface); `fb-r11-*` screenshots + perf **maxLongTaskMs 67** (review scatter), CLS **0**.
+- Owner feedback pass r10 (2026-11-03): **C5** `.overnight/prune-ledger-view-dead-css.mjs` removes dead **#ledgerView** wellness scatter CSS + budget-empty selectors → **6042** lines (−99); **D3** Today quick-entry sheet total uses **`rollText`** like the spending card; perf trace **maxLongTaskMs 0**, CLS **0**; `fb-r10-*` + Mac `fb-r10-mac-*` screenshots.
+- Owner feedback pass r9 (2026-11-03): removed hidden **ledger-legacy-viz** DOM (wellness/budget list/chips); scatter empty + jump tests target **Review**; **C5** `.overnight/prune-ledger-legacy-css.mjs` → **6140** lines (−171); **C1 audit** opaque **`--ll-surface-float`** on settings/export dialogs, ledger popovers, habit pickers; `settings-dialog-opaque.browser.test.mjs`; perf trace max long task **64ms**, CLS **0**; `fb-r9-*` screenshots.
+- Owner feedback pass r8 (2026-11-03): **C1** Today onboarding + sheet use opaque **`--ll-surface-float`** (fixes translucent `--card` glass); browser test for background alpha; **C5** merge 29× `@media (prefers-reduced-motion: no-preference)` blocks → **6285** lines (`.overnight/merge-no-preference-motion.mjs`); **C6** `compare-v2010.mjs` refreshed; `fb-r8-*` + Mac `fb-r8-mac-*` screenshots; capture adds **today-onboard** 390 shot.
+- Owner feedback pass r7 (2026-11-03): **C4** headless weather probe (correct preview storage suffix) → `.overnight/weather-headless-compare.json` — cold start empty on **HEAD** and **v2.0.10** (no Open-Meteo in headless); seeded offline cache renders **11°** on both (**not a regression**); **v210.css** `--ll-anim-enter-*` tokens (`.overnight/consolidate-v210-css.mjs`, **6336** lines, −428 B); **2.1.0** docs note **Money** main view **donut-only**.
+- Owner feedback pass r6 (2026-11-03): removed dead **treemap / chart-toggle** UI and CSS (~95 lines); **v210.css** 6421→6326; `.overnight/prune-ledger-treemap-css.mjs` + `.overnight/perf-nav-trace.mjs`; **compare-v2010** matrix refreshed; nav perf trace (max long task 58ms, CLS 0).
+- Owner feedback pass r5 (2026-11-03): **View Transitions API** for sidebar page switches (`withViewTransition`, directional cross-fade); section **hairline marks** on Review / Timeline / Habits headers; scatter deep-link spotlight after `renderReview`; capture settle wait 450ms.
+- Owner feedback pass r4 (2026-11-03): **FLIP** day-group expand on **Money** transaction list (`captureFlip`); dead ledger enter CSS trimmed; **habits-library-quiet** hairline asset; `pressBump` + subscription empty state (see r3 for stats cross-fade).
+- Owner feedback pass r2 (2026-11-03): **Today quick-entry sheet** on Spending card; **Money** wellness block off main surface (legacy DOM for tests); `v210.css` −500 lines (deduped `prefers-reduced-motion`); `.overnight/MOTION-RESEARCH.md`; `LifeLedgerLedgerUI.quickAdd`.
+
+
+Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight polish (Goal 2) ship in this release.
+
+### Added
+
+- **Bookkeeping (记账):** `state.ledger` (accounts, categories with icon/colour, transactions, budgets, recurring templates) in integer minor units + ISO currency; local save, cloud CAS payload, backup v3, demo sample, undoable delete. Sidebar **Money / 记账 / Finanzen** in all editions.
+- **Quick entry:** natural-language field (`12,50 咖啡`, `-45 Miete gestern`, …), touch amount keypad, category chips, edit/duplicate/swipe-delete, opaque edit popover, recurring create/edit/delete with “Post now” and **Post all pending** (optional `recurringId` on generated rows).
+- **Money views:** month overview, category **donut** (SVG; treemap removed in owner feedback pass), daily spend strip in month view, budget progress bars, search/filter, German CSV import/export (`;`, decimal comma, DD.MM.YYYY) with import confirm sheet.
+- **Today — Spending today:** day/month totals with roll-up animation, 7-day mini sparkline, link to Money; mood pill (opens Review scatter), recurring **pending** pill (opens ledger due banner); first-visit syntax hint; quieter copy when history exists but today is zero.
+- **Monthly review — Money panel:** spending summary; mood-, habit-, and focus-vs-spend scatters with hover/focus readout and keyboard roving; budget overspend list with optional mood correlation; habit spark `<title>` tooltips; wide three-column scatter grid; mobile jump chips + scroll-spy; collapsed **Detailed metrics** preview chips.
+- **Integrations:** recurring-due accent on **Money** (current month), **Today** card, and **Review** summary (current review month only); ledger save refreshes Today widgets.
+- **Sample workspace:** ~90 days EUR transactions, category budgets, recurring templates; demo aligns mood/habit/focus for insight copy.
+- **Goal 2 polish:** Today hero daypart ambience, reflection streak on timeline, habit/review/ledger motion (`LifeLedgerInteraction` roll + retarget), shared `ll-empty-enter` empty art, settings/import dialog enter, long-range/week/habits stagger — styles consolidated in `v210.css` (formerly `v211`–`v232` slices).
+- **QA:** ledger parsing/totals/CSV/backup/cloud-merge unit tests; Playwright `npm run test:browser` (17 suites) including fakecloud conflict/preview; `.overnight/fakecloud.sh` for offline Pages stand-in.
+- **Polish (Batch 12–13 · overnight):** Money wellness mini scatters, heatmap/category filters, list subtotals and **Esc** clear; Today/Review deep links to Money by day or month; CSV import preview + drag-drop; habit/week/review/journal micro-interactions (**is-nav-press**, **is-chip-press**, **is-spend-press**, **is-stat-press**, **is-jump-press**, **is-heat-press**); global **M** + desktop keyboard hints; long-press edit; Mac **View → Money ⌘7**; empty-ledger **Add sample entry**; spend compare **≥ €100** money delta.
+- **Polish (Batch 13 r10 · final):** Release screenshot set `capture-batch13-round10.mjs` (`b13r10-release-*`); overnight Batch 13 closed at **417** unit + **71** browser tests.
+- **Polish (Batch 13 r1):** **Money** first-visit onboarding explains that starter categories are ready and offers **Add sample entry** (toast undo); spending compare hints show **currency** when the week/month delta is **≥ €100** (not only tiny baselines or +500% jumps).
+- **Polish (Batch 13 r2):** **Today** daily reflection **autosaved** badge pulses after debounced save; mood buttons get **just-picked** press feedback (Today + drawer); **Today spending** day-over-day compare line uses number **roll-up** when the caption changes.
+- **Polish (Batch 13 r3):** **Money** CSV import confirm shows a **scrollable preview table** (date, memo, amount); drag-and-drop **.csv** onto the ledger view; transaction list **outline pulse** after a successful import.
+- **Polish (Batch 13 r4):** **Today** habit check/uncheck plays **just-checked / just-unchecked** card feedback with a **progress orbit** bump on complete; **Week** weekly goal toggles get a brief **just-toggled** check animation before re-render.
+- **Polish (Batch 13 r5):** When every scored habit for today is done, the existing **celebration overlay** now also drives a stronger **progress-orbit** pulse and a short **habits card** highlight; **Review → Money** stat buttons get **is-stat-press** feedback before opening the ledger month.
+- **Polish (Batch 13 r6):** **M** opens **Money** from any page and focuses quick entry; desktop **keyboard hint** row on the ledger page; touch **long-press** a transaction row to edit; **Review → Open Money** / recurring banner buttons share **is-stat-press** feedback.
+- **Polish (Batch 13 r7):** **Review → Money** chart **jump chips** get **is-jump-press** tap feedback before scrolling; **Mac** **View → Money** (**⌘7**) matches the sidebar page (web still uses **M** for quick entry).
+- **Polish (Batch 13 r8):** Sidebar **nav items** get **is-nav-press** on page switch; **Money** quick-entry **category chips** get **is-chip-press** when filling the amount field.
+- **Polish (Batch 13 r9):** **Today → Spending today** amount and **Open Money** buttons get **is-spend-press** before navigation; **Money** **donut/treemap** toggles and **daily spend heatmap** cells get brief **is-mode-press** / **is-heat-press** feedback.
+- **QA (Batch 13 r1):** Unit test for large absolute spend deltas; Playwright sample-entry onboarding (Chromium); structural Batch 13 r1 selectors.
+- **QA (Batch 13 r2):** Playwright journal autosave pulse (WebKit) + mood pick (Chromium); structural Batch 13 r2 selectors.
+- **QA (Batch 13 r3):** Unit test for CSV preview samples; Playwright import preview rows; structural Batch 13 r3 selectors.
+- **QA (Batch 13 r4):** Playwright habit check pulse + weekly goal toggle (WebKit/Chromium); structural Batch 13 r4 selectors.
+- **QA (Batch 13 r5):** Playwright all-habits celebration + orbit/card classes; review stat press; structural Batch 13 r5 selectors.
+- **QA (Batch 13 r6):** Playwright global **M** shortcut, long-press edit, review header open press; structural Batch 13 r6 selectors.
+- **QA (Batch 13 r7):** Playwright review scatter jump chip press; structural Batch 13 r7 selectors + Mac menu **view_ledger** mapping.
+- **QA (Batch 13 r8):** Playwright sidebar nav press + ledger category chip press; structural Batch 13 r8 selectors.
+- **QA (Batch 13 r9):** Playwright Today spending press + ledger chart/heat press; structural Batch 13 r9 selectors.
+- **Polish (Batch 12 r10 · final):** Overnight Batch 12 closed with release screenshot set `capture-batch12-round10.mjs` (Today→Money day filter, Review→Money month, filtered list strip, de 390 / Mac shell **Money**); **407** unit + **56** browser tests at gate.
+- **Polish (Batch 12 r9):** **Review** monthly **Money** summary — tap **Spending**, **Income**, or **Net** (or **Open Money**) to open **Money** on the same review month (clears day/category filters; month summary retarget animation).
+- **QA (Batch 12 r9):** Structural tests for `openToMonth` / `openLedgerForReviewMonth`; Playwright Review stat → Money month (WebKit).
+- **Polish (Batch 12 r8):** **Today** **Spending today** card — tap the day amount or **Open Money** to open **Money** with that planning day pre-filtered (heatmap selection + date chip; transaction list scroll spotlight).
+- **QA (Batch 12 r8):** Structural tests for `openToDay`; Playwright Today amount → Money day filter (Chromium).
+- **Polish (Batch 12 r7):** **Money** filtered list subtotal shows **Income** and **Expenses** separately when the filtered set mixes both, then **Net**; **Escape** clears active list filters (search/day/category) when no popover is open (still clears from the search field).
+- **QA (Batch 12 r7):** Unit test for mixed-day `summarizeTransactions`; Playwright mixed-day split strip + Escape clears day filter (WebKit 390).
+- **Polish (Batch 12 r6):** **Money** filtered **Transactions** list shows an entry count and net total strip; **Clear all filters** appears when two or more filters are active (search, day, category); day+category empty combo has a dedicated empty state.
+- **QA (Batch 12 r6):** Unit test for `summarizeTransactions`; Playwright day+category filters → subtotal or combo empty → clear all.
+- **Polish (Batch 12 r5):** **Money** donut/treemap segments filter the **Transactions** list (keyboard + clearable category chip); empty category filter shows **Clear category filter**.
+- **QA (Batch 12 r5):** Unit test for category-scoped `filterTransactions`; Playwright donut segment → list filter.
+- **Polish (Batch 12 r4):** **Money** transaction list, budget, and recurring sections use hairline empty art with primary CTAs (**Start typing**, **Set budget**, **Add recurring**); search/day filter empties reuse the search hairline with **Clear search** when needed.
+- **QA (Batch 12 r4):** Playwright **Money** month-empty CTA focuses quick entry; budget empty opens popover.
+- **Polish (Batch 12 r3):** **Money** **This month’s correlations** shows the same three-step empty checklist as **Review** when the month has spending but not enough mood/habit days for mini scatter charts (pills jump to **Today**, **Habits**, or **Money**).
+- **QA (Batch 12 r3):** Playwright **Money** wellness scatter empty checklist (WebKit 390).
+- **Polish (Batch 12 r2):** **Money** daily spend heatmap cells are tappable (keyboard + screen reader) to filter the transaction list for that day, with a clearable date chip; wellness mini scatter charts reuse Review dot tooltips and arrow-key navigation.
+- **QA (Batch 12 r2):** Unit test for day-scoped `filterTransactions`; Playwright heatmap day filter + wellness scatter tooltip.
+- **Polish (Batch 12 r1):** **Money** page shows side-by-side **mood × spend** and **habit × spend** mini scatter charts for the viewed month, with links that open the matching scatter in **Review** (shared `buildLedgerMonthDailyRows` with the review Money panel).
+- **QA (Batch 12 r1):** Playwright **Money** wellness insights → **Review** habit scatter spotlight.
+- **QA (Batch 11 r4):** Offline PWA browser test (cached ledger scripts + Money view while offline); fakecloud preview flow opens **Money** and asserts month summary + category viz.
+- **QA (Batch 11 r5):** Mac shell + fakecloud online demo opens **Money** with cloud-synced demo rows (WebKit).
+- **QA (Batch 11 r6):** Mac shell fakecloud **Money** asserts **← / N** shortcuts and native menu month step (`date:next`).
+- **QA (Batch 11 r7):** Mac menu **`date:prev`** month step on fakecloud **Money**; Today habit×spend hint link scrolls to habit-vs-spend scatter in **Review**.
+- **QA (Batch 11 r8):** Mac shell **`date:prev` / `date:next`** on **Review** and **Week**; journal timeline mood×spend insight link opens mood scatter.
+- **Polish (Batch 11 r9):** **Week** page header shows the rolling **30-day habit × spend** chip on the current week (links to habit scatter in **Review** with spotlight); Today habit insight link uses the same scatter spotlight.
+- **QA (Batch 11 r9):** Playwright **Week** habit×spend insight → `#review-scatter-habit`.
+- **QA (Batch 11 r10 · final):** Release screenshot set `capture-batch11-round10.mjs` (Today / 记账 / 时间轴 / 复盘 / 本周 / Mac shell **Money**); overnight Batch 11 closed at **394** unit + **45** browser tests.
+
+### Changed
+
+- **Owner feedback (2026-11-03):** Today **Spending today** amount opens a quick-entry sheet (full stats on **Money**); transaction list **day groups FLIP** when expanding another day; `LifeLedgerInteraction.captureFlip` + `pressBump`; monthly **Subscriptions** empty hairline + **Add subscription** CTA.
+- Mood-vs-spend logic lives in testable `ledger-core.js` helpers; quick-entry field is not wrapped in `<label>` (Add stays outside; WebKit-safe pickers elsewhere).
+- **Money desktop shortcuts:** **N** quick entry, **/** search, **← / →** month (Mac menu month step includes Money).
+- Timeline calendar photo skeleton; mobile ledger keypad clearance; week insight pulse; README EN/ZH/DE showcase adds Money (`08-ledger-v21`) desktop/mobile rows; `.overnight/CSS-LAYERS.md` documents CSS slices.
+- Release metadata, PWA cache, and asset `?v=` markers aligned to **2.1.0** / Mac **3.1.0**.
+- **Today — Spending today:** when today has expenses, the card shows the largest category chip and an entry count in the caption; a **vs yesterday** line compares default-currency spend (+/−% or “about the same”); brand-new ledgers get a subtle € side marker on empty days; German recurring pills use occurrence wording (**offene Posten**).
+- **Week — Insights:** fifth tile shows **week spending** (Mon–today for the selected week, reporting currency); tap opens **Money** on that week’s month; a caption compares the same weekday span to **last week** (+/−% or “about the same”). The **focus time** tile adds a caption for days with journal notes or mood reasons vs the same span **last week** (day count). The **completion rate** tile adds a caption comparing habit completion **percentage points** vs the same span **last week**.
+- **Review — Money summary:** spending stat includes a caption comparing the same calendar days to **last month** (+/−% or “about the same”).
+- **Spending compare copy:** increases cap at **+999%**; when the prior period baseline is under **€15**, captions show a **money delta** (e.g. demo coffee → rent reads **较昨日多 €947…** instead of +2000%).
+- **Demo habits:** fictional sample data stores starter habit names in the active UI language (zh/de/en) while custom renames stay untouched.
+- **Week insights:** switching workspace weeks rolls completion rate, spending, streak, and focus minutes (same motion as Today spending totals).
+- **Journal / review empty states:** timeline feed uses **`ll-paint-host`** skeleton while photos load; feed / calendar list / review inspector empties get consistent **`ll-empty`** styling.
+- **Journal filter / habits empty:** weekly/monthly feed filters no longer flash skeleton; daily filter keeps prior feed visible while photos reload; habit filter miss + review habit compare empty use **`ll-empty`** polish.
+- **Today insights:** rolling 30-day **习惯完成度 × 支出** caption under foundations (link to Review); **心情 × 支出** caption under the mood card (link to Review mood scatter); daily journal filter adds **stale shimmer veil** and clears **`ll-paint-host--stale`** when photos finish.
+- **Spending compare copy:** when the prior period baseline is **≥ €15** but spend rose by more than **500%**, captions show a **money delta** (e.g. €20 → €500 reads **较昨日多 480,00 €** instead of **+999%**).
+- **Backup restore:** removed redundant explicit-language branch in `syncBackupPreferencesToRuntime` (same behaviour as cold start).
+- **Long-range (Horizon):** empty phase and plan grids use hairline art, enter animation, and **Start your first phase** CTA; sidebar adds subtle dividers before Timeline and Money.
+- **Habits library:** zero-habit empty state uses centered hairline art with **Add your first habit** CTA (filters and stats hidden until the first habit exists); filter/search miss shows horizontal **search-empty** quiet card; Today hero quote block gets a short copy stagger on enter (today only).
+- **Timeline journal feed:** empty daily/weekly/monthly lists use polished hairline art with primary CTAs (**Write today's reflection**, **Open this week**, **Open monthly review**); month filter with no rows shows a quiet **search-empty** strip; Today card grid gets tighter gap rhythm and a light desktop hover lift (respects reduced motion).
+- **Week & Review empty states:** empty weekly goals, blank weekly reflection, and long-term goals on the Week page use hairline art with **Add your first weekly goal**, **Start weekly reflection**, and **Add a long-term goal** CTAs; Review shows matching CTAs for empty habit scores, metrics, inspector table, and blank monthly reflection (**Add habits**, **Check in on Today**, **Start writing**).
+- **Today widget library:** first visit to Today shows a dismissible hint above **Edit cards** (widget library shortcut); entering edit mode dismisses it. **Today — Edit cards:** tapping **Done** after reordering plays a short success pulse on the edit bar and **Edit cards** button (respects reduced motion). **Review — Money:** when the month has spending but scatter charts need more mood/habit/focus days, a quiet empty card points to **Log on Today** (fixed gate on negative `expenseMinor`). **Timeline — Calendar:** empty month shows hairline art with **Write today's reflection**; sidebar entry list adds the same CTA or a filter-miss quiet strip (unique CTA ids so calendar buttons work when the sidebar is hidden).
+- **QA:** Playwright suite runs serially (`--test-concurrency=1`) with deconflicted static-server ports; **417** unit + **71** browser checks at release (Batch 13 r10 gate).
+- **Journal — Timeline:** Daily feed description can show a mood×spending insight chip with a link to the mood scatter in **Review** (when data exists).
+- **Today:** Habit×spend insight **Review** link scrolls to the habit-vs-spend scatter (mood hint already jumps to mood scatter).
+- **Habits:** Selected habit streak calendar cells pop in with a short stagger (respects reduced motion).
+- **Money:** Quick-entry submit button gets a brief success pop (respects reduced motion).
+- **Review — Money:** scatter empty state shows a three-step checklist (mood / habits / spending) and a primary **Log on Today** CTA; checklist pills jump to **Today**, **Habits**, or **Money**.
+- **Owner feedback (2026-11-03):** Money page recentred on daily entry and automatic week/month stats (donut only on main view); slim grouped transaction list; **⋯** menu for search/CSV/budgets/recurring; sidebar **Money** below Timeline (**⌘5** on Mac); keyword category inference with learned hints; monthly subscription auto-posting; Today onboarding hint card uses opaque surface.
+
+### Fixed
+
+- **PWA offline:** `ledger-core.js` / `ledger-ui.js` included in service worker network-first managed assets so offline installs load bookkeeping scripts from cache.
+- **CSV import:** German bank amounts with dot decimals only (e.g. `12.50`) no longer inflate 100×; `formatMoney` no longer prints `-0,00 €` for negative zero.
+- **Quick entry:** invalid parse sets `aria-invalid` on the input for screen readers (visual `is-error` unchanged).
+- **Demo insights:** Active demo workspaces with ledger but without `meta.demo.insightAlign` re-align moods/habits/focus once on boot so Today mood×spending and habit×spending hints render without `demo-reset=1`.
+- **Weekly recurring pending:** fixed templates stay on the due list until each ISO week in the calendar month has a matching entry (legacy rows without `recurringId` only clear their week); **Post all pending** books every past occurrence in the month for weekly cadence.
+- **Recurring due counts:** Today pill, Money banner, and Review strip now count **unposted occurrences** (remaining weekly dates in the month), not just template rows.
+- **Voice hints:** built-in habit names in voice context terms follow the active UI language via `displayHabitName`.
+- **CSV:** semicolon tokenizer preserves empty cells (`;;`); skips `Buchungstag` header rows; quoted amounts and trailing-minus parsing; export uses active UI language for categories and explicit `currency` column.
+- **Sync & backup:** Tencent/Cloudflare merge keeps local ledger when remote lacks it; conflict recovery merges ledger; export/import v3 round-trip and budget dedupe by `(month, categoryId)`.
+- **Money UI:** default-currency-only summaries; edit invalid amount surfaces error; popovers dismiss on backdrop/Escape; swipe-delete ignores vertical scroll; category repair for localized default names; donut/treemap counts default currency only.
+- **Review:** habit score inspector visible on unified monthly page; hidden `#inspectorReviewTable` skips DOM work when collapsed; `is-entering` stagger attaches to view roots (Today/Timeline/Review/Long-range).
+- **Today:** focus tab reachable again; spending card TDZ when ledger empty; language preference on first paint; cloud first-pull re-uploads layout/profile when needed.
+- **Spending compare captions:** Today / Week / Review temporal spend hints (vs yesterday, last week, last month) compute ±% against the **previous** period baseline, so large drops no longer show inflated percentages (e.g. €100 → €10 reads **−90%**, not −900%).
+- **QA:** Playwright suites use dedicated ports **5271–5275** (no parallel flake); deploy test writes manifests to temp dir.
+- **Assets:** `pages-polish.css` / `pages-art.js` wired in shell; cascade order keeps consolidated polish winning.
+- **`spend-compare-mac-shell.browser.test.mjs`:** locks Today **amount caption** when yesterday’s baseline is under €15, Mac shell **Week / Review / Today** spend hints without four-digit +% inflation (Today includes demo **habit + mood** insight lines), and **Week insights** metric roll when changing workspace week.
+- **`fakecloud-preview-ledger.browser.test.mjs`:** after demo cloud sync, **本周** spend hint stays readable (no four-digit +%); **复盘** `#reviewLedgerSpendHint` same check.
+- **`journal-feed-paint.browser.test.mjs`:** timeline feed paint host reaches **ready** without leaving skeleton markup.
+- **`journal-feed-filter.browser.test.mjs`:** weekly timeline month filter stays **ready** without feed skeleton; daily filter clears **stale** veil when ready.
+- **`today-habit-spend-hint.test.mjs`:** Today foundations habit × spend insight wiring + journal stale veil cleanup.
+- **`today-habit-spend-hint.browser.test.mjs`:** demo Today **habit + mood** spend hints visible and review links work (Chromium + WebKit).
+- **`fakecloud-online.browser.test.mjs`:** clears storage and waits for **cloud** save mode before asserting conflict UI stays hidden (parallel suite stability).
+- **Review — Money scatter empty:** empty-state gate used `expenseMinor > 0` but expenses are negative minor units; corrected to **`expenseMinor < 0`** so the CTA appears when data is thin.
+- **Timeline — Calendar CTA:** calendar and sidebar empty buttons no longer share one `id`; calendar **Write today's reflection** works when the sidebar is hidden.
+- **Suite size:** `npm test` **389** unit checks; `npm run test:browser` **39** Playwright cases (Chromium + WebKit, serial **529x** ports).
 ## [2.0.12] - 2026-11-15
 
 Life Ledger for Mac 3.0.6. The web app is unchanged apart from the version number.
@@ -89,7 +238,6 @@ Web 2.0.7 and Life Ledger for Mac 3.0.1. Audit remediation from PR #13, plus two
 - **Cloud edition: photo wall photos and videos now sync across devices.** They are stored privately in your own Cloudflare R2 (the same bucket and limits as day photos); the order and the chosen focus point travel with your records. The first browser that opens 2.0.6 with photos on its wall brings them to the cloud. Wall settings (auto-play, fill or fit) sync too.
 - **Weather city:** the forecast for the synced city is loaded even when the weather card is hidden, so the header chip shows the same city on every device.
 - Coming back to the app window (not only the browser tab) picks up changes from other devices.
-
 ## [2.0.5] - 2026-10-28
 
 ### Fixed

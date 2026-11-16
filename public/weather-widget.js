@@ -26,13 +26,13 @@
   function showHour(index){
     if(!model)return;index=Math.max(0,Math.min(model.hours.length-1,index));model.index=index;
     const hour=model.hours[index];if(!hour)return;
-    const kind=model.kind(hour.code),host=$('#weatherDetail');host.dataset.kind=kind;
+    const kind=model.kind(hour.code),host=$('#weatherDetail');if(!host)return;host.dataset.kind=kind;
     host.replaceChildren();
     for(const [cls,text] of [['weather-symbol',symbols[kind]],['weather-temp',`${Math.round(hour.temperature)}°`],['weather-time',`${model.isToday&&index===model.currentIndex?cityNow(model.data).slice(11,16):timeLabel(hour.time)} · ${model.t(kind)} · ${hour.probability}%`]]){const n=document.createElement('span');n.className=cls;n.textContent=text;host.append(n);}
     const sym=host.querySelector('.weather-symbol');if(sym)sym.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[kind]}</svg>`;
     const input=$('#weatherHour');input.value=String(index);input.setAttribute('aria-valuetext',`${timeLabel(hour.time)} · ${Math.round(hour.temperature)}° · ${hour.probability}%`);
-    $('#weatherPlot').setAttribute('aria-label',`${model.city.name} · ${input.getAttribute('aria-valuetext')}`);
-    $('#weatherPlot').dataset.hour=hour.time;
+    const plotEl=$('#weatherPlot');
+    if(plotEl){plotEl.setAttribute('aria-label',`${model.city.name} · ${input.getAttribute('aria-valuetext')}`);plotEl.dataset.hour=hour.time;}
   }
   function paint(){
     if(!model||!root.LifeLedgerWidgetUI?.uPlot)return;

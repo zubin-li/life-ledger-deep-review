@@ -1,0 +1,6 @@
+"Booking Date","Value Date","Partner Name","Partner Iban","Type","Payment Reference","Account Name","Amount (EUR)","Original Amount","Original Currency","Exchange Rate"
+"2026-10-10","2026-10-10","Taobao.com","","Mastercard Payment","Bestellung Hülle","Hauptkonto","-13.61","-100.00","CNY","7.3475"
+"2026-10-21","2026-10-21","Döner König","","Mastercard Payment","","Hauptkonto","-7.50","","",""
+"2026-10-21","2026-10-21","Döner König","","Mastercard Payment","","Hauptkonto","-7.50","","",""
+"2026-10-30","2026-10-30","Max Müller","","Credit Transfer","Umbuchung auf N26","Hauptkonto","100.00","","",""
+"2026-10-31","2026-10-31","Kino Universum","","Pending","Tickets","Hauptkonto","-24.00","","",""

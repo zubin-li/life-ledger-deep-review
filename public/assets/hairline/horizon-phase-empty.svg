@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g data-layer="1" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M24 88h112"/>
+    <path d="M32 88V72l48-36 48 36v16"/>
+  </g>
+  <g data-layer="2" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M56 88V58M104 88V66"/>
+  </g>
+  <g data-layer="3" stroke="var(--accent, #6f8f7d)" stroke-width="1" vector-effect="non-scaling-stroke">
+    <path d="M80 36V24"/>
+    <path d="M74 24h12"/>
+    <path d="M80 24l-6 8h12l-6-8Z"/>
+  </g>
+</svg>

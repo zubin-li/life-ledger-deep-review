@@ -1,5 +1,36 @@
 (function (root) {
   const VIEW_ORDER = ["today", "week", "timeline", "review", "habits"];
+  /** Sidebar order including long-range + ledger (owner nav spec A6). */
+  const NAV_VIEW_ORDER = ["today", "week", "longrange", "timeline", "ledger", "review", "habits"];
+
+  function navViewDirection(from, to) {
+    const start = NAV_VIEW_ORDER.indexOf(from);
+    const end = NAV_VIEW_ORDER.indexOf(to);
+    if (start < 0 || end < 0 || start === end) return 0;
+    return end > start ? 1 : -1;
+  }
+
+  function withViewTransition(updateDom, options = {}) {
+    const doc = root.document;
+    if (typeof updateDom !== "function") return Promise.resolve();
+    if (!doc || motionTravelDisabled() || typeof doc.startViewTransition !== "function") {
+      updateDom();
+      return Promise.resolve();
+    }
+    const from = String(options.from ?? doc.body?.dataset?.activeView ?? "");
+    const to = String(options.to ?? "");
+    const dir = navViewDirection(from, to);
+    const rootEl = doc.documentElement;
+    rootEl.dataset.viewTransitionDir = dir > 0 ? "forward" : dir < 0 ? "back" : "none";
+    rootEl.classList.add("ll-view-transition");
+    const vt = doc.startViewTransition(() => {
+      updateDom();
+    });
+    return vt.finished.finally(() => {
+      delete rootEl.dataset.viewTransitionDir;
+      rootEl.classList.remove("ll-view-transition");
+    });
+  }
 
   function normalizeQuery(query) {
     return String(query || "").trim().toLowerCase();
@@ -200,6 +231,47 @@
       const invert = flipDelta(from, to);
       return { node, animate: true, invert, frame: to };
     });
+  }
+
+  /** FLIP list reflow — call before DOM swap, invoke returned fn with the new container. */
+  function captureFlip(container, itemSelector, keyFromNode) {
+    if (!container?.querySelectorAll) return () => {};
+    const reduced = motionTravelDisabled();
+    const before = new Map();
+    if (!reduced) {
+      container.querySelectorAll(itemSelector).forEach(node => {
+        const key = keyFromNode ? keyFromNode(node) : node;
+        if (key != null && key !== "") before.set(String(key), node.getBoundingClientRect());
+      });
+    }
+    return nextContainer => {
+      const host = nextContainer || container;
+      if (!host?.querySelectorAll || reduced || !before.size) return;
+      requestAnimationFrame(() => {
+        host.querySelectorAll(itemSelector).forEach(node => {
+          const key = keyFromNode ? keyFromNode(node) : node;
+          const prev = before.get(String(key));
+          if (!prev) return;
+          const next = node.getBoundingClientRect();
+          const invert = flipDelta(prev, next);
+          if (!invert.x && !invert.y) return;
+          node.classList.add("ll-flip-play");
+          node.style.transform = `translate(${invert.x}px, ${invert.y}px)`;
+          node.style.transition = "transform 0s";
+          requestAnimationFrame(() => {
+            node.style.transition = "transform 380ms cubic-bezier(0.22, 1, 0.36, 1)";
+            node.style.transform = "";
+          });
+          const cleanup = () => {
+            node.style.transition = "";
+            node.style.transform = "";
+            node.classList.remove("ll-flip-play");
+          };
+          node.addEventListener("transitionend", cleanup, { once: true });
+          root.setTimeout?.(cleanup, 440);
+        });
+      });
+    };
   }
 
   function hairlineSvgChecks(source) {
@@ -655,9 +727,59 @@
     };
   }
 
+  function skeletonMarkup(className = "ll-skeleton ll-skeleton--block") {
+    return `<div class="${className}" aria-hidden="true"></div>`;
+  }
+
+  const pressBumpTimers = new WeakMap();
+
+  /** Brief scale/opacity press — pass legacy class e.g. is-nav-press for existing CSS hooks. */
+  function pressBump(node, className = "ll-press-bump") {
+    if (!node || motionTravelDisabled()) return;
+    const token = String(className || "ll-press-bump");
+    node.classList.remove(token);
+    void node.offsetWidth;
+    node.classList.add(token);
+    const prev = pressBumpTimers.get(node);
+    if (prev) clearTimeout(prev);
+    pressBumpTimers.set(
+      node,
+      setTimeout(() => {
+        node.classList.remove(token);
+        pressBumpTimers.delete(node);
+      }, 420),
+    );
+  }
+
+  function paintWithSkeleton(host, paint, options = {}) {
+    if (!host || typeof paint !== "function") return;
+    const skelClass = options.skeletonClass || "ll-skeleton ll-skeleton--block";
+    const minMs = Number(options.minMs) || 0;
+    host.classList.remove("ll-paint-host--ready");
+    host.innerHTML = skeletonMarkup(skelClass);
+    const started = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const finish = () => {
+      const run = () => {
+        paint();
+        host.classList.add("ll-paint-host--ready");
+      };
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      const wait = Math.max(0, minMs - (now - started));
+      if (wait > 0) setTimeout(run, wait);
+      else requestAnimationFrame(run);
+    };
+    if (options.defer === false) finish();
+    else requestAnimationFrame(finish);
+  }
+
   const exported = {
     VIEW_ORDER,
+    NAV_VIEW_ORDER,
+    navViewDirection,
+    withViewTransition,
     MOTION_CLASS,
+    skeletonMarkup,
+    paintWithSkeleton,
     normalizeQuery,
     filterCommands,
     matchRanges,
@@ -679,6 +801,7 @@
     submitStateStep,
     flipSiblingsPlan,
     flipSharedRects,
+    captureFlip,
     hairlineSvgChecks,
     mountHairline,
     openAnchoredPopover,
@@ -691,6 +814,7 @@
     rollText,
     mountDisclosures,
     mountCommandPalette,
+    pressBump,
   };
 
   root.LifeLedgerInteraction = exported;

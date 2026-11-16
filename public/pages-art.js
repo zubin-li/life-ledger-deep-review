@@ -81,6 +81,17 @@
       empty.dataset.llEmpty = "1";
       prependArt(empty, "empty-week-goals", PALETTE.coral.solid);
     }
+    const goalHairline = root.querySelector("#weeklyGoalList .hairline-empty");
+    if (goalHairline && !goalHairline.dataset.llEnter) {
+      goalHairline.dataset.llEnter = "1";
+      goalHairline.classList.add("ll-empty-enter");
+    }
+    const ltEmpty = root.querySelector("#longTermGoalList .long-term-empty");
+    if (ltEmpty && !ltEmpty.dataset.llEmpty) {
+      ltEmpty.dataset.llEmpty = "1";
+      ltEmpty.classList.add("ll-empty", "ll-empty-enter");
+      prependArt(ltEmpty, "empty-week-goals", PALETTE.sage.solid);
+    }
     const list = root.querySelector("#weeklyGoalList");
     if (list) {
       const goals = list.querySelectorAll(".weekly-goal");
@@ -89,7 +100,7 @@
       if (goals.length && goals.length === done.length) {
         if (!banner) {
           banner = document.createElement("div");
-          banner.className = "ll-week-all-done ll-empty";
+          banner.className = "ll-week-all-done ll-empty ll-empty-enter";
           banner.innerHTML = "<strong></strong>";
           list.appendChild(banner);
         }
@@ -128,6 +139,10 @@
       empty.dataset.llEmpty = "1";
       prependArt(empty, "empty-journal", PALETTE.sage.solid);
     }
+    if (!empty.dataset.llEnter) {
+      empty.dataset.llEnter = "1";
+      empty.classList.add("ll-empty-enter");
+    }
   }
 
   function polishReview(root) {
@@ -139,6 +154,10 @@
       const artName = hasHelp ? "empty-habits" : "insights-first-week";
       const accent = hasHelp ? PALETTE.sage.solid : PALETTE.blue.solid;
       prependArt(empty, artName, accent);
+    }
+    if (empty && !empty.dataset.llEnter) {
+      empty.dataset.llEnter = "1";
+      empty.classList.add("ll-empty-enter");
     }
     root.querySelectorAll(".score-card").forEach(card => {
       if (!card.dataset.llAccent) {

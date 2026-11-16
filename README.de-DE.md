@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-desktop/de-01-today-v6.png" width="100%" alt="Life Ledger 2.0 – Heute als Karten-Arbeitsbereich" />
+  <img src="docs/images/demo-preview/de-desktop/de-08-ledger-v21.png" width="100%" alt="Life Ledger 2.1 Finanzen: Monatsüberblick, Kategorien und Schnellerfassung" />
 </p>
 
 <p align="center">
@@ -102,10 +102,12 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 ## Funktionen
 
 - Tägliche Gewohnheiten mit anpassbaren Zielen und Gültigkeitsdatum
-- Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen
+- Schreibgeschützter Tageskalender, Stimmung, Journal und Ereignisnotizen; in der **Tages**-Ansicht der Zeitleiste erscheint ein **Reflexions-Streak**, wenn an aufeinanderfolgenden Tagen Tagebuch oder Stimmungsgründe erfasst wurden; bei Finanz- und Stimmungsdaten optional ein **30-Tage Stimmung vs. Ausgaben**-Chip mit Link zum Stimmungs-Streudiagramm im **Rückblick**; leerer Feed mit Hairline-Leerzustand und **Heutige Reflexion schreiben** (Monatsfilter ohne Treffer: horizontale search-empty-Karte); **Kalender**-Modus bei leerem Monat mit gleichem Button, Seitenleistenliste mit Quiet-Karte bei Filter ohne Treffer
+- **Heute-Quer-Einblicke (Demo-Showcase):** Unter **Grundlagen** optional ein rollierender **30-Tage**-Vergleich der Ausgaben an Tagen mit hoher vs. niedriger Gewohnheits-Erfüllung plus Link zum Gewohnheits-vs.-Ausgaben-Streudiagramm im **Rückblick**; unter **Stimmung** bessere vs. niedrigere Stimmungstage mit Link zum Stimmung-vs.-Ausgaben-Streudiagramm (gleiche Datenbasis wie im Rückblick)
 - Sprachtranskription und KI-gestützte Überarbeitung mit bearbeitbarer Vorschau
-- Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen
-- Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen
+- Wochenziele, Checklisten, Wochenrückblicke und archivierte Notizen; leere Wochenziele, leerer Wochenrückblick und leere Langfristziele zeigen Hairline-Leerzustände mit **Erstes Wochenziel hinzufügen**, **Wochenrückblick beginnen** bzw. **Langfristziel hinzufügen**; nur in der **aktuellen Woche** kann der Seitenkopf denselben rollierenden **30-Tage Gewohnheit × Ausgaben**-Chip wie auf **Heute** zeigen (Link zum Gewohnheits-Streudiagramm im **Rückblick**); **Diese Woche · Einblicke** zeigt als fünfte Kachel **Ausgaben diese Woche** (Mo–heute, öffnet Finanzen) mit Hinweis **gg. Vorwoche (gleicher Zeitraum)**; die **Fokuszeit**-Kachel nennt Tage mit Tagebuch oder Ereignissen und den Vergleich **gg. Vorwoche (gleicher Zeitraum)** in Tagen; die **Abschlussrate**-Kachel vergleicht Gewohnheits-Abschluss in Prozentpunkten **gg. Vorwoche (gleicher Zeitraum)**
+- Monatsrückblick mit Gewohnheitsvergleich sowie Linien- und Balkendiagrammen; leere Gewohnheitswerte, Metrikvergleich, Detailtabelle und leerer Monatsrückblick nutzen Hairline-Leerzustände mit **Gewohnheiten anlegen**, **Heute einchecken** bzw. **Rückblick beginnen**; unter **Monatsausgaben** zeigt die Ausgaben-Zahl einen Hinweis **gg. Vormonat (gleicher Zeitraum)**; **Ausgaben**, **Einnahmen** oder **Saldo** (oder **Finanzen öffnen**) antippen öffnet **Finanzen** im gleichen Rückblick-Monat; bei Ausgaben, aber noch zu wenig Tagen für Streudiagramme, ein leiser Leerzustand mit drei antippbaren Pills (**Stimmung notieren** / **Gewohnheiten abhaken** / **Ausgabe erfassen**) plus **Auf Heute erfassen**
+- **Finanzen:** **Heute → Ausgaben heute** — Betrag antippen öffnet **Schnellbuchung** (Notiz + Kategorie-Chip, letzte Zeilen, Link zur vollen Statistik); die **Finanzseite** fokussiert **Woche/Monat**, Donut, Abos und schlanke Liste (**FLIP** beim Aufklappen eines anderen Tages); **Seitenwechsel** in der Sidebar nutzt die **View Transitions API** (Richtungs-Crossfade, Fallback bei reduced motion); **Kategorien aus Notiz** (zh/en/de, lernt aus Korrekturen), **gruppiert** (Essen, Wohnen, Gesundheit & Versicherung, Freizeit & Abos, Finanzen) mit einem Auswahlfeld und einer Kategorieverwaltung; Navigation **Heute → … → Finanzen → Rückblick** (**⌘5**); **M** fokussiert Schnellerfassung — `state.ledger` mit Backup/Cloud-Sync
 - Validierte JSON-Sicherung und geführte Wiederherstellung, einschließlich früherer Exportformate
 - Benutzeroberfläche auf Englisch, vereinfachtem Chinesisch und Deutsch
 - Helles, dunkles und systemabhängiges Erscheinungsbild
@@ -122,7 +124,7 @@ KI soll Reflexion nicht ersetzen, sondern sie bedeutungsvoller machen.
 <details open>
 <summary><strong>Neu in Life Ledger 2.0</strong></summary>
 
-- **Heute wird zum Karten-Arbeitsbereich.** Wetter mit Stundenkurve, Stimmung, Grundlagen, Gewohnheits-Heatmap, Fokus, letzte Tage, Monat, Fotowand und Tageskalender sind Karten, die du unter **Karten bearbeiten** hinzufügen, entfernen, ziehen und in der Größe ändern kannst. Das Layout bleibt gespeichert.
+- **Heute wird zum Karten-Arbeitsbereich.** Wetter mit Stundenkurve, Stimmung, Grundlagen, Gewohnheits-Heatmap, Fokus, letzte Tage, Monat, Fotowand und Tageskalender sind Karten, die du unter **Karten bearbeiten** hinzufügen, entfernen, ziehen und in der Größe ändern kannst. Das Layout bleibt gespeichert; beim ersten Besuch erscheint ein ausblendbarer Hinweis über **Karten bearbeiten** mit Shortcut zur Widget-Bibliothek. **Fertig** nach dem Bearbeiten löst einen kurzen Erfolgsimpuls an Leiste und **Karten bearbeiten** aus.
 - **Alle Seiten neu gestaltet.** Woche (Rückblick, Erledigtes, Ziele), Horizont (Phasen nebeneinander), Zeitleiste (Tag/Woche/Monat, Fotos, Kalender – jeder Tag lässt sich bearbeiten), Monatsrückblick und Gewohnheiten folgen einer Designfamilie mit passender Bewegung.
 - **Eine lokale Version, die sich zeigt.** Die rein lokale Web-App startet mit drei Monaten fiktiver Beispieldaten (Gewohnheiten, Wochen- und Monatsrückblicke, Pläne, Fotos). **Einstellungen → Lokale Daten löschen** startet leer; **Beispieldaten laden** holt sie zurück. Lokale Version schon früher genutzt? Deine früheren Einträge liegen als Sicherung in diesem Browser – **Einstellungen → Frühere Einträge wiederherstellen** holt sie zurück.
 - **Vollständiger Sprachwechsel.** Oberfläche, Dialoge, Bedienhilfen-Beschriftungen und Beispieldaten wechseln sofort zwischen Englisch, vereinfachtem Chinesisch und Deutsch.
@@ -154,9 +156,15 @@ Vorherige Version nötig? Der Tag `v1.3.0` bleibt erhalten – siehe [Zurück zu
 <p align="center"><strong>Eine private Erinnerungslinie.</strong> Tage, Wochen und Monate von oben nach unten lesen; jeder Tag lässt sich öffnen und bearbeiten.</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/de-mobile/de-01-today-v6.png" width="30%" alt="Heute-Karten auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v6.png" width="30%" alt="Zeitleiste auf dem Smartphone" />
-  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v6.png" width="30%" alt="Monatsrückblick auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-desktop/de-08-ledger-v21.png" width="78%" alt="Finanzen: Monatsüberblick, Kategorien und Schnellerfassung" />
+</p>
+<p align="center"><strong>Integrierte Finanzübersicht.</strong> Schnellerfassung, deutscher CSV-Import, Budgets – verbunden mit Heute und Monatsrückblick.</p>
+
+<p align="center">
+  <img src="docs/images/demo-preview/de-mobile/de-01-today-v6.png" width="22%" alt="Heute-Karten auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-08-ledger-v21.png" width="22%" alt="Geld auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-07-timeline-v6.png" width="22%" alt="Zeitleiste auf dem Smartphone" />
+  <img src="docs/images/demo-preview/de-mobile/de-04-monthly-review-v6.png" width="22%" alt="Monatsrückblick auf dem Smartphone" />
 </p>
 
 <p align="center"><strong>Für jede Bildschirmgröße.</strong> Karten ordnen sich einspaltig, die untere Leiste übernimmt die Navigation, der Bearbeitungsmodus funktioniert mit Touch.</p>
@@ -258,7 +266,9 @@ Das Repository enthält jetzt eine erste Tauri-v2-macOS-Hülle mit zwei klaren O
 
 Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, inklusive iCloud-Drive-Ordnern.
 
-**Life Ledger für Mac 3.0:** `Life-Ledger-3.0.0-mac-arm64.zip` aus dem **[Mac-3.0.0-Release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** laden (Apple Silicon), entpacken und **Life Ledger** in „Programme“ ziehen. Die App ist nicht notarisiert: beim ersten Start **Systemeinstellungen → Datenschutz & Sicherheit → Trotzdem öffnen**. Lokal auf diesem Mac ohne Konto, oder mit deiner eigenen Cloud verbunden (Anmeldung per E-Mail-Code): Einträge, Fotos, Name und Profilbild sind dann auf Mac, Browser und Handy gleich. Moduswechsel jederzeit unter **Einstellungen → Daten → Zum Sync-Modus / Zum lokalen Modus wechseln**. Anleitung: [docs/macos-cloud.md](docs/macos-cloud.md). Build-Hinweise: [docs/macos-desktop.md](docs/macos-desktop.md).
+**Life Ledger für Mac 3.1:** `Life-Ledger-3.1.0-mac-arm64.zip` aus dem **[Mac-3.1.0-Release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.1.0)** laden (Apple Silicon), entpacken und **Life Ledger** in „Programme“ ziehen. Die App ist nicht notarisiert: beim ersten Start **Systemeinstellungen → Datenschutz & Sicherheit → Trotzdem öffnen**. Lokal auf diesem Mac ohne Konto, oder mit deiner eigenen Cloud verbunden (Anmeldung per E-Mail-Code): Einträge, Fotos, Name und Profilbild sind dann auf Mac, Browser und Handy gleich. Moduswechsel jederzeit unter **Einstellungen → Daten → Zum Sync-Modus / Zum lokalen Modus wechseln**. Anleitung: [docs/macos-cloud.md](docs/macos-cloud.md). Build-Hinweise: [docs/macos-desktop.md](docs/macos-desktop.md).
+
+**Tastatur:** In der Menüleiste **Darstellung → Geld** (**⌘5**); von jeder Seite **M** für **Geld** mit Fokus auf die Schnellerfassung (wie in der lokalen Web-Edition).
 
 ## Datenhoheit
 
@@ -278,7 +288,8 @@ Cloud-Synchronisierung ist optional. Eine rein lokale Installation speichert get
 | Befehl | Zweck |
 |---|---|
 | `npm run dev` | Lokale Migrationen anwenden und Wrangler im Entwicklungsmodus starten |
-| `npm test` | Syntax-, Datenschutzmarker-, Struktur- und Worker-Tests ausführen |
+| `npm test` | Syntax-, Datenschutzmarker-, Struktur- und Worker-Tests ausführen (ohne Playwright) |
+| `npm run test:browser` | Playwright-Checks für Finanzen, Today und Review |
 | `npm run check` | Schnelle Repository-Prüfungen ausführen |
 | `npm run build:cloudbase` | CloudBase-Artefakt mit `TCB_ENV_ID` und `TCB_ACCESS_KEY` bauen |
 | `npm run deploy:cloudbase` | Bauen und zu Tencent CloudBase Static Hosting bereitstellen |

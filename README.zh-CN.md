@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-desktop/zh-01-today-v6.png" width="100%" alt="Life Ledger 2.0 今日卡片工作台" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-08-ledger-v21.png" width="100%" alt="Life Ledger 2.1 记账：月览、分类与快速录入" />
 </p>
 
 <p align="center">
@@ -106,10 +106,12 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 ## 主要功能
 
 - 每日习惯、目标数值和生效日期管理
-- 只读每日日历、心情、日记与事件记录
+- 只读每日日历、心情、日记与事件记录；时间轴 **日度** 视图在连续多天有日记或心情原因时显示 **连续记录 streak** 徽章；在有记账与心情数据时还可显示 **近 30 天心情与支出** 软提示并链接复盘 **心情与支出** 散点图；空列表时用 hairline 空态与 **去写今日复盘**（月份筛选无结果时显示横向 search-empty 条）；**日历** 模式空月同样带该按钮，侧栏条目列表在筛选无匹配时显示 quiet 条
+- **Today 关联洞察（demo 示例）：** **今日基础目标** 下可显示近 **30 天** 习惯完成度高/低日的平均支出对比，并链接复盘 **习惯与支出** 散点图；**心情** 卡下显示心情较好/较低日的平均支出对比，并链接复盘 **心情与支出** 散点图（与复盘页同一套数据）
 - 语音转写与 AI 整理，并在保存前编辑确认
-- 本周目标、清单、本周输出和历史归档
-- 月度复盘、习惯趋势对比、折线图与柱状图
+- 本周目标、清单、本周输出和历史归档；无周目标、空白本周复盘与长期目标空态使用 hairline 插画与 **添加第一个本周目标** / **开始写本周复盘** / **添加长期目标** 主按钮；**当前周** 页头可显示与 Today 相同的 **近 30 天习惯与支出** 软提示（链接复盘 **习惯与支出** 散点）；**本周 · 数据洞察** 第五格 **本周支出**（周一至今天，可点进记账）并显示 **较上周同期** 对比提示；**专注时长** 格显示本周有日记或事件记录的天数及 **较上周同期** 天数对比；**完成率** 格显示习惯完成率 **较上周同期** 百分点对比
+- 月度复盘、习惯趋势对比、折线图与柱状图；无习惯分数、指标对比、明细表与空白月度复盘时用 hairline 空态与 **去习惯页添加** / **去 Today 打卡** / **开始写复盘** 等主按钮；**本月支出摘要** 的支出数字下显示 **较上月同期** 对比提示；点 **支出** / **收入** / **结余** 数字（或 **打开记账**）会带着当前复盘月份进入 **记账**；本月已有支出但散点图数据不足时，显示 quiet 空态与三枚可点 pill（**记录心情** / **完成习惯** / **记一笔支出**）及 **去 Today 记录**
+- **记账：** **今日 → 今日支出** 点金额弹出 **快速记账**（备注 + 自动分类 chip、最近几笔、进入完整统计）；**记账页** 以 **周/月** 统计为主（日切换、录入、圆环、订阅、精简交易列表；展开其他日期时分组 **FLIP** 动效）；侧栏换页支持 **View Transitions** 方向淡入（减弱动效时自动降级）；**根据备注自动分类**（中/英/德关键词，改一次会记住），类别按饮食、居住、健康与保险、休闲与订阅、金融**分组**，用同一个选择器，并在设置里管理；侧栏 **今日 → … → 记账 → 复盘**（Mac **⌘5**）；**M** 聚焦录入 — `state.ledger` 随备份与云同步
 - 经过验证的 JSON 备份、引导式恢复以及早期导出格式兼容
 - 英文、简体中文和德语界面
 - 浅色、深色和跟随系统模式
@@ -126,7 +128,7 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 <details open>
 <summary><strong>Life Ledger 2.0 带来了什么</strong></summary>
 
-- **今日变成卡片工作台。** 天气（逐小时曲线）、心情、基础目标、习惯热力图、专注、近期节律、月历、照片墙、日程都是卡片，在「编辑卡片」里可以添加、删除、拖动、调整大小，布局会保存。
+- **今日变成卡片工作台。** 天气（逐小时曲线）、心情、基础目标、习惯热力图、专注、近期节律、月历、照片墙、日程都是卡片，在「编辑卡片」里可以添加、删除、拖动、调整大小，布局会保存；首次进入 Today 会在「编辑卡片」上方显示可关闭的组件库引导。编辑后点「完成」时，工具栏与「编辑卡片」按钮会有短促的成功动效。
 - **所有页面重新设计。** 本周（复盘、已完成、目标）、长期（多个阶段并排）、时间轴（日度/周度/月度、照片、日历，任何一天都能打开编辑）、月度复盘、习惯设置统一成一套设计和动效。
 - **本地版自带完整示例。** 纯本地网页版打开就是三个月的虚构生活记录（习惯、周复盘、月复盘、计划、照片）。「设置 → 清除本机数据」从空白开始，「载入示例数据」随时恢复。以前用过本地版？之前的记录已存成这个浏览器里的备份，「设置 → 恢复之前的本机记录」一键换回来。
 - **语言切换完整。** 界面、弹窗、无障碍标签和示例数据都会即时切换为英文、简体中文或德语。
@@ -158,9 +160,15 @@ AI 不负责替你思考。它只是帮助你更好地看见自己。
 <p align="center"><strong>私人的记忆线。</strong> 按日、周、月向下阅读；任何一天都能打开编辑，照片只是偶尔的注脚。</p>
 
 <p align="center">
-  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-v6.png" width="30%" alt="手机版今日卡片" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v6.png" width="30%" alt="手机版时间轴" />
-  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v6.png" width="30%" alt="手机版月度复盘" />
+  <img src="docs/images/demo-preview/zh-desktop/zh-08-ledger-v21.png" width="78%" alt="记账：月览、分类与快速录入" />
+</p>
+<p align="center"><strong>内置记账。</strong> 快速录入、德语 CSV 导入、分类预算，并与今日卡片和月度复盘联动。</p>
+
+<p align="center">
+  <img src="docs/images/demo-preview/zh-mobile/zh-01-today-v6.png" width="22%" alt="手机版今日卡片" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-08-ledger-v21.png" width="22%" alt="手机版记账" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-07-timeline-v6.png" width="22%" alt="手机版时间轴" />
+  <img src="docs/images/demo-preview/zh-mobile/zh-04-monthly-review-v6.png" width="22%" alt="手机版月度复盘" />
 </p>
 
 <p align="center"><strong>为各种屏幕设计。</strong> 卡片在手机上自动排成一列，底部导航，编辑模式支持触控。</p>
@@ -255,12 +263,14 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 
 ### 6. Life Ledger Mac 版 3.0
 
-从 **[Mac 3.0.0 发布页](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.0.0)** 下载 `Life-Ledger-3.0.0-mac-arm64.zip`（Apple 芯片），解压后把 **Life Ledger** 拖进"应用程序"。应用没有经过苹果公证，第一次打开时到 **系统设置 → 隐私与安全性 → 仍要打开**。
+从 **[Mac 3.1.0 发布页](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.1.0)** 下载 `Life-Ledger-3.1.0-mac-arm64.zip`（Apple 芯片），解压后把 **Life Ledger** 拖进"应用程序"。应用没有经过苹果公证，第一次打开时到 **系统设置 → 隐私与安全性 → 仍要打开**。
 
 - **本机模式**：不用账号、不用配置，记录只在这台 Mac 上。
 - **连接云端**：连接你自己的部署（上面第 4 种方式），用邮箱验证码登录。记录、照片、名称和头像在 Mac、浏览器和手机上都一样。
 
 随时可以在 **设置 → 数据 → 切换到同步模式 / 切换到本机模式** 里换模式（网页版也有）。五分钟教程：[Mac 联网版配置](docs/macos-cloud.zh-CN.md)。构建说明：[docs/macos-desktop.md](docs/macos-desktop.md)。
+
+**快捷键：** 菜单栏 **显示 → 记账**（**⌘5**）；任意页面按 **M** 打开 **记账** 并聚焦快速录入（与网页本地版相同）。
 
 ## 数据归属
 
@@ -280,7 +290,8 @@ CloudBase 是本项目推荐的中国大陆方案：网页、邮箱验证码身�
 | 命令 | 用途 |
 |---|---|
 | `npm run dev` | 执行本地迁移并启动 Wrangler 开发环境 |
-| `npm test` | 执行语法、隐私标记、结构和 Worker 测试 |
+| `npm test` | 执行语法、隐私标记、结构和 Worker 测试（不含 Playwright） |
+| `npm run test:browser` | Money / Today / 复盘等 Playwright 浏览器检查 |
 | `npm run check` | 快速检查仓库 |
 | `npm run build:cloudbase` | 使用 `TCB_ENV_ID` 与 `TCB_ACCESS_KEY` 构建 CloudBase 发布文件 |
 | `npm run deploy:cloudbase` | 构建并部署到腾讯云 CloudBase 静态网站托管 |
