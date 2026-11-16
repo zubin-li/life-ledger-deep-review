@@ -4,6 +4,14 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [2.0.12] - 2026-11-15
+
+Life Ledger for Mac 3.0.6. The web app is unchanged apart from the version number.
+
+### Fixed
+
+- **Mac 3.0.6 — traffic lights and the collapsed sidebar.** The window buttons stay where macOS puts them; the collapsed rail is a little wider on the Mac so the three buttons sit centred inside it above the logo instead of hanging over its edge. The expanded sidebar keeps them in its top-left corner.
+
 ## [2.0.11] - 2026-11-15
 
 Web 2.0.11 and Life Ledger for Mac 3.0.5.

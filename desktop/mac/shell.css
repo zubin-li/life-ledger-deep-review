@@ -8,11 +8,16 @@ html.ll-mac body { overscroll-behavior: none; }
 
 /* The OS paints the traffic lights at the top-left. The web sidebar is a floating dark card; the lights sit
    inside its top-left corner, so the brand row moves down below them. */
-html.ll-mac .sidebar { padding-top: 64px; }
-html.ll-mac .sidebar-toggle { top: 66px; }
+html.ll-mac .sidebar { padding-top: 54px; }
+html.ll-mac .sidebar-toggle { top: 56px; }
 @media (min-width: 761px) {
-  html.ll-mac body.sidebar-collapsed .sidebar-toggle { top: 114px; }
+  /* Collapsed: the web rail (72 pt card) is narrower than the 54 pt light group plus margins. On the Mac the rail is
+     88 pt (column 104 = 16 margin + 88), so the fixed lights sit centred above the centred logo. */
+  html.ll-mac body.sidebar-collapsed .app-shell { grid-template-columns: 104px minmax(0, 1fr); }
+  html.ll-mac body.sidebar-collapsed .sidebar-toggle { top: 104px; }
   html.ll-mac body.sidebar-collapsed .brand { padding-bottom: 72px; }
+  /* full screen hides the lights: back to the web rail */
+  html.ll-mac.ll-fullscreen body.sidebar-collapsed .app-shell { grid-template-columns: 88px minmax(0, 1fr); }
 }
 /* short windows: give back the height the lights took, so the sidebar's last item is never cut off */
 @media (max-height: 780px) { html.ll-mac .brand { padding-bottom: 16px; } }
