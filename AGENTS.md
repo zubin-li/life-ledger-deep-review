@@ -24,6 +24,7 @@
 - Tests run silently. Use headless browsers (Playwright WebKit for the Mac app's engine), GitHub Actions, or an isolated app copy with its own bundle id (`*.updatertest`, `*.preview`) and its own data folder.
 - Never open visible windows, take keyboard focus or input-method state, or launch, quit, replace or reconfigure the owner's installed `Life Ledger.app` while testing. Installing or updating the owner's app happens only when they ask, and then the owner opens it.
 - Native AppKit/WebKit probes must not create on-screen or key windows; prefer Playwright WebKit with the Mac shell injected (`desktop/mac/shell.js` + `shell.css`) for Mac-only UI checks.
+- Every feature change ships for BOTH web and the Mac app as equals (owner rule 2026-11-16): acceptance must include the Mac-shell browser tests and `npm run desktop:check` passing, Mac-specific interactions (shortcuts, month nav, traffic lights, sheet behavior) verified against the new UI, and performance/smoothness on the Mac WebKit shell considered — never web-only validation. A release is complete only when the `v*` tag pipeline has published the Mac bundles and the `mac-updates` feed serves the new version.
 
 # Git safety
 
