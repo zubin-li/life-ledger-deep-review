@@ -153,6 +153,13 @@ Web 2.1.0 and Life Ledger for Mac 3.1.0. Bookkeeping (Goal 1) and overnight poli
 - **Review — Money scatter empty:** empty-state gate used `expenseMinor > 0` but expenses are negative minor units; corrected to **`expenseMinor < 0`** so the CTA appears when data is thin.
 - **Timeline — Calendar CTA:** calendar and sidebar empty buttons no longer share one `id`; calendar **Write today's reflection** works when the sidebar is hidden.
 - **Suite size:** `npm test` **389** unit checks; `npm run test:browser` **39** Playwright cases (Chromium + WebKit, serial **529x** ports).
+## [2.0.12] - 2026-11-15
+
+Life Ledger for Mac 3.0.6. The web app is unchanged apart from the version number.
+
+### Fixed
+
+- **Mac 3.0.6 — traffic lights and the collapsed sidebar.** The window buttons stay where macOS puts them; the collapsed rail is a little wider on the Mac so the three buttons sit centred inside it above the logo instead of hanging over its edge. The expanded sidebar keeps them in its top-left corner.
 
 ## [2.0.11] - 2026-11-15
 
