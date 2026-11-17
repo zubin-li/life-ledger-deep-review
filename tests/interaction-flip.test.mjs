@@ -49,14 +49,9 @@ test("withViewTransition runs commit when API missing", () => {
   });
 });
 
-test("switchToView uses withViewTransition when changing pages", () => {
+test("page switches cut instantly (no whole-page view transition)", () => {
   const app = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
-  assert.match(app, /LifeLedgerInteraction\?\.withViewTransition/);
-  assert.match(app, /from: previous, to: view/);
-});
-
-test("v210 defines main view transition names", () => {
+  assert.doesNotMatch(app, /LifeLedgerInteraction\?\.withViewTransition/);
   const css = fs.readFileSync(new URL("../public/v210.css", import.meta.url), "utf8");
-  assert.match(css, /html\.ll-view-transition \.view\.active[\s\S]*view-transition-name: ll-main-view/);
-  assert.match(css, /ll-vt-in-forward/);
+  assert.doesNotMatch(css, /ll-main-view/);
 });

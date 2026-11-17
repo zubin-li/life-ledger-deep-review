@@ -146,8 +146,11 @@ test(
         spendBefore,
         { timeout: 20_000 },
       );
-      const rolling = await page.locator(".review-ledger-stat-btn.roll-host").count();
-      const rollLayers = await page.locator(".review-ledger-stat-btn.roll-host .roll-old, .review-ledger-stat-btn.roll-host .roll-new").count();
+      // Sample host class and layers in one tick; separate reads race the roll animation on slow CI.
+      const { rolling, rollLayers } = await page.evaluate(() => {
+        const host = document.querySelector(".review-ledger-stat-btn.roll-host");
+        return { rolling: host ? 1 : 0, rollLayers: host ? host.querySelectorAll(".roll-old, .roll-new").length : 0 };
+      });
       if (rolling >= 1) {
         assert.ok(rollLayers >= 2, "roll animation should expose outgoing and incoming layers");
       }
