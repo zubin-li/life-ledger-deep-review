@@ -69,7 +69,12 @@
   const closeDialogs = () => document.querySelectorAll("dialog[open]").forEach(d => d.close());
   function handle(action) {
     window.dispatchEvent(new CustomEvent("ll-mac-action", { detail: action }));
-    if (action.startsWith("view:")) { closeDialogs(); click(`.nav-item[data-view="${action.slice(5)}"]`); return; }
+    if (action.startsWith("view:")) {
+      closeDialogs();
+      const item = $(`.nav-item[data-view="${action.slice(5)}"]`);
+      if (item && !item.hidden) item.click();
+      return;
+    }
     switch (action) {
       case "settings": closeDialogs(); click("#settingsButton"); break;
       case "new-habit": closeDialogs(); click('.nav-item[data-view="habits"]'); setTimeout(() => click("#addHabitButton"), 0); break;

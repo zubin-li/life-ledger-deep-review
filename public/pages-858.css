@@ -2848,11 +2848,12 @@ html:not([data-workspace]) .journal-library-card img { width: 100%; aspect-ratio
 html:not([data-workspace]) .journal-library-card span { font: 500 12px/1.3 var(--font-body); color: var(--muted); }
 html:not([data-workspace]) .journal-library-card:active { transform: scale(.97); }
 
-/* phone tab bar: seven destinations since 记账 joined in 2.1 (user 10/22: nothing may spill out of the bar) */
+/* phone tab bar: one column per visible destination (洞见 only in the cloud workspace; nothing may spill) */
 @media (max-width: 760px) {
-  html:not([data-desktop]) .main-nav { grid-template-columns: repeat(7, minmax(0, 1fr)) !important; gap: 0; }
+  html:not([data-desktop]) .main-nav { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important; gap: 0; }
   html:not([data-desktop]) .sidebar { left: 8px; right: 8px; padding: 8px 6px; }
-  html:not([data-desktop]) .nav-item { padding: 7px 0; font-size: 10px; letter-spacing: 0; white-space: nowrap; min-width: 0; }
+  html:not([data-desktop]) .nav-item { padding: 7px 0; font-size: 10px; letter-spacing: 0; white-space: nowrap; min-width: 0; overflow: hidden; }
+  html:not([data-desktop]) .nav-label { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
   html:not([data-desktop]) .nav-item:active { transform: scale(.92); }
 }
 /* calendar cell: one marker per day — the mood. Photos/schedule live in the day detail (user 10/22: no clutter). */

@@ -268,7 +268,20 @@ Im lokalen Desktop-Fenster nutzt JSON-Export/Import native macOS-Dateidialoge, i
 
 **Life Ledger für Mac 3.1:** `Life-Ledger-3.1.0-mac-arm64.zip` aus dem **[Mac-3.1.0-Release](https://github.com/zubin-li/life-ledger-deep-review/releases/tag/mac-v3.1.0)** laden (Apple Silicon), entpacken und **Life Ledger** in „Programme“ ziehen. Die App ist nicht notarisiert: beim ersten Start **Systemeinstellungen → Datenschutz & Sicherheit → Trotzdem öffnen**. Lokal auf diesem Mac ohne Konto, oder mit deiner eigenen Cloud verbunden (Anmeldung per E-Mail-Code): Einträge, Fotos, Name und Profilbild sind dann auf Mac, Browser und Handy gleich. Moduswechsel jederzeit unter **Einstellungen → Daten → Zum Sync-Modus / Zum lokalen Modus wechseln**. Anleitung: [docs/macos-cloud.md](docs/macos-cloud.md). Build-Hinweise: [docs/macos-desktop.md](docs/macos-desktop.md).
 
-**Tastatur:** In der Menüleiste **Darstellung → Geld** (**⌘5**); von jeder Seite **M** für **Geld** mit Fokus auf die Schnellerfassung (wie in der lokalen Web-Edition).
+**Tastatur:** In der Menüleiste **Darstellung → Geld** (**⌘5**) und **Darstellung → Einblicke** (**⌘8**); von jeder Seite **M** für **Geld** mit Fokus auf die Schnellerfassung (wie in der lokalen Web-Edition).
+
+## Einblicke importieren
+
+Die Seite **Einblicke** gibt es nur im Cloud-Arbeitsbereich. Die lokale Seite und das lokale Fenster der Mac-App zeigen sie nicht. Sie hält Wochenkarten, die ein externes Werkzeug erzeugt (zum Beispiel ein Skript über gespeicherte Screenshots oder Notizen). Über **Importieren** eine JSON-Datei laden; sie synchronisiert sich wie die übrigen Daten. Jede Karte kann *Zustimmen*, *Zweifel* oder *Umgesetzt* sein; ein erneuter Import derselben Woche ersetzt die Karten und behält die Markierungen. Bis zu drei Karten mit `"top": true` erscheinen im Wochenbereich unter den Wochen-Einblicken.
+
+```json
+{"format": "life-ledger-insights", "version": 1, "week": "2026-W46",
+ "items": [{"id": "w46-01", "title": "…", "core": "…", "category": "Career", "credibility": "Research-backed", "top": true,
+   "quote": "…", "review": {"verdict": "部分成立", "flaws": ["孤例外推"], "generalisation": "…", "boundary": "…"},
+   "fact_check": {"status": "verified", "note": "…", "url": "https://…"}}]}
+```
+
+Nur `id` und `title` sind nötig. Jeder Eintrag darf `"images": [{"name": "…", "data": "data:image/jpeg;base64,…"}]` tragen; die Bilder liegen beim Foto-Wand-Speicher (Cloud: dein privater Speicher; lokal und Mac: dieses Gerät). Dateien über 1 MB werden beim Import auf ein paar hundert KB verkleinert. Die Seite gruppiert nach Woche (neueste zuerst, mit Datum); ein Schalter zeigt sie ohne Wochen.
 
 ## Datenhoheit
 

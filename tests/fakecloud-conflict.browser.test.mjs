@@ -111,31 +111,43 @@ test(
         const bumped = await advanceRemoteRevision(page);
         assert.ok(bumped.after > bumped.before, "remote revision should advance");
 
-        await page.locator("#todayHabits .habit-card").first().click();
-        await page.waitForTimeout(1200);
+        await page.locator("#todayHabits .habit-card:not(.future-locked)").first().waitFor({ state: "visible", timeout: 30_000 });
+        await page.waitForFunction(() => {
+          const badge = document.querySelector("#saveMode");
+          return badge?.classList.contains("cloud") && !badge.classList.contains("syncing");
+        }, null, { timeout: 30_000 });
+        await page.locator("#todayHabits .habit-card:not(.future-locked)").first().click();
+        // Local save waits out the check animation, then the cloud push is deferred.
+        // The conflict record appears only after that PUT returns 409.
+        await page.waitForFunction(key => Boolean(localStorage.getItem(key)), SYNC_CONFLICT_KEY, { timeout: 30_000 });
 
         const conflictRecord = await page.evaluate(key => localStorage.getItem(key), SYNC_CONFLICT_KEY);
         assert.ok(conflictRecord, "expected sync conflict record in localStorage");
 
         await page.click("#settingsButton");
-        await page.waitForSelector("#settingsDialog[open]", { timeout: 10_000 });
+        await page.waitForSelector("#settingsDialog[open]", { timeout: 20_000 });
         await page.locator("#settingsBackup").scrollIntoViewIfNeeded();
         await page.click("#settingsBackup");
-        await page.waitForSelector("#exportDialog[open]", { timeout: 10_000 });
+        await page.waitForSelector("#exportDialog[open]", { timeout: 20_000 });
         await page.click("#backupImportTab");
-        await page.waitForSelector("#backupImportPanel:not([hidden])", { timeout: 5000 });
+        await page.waitForSelector("#backupImportPanel:not([hidden])", { timeout: 20_000 });
+        await page.waitForSelector("#conflictRecoveryRow:not([hidden])", { timeout: 20_000 });
         const rowVisible = await page.evaluate(() => {
           const row = document.getElementById("conflictRecoveryRow");
           return Boolean(row && !row.hidden);
         });
         assert.equal(rowVisible, true);
-        await page.waitForSelector("#conflictLedgerPreview .conflict-ledger-preview-kicker", { timeout: 8000 });
+        await page.waitForSelector("#conflictLedgerPreview .conflict-ledger-preview-kicker", { timeout: 20_000 });
 
         page.once("dialog", dialog => dialog.accept());
         await page.click("#dismissConflictRecovery");
-        await page.waitForTimeout(400);
+        await page.waitForFunction(key => !localStorage.getItem(key), SYNC_CONFLICT_KEY, { timeout: 20_000 });
         const cleared = await page.evaluate(key => !localStorage.getItem(key), SYNC_CONFLICT_KEY);
         assert.equal(cleared, true);
+        await page.waitForFunction(() => {
+          const row = document.getElementById("conflictRecoveryRow");
+          return !row || row.hidden;
+        }, null, { timeout: 20_000 });
         const rowHidden = await page.evaluate(() => {
           const row = document.getElementById("conflictRecoveryRow");
           return !row || row.hidden;

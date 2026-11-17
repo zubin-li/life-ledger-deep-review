@@ -7,6 +7,7 @@
     timeline: "timelineView",
     ledger: "ledgerView",
     review: "reviewView",
+    insights: "insightsView",
   };
 
   function artName(view) {
@@ -16,6 +17,7 @@
     if (view === "timeline") return "journal-section-quiet";
     if (view === "ledger") return "today-quick-ledger";
     if (view === "review") return "review-section-quiet";
+    if (view === "insights") return "insights-first-week";
     return "";
   }
 
@@ -122,6 +124,8 @@
         intro.append(wrap);
       }
       host = wrap.querySelector("[data-art]");
+    } else if (view === "insights") {
+      host = el.querySelector(".ins-hero-art [data-art]");
     }
 
     if (!host) return;
@@ -165,6 +169,7 @@
     new MutationObserver(onActiveViewChange).observe(document.body, { attributes: true, attributeFilter: ["data-active-view"] });
     root.addEventListener?.("longrange-rendered", () => mountViewArt("longrange"));
     root.addEventListener?.("money-rendered", () => mountViewArt("ledger"));
+    root.addEventListener?.("insights-rendered", () => mountViewArt("insights"));
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

@@ -253,7 +253,7 @@ Download `Life-Ledger-3.1.0-mac-arm64.zip` from the **[Mac 3.1.0 release](https:
 
 Change mode any time in **Settings → Data → Switch to sync mode / Switch to local mode** (also in the browser editions). Five-minute guide: [Mac online edition](docs/macos-cloud.md). Build notes: [docs/macos-desktop.md](docs/macos-desktop.md).
 
-**Keyboard:** the menu bar **View** menu includes **Money** (**⌘5**); from any page press **M** to open **Money** and focus quick entry (same as the web local edition).
+**Keyboard:** the menu bar **View** menu includes **Money** (**⌘5**) and **Insights** (**⌘8**); from any page press **M** to open **Money** and focus quick entry (same as the web local edition).
 
 Personal evaluation can use the assigned `*.tcloudbaseapp.com` address, so no domain purchase or ICP filing is required to get started. The current Free environment does not support pay-as-you-go billing. It includes 3,000 resource points per month and must be renewed manually every six months; policies can change, so always review the linked official pricing page.
 
@@ -267,6 +267,19 @@ The repository includes:
 There are three one-time safety settings in the deployer's console: create a Free document-database environment, enable email OTP, and create `life_ledger_states` with **Only the creator can read and write** permission. These cannot safely be performed by browser code because that would expose administrator credentials.
 
 Read the complete [Tencent CloudBase deployment guide](docs/cloudbase-china.md) or the detailed [Chinese guide](docs/cloudbase-china.zh-CN.md).
+
+## Insights import
+
+The **Insights** page is part of the cloud workspace only. The local page and the Mac app's local window do not show it. It holds weekly cards produced by any external tool (for example a script that reads your saved screenshots or notes). Import a JSON file from the page's **Import** button; it syncs like the rest of your data. Each card can be marked *Agree*, *Doubt* or *Acted*; re-importing the same week replaces its cards but keeps your marks. Up to three cards with `"top": true` appear in the Week page's Weekly Insights section.
+
+```json
+{"format": "life-ledger-insights", "version": 1, "week": "2026-W46",
+ "items": [{"id": "w46-01", "title": "…", "core": "…", "category": "Career", "credibility": "Research-backed", "top": true,
+   "quote": "…", "review": {"verdict": "部分成立", "flaws": ["孤例外推"], "generalisation": "…", "boundary": "…"},
+   "fact_check": {"status": "verified", "note": "…", "url": "https://…"}}]}
+```
+
+Only `id` and `title` are required. Each item may carry `"images": [{"name": "…", "data": "data:image/jpeg;base64,…"}]`; images are stored with your photo-wall media (cloud edition: your private storage; local and Mac: this device), and files over 1 MB are shrunk to a few hundred KB on import. The Insights page groups cards by week (newest first, with dates); a switch shows them without weeks.
 
 ## Data ownership
 
