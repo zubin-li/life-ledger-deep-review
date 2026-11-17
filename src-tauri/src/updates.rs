@@ -1,19 +1,37 @@
 //! In-app updates (user 11/02: "发布一个更新，然后我这边收到提醒了，然后可以自动更新").
-//! Checks the signed update feed at launch and once a day while the app runs, and from the menu / Settings.
+//! Checks the signed update feed at launch, then whenever 6 h of wall-clock time have passed (an hourly tick;
+//! monotonic sleeps stop while the Mac sleeps, so a 24 h sleep could take days), and from the menu / Settings.
 //! Never installs silently: a native sheet asks first. Updates are verified against the public key in
 //! tauri.conf.json (Tauri updater signature, independent of Apple signing); the bundle id stays the same,
 //! so local records (WebKit storage) are untouched.
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use tauri::AppHandle;
 use tauri_plugin_updater::UpdaterExt;
 
 static CHECKING: AtomicBool = AtomicBool::new(false);
-/// Version the user answered "Later" for in this run: automatic checks do not ask again for it.
-static POSTPONED: Mutex<String> = Mutex::new(String::new());
-const DAY: Duration = Duration::from_secs(24 * 60 * 60);
+/// Version the user answered "Later" for, and when (unix seconds): automatic checks skip it for a day.
+static POSTPONED: Mutex<(String, u64)> = Mutex::new((String::new(), 0));
+/// Unix seconds of the last successful automatic or manual check (0 = never in this run).
+static LAST_CHECK: Mutex<u64> = Mutex::new(0);
+const TICK: Duration = Duration::from_secs(60 * 60);
+const CHECK_EVERY: u64 = 6 * 60 * 60;
+const SNOOZE: u64 = 24 * 60 * 60;
+
+fn now() -> u64 {
+    SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0)
+}
+
+/// Due when never checked, 6 h have passed, or the clock jumped backwards.
+fn due(last: u64, now: u64) -> bool {
+    last == 0 || now < last || now - last >= CHECK_EVERY
+}
+
+fn snoozed(postponed: &(String, u64), version: &str, now: u64) -> bool {
+    postponed.0 == version && now >= postponed.1 && now - postponed.1 < SNOOZE
+}
 const MAX_NOTES: usize = 700;
 
 fn lang() -> String {
@@ -77,6 +95,9 @@ pub async fn check(app: AppHandle, manual: bool) {
         return;
     }
     let result = run_check(&app, manual).await;
+    if result.is_ok() {
+        *LAST_CHECK.lock().unwrap() = now(); // a failed (offline) check retries on the next tick
+    }
     CHECKING.store(false, Ordering::SeqCst);
     if let Err(error) = result {
         if manual {
@@ -99,7 +120,7 @@ async fn run_check(app: &AppHandle, manual: bool) -> Result<(), String> {
         }
         return Ok(());
     };
-    if !manual && *POSTPONED.lock().unwrap() == update.version {
+    if !manual && snoozed(&POSTPONED.lock().unwrap(), &update.version, now()) {
         return Ok(());
     }
     let mut body = text("body").replace("{new}", &update.version).replace("{cur}", &current);
@@ -124,7 +145,7 @@ async fn run_check(app: &AppHandle, manual: bool) -> Result<(), String> {
         .show()
         .await;
     if !crate::confirmed(&answer, &install) {
-        *POSTPONED.lock().unwrap() = update.version.clone();
+        *POSTPONED.lock().unwrap() = (update.version.clone(), now());
         return Ok(());
     }
     update
@@ -134,20 +155,38 @@ async fn run_check(app: &AppHandle, manual: bool) -> Result<(), String> {
     app.restart();
 }
 
-/// Launch check (after the windows are up) and one check a day while the app keeps running.
+/// Launch check (after the windows are up), then an hourly tick that checks once 6 h of real time have passed.
 pub fn schedule(app: AppHandle) {
     std::thread::spawn(move || {
         std::thread::sleep(Duration::from_secs(8));
         loop {
-            tauri::async_runtime::block_on(check(app.clone(), false));
-            std::thread::sleep(DAY);
+            if due(*LAST_CHECK.lock().unwrap(), now()) {
+                tauri::async_runtime::block_on(check(app.clone(), false));
+            }
+            std::thread::sleep(TICK);
         }
     });
 }
 
 #[cfg(test)]
 mod tests {
-    use super::trim_notes;
+    use super::{due, snoozed, trim_notes, CHECK_EVERY, SNOOZE};
+
+    #[test]
+    fn checks_are_due_by_wall_clock() {
+        assert!(due(0, 1_000));
+        assert!(!due(1_000, 1_000 + CHECK_EVERY - 1));
+        assert!(due(1_000, 1_000 + CHECK_EVERY));
+        assert!(due(5_000, 4_000)); // clock moved backwards
+    }
+
+    #[test]
+    fn later_snoozes_one_version_for_a_day() {
+        let p = ("3.2.0".to_string(), 1_000);
+        assert!(snoozed(&p, "3.2.0", 1_000 + SNOOZE - 1));
+        assert!(!snoozed(&p, "3.2.0", 1_000 + SNOOZE));
+        assert!(!snoozed(&p, "3.3.0", 1_001));
+    }
 
     #[test]
     fn release_notes_are_trimmed_for_the_sheet() {

@@ -319,7 +319,7 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "view_today" => ["今日", "Today", "Heute"],
         "view_week" => ["本周", "Week", "Woche"],
         "view_longrange" => ["长期", "Horizon", "Horizont"],
-        "view_timeline" => ["时间线", "Timeline", "Zeitleiste"],
+        "view_timeline" => ["时间轴", "Timeline", "Zeitleiste"],
         "view_insights" => ["洞见", "Insights", "Einblicke"],
         "view_review" => ["复盘", "Review", "Rückblick"],
         "view_ledger" => ["记账", "Money", "Geld"],
@@ -332,6 +332,10 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "window" => ["窗口", "Window", "Fenster"],
         "minimize" => ["最小化", "Minimize", "Im Dock ablegen"],
         "zoom" => ["缩放", "Zoom", "Zoomen"],
+        "bring_all_to_front" => ["前置全部窗口", "Bring All to Front", "Alle nach vorne bringen"],
+        "help" => ["帮助", "Help", "Hilfe"],
+        "help_guide" => ["Life Ledger 使用指南", "Life Ledger Guide", "Life Ledger Anleitung"],
+        "help_whats_new" => ["更新说明", "What's New", "Neuigkeiten"],
         _ => ["", "", ""],
     };
     match lang {
@@ -396,15 +400,19 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
         .item(&PredefinedMenuItem::select_all(app, Some(t("select_all")))?)
         .build()?;
 
-    let view_menu = SubmenuBuilder::new(app, t("view"))
+    let mut view_menu = SubmenuBuilder::new(app, t("view"))
         .item(&item("view_today", Some("CmdOrCtrl+1"))?)
         .item(&item("view_week", Some("CmdOrCtrl+2"))?)
         .item(&item("view_longrange", Some("CmdOrCtrl+3"))?)
         .item(&item("view_timeline", Some("CmdOrCtrl+4"))?)
-        .item(&item("view_insights", Some("CmdOrCtrl+8"))?)
         .item(&item("view_ledger", Some("CmdOrCtrl+5"))?)
         .item(&item("view_review", Some("CmdOrCtrl+6"))?)
-        .item(&item("view_habits", Some("CmdOrCtrl+7"))?)
+        .item(&item("view_habits", Some("CmdOrCtrl+7"))?);
+    // Insights needs the cloud (AI); the local workspace hides the page, so the menu hides it too.
+    if app.get_webview_window("cloud").is_some() {
+        view_menu = view_menu.item(&item("view_insights", Some("CmdOrCtrl+8"))?);
+    }
+    let view_menu = view_menu
         .separator()
         .item(&item("date_today", Some("CmdOrCtrl+T"))?)
         .item(&item("date_prev", Some("CmdOrCtrl+["))?)
@@ -417,11 +425,37 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
     let window_menu = SubmenuBuilder::new(app, t("window"))
         .item(&PredefinedMenuItem::minimize(app, Some(t("minimize")))?)
         .item(&PredefinedMenuItem::maximize(app, Some(t("zoom")))?)
+        .separator()
+        .item(&PredefinedMenuItem::bring_all_to_front(app, Some(t("bring_all_to_front")))?)
         .build()?;
+    // AppKit then lists the open windows here and adds the menu search field to Help.
+    #[cfg(target_os = "macos")]
+    window_menu.set_as_windows_menu_for_nsapp()?;
+
+    let help_menu = SubmenuBuilder::new(app, t("help"))
+        .item(&item("help_guide", None)?)
+        .item(&item("help_whats_new", None)?)
+        .build()?;
+    #[cfg(target_os = "macos")]
+    help_menu.set_as_help_menu_for_nsapp()?;
 
     MenuBuilder::new(app)
-        .items(&[&app_menu, &file_menu, &edit_menu, &view_menu, &window_menu])
+        .items(&[&app_menu, &file_menu, &edit_menu, &view_menu, &window_menu, &help_menu])
         .build()
+}
+
+/// Help menu targets (opened in the default browser).
+fn help_url(id: &str, lang: &str) -> Option<String> {
+    let repo = "https://github.com/zubin-li/life-ledger-deep-review";
+    match id {
+        "help_guide" => Some(match lang {
+            "zh" => format!("{repo}/blob/main/README.zh-CN.md"),
+            "de" => format!("{repo}/blob/main/README.de-DE.md"),
+            _ => format!("{repo}#readme"),
+        }),
+        "help_whats_new" => Some(format!("{repo}/releases")),
+        _ => None,
+    }
 }
 
 /// The frontend reports its language so the menu bar speaks it too.
@@ -431,7 +465,14 @@ fn set_menu_language(app: AppHandle, lang: String) -> Result<(), String> {
         "zh" | "de" => lang,
         _ => "en".to_string(),
     };
-    *MENU_LANG.lock().unwrap() = lang;
+    {
+        let mut current = MENU_LANG.lock().unwrap();
+        // the page re-reports its language on every render; rebuilding the whole native menu each time stalls the main thread
+        if *current == lang {
+            return Ok(());
+        }
+        *current = lang;
+    }
     refresh_menu(&app);
     Ok(())
 }
@@ -1012,6 +1053,10 @@ pub fn run() {
                     check_for_updates(app.clone());
                     return;
                 }
+                if let Some(url) = help_url(event.id().as_ref(), &current_menu_language()) {
+                    let _ = std::process::Command::new("/usr/bin/open").arg(url).spawn();
+                    return;
+                }
                 if let Some(action) = menu_action_for_id(event.id().as_ref()) {
                     emit_menu_action(app, action);
                 }
@@ -1234,6 +1279,14 @@ mod tests {
         assert_eq!(menu_action_for_id("view_ledger"), Some("view:ledger"));
         assert_eq!(menu_action_for_id("export_backup"), Some("export"));
         assert_eq!(menu_action_for_id("unknown_item"), None);
+    }
+
+    #[test]
+    fn help_menu_links_follow_language() {
+        assert!(super::help_url("help_guide", "zh").unwrap().ends_with("README.zh-CN.md"));
+        assert!(super::help_url("help_guide", "en").unwrap().ends_with("#readme"));
+        assert!(super::help_url("help_whats_new", "de").unwrap().ends_with("/releases"));
+        assert_eq!(super::help_url("view_today", "en"), None);
     }
 
     #[test]

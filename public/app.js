@@ -2390,7 +2390,8 @@ function applySidebarState() {
   button.setAttribute("aria-expanded", String(!sidebarCollapsed));
 }
 function applyLanguage() {
-  document.documentElement.lang = i18n[currentLang].locale;
+  // only on change: every write fires a mutation the Mac shell turns into a native menu rebuild
+  if (document.documentElement.lang !== i18n[currentLang].locale) document.documentElement.lang = i18n[currentLang].locale;
   document.body.dataset.language = currentLang;
   document.title = tr("title");
   document.querySelector('meta[name="description"]')?.setAttribute("content", tr("metaDescription"));
