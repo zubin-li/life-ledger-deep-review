@@ -278,6 +278,7 @@ fn menu_action_for_id(id: &str) -> Option<&'static str> {
         "view_week" => Some("view:week"),
         "view_longrange" => Some("view:longrange"),
         "view_timeline" => Some("view:timeline"),
+        "view_insights" => Some("view:insights"),
         "view_review" => Some("view:review"),
         "view_ledger" => Some("view:ledger"),
         "view_habits" => Some("view:habits"),
@@ -319,6 +320,7 @@ fn menu_label(lang: &str, key: &str) -> &'static str {
         "view_week" => ["本周", "Week", "Woche"],
         "view_longrange" => ["长期", "Horizon", "Horizont"],
         "view_timeline" => ["时间线", "Timeline", "Zeitleiste"],
+        "view_insights" => ["洞见", "Insights", "Einblicke"],
         "view_review" => ["复盘", "Review", "Rückblick"],
         "view_ledger" => ["记账", "Money", "Geld"],
         "view_habits" => ["习惯设置", "Habits", "Gewohnheiten"],
@@ -399,6 +401,7 @@ fn build_app_menu(app: &AppHandle, lang: &str) -> Result<tauri::menu::Menu<tauri
         .item(&item("view_week", Some("CmdOrCtrl+2"))?)
         .item(&item("view_longrange", Some("CmdOrCtrl+3"))?)
         .item(&item("view_timeline", Some("CmdOrCtrl+4"))?)
+        .item(&item("view_insights", Some("CmdOrCtrl+8"))?)
         .item(&item("view_ledger", Some("CmdOrCtrl+5"))?)
         .item(&item("view_review", Some("CmdOrCtrl+6"))?)
         .item(&item("view_habits", Some("CmdOrCtrl+7"))?)

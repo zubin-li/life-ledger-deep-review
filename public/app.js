@@ -19,6 +19,7 @@ function wipeLocalRecords() {
   // delete is never blocked by an open connection (a blocked delete would stall every later one).
   ["", "-2", "-3"].forEach(suffix => indexedDB.deleteDatabase(`life-ledger-wall${suffix}`));
   indexedDB.deleteDatabase(`life-ledger-photos${window.LifeLedgerStorageSuffix || ""}`); // day photos of the local edition
+  indexedDB.deleteDatabase(`life-ledger-insights${window.LifeLedgerStorageSuffix || ""}`); // insight originals of the local edition
 }
 // Mac app: the sample only ever replaces localStorage records; the user's own photo walls (IndexedDB) stay.
 function removeLocalKeys() {
@@ -92,7 +93,7 @@ const i18n = {
     metaDescription: "一套会随着你成长的私人习惯与深度复盘系统。",
     brand: "Life Ledger",
     brandSmall: "深度复盘",
-    nav: { today: "今日", week: "本周", timeline: "时间轴", review: "复盘", ledger: "记账", habits: "习惯设置" ,
+    nav: { today: "今日", week: "本周", timeline: "时间轴", insights: "洞见", review: "复盘", ledger: "记账", habits: "习惯设置" ,
 "longrange": "长期"
 },
     sidebarQuote: { text: "不积跬步，\n无以至千里。", source: "《荀子·劝学》" },
@@ -134,7 +135,7 @@ const i18n = {
       habits: "习惯",
       ledger: "记账",
 
-"longrange": "长期"
+"longrange": "长期", "insights": "洞见"
 },
     hero: {
       quote: "不积小流，\n无以成江海。",
@@ -774,7 +775,7 @@ const i18n = {
     metaDescription: "A private habit and deep-review system that grows with you.",
     brand: "Life Ledger",
     brandSmall: "DEEP REVIEW",
-    nav: { today: "Today", week: "Week", timeline: "Timeline", review: "Review", ledger: "Money", habits: "Habits" ,
+    nav: { today: "Today", week: "Week", timeline: "Timeline", insights: "Insights", review: "Review", ledger: "Money", habits: "Habits" ,
 "longrange": "Horizon"
 },
     sidebarQuote: { text: "Well done is\nbetter than well said.", source: "Benjamin Franklin, Poor Richard's Almanack" },
@@ -816,7 +817,7 @@ const i18n = {
       habits: "Habits",
       ledger: "Money",
 
-"longrange": "Horizon"
+"longrange": "Horizon", "insights": "Insights"
 },
     hero: {
       quote: "The secret of getting ahead\nis getting started.",
@@ -1456,7 +1457,7 @@ const i18n = {
     metaDescription: "Ein privates System für Gewohnheiten und tiefgehende Rückblicke, das mit dir wächst.",
     brand: "Life Ledger",
     brandSmall: "TIEFE REFLEXION",
-    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", review: "Rückblick", ledger: "Finanzen", habits: "Gewohnheiten" ,
+    nav: { today: "Heute", week: "Woche", timeline: "Zeitleiste", insights: "Einblicke", review: "Rückblick", ledger: "Finanzen", habits: "Gewohnheiten" ,
 "longrange": "Horizont"
 },
     sidebarQuote: { text: "Auch aus Steinen,\ndie dir in den Weg gelegt werden,\nkannst du etwas Schönes bauen.", source: "Johann Wolfgang von Goethe" },
@@ -1498,7 +1499,7 @@ const i18n = {
       habits: "Gewohnheiten",
       ledger: "Finanzen",
 
-"longrange": "Horizont"
+"longrange": "Horizont", "insights": "Einblicke"
 },
     hero: {
       quote: "Es ist nicht genug zu wollen,\nman muss auch tun.",
@@ -2398,9 +2399,10 @@ function applyLanguage() {
   $(".brand")?.setAttribute("aria-label", tr("brand"));
   $$(".nav-item").forEach(button => {
     const icon = $(".nav-icon", button)?.textContent || "";
-    const full = tr(`nav.${button.dataset.view}`), short = currentLang === "de" && button.dataset.view === "habits" ? "Gewohnh." : "";
+    const full = tr(`nav.${button.dataset.view}`), short = currentLang === "de" && button.dataset.view === "habits" ? "Gewohnh." : currentLang === "de" && button.dataset.view === "insights" ? "Einbl." : "";
     button.innerHTML = `<span class="nav-icon">${icon}</span><span class="nav-label">${short ? `<span class="nav-label-full">${full}</span><span class="nav-label-short" aria-hidden="true">${short}</span>` : full}</span>`;
     button.setAttribute("title", tr(`nav.${button.dataset.view}`));
+    if (button.dataset.view === "insights") button.hidden = !hostedCloudMode;
   });
   setAria(".main-nav", languageText("主导航", "Main navigation", "Hauptnavigation"));
   setText(".sidebar-note p", "");
@@ -6351,7 +6353,7 @@ function exportRange(scope) {
 }
 function withinRange(date, range) { return range.scope === "all" || (date >= range.start && date <= range.end); }
 function scopedState(range) {
-  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), quoteSettings: cloneData(state.quoteSettings || { mode: "auto", items: [] }), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
+  const result = { habits: cloneData(state.habits), logs: {}, reviews: {}, dailyGoals: {}, weeklyGoals: {}, longTermGoals: cloneData(state.longTermGoals || []), weeklyOutputs: {}, weeklyReviews: {}, focusSessions: [], focusSettings: cloneData(state.focusSettings || seed.focusSettings), quoteSettings: cloneData(state.quoteSettings || { mode: "auto", items: [] }), ...(range.scope === "all" && state.insights ? { insights: cloneData(state.insights) } : {}), exportMeta: { ...range, exportedAt: new Date().toISOString() } };
   Object.entries(state.logs || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.logs[key] = value; });
   Object.entries(state.dailyGoals || {}).forEach(([key, value]) => { if (withinRange(key, range)) result.dailyGoals[key] = value; });
   Object.entries(state.reviews || {}).forEach(([key, value]) => {
@@ -6845,6 +6847,7 @@ function importedPayload(raw) {
       focusSettings: { ...cloneData(seed.focusSettings), ...cloneData(payload.focusSettings || {}) },
       ...(isRecord(payload.quoteSettings) ? { quoteSettings: cloneData(payload.quoteSettings) } : {}),
       ...(isRecord(payload.ledger) ? { ledger: cloneData(payload.ledger) } : {}),
+      ...(isRecord(payload.insights) && isRecord(payload.insights.weeks) && isRecord(payload.insights.marks) ? { insights: cloneData(payload.insights) } : {}),
     },
   };
 }
@@ -6928,6 +6931,7 @@ function mergeBackupData(current, incoming) {
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
     ...(ledger ? { ledger } : {}),
+    ...(current.insights || incoming.insights ? { insights: window.LifeLedgerInsights?.merge(current.insights, incoming.insights) || cloneData(current.insights || incoming.insights) } : {}),
   };
 }
 function syncBackupPreferencesToRuntime() {
@@ -8239,6 +8243,7 @@ function alignedWeekCompletionCompare(startDay, rangeEnd) {
 function renderWeekInsights() {
   const grid = $("#weekInsightsGrid");
   if (!grid) return;
+  renderWeekTopInsights();
   grid.classList.add("week-insights--loading");
 
   const key = selectedWorkspaceWeek;
@@ -10407,6 +10412,24 @@ function renderInsightTrend(model) {
   $('#insightTrendSvg').addEventListener('click',explore);update(points.length-1);
 }
 
+function renderInsights() {
+  window.LifeLedgerInsights?.render({
+    state: () => state, save: () => saveState(), text: languageText, escape: escapeHtml,
+    toast: showToast, changed: () => renderWeekTopInsights(), lang: dateLocale, currentWeek: () => isoWeekKey(new Date()),
+    // same rule as the photo wall: cloud edition → R2, everything else → this device
+    cloud: () => !window.LifeLedgerStorageSuffix && cloudMode && cloudProvider === "cloudflare", ns: () => window.LifeLedgerStorageSuffix || "",
+  });
+}
+function renderWeekTopInsights() {
+  const list = $("#weekTopInsights");
+  if (!list) return;
+  if (!hostedCloudMode) { list.hidden = true; list.innerHTML = ""; return; }
+  const items = window.LifeLedgerInsights?.top(state, selectedWorkspaceWeek) || [];
+  list.hidden = !items.length;
+  list.innerHTML = items.map(item => `<li><button type="button" class="week-top-insight" data-insight-open>${escapeHtml(item.title)}</button></li>`).join("");
+  list.onclick = event => { if (event.target.closest("[data-insight-open]")) switchToView("insights"); };
+}
+
 function renderLongRange() {
   window.LifeLedgerLongRange?.render({
     state:()=>state,save:()=>saveState(),text:languageText,escape:escapeHtml,iso:isoDate,
@@ -10882,6 +10905,7 @@ function renderJournalCalendarLegend() {
 var lastShownView = "";
 var pendingReviewScatterFocus = "";
 function switchToView(view) {
+  if (view === "insights" && !hostedCloudMode) return Promise.resolve();
   const button = $(`.nav-item[data-view="${view}"]`);
   pulseNavItemPress(button);
   pulseShellNav(view);
@@ -10907,6 +10931,7 @@ function switchToView(view) {
     $("#viewTitle").textContent = tr(`viewTitles.${view}`);
     if (view === "week") renderWeeklyWorkspace();
     if (view === "longrange") renderLongRange();
+    if (view === "insights") renderInsights();
     if (view === "timeline") void renderTimeline();
     if (view === "review") { renderReview(); requestAnimationFrame(fitReviewText); }
     if (view === "habits") renderHabitSettings();
@@ -10942,6 +10967,7 @@ setText("#journalScrollTitle", tr("viewTitles.timeline"));
 setText("#insightsScrollTitle", tr("viewTitles.review"));
 setText("#habitsScrollTitle", tr("viewTitles.habits"));
 setText("#ledgerScrollTitle", tr("viewTitles.ledger"));
+setText("#insightsPageTitle", tr("viewTitles.insights"));
 setAria("#analyticsPeriod", tr("review.windowAria"));
 setText("#habitColName", tr("habits.colName"));
 setText("#habitColTarget", tr("habits.colTarget"));
@@ -11234,9 +11260,9 @@ function initQuoteSettings() {
   $("#settingsButton").addEventListener("click", sync);
 }
 
-// Settings → page order (user 10/27): Today, Week, Horizon, Timeline, Money, Review in any order; Habits stays last.
+// Settings → page order: Today, Week, Horizon, Timeline, Insights, Money, Review; Habits stays last.
 const NAV_ORDER_KEY = "life-ledger-nav-order";
-const NAV_PAGES = ["today", "week", "longrange", "timeline", "ledger", "review"];
+const NAV_PAGES = ["today", "week", "longrange", "timeline", "insights", "ledger", "review"];
 function navOrder() {
   let saved = [];
   try { saved = JSON.parse(localStorage.getItem(NAV_ORDER_KEY) || "[]"); } catch {}
@@ -11247,8 +11273,14 @@ function navOrder() {
     const ti = order.indexOf("timeline");
     order.splice(ti >= 0 ? ti + 1 : order.length, 0, "ledger");
   }
+  if (!order.includes("insights")) {
+    const ledgerAt = order.indexOf("ledger");
+    const ti = order.indexOf("timeline");
+    const at = ledgerAt >= 0 ? ledgerAt : (ti >= 0 ? ti + 1 : order.length);
+    order.splice(at, 0, "insights");
+  }
   for (const id of pages) if (!order.includes(id)) order.push(id);
-  return order;
+  return hostedCloudMode ? order : order.filter(id => id !== "insights");
 }
 function applyNavOrder() {
   const nav = $(".main-nav");

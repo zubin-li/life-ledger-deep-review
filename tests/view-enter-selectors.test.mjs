@@ -282,7 +282,8 @@ test("Owner feedback r1 — daily ledger shell + nav order", () => {
   const ledgerUi = fs.readFileSync(new URL("../public/ledger-ui.js", import.meta.url), "utf8");
   const core = fs.readFileSync(new URL("../public/ledger-core.js", import.meta.url), "utf8");
   const navBlock = html.match(/<nav class="main-nav"[\s\S]*?<\/nav>/)[0];
-  assert.ok(navBlock.indexOf('data-view="timeline"') < navBlock.indexOf('data-view="ledger"'));
+  assert.ok(navBlock.indexOf('data-view="timeline"') < navBlock.indexOf('data-view="insights"'));
+  assert.ok(navBlock.indexOf('data-view="insights"') < navBlock.indexOf('data-view="ledger"'));
   assert.ok(navBlock.indexOf('data-view="ledger"') < navBlock.indexOf('data-view="review"'));
   assert.match(ledgerUi, /renderStatsPanel/);
   assert.match(ledgerUi, /data-ledger-day-prev/);

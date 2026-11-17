@@ -1,4 +1,4 @@
-const CACHE_NAME = "life-ledger-pwa-2.1.0-b2e1";
+const CACHE_NAME = "life-ledger-pwa-2.1.0-b2e2";
 
 const HAIRLINE_ASSETS = [
   "./assets/hairline/backup-restore.svg",
@@ -93,6 +93,8 @@ const APP_SHELL = [
   "./view-headers-art.js?v=2.1.0",
   "./pages-858.css?v=2.1.0",
   "./long-range.js?v=2.1.0",
+  "./insights.js?v=2.1.0",
+  "./insights.css?v=2.1.0",
   "./ledger-core.js?v=2.1.0",
   "./bank-import.js?v=2.1.0",
   "./review-metrics-preview.js?v=2.1.0",
@@ -151,6 +153,8 @@ const NETWORK_FIRST_SUFFIXES = [
   "/_init_tcb-env.js",
   "/interaction.js",
   "/long-range.js",
+  "/insights.js",
+  "/insights.css",
   "/habit-analytics.js",
   "/ledger-core.js",
   "/bank-import.js",

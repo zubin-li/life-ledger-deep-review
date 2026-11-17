@@ -34,6 +34,11 @@ test(
         localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
+      // A fully checked demo day would skip the loop and never fire the celebration.
+      if ((await page.locator("#todayHabits .habit-card:not(.completed):not(.future-locked)").count()) === 0) {
+        await page.locator("#todayHabits .habit-card.completed").first().click();
+        await page.waitForTimeout(480);
+      }
       for (let i = 0; i < 24; i += 1) {
         const remaining = page.locator("#todayHabits .habit-card:not(.completed):not(.future-locked)");
         if ((await remaining.count()) === 0) break;

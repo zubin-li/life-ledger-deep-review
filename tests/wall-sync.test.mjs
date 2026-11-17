@@ -20,7 +20,7 @@ test("wall uploads accept only real images and videos up to 50 MB", () => {
 
 test("wall files live under the signed-in user's own prefix", () => {
   assert.equal(wallKey("a".repeat(64), "11111111-1111-4111-8111-111111111111"), `${"a".repeat(24)}/wall/11111111-1111-4111-8111-111111111111`);
-  assert.match(index, /\/api\/wall\/"\)\) return handlePhotoApi\(request, env, handleWallRequest\)/, "same Access identity check as photos");
+  assert.match(index, /\/api\/wall\/"\)\) return handlePhotoApi\(request, env, handleWallRequest, request\.method === "PUT"\)/, "same Access identity check as photos; the publisher token may only upload");
 });
 
 test("cloud edition keeps the wall list in the synced record and never seeds before the first pull", () => {

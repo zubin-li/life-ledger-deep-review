@@ -34,7 +34,13 @@ test(
         localStorage.setItem("life-ledger-demo-dismissed-v1", "1");
       });
       await page.goto(base, { waitUntil: "networkidle" });
-      const card = page.locator("#todayHabits .habit-card:not(.completed)").first();
+      // Demo days are sometimes already fully checked. Leave two open so this
+      // click is a normal check, not the all-complete celebration.
+      const open = page.locator("#todayHabits .habit-card:not(.completed)");
+      while ((await open.count()) < 2) {
+        await page.locator("#todayHabits .habit-card.completed").first().click();
+      }
+      const card = open.first();
       await card.waitFor({ state: "visible", timeout: 8000 });
       await card.click();
       await page.waitForFunction(

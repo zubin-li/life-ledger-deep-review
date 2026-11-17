@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Insights (洞见 / Insights / Einblicke) sits between Timeline and Money in the cloud workspace only. The local page and the Mac app's local window hide the nav entry; a menu request to open it does nothing there. Import a weekly JSON file, mark cards, and up to three starred cards show on Week. Today is unchanged. In the cloud workspace the Mac View menu opens it with ⌘8; Money stays ⌘5.
+
 - Money again opens on the day you came from (Today’s spending link, review month) and M / N open the add-entry sheet. The empty journal button focuses the visible reflection field. Browser tests follow the 2.1 Money page and Today cards, and the suite can no longer hang forever.
 
 ## [2.1.0] - 2026-11-15

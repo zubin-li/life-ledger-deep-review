@@ -3,6 +3,7 @@ import { VoiceRequestError, handleVoiceReview } from "./voice.js";
 import { CalendarRequestError, handleCalendarRequest } from "./calendar.js";
 import { PhotoRequestError, handlePhotoRequest } from "./photos.js";
 import { handleWallRequest } from "./wall.js";
+import { importInsightsWeek } from "./insights-import.js";
 import { handleVersionRequest, isVersionPath } from "./version-endpoint.js";
 
 const json = (data, status = 200, extraHeaders = {}) => new Response(JSON.stringify(data), {
@@ -47,7 +48,7 @@ function normalizedTeamDomain(value) {
   return url.origin;
 }
 
-async function identify(request, env) {
+async function identify(request, env, allowService = false) {
   const teamDomain = normalizedTeamDomain(env.TEAM_DOMAIN);
   const audience = String(env.POLICY_AUD || "").trim();
   if (!teamDomain || !audience) {
@@ -69,6 +70,16 @@ async function identify(request, env) {
       audience,
       algorithms: ["RS256"],
     });
+    // Access service token of the Mac insights publisher: it has no email, only its client id.
+    // Accepted solely on routes that pass allowService, and always acts as the single owner.
+    if (payload.common_name !== undefined) {
+      const clientId = String(env.INSIGHTS_CLIENT_ID || "").trim();
+      const owner = String(env.OWNER_EMAIL || "").trim();
+      if (!allowService || !clientId || !owner.includes("@") || payload.common_name !== clientId) {
+        throw new AccessError("Service token not allowed here", 403);
+      }
+      return hashIdentity(owner);
+    }
     if (typeof payload.email !== "string" || !payload.email.includes("@")) {
       throw new AccessError("Authenticated identity has no email", 403);
     }
@@ -79,9 +90,9 @@ async function identify(request, env) {
   }
 }
 
-async function identityOrResponse(request, env) {
+async function identityOrResponse(request, env, allowService = false) {
   try {
-    return { keyHash: await identify(request, env) };
+    return { keyHash: await identify(request, env, allowService) };
   } catch (error) {
     if (error instanceof AccessError) return { response: json({ error: error.message }, error.status) };
     return { response: json({ error: "Unable to validate identity" }, 500) };
@@ -285,8 +296,8 @@ async function handleCalendarApi(request, env) {
   }
 }
 
-async function handlePhotoApi(request, env, handler = handlePhotoRequest) {
-  const identity = await identityOrResponse(request, env);
+async function handlePhotoApi(request, env, handler = handlePhotoRequest, allowService = false) {
+  const identity = await identityOrResponse(request, env, allowService);
   if (identity.response) return identity.response;
   try {
     return await handler(request, env, identity.keyHash);
@@ -298,6 +309,17 @@ async function handlePhotoApi(request, env, handler = handlePhotoRequest) {
     console.error("Photo request failed", { requestId, name: error?.name || "Error" });
     return json({ error: "Photo request could not be completed", code: "PHOTO_FAILED", requestId }, 502);
   }
+}
+
+async function handleInsightsImport(request, env) {
+  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (!env.DB) return json({ error: "D1 binding is not configured" }, 503);
+  const identity = await identityOrResponse(request, env, true);
+  if (identity.response) return identity.response;
+  let body;
+  try { body = await request.json(); } catch { return json({ error: "Invalid JSON" }, 400); }
+  const result = await importInsightsWeek(env.DB, identity.keyHash, body, { read: readStateRow, swap: compareAndSwapState });
+  return json(result.body, result.status);
 }
 
 export default {
@@ -313,10 +335,12 @@ export default {
     if (url.pathname === "/api/voice-review") return handleVoiceApi(request, env);
     if (url.pathname.startsWith("/api/calendar/")) return handleCalendarApi(request, env);
     if (url.pathname.startsWith("/api/photos")) return handlePhotoApi(request, env);
-    if (url.pathname.startsWith("/api/wall/")) return handlePhotoApi(request, env, handleWallRequest);
+    // The publisher may upload originals (PUT) but never read or delete media.
+    if (url.pathname.startsWith("/api/wall/")) return handlePhotoApi(request, env, handleWallRequest, request.method === "PUT");
+    if (url.pathname === "/api/insights/import") return handleInsightsImport(request, env);
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
     return env.ASSETS.fetch(request);
   },
 };
 
-export { hashIdentity, identify, normalizedTeamDomain, readStateRow, validPayload, writeStateRow };
+export { compareAndSwapState, hashIdentity, identify, normalizedTeamDomain, readStateRow, validPayload, writeStateRow };
