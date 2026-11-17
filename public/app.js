@@ -10938,10 +10938,8 @@ function switchToView(view) {
     if (view === "habits") renderHabitSettings();
     if (view === "ledger") renderLedger();
   };
-  const vt = window.LifeLedgerInteraction?.withViewTransition;
-  if (view !== previous && typeof vt === "function") {
-    return vt(apply, { from: previous, to: view });
-  }
+  // Instant cut like native Mac sidebar apps: the whole-page view transition snapshotted the
+  // outgoing page, costing ~0.9 s leaving Insights on a 5K display (measured in system WKWebView).
   apply();
   return Promise.resolve();
 }

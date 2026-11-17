@@ -106,11 +106,13 @@ html[data-theme="dark"] #insightsView, :root.dark #insightsView { --ins-blue: #8
 
 /* cards */
 .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; align-items: start; }
-.insight-card { position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--line); background: var(--card); padding: 18px 20px 16px; box-shadow: rgba(0,0,0,.03) 0 4px 20px, rgba(0,0,0,.02) 0 1px 3px;
-  transition: transform .28s var(--ins-ease), box-shadow .28s, border-color .28s; }
+.insight-card { position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--line); background: var(--card); padding: 18px 20px 16px; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  transition: transform .28s var(--ins-ease), border-color .28s; }
+/* Off-screen weeks skip layout/paint (sticky week header stays outside the contained part). */
+.ins-week > .insights-grid { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .insight-card::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; border-radius: 0 3px 3px 0; background: var(--tone); opacity: .85; transition: top .28s var(--ins-ease), bottom .28s var(--ins-ease); }
 @media (hover: hover) and (pointer: fine) {
-  .insight-card:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgba(29,49,70,.10), 0 1px 3px rgba(0,0,0,.03); border-color: color-mix(in srgb, var(--tone) 30%, var(--line)); }
+  .insight-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--tone) 30%, var(--line)); }
   .insight-card:hover::before { top: 0; bottom: 0; }
 }
 .is-animating .insight-card { animation: pageCardIn .5s var(--ins-ease) calc(var(--wi, 0) * 90ms + var(--i) * 45ms) both; }
