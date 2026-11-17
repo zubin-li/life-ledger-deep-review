@@ -9,19 +9,35 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const port = 5287;
 const base = `http://127.0.0.1:${port}/index.html?mode=local`;
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function startStaticServer() {
+  return spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1"], {
+    cwd: join(repoRoot, "public"),
+    stdio: "ignore",
+  });
 }
 
-function startStaticServer() {
-  return new Promise((resolve, reject) => {
-    const proc = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1"], {
-      cwd: join(repoRoot, "public"),
-      stdio: "ignore",
-    });
-    proc.on("error", reject);
-    setTimeout(() => resolve(proc), 400);
-  });
+async function waitForHttp(url) {
+  let lastError = null;
+  for (let i = 0; i < 80; i += 1) {
+    try {
+      const response = await fetch(url);
+      if (response.status < 500) return;
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      lastError = error;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  throw new Error(`Server did not respond: ${url} (${lastError?.message || "timeout"})`);
+}
+
+async function waitForAppReady(page) {
+  await page.waitForFunction(() => {
+    const ledgerReady = Boolean(window.LifeLedgerLedger?.buildDemoSample);
+    const stored = Object.keys(localStorage).some(key => key === "life-ledger-v1" || key.startsWith("life-ledger-v1"));
+    const habits = document.querySelector("#todayHabits .habit-card");
+    return ledgerReady && stored && Boolean(habits);
+  }, null, { timeout: 30_000 });
 }
 
 async function seedDemoLedger(page) {
@@ -65,13 +81,16 @@ test(
   "review jump spy highlights section and month stats roll on change",
   { skip: !hasPlaywright },
   async () => {
-    const server = await startStaticServer();
-    const { chromium } = await import(join(playwrightRoot, "index.mjs"));
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    const page = await context.newPage();
+    const server = startStaticServer();
+    let browser;
     try {
-      await page.goto(base, { waitUntil: "networkidle" });
+      await waitForHttp(base);
+      const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+      browser = await chromium.launch({ headless: true });
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const page = await context.newPage();
+      await page.goto(base, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await waitForAppReady(page);
       await page.evaluate(() => {
         localStorage.setItem("life-ledger-language", "zh");
         localStorage.setItem("life-ledger-language-preference-set", "true");
@@ -79,10 +98,16 @@ test(
         document.documentElement.dataset.theme = "light";
       });
       await seedDemoLedger(page);
-      await page.reload({ waitUntil: "networkidle" });
-      await page.locator('.nav-item[data-view="review"]').first().click({ timeout: 8000 });
-      await page.waitForSelector(".review-scatter-jump", { timeout: 8000 });
-      await page.waitForSelector("#review-scatter-focus", { timeout: 12000 });
+      await page.reload({ waitUntil: "domcontentloaded", timeout: 60_000 });
+      await waitForAppReady(page);
+      await page.locator('.nav-item[data-view="review"]').first().click({ timeout: 20_000 });
+      await page.waitForSelector(".review-scatter-jump", { timeout: 20_000 });
+      await page.waitForFunction(() => {
+        const el = document.getElementById("review-scatter-focus");
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      }, null, { timeout: 30_000 });
       await page.evaluate(() => {
         const el = document.getElementById("review-scatter-focus");
         if (!el) return;
@@ -91,38 +116,51 @@ test(
         window.scrollBy(0, (rect.top + rect.bottom) / 2 - anchor);
         window.dispatchEvent(new Event("scroll"));
       });
-      await sleep(250);
+      // Jump spy binds only after scatter charts finish hydrating.
+      await page.waitForFunction(
+        () => document.querySelector('.review-scatter-jump-chip.is-active[data-review-scatter-jump="review-scatter-focus"]'),
+        null,
+        { timeout: 20_000 },
+      );
       const activeFromScroll = await page.locator('.review-scatter-jump-chip.is-active[data-review-scatter-jump="review-scatter-focus"]').count();
       assert.equal(activeFromScroll, 1, "scrolling to focus scatter should highlight focus chip");
       await page.locator('[data-review-scatter-jump="review-scatter-habit"]').click();
+      await page.waitForFunction(
+        () => document.querySelector('.review-scatter-jump-chip.is-active[data-review-scatter-jump="review-scatter-habit"]'),
+        null,
+        { timeout: 15_000 },
+      );
       const activeFromClick = await page.locator('.review-scatter-jump-chip.is-active[data-review-scatter-jump="review-scatter-habit"]').count();
       assert.equal(activeFromClick, 1, "clicking habit chip should mark it active");
       const spendBefore = (await page.locator(".review-ledger-stat-btn").first().textContent())?.trim();
       await page.locator('.rv-month-step[data-rv-month="-1"]').click();
       await page.waitForFunction(
         before => {
-          const next = document.querySelector(".review-ledger-stat-btn")?.textContent?.trim();
-          return Boolean(next && next !== before);
-        },
-        spendBefore,
-        { timeout: 5000 },
-      );
-      await page.waitForFunction(
-        () => {
           const strong = document.querySelector(".review-ledger-stat-btn");
           if (!strong) return false;
           const layers = strong.querySelectorAll(".roll-old, .roll-new").length;
-          if (layers >= 2) return true;
-          return !strong.classList.contains("roll-host") && Boolean(strong.dataset.rollValue);
+          if (strong.classList.contains("roll-host") && layers >= 2) return true;
+          const next = strong.textContent?.trim();
+          return !strong.classList.contains("roll-host") && Boolean(strong.dataset.rollValue) && Boolean(next && next !== before);
         },
-        { timeout: 3000 },
+        spendBefore,
+        { timeout: 20_000 },
       );
       const rolling = await page.locator(".review-ledger-stat-btn.roll-host").count();
       const rollLayers = await page.locator(".review-ledger-stat-btn.roll-host .roll-old, .review-ledger-stat-btn.roll-host .roll-new").count();
       if (rolling >= 1) {
         assert.ok(rollLayers >= 2, "roll animation should expose outgoing and incoming layers");
       }
-      await sleep(220);
+      await page.waitForFunction(
+        before => {
+          const strong = document.querySelector(".review-ledger-stat-btn");
+          if (!strong || strong.classList.contains("roll-host")) return false;
+          const text = strong.textContent?.trim();
+          return Boolean(text && text !== before && strong.dataset.rollValue === text);
+        },
+        spendBefore,
+        { timeout: 15_000 },
+      );
       const spendAfter = (await page.locator(".review-ledger-stat-btn").first().textContent())?.trim();
       assert.notEqual(spendBefore, spendAfter, "previous month should show different spending total");
       const rollValue = await page.locator(".review-ledger-stat-btn").first().getAttribute("data-roll-value");
@@ -130,15 +168,18 @@ test(
 
       const firstDot = page.locator("#reviewLedgerSummary .review-scatter-dot-hit[tabindex='0']").first();
       await firstDot.focus();
-      await page.waitForSelector("#reviewLedgerSummary .review-scatter-tip:not([hidden])", { timeout: 5000 });
+      await page.waitForSelector("#reviewLedgerSummary .review-scatter-tip:not([hidden])", { timeout: 15_000 });
       const tipVisible = await page.locator("#reviewLedgerSummary .review-scatter-tip strong").textContent();
       assert.ok(tipVisible && tipVisible.length > 4, "keyboard focus on scatter dot should show tip readout");
       await firstDot.press("ArrowRight");
-      await sleep(80);
+      await page.waitForFunction(() => {
+        const live = document.querySelector(".review-scatter-live")?.textContent?.trim() || "";
+        return live.includes("—");
+      }, null, { timeout: 15_000 });
       const live = (await page.locator(".review-scatter-live").textContent())?.trim();
       assert.ok(live && live.includes("—"), "arrow key between dots should update live region");
     } finally {
-      await browser.close();
+      await browser?.close();
       server.kill("SIGTERM");
     }
   },
