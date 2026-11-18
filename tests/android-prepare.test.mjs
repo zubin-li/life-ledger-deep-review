@@ -238,7 +238,7 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.match(workflow, /apksigner.*sign/s);
   assert.match(workflow, /build-tools\/35\.0\.0\/aapt2/);
   assert.match(apkCheck, /"--file", "AndroidManifest\.xml"/);
-  assert.match(apkCheck, /"dump", "packagename"/);
+  assert.match(apkCheck, /"dump", "badging"/);
   assert.match(workflow, /android-apk\/\*-signed\.apk/);
   assert.match(workflow, /retention-days: 1/);
   assert.doesNotMatch(workflow, /secrets\./);

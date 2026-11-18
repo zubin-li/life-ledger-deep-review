@@ -8,18 +8,19 @@ if (!apk || !aapt2) {
   process.exit(2);
 }
 
-function dump(args) {
+function dump(label, args) {
   const result = spawnSync(aapt2, args, { encoding: "utf8" });
   if (result.status !== 0) {
-    console.error(result.stderr || result.stdout || `${aapt2} failed`);
+    console.error(`${label} dump failed: ${result.stderr || result.stdout || aapt2}`);
     process.exit(1);
   }
   return result.stdout;
 }
 
-const packageName = dump(["dump", "packagename", apk]);
-const permissions = dump(["dump", "permissions", apk]);
-const xmltree = dump(["dump", "xmltree", apk, "--file", "AndroidManifest.xml"]);
+const badging = dump("badging", ["dump", "badging", apk]);
+const packageName = badging.match(/^package: name='([^']+)'/m)?.[1] ?? "";
+const permissions = dump("permissions", ["dump", "permissions", apk]);
+const xmltree = dump("manifest", ["dump", "xmltree", apk, "--file", "AndroidManifest.xml"]);
 const rulesDump = spawnSync(
   aapt2,
   ["dump", "xmltree", apk, "--file", "res/xml/life_ledger_backup_rules.xml"],
