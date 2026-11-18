@@ -22,11 +22,15 @@ jobs:
       - run: npm test
       - run: npx wrangler deploy --dry-run
 
-  browser:
+  browser-shard:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Browsers come preinstalled in the image; keep the tag equal to the playwright version in package-lock.json.
     container: mcr.microsoft.com/playwright:v1.65.1-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,4 +39,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: apt-get update -qq && apt-get install -y -qq curl rsync >/dev/null
-      - run: npm run test:browser
+      - run: node --test --test-concurrency=1 --test-timeout=120000 --test-force-exit --test-shard=${{ matrix.shard }}/4 tests/*.browser.test.mjs
+
+  # Branch protection requires a check named "browser": this gate passes only when every shard passed.
+  browser:
+    if: always()
+    needs: browser-shard
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.browser-shard.result }}" = success
