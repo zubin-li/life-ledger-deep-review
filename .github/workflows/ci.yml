@@ -34,4 +34,5 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: apt-get update -qq && apt-get install -y -qq curl rsync >/dev/null
       - run: npm run test:browser
