@@ -306,7 +306,7 @@ test("preflight local gates can run with injected runner", () => {
 test("CI workflow stays local-only", () => {
   const ci = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
   assert.match(ci, /npm test/);
-  assert.match(ci, /npm run test:browser/);
+  assert.match(ci, /npm run test:browser|tests\/\*\.browser\.test\.mjs/);
   assert.match(ci, /wrangler deploy --dry-run/);
   assert.doesNotMatch(ci, /migrations apply.*--remote/);
   assert.doesNotMatch(ci, /cloudflare-release\.mjs deploy/);
