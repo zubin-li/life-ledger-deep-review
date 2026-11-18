@@ -14,6 +14,7 @@ import {
   patchManifest,
   patchProject,
 } from "../scripts/android-manifest.mjs";
+import { findBackupRulesPath } from "../scripts/android-apk-check.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "android-dist");
@@ -239,6 +240,10 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.match(workflow, /build-tools\/35\.0\.0\/aapt2/);
   assert.match(apkCheck, /"--file", "AndroidManifest\.xml"/);
   assert.match(apkCheck, /"dump", "badging"/);
+  assert.equal(
+    findBackupRulesPath("resource 0x7f130000 xml/life_ledger_backup_rules\n  () (file) res/0w.xml type=XML"),
+    "res/0w.xml",
+  );
   assert.match(workflow, /android-apk\/\*-signed\.apk/);
   assert.match(workflow, /retention-days: 1/);
   assert.doesNotMatch(workflow, /secrets\./);
