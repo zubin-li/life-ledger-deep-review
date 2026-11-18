@@ -168,6 +168,7 @@ test("manifest patch removes internet and storage and disables backup transfer",
 
 test("apk dump check fails closed on internet and passes a patched manifest dump", () => {
   const bad = evaluateApkDumps({
+    packageName: "app.zubinli.lifeledger.androidtest",
     permissions: "uses-permission: name='android.permission.INTERNET'\n",
     xmltree: 'A: android:allowBackup(0x01010280)=(type 0x12)0xffffffff\n',
     rules: "<data-extraction-rules></data-extraction-rules>",
@@ -176,6 +177,7 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
   assert.ok(bad.some((line) => line.includes("allowBackup")));
 
   const good = evaluateApkDumps({
+    packageName: "app.zubinli.lifeledger.androidtest",
     permissions: "uses-permission: name='android.permission.CAMERA'\n",
     xmltree: [
       'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
@@ -186,6 +188,7 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
   });
   assert.deepEqual(good, []);
   const fromAapt = evaluateApkDumps({
+    packageName: "app.zubinli.lifeledger.androidtest",
     permissions: "package: app.zubinli.lifeledger.androidtest\n",
     xmltree: [
       "A: android:allowBackup(0x01010280)=false",
@@ -195,6 +198,17 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
     rules: "E: device-transfer (line=8)\n    E: exclude (line=9)\n      A: domain(0x01010000)=\"root\"\n",
   });
   assert.deepEqual(fromAapt, []);
+  const wrongPackage = evaluateApkDumps({
+    packageName: "app.zubinli.lifeledger",
+    permissions: "",
+    xmltree: [
+      'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
+      'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
+      "A: android:dataExtractionRules(0x0101057a)=@xml/life_ledger_backup_rules",
+    ].join("\n"),
+    rules: BACKUP_RULES_XML,
+  });
+  assert.ok(wrongPackage.some((line) => line.includes("package id")));
 });
 
 test("android config is a separate test id and does not replace the desktop id", async () => {
@@ -203,6 +217,7 @@ test("android config is a separate test id and does not replace the desktop id",
   const android = JSON.parse(await readFile(resolve(root, "src-tauri/tauri.android.conf.json"), "utf8"));
   const capability = JSON.parse(await readFile(resolve(root, "src-tauri/capabilities/android-local.json"), "utf8"));
   const lib = await readFile(resolve(root, "src-tauri/src/lib.rs"), "utf8");
+  const apkCheck = await readFile(resolve(root, "scripts/android-apk-check.mjs"), "utf8");
   assert.equal(packageJson.scripts.tauri, "tauri");
   assert.equal(desktop.identifier, "app.zubinli.lifeledger");
   assert.equal(android.identifier, "app.zubinli.lifeledger.androidtest");
@@ -221,6 +236,9 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.match(workflow, /tauri android build --apk --target aarch64/);
   assert.match(workflow, /keytool -genkeypair/);
   assert.match(workflow, /apksigner.*sign/s);
+  assert.match(workflow, /build-tools\/35\.0\.0\/aapt2/);
+  assert.match(apkCheck, /"--file", "AndroidManifest\.xml"/);
+  assert.match(apkCheck, /"dump", "packagename"/);
   assert.match(workflow, /android-apk\/\*-signed\.apk/);
   assert.match(workflow, /retention-days: 1/);
   assert.doesNotMatch(workflow, /secrets\./);

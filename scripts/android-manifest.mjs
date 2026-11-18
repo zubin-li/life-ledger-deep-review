@@ -2,6 +2,8 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+export const ANDROID_TEST_ID = "app.zubinli.lifeledger.androidtest";
+
 export const FORBIDDEN_PERMISSIONS = [
   "android.permission.INTERNET",
   "android.permission.READ_EXTERNAL_STORAGE",
@@ -127,8 +129,9 @@ function flagIsFalse(dump, attribute) {
   return patterns.some((pattern) => pattern.test(dump));
 }
 
-export function evaluateApkDumps({ permissions, xmltree, rules }) {
+export function evaluateApkDumps({ packageName, permissions, xmltree, rules }) {
   const errors = [];
+  if (packageName.trim() !== ANDROID_TEST_ID) errors.push(`unexpected package id: ${packageName.trim() || "missing"}`);
   const haystack = `${permissions}\n${xmltree}`;
   for (const name of FORBIDDEN_PERMISSIONS) {
     if (haystack.includes(name)) errors.push(`forbidden permission: ${name}`);

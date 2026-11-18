@@ -119,9 +119,9 @@ jobs:
             echo "no signed apk produced"
             exit 1
           fi
-          aapt="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          aapt2="$ANDROID_HOME/build-tools/35.0.0/aapt2"
           for apk in "${apks[@]}"; do
-            node scripts/android-apk-check.mjs "$apk" "$aapt"
+            node scripts/android-apk-check.mjs "$apk" "$aapt2"
           done
 
       - name: Upload the signed APK as a workflow artifact
