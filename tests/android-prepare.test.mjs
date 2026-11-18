@@ -198,10 +198,12 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
 });
 
 test("android config is a separate test id and does not replace the desktop id", async () => {
+  const packageJson = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
   const desktop = JSON.parse(await readFile(resolve(root, "src-tauri/tauri.conf.json"), "utf8"));
   const android = JSON.parse(await readFile(resolve(root, "src-tauri/tauri.android.conf.json"), "utf8"));
   const capability = JSON.parse(await readFile(resolve(root, "src-tauri/capabilities/android-local.json"), "utf8"));
   const lib = await readFile(resolve(root, "src-tauri/src/lib.rs"), "utf8");
+  assert.equal(packageJson.scripts.tauri, "tauri");
   assert.equal(desktop.identifier, "app.zubinli.lifeledger");
   assert.equal(android.identifier, "app.zubinli.lifeledger.androidtest");
   assert.equal(android.productName, "Life Ledger Android Test");
