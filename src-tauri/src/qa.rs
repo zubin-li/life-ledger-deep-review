@@ -141,5 +141,5 @@ pub fn qa_report(line: String) {
 
 #[tauri::command]
 pub fn qa_sign_out(app: AppHandle) {
-    crate::sign_out_of_cloud(&app);
+    super::sign_out_of_cloud(&app);
 }

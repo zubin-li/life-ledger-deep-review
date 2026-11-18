@@ -1,3 +1,7 @@
+// Desktop (menus, windows, file dialogs, updater) stays in this module so Android
+// does not compile it. Behavior on macOS is the same entry `main` already calls.
+#[cfg(desktop)]
+mod desktop {
 use std::fs;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex, OnceLock};
@@ -514,7 +518,9 @@ fn forget_workspace(app: AppHandle) -> Result<(), String> {
 }
 
 #[cfg(all(feature = "qa", target_os = "macos"))]
+#[path = "qa.rs"]
 mod qa;
+#[path = "updates.rs"]
 mod updates;
 
 pub(crate) fn current_menu_language() -> String {
@@ -1005,7 +1011,6 @@ fn open_backup_file() -> Result<Response, String> {
     Ok(Response::new(framed))
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default();
     #[cfg(all(feature = "qa", target_os = "macos"))]
@@ -1396,4 +1401,17 @@ mod tests {
     fn backup_cancelled_error_is_stable() {
         assert_eq!(BACKUP_CANCELLED_ERROR, "backup-cancelled");
     }
+}
+}
+
+#[cfg(mobile)]
+mod mobile;
+
+#[cfg(desktop)]
+pub use desktop::run;
+
+#[cfg(mobile)]
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    mobile::run();
 }

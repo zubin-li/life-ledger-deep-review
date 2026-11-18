@@ -13,6 +13,7 @@ test-results/
 playwright-report/
 *.log
 desktop-dist/
+android-dist/
 src-tauri/target/
 src-tauri/gen/
 src-tauri/icons/android/

@@ -1,0 +1,14 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "android-local",
+  "description": "Offline Android test build. No updater, shell, or remote URL permissions.",
+  "platforms": [
+    "android"
+  ],
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default"
+  ]
+}

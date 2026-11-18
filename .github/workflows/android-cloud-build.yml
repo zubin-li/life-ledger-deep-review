@@ -1,0 +1,134 @@
+name: Android cloud build
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src-tauri/**"
+      - "public/**"
+      - "scripts/android-*.mjs"
+      - "tests/android-*.test.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/android-cloud-build.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  android-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17.0.15"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install pinned Android SDK and NDK
+        run: |
+          set -euo pipefail
+          mkdir -p "$ANDROID_HOME/licenses"
+          printf '%s\n' "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "platform-tools"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+
+      - name: Setup Rust stable with Android targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare offline Android assets
+        run: npm run android:prepare
+
+      - name: Check Android asset and manifest logic
+        run: node --test tests/android-prepare.test.mjs
+
+      - name: Generate Android icons
+        run: npx tauri icon public/assets/app-icon.svg --output src-tauri/icons
+
+      - name: Initialize the Android project
+        run: npx tauri android init --ci
+
+      - name: Strip internet permission and disable backup
+        run: node scripts/android-manifest.mjs src-tauri/gen/android
+
+      - name: Build the arm64 release APK
+        run: npx tauri android build --apk --target aarch64
+
+      - name: Sign with an ephemeral test key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t apks < <(find src-tauri/gen/android/app/build/outputs/apk -type f -name '*.apk' ! -name '*-signed.apk' ! -name '*-aligned.apk' | sort)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "no apk produced"
+            exit 1
+          fi
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          keytool -genkeypair -noprompt \
+            -keystore "$RUNNER_TEMP/life-ledger-android-test.jks" \
+            -storepass "$password" -keypass "$password" \
+            -alias life-ledger-android-test \
+            -keyalg RSA -keysize 2048 -validity 3650 \
+            -dname "CN=Life Ledger Android Test,O=Local Test,C=DE"
+          zipalign="$ANDROID_HOME/build-tools/35.0.0/zipalign"
+          apksigner="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          mkdir -p android-apk
+          for apk in "${apks[@]}"; do
+            aligned="$RUNNER_TEMP/$(basename "${apk%.apk}")-aligned.apk"
+            signed="android-apk/$(basename "${apk%.apk}")-signed.apk"
+            "$zipalign" -p -f 4 "$apk" "$aligned"
+            "$apksigner" sign \
+              --ks "$RUNNER_TEMP/life-ledger-android-test.jks" \
+              --ks-key-alias life-ledger-android-test \
+              --ks-pass "pass:$password" --key-pass "pass:$password" \
+              --out "$signed" "$aligned"
+            "$apksigner" verify --verbose "$signed"
+          done
+
+      - name: Fail if the signed APK has forbidden permissions
+        run: |
+          set -euo pipefail
+          mapfile -t apks < <(find android-apk -type f -name '*-signed.apk' | sort)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "no signed apk produced"
+            exit 1
+          fi
+          aapt="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          for apk in "${apks[@]}"; do
+            node scripts/android-apk-check.mjs "$apk" "$aapt"
+          done
+
+      - name: Upload the signed APK as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: life-ledger-android-test-apk
+          path: android-apk/*-signed.apk
+          if-no-files-found: error
+          retention-days: 1
