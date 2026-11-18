@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { evaluateApkDumps } from "./android-manifest.mjs";
 
 export function findBackupRulesPath(resourcesDump) {
-  const block = resourcesDump.match(/xml/life_ledger_backup_rules[\s\S]{0,300}?\(file\)\s+(\S+)/);
+  const block = resourcesDump.match(/xml\/life_ledger_backup_rules[\s\S]{0,300}?\(file\)\s+(\S+)/);
   return block ? block[1] : "res/xml/life_ledger_backup_rules.xml";
 }
 
