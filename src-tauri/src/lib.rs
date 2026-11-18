@@ -518,9 +518,7 @@ fn forget_workspace(app: AppHandle) -> Result<(), String> {
 }
 
 #[cfg(all(feature = "qa", target_os = "macos"))]
-#[path = "qa.rs"]
 mod qa;
-#[path = "updates.rs"]
 mod updates;
 
 pub(crate) fn current_menu_language() -> String {
