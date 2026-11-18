@@ -11,6 +11,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,6 +24,9 @@ jobs:
 
   browser:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Browsers come preinstalled in the image; keep the tag equal to the playwright version in package-lock.json.
+    container: mcr.microsoft.com/playwright:v1.65.1-noble
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,5 +34,5 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium webkit
+      - run: apt-get update -qq && apt-get install -y -qq curl rsync >/dev/null
       - run: npm run test:browser

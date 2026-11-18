@@ -17,7 +17,7 @@
 
 # Web Today requirements
 
-- Before any Web Today change, read `/Users/ashan/Documents/Codex/ll-361-blank-fix/.hermes/requirements/REQUIREMENTS.md` (the single requirements ledger, every row cites the user's words). New user feedback is added there first; every delivery reports the whole table, not only the latest item.
+- Before any Web Today change, read `.hermes/requirements/REQUIREMENTS.md` in the single working copy `/Users/ashan/Developer/life-ledger` (the single requirements ledger, every row cites the user's words). New user feedback is added there first; every delivery reports the whole table, not only the latest item.
 
 # Testing without disturbing the owner
 
@@ -29,3 +29,9 @@
 # Git safety
 
 - Commit and push every completed local change to the current feature branch immediately; work must never exist only on this machine. Never commit to or push `main`, merge, rebase, force-push, rewrite history, tag or release without explicit user authorization.
+
+# Keep it simple (owner rule 2026-11-18)
+
+- One working copy only: `/Users/ashan/Developer/life-ledger`. Use short-lived branches there; do not create extra clones or worktrees.
+- One agent session works on this repo at a time. Check `gh pr list` first; if another change is open, finish or hand it over before starting a new one.
+- Small text, data, or style changes: edit, run `npm test`, open one PR, merge when CI is green. No multi-model reviews, review panels, or extra watchdog scripts for them.
