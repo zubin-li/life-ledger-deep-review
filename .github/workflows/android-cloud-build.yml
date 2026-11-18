@@ -39,9 +39,11 @@ jobs:
       - name: Install pinned Android SDK and NDK
         run: |
           set -euo pipefail
+          sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$sdkmanager"
           mkdir -p "$ANDROID_HOME/licenses"
           printf '%s\n' "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
-          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "platform-tools"
+          "$sdkmanager" --install "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "platform-tools"
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
           echo "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
 

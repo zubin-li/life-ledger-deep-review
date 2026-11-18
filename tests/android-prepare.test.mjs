@@ -214,6 +214,8 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.deepEqual(capability.permissions, ["core:default"]);
   const workflow = await readFile(resolve(root, ".github/workflows/android-cloud-build.yml"), "utf8");
   assert.match(workflow, /tauri android init --ci/);
+  assert.match(workflow, /cmdline-tools\/latest\/bin\/sdkmanager/);
+  assert.doesNotMatch(workflow, /packages:\s*tools/);
   assert.match(workflow, /tauri android build --apk --target aarch64/);
   assert.match(workflow, /keytool -genkeypair/);
   assert.match(workflow, /apksigner.*sign/s);
