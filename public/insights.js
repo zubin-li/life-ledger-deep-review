@@ -4,7 +4,7 @@
    the cloud edition → private R2 (/api/wall/<id>), local web + Mac app → this device's IndexedDB.
    Import format (generic, documented in README):
    {"format":"life-ledger-insights","version":1,"week":"2026-W46","items":[{id,title,core,category?,
-    credibility?,top?,quote?,relevance?,review?:{verdict,flaws[],generalisation,boundary},fact_check?:{status,note,url},
+    credibility?,top?,quote?,relevance?,review?:{verdict,flaws[],generalisation,boundary,meaning},fact_check?:{status,note,url},
     images?:[{name,data:"data:image/jpeg;base64,…"}]}]} */
 (function(root){
   const MARKS=['agree','doubt','acted'];
@@ -23,7 +23,7 @@
     return {id,title:str(raw.title,300),core:str(raw.core,2000),category:str(raw.category,40),
       credibility:str(raw.credibility,40),top:raw.top===true,quote:str(raw.quote,400),relevance:str(raw.relevance,1000),
       review:r?{verdict:str(r.verdict,20),flaws:Array.isArray(r.flaws)?r.flaws.filter(x=>typeof x==='string').slice(0,5).map(x=>x.slice(0,20)):[],
-        generalisation:str(r.generalisation,1000),boundary:str(r.boundary,1000)}:null,
+        generalisation:str(r.generalisation,1000),boundary:str(r.boundary,1000),meaning:str(r.meaning,1500)}:null,
       fact:f?{status:str(f.status,20),note:str(f.note,1000),url:/^https?:\/\//.test(url)?url:''}:null,
       images:cleanImages(images?.[id])};
   }
@@ -198,7 +198,7 @@
   }
   function card(i,mark,n,kept){
     const r=i.review, f=i.fact, k=kind(i.category), bad=r?.verdict==='不成立';
-    const rows=r?[[t('归纳是否成立','Does the conclusion follow','Folgt der Schluss'),r.generalisation],[t('适用边界','Where it applies','Gilt wann'),r.boundary]].filter(x=>x[1]):[];
+    const rows=r?[[t('归纳是否成立','Does the conclusion follow','Folgt der Schluss'),r.generalisation],[t('适用边界','Where it applies','Gilt wann'),r.boundary],[t('背后反映','What it reveals','Was dahintersteckt'),r.meaning]].filter(x=>x[1]):[];
     const imgs=i.images||[];
     return `<article class="insight-card${i.top?' is-top':''}${bad?' is-false':''}" data-id="${e(i.id)}" data-tone="${k.color}" style="--i:${Math.min(n,10)}">
       ${art(k.icon,'insight-art')}
@@ -254,7 +254,7 @@
     const q=filter.q.toLowerCase();
     return weeks.flatMap(w=>live(d,w).slice().sort((a,b)=>b.top-a.top)).filter(i=>(!filter.cat||i.category===filter.cat)&&(!filter.verdict||i.review?.verdict===filter.verdict)
       &&(!filter.mark||(filter.mark==='none'?!d.marks[i.id]?.mark:d.marks[i.id]?.mark===filter.mark))
-      &&(!q||[i.title,i.core,i.quote,i.category,i.review?.generalisation,i.review?.boundary].join(' ').toLowerCase().includes(q)));
+      &&(!q||[i.title,i.core,i.quote,i.category,i.review?.generalisation,i.review?.boundary,i.review?.meaning].join(' ').toLowerCase().includes(q)));
   }
   function paintBody(host,animate){
     const d=data(ctx.state()), weeks=Object.keys(d.weeks).sort().reverse(), list=host.querySelector('.ins-body');
