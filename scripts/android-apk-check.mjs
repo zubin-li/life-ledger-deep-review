@@ -9,9 +9,9 @@ export function findBackupRulesPath(resourcesDump) {
 }
 
 function dump(aapt2, apk, label, args) {
-  const result = spawnSync(aapt2, args, { encoding: "utf8" });
+  const result = spawnSync(aapt2, args, { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
   if (result.status !== 0) {
-    console.error(`${label} dump failed: ${result.stderr || result.stdout || aapt2}`);
+    console.error(`${label} dump failed: ${result.error?.message || result.stderr || result.stdout || aapt2}`);
     process.exit(1);
   }
   return result.stdout;

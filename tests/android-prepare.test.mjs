@@ -240,6 +240,7 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.match(workflow, /build-tools\/35\.0\.0\/aapt2/);
   assert.match(apkCheck, /"--file", "AndroidManifest\.xml"/);
   assert.match(apkCheck, /"dump", "badging"/);
+  assert.match(apkCheck, /maxBuffer/);
   assert.equal(
     findBackupRulesPath("resource 0x7f130000 xml/life_ledger_backup_rules\n  () (file) res/0w.xml type=XML"),
     "res/0w.xml",
