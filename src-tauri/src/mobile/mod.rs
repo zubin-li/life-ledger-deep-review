@@ -1,6 +1,7 @@
 mod backup;
 
 use backup::ANDROID_INIT_SCRIPT;
+use tauri::Manager;
 
 pub fn run() {
     tauri::Builder::default()

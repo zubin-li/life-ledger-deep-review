@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 
 const plugin = readFileSync(new URL("../src-tauri/android/src/main/java/BackupPlugin.kt", import.meta.url), "utf8");
 const mobileRs = readFileSync(new URL("../src-tauri/src/mobile/backup.rs", import.meta.url), "utf8");
+const mobileModRs = readFileSync(new URL("../src-tauri/src/mobile/mod.rs", import.meta.url), "utf8");
 const capability = JSON.parse(readFileSync(new URL("../src-tauri/capabilities/android-local.json", import.meta.url), "utf8"));
 
 test("android backup plugin uses SAF create/open document intents", () => {
@@ -23,6 +24,9 @@ test("mobile backup commands and capabilities stay android-scoped", () => {
   assert.match(mobileRs, /register_android_plugin\(PLUGIN_CLASS, "BackupPlugin"\)/);
   assert.match(mobileRs, /app\.zubinli\.lifeledger\.androidtest\.backup/);
   assert.equal([...mobileRs.matchAll(/#\[tauri::command\]\s+pub async fn android_/g)].length, 9);
+  assert.match(mobileRs, /#\[derive\(Debug, Deserialize, Serialize\)\]\s+pub struct CloseIoResponse/);
+  assert.match(mobileRs, /#\[derive\(Debug, Deserialize, Serialize\)\]\s+pub struct ReadChunkResponse/);
+  assert.match(mobileModRs, /use tauri::Manager;/);
   assert.ok(capability.permissions.includes("allow-android-pick-import"));
   assert.ok(capability.permissions.includes("allow-android-backup-open-write"));
   assert.doesNotMatch(readFileSync(new URL("../src-tauri/capabilities/local-only.json", import.meta.url), "utf8"), /allow-android/);

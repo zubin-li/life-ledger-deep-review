@@ -93,13 +93,13 @@ pub struct WriteChunkResponse {
     pub written: usize,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ReadChunkResponse {
     pub done: bool,
     pub data: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct CloseIoResponse {
     pub checksum: String,
 }
