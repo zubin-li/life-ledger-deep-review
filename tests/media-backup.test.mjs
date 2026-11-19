@@ -17,7 +17,7 @@ for (const schemaVersion of [2, 3]) {
     const photoBytes = new Uint8Array([82, 73, 70, 70, 1, 2, 3, 4, 87, 69, 66, 80]);
     const photoBlob = new Blob([photoBytes], { type: "image/webp" });
     const backup = { format: "life-ledger-backup", schemaVersion, scope: "month", data: { habits: [], logs: {} } };
-    const photos = [{ id: "11111111-1111-4111-8111-111111111111", backupId: "22222222-2222-4222-8222-222222222222", date: "2026-08-12", contentType: "image/webp", size: photoBlob.size, width: 800, height: 600, createdAt: 1755000000000 }];
+    const photos = [{ id: "11111111-1111-4111-8111-111111111111", backupId: "22222222-2222-4222-8222-222222222222", date: "2026-08-12", contentType: "image/webp", width: 800, height: 600, createdAt: 1755000000000 }];
     const bundle = await api.createBundle(backup, photos, async () => new Response(photoBlob));
 
     assert.equal(await api.isBundle(bundle), true);

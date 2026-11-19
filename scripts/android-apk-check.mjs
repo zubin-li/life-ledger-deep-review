@@ -2,10 +2,19 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateApkDumps } from "./android-manifest.mjs";
+import { BACKUP_PLUGIN_CLASS } from "./android-prepare.mjs";
 
 export function findBackupRulesPath(resourcesDump) {
   const block = resourcesDump.match(/xml\/life_ledger_backup_rules[\s\S]{0,300}?\(file\)\s+(\S+)/);
   return block ? block[1] : "res/xml/life_ledger_backup_rules.xml";
+}
+
+export function evaluateBackupPluginClass(apkanalyzerOutput) {
+  const errors = [];
+  if (!apkanalyzerOutput.includes(BACKUP_PLUGIN_CLASS)) {
+    errors.push(`missing compiled dex class: ${BACKUP_PLUGIN_CLASS}`);
+  }
+  return errors;
 }
 
 function dump(aapt2, apk, label, args) {
@@ -20,8 +29,9 @@ function dump(aapt2, apk, label, args) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const apk = process.argv[2];
   const aapt2 = process.argv[3];
-  if (!apk || !aapt2) {
-    console.error("usage: android-apk-check.mjs <apk> <aapt2>");
+  const apkanalyzer = process.argv[4];
+  if (!apk || !aapt2 || !apkanalyzer) {
+    console.error("usage: android-apk-check.mjs <apk> <aapt2> <apkanalyzer>");
     process.exit(2);
   }
 
@@ -37,10 +47,22 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(1);
   }
 
-  const errors = evaluateApkDumps({ packageName, permissions, xmltree, rules: rulesDump.stdout });
+  const classTree = spawnSync(apkanalyzer, ["dex", "packages", "--defined-only", apk], {
+    encoding: "utf8",
+    maxBuffer: 32 * 1024 * 1024,
+  });
+  if (classTree.status !== 0) {
+    console.error(classTree.stderr || classTree.stdout || `apkanalyzer dex list failed for ${apk}`);
+    process.exit(1);
+  }
+
+  const errors = [
+    ...evaluateApkDumps({ packageName, permissions, xmltree, rules: rulesDump.stdout }),
+    ...evaluateBackupPluginClass(classTree.stdout),
+  ];
   if (errors.length) {
     console.error(errors.join("\n"));
     process.exit(1);
   }
-  console.log(`APK permission check passed: ${apk}`);
+  console.log(`APK permission and dex checks passed: ${apk}`);
 }

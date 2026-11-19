@@ -1,10 +1,40 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "android-dist");
 const publicDir = resolve(root, "public");
+
+export const BACKUP_PLUGIN_RELATIVE = "app/src/main/java/app/zubinli/lifeledger/androidtest/backup/BackupPlugin.kt";
+export const BACKUP_PLUGIN_CLASS = "app.zubinli.lifeledger.androidtest.backup.BackupPlugin";
+export const PROGUARD_RULE = [
+  "# life-ledger-backup-plugin",
+  "-keep class app.zubinli.lifeledger.androidtest.backup.BackupPlugin { *; }",
+  "-keepclassmembers class app.zubinli.lifeledger.androidtest.backup.BackupPlugin { *; }",
+].join("\n");
+
+function injectDestination(projectRoot) {
+  return join(projectRoot, BACKUP_PLUGIN_RELATIVE);
+}
+
+export async function injectAndroidBackupPlugin(projectRoot = join(root, "src-tauri/gen/android")) {
+  const source = join(root, "src-tauri/android/src/main/java/BackupPlugin.kt");
+  const destination = injectDestination(resolve(projectRoot));
+  await mkdir(dirname(destination), { recursive: true });
+  await cp(source, destination);
+
+  const proguardPath = join(resolve(projectRoot), "app/proguard-backup-plugin.pro");
+  await writeFile(proguardPath, `${PROGUARD_RULE}\n`);
+
+  const rulesPath = join(resolve(projectRoot), "app/proguard-rules.pro");
+  const current = await readFile(rulesPath, "utf8").catch(() => "");
+  if (!current.includes("life-ledger-backup-plugin")) {
+    const next = current.trimEnd() ? `${current.trimEnd()}\n\n${PROGUARD_RULE}\n` : `${PROGUARD_RULE}\n`;
+    await writeFile(rulesPath, next);
+  }
+  return destination;
+}
 
 export const REMOVE_FILES = [
   "cloudbase-sync.js",
@@ -168,6 +198,12 @@ export async function prepare() {
 
 const isDirect = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isDirect) {
-  await prepare();
-  console.log("Android offline assets prepared in android-dist.");
+  const target = process.argv[2];
+  if (target) {
+    const destination = await injectAndroidBackupPlugin(resolve(target));
+    console.log(`Injected Android backup plugin at ${destination}`);
+  } else {
+    await prepare();
+    console.log("Android offline assets prepared in android-dist.");
+  }
 }

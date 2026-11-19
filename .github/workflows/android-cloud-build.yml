@@ -76,6 +76,9 @@ jobs:
       - name: Strip internet permission and disable backup
         run: node scripts/android-manifest.mjs src-tauri/gen/android
 
+      - name: Inject offline backup plugin sources
+        run: node scripts/android-prepare.mjs src-tauri/gen/android
+
       - name: Build the arm64 release APK
         run: npx tauri android build --apk --target aarch64
 
@@ -120,8 +123,10 @@ jobs:
             exit 1
           fi
           aapt2="$ANDROID_HOME/build-tools/35.0.0/aapt2"
+          apkanalyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+          test -x "$apkanalyzer"
           for apk in "${apks[@]}"; do
-            node scripts/android-apk-check.mjs "$apk" "$aapt2"
+            node scripts/android-apk-check.mjs "$apk" "$aapt2" "$apkanalyzer"
           done
 
       - name: Upload the signed APK as a workflow artifact

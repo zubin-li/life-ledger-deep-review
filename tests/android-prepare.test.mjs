@@ -14,7 +14,8 @@ import {
   patchManifest,
   patchProject,
 } from "../scripts/android-manifest.mjs";
-import { findBackupRulesPath } from "../scripts/android-apk-check.mjs";
+import { evaluateBackupPluginClass, findBackupRulesPath } from "../scripts/android-apk-check.mjs";
+import { BACKUP_PLUGIN_CLASS, injectAndroidBackupPlugin } from "../scripts/android-prepare.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "android-dist");
@@ -131,6 +132,18 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   }
 });
 
+test("backup plugin injection copies Kotlin into the generated android app", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "ll-android-inject-"));
+  const appRoot = join(dir, "app");
+  await mkdir(join(appRoot, "src/main"), { recursive: true });
+  await writeFile(join(appRoot, "proguard-rules.pro"), "-keep class androidx.appcompat.widget.Toolbar { *; }\n");
+  const destination = await injectAndroidBackupPlugin(dir);
+  const injected = await readFile(destination, "utf8");
+  assert.match(injected, /BackupPlugin/);
+  assert.match(await readFile(join(appRoot, "proguard-rules.pro"), "utf8"), /life-ledger-backup-plugin/);
+  await rm(dir, { recursive: true, force: true });
+});
+
 test("manifest patch removes internet and storage and disables backup transfer", async () => {
   const patched = patchManifest(SAMPLE_MANIFEST);
   assert.equal(patchManifest(patched), patched);
@@ -229,9 +242,25 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.equal(android.bundle.createUpdaterArtifacts, false);
   assert.deepEqual(android.app.security.capabilities, ["android-local"]);
   assert.deepEqual(capability.platforms, ["android"]);
-  assert.deepEqual(capability.permissions, ["core:default"]);
+  assert.deepEqual(capability.permissions, [
+    "core:default",
+    "allow-android-pick-import",
+    "allow-android-pick-export",
+    "allow-android-document-length",
+    "allow-android-backup-open-write",
+    "allow-android-backup-write-chunk",
+    "allow-android-backup-close-write",
+    "allow-android-backup-open-read",
+    "allow-android-backup-read-chunk",
+    "allow-android-backup-close-read",
+  ]);
+  const backupPlugin = await readFile(resolve(root, "src-tauri/android/src/main/java/BackupPlugin.kt"), "utf8");
+  assert.match(backupPlugin, /ACTION_CREATE_DOCUMENT/);
+  assert.match(backupPlugin, /ACTION_OPEN_DOCUMENT/);
   const workflow = await readFile(resolve(root, ".github/workflows/android-cloud-build.yml"), "utf8");
   assert.match(workflow, /tauri android init --ci/);
+  assert.match(workflow, /android-prepare\.mjs src-tauri\/gen\/android/);
+  assert.match(workflow, /apkanalyzer/);
   assert.match(workflow, /cmdline-tools\/latest\/bin\/sdkmanager/);
   assert.doesNotMatch(workflow, /packages:\s*tools/);
   assert.match(workflow, /tauri android build --apk --target aarch64/);
@@ -241,6 +270,11 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.match(apkCheck, /"--file", "AndroidManifest\.xml"/);
   assert.match(apkCheck, /"dump", "badging"/);
   assert.match(apkCheck, /maxBuffer/);
+  assert.match(apkCheck, /apkanalyzer/);
+  assert.match(apkCheck, /\["dex", "packages", "--defined-only", apk\]/);
+  assert.doesNotMatch(apkCheck, /\["dex", "classes"/);
+  assert.deepEqual(evaluateBackupPluginClass(`${BACKUP_PLUGIN_CLASS}\n`), []);
+  assert.notDeepEqual(evaluateBackupPluginClass("com.example.Missing\n"), []);
   assert.equal(
     findBackupRulesPath("resource 0x7f130000 xml/life_ledger_backup_rules\n  () (file) res/0w.xml type=XML"),
     "res/0w.xml",
@@ -250,5 +284,5 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.doesNotMatch(workflow, /secrets\./);
   assert.match(lib, /#\[cfg\(desktop\)\]\s*mod desktop/);
   assert.match(lib, /#\[cfg\(mobile\)\]\s*mod mobile/);
-  assert.match(await readFile(resolve(root, "src-tauri/src/mobile.rs"), "utf8"), /pub fn run\(\)/);
+  assert.match(await readFile(resolve(root, "src-tauri/src/mobile/mod.rs"), "utf8"), /pub fn run\(\)/);
 });
