@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 
 const conf = JSON.parse(readFileSync(new URL("../src-tauri/tauri.conf.json", import.meta.url), "utf8"));
 const lib = readFileSync(new URL("../src-tauri/src/lib.rs", import.meta.url), "utf8");
-const updates = readFileSync(new URL("../src-tauri/src/updates.rs", import.meta.url), "utf8");
+const updates = readFileSync(new URL("../src-tauri/src/desktop/updates.rs", import.meta.url), "utf8");
 const workflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
 const localCap = JSON.parse(readFileSync(new URL("../src-tauri/capabilities/local-only.json", import.meta.url), "utf8"));
 

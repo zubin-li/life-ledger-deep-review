@@ -1,0 +1,23 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "android-local",
+  "description": "Offline Android test build. SAF backup import/export via the in-app backup plugin.",
+  "platforms": [
+    "android"
+  ],
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "allow-android-pick-import",
+    "allow-android-pick-export",
+    "allow-android-document-length",
+    "allow-android-backup-open-write",
+    "allow-android-backup-write-chunk",
+    "allow-android-backup-close-write",
+    "allow-android-backup-open-read",
+    "allow-android-backup-read-chunk",
+    "allow-android-backup-close-read"
+  ]
+}

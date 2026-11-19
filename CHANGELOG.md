@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Android offline test build: backup export and import use Storage Access Framework (`ACTION_CREATE_DOCUMENT` / `ACTION_OPEN_DOCUMENT`) with `ContentResolver` streaming through a dedicated in-app plugin. Media `.llmedia` backups no longer cap at 160 MiB or assemble the full payload in memory during export; import preview and restore stream one photo entry at a time on Android. Desktop and browser backup behavior is unchanged.
+
 - Browser tests for sync-conflict recovery, the all-habits celebration, and the review jump spy wait for the page state they assert, so a slow CI runner no longer races the check animation, the deferred cloud push, or scatter hydration.
 
 - Insights (洞见 / Insights / Einblicke) sits between Timeline and Money in the cloud workspace only. The local page and the Mac app's local window hide the nav entry; a menu request to open it does nothing there. Import a weekly JSON file, mark cards, and up to three starred cards show on Week. Today is unchanged. In the cloud workspace the Mac View menu opens it with ⌘8; Money stays ⌘5.

@@ -43,7 +43,6 @@ const FOCUS_ACTIVE_KEY = "life-ledger-focus-active";
 const BACKUP_FORMAT = "life-ledger-backup";
 const BACKUP_SCHEMA_VERSION = 3;
 const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
-const MAX_MEDIA_IMPORT_BYTES = 160 * 1024 * 1024;
 const CLOUD_API = "./api/state";
 const colors = {
   sage: { solid: "#6f8f7d", soft: "#dbe6dc" },
@@ -2255,6 +2254,12 @@ const desktopNativeBackup = Boolean(
   && desktopBridge?.openBackupJson
   && desktopBridge?.saveBackupBinary
   && desktopBridge?.openBackupFile,
+);
+const androidNativeBackup = Boolean(
+  !desktopBridge
+  && window.LifeLedgerAndroidBackup?.pickImport
+  && window.LifeLedgerAndroidBackup?.pickExport
+  && window.__TAURI__?.core?.invoke,
 );
 const deploymentMode = requestedMode === "local" || requestedMode === "cloudflare"
   ? requestedMode
@@ -6748,6 +6753,107 @@ function triggerFileDownload(blob, filename) {
 function inspectorSolidColor(value) {
   return /^#[0-9a-fA-F]{6}$/.test(value) ? value : colors.sage.solid;
 }
+function bytesToBase64(bytes) {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+function base64ToBytes(base64) {
+  const binary = atob(base64);
+  const out = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
+  return out;
+}
+async function androidWriteSink(uri) {
+  const { handle } = await window.LifeLedgerAndroidBackup.openWrite(uri);
+  const chunkSize = window.LifeLedgerMediaBackup.STREAM_CHUNK_BYTES;
+  let closed = false;
+  return {
+    async write(chunk) {
+      let offset = 0;
+      while (offset < chunk.byteLength) {
+        const slice = chunk.subarray(offset, offset + chunkSize);
+        await window.LifeLedgerAndroidBackup.writeChunk(handle, bytesToBase64(slice));
+        offset += slice.byteLength;
+      }
+    },
+    async close() {
+      if (closed) return;
+      closed = true;
+      await window.LifeLedgerAndroidBackup.closeWrite(handle);
+    },
+  };
+}
+async function androidReadSource(uri) {
+  const { length } = await window.LifeLedgerAndroidBackup.documentLength(uri);
+  const { handle } = await window.LifeLedgerAndroidBackup.openRead(uri);
+  let pending = new Uint8Array(0);
+  let closed = false;
+  return {
+    length,
+    async read(maxLength) {
+      while (pending.byteLength < maxLength) {
+        const chunk = await window.LifeLedgerAndroidBackup.readChunk(handle, maxLength);
+        if (chunk.done) break;
+        const bytes = base64ToBytes(chunk.data);
+        if (!bytes.byteLength) break;
+        const next = new Uint8Array(pending.byteLength + bytes.byteLength);
+        next.set(pending);
+        next.set(bytes, pending.byteLength);
+        pending = next;
+      }
+      const take = pending.subarray(0, Math.min(maxLength, pending.byteLength));
+      pending = pending.subarray(take.byteLength);
+      return take;
+    },
+    async close() {
+      if (closed) return;
+      closed = true;
+      await window.LifeLedgerAndroidBackup.closeRead(handle);
+    },
+  };
+}
+async function readAndroidTextBackup(source) {
+  const chunks = [];
+  let total = 0;
+  while (true) {
+    const part = await source.read(65_536);
+    if (!part.byteLength) break;
+    chunks.push(part);
+    total += part.byteLength;
+    if (total > MAX_IMPORT_BYTES) throw new Error("too-large");
+  }
+  const merged = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(merged);
+}
+async function exportAndroidJsonBackup(backup, filename) {
+  const picked = await window.LifeLedgerAndroidBackup.pickExport(filename, "application/json");
+  if (picked?.cancelled || !picked?.uri) return;
+  const sink = await androidWriteSink(picked.uri);
+  try {
+    await sink.write(new TextEncoder().encode(JSON.stringify(backup, null, 2)));
+    showToast(tr("toast.exported"));
+  } finally {
+    await sink.close().catch(() => {});
+  }
+}
+async function exportAndroidMediaBackup(backup, photos) {
+  const filename = `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`;
+  const picked = await window.LifeLedgerAndroidBackup.pickExport(filename, "application/octet-stream");
+  if (picked?.cancelled || !picked?.uri) return;
+  const sink = await androidWriteSink(picked.uri);
+  try {
+    await window.LifeLedgerMediaBackup.writeBundle(sink, backup, photos);
+    showToast(tr("toast.exported"));
+  } finally {
+    await sink.close().catch(() => {});
+  }
+}
 function decodeNativeOpenBackupPayload(buffer) {
   const bytes = buffer instanceof ArrayBuffer ? new Uint8Array(buffer) : new Uint8Array(buffer);
   if (bytes.length < 3 || bytes[0] !== 1) throw new Error("invalid-bridge-frame");
@@ -6793,11 +6899,20 @@ async function downloadExport(event) {
       if (scope !== "month") throw new Error("photo-backup-month-only");
       confirmButton.textContent = tr("backup.mediaExporting");
       const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
-      const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
-      await saveBackupBlob(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
+      if (androidNativeBackup) {
+        await exportAndroidMediaBackup(backup, photos);
+      } else {
+        const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
+        await saveBackupBlob(blob, `life-ledger-media-${backup.range.start.slice(0, 7)}-${isoDate(new Date())}.llmedia`);
+      }
     } else {
-      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-      await saveBackupBlob(blob, `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`);
+      const filename = `life-ledger-backup-${scope}-${backup.range.start || "all"}-${isoDate(new Date())}.json`;
+      if (androidNativeBackup) {
+        await exportAndroidJsonBackup(backup, filename);
+      } else {
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+        await saveBackupBlob(blob, filename);
+      }
     }
   } catch (error) {
     console.warn("Backup export failed", error);
@@ -6879,8 +6994,7 @@ async function previewImportFile(file) {
   clearImportSelection();
   if (!file) return;
   const mediaBundle = await window.LifeLedgerMediaBackup?.isBundle(file).catch(() => false);
-  const limit = mediaBundle ? MAX_MEDIA_IMPORT_BYTES : MAX_IMPORT_BYTES;
-  if (file.size > limit) {
+  if (!mediaBundle && file.size > MAX_IMPORT_BYTES) {
     $("#importError").textContent = tr("backup.tooLarge");
     $("#importError").hidden = false;
     return;
@@ -6899,6 +7013,57 @@ async function previewImportFile(file) {
   } catch (error) {
     console.warn("Backup validation failed", error);
     $("#importError").textContent = mediaBundle ? tr("backup.mediaInvalid") : tr("backup.invalid");
+    $("#importError").hidden = false;
+  }
+}
+async function previewAndroidImport() {
+  clearImportSelection();
+  try {
+    const picked = await window.LifeLedgerAndroidBackup.pickImport();
+    if (picked?.cancelled || !picked?.uri) return;
+    const name = picked.displayName || "life-ledger-backup";
+    const source = await androidReadSource(picked.uri);
+    let manifest = null;
+    try {
+      manifest = await window.LifeLedgerMediaBackup.parseBundlePreview(source, source.length);
+    } catch (error) {
+      manifest = null;
+    } finally {
+      await source.close().catch(() => {});
+    }
+    if (manifest) {
+      if (!photosEnabled) throw new Error("media-cloud-only");
+      const candidate = importedPayload(manifest.backup);
+      pendingImport = candidate;
+      pendingMediaImport = { manifest, androidUri: picked.uri, androidImport: true };
+      $("#importFileName").textContent = name;
+      $("#importSummary").textContent = importStats(candidate);
+      $(".import-file-badge").textContent = "MEDIA";
+      $("#chooseImportFile").hidden = true;
+      $("#importPreview").hidden = false;
+      return;
+    }
+    const jsonSource = await androidReadSource(picked.uri);
+    let contents;
+    try {
+      contents = await readAndroidTextBackup(jsonSource);
+    } finally {
+      await jsonSource.close().catch(() => {});
+    }
+    const candidate = importedPayload(JSON.parse(contents));
+    pendingImport = candidate;
+    pendingMediaImport = null;
+    $("#importFileName").textContent = name;
+    $("#importSummary").textContent = importStats(candidate);
+    $(".import-file-badge").textContent = "JSON";
+    $("#chooseImportFile").hidden = true;
+    $("#importPreview").hidden = false;
+  } catch (error) {
+    if (String(error?.message || "").includes("backup-cancelled")) return;
+    console.warn("Android backup import failed", error);
+    $("#importError").textContent = String(error?.message || "").includes("too-large")
+      ? tr("backup.tooLarge")
+      : tr("backup.invalid");
     $("#importError").hidden = false;
   }
 }
@@ -7006,7 +7171,21 @@ async function restorePendingImport() {
     syncBackupPreferencesToRuntime();
   }
   saveState();
-  if (media?.entries?.length) {
+  if (media?.androidImport && media?.androidUri) {
+    restoreButton.textContent = tr("backup.mediaRestoring");
+    const source = await androidReadSource(media.androidUri);
+    try {
+      const parsed = await window.LifeLedgerMediaBackup.parseBundleStream(source, source.length);
+      for (const entry of parsed.entries) {
+        await photoMemories.restorePhoto(entry.photo, await entry.readBlob());
+      }
+    } catch (error) {
+      console.warn("Photo restore failed", error);
+      void appAlert(tr("backup.mediaInvalid"));
+    } finally {
+      await source.close().catch(() => {});
+    }
+  } else if (media?.entries?.length) {
     restoreButton.textContent = tr("backup.mediaRestoring");
     try {
       for (const entry of media.entries) await photoMemories.restorePhoto(entry.photo, entry.blob);
@@ -7985,6 +8164,10 @@ function bindEvents() {
   $$('#exportForm input[name="exportScope"]').forEach(input => input.addEventListener("change", updateExportFields));
   $("#exportForm").addEventListener("submit", downloadExport);
   $("#chooseImportFile").addEventListener("click", async () => {
+    if (androidNativeBackup) {
+      await previewAndroidImport();
+      return;
+    }
     if (!desktopNativeBackup) {
       $("#importFile").click();
       return;
@@ -8005,7 +8188,7 @@ function bindEvents() {
   });
   $("#clearImportFile").addEventListener("click", () => {
     clearImportSelection();
-    if (!desktopNativeBackup) $("#importFile").click();
+    if (!desktopNativeBackup && !androidNativeBackup) $("#importFile").click();
   });
   $("#importFile").addEventListener("change", event => previewImportFile(event.target.files?.[0]));
   $("#restoreImport").addEventListener("click", restorePendingImport);
