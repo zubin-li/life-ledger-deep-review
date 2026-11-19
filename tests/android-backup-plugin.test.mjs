@@ -22,7 +22,7 @@ test("android backup plugin uses SAF create/open document intents", () => {
 test("mobile backup commands and capabilities stay android-scoped", () => {
   assert.match(mobileRs, /register_android_plugin\(PLUGIN_CLASS, "BackupPlugin"\)/);
   assert.match(mobileRs, /app\.zubinli\.lifeledger\.androidtest\.backup/);
-  assert.match(mobileRs, /android_pick_import/);
+  assert.equal([...mobileRs.matchAll(/#\[tauri::command\]\s+pub async fn android_/g)].length, 9);
   assert.ok(capability.permissions.includes("allow-android-pick-import"));
   assert.ok(capability.permissions.includes("allow-android-backup-open-write"));
   assert.doesNotMatch(readFileSync(new URL("../src-tauri/capabilities/local-only.json", import.meta.url), "utf8"), /allow-android/);
