@@ -9,6 +9,8 @@ const capability = JSON.parse(readFileSync(new URL("../src-tauri/capabilities/an
 
 test("android backup plugin uses SAF create/open document intents", () => {
   assert.match(plugin, /Intent\.ACTION_CREATE_DOCUMENT/);
+  assert.match(plugin, /import androidx\.activity\.result\.ActivityResult/);
+  assert.doesNotMatch(plugin, /android\.app\.ActivityResult/);
   assert.match(plugin, /Intent\.ACTION_OPEN_DOCUMENT/);
   assert.match(plugin, /"application\/json"/);
   assert.match(plugin, /"text\/plain"/);

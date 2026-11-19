@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.OpenableColumns
 import android.util.Base64
+import androidx.activity.result.ActivityResult
 import app.tauri.Logger
 import app.tauri.annotation.ActivityCallback
 import app.tauri.annotation.Command
@@ -101,7 +102,7 @@ class BackupPlugin(private val activity: Activity) : Plugin(activity) {
     }
 
     @ActivityCallback
-    fun importPickResult(invoke: Invoke, result: android.app.ActivityResult) {
+    fun importPickResult(invoke: Invoke, result: ActivityResult) {
         try {
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
@@ -151,7 +152,7 @@ class BackupPlugin(private val activity: Activity) : Plugin(activity) {
     }
 
     @ActivityCallback
-    fun exportPickResult(invoke: Invoke, result: android.app.ActivityResult) {
+    fun exportPickResult(invoke: Invoke, result: ActivityResult) {
         try {
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
