@@ -1,14 +1,14 @@
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
-use tauri::{plugin::PluginHandle, Manager, Runtime, State};
+use tauri::{plugin::PluginHandle, Manager, State, Wry};
 
 pub const PLUGIN_NAME: &str = "life-ledger-backup";
 const PLUGIN_CLASS: &str = "app.zubinli.lifeledger.androidtest.backup";
 pub const BACKUP_CANCELLED_ERROR: &str = "backup-cancelled";
 
-pub struct BackupHandle<R: Runtime>(pub(crate) Mutex<Option<PluginHandle<R>>>);
+pub struct BackupHandle(pub(crate) Mutex<Option<PluginHandle<Wry>>>);
 
-fn plugin_handle<R: Runtime>(state: &State<'_, BackupHandle<R>>) -> Result<PluginHandle<R>, String> {
+fn plugin_handle(state: &State<'_, BackupHandle>) -> Result<PluginHandle<Wry>, String> {
     state
         .0
         .lock()
@@ -110,7 +110,7 @@ struct WriteChunkRaw {
 }
 
 #[tauri::command]
-pub async fn android_pick_import<R: Runtime>(backup: State<'_, BackupHandle<R>>) -> Result<PickImportResponse, String> {
+pub async fn android_pick_import(backup: State<'_, BackupHandle>) -> Result<PickImportResponse, String> {
     let handle = plugin_handle(&backup)?;
     let response = handle
         .run_mobile_plugin_async::<PickResponse>("pickImport", ())
@@ -124,8 +124,8 @@ pub async fn android_pick_import<R: Runtime>(backup: State<'_, BackupHandle<R>>)
 }
 
 #[tauri::command]
-pub async fn android_pick_export<R: Runtime>(
-    backup: State<'_, BackupHandle<R>>,
+pub async fn android_pick_export(
+    backup: State<'_, BackupHandle>,
     file_name: String,
     mime_type: String,
 ) -> Result<PickExportResponse, String> {
@@ -145,7 +145,7 @@ pub async fn android_pick_export<R: Runtime>(
 }
 
 #[tauri::command]
-pub async fn android_document_length<R: Runtime>(backup: State<'_, BackupHandle<R>>, uri: String) -> Result<DocumentLength, String> {
+pub async fn android_document_length(backup: State<'_, BackupHandle>, uri: String) -> Result<DocumentLength, String> {
     let handle = plugin_handle(&backup)?;
     let response = handle
         .run_mobile_plugin_async::<DocumentLengthResponse>("documentLength", UriPayload { uri: &uri })
@@ -157,7 +157,7 @@ pub async fn android_document_length<R: Runtime>(backup: State<'_, BackupHandle<
 }
 
 #[tauri::command]
-pub async fn android_backup_open_write<R: Runtime>(backup: State<'_, BackupHandle<R>>, uri: String) -> Result<IoHandleResponse, String> {
+pub async fn android_backup_open_write(backup: State<'_, BackupHandle>, uri: String) -> Result<IoHandleResponse, String> {
     let handle = plugin_handle(&backup)?;
     let response = handle
         .run_mobile_plugin_async::<OpenHandleResponse>("openWrite", UriPayload { uri: &uri })
@@ -169,8 +169,8 @@ pub async fn android_backup_open_write<R: Runtime>(backup: State<'_, BackupHandl
 }
 
 #[tauri::command]
-pub async fn android_backup_write_chunk<R: Runtime>(
-    backup: State<'_, BackupHandle<R>>,
+pub async fn android_backup_write_chunk(
+    backup: State<'_, BackupHandle>,
     handle: i32,
     data: String,
 ) -> Result<WriteChunkResponse, String> {
@@ -185,7 +185,7 @@ pub async fn android_backup_write_chunk<R: Runtime>(
 }
 
 #[tauri::command]
-pub async fn android_backup_close_write<R: Runtime>(backup: State<'_, BackupHandle<R>>, handle: i32) -> Result<CloseIoResponse, String> {
+pub async fn android_backup_close_write(backup: State<'_, BackupHandle>, handle: i32) -> Result<CloseIoResponse, String> {
     let plugin = plugin_handle(&backup)?;
     plugin
         .run_mobile_plugin_async::<CloseIoResponse>("closeWrite", HandlePayload { handle })
@@ -194,7 +194,7 @@ pub async fn android_backup_close_write<R: Runtime>(backup: State<'_, BackupHand
 }
 
 #[tauri::command]
-pub async fn android_backup_open_read<R: Runtime>(backup: State<'_, BackupHandle<R>>, uri: String) -> Result<IoHandleResponse, String> {
+pub async fn android_backup_open_read(backup: State<'_, BackupHandle>, uri: String) -> Result<IoHandleResponse, String> {
     let handle = plugin_handle(&backup)?;
     let response = handle
         .run_mobile_plugin_async::<OpenHandleResponse>("openRead", UriPayload { uri: &uri })
@@ -206,8 +206,8 @@ pub async fn android_backup_open_read<R: Runtime>(backup: State<'_, BackupHandle
 }
 
 #[tauri::command]
-pub async fn android_backup_read_chunk<R: Runtime>(
-    backup: State<'_, BackupHandle<R>>,
+pub async fn android_backup_read_chunk(
+    backup: State<'_, BackupHandle>,
     handle: i32,
     max_bytes: Option<i32>,
 ) -> Result<ReadChunkResponse, String> {
@@ -225,7 +225,7 @@ pub async fn android_backup_read_chunk<R: Runtime>(
 }
 
 #[tauri::command]
-pub async fn android_backup_close_read<R: Runtime>(backup: State<'_, BackupHandle<R>>, handle: i32) -> Result<CloseIoResponse, String> {
+pub async fn android_backup_close_read(backup: State<'_, BackupHandle>, handle: i32) -> Result<CloseIoResponse, String> {
     let plugin = plugin_handle(&backup)?;
     plugin
         .run_mobile_plugin_async::<CloseIoResponse>("closeRead", HandlePayload { handle })
@@ -233,7 +233,7 @@ pub async fn android_backup_close_read<R: Runtime>(backup: State<'_, BackupHandl
         .map_err(|e| e.to_string())
 }
 
-pub fn plugin<R: Runtime>() -> tauri::plugin::TauriPlugin<R> {
+pub fn plugin() -> tauri::plugin::TauriPlugin<Wry> {
     tauri::plugin::Builder::new(PLUGIN_NAME)
         .setup(|app, api| {
             #[cfg(target_os = "android")]

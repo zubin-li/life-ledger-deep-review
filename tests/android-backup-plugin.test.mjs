@@ -23,6 +23,9 @@ test("android backup plugin uses SAF create/open document intents", () => {
 test("mobile backup commands and capabilities stay android-scoped", () => {
   assert.match(mobileRs, /register_android_plugin\(PLUGIN_CLASS, "BackupPlugin"\)/);
   assert.match(mobileRs, /app\.zubinli\.lifeledger\.androidtest\.backup/);
+  assert.match(mobileRs, /pub struct BackupHandle\(pub\(crate\) Mutex<Option<PluginHandle<Wry>>>\);/);
+  assert.match(mobileRs, /pub fn plugin\(\) -> tauri::plugin::TauriPlugin<Wry>/);
+  assert.doesNotMatch(mobileRs, /pub async fn android_\w+<R: Runtime>/);
   assert.equal([...mobileRs.matchAll(/#\[tauri::command\]\s+pub async fn android_/g)].length, 9);
   assert.match(mobileRs, /#\[derive\(Debug, Deserialize, Serialize\)\]\s+pub struct CloseIoResponse/);
   assert.match(mobileRs, /#\[derive\(Debug, Deserialize, Serialize\)\]\s+pub struct ReadChunkResponse/);
