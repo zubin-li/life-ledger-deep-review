@@ -1,4 +1,4 @@
-const CACHE_NAME = "life-ledger-pwa-2.1.0-b2e2";
+const CACHE_NAME = "life-ledger-pwa-2.1.0-b3e3";
 
 const HAIRLINE_ASSETS = [
   "./assets/hairline/backup-restore.svg",

@@ -7,7 +7,6 @@
     credibility?,top?,quote?,relevance?,review?:{verdict,flaws[],generalisation,boundary,meaning},fact_check?:{status,note,url},
     images?:[{name,data:"data:image/jpeg;base64,…"}]}]} */
 (function(root){
-  const MARKS=['agree','doubt','acted'];
   const BIG=1024*1024; // screenshots are tens to hundreds of KB; bigger files are likely photos
   const empty=()=>({weeks:{},marks:{},deleted:{}});
   const str=(v,max)=>typeof v==='string'?v.slice(0,max):'';
@@ -19,9 +18,10 @@
   function cleanItem(raw,week,images){
     if(!raw||typeof raw!=='object'||!str(raw.id,80)||!str(raw.title,300))return null;
     const r=raw.review&&typeof raw.review==='object'?raw.review:null, f=raw.fact_check&&typeof raw.fact_check==='object'?raw.fact_check:null;
-    const url=str(f?.url,500), id=`${week}:${str(raw.id,80)}`;
+    const url=str(f?.url,500), id=`${week}:${str(raw.id,80)}`, cap=str(raw.capturedAt,10);
     return {id,title:str(raw.title,300),core:str(raw.core,2000),category:str(raw.category,40),
       credibility:str(raw.credibility,40),top:raw.top===true,quote:str(raw.quote,400),relevance:str(raw.relevance,1000),
+      capturedAt:/^\d{4}-\d{2}-\d{2}$/.test(cap)?cap:'',
       review:r?{verdict:str(r.verdict,20),flaws:Array.isArray(r.flaws)?r.flaws.filter(x=>typeof x==='string').slice(0,5).map(x=>x.slice(0,20)):[],
         generalisation:str(r.generalisation,1000),boundary:str(r.boundary,1000),meaning:str(r.meaning,1500)}:null,
       fact:f?{status:str(f.status,20),note:str(f.note,1000),url:/^https?:\/\//.test(url)?url:''}:null,
@@ -105,7 +105,7 @@
   }
 
   // ---- view ----
-  let ctx, filter={cat:'',verdict:'',q:'',mark:''};
+  let ctx, filter={cat:'',verdict:'',q:''};
   let layout=(()=>{try{return localStorage.getItem('life-ledger-insights-layout')==='flat'?'flat':'timeline';}catch{return 'timeline';}})();
   const urls=new Map();
   const t=(zh,en,de)=>ctx.text(zh,en,de), e=v=>ctx.escape(String(v??''));
@@ -120,11 +120,11 @@
     tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>',
     quote:'<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 0-1 1v3c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.76-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>',
     other:'<path d="M12 3l1.9 5.8L20 10.7l-5.8 1.9L12 18.5l-1.9-5.9L4 10.7l6.1-1.9z"/>',
-    agree:'<path d="M20 6 9 17l-5-5"/>', doubt:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
-    acted:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>', image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+    calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
     upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
     timeline:'<path d="M12 3v18"/><circle cx="12" cy="7" r="2"/><circle cx="12" cy="17" r="2"/><path d="M15 7h6M3 17h6"/>', grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-    check:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>', search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
     trash:'<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/>',
   };
   // Category → icon/colour by common words in zh/en/de; any other category still gets a stable colour.
@@ -133,7 +133,6 @@
   const COLORS=['blue','sage','violet','amber','coral'];
   function kind(cat){const k=KINDS.find(([,re])=>re.test(cat||''));if(k)return {icon:k[0],color:k[2]};let h=0;for(const ch of cat||'')h=(h*31+ch.charCodeAt(0))|0;return {icon:'other',color:COLORS[Math.abs(h)%5]};}
   const VERDICT={'成立':'sage','部分成立':'amber','不成立':'coral','证据不足':'muted'};
-  const markLabel=m=>({agree:t('认同','Agree','Stimme zu'),doubt:t('存疑','Doubt','Zweifel'),acted:t('已行动','Acted','Umgesetzt')}[m]);
   const fmt=d=>d.toLocaleDateString(ctx.lang(),{month:'short',day:'numeric'});
   function weekLabel(key){
     const n=weeksBetween(ctx.currentWeek(),key), [a,b]=weekRange(key);
@@ -172,7 +171,7 @@
       <div class="ins-vlegend" role="group" aria-label="${e(t('按结论筛选','Filter by verdict','Nach Urteil filtern'))}">${counts.map(([v,n])=>`<button type="button" data-verdict="${e(v)}" data-tone="${VERDICT[v]}" class="ins-vchip${filter.verdict===v?' is-active':''}" aria-pressed="${filter.verdict===v}"><b></b>${e(v)}<small>${n}</small></button>`).join('')}<span class="ins-vhint">${t('点一下只看这一类','Tap to show only these','Antippen zum Filtern')}</span></div>`;
   }
   function hero(d,weeks){
-    const w=weeks[0], items=live(d,w), marked=items.filter(i=>d.marks[i.id]?.mark).length, L=weekLabel(w);
+    const w=weeks[0], items=live(d,w), L=weekLabel(w);
     return `<header class="ins-hero">
       <div class="ins-hero-art">${hairline}</div>
       <div class="ins-hero-main">
@@ -181,7 +180,6 @@
         <div class="ins-signals">
           <span>${svg(IC.all)}<b>${items.length}</b>${t('条','items','Einträge')}</span>
           <span>${svg(IC.other)}<b>${items.filter(i=>i.top).length}</b>${t('条重点','top','Top')}</span>
-          <span>${svg(IC.check)}<b data-marked>${marked}</b>/${items.length} ${t('已标记','marked','markiert')}</span>
           <span>${svg(IC.image)}<b>${items.reduce((s,i)=>s+(i.images?.length||0),0)}</b>${t('张原图','originals','Originale')}</span>
         </div>
         <div class="ins-verdicts">${verdictBar(allLive(d,weeks))}</div>
@@ -196,7 +194,7 @@
     const delAll=v==='不成立'&&shown.length>1?`<button type="button" class="ins-del-all" data-delete-all>${svg(IC.trash)}${t(`删除这 ${shown.length} 条`,`Delete these ${shown.length}`,`Diese ${shown.length} löschen`)}</button>`:'';
     return `<div class="ins-banner" data-tone="${tone}">${art(key,'ins-banner-art')}<div><strong>${e(title)}</strong><p>${e(note)}</p></div>${delAll}<button type="button" class="ins-banner-x" data-clear aria-label="${e(t('清除筛选','Clear filter','Filter löschen'))}">✕</button></div>`;
   }
-  function card(i,mark,n,kept){
+  function card(i,n,kept){
     const r=i.review, f=i.fact, k=kind(i.category), bad=r?.verdict==='不成立';
     const rows=r?[[t('归纳是否成立','Does the conclusion follow','Folgt der Schluss'),r.generalisation],[t('适用边界','Where it applies','Gilt wann'),r.boundary],[t('背后反映','What it reveals','Was dahintersteckt'),r.meaning]].filter(x=>x[1]):[];
     const imgs=i.images||[];
@@ -208,17 +206,17 @@
       ${r?`<div class="insight-review"><div class="insight-review-head">${t('辨证分析','Critical check','Kritische Prüfung')}${r.verdict?`<button type="button" class="insight-verdict" data-verdict="${e(r.verdict)}" data-tone="${VERDICT[r.verdict]||'muted'}" title="${e(t('只看这一类','Show only these','Nur diese zeigen'))}">${e(r.verdict)}</button>`:''}${r.flaws.map(x=>`<span class="insight-flaw">${e(x)}</span>`).join('')}</div>${rows.map(([k2,v])=>`<p><b>${e(k2)}：</b>${e(v)}</p>`).join('')}</div>`:''}
       ${f?`<p class="insight-fact"><b>${t('核实','Fact check','Faktencheck')}：${e(f.status)}</b> ${e(f.note)}${f.url?` <a href="${e(f.url)}" target="_blank" rel="noopener noreferrer">${t('来源','Source','Quelle')}</a>`:''}</p>`:''}
       ${bad&&!kept?`<div class="insight-ask">${art('不成立','insight-ask-art')}<span>${t('这条核查后不成立，要删掉吗？','This did not hold up. Delete it?','Hält nicht stand. Löschen?')}</span><button type="button" class="is-danger" data-delete>${t('删除','Delete','Löschen')}</button><button type="button" data-keep>${t('保留','Keep','Behalten')}</button></div>`:''}
-      <div class="insight-marks" role="group">${MARKS.map(m=>`<button type="button" class="insight-mark${mark===m?' is-active':''}" data-mark="${m}" aria-pressed="${mark===m}">${svg(IC[m])}${e(markLabel(m))}</button>`).join('')}<button type="button" class="insight-del" data-delete aria-label="${e(t('删除这条','Delete this insight','Diese Erkenntnis löschen'))}" title="${e(t('删除','Delete','Löschen'))}">${svg(IC.trash)}</button></div>
+      <div class="insight-foot">${i.capturedAt?`<time class="insight-date" datetime="${e(i.capturedAt)}">${svg(IC.calendar)}${e(t(`截图于 ${i.capturedAt}`,`Captured ${i.capturedAt}`,`Aufgenommen ${i.capturedAt}`))}</time>`:''}<button type="button" class="insight-del" data-delete aria-label="${e(t('删除这条','Delete this insight','Diese Erkenntnis löschen'))}" title="${e(t('删除','Delete','Löschen'))}">${svg(IC.trash)}</button></div>
     </article>`;
   }
-  const cardOf=(d,i,n)=>card(i,d.marks[i.id]?.mark,n,d.marks[i.id]?.kept);
+  const cardOf=(d,i,n)=>card(i,n,d.marks[i.id]?.kept);
   function body(d,weeks,shown){
     if(!shown.length)return `<div class="ins-none">${art(filter.verdict||'other','ins-none-art')}<p>${t('没有符合筛选的洞见','No insights match these filters','Keine passenden Erkenntnisse')}</p></div>`;
     if(layout==='flat')return `<div class="insights-grid">${shown.map((i,n)=>cardOf(d,i,n)).join('')}</div>`;
     return `<div class="ins-timeline">${weeks.map((w,wn)=>{
       const items=shown.filter(i=>i.id.startsWith(w+':')); if(!items.length)return '';
-      const L=weekLabel(w), all=live(d,w), marked=all.filter(i=>d.marks[i.id]?.mark).length;
-      return `<section class="ins-week${L.current?' is-current':''}" style="--wi:${Math.min(wn,4)}"><header class="ins-week-head"><i class="ins-dot"></i><strong>${e(L.rel)}</strong><span>${e(L.range)}</span><span class="ins-week-count">${items.length} ${t('条','items','Einträge')} · ${marked}/${all.length} ${t('已标记','marked','markiert')}</span></header>
+      const L=weekLabel(w);
+      return `<section class="ins-week${L.current?' is-current':''}" style="--wi:${Math.min(wn,4)}"><header class="ins-week-head"><i class="ins-dot"></i><strong>${e(L.rel)}</strong><span>${e(L.range)}</span><span class="ins-week-count">${items.length} ${t('条','items','Einträge')}</span></header>
         <div class="insights-grid">${items.map((i,n)=>cardOf(d,i,n)).join('')}</div></section>`;}).join('')}</div>`;
   }
   const io=typeof IntersectionObserver!=='undefined'?new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){io.unobserve(en.target);loadImg(en.target);}}),{rootMargin:'400px'}):null;
@@ -252,9 +250,8 @@
   }
   function visible(d,weeks){
     const q=filter.q.toLowerCase();
-    return weeks.flatMap(w=>live(d,w).slice().sort((a,b)=>b.top-a.top)).filter(i=>(!filter.cat||i.category===filter.cat)&&(!filter.verdict||i.review?.verdict===filter.verdict)
-      &&(!filter.mark||(filter.mark==='none'?!d.marks[i.id]?.mark:d.marks[i.id]?.mark===filter.mark))
-      &&(!q||[i.title,i.core,i.quote,i.category,i.review?.generalisation,i.review?.boundary,i.review?.meaning].join(' ').toLowerCase().includes(q)));
+    return weeks.flatMap(w=>live(d,w).slice().sort((a,b)=>(b.top-a.top)||String(b.capturedAt||'').localeCompare(String(a.capturedAt||'')))).filter(i=>(!filter.cat||i.category===filter.cat)&&(!filter.verdict||i.review?.verdict===filter.verdict)
+      &&(!q||[i.title,i.core,i.quote,i.category,i.capturedAt,i.review?.generalisation,i.review?.boundary,i.review?.meaning].join(' ').toLowerCase().includes(q)));
   }
   function paintBody(host,animate){
     const d=data(ctx.state()), weeks=Object.keys(d.weeks).sort().reverse(), list=host.querySelector('.ins-body');
@@ -270,7 +267,6 @@
     const d=data(ctx.state()), weeks=Object.keys(d.weeks).sort().reverse();
     const v=host.querySelector('.ins-verdicts'); if(v)v.innerHTML=verdictBar(allLive(d,weeks));
     host.querySelectorAll('.ins-chip').forEach(b=>{const c=b.dataset.cat;b.querySelector('small').textContent=allLive(d,weeks).filter(i=>!c||i.category===c).length;});
-    const latest=weeks[0], hm=host.querySelector('[data-marked]'); if(hm)hm.textContent=live(d,latest).filter(i=>d.marks[i.id]?.mark).length;
     ctx.changed?.();
   }
   function deleteIds(host,ids){
@@ -287,7 +283,6 @@
     const cats=[...new Set(allLive(d,weeks).map(i=>i.category).filter(Boolean))];
     if(filter.cat&&!cats.includes(filter.cat))filter.cat='';
     const count=c2=>allLive(d,weeks).filter(i=>!c2||i.category===c2).length;
-    const opt=(v,l,cur)=>`<option value="${e(v)}"${v===cur?' selected':''}>${e(l)}</option>`;
     const importBtn=`<label class="ins-import">${svg(IC.upload)}<span>${t('导入','Import','Importieren')}</span><input type="file" accept="application/json,.json" hidden></label>`;
     host.innerHTML=weeks.length?`${hero(d,weeks)}
       <div class="insights-toolbar">
@@ -296,7 +291,6 @@
           <div class="ins-seg" role="group" aria-label="${e(t('排列','Layout','Anordnung'))}"><i class="ins-seg-thumb" data-pos="${layout==='flat'?1:0}"></i>
             <button type="button" data-layout="timeline" aria-pressed="${layout==='timeline'}">${svg(IC.timeline)}${t('时间轴','Timeline','Zeitachse')}</button>
             <button type="button" data-layout="flat" aria-pressed="${layout==='flat'}">${svg(IC.grid)}${t('不分周','All at once','Ohne Wochen')}</button></div>
-          <select data-f="mark" aria-label="${e(t('标记','Mark','Markierung'))}">${opt('',t('全部标记','All marks','Alle'),filter.mark)}${opt('none',t('未标记','Unmarked','Ohne'),filter.mark)}${MARKS.map(m=>opt(m,markLabel(m),filter.mark)).join('')}</select>
           <label class="ins-search">${svg(IC.search)}<input type="search" data-f="q" value="${e(filter.q)}" placeholder="${e(t('搜索…','Search…','Suchen…'))}"></label>
           ${importBtn}
         </div></div><div class="ins-body"></div>`
@@ -322,15 +316,6 @@
       if(keep){const cardEl=keep.closest('.insight-card'),id=cardEl.dataset.id,s=ctx.state(),cur=data(s);
         s.insights={weeks:cur.weeks,marks:{...cur.marks,[id]:{...(cur.marks[id]||{mark:''}),kept:true,updatedAt:Date.now()}},deleted:cur.deleted};ctx.save();
         const ask=cardEl.querySelector('.insight-ask');ask.classList.add('is-leaving');setTimeout(()=>ask.remove(),300);return;}
-      const mb=ev.target.closest('[data-mark]'); if(!mb)return;
-      const cardEl=mb.closest('.insight-card'), id=cardEl.dataset.id, s=ctx.state(), cur=data(s), m=mb.dataset.mark, next=cur.marks[id]?.mark===m?'':m;
-      s.insights={weeks:cur.weeks,marks:{...cur.marks,[id]:{...(cur.marks[id]||{}),mark:next,updatedAt:Date.now()}},deleted:cur.deleted}; ctx.save();
-      // update in place: no re-render, so nothing jumps
-      cardEl.querySelectorAll('[data-mark]').forEach(b=>{const on=b.dataset.mark===next;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',on);});
-      if(next){mb.classList.remove('is-pop');void mb.offsetWidth;mb.classList.add('is-pop');}
-      const nd=data(s), latest=Object.keys(nd.weeks).sort().reverse()[0];
-      const hm=host.querySelector('[data-marked]'); if(hm)hm.textContent=live(nd,latest).filter(i=>nd.marks[i.id]?.mark).length;
-      const sec=cardEl.closest('.ins-week'); if(sec){const w=id.split(':')[0],all=live(nd,w);sec.querySelector('.ins-week-count').textContent=`${sec.querySelectorAll('.insight-card').length} ${t('条','items','Einträge')} · ${all.filter(i=>nd.marks[i.id]?.mark).length}/${all.length} ${t('已标记','marked','markiert')}`;}
     };
     let qTimer;
     host.querySelectorAll('[data-f]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{
