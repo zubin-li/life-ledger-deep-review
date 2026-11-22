@@ -15,6 +15,16 @@ test("parse rejects foreign files and keeps only safe fields", () => {
   assert.equal(items[0].id, "2026-W46:a");
   assert.equal(items[0].fact.url, "");
   assert.equal(items[0].files, undefined);
+  assert.equal(items[0].capturedAt, "");
+});
+
+test("parse keeps valid YYYY-MM-DD capturedAt and drops invalid values", () => {
+  const { items } = insights.parse(file([
+    item("a", { capturedAt: "2026-11-16" }),
+    item("b", { capturedAt: "not-a-date" }),
+  ]));
+  assert.equal(items[0].capturedAt, "2026-11-16");
+  assert.equal(items[1].capturedAt, "");
 });
 
 test("re-importing a week replaces its items but keeps the user's marks", () => {

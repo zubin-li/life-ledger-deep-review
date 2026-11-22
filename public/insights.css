@@ -79,13 +79,13 @@ html[data-theme="dark"] #insightsView, :root.dark #insightsView { --ins-blue: #8
 .ins-seg button[aria-pressed="true"] { color: var(--ink); }
 .ins-seg-thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 8px; background: var(--card); box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04); transition: transform .32s var(--ins-ease); }
 .ins-seg-thumb[data-pos="1"] { transform: translateX(100%); }
-.insights-filters select, .ins-search { height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 500 13px var(--font-body); }
+.ins-search { height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 500 13px var(--font-body); }
 .ins-search { display: inline-flex; align-items: center; gap: 6px; flex: 1 1 180px; max-width: 280px; color: var(--muted); transition: border-color .2s, box-shadow .2s; }
 .ins-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
 .ins-search input { flex: 1; min-width: 0; border: 0; background: none; outline: none; color: var(--ink); font: inherit; }
 .ins-import { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; background: var(--accent); color: #fff; font: 600 13px var(--font-body); cursor: pointer; transition: transform .22s var(--ins-ease), box-shadow .22s; }
 .ins-import:hover { transform: translateY(-1px); box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 30%, transparent); }
-.ins-import:active, .ins-chip:active, .insight-mark:active, .insight-shot:active { transform: scale(.96); transition-duration: .08s; }
+.ins-import:active, .ins-chip:active, .insight-shot:active { transform: scale(.96); transition-duration: .08s; }
 .insights-count { margin: 6px 0 4px; color: var(--muted); font-size: 12px; }
 
 /* timeline */
@@ -178,18 +178,10 @@ html[data-theme="dark"] #insightsView, :root.dark #insightsView { --ins-blue: #8
 .insight-card.is-leaving { overflow: hidden; opacity: 0; transform: scale(.94); height: 0 !important; padding-top: 0; padding-bottom: 0; margin: 0; border-width: 0;
   transition: opacity .25s ease, transform .3s var(--ins-ease), height .35s var(--ins-ease) .05s, padding .35s var(--ins-ease) .05s; }
 
-/* marks */
-.insight-marks { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
-.insight-mark { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 500 13px var(--font-body); cursor: pointer;
-  transition: background-color .22s var(--ins-ease), color .22s, border-color .22s, transform .22s var(--ins-ease); }
-.insight-mark .ins-ic { width: 14px; height: 14px; }
-.insight-mark:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 25%, transparent); }
-.insight-mark[data-mark="agree"] { --m: var(--ins-sage); } .insight-mark[data-mark="doubt"] { --m: var(--ins-amber); } .insight-mark[data-mark="acted"] { --m: var(--accent); }
-.insight-mark.is-active { background: var(--m); border-color: var(--m); color: #fff; }
-.insight-mark.is-pop { animation: insPop .42s var(--ins-ease); }
-.insight-mark.is-pop .ins-ic { animation: insTick .42s var(--ins-ease); }
-@keyframes insPop { 0% { transform: scale(.9); } 45% { transform: scale(1.08); } 100% { transform: none; } }
-@keyframes insTick { 0% { transform: rotate(-20deg) scale(.4); } 60% { transform: rotate(8deg) scale(1.15); } 100% { transform: none; } }
+/* card footer */
+.insight-foot { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.insight-date { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.insight-date .ins-ic { width: 14px; height: 14px; opacity: .75; }
 
 /* empty states */
 .insights-empty, .ins-none { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 56px 16px; text-align: center; color: var(--muted); }

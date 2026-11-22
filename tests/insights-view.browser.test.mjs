@@ -54,6 +54,43 @@ test(
       assert.match(title || "", /洞见/);
       await page.waitForSelector("#insightsWorkspace .ll-art svg", { timeout: 15000 });
       assert.equal(await page.locator('.nav-item[data-view="insights"].active').count(), 1);
+
+      await page.evaluate(() => {
+        window.LifeLedgerInsights.render({
+          state: () => ({
+            insights: {
+              weeks: {
+                "2026-W47": {
+                  importedAt: 1,
+                  items: [{
+                    id: "2026-W47:w47-01",
+                    title: "截图日期展示验证",
+                    core: "核心内容",
+                    category: "人生观",
+                    capturedAt: "2026-11-16",
+                    top: true,
+                    images: [],
+                  }],
+                },
+              },
+              marks: {},
+              deleted: {},
+            },
+          }),
+          save: () => {},
+          toast: () => {},
+          text: zh => zh,
+          escape: v => v,
+          lang: () => "zh-CN",
+          currentWeek: () => "2026-W47",
+          cloud: () => true,
+          ns: () => "",
+        });
+      });
+      await page.waitForSelector(".insight-card .insight-date", { timeout: 15000 });
+      assert.match(await page.locator(".insight-card .insight-date").textContent() || "", /2026-11-16/);
+      assert.equal(await page.locator(".insight-mark").count(), 0);
+      assert.equal(await page.locator('select[data-f="mark"]').count(), 0);
     } finally {
       await browser.close();
       server.kill("SIGTERM");
