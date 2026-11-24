@@ -1,3 +1,7 @@
+# Platforms
+
+- Web, macOS and Android share one `main` and one data core; read `PLATFORMS.md` before cross-platform or platform-specific design work.
+
 # Repository release discipline
 
 - Keep each commit focused on one logical change. Do not create extra commits only to make the history look busier.
