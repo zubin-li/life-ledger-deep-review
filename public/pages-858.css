@@ -2852,8 +2852,8 @@ html:not([data-workspace]) .journal-library-card:active { transform: scale(.97);
 @media (max-width: 760px) {
   html:not([data-desktop]) .main-nav { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important; gap: 0; }
   html:not([data-desktop]) .sidebar { left: 8px; right: 8px; padding: 8px 6px; }
-  html:not([data-desktop]) .nav-item { padding: 7px 0; font-size: 10px; letter-spacing: 0; white-space: nowrap; min-width: 0; overflow: hidden; }
-  html:not([data-desktop]) .nav-label { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  html:not([data-desktop]) .nav-item { padding: 4px 0; font-size: 9.5px; letter-spacing: 0; white-space: normal; min-width: 0; min-height: 48px; overflow: visible; align-content: center; }
+  html:not([data-desktop]) .nav-label { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-overflow: unset; max-width: 100%; line-height: 1.12; text-align: center; overflow-wrap: anywhere; hyphens: auto; }
   html:not([data-desktop]) .nav-item:active { transform: scale(.92); }
 }
 /* calendar cell: one marker per day — the mood. Photos/schedule live in the day detail (user 10/22: no clutter). */
@@ -2947,9 +2947,10 @@ html:not([data-workspace]) #timelineDetail .tl-habit > span { white-space: nowra
 #reviewView .rv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 #reviewView .rv-table th, #reviewView .rv-table td { padding: 7px 6px; text-align: left; border-top: 1px solid var(--line); font-weight: 500; white-space: nowrap; }
 #reviewView .rv-table thead th { border-top: 0; color: var(--muted); font-size: 11px; font-weight: 500; }
-#reviewView .rv-table tbody th { display: flex; align-items: center; gap: 8px; }
-#reviewView .rv-table .insight-habit-icon { width: 24px; height: 24px; flex: 0 0 auto; }
-#reviewView .rv-table td:nth-child(3) { display: flex; align-items: center; gap: 8px; }
+#reviewView .rv-table tbody th { vertical-align: middle; line-height: 1.35; }
+#reviewView .rv-table .insight-habit-icon { display: inline-grid; width: 24px; height: 24px; vertical-align: middle; margin-inline-end: 8px; }
+#reviewView .rv-table td:has(.rv-bar) { vertical-align: middle; }
+#reviewView .rv-table td .rv-bar { display: inline-block; vertical-align: middle; max-width: 72px; width: 42%; min-width: 28px; margin-inline-end: 6px; }
 #reviewView .rv-bar { flex: 1; min-width: 60px; height: 6px; border-radius: 99px; background: rgba(120,130,140,.12); overflow: hidden; }
 #reviewView .rv-bar i { display: block; height: 100%; border-radius: inherit; background: var(--habit-color, var(--desk-accent, #167dce)); }
 #reviewView .rv-table td b { min-width: 3ch; font-weight: 600; }
@@ -2961,8 +2962,29 @@ html:not([data-workspace]) #timelineDetail .tl-habit > span { white-space: nowra
 @media (max-width: 760px) {
   #reviewView .rv-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   #reviewView .review-habit-compare { grid-template-columns: minmax(0, 1fr) !important; }
-  #reviewView .rv-table td:nth-child(2) { display: none; }
-  #reviewView .rv-table thead th:nth-child(2) { display: none; }
+  #reviewView .review-habit-compare,
+  #reviewView .insight-habit-panel { min-width: 0; max-width: 100%; overflow-x: clip; }
+  #reviewView .rv-table { table-layout: fixed; width: 100%; font-size: 11.5px; }
+  #reviewView .rv-table th,
+  #reviewView .rv-table td { white-space: normal; overflow-wrap: anywhere; hyphens: auto; padding: 7px 4px; }
+  #reviewView .rv-table thead th:nth-child(1) { width: 36%; }
+  #reviewView .rv-table thead th:nth-child(3) { width: 22%; }
+  #reviewView .rv-table thead th:nth-child(4) { width: 26%; }
+  #reviewView .rv-table thead th:nth-child(5) { width: 16%; }
+  #reviewView .rv-table thead th:nth-child(2),
+  #reviewView .rv-table .rv-spark-cell {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #reviewView .rv-table td .rv-bar { max-width: 48px; width: 36%; min-width: 20px; }
+  #reviewView .rv-table td b { font-size: 11px; }
   #reviewTitle { font-size: 18px; }
 }
 /* Settings dialog */
