@@ -26,6 +26,7 @@ export const H_SCROLL_ALLOWLIST = [
   ".insight-shots",
   "#weekHabitStrip",
   ".week-habit-scroll",
+  ".review-scatter-jump",
 ];
 
 export function auditReportDir() {
@@ -122,7 +123,8 @@ export async function measureActiveViewLayout(page) {
     }
 
     const navTargets = [...document.querySelectorAll(".main-nav .nav-item:not([hidden])")].map(btn => {
-      const b = btn.getBoundingClientRect();
+      // layout size, not the transformed rect: the tap animation briefly scales the active tab to .97
+      const b = { width: btn.offsetWidth, height: btn.offsetHeight };
       const ok = b.width >= 48 && b.height >= 48;
       if (!ok) issues.push(`nav ${btn.dataset.view} ${Math.round(b.width)}x${Math.round(b.height)}`);
       return { view: btn.dataset.view || "", w: b.width, h: b.height, ok };

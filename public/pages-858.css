@@ -2851,7 +2851,7 @@ html:not([data-workspace]) .journal-library-card:active { transform: scale(.97);
 /* phone tab bar: one column per visible destination (洞见 only in the cloud workspace; nothing may spill) */
 @media (max-width: 760px) {
   html:not([data-desktop]) .main-nav { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important; gap: 0; }
-  html:not([data-desktop]) .sidebar { left: 8px; right: 8px; padding: 8px 6px; }
+  html:not([data-desktop]) .sidebar { left: 8px; right: 8px; padding: 8px 0; } /* 7 tabs × ≥48px at 360px wide */
   html:not([data-desktop]) .nav-item { padding: 4px 0; font-size: 9.5px; letter-spacing: 0; white-space: normal; min-width: 0; min-height: 48px; overflow: visible; align-content: center; }
   html:not([data-desktop]) .nav-label { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-overflow: unset; max-width: 100%; line-height: 1.12; text-align: center; overflow-wrap: anywhere; hyphens: auto; }
   html:not([data-desktop]) .nav-item:active { transform: scale(.92); }
