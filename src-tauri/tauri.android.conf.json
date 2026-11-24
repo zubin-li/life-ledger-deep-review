@@ -1,0 +1,32 @@
+{
+  "productName": "Life Ledger Android Test",
+  "identifier": "app.zubinli.lifeledger.androidtest",
+  "build": {
+    "beforeBuildCommand": "npm run android:prepare",
+    "frontendDist": "../android-dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Life Ledger Android Test",
+        "url": "index.html",
+        "width": 390,
+        "height": 844,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "capabilities": [
+        "android-local"
+      ]
+    }
+  },
+  "bundle": {
+    "createUpdaterArtifacts": false,
+    "android": {
+      "minSdkVersion": 24
+    }
+  }
+}

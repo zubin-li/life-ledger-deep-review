@@ -5922,3 +5922,100 @@ html.motion-reduced .horizon-goal:hover { transform: none; box-shadow: none; }
 .horizon-goal-expanded[hidden] { display: none !important; }
 .horizon-goal-steps-toggle { margin-top: 8px; font-size: 12px; }
 .horizon-steps--next { margin: 0 0 4px; }
+
+/* Mobile layout hardening — Android 360–412px (scoped; v210 loads last) */
+@media (max-width: 760px) {
+  html:not([data-desktop]) {
+    overflow-x: clip;
+  }
+
+  html:not([data-desktop]) body {
+    overflow-x: clip;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: contain;
+  }
+
+  html:not([data-desktop]) :is(.app-shell, .workspace-pane, .content-split, .main-content) {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  html:not([data-desktop]) :is(
+    .topbar,
+    .topbar h1,
+    #viewTitle,
+    .top-actions,
+    .hero-copy,
+    .hero-copy h2,
+    .week-page-header,
+    .week-page-header h1,
+    .horizon-heading,
+    .horizon-heading h2,
+    .review-intro,
+    .review-intro h2,
+    .money-head,
+    .habits-view-header,
+    .journal-feed-heading,
+    .module-header,
+    .daily-goals-heading
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+
+  html:not([data-desktop]) .main-nav {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+  }
+
+  html:not([data-desktop]) .nav-item[hidden] {
+    display: none !important;
+  }
+
+  html:not([data-desktop]) .sidebar {
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+
+  html:not([data-desktop]) .main-content {
+    padding-bottom: max(110px, calc(92px + var(--mobile-nav-safe-bottom, 0px)));
+  }
+
+  html:not([data-desktop]) :is(.hero-card, .habit-card, .mood-card, .calendar-card, .panel, .module-card, .rv-panel, .money-page > section) {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  html:not([data-desktop]) :is(.hero-card, .habit-card, .mood-card, .module-card, .rv-panel) {
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 760px) and (pointer: coarse) {
+  html:not([data-desktop]) :is(
+    .hero-card,
+    .habit-card,
+    .panel,
+    .module-card,
+    .apple-tilt,
+    .horizon-goal,
+    .review-week-card,
+    .journal-feed-entry .feed-paper,
+    .settings-action,
+    .icon-button,
+    .primary-button,
+    .secondary-button
+  ):hover {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  html:not([data-desktop]) :is(.hero-card, .habit-card, .module-card, .apple-tilt):hover {
+    transform: none !important;
+    transition: none !important;
+  }
+}

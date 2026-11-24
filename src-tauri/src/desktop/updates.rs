@@ -35,7 +35,7 @@ fn snoozed(postponed: &(String, u64), version: &str, now: u64) -> bool {
 const MAX_NOTES: usize = 700;
 
 fn lang() -> String {
-    crate::current_menu_language()
+    super::current_menu_language()
 }
 
 fn text(key: &str) -> &'static str {
@@ -144,7 +144,7 @@ async fn run_check(app: &AppHandle, manual: bool) -> Result<(), String> {
         .set_buttons(rfd::MessageButtons::OkCancelCustom(install.clone(), text("later").to_string()))
         .show()
         .await;
-    if !crate::confirmed(&answer, &install) {
+    if !super::confirmed(&answer, &install) {
         *POSTPONED.lock().unwrap() = (update.version.clone(), now());
         return Ok(());
     }
