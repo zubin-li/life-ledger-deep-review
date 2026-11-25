@@ -61,7 +61,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Prepare offline Android assets
+      - name: Prepare local Android assets
         run: npm run android:prepare
 
       - name: Check Android asset and manifest logic
@@ -73,10 +73,10 @@ jobs:
       - name: Initialize the Android project
         run: npx tauri android init --ci
 
-      - name: Strip internet permission and disable backup
+      - name: Patch Android manifest and disable auto-backup
         run: node scripts/android-manifest.mjs src-tauri/gen/android
 
-      - name: Inject offline backup plugin sources
+      - name: Inject Android backup plugin and version config
         run: node scripts/android-prepare.mjs src-tauri/gen/android
 
       - name: Build the arm64 release APK

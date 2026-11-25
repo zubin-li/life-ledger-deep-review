@@ -41,6 +41,7 @@ const BACKUP_ATTRS = [
   ["android:allowBackup", "false"],
   ["android:fullBackupContent", "false"],
   ["android:dataExtractionRules", "@xml/life_ledger_backup_rules"],
+  ["android:enableOnBackInvokedCallback", "true"],
 ];
 
 function setAttr(attrs, name, value) {
@@ -100,6 +101,9 @@ export function patchManifest(xml) {
   if (!next.includes('android:fullBackupContent="false"')) throw new Error("full backup was not disabled");
   if (!next.includes('android:dataExtractionRules="@xml/life_ledger_backup_rules"')) {
     throw new Error("device transfer rules were not set");
+  }
+  if (!next.includes('android:enableOnBackInvokedCallback="true"')) {
+    throw new Error("predictive back callback was not enabled");
   }
   return next;
 }

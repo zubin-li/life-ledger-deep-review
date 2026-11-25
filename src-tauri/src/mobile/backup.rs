@@ -104,6 +104,22 @@ pub struct CloseIoResponse {
     pub checksum: String,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RingerModeResponse {
+    pub mode: String,
+    pub silent: bool,
+}
+
+#[derive(Debug, Serialize)]
+struct BackEnabledPayload {
+    enabled: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct BackEnabledResponse {
+    pub enabled: bool,
+}
+
 #[derive(Debug, Deserialize)]
 struct WriteChunkRaw {
     written: Option<u64>,
@@ -233,6 +249,24 @@ pub async fn android_backup_close_read(backup: State<'_, BackupHandle>, handle: 
         .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+pub async fn android_get_ringer_mode(backup: State<'_, BackupHandle>) -> Result<RingerModeResponse, String> {
+    let plugin = plugin_handle(&backup)?;
+    plugin
+        .run_mobile_plugin_async::<RingerModeResponse>("getRingerMode", ())
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn android_set_back_enabled(backup: State<'_, BackupHandle>, enabled: bool) -> Result<BackEnabledResponse, String> {
+    let plugin = plugin_handle(&backup)?;
+    plugin
+        .run_mobile_plugin_async::<BackEnabledResponse>("setBackEnabled", BackEnabledPayload { enabled })
+        .await
+        .map_err(|e| e.to_string())
+}
+
 pub fn plugin() -> tauri::plugin::TauriPlugin<Wry> {
     tauri::plugin::Builder::new(PLUGIN_NAME)
         .setup(|app, api| {
@@ -263,5 +297,7 @@ window.LifeLedgerAndroidBackup = {
   openRead: uri => window.__TAURI__.core.invoke("android_backup_open_read", { uri }),
   readChunk: (handle, maxBytes) => window.__TAURI__.core.invoke("android_backup_read_chunk", { handle, maxBytes }),
   closeRead: handle => window.__TAURI__.core.invoke("android_backup_close_read", { handle }),
+  getRingerMode: () => window.__TAURI__.core.invoke("android_get_ringer_mode"),
+  setBackEnabled: enabled => window.__TAURI__.core.invoke("android_set_back_enabled", { enabled: Boolean(enabled) }),
 };
 "#;

@@ -16,6 +16,8 @@ pub fn run() {
             backup::android_backup_open_read,
             backup::android_backup_read_chunk,
             backup::android_backup_close_read,
+            backup::android_get_ringer_mode,
+            backup::android_set_back_enabled,
         ])
         .setup(|app| {
             if let Some(window) = app.get_webview_window("main") {

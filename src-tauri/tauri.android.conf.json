@@ -1,5 +1,6 @@
 {
   "productName": "Life Ledger Android Test",
+  "version": "1.0.0",
   "identifier": "app.zubinli.lifeledger.androidtest",
   "build": {
     "beforeBuildCommand": "npm run android:prepare",
@@ -26,7 +27,8 @@
   "bundle": {
     "createUpdaterArtifacts": false,
     "android": {
-      "minSdkVersion": 24
+      "minSdkVersion": 24,
+      "versionCode": 1
     }
   }
 }

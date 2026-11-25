@@ -140,15 +140,25 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   }
 });
 
-test("backup plugin injection copies Kotlin into the generated android app", async () => {
+test("backup plugin injection copies Kotlin into the generated android app and pins Android 1.0 (versionCode 1)", async () => {
   const dir = await mkdtemp(join(tmpdir(), "ll-android-inject-"));
   const appRoot = join(dir, "app");
   await mkdir(join(appRoot, "src/main"), { recursive: true });
   await writeFile(join(appRoot, "proguard-rules.pro"), "-keep class androidx.appcompat.widget.Toolbar { *; }\n");
+  await writeFile(
+    join(appRoot, "build.gradle.kts"),
+    'android {\n  defaultConfig {\n    versionCode = tauriProperties.getProperty("tauri.android.versionCode", "3001000").toInt()\n    versionName = tauriProperties.getProperty("tauri.android.versionName", "3.1.0")\n  }\n}\n',
+  );
   const destination = await injectAndroidBackupPlugin(dir);
   const injected = await readFile(destination, "utf8");
   assert.match(injected, /BackupPlugin/);
   assert.match(await readFile(join(appRoot, "proguard-rules.pro"), "utf8"), /life-ledger-backup-plugin/);
+  const gradle = await readFile(join(appRoot, "build.gradle.kts"), "utf8");
+  assert.match(gradle, /versionCode = 1\b/);
+  assert.match(gradle, /versionName = "1\.0"/);
+  const props = await readFile(join(appRoot, "tauri.properties"), "utf8");
+  assert.match(props, /tauri\.android\.versionCode=1/);
+  assert.match(props, /tauri\.android\.versionName=1\.0/);
   await rm(dir, { recursive: true, force: true });
 });
 
@@ -171,6 +181,7 @@ test("manifest patch keeps INTERNET, removes broad storage permissions and disab
   assert.match(patched, /android:allowBackup="false"/);
   assert.match(patched, /android:fullBackupContent="false"/);
   assert.match(patched, /android:dataExtractionRules="@xml\/life_ledger_backup_rules"/);
+  assert.match(patched, /android:enableOnBackInvokedCallback="true"/);
 
   const withoutInternet = patchManifest(
     '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><uses-permission android:name="android.permission.INTERNET" tools:node="remove" /><application android:usesCleartextTraffic="true" /></manifest>',
@@ -268,6 +279,8 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.equal(desktop.identifier, "app.zubinli.lifeledger");
   assert.equal(android.identifier, "app.zubinli.lifeledger.androidtest");
   assert.equal(android.productName, "Life Ledger Android Test");
+  assert.equal(android.version, "1.0.0");
+  assert.equal(android.bundle.android.versionCode, 1);
   assert.equal(android.app.windows[0].label, "main");
   assert.equal(android.app.windows[0].title, "Life Ledger Android Test");
   assert.equal(android.build.frontendDist, "../android-dist");
@@ -285,11 +298,14 @@ test("android config is a separate test id and does not replace the desktop id",
     "allow-android-backup-open-read",
     "allow-android-backup-read-chunk",
     "allow-android-backup-close-read",
+    "allow-android-get-ringer-mode",
+    "allow-android-set-back-enabled",
   ]);
   const backupPlugin = await readFile(resolve(root, "src-tauri/android/src/main/java/BackupPlugin.kt"), "utf8");
   assert.match(backupPlugin, /ACTION_CREATE_DOCUMENT/);
   assert.match(backupPlugin, /ACTION_OPEN_DOCUMENT/);
   const workflow = await readFile(resolve(root, ".github/workflows/android-cloud-build.yml"), "utf8");
+  assert.doesNotMatch(workflow, /Strip internet permission/i);
   assert.match(workflow, /tauri android init --ci/);
   assert.match(workflow, /android-prepare\.mjs src-tauri\/gen\/android/);
   assert.match(workflow, /apkanalyzer/);

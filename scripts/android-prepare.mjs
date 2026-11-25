@@ -8,6 +8,8 @@ const publicDir = resolve(root, "public");
 
 export const BACKUP_PLUGIN_RELATIVE = "app/src/main/java/app/zubinli/lifeledger/androidtest/backup/BackupPlugin.kt";
 export const BACKUP_PLUGIN_CLASS = "app.zubinli.lifeledger.androidtest.backup.BackupPlugin";
+export const ANDROID_VERSION_NAME = "1.0";
+export const ANDROID_VERSION_CODE = 1;
 export const PROGUARD_RULE = [
   "# life-ledger-backup-plugin",
   "-keep class app.zubinli.lifeledger.androidtest.backup.BackupPlugin { *; }",
@@ -19,20 +21,45 @@ function injectDestination(projectRoot) {
 }
 
 export async function injectAndroidBackupPlugin(projectRoot = join(root, "src-tauri/gen/android")) {
+  const resolvedRoot = resolve(projectRoot);
   const source = join(root, "src-tauri/android/src/main/java/BackupPlugin.kt");
-  const destination = injectDestination(resolve(projectRoot));
+  const destination = injectDestination(resolvedRoot);
   await mkdir(dirname(destination), { recursive: true });
   await cp(source, destination);
 
-  const proguardPath = join(resolve(projectRoot), "app/proguard-backup-plugin.pro");
+  const proguardPath = join(resolvedRoot, "app/proguard-backup-plugin.pro");
   await writeFile(proguardPath, `${PROGUARD_RULE}\n`);
 
-  const rulesPath = join(resolve(projectRoot), "app/proguard-rules.pro");
+  const rulesPath = join(resolvedRoot, "app/proguard-rules.pro");
   const current = await readFile(rulesPath, "utf8").catch(() => "");
   if (!current.includes("life-ledger-backup-plugin")) {
     const next = current.trimEnd() ? `${current.trimEnd()}\n\n${PROGUARD_RULE}\n` : `${PROGUARD_RULE}\n`;
     await writeFile(rulesPath, next);
   }
+
+  // Pin Android 1.0 (versionCode 1) in generated Gradle / tauri.properties
+  const gradlePath = join(resolvedRoot, "app/build.gradle.kts");
+  const gradleSrc = await readFile(gradlePath, "utf8").catch(() => "");
+  if (gradleSrc) {
+    let patchedGradle = gradleSrc;
+    patchedGradle = patchedGradle.replace(
+      /versionCode\s*=\s*[^\n]+/,
+      `versionCode = ${ANDROID_VERSION_CODE}`,
+    );
+    patchedGradle = patchedGradle.replace(
+      /versionName\s*=\s*[^\n]+/,
+      `versionName = "${ANDROID_VERSION_NAME}"`,
+    );
+    if (patchedGradle !== gradleSrc) {
+      await writeFile(gradlePath, patchedGradle);
+    }
+  }
+  const propsPath = join(resolvedRoot, "app/tauri.properties");
+  await writeFile(
+    propsPath,
+    `tauri.android.versionCode=${ANDROID_VERSION_CODE}\ntauri.android.versionName=${ANDROID_VERSION_NAME}\n`,
+  );
+
   return destination;
 }
 

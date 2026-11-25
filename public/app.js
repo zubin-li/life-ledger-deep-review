@@ -6970,7 +6970,9 @@ async function downloadExport(event) {
     if (includePhotos) {
       if (scope !== "month") throw new Error("photo-backup-month-only");
       confirmButton.textContent = tr("backup.mediaExporting");
-      const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
+      const dayPhotos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
+      const splashMedia = await window.LifeLedgerSplashMedia?.listForBackup?.() || [];
+      const photos = [...dayPhotos, ...splashMedia];
       if (androidNativeBackup) {
         await exportAndroidMediaBackup(backup, photos);
       } else {
@@ -7168,6 +7170,7 @@ function mergeBackupData(current, incoming) {
     weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
+    ...(isRecord(incoming.quoteSettings) ? { quoteSettings: cloneData(incoming.quoteSettings) } : isRecord(current.quoteSettings) ? { quoteSettings: cloneData(current.quoteSettings) } : {}),
     ...(ledger ? { ledger } : {}),
     ...(current.insights || incoming.insights ? { insights: window.LifeLedgerInsights?.merge(current.insights, incoming.insights) || cloneData(current.insights || incoming.insights) } : {}),
   };
@@ -7249,7 +7252,12 @@ async function restorePendingImport() {
     try {
       const parsed = await window.LifeLedgerMediaBackup.parseBundleStream(source, source.length);
       for (const entry of parsed.entries) {
-        await photoMemories.restorePhoto(entry.photo, await entry.readBlob());
+        const blob = await entry.readBlob();
+        if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+          await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, blob);
+        } else {
+          await photoMemories.restorePhoto(entry.photo, blob);
+        }
       }
     } catch (error) {
       console.warn("Photo restore failed", error);
@@ -7260,7 +7268,13 @@ async function restorePendingImport() {
   } else if (media?.entries?.length) {
     restoreButton.textContent = tr("backup.mediaRestoring");
     try {
-      for (const entry of media.entries) await photoMemories.restorePhoto(entry.photo, entry.blob);
+      for (const entry of media.entries) {
+        if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+          await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, entry.blob);
+        } else {
+          await photoMemories.restorePhoto(entry.photo, entry.blob);
+        }
+      }
     } catch (error) {
       console.warn("Photo restore failed", error);
       void appAlert(tr("backup.mediaInvalid"));
@@ -12421,6 +12435,258 @@ window.LifeLedgerAndroidCore = {
     openBackupDialog();
     setBackupTab("import");
   },
-  openSettings: () => $("#settingsButton")?.click(),
+  openSettings: () => {
+    if (isAndroidAppFace() && window.LifeLedgerAndroidFace?.openSettings) {
+      window.LifeLedgerAndroidFace.openSettings();
+      return;
+    }
+    $("#settingsButton")?.click();
+  },
   createBackup: (scope = "all") => createBackup(scope),
+  getQuoteSettings: () => {
+    const src = androidDemoActive ? (androidDemoSavedUserState || loadState()) : state;
+    const q = src?.quoteSettings;
+    const mode = q?.mode === "custom" || q?.mode === "mixed" ? q.mode : "auto";
+    const items = Array.isArray(q?.items) ? cloneData(q.items.filter(it => it && String(it.text || "").trim())) : [];
+    return { mode, items };
+  },
+  setQuoteSettings: next => {
+    const mode = next?.mode === "custom" || next?.mode === "mixed" ? next.mode : "auto";
+    const rawItems = Array.isArray(next?.items)
+      ? next.items
+          .map(it => ({ text: String(it?.text || "").trim().slice(0, 300), source: String(it?.source || "").trim().slice(0, 120) }))
+          .filter(it => it.text)
+          .slice(0, 100)
+      : typeof next?.rawText === "string"
+        ? parseCustomQuotes(next.rawText)
+        : (state.quoteSettings?.items || []);
+    state.quoteSettings = { mode, items: rawItems };
+    saveState();
+    applyLanguage();
+    renderAll();
+    return cloneData(state.quoteSettings);
+  },
+  parseCustomQuotes: raw => parseCustomQuotes(raw),
+  getThemeChoice: () => themeChoice,
+  setThemeChoice: next => {
+    if (!["system", "light", "dark"].includes(next)) return themeChoice;
+    themeChoice = next;
+    try { localStorage.setItem(THEME_KEY, themeChoice); } catch {}
+    applyTheme();
+    renderAll();
+    return themeChoice;
+  },
+  setLanguage: next => {
+    if (!supportedLanguages.includes(next)) return currentLang;
+    currentLang = next;
+    try {
+      localStorage.setItem(LANGUAGE_KEY, currentLang);
+      localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
+    } catch {}
+    try {
+      const url = new URL(location.href);
+      url.searchParams.set("lang", currentLang);
+      history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    } catch {}
+    voiceReflection?.setLanguage?.(currentLang);
+    photoMemories?.setLanguage?.(currentLang);
+    renderAll();
+    if ($("#dayDrawer")?.classList.contains("open")) renderDrawer();
+    return currentLang;
+  },
+  getReminderSettings: () => ({ ...reminderSettings }),
+  setReminderSettings: patch => {
+    reminderSettings = { ...reminderSettings, ...(patch || {}) };
+    try { localStorage.setItem(REMINDER_KEY, JSON.stringify(reminderSettings)); } catch {}
+    if ($("#reminderEnabled")) $("#reminderEnabled").checked = Boolean(reminderSettings.enabled);
+    if ($("#reminderTime")) $("#reminderTime").value = reminderSettings.time;
+    armReminderClock();
+    renderAll();
+    return { ...reminderSettings };
+  },
+  getBackupStats: () => {
+    const userState = androidDemoActive ? (androidDemoSavedUserState || loadState()) : state;
+    const dayKeys = new Set([
+      ...Object.keys(userState?.logs || {}),
+      ...Object.keys(userState?.dailyGoals || {}),
+    ]);
+    let approxBytes = 0;
+    try { approxBytes = new Blob([JSON.stringify(userState || {})]).size; } catch { approxBytes = JSON.stringify(userState || {}).length; }
+    return {
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      days: dayKeys.size,
+      habits: Array.isArray(userState?.habits) ? userState.habits.length : 0,
+      approxBytes,
+      lastBackupAt: localStorage.getItem("life-ledger-android-last-backup") || "",
+      hasNativeSaf: Boolean(androidNativeBackup),
+    };
+  },
+  exportAndroidBackup: async ({ format = "json", scope = "all" } = {}) => {
+    const backup = createBackup(scope);
+    const todayStr = isoDate(new Date());
+    if (format === "llmedia") {
+      const dayPhotos = await photoMemories?.listRange("0000-01-01", "9999-12-31") || [];
+      const splashMedia = await window.LifeLedgerSplashMedia?.listForBackup?.() || [];
+      const photos = [...dayPhotos, ...splashMedia];
+      const filename = `life-ledger-media-${todayStr}.llmedia`;
+      if (androidNativeBackup) {
+        const picked = await window.LifeLedgerAndroidBackup.pickExport(filename, "application/octet-stream");
+        if (picked?.cancelled || !picked?.uri) return { cancelled: true };
+        const sink = await androidWriteSink(picked.uri);
+        try {
+          await window.LifeLedgerMediaBackup.writeBundle(sink, backup, photos);
+        } finally {
+          await sink.close().catch(() => {});
+        }
+      } else {
+        const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
+        triggerFileDownload(blob, filename);
+      }
+      try { localStorage.setItem("life-ledger-android-last-backup", new Date().toISOString()); } catch {}
+      return { cancelled: false, format: "llmedia", mediaCount: photos.length, filename };
+    }
+    const filename = `life-ledger-backup-${scope}-${todayStr}.json`;
+    if (androidNativeBackup) {
+      const picked = await window.LifeLedgerAndroidBackup.pickExport(filename, "application/json");
+      if (picked?.cancelled || !picked?.uri) return { cancelled: true };
+      const sink = await androidWriteSink(picked.uri);
+      try {
+        await sink.write(new TextEncoder().encode(JSON.stringify(backup, null, 2)));
+      } finally {
+        await sink.close().catch(() => {});
+      }
+    } else {
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      triggerFileDownload(blob, filename);
+    }
+    try { localStorage.setItem("life-ledger-android-last-backup", new Date().toISOString()); } catch {}
+    return { cancelled: false, format: "json", filename };
+  },
+  pickAndPreviewAndroidImport: async (file = null) => {
+    if (!file && androidNativeBackup) {
+      const picked = await window.LifeLedgerAndroidBackup.pickImport();
+      if (picked?.cancelled || !picked?.uri) return { cancelled: true };
+      const name = picked.displayName || "life-ledger-backup";
+      const source = await androidReadSource(picked.uri);
+      let manifest = null;
+      try {
+        manifest = await window.LifeLedgerMediaBackup.parseBundlePreview(source, source.length);
+      } catch {
+        manifest = null;
+      } finally {
+        await source.close().catch(() => {});
+      }
+      if (manifest) {
+        const candidate = importedPayload(manifest.backup);
+        return {
+          cancelled: false,
+          fileName: name,
+          kind: "llmedia",
+          mediaCount: Array.isArray(manifest.photos) ? manifest.photos.length : 0,
+          summary: importStats(candidate),
+          candidate,
+          media: { manifest, androidUri: picked.uri, androidImport: true },
+        };
+      }
+      const jsonSource = await androidReadSource(picked.uri);
+      let contents = "";
+      try {
+        contents = await readAndroidTextBackup(jsonSource);
+      } finally {
+        await jsonSource.close().catch(() => {});
+      }
+      const candidate = importedPayload(JSON.parse(contents));
+      return {
+        cancelled: false,
+        fileName: name,
+        kind: "json",
+        mediaCount: 0,
+        summary: importStats(candidate),
+        candidate,
+        media: null,
+      };
+    }
+    if (!file) return { cancelled: true };
+    const mediaBundle = await window.LifeLedgerMediaBackup?.isBundle(file).catch(() => false);
+    if (!mediaBundle && file.size > MAX_IMPORT_BYTES) throw new Error("too-large");
+    const media = mediaBundle ? await window.LifeLedgerMediaBackup.parseBundle(file) : null;
+    const candidate = importedPayload(media ? media.manifest.backup : JSON.parse(await file.text()));
+    return {
+      cancelled: false,
+      fileName: file.name || "life-ledger-backup",
+      kind: media ? "llmedia" : "json",
+      mediaCount: media ? (media.entries?.length || 0) : 0,
+      summary: importStats(candidate),
+      candidate,
+      media,
+    };
+  },
+  applyAndroidImport: async preview => {
+    if (!preview?.candidate) return false;
+    if (androidDemoActive) exitAndroidIsolatedDemo();
+    const candidate = preview.candidate;
+    const media = preview.media;
+    const isComplete = candidate.scope === "all";
+    const suffix = window.LifeLedgerStorageSuffix || "";
+    try { localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify(createRestoreSafetySnapshot(state, localStorage, { suffix }))); } catch {}
+    state = isComplete ? cloneData(candidate.data) : mergeBackupData(state, candidate.data);
+    if (isComplete && candidate.preferences && applyBackupPreferences(localStorage, candidate.preferences, { suffix })) {
+      syncBackupPreferencesToRuntime();
+    }
+    saveState();
+    let restoredMedia = 0;
+    if (media?.androidImport && media?.androidUri) {
+      const source = await androidReadSource(media.androidUri);
+      try {
+        const parsed = await window.LifeLedgerMediaBackup.parseBundleStream(source, source.length);
+        for (const entry of parsed.entries) {
+          const blob = await entry.readBlob();
+          if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+            await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, blob);
+          } else {
+            await photoMemories.restorePhoto(entry.photo, blob);
+          }
+          restoredMedia += 1;
+        }
+      } finally {
+        await source.close().catch(() => {});
+      }
+    } else if (media?.entries?.length) {
+      for (const entry of media.entries) {
+        if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+          await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, entry.blob);
+        } else {
+          await photoMemories.restorePhoto(entry.photo, entry.blob);
+        }
+        restoredMedia += 1;
+      }
+    }
+    selectedAnalyticsHabitIds = [];
+    renderAll();
+    return { ok: true, restoredMedia };
+  },
+  clearAllLocalData: async () => {
+    if (androidDemoActive) exitAndroidIsolatedDemo();
+    Object.keys(localStorage)
+      .filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key))
+      .forEach(key => localStorage.removeItem(key));
+    localStorage.setItem(demoDismissedStorageKey(), "1");
+    localStorage.setItem(LOCAL_EDITION_KEY, "wipe");
+    await window.LifeLedgerSplashMedia?.clearAll?.().catch(() => {});
+    try { indexedDB.deleteDatabase("life-ledger-wall"); } catch {}
+    try { indexedDB.deleteDatabase("life-ledger-photos" + (window.LifeLedgerStorageSuffix || "")); } catch {}
+    location.reload();
+  },
+  getFocusTopics: () => {
+    const custom = Array.isArray(state.focusSettings?.customTopics) ? state.focusSettings.customTopics : [];
+    const recent = [...new Set([...(state.focusSessions || [])].reverse().map(s => String(s.label || "").trim()).filter(Boolean))];
+    return { custom: cloneData(custom), recent: recent.slice(0, 12), defaultTopic: state.focusSettings?.defaultTopic || "" };
+  },
+  setFocusTopics: customTopics => {
+    const clean = [...new Set((Array.isArray(customTopics) ? customTopics : []).map(s => String(s || "").trim().slice(0, 60)).filter(Boolean))].slice(0, 20);
+    state.focusSettings = { ...seed.focusSettings, ...(state.focusSettings || {}), customTopics: clean };
+    saveState();
+    renderAll();
+    return clean;
+  },
 };

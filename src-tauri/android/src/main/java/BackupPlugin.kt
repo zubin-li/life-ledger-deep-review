@@ -2,11 +2,18 @@
 package app.zubinli.lifeledger.androidtest.backup
 
 import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.net.Uri
+import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.provider.OpenableColumns
 import android.util.Base64
+import android.webkit.WebView
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import app.tauri.Logger
 import app.tauri.annotation.ActivityCallback
@@ -59,6 +66,11 @@ class ReadChunkArgs {
     var maxBytes: Int = BUFFER_SIZE
 }
 
+@InvokeArg
+class BackEnabledArgs {
+    var enabled: Boolean = false
+}
+
 private class WriteSession(stream: BufferedOutputStream, val pfd: ParcelFileDescriptor?) {
     val stream: BufferedOutputStream = stream
     val checksum = CRC32()
@@ -77,6 +89,51 @@ class BackupPlugin(private val activity: Activity) : Plugin(activity) {
     private val readSessions = ConcurrentHashMap<Int, ReadSession>()
     private val nextHandle = AtomicInteger(1)
     private val ioExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+    private var backCallback: OnBackPressedCallback? = null
+    private var hostWebView: WebView? = null
+
+    override fun load(webView: WebView) {
+        super.load(webView)
+        hostWebView = webView
+        val componentActivity = activity as? ComponentActivity ?: return
+        activity.runOnUiThread {
+            if (backCallback != null) return@runOnUiThread
+            val callback = object : OnBackPressedCallback(false) {
+                override fun handleOnBackPressed() {
+                    val wv = hostWebView
+                    if (wv == null) {
+                        isEnabled = false
+                        componentActivity.onBackPressedDispatcher.onBackPressed()
+                        return
+                    }
+                    wv.evaluateJavascript("(function(){try{return window.LifeLedgerAndroidFace&&window.LifeLedgerAndroidFace.handleBack()?'1':'0';}catch(_){return '0';}})()") { result ->
+                        val handled = result?.contains("1") == true
+                        if (!handled) {
+                            isEnabled = false
+                            componentActivity.onBackPressedDispatcher.onBackPressed()
+                        }
+                    }
+                }
+            }
+            backCallback = callback
+            componentActivity.onBackPressedDispatcher.addCallback(componentActivity, callback)
+        }
+    }
+
+    @Command
+    fun setBackEnabled(invoke: Invoke) {
+        try {
+            val args = invoke.parseArgs(BackEnabledArgs::class.java)
+            activity.runOnUiThread {
+                backCallback?.isEnabled = args.enabled
+            }
+            val ret = JSObject()
+            ret.put("enabled", args.enabled)
+            invoke.resolve(ret)
+        } catch (ex: Exception) {
+            invoke.reject(ex.message ?: "setBackEnabled failed")
+        }
+    }
 
     @Command
     fun pickImport(invoke: Invoke) {
@@ -374,6 +431,38 @@ class BackupPlugin(private val activity: Activity) : Plugin(activity) {
             } catch (ex: Exception) {
                 invoke.reject(ex.message ?: "closeRead failed")
             }
+        }
+    }
+
+    @Command
+    fun getRingerMode(invoke: Invoke) {
+        try {
+            val audioManager = activity.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            val ringerMode = audioManager?.ringerMode ?: AudioManager.RINGER_MODE_SILENT
+            val dndActive = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val nm = activity.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+                val filter = nm?.currentInterruptionFilter ?: NotificationManager.INTERRUPTION_FILTER_ALL
+                filter == NotificationManager.INTERRUPTION_FILTER_NONE ||
+                    filter == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
+                    filter == NotificationManager.INTERRUPTION_FILTER_PRIORITY
+            } else {
+                false
+            }
+            val modeName = when {
+                dndActive -> "dnd"
+                ringerMode == AudioManager.RINGER_MODE_NORMAL -> "normal"
+                ringerMode == AudioManager.RINGER_MODE_VIBRATE -> "vibrate"
+                else -> "silent"
+            }
+            val ret = JSObject()
+            ret.put("mode", modeName)
+            ret.put("silent", dndActive || ringerMode != AudioManager.RINGER_MODE_NORMAL)
+            invoke.resolve(ret)
+        } catch (_: Exception) {
+            val ret = JSObject()
+            ret.put("mode", "silent")
+            ret.put("silent", true)
+            invoke.resolve(ret)
         }
     }
 

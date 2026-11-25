@@ -298,3 +298,125 @@ test("Phase 5 keypad expression evaluation and locale decimal parsing match ledg
     { handled: true, action: "close-focus" },
   );
 });
+
+test("Phase 6 launch splash: frequency rules, 7 styles × 21 quotes, silent-mode audio guard, and .llmedia custom media round-trip", async () => {
+  const { win } = await loadFaceHelpers({ hostname: "example.com" });
+  const {
+    SPLASH_WEEKDAY_STYLES,
+    SPLASH_QUOTES,
+    SPLASH_MEDIA_IMAGE_DATE,
+    SPLASH_MEDIA_AUDIO_DATE,
+    weekdayIndexFromIso,
+    shouldShowSplashOnLaunch,
+    resolveSplashStyleAndQuote,
+    shouldPlaySplashAudio,
+    buildSplashMediaBackupEntry,
+    isSplashMediaBackupEntry,
+    resolvePredictiveBackAction,
+  } = win.LifeLedgerAndroidFaceHelpers;
+
+  // 1. Splash frequency rule: default "daily" = first open per day; "off" never; "always" every open; blocked during onboarding
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "daily", lastShownDate: "", todayIso: "2026-11-25" }), true);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "daily", lastShownDate: "2026-11-24", todayIso: "2026-11-25" }), true);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "daily", lastShownDate: "2026-11-25", todayIso: "2026-11-25" }), false);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "always", lastShownDate: "2026-11-25", todayIso: "2026-11-25" }), true);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "off", lastShownDate: "", todayIso: "2026-11-25" }), false);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "always", lastShownDate: "", todayIso: "2026-11-25", welcomeStep: 1 }), false);
+
+  // 2. 7 weekday styles & all 21 quotes (zh/en/de, text + author/work) complete and accurate
+  assert.equal(SPLASH_WEEKDAY_STYLES.length, 7);
+  assert.equal(SPLASH_QUOTES.length, 7);
+  let totalEntries = 0;
+  for (let wd = 0; wd < 7; wd += 1) {
+    assert.equal(SPLASH_WEEKDAY_STYLES[wd].index, wd);
+    for (const lang of ["zh", "en", "de"]) {
+      const q = SPLASH_QUOTES[wd][lang];
+      assert.ok(q && q.text.trim().length > 4, `missing quote text wd=${wd} lang=${lang}`);
+      assert.ok(q && q.source.trim().length > 2, `missing quote source wd=${wd} lang=${lang}`);
+      totalEntries += 1;
+    }
+  }
+  assert.equal(totalEntries, 21);
+
+  // Spot-check SPEC Mon / Wed / Sat dates & style mapping
+  assert.equal(weekdayIndexFromIso("2026-11-23"), 0); // Monday
+  assert.equal(weekdayIndexFromIso("2026-11-25"), 2); // Wednesday
+  assert.equal(weekdayIndexFromIso("2026-11-28"), 5); // Saturday
+  const monZh = resolveSplashStyleAndQuote({ dateIso: "2026-11-23", lang: "zh" });
+  assert.equal(monZh.style.id, "dawn");
+  assert.equal(monZh.quote.text, "千里之行，始于足下。");
+  const wedZh = resolveSplashStyleAndQuote({ dateIso: "2026-11-25", lang: "zh" });
+  assert.equal(wedZh.style.id, "water");
+  assert.equal(wedZh.quote.text, "知止而后有定，定而后能静。");
+  const satDe = resolveSplashStyleAndQuote({ dateIso: "2026-11-28", lang: "de" });
+  assert.equal(satDe.style.id, "moss");
+  assert.match(satDe.quote.source, /Friedrich Schiller/);
+
+  // Shared quoteSettings custom mode works without parallel store
+  const customRes = resolveSplashStyleAndQuote({
+    dateIso: "2026-11-25",
+    lang: "zh",
+    quoteSettings: { mode: "custom", items: [{ text: "慎终如始，则无败事。", source: "《道德经》" }] },
+  });
+  assert.equal(customRes.fromCustom, true);
+  assert.equal(customRes.quote.text, "慎终如始，则无败事。");
+
+  // 3. Music never plays when silent flag is set (and fails closed when undefined/off)
+  assert.equal(shouldPlaySplashAudio({ musicEnabled: false, hasAudio: true, ringerSilent: false }), false);
+  assert.equal(shouldPlaySplashAudio({ musicEnabled: true, hasAudio: true, ringerSilent: true }), false);
+  assert.equal(shouldPlaySplashAudio({ musicEnabled: true, hasAudio: true, ringerSilent: undefined }), false);
+  assert.equal(shouldPlaySplashAudio({ musicEnabled: true, hasAudio: true, ringerSilent: false, forceSilent: true }), false);
+  assert.equal(shouldPlaySplashAudio({ musicEnabled: true, hasAudio: false, ringerSilent: false }), false);
+  assert.equal(shouldPlaySplashAudio({ musicEnabled: true, hasAudio: true, ringerSilent: false }), true);
+
+  // 4. Custom media (image + audio) round-trips byte-for-byte through existing media-backup.js v1 format
+  const mediaCode = await readFile(resolve(root, "public/media-backup.js"), "utf8");
+  const mediaRoot = {};
+  vm.runInNewContext(mediaCode, {
+    window: mediaRoot,
+    TextEncoder,
+    TextDecoder,
+    Blob,
+    Uint8Array,
+    DataView,
+    JSON,
+    Error,
+    Date,
+    fetch: () => { throw new Error("unexpected fetch"); },
+  });
+  const mediaApi = mediaRoot.LifeLedgerMediaBackup;
+  assert.equal(mediaApi.VERSION, 1);
+
+  const imgBytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10, 42, 99]);
+  const audBytes = new Uint8Array([73, 68, 51, 3, 0, 0, 0, 1, 2, 3, 4, 5]);
+  const entries = [
+    buildSplashMediaBackupEntry({ id: "splash-img-1", kind: "image", contentType: "image/png", width: 412, height: 915, createdAt: 1764000000000 }, "blob:img-1"),
+    buildSplashMediaBackupEntry({ id: "splash-aud-1", kind: "audio", contentType: "audio/mpeg", createdAt: 1764000001000 }, "blob:aud-1"),
+  ];
+  const backup = { format: "life-ledger-backup", schemaVersion: 3, scope: "all", data: { habits: [], logs: {} } };
+  const fetcher = async url => {
+    if (url === "blob:img-1") return new Response(new Blob([imgBytes], { type: "image/png" }));
+    if (url === "blob:aud-1") return new Response(new Blob([audBytes], { type: "audio/mpeg" }));
+    throw new Error(`unexpected ${url}`);
+  };
+  const bundle = await mediaApi.createBundle(backup, entries, fetcher);
+  assert.equal(await mediaApi.isBundle(bundle), true);
+  const parsed = await mediaApi.parseBundle(bundle);
+  assert.equal(parsed.entries.length, 2);
+  assert.equal(parsed.entries[0].photo.date, SPLASH_MEDIA_IMAGE_DATE);
+  assert.equal(parsed.entries[1].photo.date, SPLASH_MEDIA_AUDIO_DATE);
+  assert.equal(isSplashMediaBackupEntry(parsed.entries[0].photo), true);
+  assert.equal(isSplashMediaBackupEntry(parsed.entries[1].photo), true);
+  assert.deepEqual(new Uint8Array(await parsed.entries[0].blob.arrayBuffer()), imgBytes);
+  assert.deepEqual(new Uint8Array(await parsed.entries[1].blob.arrayBuffer()), audBytes);
+
+  // 5. Predictive back closes Splash and Splash Settings before lower layers
+  assert.deepEqual(
+    { ...resolvePredictiveBackAction({ splashOpen: true, sheetOpen: true, activeView: "today" }) },
+    { handled: true, action: "close-splash" },
+  );
+  assert.deepEqual(
+    { ...resolvePredictiveBackAction({ splashOpen: false, sheetOpen: false, splashSettingsOpen: true, settingsOpen: true, activeView: "today" }) },
+    { handled: true, action: "close-splash-settings" },
+  );
+});

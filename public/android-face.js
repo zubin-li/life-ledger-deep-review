@@ -4,10 +4,129 @@
 (() => {
   const ONBOARDED_KEY = "life-ledger-android-onboarded-v1";
   const CARDS_PREF_KEY = "life-ledger-android-today-cards-v1";
+  const SPLASH_PREFS_KEY = "life-ledger-android-splash-v1";
+  const DISPLAY_PREFS_KEY = "life-ledger-android-display-v1";
+  const SPLASH_MEDIA_IMAGE_DATE = "__splash_image__";
+  const SPLASH_MEDIA_AUDIO_DATE = "__splash_audio__";
+  const SPLASH_MEDIA_MAX_BYTES = 1_200_000;
+  const SPLASH_DURATION_MS = 2500;
   const HISTORY_VIEWS = new Set(["timeline", "week", "review", "longrange"]);
   const PRIMARY_TABS = new Set(["today", "ledger", "timeline", "habits"]);
   const DEFAULT_TODAY_CARDS = ["quote", "weather", "mood", "habits", "focusSpend", "wall"];
   const ALL_TODAY_CARDS = ["quote", "weather", "mood", "habits", "focusSpend", "wall", "rhythm"];
+
+  // SPEC §1b: 7 built-in weekday visual styles (0=Mon .. 6=Sun)
+  const SPLASH_WEEKDAY_STYLES = [
+    {
+      index: 0,
+      id: "dawn",
+      isLight: true,
+      name: { zh: "晨曦微光", en: "Dawn Mist", de: "Morgendunst" },
+      short: { zh: "晨曦", en: "Dawn", de: "Morgen" },
+      swatchBg: "linear-gradient(160deg,#E8F1EC,#F6EFE2)",
+      swatchFg: "#1E2723",
+    },
+    {
+      index: 1,
+      id: "pine",
+      isLight: false,
+      name: { zh: "墨松林间", en: "Pine Ink", de: "Kieferntusche" },
+      short: { zh: "墨松", en: "Pine", de: "Kiefer" },
+      swatchBg: "linear-gradient(160deg,#1E2723,#2F453B)",
+      swatchFg: "#E8F0EC",
+    },
+    {
+      index: 2,
+      id: "water",
+      isLight: false,
+      name: { zh: "静水微澜", en: "Still Water", de: "Stilles Wasser" },
+      short: { zh: "静水", en: "Water", de: "Wasser" },
+      swatchBg: "linear-gradient(160deg,#101B26,#1E3747)",
+      swatchFg: "#8CE0B4",
+    },
+    {
+      index: 3,
+      id: "paper",
+      isLight: true,
+      name: { zh: "素纸笺墨", en: "Warm Paper", de: "Warmes Papier" },
+      short: { zh: "素纸", en: "Paper", de: "Papier" },
+      swatchBg: "linear-gradient(160deg,#F7F6F2,#ECEAE3)",
+      swatchFg: "#2D312E",
+    },
+    {
+      index: 4,
+      id: "dusk",
+      isLight: false,
+      name: { zh: "暮色琥珀", en: "Dusk Amber", de: "Abendbernstein" },
+      short: { zh: "暮珀", en: "Dusk", de: "Abend" },
+      swatchBg: "linear-gradient(160deg,#1F2333,#4A3628)",
+      swatchFg: "#FFD166",
+    },
+    {
+      index: 5,
+      id: "moss",
+      isLight: false,
+      name: { zh: "山岚青苔", en: "Moss Horizon", de: "Mooshorizont" },
+      short: { zh: "山岚", en: "Moss", de: "Moos" },
+      swatchBg: "linear-gradient(160deg,#9AB4A6,#1B2A23)",
+      swatchFg: "#F2F6F3",
+    },
+    {
+      index: 6,
+      id: "night",
+      isLight: false,
+      name: { zh: "星夜回响", en: "Night Sky", de: "Sternennacht" },
+      short: { zh: "星夜", en: "Night", de: "Nacht" },
+      swatchBg: "linear-gradient(160deg,#11141B,#23293A)",
+      swatchFg: "#CBD5E1",
+    },
+  ];
+
+  // SPEC §1b: Exact 21 classic quotes (7 weekdays × zh/en/de, author + work)
+  const SPLASH_QUOTES = [
+    {
+      weekday: 0,
+      zh: { text: "千里之行，始于足下。", source: "老子《道德经·第六十四章》" },
+      en: { text: "Write it on your heart that every day is the best day in the year.", source: 'Ralph Waldo Emerson, Society and Solitude ("Works and Days", 1870)' },
+      de: { text: "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.", source: "Johann Wolfgang von Goethe, Wilhelm Meisters Wanderjahre (1829)" },
+    },
+    {
+      weekday: 1,
+      zh: { text: "不积跬步，无以至千里。", source: "荀子《荀子·劝学》" },
+      en: { text: "It is not enough to be busy; so are the ants. The question is: what are we busy about?", source: "Henry David Thoreau, Letter to H. G. O. Blake (1857)" },
+      de: { text: "Habe Mut, dich deines eigenen Verstandes zu bedienen!", source: "Immanuel Kant, Beantwortung der Frage: Was ist Aufklärung? (1784)" },
+    },
+    {
+      weekday: 2,
+      zh: { text: "知止而后有定，定而后能静。", source: "《礼记·大学》" },
+      en: { text: "The unexamined life is not worth living.", source: "Plato, Apology (38a, trans. Benjamin Jowett, 1871)" },
+      de: { text: "Nach innen geht der geheimnisvolle Weg.", source: "Novalis, Blüthenstaub (Fragment 16, 1798)" },
+    },
+    {
+      weekday: 3,
+      zh: { text: "非淡泊无以明志，非宁静无以致远。", source: "诸葛亮《诫子书》" },
+      en: { text: "Look within. Within is the fountain of good, and it will ever bubble up, if thou wilt ever dig.", source: "Marcus Aurelius, Meditations (VII.59, trans. George Long, 1862)" },
+      de: { text: "Leben Sie jetzt die Fragen.", source: "Rainer Maria Rilke, Briefe an einen jungen Dichter (4. Brief, 1903)" },
+    },
+    {
+      weekday: 4,
+      zh: { text: "吾日三省吾身。", source: "曾子《论语·学而》" },
+      en: { text: "While we are postponing, life speeds by.", source: "Seneca, Epistulae Morales ad Lucilium (Letter 1, trans. Richard M. Gummere, 1917)" },
+      de: { text: "Nicht was wir erleben, sondern wie wir empfinden, was wir erleben, macht unser Schicksal aus.", source: "Marie von Ebner-Eschenbach, Aphorismen (1880)" },
+    },
+    {
+      weekday: 5,
+      zh: { text: "行到水穷处，坐看云起时。", source: "王维《终南别业》" },
+      en: { text: "To see a World in a Grain of Sand, and a Heaven in a Wild Flower.", source: "William Blake, Auguries of Innocence (c. 1803)" },
+      de: { text: "Dreifach ist der Schritt der Zeit: Zögernd kommt die Zukunft hergezogen, pfeilschnell ist das Jetzt entflogen, ewig still steht die Vergangenheit.", source: "Friedrich Schiller, Sprüche des Konfuzius (1795)" },
+    },
+    {
+      weekday: 6,
+      zh: { text: "往者不可谏，来者犹可追。", source: "《论语·微子》" },
+      en: { text: "Life can only be understood backwards; but it must be lived forwards.", source: "Søren Kierkegaard, Journals (JJ:167, 1843)" },
+      de: { text: "Schön ist eigentlich alles, was man mit Liebe betrachtet.", source: "Christian Morgenstern, Stufen (1918)" },
+    },
+  ];
 
   function isLocalHostname(hostname) {
     return /^(localhost|127\.0\.0\.1|\[::1\])$/.test(String(hostname || ""));
@@ -25,13 +144,19 @@
   }
 
   function resolvePredictiveBackAction({
+    splashOpen = false,
     sheetOpen = false,
+    splashSettingsOpen = false,
+    settingsOpen = false,
     focusOpen = false,
     dialogOpen = false,
     welcomeStep = 0,
     activeView = "today",
   } = {}) {
+    if (splashOpen) return { handled: true, action: "close-splash" };
     if (sheetOpen) return { handled: true, action: "close-sheet" };
+    if (splashSettingsOpen) return { handled: true, action: "close-splash-settings" };
+    if (settingsOpen) return { handled: true, action: "close-settings" };
     if (focusOpen) return { handled: true, action: "close-focus" };
     if (dialogOpen) return { handled: true, action: "close-dialog" };
     if (welcomeStep === 2) return { handled: true, action: "welcome-prev" };
@@ -42,6 +167,89 @@
       return { handled: true, action: "to-today", targetView: "today" };
     }
     return { handled: false, action: "exit-app" };
+  }
+
+  function weekdayIndexFromIso(dateIso) {
+    const dt = parseIsoDate(dateIso);
+    return (dt.getDay() + 6) % 7; // 0=Mon .. 6=Sun
+  }
+
+  function dayNumberFromIso(dateIso) {
+    const dt = parseIsoDate(dateIso);
+    return Math.floor(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()) / 86400000);
+  }
+
+  function shouldShowSplashOnLaunch({ frequency = "daily", lastShownDate = "", todayIso = "", welcomeStep = 0 } = {}) {
+    if (Number(welcomeStep) > 0) return false;
+    const freq = frequency === "off" || frequency === "always" || frequency === "daily" ? frequency : "daily";
+    if (freq === "off") return false;
+    if (freq === "always") return true;
+    return String(lastShownDate || "") !== String(todayIso || "");
+  }
+
+  function resolveSplashStyleAndQuote({ dateIso = "", weekdayOverride = null, lang = "zh", quoteSettings = null } = {}) {
+    const language = lang === "zh" || lang === "de" ? lang : "en";
+    const weekday =
+      Number.isInteger(weekdayOverride) && weekdayOverride >= 0 && weekdayOverride <= 6
+        ? weekdayOverride
+        : weekdayIndexFromIso(dateIso);
+    const style = SPLASH_WEEKDAY_STYLES[weekday] || SPLASH_WEEKDAY_STYLES[0];
+    const row = SPLASH_QUOTES[weekday] || SPLASH_QUOTES[0];
+    const builtIn = row[language] || row.en;
+    const mode = quoteSettings?.mode === "custom" || quoteSettings?.mode === "mixed" ? quoteSettings.mode : "auto";
+    const customItems = Array.isArray(quoteSettings?.items)
+      ? quoteSettings.items.filter(it => it && String(it.text || "").trim())
+      : [];
+
+    let quote = { text: builtIn.text, source: builtIn.source };
+    let fromCustom = false;
+    if (weekdayOverride == null && customItems.length > 0) {
+      const dayNum = Math.abs(dayNumberFromIso(dateIso));
+      if (mode === "custom") {
+        const picked = customItems[dayNum % customItems.length];
+        quote = { text: String(picked.text || "").trim(), source: String(picked.source || "").trim() };
+        fromCustom = true;
+      } else if (mode === "mixed" && dayNum % 2 === 1) {
+        const picked = customItems[Math.floor(dayNum / 2) % customItems.length];
+        quote = { text: String(picked.text || "").trim(), source: String(picked.source || "").trim() };
+        fromCustom = true;
+      }
+    }
+
+    return {
+      weekday,
+      style,
+      quote,
+      fromCustom,
+      mode,
+    };
+  }
+
+  function shouldPlaySplashAudio({ musicEnabled = false, hasAudio = false, ringerSilent = true, forceSilent = false } = {}) {
+    if (!musicEnabled || !hasAudio) return false;
+    if (forceSilent === true) return false;
+    // Fail-closed: only play when ringerSilent is explicitly false
+    return ringerSilent === false;
+  }
+
+  function isSplashMediaBackupEntry(photoMeta) {
+    const d = String(photoMeta?.date || "");
+    return d === SPLASH_MEDIA_IMAGE_DATE || d === SPLASH_MEDIA_AUDIO_DATE;
+  }
+
+  function buildSplashMediaBackupEntry(record, url = "") {
+    if (!record || !record.id) return null;
+    const isAudio = record.kind === "audio";
+    return {
+      id: record.id,
+      backupId: record.id,
+      date: isAudio ? SPLASH_MEDIA_AUDIO_DATE : SPLASH_MEDIA_IMAGE_DATE,
+      url,
+      contentType: record.contentType || (isAudio ? "audio/mpeg" : "image/jpeg"),
+      width: Number(record.width) || 0,
+      height: Number(record.height) || 0,
+      createdAt: Number(record.createdAt) || 0,
+    };
   }
 
   function sortAndroidHabits(habits, completedIds) {
@@ -286,6 +494,17 @@
     buildWeatherCurveModel,
     localeDecimalSeparator,
     evaluateKeypadExpression,
+    SPLASH_WEEKDAY_STYLES,
+    SPLASH_QUOTES,
+    SPLASH_MEDIA_IMAGE_DATE,
+    SPLASH_MEDIA_AUDIO_DATE,
+    SPLASH_MEDIA_MAX_BYTES,
+    weekdayIndexFromIso,
+    shouldShowSplashOnLaunch,
+    resolveSplashStyleAndQuote,
+    shouldPlaySplashAudio,
+    isSplashMediaBackupEntry,
+    buildSplashMediaBackupEntry,
   };
 
   if (
@@ -597,6 +816,124 @@
         customTopicPlaceholder: "或输入新主题…",
         capsuleAria: "返回专注计时",
       },
+      splash: {
+        settingsTitle: "开机名言与每日一句",
+        previewBtn: "预览",
+        masterTitle: "冷启动展示开机名言画面",
+        masterDesc: "停留约 2.5 秒，轻触任意处立即进入今日页；遵循系统「减弱动态效果」。",
+        freqOff: "关闭",
+        freqDaily: "每天首次",
+        freqAlways: "每次打开",
+        stylesTitle: "内置 7 日场景风格（周一至周日）",
+        stylesBadge: "21 条三语经典",
+        todayBadge: "今日生效",
+        previewDayBadge: "风格预览",
+        syncSourceNote: "与今日页名言条同源",
+        tapHint: "轻触任意处进入",
+        todayTag: "今日",
+        weekdaysFull: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        quoteLibLabel: "名言库（复用共享 quoteSettings）",
+        modeAuto: "内置 7 日",
+        modeCustom: "自定义",
+        modeMixed: "混合轮换",
+        manageCustomTitle: "管理我的自定义名言",
+        manageCustomSub: "与 Mac / Web 端共享同一名言配置",
+        customCount: n => (n ? `已添 ${n} 条` : "去添加"),
+        customSheetTitle: "自定义名言",
+        customSheetSub: "每行一条，出处写在 —— 后面，直接保存至共享 quoteSettings。",
+        customPlaceholder: "例如：\n慎终如始，则无败事。——《道德经》",
+        save: "保存",
+        mediaSectionLabel: "自定义场景图与音乐（本机存储）",
+        customImgTitle: "自定义背景图片",
+        customImgSub: "保存于本机并随 .llmedia 备份导出",
+        imgCount: n => (n ? `${n} 张` : "未添加"),
+        addImg: "添加图片",
+        useBuiltInBg: "内置风格",
+        musicTitle: "启动背景音乐",
+        musicSub: "默认关闭 · 可选本机 MP3 / M4A",
+        musicPick: "选择音频",
+        musicRemove: "移除音频",
+        musicTooLarge: "音频文件请控制在 1.2 MB 以内，以便随 .llmedia 完整备份。",
+        musicReady: name => `已选：${name}`,
+        silentNote: "手机处于静音或振动模式时绝不发声；音频仅存本机并纳入 .llmedia 备份。",
+        footerNote: "自定义图片与音频不上传云端，通过 SAF 随 .llmedia 备份一并迁移",
+        demoMediaNote: "示例模式下不改动你的本机图片与音频",
+        statusChipOff: "已关闭",
+        statusChipDaily: "每日首次 · 7日风格",
+        statusChipAlways: "每次打开 · 7日风格",
+      },
+      settings: {
+        title: "设置与本地备份",
+        backupPill: "本机存储 · 随时导出",
+        backupTitle: "数据完全归你所有",
+        backupMeta: (lastStr, days, sizeStr) => `${lastStr} · ${days} 天 · ${sizeStr}`,
+        lastBackupNever: "尚未备份",
+        lastBackupOn: d => `上次备份：${d}`,
+        exportBtn: "导出 .json / .llmedia",
+        importBtn: "从备份恢复",
+        syncNote: "所有文件保存于本机 · 云同步将在后续版本推出",
+        secAppear: "外观与体验",
+        theme: "外观主题",
+        themeVals: { system: "跟随系统", light: "浅色", dark: "深色" },
+        language: "界面语言",
+        languageVal: "简体中文 / EN / DE",
+        splash: "开机名言与每日一句",
+        display: "字号与动效",
+        fontNormal: "标准",
+        fontLarge: "大字号",
+        motionFull: "完整动效",
+        motionReduced: "减弱动效",
+        secModules: "今日与模块设置",
+        weatherCity: "实时天气城市",
+        cardLib: "今日卡片库",
+        cardLibVal: n => `已启用 ${n} 张`,
+        focusTopics: "专注主题分类",
+        focusTopicsVal: n => `${n} 个主题`,
+        currencyBill: "记账币种与账单",
+        currencyVal: (cur, multi) => `${cur} · ${multi ? "按笔选币开" : "单币种"}`,
+        reminder: "每日本地提醒",
+        reminderOff: "未开启",
+        enterDemo: "进入示例模式",
+        enterDemoVal: "3 个月独立预览",
+        exitDemo: "退出示例模式",
+        exitDemoVal: "回到我的数据",
+        clearLocal: "清空本机数据",
+        verLine1: "Life Ledger Android 1.0 (android-v1.0.0) · 本地存储版 · Schema v3",
+        verLine2: "通过 Android SAF 与 Mac 端互通 JSON 与流式 .llmedia 备份",
+        exportSheetTitle: "导出本机备份",
+        exportSheetSub: "通过 Android SAF 自由选择保存位置，可直接发往 Mac 或 Web 端恢复。",
+        exportJsonTitle: "导出 JSON 数据备份（.json）",
+        exportJsonDesc: "含全部心情、习惯、复盘、专注、记账与自定义名言（Schema v3）",
+        exportMediaTitle: "导出完整媒体包（.llmedia）",
+        exportMediaDesc: "流式打包数据、本地照片与自定义开机名言图片/音频（无 160 MiB 上限）",
+        exportDone: name => `已导出备份：${name}`,
+        exportFailed: "导出失败，请重试",
+        importSheetTitle: "从备份恢复",
+        importSheetSub: "支持 Android SAF 选择 .json 或 .llmedia 备份文件；高于当前版本的备份会被安全拦截。",
+        pickBackupBtn: "选择备份文件（.json / .llmedia）",
+        confirmRestoreBtn: "确认恢复到本机",
+        restoreDone: "已从备份恢复本机数据",
+        restoreUnsupported: "该备份来自更新版本（Schema > 3），请先更新客户端，现有数据未被改动。",
+        restoreInvalid: "无法解析该备份文件，现有本机数据保持完好。",
+        mediaItemsCount: n => `含 ${n} 项本地媒体附件`,
+        displaySheetTitle: "字号与动效",
+        fontLabel: "界面字号",
+        motionLabel: "界面动效",
+        topicsSheetTitle: "专注主题分类",
+        topicsSheetSub: "专注计时页可直接切换以下主题；休息时长始终不计入专注统计。",
+        topicsPlaceholder: "添加新主题（如 德语 B2）",
+        topicsAdd: "添加",
+        reminderSheetTitle: "每日本地提醒",
+        reminderEnable: "开启每日复盘提醒",
+        reminderTimeLabel: "提醒时间",
+        reminderSaved: "提醒设置已保存",
+        clearTitle: "清空本机数据？",
+        clearDesc: "此操作将永久删除这台手机上的全部记录、本地照片以及自定义开机名言媒体（外观与语言设置保留），且无法撤销。建议先导出 .json / .llmedia 备份。",
+        clearCancel: "取消",
+        clearConfirm: "确认清空本机数据",
+        multiCurrencyLabel: "允许按笔切换币种",
+        bankImportRow: "导入银行账单（CSV / PDF）",
+      },
     },
     en: {
       tabs: { today: "Today", ledger: "Money", timeline: "History", habits: "Habits" },
@@ -892,6 +1229,124 @@
         chooseTopic: "Choose focus topic",
         customTopicPlaceholder: "Or enter a topic…",
         capsuleAria: "Return to focus timer",
+      },
+      splash: {
+        settingsTitle: "Launch quote & daily line",
+        previewBtn: "Preview",
+        masterTitle: "Show quote splash on launch",
+        masterDesc: "Stays ~2.5 s, tap anywhere to continue; honours system reduced motion.",
+        freqOff: "Off",
+        freqDaily: "First open / day",
+        freqAlways: "Every open",
+        stylesTitle: "7 weekday scenes (Mon–Sun)",
+        stylesBadge: "21 classic quotes",
+        todayBadge: "Active today",
+        previewDayBadge: "Preview",
+        syncSourceNote: "Same quote as Today",
+        tapHint: "Tap anywhere to enter",
+        todayTag: "Today",
+        weekdaysFull: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        quoteLibLabel: "Quote source (shared quoteSettings)",
+        modeAuto: "Built-in 7d",
+        modeCustom: "Custom",
+        modeMixed: "Mixed",
+        manageCustomTitle: "Manage my custom quotes",
+        manageCustomSub: "Shared with Mac & Web via quoteSettings",
+        customCount: n => (n ? `${n} saved` : "Add"),
+        customSheetTitle: "Custom quotes",
+        customSheetSub: "One per line. Put the source after —. Saved to shared quoteSettings.",
+        customPlaceholder: "Example:\nWell begun is half done. — Aristotle",
+        save: "Save",
+        mediaSectionLabel: "Custom background & music (local only)",
+        customImgTitle: "Custom background images",
+        customImgSub: "Stored locally & included in .llmedia backup",
+        imgCount: n => (n ? `${n} saved` : "None"),
+        addImg: "Add image",
+        useBuiltInBg: "Built-in",
+        musicTitle: "Launch background music",
+        musicSub: "Off by default · local MP3 / M4A",
+        musicPick: "Pick audio",
+        musicRemove: "Remove audio",
+        musicTooLarge: "Keep launch audio under 1.2 MB so it stays within .llmedia backup limits.",
+        musicReady: name => `Track: ${name}`,
+        silentNote: "Never plays in silent, vibrate, or Do Not Disturb mode; stored locally & included in .llmedia backup.",
+        footerNote: "Custom images and audio never leave your phone; migrated via SAF .llmedia backup",
+        demoMediaNote: "Demo mode does not modify your local splash media",
+        statusChipOff: "Off",
+        statusChipDaily: "Daily · 7 styles",
+        statusChipAlways: "Every open · 7 styles",
+      },
+      settings: {
+        title: "Settings & Backup",
+        backupPill: "Local storage · Export anytime",
+        backupTitle: "Your data stays yours",
+        backupMeta: (lastStr, days, sizeStr) => `${lastStr} · ${days} days · ${sizeStr}`,
+        lastBackupNever: "Not backed up yet",
+        lastBackupOn: d => `Last backup: ${d}`,
+        exportBtn: "Export .json / .llmedia",
+        importBtn: "Restore backup",
+        syncNote: "All files stay on this device · Cloud sync coming later",
+        secAppear: "Appearance & Experience",
+        theme: "Appearance",
+        themeVals: { system: "System", light: "Light", dark: "Dark" },
+        language: "Language",
+        languageVal: "English / 中文 / DE",
+        splash: "Launch quote & daily line",
+        display: "Text & motion",
+        fontNormal: "Standard",
+        fontLarge: "Large",
+        motionFull: "Full motion",
+        motionReduced: "Reduced",
+        secModules: "Today & Modules",
+        weatherCity: "Weather city",
+        cardLib: "Today card library",
+        cardLibVal: n => `${n} enabled`,
+        focusTopics: "Focus topics",
+        focusTopicsVal: n => `${n} topics`,
+        currencyBill: "Currency & bank import",
+        currencyVal: (cur, multi) => `${cur} · ${multi ? "Per-tx on" : "Single"}`,
+        reminder: "Daily local reminder",
+        reminderOff: "Off",
+        enterDemo: "Enter demo mode",
+        enterDemoVal: "3-month isolated preview",
+        exitDemo: "Exit demo mode",
+        exitDemoVal: "Return to your data",
+        clearLocal: "Clear local data",
+        verLine1: "Life Ledger Android 1.0 (android-v1.0.0) · Local-Storage · Schema v3",
+        verLine2: "Compatible with Mac & Web via SAF JSON and streaming .llmedia backups",
+        exportSheetTitle: "Export local backup",
+        exportSheetSub: "Choose where to save via Android SAF; ready to restore on Mac or Web.",
+        exportJsonTitle: "Export JSON backup (.json)",
+        exportJsonDesc: "All moods, habits, reviews, focus, ledger & quoteSettings (Schema v3)",
+        exportMediaTitle: "Export media bundle (.llmedia)",
+        exportMediaDesc: "Streams records, local photos & custom splash images/audio (no 160 MiB cap)",
+        exportDone: name => `Backup exported: ${name}`,
+        exportFailed: "Export failed. Please try again.",
+        importSheetTitle: "Restore from backup",
+        importSheetSub: "Pick a .json or .llmedia file via Android SAF; newer schemas are safely blocked.",
+        pickBackupBtn: "Choose backup file (.json / .llmedia)",
+        confirmRestoreBtn: "Restore to this device",
+        restoreDone: "Local data restored from backup",
+        restoreUnsupported: "This backup was created by a newer version (Schema > 3). Update the app first; existing data was untouched.",
+        restoreInvalid: "Could not read this backup file. Existing data is untouched.",
+        mediaItemsCount: n => `Includes ${n} local media item(s)`,
+        displaySheetTitle: "Text & motion",
+        fontLabel: "Text size",
+        motionLabel: "Motion",
+        topicsSheetTitle: "Focus topics",
+        topicsSheetSub: "Available in the Focus timer; break time is never counted as focus.",
+        topicsPlaceholder: "Add a topic (e.g. German B2)",
+        topicsAdd: "Add",
+        reminderSheetTitle: "Daily local reminder",
+        reminderEnable: "Enable daily check-in reminder",
+        reminderTimeLabel: "Reminder time",
+        reminderSaved: "Reminder saved",
+        clearTitle: "Clear all local data?",
+        clearDesc: "This permanently removes all records, local photos, and custom launch media on this device (appearance & language stay). Export a backup first if needed.",
+        clearCancel: "Cancel",
+        clearConfirm: "Clear local data",
+        multiCurrencyLabel: "Allow per-transaction currency",
+        bankImportRow: "Import bank statement (CSV / PDF)",
       },
     },
     de: {
@@ -1189,6 +1644,124 @@
         customTopicPlaceholder: "Oder eigenes Thema…",
         capsuleAria: "Zum Fokus-Timer zurück",
       },
+      splash: {
+        settingsTitle: "Startzitat & Spruch",
+        previewBtn: "Vorschau",
+        masterTitle: "Startzitat beim Öffnen zeigen",
+        masterDesc: "Bleibt ca. 2,5 s, tippen überspringt sofort; respektiert „Bewegung reduzieren“.",
+        freqOff: "Aus",
+        freqDaily: "1× täglich",
+        freqAlways: "Jedes Öffnen",
+        stylesTitle: "7 Wochentags-Stile (Mo–So)",
+        stylesBadge: "21 Klassiker",
+        todayBadge: "Heute aktiv",
+        previewDayBadge: "Vorschau",
+        syncSourceNote: "Identisch mit Heute-Zitat",
+        tapHint: "Zum Öffnen tippen",
+        todayTag: "Heute",
+        weekdaysFull: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+        quoteLibLabel: "Zitatquelle (gemeinsame quoteSettings)",
+        modeAuto: "7-Tage-Stil",
+        modeCustom: "Eigene",
+        modeMixed: "Gemischt",
+        manageCustomTitle: "Eigene Zitate verwalten",
+        manageCustomSub: "Synchron mit Mac & Web über quoteSettings",
+        customCount: n => (n ? `${n} Zitate` : "Hinzufügen"),
+        customSheetTitle: "Eigene Zitate",
+        customSheetSub: "Eins pro Zeile, Quelle nach —. Direkt in gemeinsamen quoteSettings gespeichert.",
+        customPlaceholder: "Beispiel:\nAller Anfang ist schwer. — Sprichwort",
+        save: "Speichern",
+        mediaSectionLabel: "Eigene Bilder & Musik (nur lokal)",
+        customImgTitle: "Eigene Hintergrundbilder",
+        customImgSub: "Lokal gespeichert & im .llmedia-Backup enthalten",
+        imgCount: n => (n ? `${n} Bild(er)` : "Keine"),
+        addImg: "Bild",
+        useBuiltInBg: "Standard",
+        musicTitle: "Startmusik",
+        musicSub: "Standardmäßig aus · lokale MP3 / M4A",
+        musicPick: "Audio wählen",
+        musicRemove: "Entfernen",
+        musicTooLarge: "Audiodatei bitte unter 1,2 MB halten für das .llmedia-Backup.",
+        musicReady: name => `Titel: ${name}`,
+        silentNote: "Spielt im Lautlos-, Vibrations- oder Bitte-nicht-stören-Modus niemals ab; lokal im .llmedia-Backup.",
+        footerNote: "Eigene Bilder & Audios verlassen das Gerät nicht; Migration per SAF-.llmedia-Backup",
+        demoMediaNote: "Im Beispielmodus bleiben deine lokalen Medien unverändert",
+        statusChipOff: "Aus",
+        statusChipDaily: "1× täglich · 7 Stile",
+        statusChipAlways: "Immer · 7 Stile",
+      },
+      settings: {
+        title: "Einstellungen & Backup",
+        backupPill: "Lokal · Jederzeit exportieren",
+        backupTitle: "Deine Daten gehören dir",
+        backupMeta: (lastStr, days, sizeStr) => `${lastStr} · ${days} T. · ${sizeStr}`,
+        lastBackupNever: "Noch kein Backup",
+        lastBackupOn: d => `Letztes Backup: ${d}`,
+        exportBtn: "Export .json / .llmedia",
+        importBtn: "Wiederherstellen",
+        syncNote: "Alle Daten bleiben lokal · Cloud-Sync folgt später",
+        secAppear: "Darstellung & Erlebnis",
+        theme: "Erscheinungsbild",
+        themeVals: { system: "System", light: "Hell", dark: "Dunkel" },
+        language: "Sprache",
+        languageVal: "Deutsch / 中文 / EN",
+        splash: "Startzitat & Spruch",
+        display: "Text & Bewegung",
+        fontNormal: "Standard",
+        fontLarge: "Groß",
+        motionFull: "Voll",
+        motionReduced: "Reduziert",
+        secModules: "Heute & Module",
+        weatherCity: "Wetter-Stadt",
+        cardLib: "Heute-Karten",
+        cardLibVal: n => `${n} aktiv`,
+        focusTopics: "Fokus-Themen",
+        focusTopicsVal: n => `${n} Themen`,
+        currencyBill: "Währung & Kontoauszug",
+        currencyVal: (cur, multi) => `${cur} · ${multi ? "Pro Buchung" : "Einzeln"}`,
+        reminder: "Tägliche Erinnerung",
+        reminderOff: "Aus",
+        enterDemo: "Beispielmodus öffnen",
+        enterDemoVal: "3-Monats-Vorschau",
+        exitDemo: "Beispielmodus beenden",
+        exitDemoVal: "Zu deinen Daten",
+        clearLocal: "Lokale Daten löschen",
+        verLine1: "Life Ledger Android 1.0 (android-v1.0.0) · Lokal · Schema v3",
+        verLine2: "SAF-Backup (.json & Streaming-.llmedia) kompatibel mit Mac & Web",
+        exportSheetTitle: "Lokales Backup exportieren",
+        exportSheetSub: "Über Android SAF lokal speichern – direkt kompatibel mit Mac & Web.",
+        exportJsonTitle: "JSON-Backup exportieren (.json)",
+        exportJsonDesc: "Alle Einträge, Routinen, Rückblicke, Fokus, Geld & quoteSettings (Schema v3)",
+        exportMediaTitle: "Medienpaket exportieren (.llmedia)",
+        exportMediaDesc: "Streamt Daten, lokale Fotos & Startzitat-Medien ohne 160-MiB-Limit",
+        exportDone: name => `Backup exportiert: ${name}`,
+        exportFailed: "Export fehlgeschlagen. Bitte erneut versuchen.",
+        importSheetTitle: "Aus Backup wiederherstellen",
+        importSheetSub: ".json oder .llmedia via Android SAF wählen; neuere Schemas werden sicher abgelehnt.",
+        pickBackupBtn: "Backupdatei wählen (.json / .llmedia)",
+        confirmRestoreBtn: "Auf diesem Gerät wiederherstellen",
+        restoreDone: "Lokale Daten wiederhergestellt",
+        restoreUnsupported: "Dieses Backup stammt aus einer neueren Version (Schema > 3). Bitte zuerst aktualisieren.",
+        restoreInvalid: "Backupdatei ungültig. Bestehende Daten bleiben unverändert.",
+        mediaItemsCount: n => `Enthält ${n} lokale Mediendatei(en)`,
+        displaySheetTitle: "Text & Bewegung",
+        fontLabel: "Textgröße",
+        motionLabel: "Bewegung",
+        topicsSheetTitle: "Fokus-Themen",
+        topicsSheetSub: "Im Fokus-Timer wählbar; Pausenzeit wird nie als Fokus gezählt.",
+        topicsPlaceholder: "Neues Thema (z. B. Deutsch B2)",
+        topicsAdd: "Hinzufügen",
+        reminderSheetTitle: "Tägliche Erinnerung",
+        reminderEnable: "Tägliche Erinnerung aktivieren",
+        reminderTimeLabel: "Uhrzeit",
+        reminderSaved: "Erinnerung gespeichert",
+        clearTitle: "Alle lokalen Daten löschen?",
+        clearDesc: "Löscht dauerhaft alle Einträge, lokalen Fotos und eigenen Startmedien auf diesem Gerät (Darstellung & Sprache bleiben). Vorher bei Bedarf sichern.",
+        clearCancel: "Abbrechen",
+        clearConfirm: "Lokale Daten löschen",
+        multiCurrencyLabel: "Währung pro Buchung wählen",
+        bankImportRow: "Kontoauszug importieren (CSV / PDF)",
+      },
     },
   };
 
@@ -1378,6 +1951,193 @@
       delete: id => run("readwrite", s => s.delete(id)),
     };
   })();
+
+  // Phase 6: Local splash custom media IndexedDB store (images + audio, included in .llmedia backup)
+  const splashMediaDb = (() => {
+    let db;
+    const open = () =>
+      (db ||= new Promise((ok, no) => {
+        const req = indexedDB.open("life-ledger-splash-media", 1);
+        req.onupgradeneeded = () => {
+          if (!req.result.objectStoreNames.contains("media")) {
+            req.result.createObjectStore("media", { keyPath: "id" });
+          }
+        };
+        req.onsuccess = () => {
+          req.result.onversionchange = () => {
+            req.result.close();
+            db = null;
+          };
+          ok(req.result);
+        };
+        req.onerror = () => no(req.error);
+      }));
+    const run = (mode, fn) =>
+      open().then(
+        d =>
+          new Promise((ok, no) => {
+            const tx = d.transaction("media", mode);
+            const q = fn(tx.objectStore("media"));
+            tx.oncomplete = () => ok(q.result);
+            tx.onerror = tx.onabort = () => no(tx.error || q.error);
+          }),
+      );
+    return {
+      all: () => run("readonly", s => s.getAll()),
+      put: row => run("readwrite", s => s.put(row)),
+      delete: id => run("readwrite", s => s.delete(id)),
+      clear: () => run("readwrite", s => s.clear()),
+    };
+  })();
+
+  let splashOpen = false;
+  let splashSettingsOpen = false;
+  let settingsOpen = false;
+  let pendingBackupImportPreview = null;
+  let backupImportError = "";
+  let splashTimer = 0;
+  let splashAudioEl = null;
+  let splashPreviewWeekday = null; // 0..6 when inspecting a weekday in splash settings
+  let splashMediaItems = [];
+  let splashMediaLoaded = false;
+  let splashMediaObjectUrls = [];
+
+  function loadSplashPrefs() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(SPLASH_PREFS_KEY) || "null") || {};
+      const frequency = raw.frequency === "off" || raw.frequency === "always" || raw.frequency === "daily" ? raw.frequency : "daily";
+      return {
+        frequency,
+        lastShownDate: String(raw.lastShownDate || ""),
+        musicEnabled: Boolean(raw.musicEnabled === true), // default OFF
+        activeImageId: String(raw.activeImageId || ""),
+        activeAudioId: String(raw.activeAudioId || ""),
+      };
+    } catch {
+      return { frequency: "daily", lastShownDate: "", musicEnabled: false, activeImageId: "", activeAudioId: "" };
+    }
+  }
+
+  function saveSplashPrefs(patch) {
+    const next = { ...loadSplashPrefs(), ...(patch || {}) };
+    try {
+      localStorage.setItem(SPLASH_PREFS_KEY, JSON.stringify(next));
+    } catch {}
+    return next;
+  }
+
+  async function refreshSplashMediaCache() {
+    try {
+      const rows = await splashMediaDb.all();
+      splashMediaObjectUrls.forEach(u => URL.revokeObjectURL(u));
+      splashMediaObjectUrls = [];
+      splashMediaItems = (rows || [])
+        .filter(r => r && r.id && r.bytes)
+        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
+        .map(r => {
+          const blob = new Blob([r.bytes], { type: r.contentType || "application/octet-stream" });
+          const url = URL.createObjectURL(blob);
+          splashMediaObjectUrls.push(url);
+          return { ...r, url, size: blob.size };
+        });
+      splashMediaLoaded = true;
+    } catch {
+      splashMediaItems = [];
+      splashMediaLoaded = true;
+    }
+    return splashMediaItems;
+  }
+
+  async function compressSplashImageFile(file) {
+    if (window.LifeLedgerPhotoMemories?.compressPhoto) {
+      const res = await window.LifeLedgerPhotoMemories.compressPhoto(file);
+      return { blob: res.blob, width: res.width || 0, height: res.height || 0 };
+    }
+    if (file.size <= SPLASH_MEDIA_MAX_BYTES) {
+      return { blob: file, width: 0, height: 0 };
+    }
+    throw new Error("image-too-large");
+  }
+
+  window.LifeLedgerSplashMedia = {
+    async list() {
+      return refreshSplashMediaCache();
+    },
+    async saveImage(file) {
+      const { blob, width, height } = await compressSplashImageFile(file);
+      if (blob.size > SPLASH_MEDIA_MAX_BYTES) throw new Error("image-too-large");
+      const bytes = await blob.arrayBuffer();
+      const record = {
+        id: `splash-img-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+        kind: "image",
+        name: String(file.name || "splash-image").slice(0, 80),
+        contentType: blob.type || "image/jpeg",
+        bytes,
+        width,
+        height,
+        createdAt: Date.now(),
+      };
+      await splashMediaDb.put(record);
+      saveSplashPrefs({ activeImageId: record.id });
+      await refreshSplashMediaCache();
+      return record;
+    },
+    async saveAudio(file) {
+      if (!file || file.size < 1) throw new Error("invalid-audio");
+      if (file.size > SPLASH_MEDIA_MAX_BYTES) throw new Error("audio-too-large");
+      const bytes = await file.arrayBuffer();
+      const record = {
+        id: `splash-aud-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+        kind: "audio",
+        name: String(file.name || "launch-audio").slice(0, 80),
+        contentType: file.type || "audio/mpeg",
+        bytes,
+        width: 0,
+        height: 0,
+        createdAt: Date.now(),
+      };
+      await splashMediaDb.put(record);
+      saveSplashPrefs({ activeAudioId: record.id });
+      await refreshSplashMediaCache();
+      return record;
+    },
+    async remove(id) {
+      await splashMediaDb.delete(id);
+      const prefs = loadSplashPrefs();
+      if (prefs.activeImageId === id) saveSplashPrefs({ activeImageId: "" });
+      if (prefs.activeAudioId === id) saveSplashPrefs({ activeAudioId: "" });
+      await refreshSplashMediaCache();
+    },
+    async clearAll() {
+      await splashMediaDb.clear();
+      await refreshSplashMediaCache();
+    },
+    async listForBackup() {
+      const items = await refreshSplashMediaCache();
+      return items
+        .filter(item => item.size > 0 && item.size <= SPLASH_MEDIA_MAX_BYTES)
+        .map(item => buildSplashMediaBackupEntry(item, item.url))
+        .filter(Boolean);
+    },
+    async restoreFromBackup(photoMeta, blob) {
+      if (!photoMeta || !blob || !isSplashMediaBackupEntry(photoMeta)) return null;
+      const kind = photoMeta.date === SPLASH_MEDIA_AUDIO_DATE ? "audio" : "image";
+      const bytes = await blob.arrayBuffer();
+      const record = {
+        id: photoMeta.backupId || photoMeta.id || `splash-${kind}-${Date.now().toString(36)}`,
+        kind,
+        name: kind === "audio" ? "restored-audio" : "restored-image",
+        contentType: photoMeta.contentType || blob.type || (kind === "audio" ? "audio/mpeg" : "image/jpeg"),
+        bytes,
+        width: Number(photoMeta.width) || 0,
+        height: Number(photoMeta.height) || 0,
+        createdAt: Number(photoMeta.createdAt) || Date.now(),
+      };
+      await splashMediaDb.put(record);
+      await refreshSplashMediaCache();
+      return record;
+    },
+  };
 
   let mounted = false;
   let welcomeStep = 0; // 0 = hidden, 1 = screen 1, 2 = screen 2
@@ -1655,6 +2415,32 @@
     snackbar.innerHTML = `<span class="a-snackbar-msg" id="androidSnackbarMsg"></span><button type="button" class="a-snackbar-undo" id="androidSnackbarUndo"></button>`;
     document.body.append(snackbar);
 
+    // 10. Phase 6 Launch Quote Splash Overlay (full-screen) & Splash Settings Sub-page
+    const splashOverlay = document.createElement("section");
+    splashOverlay.id = "androidSplashOverlay";
+    splashOverlay.className = "a-splash-overlay";
+    splashOverlay.hidden = true;
+    splashOverlay.setAttribute("role", "dialog");
+    splashOverlay.setAttribute("aria-modal", "true");
+    document.body.append(splashOverlay);
+
+    const splashSettingsOverlay = document.createElement("section");
+    splashSettingsOverlay.id = "androidSplashSettingsOverlay";
+    splashSettingsOverlay.className = "a-subpage-overlay a-splash-settings-overlay";
+    splashSettingsOverlay.hidden = true;
+    splashSettingsOverlay.setAttribute("role", "dialog");
+    splashSettingsOverlay.setAttribute("aria-modal", "true");
+    document.body.append(splashSettingsOverlay);
+
+    // 11. Phase 7 Full-Screen Settings & Local Backup Overlay (11-settings-backup)
+    const settingsOverlay = document.createElement("section");
+    settingsOverlay.id = "androidSettingsOverlay";
+    settingsOverlay.className = "a-subpage-overlay a-settings-overlay";
+    settingsOverlay.hidden = true;
+    settingsOverlay.setAttribute("role", "dialog");
+    settingsOverlay.setAttribute("aria-modal", "true");
+    document.body.append(settingsOverlay);
+
     els = {
       ribbon,
       topbar,
@@ -1677,6 +2463,9 @@
       lightbox,
       focusOverlay,
       snackbar,
+      splashOverlay,
+      splashSettingsOverlay,
+      settingsOverlay,
     };
 
     bindEvents();
@@ -1684,7 +2473,7 @@
 
   function bindEvents() {
     els.ribbon.querySelector("#androidDemoExit").addEventListener("click", () => exitDemo());
-    els.topbar.querySelector("#androidSettingsBtn").addEventListener("click", () => core()?.openSettings?.());
+    els.topbar.querySelector("#androidSettingsBtn").addEventListener("click", () => openSettingsOverlay());
     els.topbar.querySelector("#androidCardLibBtn").addEventListener("click", () => openCardLibrarySheet());
     els.topbar.querySelector("#androidBackTodayBtn").addEventListener("click", () => {
       const todayIso = core()?.getTodayIso?.();
@@ -2031,8 +2820,13 @@
     const activeCards = loadCardsPref();
     const cardHtmlMap = {};
 
-    // Quote line (same source as shared quoteSettings via core().getTodayQuote())
-    const quote = c?.getTodayQuote?.() || { text: "", source: "" };
+    // Quote line (same source as Launch Quote Splash & shared quoteSettings)
+    const resolvedQuote = resolveSplashStyleAndQuote({
+      dateIso: selectedDate,
+      lang: lang(),
+      quoteSettings: c?.getQuoteSettings?.() || null,
+    });
+    const quote = resolvedQuote.quote || { text: "", source: "" };
     const cleanQuote = String(quote.text || "").replace(/\s+/g, " ").trim();
     const cleanSource = String(quote.source || "").trim();
     const shortSource = cleanSource.length > 18 ? cleanSource.split(",")[0].trim() : cleanSource;
@@ -2316,9 +3110,9 @@
       });
     }
 
-    // 2. Quote tap -> Settings; Weather card tap -> Weather City sheet
+    // 2. Quote tap -> Splash & Quote Settings (18-splash-settings); Weather card tap -> Weather City sheet
     els.todayRoot.querySelector("#androidQuoteStrip")?.addEventListener("click", () => {
-      core()?.openSettings?.();
+      openSplashSettings();
     });
     els.todayRoot.querySelector("#androidWeatherCard")?.addEventListener("click", () => {
       openWeatherSheet();
@@ -2596,7 +3390,7 @@
           enterDemo();
         } else if (act === "import") {
           completeWelcome();
-          core()?.openImportBackup?.();
+          openBackupImportSheet();
         }
       });
     });
@@ -2853,6 +3647,42 @@
     }
     if (sheetMode === "moneymenu") {
       renderMoneyMenuSheetContent();
+      return;
+    }
+    if (sheetMode === "customquotes") {
+      renderCustomQuotesSheetContent();
+      return;
+    }
+    if (sheetMode === "backup-export") {
+      renderBackupExportSheetContent();
+      return;
+    }
+    if (sheetMode === "backup-import") {
+      renderBackupImportSheetContent();
+      return;
+    }
+    if (sheetMode === "theme") {
+      renderThemeSheetContent();
+      return;
+    }
+    if (sheetMode === "language") {
+      renderLanguageSheetContent();
+      return;
+    }
+    if (sheetMode === "display") {
+      renderDisplaySheetContent();
+      return;
+    }
+    if (sheetMode === "focustopics-manage") {
+      renderFocusTopicsManageSheetContent();
+      return;
+    }
+    if (sheetMode === "reminder") {
+      renderReminderSheetContent();
+      return;
+    }
+    if (sheetMode === "clear-confirm") {
+      renderClearConfirmSheetContent();
       return;
     }
     if (sheetMode === "focustopic") {
@@ -4657,6 +5487,1196 @@
   }
 
   /* ============================================================================
+     Phase 6: Launch Quote Splash (15-17) + Splash Settings (18-splash-settings)
+     ============================================================================ */
+
+  function splashArtworkHtml(styleId) {
+    if (styleId === "dawn") {
+      return `
+        <div class="a-sp-glow a-sp-glow-dawn" aria-hidden="true"></div>
+        <div class="a-sp-art" aria-hidden="true">
+          <svg width="360" height="240" viewBox="0 0 360 240" fill="none">
+            <circle cx="180" cy="146" r="54" stroke="#E59600" stroke-opacity="0.28" stroke-width="1.2"/>
+            <circle cx="180" cy="146" r="88" stroke="#276E4E" stroke-opacity="0.14" stroke-width="1"/>
+            <circle cx="180" cy="146" r="126" stroke="#276E4E" stroke-opacity="0.08" stroke-width="1" stroke-dasharray="4 6"/>
+            <path d="M30 166 C110 132, 250 132, 330 166" stroke="#1E2723" stroke-opacity="0.16" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M62 184 C135 162, 225 162, 298 184" stroke="#276E4E" stroke-opacity="0.14" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="180" cy="146" r="24" fill="rgba(244, 169, 0, 0.16)" stroke="#E59600" stroke-opacity="0.45" stroke-width="1.4"/>
+          </svg>
+        </div>
+      `;
+    }
+    if (styleId === "pine") {
+      return `
+        <div class="a-sp-glow a-sp-glow-pine" aria-hidden="true"></div>
+        <div class="a-sp-art" aria-hidden="true">
+          <svg width="360" height="230" viewBox="0 0 360 230" fill="none">
+            <path d="M26 178 C118 118, 242 114, 334 166" stroke="#8CE0B4" stroke-opacity="0.34" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M46 150 C130 102, 232 100, 316 144" stroke="#8CE0B4" stroke-opacity="0.18" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="246" cy="96" r="56" stroke="#8CE0B4" stroke-opacity="0.15" stroke-width="1" stroke-dasharray="4 6"/>
+            <circle cx="246" cy="96" r="22" fill="rgba(140, 224, 180, 0.12)" stroke="#8CE0B4" stroke-opacity="0.32" stroke-width="1.2"/>
+          </svg>
+        </div>
+      `;
+    }
+    if (styleId === "water") {
+      return `
+        <div class="a-sp-glow a-sp-glow-water" aria-hidden="true"></div>
+        <div class="a-sp-art" aria-hidden="true">
+          <svg width="380" height="230" viewBox="0 0 380 230" fill="none">
+            <ellipse cx="190" cy="126" rx="164" ry="44" stroke="#7BB5FF" stroke-opacity="0.14" stroke-width="1"/>
+            <ellipse cx="190" cy="126" rx="122" ry="31" stroke="#7BB5FF" stroke-opacity="0.24" stroke-width="1.1"/>
+            <ellipse cx="190" cy="126" rx="78" ry="19" stroke="#8CE0B4" stroke-opacity="0.34" stroke-width="1.2"/>
+            <ellipse cx="190" cy="126" rx="34" ry="8" stroke="#FFFFFF" stroke-opacity="0.48" stroke-width="1.3"/>
+            <line x1="190" y1="54" x2="190" y2="112" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
+            <circle cx="190" cy="126" r="3.5" fill="#8CE0B4"/>
+          </svg>
+        </div>
+      `;
+    }
+    if (styleId === "paper") {
+      return `
+        <div class="a-sp-art" aria-hidden="true">
+          <svg width="360" height="220" viewBox="0 0 360 220" fill="none">
+            <line x1="48" y1="156" x2="312" y2="156" stroke="#2D312E" stroke-opacity="0.14" stroke-width="1.2"/>
+            <path d="M90 144 C150 94, 210 94, 270 144" stroke="#276E4E" stroke-opacity="0.28" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="180" cy="108" r="34" stroke="#2D312E" stroke-opacity="0.10" stroke-width="1" stroke-dasharray="3 5"/>
+          </svg>
+        </div>
+      `;
+    }
+    if (styleId === "dusk") {
+      return `
+        <div class="a-sp-glow a-sp-glow-dusk" aria-hidden="true"></div>
+        <div class="a-sp-art" aria-hidden="true">
+          <svg width="360" height="230" viewBox="0 0 360 230" fill="none">
+            <path d="M24 166 C110 124, 250 124, 336 166" stroke="#FFD166" stroke-opacity="0.38" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="180" cy="140" r="46" fill="rgba(255, 209, 102, 0.12)" stroke="#FFD166" stroke-opacity="0.32" stroke-width="1.2"/>
+            <circle cx="180" cy="140" r="88" stroke="#FFD166" stroke-opacity="0.14" stroke-width="1" stroke-dasharray="4 6"/>
+          </svg>
+        </div>
+      `;
+    }
+    if (styleId === "moss") {
+      return `
+        <svg class="a-sp-mountain-bg" viewBox="0 0 412 915" preserveAspectRatio="none" fill="none" aria-hidden="true">
+          <defs>
+            <radialGradient id="aSatMistGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.52"/>
+              <stop offset="55%" stop-color="#FFFFFF" stop-opacity="0.16"/>
+              <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="aSatCloudBand" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <circle cx="298" cy="192" r="92" fill="url(#aSatMistGlow)"/>
+          <rect x="24" y="226" width="236" height="14" rx="7" fill="url(#aSatCloudBand)"/>
+          <rect x="148" y="256" width="240" height="10" rx="5" fill="url(#aSatCloudBand)" opacity="0.7"/>
+          <path d="M0 326 Q98 258, 198 302 T412 276 L412 915 L0 915 Z" fill="#547566" fill-opacity="0.42"/>
+          <path d="M0 398 Q128 326, 252 378 T412 356 L412 915 L0 915 Z" fill="#2E4A3E" fill-opacity="0.72"/>
+          <path d="M0 478 Q112 436, 232 468 T412 444 L412 915 L0 915 Z" fill="#1B2A23"/>
+          <path d="M24 476 C126 426, 272 430, 390 462" stroke="#8CE0B4" stroke-opacity="0.34" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+    return `
+      <div class="a-sp-glow a-sp-glow-night" aria-hidden="true"></div>
+      <div class="a-sp-art" aria-hidden="true">
+        <svg width="360" height="230" viewBox="0 0 360 230" fill="none">
+          <circle cx="180" cy="126" r="96" stroke="#CBD5E1" stroke-opacity="0.16" stroke-width="1" stroke-dasharray="3 6"/>
+          <circle cx="180" cy="126" r="62" stroke="#8CE0B4" stroke-opacity="0.24" stroke-width="1.1"/>
+          <circle cx="122" cy="78" r="2.2" fill="#FFFFFF" fill-opacity="0.78"/>
+          <circle cx="242" cy="96" r="1.8" fill="#8CE0B4" fill-opacity="0.85"/>
+          <circle cx="212" cy="60" r="1.5" fill="#CBD5E1" fill-opacity="0.65"/>
+          <circle cx="148" cy="158" r="1.6" fill="#FFFFFF" fill-opacity="0.55"/>
+        </svg>
+      </div>
+    `;
+  }
+
+  function formatSplashQuoteMain(text, language) {
+    const clean = String(text || "").trim();
+    if (language === "zh" && clean.length >= 8 && clean.length <= 18) {
+      const commaIdx = clean.indexOf("，");
+      if (commaIdx > 2 && commaIdx < clean.length - 3) {
+        return `${escapeHtml(clean.slice(0, commaIdx + 1))}<br>${escapeHtml(clean.slice(commaIdx + 1))}`;
+      }
+    }
+    return escapeHtml(clean);
+  }
+
+  function stopSplashAudio() {
+    if (splashAudioEl) {
+      try {
+        splashAudioEl.pause();
+        splashAudioEl.currentTime = 0;
+      } catch {}
+      splashAudioEl = null;
+    }
+  }
+
+  async function maybeStartSplashAudio(prefs) {
+    if (!prefs?.musicEnabled) return;
+    if (!splashMediaLoaded) await refreshSplashMediaCache();
+    const audioItems = splashMediaItems.filter(it => it.kind === "audio");
+    const track = audioItems.find(it => it.id === prefs.activeAudioId) || audioItems[0] || null;
+    if (!track) return;
+
+    // Query Android native ringer mode via minimal Tauri/Kotlin bridge (fail-closed!)
+    let ringerSilent = true;
+    try {
+      if (typeof window.__LL_RINGER_SILENT__ === "boolean") {
+        ringerSilent = window.__LL_RINGER_SILENT__;
+      } else if (window.LifeLedgerAndroidBackup?.getRingerMode) {
+        const res = await window.LifeLedgerAndroidBackup.getRingerMode();
+        ringerSilent = res?.silent !== false;
+      }
+    } catch {
+      ringerSilent = true;
+    }
+
+    if (!shouldPlaySplashAudio({ musicEnabled: prefs.musicEnabled, hasAudio: Boolean(track), ringerSilent })) {
+      return;
+    }
+    if (!splashOpen) return;
+    try {
+      const audio = new Audio(track.url);
+      audio.volume = 0.55;
+      splashAudioEl = audio;
+      await audio.play().catch(() => {});
+    } catch {}
+  }
+
+  function dismissSplashOverlay() {
+    if (!splashOpen) return;
+    splashOpen = false;
+    clearTimeout(splashTimer);
+    splashTimer = 0;
+    stopSplashAudio();
+    if (!els.splashOverlay) return;
+    if (isReducedMotion()) {
+      els.splashOverlay.hidden = true;
+      els.splashOverlay.classList.remove("is-leaving", "is-entering");
+      return;
+    }
+    els.splashOverlay.classList.add("is-leaving");
+    setTimeout(() => {
+      if (!splashOpen && els.splashOverlay) {
+        els.splashOverlay.hidden = true;
+        els.splashOverlay.classList.remove("is-leaving", "is-entering");
+      }
+    }, 320);
+  }
+
+  function showSplashOverlay({ weekdayOverride = null, preview = false, hold = false, progressPct = null } = {}) {
+    if (!els.splashOverlay) return;
+    const c = core();
+    const l = lang();
+    const sp = t().splash;
+    const todayIso = c?.getTodayIso?.() || toIsoDate(new Date());
+    const todayWeekday = weekdayIndexFromIso(todayIso);
+    const targetWeekday = Number.isInteger(weekdayOverride) && weekdayOverride >= 0 && weekdayOverride <= 6 ? weekdayOverride : todayWeekday;
+    const offsetDays = targetWeekday - todayWeekday;
+    const displayIso = offsetDays === 0 ? todayIso : shiftIsoDate(todayIso, offsetDays);
+    const resolved = resolveSplashStyleAndQuote({
+      dateIso: displayIso,
+      weekdayOverride: preview && weekdayOverride != null ? targetWeekday : null,
+      lang: l,
+      quoteSettings: preview && weekdayOverride != null ? null : (c?.getQuoteSettings?.() || null),
+    });
+
+    const prefs = loadSplashPrefs();
+    const customImg =
+      !preview && prefs.activeImageId
+        ? splashMediaItems.find(it => it.kind === "image" && it.id === prefs.activeImageId) || null
+        : null;
+
+    const style = resolved.style;
+    const styleLabel = `${style.name[l] || style.name.en} · ${style.index + 1}/7`;
+    const isTodaySplash = targetWeekday === todayWeekday;
+    const weekdayName = sp.weekdaysFull[targetWeekday] || "";
+    const datePart = formatShortDate(displayIso);
+    const badgeText = isTodaySplash ? `${weekdayName} · ${datePart} · ${sp.todayTag}` : `${weekdayName} · ${datePart}`;
+    const quoteMainHtml = formatSplashQuoteMain(resolved.quote.text, l);
+    const isLongQuote = resolved.quote.text.length > 48;
+
+    const subNoteHtml =
+      style.id === "dawn" && !customImg
+        ? `<div class="a-sp-en-sub">Understand your past. Shape your future.</div>`
+        : isTodaySplash
+          ? `<div class="a-sp-sync-note">${ICONS.check}<span>${escapeHtml(sp.syncSourceNote)}</span></div>`
+          : "";
+
+    const reduced = isReducedMotion();
+    const fixedPct = Number.isFinite(progressPct) ? Math.max(0, Math.min(100, progressPct)) : null;
+
+    splashOpen = true;
+    clearTimeout(splashTimer);
+    stopSplashAudio();
+
+    els.splashOverlay.className = `a-splash-overlay a-sp-style-${style.id}${customImg ? " has-custom-bg" : ""}${reduced ? " is-reduced" : ""}`;
+    els.splashOverlay.dataset.splashStyle = style.id;
+    els.splashOverlay.dataset.splashWeekday = String(targetWeekday);
+    els.splashOverlay.hidden = false;
+    els.splashOverlay.innerHTML = `
+      ${customImg ? `<div class="a-sp-custom-bg" style="background-image:url('${escapeHtml(customImg.url)}')" aria-hidden="true"></div><div class="a-sp-custom-scrim" aria-hidden="true"></div>` : splashArtworkHtml(style.id)}
+      <div class="a-sp-top">
+        <div class="a-sp-day-badge">
+          <span class="a-sp-badge-dot" aria-hidden="true"></span>
+          <span>${escapeHtml(badgeText)}</span>
+        </div>
+        <span class="a-sp-style-name">${escapeHtml(styleLabel)}</span>
+      </div>
+      <div class="a-sp-center">
+        <div class="a-sp-quote-mark" aria-hidden="true"></div>
+        <div class="a-sp-quote-main${isLongQuote ? " is-long" : ""}">${quoteMainHtml}</div>
+        ${resolved.quote.source ? `<div class="a-sp-quote-author">— ${escapeHtml(resolved.quote.source)}</div>` : ""}
+        ${subNoteHtml}
+      </div>
+      <div class="a-sp-bottom">
+        <div class="a-sp-brand-row">
+          <div class="a-sp-brand-mini">
+            ${ICONS.appIcon}
+            <span>Life Ledger</span>
+          </div>
+          <span class="a-sp-tap-hint">${escapeHtml(sp.tapHint)}</span>
+        </div>
+        <div class="a-sp-progress-track" aria-hidden="true">
+          <div class="a-sp-progress-fill" id="androidSplashProgFill" style="${fixedPct != null ? `width:${fixedPct}%;transition:none;` : ""}"></div>
+        </div>
+      </div>
+    `;
+
+    els.splashOverlay.onclick = () => dismissSplashOverlay();
+
+    if (!preview) {
+      saveSplashPrefs({ lastShownDate: todayIso });
+    }
+
+    if (fixedPct == null) {
+      const fill = els.splashOverlay.querySelector("#androidSplashProgFill");
+      if (fill) {
+        if (reduced) {
+          fill.style.width = "100%";
+        } else {
+          fill.style.width = "0%";
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (splashOpen && fill) {
+                fill.style.transition = `width ${SPLASH_DURATION_MS}ms linear`;
+                fill.style.width = "100%";
+              }
+            });
+          });
+        }
+      }
+    }
+
+    if (!hold) {
+      splashTimer = setTimeout(() => dismissSplashOverlay(), SPLASH_DURATION_MS);
+    }
+
+    if (!preview) {
+      void maybeStartSplashAudio(prefs);
+    }
+  }
+
+  function openSplashSettings() {
+    splashSettingsOpen = true;
+    const todayIso = core()?.getTodayIso?.() || toIsoDate(new Date());
+    splashPreviewWeekday = weekdayIndexFromIso(todayIso);
+    els.splashSettingsOverlay.hidden = false;
+    renderSplashSettings();
+    if (!splashMediaLoaded) {
+      void refreshSplashMediaCache().then(() => {
+        if (splashSettingsOpen) renderSplashSettings();
+      });
+    }
+    pushBackStateIfNeeded();
+  }
+
+  function closeSplashSettings() {
+    if (!splashSettingsOpen) return;
+    splashSettingsOpen = false;
+    els.splashSettingsOverlay.hidden = true;
+    syncUI();
+  }
+
+  function renderSplashSettings() {
+    if (!els.splashSettingsOverlay || !splashSettingsOpen) return;
+    const c = core();
+    const l = lang();
+    const sp = t().splash;
+    const prefs = loadSplashPrefs();
+    const demoActive = Boolean(c?.isIsolatedDemoActive?.());
+    const todayIso = c?.getTodayIso?.() || toIsoDate(new Date());
+    const todayWd = weekdayIndexFromIso(todayIso);
+    const activeWd = Number.isInteger(splashPreviewWeekday) ? splashPreviewWeekday : todayWd;
+    const qs = c?.getQuoteSettings?.() || { mode: "auto", items: [] };
+    const previewRes = resolveSplashStyleAndQuote({
+      dateIso: todayIso,
+      weekdayOverride: activeWd,
+      lang: l,
+      quoteSettings: null,
+    });
+    const isEnabled = prefs.frequency !== "off";
+    const images = splashMediaItems.filter(it => it.kind === "image");
+    const audios = splashMediaItems.filter(it => it.kind === "audio");
+    const activeAudio = audios.find(it => it.id === prefs.activeAudioId) || audios[0] || null;
+    const previewStyle = previewRes.style;
+    const previewDarkBg = previewStyle.isLight
+      ? "linear-gradient(135deg, #1E2723 0%, #2C3D34 100%)"
+      : previewStyle.swatchBg;
+
+    els.splashSettingsOverlay.innerHTML = `
+      <div class="a-subpage-shell">
+        <header class="a-subpage-top">
+          <div class="a-subpage-top-left">
+            <button type="button" class="a-back-btn" id="androidSplashSettingsBack" aria-label="${escapeHtml(t().welcome.backAria)}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <h1 class="a-subpage-title">${escapeHtml(sp.settingsTitle)}</h1>
+          </div>
+          <button type="button" class="a-sp-preview-pill" id="androidSplashPreviewBtn">
+            ${ICONS.playIc}
+            <span>${escapeHtml(sp.previewBtn)}</span>
+          </button>
+        </header>
+
+        <div class="a-subpage-content">
+          <section class="a-card a-sp-card">
+            <div class="a-sp-sw-row">
+              <div class="a-sp-sw-copy">
+                <div class="a-sp-sw-title">${escapeHtml(sp.masterTitle)}</div>
+                <div class="a-sp-sw-desc">${escapeHtml(sp.masterDesc)}</div>
+              </div>
+              <button type="button" class="a-toggle${isEnabled ? " is-on" : ""}" id="androidSplashMasterToggle" role="switch" aria-checked="${isEnabled}" aria-label="${escapeHtml(sp.masterTitle)}">
+                <span class="a-toggle-knob"></span>
+              </button>
+            </div>
+            <div class="a-sp-freq-seg" role="radiogroup" aria-label="${escapeHtml(sp.masterTitle)}">
+              ${[
+                { id: "off", label: sp.freqOff },
+                { id: "daily", label: sp.freqDaily },
+                { id: "always", label: sp.freqAlways },
+              ]
+                .map(
+                  opt =>
+                    `<button type="button" class="a-sp-seg-btn${prefs.frequency === opt.id ? " is-active" : ""}" data-sp-freq="${opt.id}" role="radio" aria-checked="${prefs.frequency === opt.id}">${escapeHtml(opt.label)}</button>`,
+                )
+                .join("")}
+            </div>
+          </section>
+
+          <section class="a-card a-sp-card">
+            <div class="a-sp-subhead">
+              <strong>${escapeHtml(sp.stylesTitle)}</strong>
+              <span>${escapeHtml(sp.stylesBadge)}</span>
+            </div>
+            <div class="a-sp-styles-grid">
+              ${SPLASH_WEEKDAY_STYLES.map(
+                st => `
+                <button type="button" class="a-sp-st-item${st.index === activeWd ? " is-active" : ""}" data-sp-wd="${st.index}">
+                  <span class="a-sp-st-swatch" style="background:${st.swatchBg};color:${st.swatchFg};">${escapeHtml(st.short[l] || st.short.en)}</span>
+                  <span class="a-sp-st-dow">${escapeHtml(t().weekdays[st.index])}</span>
+                </button>
+              `,
+              ).join("")}
+            </div>
+            <div class="a-sp-today-preview" style="background:${previewDarkBg};">
+              <div class="a-sp-tp-copy">
+                <div class="a-sp-tp-q">${escapeHtml(l === "zh" ? `「${previewRes.quote.text}」` : `“${previewRes.quote.text}”`)}</div>
+                <div class="a-sp-tp-src">${escapeHtml(`${sp.weekdaysFull[activeWd]} · ${previewRes.quote.source} · ${sp.syncSourceNote}`)}</div>
+              </div>
+              <span class="a-sp-tp-badge">${escapeHtml(activeWd === todayWd ? sp.todayBadge : sp.previewDayBadge)}</span>
+            </div>
+          </section>
+
+          <div class="a-sp-sec-lbl">${escapeHtml(sp.quoteLibLabel)}</div>
+          <section class="a-card a-sp-card">
+            <div class="a-sp-freq-seg" role="radiogroup">
+              ${[
+                { id: "auto", label: sp.modeAuto },
+                { id: "custom", label: sp.modeCustom },
+                { id: "mixed", label: sp.modeMixed },
+              ]
+                .map(
+                  opt =>
+                    `<button type="button" class="a-sp-seg-btn${qs.mode === opt.id ? " is-active" : ""}" data-sp-qmode="${opt.id}" role="radio" aria-checked="${qs.mode === opt.id}">${escapeHtml(opt.label)}</button>`,
+                )
+                .join("")}
+            </div>
+            <button type="button" class="a-sp-row-btn" id="androidSplashManageQuotes">
+              <span class="a-sp-row-left">
+                <span class="a-sp-row-ic is-sage"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+                <span class="a-sp-row-copy">
+                  <strong>${escapeHtml(sp.manageCustomTitle)}</strong>
+                  <small>${escapeHtml(sp.manageCustomSub)}</small>
+                </span>
+              </span>
+              <span class="a-sp-row-val">${escapeHtml(sp.customCount(qs.items.length))} ›</span>
+            </button>
+          </section>
+
+          <div class="a-sp-sec-lbl">${escapeHtml(sp.mediaSectionLabel)}</div>
+          <section class="a-card a-sp-card">
+            <div class="a-sp-row-static">
+              <div class="a-sp-row-left">
+                <span class="a-sp-row-ic is-amber">${ICONS.photoIc}</span>
+                <div class="a-sp-row-copy">
+                  <strong>${escapeHtml(sp.customImgTitle)}</strong>
+                  <small>${escapeHtml(sp.customImgSub)}</small>
+                </div>
+              </div>
+              <span class="a-sp-row-val">${escapeHtml(sp.imgCount(images.length))}</span>
+            </div>
+            <div class="a-sp-img-strip">
+              <button type="button" class="a-sp-img-default${!prefs.activeImageId ? " is-selected" : ""}" id="androidSplashUseBuiltInBg">
+                <span>${escapeHtml(sp.useBuiltInBg)}</span>
+              </button>
+              ${images
+                .map(
+                  img => `
+                <div class="a-sp-img-thumb${prefs.activeImageId === img.id ? " is-selected" : ""}">
+                  <button type="button" class="a-sp-img-pick" data-sp-img-pick="${escapeHtml(img.id)}" aria-label="${escapeHtml(img.name)}">
+                    <img src="${escapeHtml(img.url)}" alt="">
+                  </button>
+                  <button type="button" class="a-sp-img-del" data-sp-img-del="${escapeHtml(img.id)}" aria-label="Remove">×</button>
+                </div>
+              `,
+                )
+                .join("")}
+              <label class="a-sp-img-add" for="androidSplashImgInput">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                <span>${escapeHtml(sp.addImg)}</span>
+                <input type="file" id="androidSplashImgInput" accept="image/*" hidden ${demoActive ? "disabled" : ""}>
+              </label>
+            </div>
+
+            <div class="a-sp-row-static a-sp-row-divider">
+              <div class="a-sp-row-left">
+                <span class="a-sp-row-ic is-sky"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+                <div class="a-sp-row-copy">
+                  <strong>${escapeHtml(sp.musicTitle)}</strong>
+                  <small>${escapeHtml(activeAudio ? sp.musicReady(activeAudio.name) : sp.musicSub)}</small>
+                </div>
+              </div>
+              <button type="button" class="a-toggle${prefs.musicEnabled ? " is-on" : ""}" id="androidSplashMusicToggle" role="switch" aria-checked="${prefs.musicEnabled}" aria-label="${escapeHtml(sp.musicTitle)}">
+                <span class="a-toggle-knob"></span>
+              </button>
+            </div>
+            <div class="a-sp-audio-actions">
+              <label class="a-sp-audio-btn" for="androidSplashAudioInput">
+                <span>${escapeHtml(sp.musicPick)}</span>
+                <input type="file" id="androidSplashAudioInput" accept="audio/*" hidden ${demoActive ? "disabled" : ""}>
+              </label>
+              ${activeAudio ? `<button type="button" class="a-sp-audio-btn is-danger" id="androidSplashAudioRemove">${escapeHtml(sp.musicRemove)}</button>` : ""}
+            </div>
+            <div class="a-sp-silent-pill">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a-primary)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              <span>${escapeHtml(sp.silentNote)}</span>
+            </div>
+          </section>
+
+          <p class="a-sp-foot-note">${escapeHtml(sp.footerNote)}</p>
+        </div>
+      </div>
+    `;
+
+    els.splashSettingsOverlay.querySelector("#androidSplashSettingsBack")?.addEventListener("click", () => closeSplashSettings());
+    els.splashSettingsOverlay.querySelector("#androidSplashPreviewBtn")?.addEventListener("click", () => {
+      showSplashOverlay({ weekdayOverride: activeWd, preview: true });
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashMasterToggle")?.addEventListener("click", () => {
+      const cur = loadSplashPrefs();
+      saveSplashPrefs({ frequency: cur.frequency === "off" ? "daily" : "off" });
+      renderSplashSettings();
+    });
+    els.splashSettingsOverlay.querySelectorAll("[data-sp-freq]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        saveSplashPrefs({ frequency: btn.dataset.spFreq });
+        renderSplashSettings();
+      });
+    });
+    els.splashSettingsOverlay.querySelectorAll("[data-sp-wd]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        splashPreviewWeekday = Number(btn.dataset.spWd);
+        renderSplashSettings();
+      });
+    });
+    els.splashSettingsOverlay.querySelectorAll("[data-sp-qmode]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const nextMode = btn.dataset.spQmode;
+        c?.setQuoteSettings?.({ mode: nextMode, items: qs.items });
+        renderSplashSettings();
+      });
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashManageQuotes")?.addEventListener("click", () => {
+      sheetMode = "customquotes";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashUseBuiltInBg")?.addEventListener("click", () => {
+      saveSplashPrefs({ activeImageId: "" });
+      renderSplashSettings();
+    });
+    els.splashSettingsOverlay.querySelectorAll("[data-sp-img-pick]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        saveSplashPrefs({ activeImageId: btn.dataset.spImgPick });
+        renderSplashSettings();
+      });
+    });
+    els.splashSettingsOverlay.querySelectorAll("[data-sp-img-del]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        await window.LifeLedgerSplashMedia.remove(btn.dataset.spImgDel);
+        renderSplashSettings();
+      });
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashImgInput")?.addEventListener("change", async e => {
+      const file = e.target.files?.[0];
+      if (!file || demoActive) return;
+      try {
+        await window.LifeLedgerSplashMedia.saveImage(file);
+        renderSplashSettings();
+      } catch {}
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashMusicToggle")?.addEventListener("click", () => {
+      const cur = loadSplashPrefs();
+      saveSplashPrefs({ musicEnabled: !cur.musicEnabled });
+      renderSplashSettings();
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashAudioInput")?.addEventListener("change", async e => {
+      const file = e.target.files?.[0];
+      if (!file || demoActive) return;
+      try {
+        await window.LifeLedgerSplashMedia.saveAudio(file);
+        renderSplashSettings();
+      } catch (err) {
+        if (String(err?.message || "").includes("audio-too-large")) {
+          showUndoSnackbar(sp.musicTooLarge, null);
+        }
+      }
+    });
+    els.splashSettingsOverlay.querySelector("#androidSplashAudioRemove")?.addEventListener("click", async () => {
+      if (!activeAudio) return;
+      await window.LifeLedgerSplashMedia.remove(activeAudio.id);
+      renderSplashSettings();
+    });
+  }
+
+  function renderCustomQuotesSheetContent() {
+    const c = core();
+    const sp = t().splash;
+    const qs = c?.getQuoteSettings?.() || { mode: "auto", items: [] };
+    const textVal = (qs.items || []).map(it => (it.source ? `${it.text}——${it.source}` : it.text)).join("\n");
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head">
+        <h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(sp.customSheetTitle)}</h2>
+      </div>
+      <p class="a-lib-sub">${escapeHtml(sp.customSheetSub)}</p>
+      <div class="a-note-box">
+        <textarea id="androidCustomQuotesInput" class="a-note-input a-cq-textarea" rows="5" placeholder="${escapeHtml(sp.customPlaceholder)}">${escapeHtml(textVal)}</textarea>
+      </div>
+      <div class="a-sheet-cta-wrap">
+        <button type="button" class="a-btn-primary" id="androidCustomQuotesSave">${escapeHtml(sp.save)}</button>
+      </div>
+    `;
+    els.sheetBody.querySelector("#androidCustomQuotesSave")?.addEventListener("click", () => {
+      const raw = els.sheetBody.querySelector("#androidCustomQuotesInput")?.value || "";
+      const parsed = c?.parseCustomQuotes?.(raw) || [];
+      const nextMode = parsed.length && qs.mode === "auto" ? "custom" : qs.mode;
+      c?.setQuoteSettings?.({ mode: nextMode, items: parsed });
+      closeSheet();
+      if (splashSettingsOpen) renderSplashSettings();
+    });
+  }
+
+  /* ============================================================================
+     Phase 7: Full-Screen Settings & Local SAF Backup (11-settings-backup)
+     ============================================================================ */
+
+  function loadDisplayPrefs() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(DISPLAY_PREFS_KEY) || "null") || {};
+      return {
+        fontScale: raw.fontScale === "large" ? "large" : "normal",
+        reducedMotion: Boolean(raw.reducedMotion === true),
+      };
+    } catch {
+      return { fontScale: "normal", reducedMotion: false };
+    }
+  }
+
+  function applyDisplayPrefs(prefs) {
+    const p = prefs || loadDisplayPrefs();
+    if (p.fontScale === "large") document.documentElement.dataset.androidFontScale = "large";
+    else delete document.documentElement.dataset.androidFontScale;
+    document.documentElement.classList.toggle("motion-reduced", Boolean(p.reducedMotion));
+    return p;
+  }
+
+  function saveDisplayPrefs(patch) {
+    const next = { ...loadDisplayPrefs(), ...(patch || {}) };
+    try {
+      localStorage.setItem(DISPLAY_PREFS_KEY, JSON.stringify(next));
+    } catch {}
+    return applyDisplayPrefs(next);
+  }
+
+  function formatBytesCompact(bytes) {
+    const b = Math.max(0, Number(bytes) || 0);
+    if (b >= 1024 * 1024) return `${(b / (1024 * 1024)).toFixed(1)} MB`;
+    if (b >= 1024) return `${Math.max(1, Math.round(b / 1024))} KB`;
+    return `${b} B`;
+  }
+
+  function openSettingsOverlay() {
+    settingsOpen = true;
+    els.settingsOverlay.hidden = false;
+    renderSettingsOverlay();
+    pushBackStateIfNeeded();
+    syncNativeBackState();
+  }
+
+  function closeSettingsOverlay() {
+    if (!settingsOpen) return;
+    settingsOpen = false;
+    els.settingsOverlay.hidden = true;
+    syncUI();
+  }
+
+  function openBackupExportSheet() {
+    sheetMode = "backup-export";
+    renderSheetContent();
+    presentSheet({ fromFab: false });
+  }
+
+  function openBackupImportSheet() {
+    pendingBackupImportPreview = null;
+    backupImportError = "";
+    sheetMode = "backup-import";
+    renderSheetContent();
+    presentSheet({ fromFab: false });
+  }
+
+  function renderSettingsOverlay() {
+    if (!els.settingsOverlay || !settingsOpen) return;
+    const c = core();
+    const copy = t();
+    const s = copy.settings;
+    const sp = copy.splash;
+    const demoActive = Boolean(c?.isIsolatedDemoActive?.());
+    const stats = c?.getBackupStats?.() || { days: 0, approxBytes: 0, lastBackupAt: "" };
+    const lastStr = stats.lastBackupAt
+      ? s.lastBackupOn(formatShortDate(stats.lastBackupAt.slice(0, 10)))
+      : s.lastBackupNever;
+    const themeVal = s.themeVals[c?.getThemeChoice?.() || "system"] || s.themeVals.system;
+    const splashPrefs = loadSplashPrefs();
+    const splashChip =
+      splashPrefs.frequency === "off"
+        ? sp.statusChipOff
+        : splashPrefs.frequency === "always"
+          ? sp.statusChipAlways
+          : sp.statusChipDaily;
+    const disp = loadDisplayPrefs();
+    const dispVal = `${disp.fontScale === "large" ? s.fontLarge : s.fontNormal} · ${disp.reducedMotion ? s.motionReduced : s.motionFull}`;
+
+    const wb = weatherBridge();
+    const wSnap = wb?.getSnapshot?.() || null;
+    const wCity = localizedCityName(wSnap?.city?.name || copy.today.weatherSlotCity);
+    const wTemp = Number.isFinite(wSnap?.forecast?.current?.temperature_2m) ? `${Math.round(wSnap.forecast.current.temperature_2m)}°` : "";
+    const weatherVal = wTemp ? `${wCity} · ${wTemp}` : wCity;
+
+    const cardsCount = loadCardsPref().length;
+    const focusTopics = c?.getFocusTopics?.() || { custom: [], recent: [] };
+    const topicSet = new Set([...(copy.focus.presetTopics || []), ...(focusTopics.custom || []), ...(focusTopics.recent || [])]);
+    const ledger = c?.getLedger?.();
+    const curCode = ledger?.settings?.defaultCurrency || "EUR";
+    const multiCur = Boolean(ledger?.settings?.allowMultiCurrency !== false);
+    const rem = c?.getReminderSettings?.() || { enabled: false, time: "21:30" };
+    const remVal = rem.enabled ? (rem.time || "21:30") : s.reminderOff;
+
+    els.settingsOverlay.innerHTML = `
+      <div class="a-subpage-shell">
+        <header class="a-subpage-top">
+          <div class="a-subpage-top-left">
+            <button type="button" class="a-back-btn" id="androidSettingsBack" aria-label="${escapeHtml(copy.welcome.backAria)}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <h1 class="a-subpage-title">${escapeHtml(s.title)}</h1>
+          </div>
+        </header>
+
+        <div class="a-subpage-content a-set-content">
+          <section class="a-bk-hero-card">
+            <div class="a-bk-top">
+              <div class="a-bk-art" aria-hidden="true">
+                <svg width="42" height="32" viewBox="0 0 160 120" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="28" y="24" width="104" height="72" rx="14" stroke="var(--a-on-surface)" stroke-width="4"/>
+                  <path d="M28 48h104" stroke="var(--a-on-surface)" stroke-width="3.5"/>
+                  <path d="M80 60v24M71 69l9-9 9 9" stroke="var(--a-primary)" stroke-width="4.5"/>
+                </svg>
+              </div>
+              <div class="a-bk-copy">
+                <span class="a-bk-pill">${escapeHtml(s.backupPill)}</span>
+                <div class="a-bk-title">${escapeHtml(s.backupTitle)}</div>
+                <div class="a-bk-meta">${escapeHtml(s.backupMeta(lastStr, stats.days, formatBytesCompact(stats.approxBytes)))}</div>
+              </div>
+            </div>
+            <div class="a-bk-btns">
+              <button type="button" class="a-bk-btn-exp" id="androidSetExportBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+                <span>${escapeHtml(s.exportBtn)}</span>
+              </button>
+              <button type="button" class="a-bk-btn-imp" id="androidSetImportBtn">
+                ${ICONS.upload}
+                <span>${escapeHtml(s.importBtn)}</span>
+              </button>
+            </div>
+            <div class="a-bk-sync-note">${escapeHtml(s.syncNote)}</div>
+          </section>
+
+          <div class="a-sp-sec-lbl">${escapeHtml(s.secAppear)}</div>
+          <section class="a-card a-set-list-card">
+            <button type="button" class="a-set-row" id="androidSetThemeBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic">${ICONS.sunSmall}</span>
+                <span class="a-set-title">${escapeHtml(s.theme)}</span>
+              </span>
+              <span class="a-set-val"><span class="a-set-chip">${escapeHtml(themeVal)}</span>›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetLangBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+                <span class="a-set-title">${escapeHtml(s.language)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(s.languageVal)} ›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetSplashBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic is-sage"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 17h3l2-4V7H5v6h3M15 17h3l2-4V7h-6v6h3"/></svg></span>
+                <span class="a-set-title">${escapeHtml(s.splash)}</span>
+              </span>
+              <span class="a-set-val"><span class="a-set-chip${splashPrefs.frequency !== "off" ? " is-on" : ""}">${escapeHtml(splashChip)}</span>›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetDisplayBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V4h16v3M12 4v16M9 20h6"/></svg></span>
+                <span class="a-set-title">${escapeHtml(s.display)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(dispVal)} ›</span>
+            </button>
+          </section>
+
+          <div class="a-sp-sec-lbl">${escapeHtml(s.secModules)}</div>
+          <section class="a-card a-set-list-card">
+            <button type="button" class="a-set-row" id="androidSetWeatherBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic is-sky">${ICONS.cloud}</span>
+                <span class="a-set-title">${escapeHtml(s.weatherCity)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(weatherVal)} ›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetCardLibBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic">${ICONS.cardLib}</span>
+                <span class="a-set-title">${escapeHtml(s.cardLib)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(s.cardLibVal(cardsCount))} ›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetTopicsBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic">${ICONS.focusIc}</span>
+                <span class="a-set-title">${escapeHtml(s.focusTopics)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(s.focusTopicsVal(topicSet.size))} ›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetCurrencyBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic">${ICONS.euroIc}</span>
+                <span class="a-set-title">${escapeHtml(s.currencyBill)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(s.currencyVal(curCode, multiCur))} ›</span>
+            </button>
+            <button type="button" class="a-set-row" id="androidSetReminderBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic">${ICONS.bell}</span>
+                <span class="a-set-title">${escapeHtml(s.reminder)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(remVal)} ›</span>
+            </button>
+          </section>
+
+          <section class="a-card a-set-list-card">
+            <button type="button" class="a-set-row" id="androidSetDemoBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic is-sage">${ICONS.eye}</span>
+                <span class="a-set-title">${escapeHtml(demoActive ? s.exitDemo : s.enterDemo)}</span>
+              </span>
+              <span class="a-set-val">${escapeHtml(demoActive ? s.exitDemoVal : s.enterDemoVal)} ›</span>
+            </button>
+            <button type="button" class="a-set-row is-danger" id="androidSetClearBtn">
+              <span class="a-set-left">
+                <span class="a-set-ic">${ICONS.trash}</span>
+                <span class="a-set-title">${escapeHtml(s.clearLocal)}</span>
+              </span>
+              <span class="a-set-val">›</span>
+            </button>
+          </section>
+
+          <footer class="a-set-ver-foot">
+            <div>${escapeHtml(s.verLine1)}</div>
+            <div>${escapeHtml(s.verLine2)}</div>
+          </footer>
+        </div>
+      </div>
+    `;
+
+    els.settingsOverlay.querySelector("#androidSettingsBack")?.addEventListener("click", () => closeSettingsOverlay());
+    els.settingsOverlay.querySelector("#androidSetExportBtn")?.addEventListener("click", () => openBackupExportSheet());
+    els.settingsOverlay.querySelector("#androidSetImportBtn")?.addEventListener("click", () => openBackupImportSheet());
+    els.settingsOverlay.querySelector("#androidSetThemeBtn")?.addEventListener("click", () => {
+      sheetMode = "theme";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+    els.settingsOverlay.querySelector("#androidSetLangBtn")?.addEventListener("click", () => {
+      sheetMode = "language";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+    els.settingsOverlay.querySelector("#androidSetSplashBtn")?.addEventListener("click", () => openSplashSettings());
+    els.settingsOverlay.querySelector("#androidSetDisplayBtn")?.addEventListener("click", () => {
+      sheetMode = "display";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+    els.settingsOverlay.querySelector("#androidSetWeatherBtn")?.addEventListener("click", () => openWeatherSheet());
+    els.settingsOverlay.querySelector("#androidSetCardLibBtn")?.addEventListener("click", () => openCardLibrarySheet());
+    els.settingsOverlay.querySelector("#androidSetTopicsBtn")?.addEventListener("click", () => {
+      sheetMode = "focustopics-manage";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+    els.settingsOverlay.querySelector("#androidSetCurrencyBtn")?.addEventListener("click", () => openMoneyMenuSheet());
+    els.settingsOverlay.querySelector("#androidSetReminderBtn")?.addEventListener("click", () => {
+      sheetMode = "reminder";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+    els.settingsOverlay.querySelector("#androidSetDemoBtn")?.addEventListener("click", () => {
+      closeSettingsOverlay();
+      if (demoActive) exitDemo();
+      else enterDemo();
+    });
+    els.settingsOverlay.querySelector("#androidSetClearBtn")?.addEventListener("click", () => {
+      sheetMode = "clear-confirm";
+      renderSheetContent();
+      presentSheet({ fromFab: false });
+    });
+  }
+
+  function renderBackupExportSheetContent() {
+    const s = t().settings;
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head">
+        <h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.exportSheetTitle)}</h2>
+      </div>
+      <p class="a-lib-sub">${escapeHtml(s.exportSheetSub)}</p>
+      <div class="a-bk-opt-list">
+        <button type="button" class="a-bk-opt-card" id="androidExportJsonOpt">
+          <span class="a-bk-opt-badge">JSON</span>
+          <span class="a-bk-opt-copy">
+            <strong>${escapeHtml(s.exportJsonTitle)}</strong>
+            <small>${escapeHtml(s.exportJsonDesc)}</small>
+          </span>
+        </button>
+        <button type="button" class="a-bk-opt-card is-media" id="androidExportMediaOpt">
+          <span class="a-bk-opt-badge is-sage">MEDIA</span>
+          <span class="a-bk-opt-copy">
+            <strong>${escapeHtml(s.exportMediaTitle)}</strong>
+            <small>${escapeHtml(s.exportMediaDesc)}</small>
+          </span>
+        </button>
+      </div>
+    `;
+    const runExport = async format => {
+      try {
+        const res = await core()?.exportAndroidBackup?.({ format, scope: "all" });
+        if (!res || res.cancelled) return;
+        closeSheet();
+        if (settingsOpen) renderSettingsOverlay();
+        showUndoSnackbar(s.exportDone(res.filename), null);
+      } catch {
+        showUndoSnackbar(s.exportFailed, null);
+      }
+    };
+    els.sheetBody.querySelector("#androidExportJsonOpt")?.addEventListener("click", () => { void runExport("json"); });
+    els.sheetBody.querySelector("#androidExportMediaOpt")?.addEventListener("click", () => { void runExport("llmedia"); });
+  }
+
+  function renderBackupImportSheetContent() {
+    const s = t().settings;
+    const hasNativeSaf = Boolean(window.LifeLedgerAndroidBackup?.pickImport);
+    const prev = pendingBackupImportPreview;
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head">
+        <h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.importSheetTitle)}</h2>
+      </div>
+      <p class="a-lib-sub">${escapeHtml(s.importSheetSub)}</p>
+      ${backupImportError ? `<div class="a-bk-error" role="alert">${escapeHtml(backupImportError)}</div>` : ""}
+      ${
+        prev
+          ? `
+        <div class="a-bk-preview-box">
+          <div class="a-bk-preview-head">
+            <span class="a-bk-opt-badge${prev.kind === "llmedia" ? " is-sage" : ""}">${prev.kind === "llmedia" ? "MEDIA" : "JSON"}</span>
+            <strong>${escapeHtml(prev.fileName)}</strong>
+          </div>
+          <p class="a-bk-preview-sum">${escapeHtml(prev.summary)}</p>
+          ${prev.mediaCount > 0 ? `<p class="a-bk-preview-media">${escapeHtml(s.mediaItemsCount(prev.mediaCount))}</p>` : ""}
+        </div>
+        <div class="a-sheet-cta-wrap">
+          <button type="button" class="a-btn-primary" id="androidConfirmImportBtn">${escapeHtml(s.confirmRestoreBtn)}</button>
+        </div>
+      `
+          : `
+        <div class="a-sheet-cta-wrap">
+          ${
+            hasNativeSaf
+              ? `<button type="button" class="a-btn-primary" id="androidPickImportSaf">${escapeHtml(s.pickBackupBtn)}</button>`
+              : `<label class="a-btn-primary" for="androidPickImportInput">${escapeHtml(s.pickBackupBtn)}<input type="file" id="androidPickImportInput" accept=".json,.llmedia,.llbackup,application/json,application/octet-stream" hidden></label>`
+          }
+        </div>
+      `
+      }
+    `;
+    const handlePreview = async file => {
+      backupImportError = "";
+      try {
+        const res = await core()?.pickAndPreviewAndroidImport?.(file || null);
+        if (!res || res.cancelled) return;
+        pendingBackupImportPreview = res;
+        renderBackupImportSheetContent();
+      } catch (err) {
+        const msg = String(err?.message || "");
+        backupImportError = msg.includes("unsupported-backup-version") ? s.restoreUnsupported : s.restoreInvalid;
+        pendingBackupImportPreview = null;
+        renderBackupImportSheetContent();
+      }
+    };
+    els.sheetBody.querySelector("#androidPickImportSaf")?.addEventListener("click", () => { void handlePreview(null); });
+    els.sheetBody.querySelector("#androidPickImportInput")?.addEventListener("change", e => {
+      const f = e.target.files?.[0];
+      if (f) void handlePreview(f);
+    });
+    els.sheetBody.querySelector("#androidConfirmImportBtn")?.addEventListener("click", async () => {
+      if (!pendingBackupImportPreview) return;
+      try {
+        await core()?.applyAndroidImport?.(pendingBackupImportPreview);
+        pendingBackupImportPreview = null;
+        closeSheet();
+        if (settingsOpen) renderSettingsOverlay();
+        showUndoSnackbar(s.restoreDone, null);
+      } catch {
+        backupImportError = s.restoreInvalid;
+        renderBackupImportSheetContent();
+      }
+    });
+  }
+
+  function renderThemeSheetContent() {
+    const s = t().settings;
+    const cur = core()?.getThemeChoice?.() || "system";
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head"><h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.theme)}</h2></div>
+      <div class="a-bk-opt-list">
+        ${["system", "light", "dark"]
+          .map(
+            id => `<button type="button" class="a-set-pick-row${cur === id ? " is-active" : ""}" data-pick-theme="${id}"><span>${escapeHtml(s.themeVals[id])}</span>${cur === id ? ICONS.check : ""}</button>`,
+          )
+          .join("")}
+      </div>
+    `;
+    els.sheetBody.querySelectorAll("[data-pick-theme]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        core()?.setThemeChoice?.(btn.dataset.pickTheme);
+        closeSheet();
+        if (settingsOpen) renderSettingsOverlay();
+      });
+    });
+  }
+
+  function renderLanguageSheetContent() {
+    const s = t().settings;
+    const cur = lang();
+    const opts = [
+      { id: "zh", label: "简体中文" },
+      { id: "en", label: "English" },
+      { id: "de", label: "Deutsch" },
+    ];
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head"><h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.language)}</h2></div>
+      <div class="a-bk-opt-list">
+        ${opts
+          .map(
+            opt => `<button type="button" class="a-set-pick-row${cur === opt.id ? " is-active" : ""}" data-pick-lang="${opt.id}"><span>${escapeHtml(opt.label)}</span>${cur === opt.id ? ICONS.check : ""}</button>`,
+          )
+          .join("")}
+      </div>
+    `;
+    els.sheetBody.querySelectorAll("[data-pick-lang]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        core()?.setLanguage?.(btn.dataset.pickLang);
+        closeSheet();
+        if (settingsOpen) renderSettingsOverlay();
+      });
+    });
+  }
+
+  function renderDisplaySheetContent() {
+    const s = t().settings;
+    const disp = loadDisplayPrefs();
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head"><h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.displaySheetTitle)}</h2></div>
+      <div class="a-sp-sec-lbl">${escapeHtml(s.fontLabel)}</div>
+      <div class="a-sp-freq-seg" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px;margin-bottom:14px;">
+        <button type="button" class="a-sp-seg-btn${disp.fontScale === "normal" ? " is-active" : ""}" data-disp-font="normal">${escapeHtml(s.fontNormal)}</button>
+        <button type="button" class="a-sp-seg-btn${disp.fontScale === "large" ? " is-active" : ""}" data-disp-font="large">${escapeHtml(s.fontLarge)}</button>
+      </div>
+      <div class="a-sp-sec-lbl">${escapeHtml(s.motionLabel)}</div>
+      <div class="a-sp-freq-seg" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px;margin-bottom:14px;">
+        <button type="button" class="a-sp-seg-btn${!disp.reducedMotion ? " is-active" : ""}" data-disp-motion="0">${escapeHtml(s.motionFull)}</button>
+        <button type="button" class="a-sp-seg-btn${disp.reducedMotion ? " is-active" : ""}" data-disp-motion="1">${escapeHtml(s.motionReduced)}</button>
+      </div>
+      <div class="a-sheet-cta-wrap">
+        <button type="button" class="a-btn-primary" id="androidDisplayDone">${escapeHtml(t().cardLib.done)}</button>
+      </div>
+    `;
+    els.sheetBody.querySelectorAll("[data-disp-font]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        saveDisplayPrefs({ fontScale: btn.dataset.dispFont });
+        renderDisplaySheetContent();
+        if (settingsOpen) renderSettingsOverlay();
+      });
+    });
+    els.sheetBody.querySelectorAll("[data-disp-motion]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        saveDisplayPrefs({ reducedMotion: btn.dataset.dispMotion === "1" });
+        renderDisplaySheetContent();
+        if (settingsOpen) renderSettingsOverlay();
+      });
+    });
+    els.sheetBody.querySelector("#androidDisplayDone")?.addEventListener("click", () => closeSheet());
+  }
+
+  function renderFocusTopicsManageSheetContent() {
+    const s = t().settings;
+    const c = core();
+    const ft = c?.getFocusTopics?.() || { custom: [], recent: [] };
+    const customList = ft.custom || [];
+    const presets = t().focus.presetTopics || [];
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head"><h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.topicsSheetTitle)}</h2></div>
+      <p class="a-lib-sub">${escapeHtml(s.topicsSheetSub)}</p>
+      <div class="a-weather-search-row" style="margin-bottom:12px;">
+        <input type="text" id="androidTopicNewInput" class="a-weather-search-input" maxlength="60" placeholder="${escapeHtml(s.topicsPlaceholder)}">
+        <button type="button" class="a-weather-search-btn" id="androidTopicAddBtn">${escapeHtml(s.topicsAdd)}</button>
+      </div>
+      <div class="a-chip-wrap">
+        ${presets.map(p => `<span class="a-h-chip">${escapeHtml(p)}</span>`).join("")}
+        ${customList.map(tp => `<button type="button" class="a-h-chip is-done" data-topic-del="${escapeHtml(tp)}">${escapeHtml(tp)} ×</button>`).join("")}
+      </div>
+    `;
+    els.sheetBody.querySelector("#androidTopicAddBtn")?.addEventListener("click", () => {
+      const val = els.sheetBody.querySelector("#androidTopicNewInput")?.value?.trim();
+      if (!val) return;
+      c?.setFocusTopics?.([...customList, val]);
+      renderFocusTopicsManageSheetContent();
+      if (settingsOpen) renderSettingsOverlay();
+    });
+    els.sheetBody.querySelectorAll("[data-topic-del]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        c?.setFocusTopics?.(customList.filter(x => x !== btn.dataset.topicDel));
+        renderFocusTopicsManageSheetContent();
+        if (settingsOpen) renderSettingsOverlay();
+      });
+    });
+  }
+
+  function renderReminderSheetContent() {
+    const s = t().settings;
+    const c = core();
+    const rem = c?.getReminderSettings?.() || { enabled: false, time: "21:30" };
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head"><h2 class="a-sheet-title" id="androidSheetTitle">${escapeHtml(s.reminderSheetTitle)}</h2></div>
+      <div class="a-sp-sw-row" style="margin-bottom:14px;">
+        <span class="a-sp-sw-title">${escapeHtml(s.reminderEnable)}</span>
+        <button type="button" class="a-toggle${rem.enabled ? " is-on" : ""}" id="androidRemToggle" role="switch" aria-checked="${rem.enabled}"><span class="a-toggle-knob"></span></button>
+      </div>
+      <div class="a-sp-sw-row" style="margin-bottom:14px;">
+        <label class="a-sp-sw-title" for="androidRemTimeInput">${escapeHtml(s.reminderTimeLabel)}</label>
+        <input type="time" id="androidRemTimeInput" class="a-rem-time-input" value="${escapeHtml(rem.time || "21:30")}">
+      </div>
+      <div class="a-sheet-cta-wrap">
+        <button type="button" class="a-btn-primary" id="androidRemSaveBtn">${escapeHtml(t().splash.save)}</button>
+      </div>
+    `;
+    let nextEnabled = Boolean(rem.enabled);
+    els.sheetBody.querySelector("#androidRemToggle")?.addEventListener("click", e => {
+      nextEnabled = !nextEnabled;
+      e.currentTarget.classList.toggle("is-on", nextEnabled);
+      e.currentTarget.setAttribute("aria-checked", String(nextEnabled));
+    });
+    els.sheetBody.querySelector("#androidRemSaveBtn")?.addEventListener("click", () => {
+      const timeVal = els.sheetBody.querySelector("#androidRemTimeInput")?.value || "21:30";
+      c?.setReminderSettings?.({ enabled: nextEnabled, time: timeVal });
+      closeSheet();
+      if (settingsOpen) renderSettingsOverlay();
+      showUndoSnackbar(s.reminderSaved, null);
+    });
+  }
+
+  function renderClearConfirmSheetContent() {
+    const s = t().settings;
+    els.sheetBody.innerHTML = `
+      <div class="a-sheet-head"><h2 class="a-sheet-title is-danger" id="androidSheetTitle">${escapeHtml(s.clearTitle)}</h2></div>
+      <p class="a-lib-sub">${escapeHtml(s.clearDesc)}</p>
+      <div class="a-clear-actions">
+        <button type="button" class="a-btn-secondary" id="androidClearCancel">${escapeHtml(s.clearCancel)}</button>
+        <button type="button" class="a-btn-danger" id="androidClearConfirm">${escapeHtml(s.clearConfirm)}</button>
+      </div>
+    `;
+    els.sheetBody.querySelector("#androidClearCancel")?.addEventListener("click", () => closeSheet());
+    els.sheetBody.querySelector("#androidClearConfirm")?.addEventListener("click", () => {
+      closeSheet();
+      void core()?.clearAllLocalData?.();
+    });
+  }
+
+  function syncNativeBackState() {
+    const openDialog =
+      Boolean(document.querySelector("dialog[open]")) ||
+      Boolean(document.getElementById("dayDrawer")?.classList.contains("open"));
+    const decision = resolvePredictiveBackAction({
+      splashOpen,
+      sheetOpen: sheetOpen || lightboxOpen,
+      splashSettingsOpen,
+      settingsOpen,
+      focusOpen,
+      dialogOpen: openDialog,
+      welcomeStep,
+      activeView: getActiveView(),
+    });
+    try {
+      window.LifeLedgerAndroidBackup?.setBackEnabled?.(Boolean(decision.handled));
+    } catch {}
+  }
+
+  /* ============================================================================
      Demo Mode & Predictive Back
      ============================================================================ */
 
@@ -4703,6 +6723,10 @@
   }
 
   function handleBack() {
+    if (splashOpen) {
+      dismissSplashOverlay();
+      return true;
+    }
     if (lightboxOpen) {
       closeLightbox();
       return true;
@@ -4711,19 +6735,39 @@
       Boolean(document.querySelector("dialog[open]")) ||
       Boolean(document.getElementById("dayDrawer")?.classList.contains("open"));
     const decision = resolvePredictiveBackAction({
+      splashOpen,
       sheetOpen,
+      splashSettingsOpen,
+      settingsOpen,
       focusOpen,
       dialogOpen: openDialog,
       welcomeStep,
       activeView: getActiveView(),
     });
     if (!decision.handled) return false;
+    if (decision.action === "close-splash") {
+      dismissSplashOverlay();
+      syncNativeBackState();
+      return true;
+    }
     if (decision.action === "close-sheet") {
       closeSheet();
+      syncNativeBackState();
+      return true;
+    }
+    if (decision.action === "close-splash-settings") {
+      closeSplashSettings();
+      syncNativeBackState();
+      return true;
+    }
+    if (decision.action === "close-settings") {
+      closeSettingsOverlay();
+      syncNativeBackState();
       return true;
     }
     if (decision.action === "close-focus") {
       closeFocusOverlay();
+      syncNativeBackState();
       return true;
     }
     if (decision.action === "close-dialog") {
@@ -4851,14 +6895,19 @@
     renderHabits();
 
     if (focusOpen) renderFocusOverlay();
+    if (settingsOpen) renderSettingsOverlay();
+    if (splashSettingsOpen) renderSplashSettings();
     if (welcomeStep > 0) renderWelcome();
     if (sheetOpen) renderSheetContent();
+    syncNativeBackState();
   }
 
   function init() {
+    applyDisplayPrefs();
     buildShell();
     const params = new URLSearchParams(location.search);
     const forceWelcome = isLocalHostname(location.hostname) ? Number(params.get("android-welcome") || 0) : 0;
+    const forceSplashParam = isLocalHostname(location.hostname) ? params.get("android-splash") : null;
     const onboarded = localStorage.getItem(ONBOARDED_KEY) === "1";
     const hasData = Boolean(core()?.hasUserData?.());
 
@@ -4871,6 +6920,20 @@
     }
     syncUI();
     renderWelcome();
+
+    const todayIso = core()?.getTodayIso?.() || toIsoDate(new Date());
+    if (forceSplashParam != null && forceSplashParam !== "") {
+      const wdMap = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
+      const parsedWd = wdMap[forceSplashParam.toLowerCase()] ?? (Number.isInteger(Number(forceSplashParam)) ? Number(forceSplashParam) : null);
+      showSplashOverlay({ weekdayOverride: parsedWd, preview: true, hold: true, progressPct: parsedWd === 0 ? 44 : parsedWd === 2 ? 62 : parsedWd === 5 ? 36 : 50 });
+    } else {
+      const prefs = loadSplashPrefs();
+      if (shouldShowSplashOnLaunch({ frequency: prefs.frequency, lastShownDate: prefs.lastShownDate, todayIso, welcomeStep })) {
+        void refreshSplashMediaCache().then(() => {
+          showSplashOverlay({ preview: false });
+        });
+      }
+    }
   }
 
   window.LifeLedgerAndroidFace = {
@@ -4889,6 +6952,17 @@
     openCardLibrary: openCardLibrarySheet,
     openPhotoFocus: openPhotoFocusSheet,
     openWeatherSheet,
+    showSplash: showSplashOverlay,
+    dismissSplash: dismissSplashOverlay,
+    isSplashOpen: () => splashOpen,
+    openSplashSettings,
+    closeSplashSettings,
+    isSplashSettingsOpen: () => splashSettingsOpen,
+    openSettings: openSettingsOverlay,
+    closeSettings: closeSettingsOverlay,
+    isSettingsOpen: () => settingsOpen,
+    openBackupExportSheet,
+    openBackupImportSheet,
     closeSheet,
     isSheetOpen: () => sheetOpen,
     handleBack,
