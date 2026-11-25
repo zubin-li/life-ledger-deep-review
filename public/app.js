@@ -2866,6 +2866,8 @@ function enterAndroidIsolatedDemo() {
   }
   state = { ...cloneData(seed), ...demoState };
   androidDemoState = cloneData(state);
+  selectedPlanningDate = effectiveDemoTodayIso();
+  cursor = parseDate(selectedPlanningDate);
   renderAll();
   return true;
 }
@@ -2876,6 +2878,8 @@ function exitAndroidIsolatedDemo() {
   androidDemoState = null;
   state = androidDemoSavedUserState ? cloneData(androidDemoSavedUserState) : loadState();
   androidDemoSavedUserState = null;
+  selectedPlanningDate = isoDate(new Date());
+  cursor = parseDate(selectedPlanningDate);
   stripDemoCalendarPhotos();
   renderAll();
   return true;
@@ -11864,17 +11868,125 @@ window.LifeLedgerAndroidCore = {
   hasUserData: () => Boolean(demoWorkspaceApi()?.hasMeaningfulUserData?.(androidDemoActive ? (androidDemoSavedUserState || loadState()) : state)),
   getLang: () => currentLang,
   getTodayIso: () => effectiveDemoTodayIso(),
-  getSelectedDate: () => selectedPlanningDate || isoDate(new Date()),
+  getSelectedDate: () => selectedPlanningDate || effectiveDemoTodayIso(),
+  isFutureDate: date => String(date || "") > effectiveDemoTodayIso(),
+  selectDate: date => {
+    if (!date) return;
+    selectPlanningDate(String(date));
+  },
+  getTodayQuote: () => quoteFor(0),
   activeHabitsForDate: date => activeHabits(date),
+  orderedHabitsForDate: date => orderedTodayHabits(activeHabits(date), getLog(date).completed),
+  getHabitIconKey: habit => iconKey(habit),
+  getHabitIconPath: habit => iconCatalog[iconKey(habit)] || iconCatalog.target,
   getLog: date => getLog(date),
   displayHabitName: habit => displayHabitName(habit),
-  setMood: (date, mood) => setMood(date, mood, false),
-  toggleHabit: (date, id) => toggleHabit(date, id),
-  setDayNote: (date, note) => {
-    const log = getLog(date);
-    log.note = String(note || "").trim();
+  setMood: (date, mood) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return false;
+    setMood(date, mood, false);
+    return true;
+  },
+  toggleHabit: (date, id) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return false;
+    toggleHabit(date, id);
+    return true;
+  },
+  toggleHabitImmediate: (date, id) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return null;
+    const log = { ...getLog(date), completed: [...getLog(date).completed] };
+    const idx = log.completed.indexOf(id);
+    const nowDone = idx < 0;
+    if (nowDone) log.completed.push(id);
+    else log.completed.splice(idx, 1);
+    state.logs[date] = log;
     saveState();
     renderAll();
+    return nowDone;
+  },
+  setDayNote: (date, note) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return false;
+    state.logs[date] = { ...getLog(date), note: String(note || "").trim() };
+    saveState();
+    renderAll();
+    return true;
+  },
+  getFocusDaySummary: date => {
+    const target = date || selectedPlanningDate || effectiveDemoTodayIso();
+    const sessions = focusSessionsBetween(target, target);
+    const totalMinutes = Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0));
+    const topicMap = new Map();
+    sessions.forEach(session => {
+      const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+      topicMap.set(label, (topicMap.get(label) || 0) + focusSessionMinutes(session));
+    });
+    const topics = [...topicMap.entries()]
+      .filter(([, mins]) => mins >= 0.5)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([label, minutes]) => ({ label, minutes: Math.round(minutes) }));
+    const snap = focusTimer?.snapshot?.() || null;
+    return {
+      totalMinutes,
+      topics,
+      running: Boolean(snap),
+      remainingText: snap ? formatFocusTime(snap.remainingMs) : "",
+    };
+  },
+  getSpendDaySummary: date => {
+    const target = date || selectedPlanningDate || effectiveDemoTodayIso();
+    const L = window.LifeLedgerLedger;
+    const ledger = L ? L.normalize(state.ledger || null, { lang: currentLang }) : null;
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "de-DE");
+    const currency = ledger?.settings?.defaultCurrency || "EUR";
+    const detail = ledger ? L.spendingTodayDetail(ledger, target, { lang: currentLang }) : { totalMinor: 0, expenseCount: 0 };
+    const totalMinor = Math.abs(Number(detail.totalMinor) || 0);
+    const formatted = ledger ? L.formatMoney(totalMinor, currency, locale) : "€0.00";
+    const end = parseDate(target);
+    const bars = [];
+    for (let off = 6; off >= 0; off -= 1) {
+      const d = new Date(end);
+      d.setDate(end.getDate() - off);
+      const key = isoDate(d);
+      const minor = ledger ? Math.abs(L.rangeSummary(ledger, key, key).expenseMinor) : 0;
+      bars.push({ date: key, minor, isSelected: key === target });
+    }
+    const maxMinor = Math.max(1, ...bars.map(b => b.minor));
+    const spark7 = bars.map(b => ({
+      ...b,
+      heightPct: b.minor > 0 ? Math.max(18, Math.round((b.minor / maxMinor) * 100)) : 14,
+    }));
+    return {
+      totalMinor,
+      formatted,
+      count: Number(detail.expenseCount) || 0,
+      currency,
+      spark7,
+    };
+  },
+  getRhythm7Summary: date => {
+    const end = parseDate(date || selectedPlanningDate || effectiveDemoTodayIso());
+    const todayCap = effectiveDemoTodayIso();
+    const days = [];
+    for (let off = 6; off >= 0; off -= 1) {
+      const d = new Date(end);
+      d.setDate(end.getDate() - off);
+      const key = isoDate(d);
+      const scored = dailyHabits(key);
+      const future = key > todayCap;
+      const done = future ? 0 : scored.filter(h => getLog(key).completed.includes(h.id)).length;
+      days.push({ date: key, done, total: scored.length, future, pct: scored.length && !future ? Math.round((done / scored.length) * 100) : 0 });
+    }
+    const past = days.filter(d => !d.future);
+    const sumDone = past.reduce((s, d) => s + d.done, 0);
+    const sumAll = past.reduce((s, d) => s + d.total, 0);
+    return { pct: sumAll ? Math.round((sumDone / sumAll) * 100) : 0, days };
+  },
+  openFocus: () => {
+    if (typeof openFocusTimerDialog === "function") openFocusTimerDialog();
+  },
+  openSpend: date => {
+    window.LifeLedgerLedgerUI?.openToDay?.(date || selectedPlanningDate || effectiveDemoTodayIso());
+    switchToView("ledger");
   },
   switchToView: view => switchToView(view),
   openImportBackup: () => {

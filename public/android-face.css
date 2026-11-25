@@ -98,6 +98,8 @@ html[data-android-app="true"] {
   --a-income: #22885C;
   --a-sky: #3B82C4;
   --a-sky-soft: #EAF3FC;
+  --a-sleep-soft: #EAEFF9;
+  --a-sleep-fg: #3B5B9A;
 
   /* Surface Elevation & Shape */
   --a-shadow-bubble: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 8px rgba(20, 30, 26, 0.035), 0 8px 24px rgba(20, 30, 26, 0.03);
@@ -178,6 +180,8 @@ html[data-android-app="true"][data-theme="dark"] {
   --a-income: #5EE09B;
   --a-sky: #7BB5FF;
   --a-sky-soft: #162638;
+  --a-sleep-soft: #1D273A;
+  --a-sleep-fg: #89B4FA;
 
   --a-shadow-bubble: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 16px rgba(0, 0, 0, 0.28);
   --a-shadow-cta: 0 8px 22px rgba(0, 0, 0, 0.36);
@@ -276,10 +280,24 @@ html[data-android-app="true"].a-sheet-open .app-shell {
     transform: none;
     border-radius: 0;
   }
+  html[data-android-app="true"] .a-sheet.is-from-fab {
+    transform: translateY(100%);
+  }
+  html[data-android-app="true"] .a-back-today-pill,
+  html[data-android-app="true"] .a-h-tile.is-bouncing {
+    animation: none;
+  }
 }
 html[data-android-app="true"].motion-reduced.a-sheet-open .app-shell {
   transform: none;
   border-radius: 0;
+}
+html[data-android-app="true"].motion-reduced .a-sheet.is-from-fab {
+  transform: translateY(100%);
+}
+html[data-android-app="true"].motion-reduced .a-back-today-pill,
+html[data-android-app="true"].motion-reduced .a-h-tile.is-bouncing {
+  animation: none;
 }
 
 /* Hide desktop/web chrome and desktop free-grid floating overlays on Android */
@@ -381,15 +399,25 @@ html[data-android-app="true"] .a-demo-exit {
 
 /* Android Top Bar */
 html[data-android-app="true"] .a-topbar {
-  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 8px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 2px 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 html[data-android-app="true"].a-demo-on .a-topbar {
-  padding-top: 8px;
+  padding-top: 7px;
+  padding-bottom: 5px;
+}
+html[data-android-app="true"].a-demo-on .a-day-pill {
+  height: 46px;
+}
+html[data-android-app="true"].a-demo-on .a-today-content {
+  gap: 8px;
+}
+html[data-android-app="true"].a-demo-on .a-photo-frame {
+  height: 98px;
 }
 html[data-android-app="true"] .a-title-wrap {
   display: flex;
@@ -1028,11 +1056,14 @@ html[data-android-app="true"] .a-empty-link {
   cursor: pointer;
 }
 
-/* When Android empty Today state is active, hide legacy Today grid clutter cleanly */
-html[data-android-app="true"].a-today-empty #todayView {
+/* Always hide legacy web Today cards on Android face (Phase 3 rebuilt Today replaces them completely) */
+html[data-android-app="true"] #todayView {
   display: block !important;
 }
-html[data-android-app="true"].a-today-empty #todayView > *:not(.a-empty-card) {
+html[data-android-app="true"] #todayView:not(.active) {
+  display: none !important;
+}
+html[data-android-app="true"] #todayView > :not(#androidTodayEmpty):not(#androidTodayRoot) {
   display: none !important;
 }
 html[data-android-app="true"] .a-empty-card {
@@ -1040,16 +1071,959 @@ html[data-android-app="true"] .a-empty-card {
   grid-column: 1 / -1;
 }
 
-/* Compact adjustments for legacy views inside the Android shell (Phase 3+ screens) */
-html[data-android-app="true"] #todayView .hero-grid,
-html[data-android-app="true"] #todayView .today-grid {
+/* ============================================================================
+   Phase 3: Rebuilt Android Today (03-today / 12-today-dark / 13-today-de-360 / 14-demo-mode)
+   ============================================================================ */
+
+html[data-android-app="true"] .a-back-today-pill {
+  appearance: none;
+  border: 1px solid rgba(39, 110, 78, 0.28);
+  background: var(--a-primary-soft);
+  color: var(--a-nav-pill-fg);
+  padding: 4px 10px;
+  min-height: 26px;
+  border-radius: var(--a-radius-pill);
+  font-family: var(--a-font-sans);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  animation: a-pill-pop var(--a-dur-fast) var(--a-spring-fast);
+}
+html[data-android-app="true"] .a-back-today-pill[hidden] {
+  display: none !important;
+}
+html[data-android-app="true"] .a-back-today-pill:active {
+  transform: scale(0.94);
+}
+html[data-android-app="true"] .a-icon-btn[hidden] {
+  display: none !important;
+}
+@keyframes a-pill-pop {
+  from { opacity: 0; transform: scale(0.84); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+html[data-android-app="true"] .a-today-root {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-today-root[hidden] {
+  display: none !important;
+}
+
+/* 7-Day Swipeable Date Strip */
+html[data-android-app="true"] .a-date-strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  padding: 0 2px 2px;
+  touch-action: pan-y;
+}
+html[data-android-app="true"] .a-day-pill {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  height: 50px;
+  border-radius: 15px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-family: var(--a-font-sans);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--a-dur-effects) var(--a-effects-fast), transform var(--a-dur-fast) var(--a-spring-fast);
+}
+html[data-android-app="true"] .a-day-pill:active {
+  transform: scale(0.94);
+}
+html[data-android-app="true"] .a-day-pill .a-dow {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+}
+html[data-android-app="true"] .a-day-pill .a-num {
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--a-on-surface);
+}
+html[data-android-app="true"] .a-day-pill .a-mdot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+html[data-android-app="true"] .a-day-pill.is-future .a-dow,
+html[data-android-app="true"] .a-day-pill.is-future .a-num {
+  color: var(--a-on-surface-variant);
+  opacity: 0.45;
+}
+html[data-android-app="true"] .a-day-pill.is-future .a-mdot {
+  background: transparent;
+  border: 1px dashed rgba(91, 98, 94, 0.34);
+}
+html[data-android-app="true"] .a-day-pill.is-active {
+  background: var(--a-brand-ink);
+  box-shadow: 0 6px 14px rgba(30, 39, 35, 0.2);
+}
+html[data-android-app="true"] .a-day-pill.is-active .a-dow {
+  color: rgba(255, 255, 255, 0.72);
+}
+html[data-android-app="true"] .a-day-pill.is-active .a-num {
+  color: #FFFFFF;
+}
+html[data-android-app="true"][data-theme="dark"] .a-day-pill.is-active {
+  background: var(--a-nav-pill-bg);
+  border-color: rgba(140, 224, 180, 0.36);
+  box-shadow: none;
+}
+html[data-android-app="true"][data-theme="dark"] .a-day-pill.is-active .a-dow {
+  color: #A6ECC8;
+}
+html[data-android-app="true"][data-theme="dark"] .a-day-pill.is-active .a-num {
+  color: #FFFFFF;
+}
+
+html[data-android-app="true"] .a-today-content {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+/* Future Date Read-Only Notice */
+html[data-android-app="true"] .a-future-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--a-surface-container);
+  border: 1px solid var(--a-outline);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+}
+
+/* Single-Line Daily Quote Strip */
+html[data-android-app="true"] .a-quote-strip {
+  appearance: none;
+  width: 100%;
+  padding: 7px 13px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--a-outline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--a-font-sans);
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+html[data-android-app="true"][data-theme="dark"] .a-quote-strip {
+  background: rgba(24, 27, 31, 0.92);
+}
+html[data-android-app="true"] .a-quote-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+html[data-android-app="true"] .a-quote-text {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--a-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-quote-src {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--a-on-surface-variant);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Shared Card & Chip Primitives */
+html[data-android-app="true"] .a-card {
+  background: var(--a-surface-card);
+  border: 1px solid var(--a-outline);
+  border-radius: 21px;
+  padding: 11px 14px 12px;
+  box-shadow: var(--a-shadow-bubble);
+  min-width: 0;
+}
+html[data-android-app="true"] .a-card.is-readonly {
+  opacity: 0.78;
+}
+html[data-android-app="true"] .a-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+html[data-android-app="true"] .a-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-card-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--a-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-card-meta {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+html[data-android-app="true"] .a-card-empty {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--a-on-surface-variant);
+}
+html[data-android-app="true"] .a-chip-ic {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+html[data-android-app="true"] .a-chip-sky { background: var(--a-sky-soft); color: var(--a-sky); width: 22px; height: 22px; border-radius: 7px; }
+html[data-android-app="true"] .a-chip-good { background: var(--a-good-soft); color: var(--a-good); }
+html[data-android-app="true"] .a-chip-primary { background: var(--a-nav-pill-bg); color: var(--a-primary); }
+html[data-android-app="true"] .a-chip-focus { background: var(--a-focus-soft); color: var(--a-focus); }
+html[data-android-app="true"] .a-chip-coral { background: var(--a-expense-soft); color: var(--a-expense); }
+
+/* Weather Card Slot (l013: 00/06/12/18/24 curve + current time dashed line) */
+html[data-android-app="true"] .a-weather-card {
+  background: linear-gradient(150deg, #FFFFFF 0%, #F5FAFF 100%);
+  border: 1px solid rgba(59, 130, 196, 0.16);
+  border-radius: 21px;
+  padding: 10px 14px;
+  box-shadow: var(--a-shadow-bubble);
+  display: grid;
+  grid-template-columns: 126px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+html[data-android-app="true"][data-theme="dark"] .a-weather-card {
+  background: linear-gradient(150deg, #181D23 0%, #152130 100%);
+  border-color: rgba(123, 181, 255, 0.2);
+}
+html[data-android-app="true"] .a-w-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-w-city-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-w-city {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--a-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-w-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--a-sky);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+html[data-android-app="true"] .a-w-temp-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-w-temp {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--a-on-surface);
+}
+html[data-android-app="true"] .a-w-cond {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-w-range {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-w-chart-wrap {
+  width: 100%;
+  height: 66px;
+  min-width: 0;
+}
+
+/* Mood Card (C72 + S4 luminous dark icons) */
+html[data-android-app="true"] .a-mood-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+html[data-android-app="true"] .a-mood-btn {
+  appearance: none;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--a-surface);
+  border: 1.5px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--a-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+  cursor: pointer;
+  padding: 0 6px;
+  transition: transform var(--a-dur-fast) var(--a-spring-fast), background var(--a-dur-effects) var(--a-effects-fast), border-color var(--a-dur-effects) var(--a-effects-fast);
+}
+html[data-android-app="true"][data-theme="dark"] .a-mood-btn {
+  background: var(--a-surface-container);
+}
+html[data-android-app="true"] .a-mood-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+html[data-android-app="true"] .a-mood-btn:disabled {
+  cursor: default;
+}
+html[data-android-app="true"] .a-mood-btn-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+html[data-android-app="true"] .a-mood-good .a-mood-btn-ic { color: var(--a-good); }
+html[data-android-app="true"] .a-mood-calm .a-mood-btn-ic { color: var(--a-calm); }
+html[data-android-app="true"] .a-mood-low .a-mood-btn-ic { color: var(--a-low); }
+
+html[data-android-app="true"] .a-mood-good.is-selected {
+  background: var(--a-good-soft);
+  border-color: rgba(244, 169, 0, 0.58);
+  color: var(--a-good-fg);
+}
+html[data-android-app="true"] .a-mood-calm.is-selected {
+  background: var(--a-calm-soft);
+  border-color: rgba(31, 183, 106, 0.55);
+  color: var(--a-calm-fg);
+  box-shadow: 0 3px 10px rgba(31, 183, 106, 0.12);
+}
+html[data-android-app="true"] .a-mood-low.is-selected {
+  background: var(--a-low-soft);
+  border-color: rgba(47, 128, 237, 0.58);
+  color: var(--a-low-fg);
+}
+html[data-android-app="true"] .a-mood-note {
+  appearance: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 11px;
+  background: var(--a-surface);
+  font-family: var(--a-font-sans);
+  font-size: 11.5px;
+  color: var(--a-on-surface-variant);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+html[data-android-app="true"][data-theme="dark"] .a-mood-note {
+  background: var(--a-surface-container);
+}
+
+/* Horizontal Habit Rail (l03: bounce + FLIP move-to-end + clean edge peek) */
+html[data-android-app="true"] .a-habit-rail-wrap {
+  position: relative;
+  margin: 0 -14px;
+  overflow: hidden;
+}
+html[data-android-app="true"] .a-habit-rail {
+  display: flex;
+  gap: 8px;
+  padding: 2px 24px 2px 14px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+html[data-android-app="true"] .a-habit-rail::-webkit-scrollbar {
+  display: none;
+}
+html[data-android-app="true"] .a-habit-rail-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.96) 100%);
+  pointer-events: none;
+}
+html[data-android-app="true"][data-theme="dark"] .a-habit-rail-wrap::after {
+  background: linear-gradient(90deg, rgba(24, 27, 31, 0) 0%, rgba(24, 27, 31, 0.96) 100%);
+}
+html[data-android-app="true"] .a-h-tile {
+  appearance: none;
+  width: 78px;
+  height: 68px;
+  border-radius: 15px;
+  flex-shrink: 0;
+  background: var(--a-surface);
+  border: 1px solid var(--a-outline);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px;
+  position: relative;
+  font-family: var(--a-font-sans);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+}
+html[data-android-app="true"][data-theme="dark"] .a-h-tile {
+  background: var(--a-surface-container);
+}
+html[data-android-app="true"] .a-h-tile:disabled {
+  cursor: default;
+}
+html[data-android-app="true"] .a-h-ic {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html[data-android-app="true"] .a-h-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--a-on-surface);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-h-tile.is-done,
+html[data-android-app="true"] .a-h-tile.is-done-preview {
+  background: #F1F8F4;
+  border-color: rgba(39, 110, 78, 0.24);
+}
+html[data-android-app="true"][data-theme="dark"] .a-h-tile.is-done,
+html[data-android-app="true"][data-theme="dark"] .a-h-tile.is-done-preview {
+  background: #172A21;
+  border-color: rgba(116, 214, 163, 0.28);
+}
+html[data-android-app="true"] .a-h-tile.is-done .a-h-name,
+html[data-android-app="true"] .a-h-tile.is-done-preview .a-h-name {
+  color: var(--a-primary);
+}
+html[data-android-app="true"][data-theme="dark"] .a-h-tile.is-done .a-h-name,
+html[data-android-app="true"][data-theme="dark"] .a-h-tile.is-done-preview .a-h-name {
+  color: var(--a-nav-pill-fg);
+}
+html[data-android-app="true"] .a-h-check {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--a-primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html[data-android-app="true"][data-theme="dark"] .a-h-check {
+  color: #0B1F15;
+}
+html[data-android-app="true"] .a-h-tile.is-bouncing {
+  animation: a-habit-bounce 170ms var(--a-spring-fast) forwards;
+  z-index: 2;
+}
+html[data-android-app="true"] .a-h-tile.is-flip-moving {
+  z-index: 3;
+  box-shadow: 0 6px 16px rgba(39, 110, 78, 0.16);
+}
+@keyframes a-habit-bounce {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.88); }
+  75% { transform: scale(1.07); }
+  100% { transform: scale(1.03); }
+}
+
+/* 2-Up Whole-Card-Tap Row: Focus (l019) + Today Spend (R2 + C110) */
+html[data-android-app="true"] .a-two-up {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+html[data-android-app="true"] .a-mini-card {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  background: var(--a-surface-card);
+  border: 1px solid var(--a-outline);
+  border-radius: 21px;
+  padding: 11px 13px;
+  box-shadow: var(--a-shadow-bubble);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 108px;
+  min-width: 0;
+  font-family: var(--a-font-sans);
+  color: var(--a-on-surface);
+  cursor: pointer;
+  transition: transform var(--a-dur-fast) var(--a-spring-fast);
+}
+html[data-android-app="true"] .a-mini-card:active {
+  transform: scale(0.97);
+}
+html[data-android-app="true"] .a-mini-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-mini-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-mini-title > span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-mini-chev {
+  color: var(--a-on-surface-variant);
+  opacity: 0.72;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+html[data-android-app="true"] .a-mini-meta {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+html[data-android-app="true"] .a-mini-body {
+  min-width: 0;
+}
+html[data-android-app="true"] .a-big-val {
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--a-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-big-val.is-coral {
+  color: var(--a-expense);
+}
+html[data-android-app="true"] .a-big-val small {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+  margin-left: 2px;
+}
+html[data-android-app="true"] .a-mini-sub {
+  margin-top: 4px;
+  font-size: 10.5px;
+  color: var(--a-on-surface-variant);
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-android-app="true"] .a-spark7 {
+  margin-top: 6px;
+  height: 22px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  align-items: end;
+}
+html[data-android-app="true"] .a-sp-b {
+  border-radius: 3.5px;
+  background: rgba(200, 90, 63, 0.22);
+  min-height: 3px;
+}
+html[data-android-app="true"][data-theme="dark"] .a-sp-b {
+  background: rgba(243, 146, 122, 0.26);
+}
+html[data-android-app="true"] .a-sp-b.is-today {
+  background: var(--a-expense);
+}
+
+/* Full-Bleed Photo Wall Card (l014: 6px thin frame, zero buttons on face) */
+html[data-android-app="true"] .a-photo-card {
+  appearance: none;
+  width: 100%;
+  padding: 6px;
+  border-radius: 21px;
+  background: var(--a-surface-card);
+  border: 1px solid var(--a-outline);
+  box-shadow: var(--a-shadow-bubble);
+  overflow: hidden;
+  cursor: pointer;
+  display: block;
+}
+html[data-android-app="true"] .a-photo-frame {
+  width: 100%;
+  height: 114px;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  background: var(--a-surface-container);
+}
+html[data-android-app="true"] .a-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+html[data-android-app="true"][data-theme="dark"] .a-photo-frame img {
+  filter: brightness(0.92);
+}
+html[data-android-app="true"] .a-photo-empty-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--a-on-surface-variant);
+  font-family: var(--a-font-sans);
+  border: 1px dashed var(--a-outline-strong);
+}
+html[data-android-app="true"] .a-photo-empty-frame strong {
+  font-size: 13px;
+  color: var(--a-on-surface);
+}
+html[data-android-app="true"] .a-photo-empty-frame span {
+  font-size: 11.5px;
+}
+
+/* Optional Rhythm Card (Card Library only, l029) */
+html[data-android-app="true"] .a-rhythm-bars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+}
+html[data-android-app="true"] .a-rhythm-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+html[data-android-app="true"] .a-rhythm-track {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--a-surface);
+  display: flex;
+  align-items: flex-end;
+  padding: 2px;
+}
+html[data-android-app="true"] .a-rhythm-track span {
+  width: 100%;
+  border-radius: 6px;
+  background: var(--a-primary-soft);
+  border: 1px solid rgba(39, 110, 78, 0.25);
+}
+html[data-android-app="true"] .a-rhythm-col.is-sel .a-rhythm-track span {
+  background: var(--a-primary);
+}
+html[data-android-app="true"] .a-rhythm-col small {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--a-on-surface-variant);
+}
+
+/* FAB Container-Transform Morph into Capture Sheet (SPEC §e #1) */
+html[data-android-app="true"] .a-fab.is-morphed {
+  transform: scale(0.72) translateY(-10px);
+  opacity: 0;
+  transition: transform 260ms var(--a-spring-default), opacity 180ms var(--a-effects-fast);
+}
+html[data-android-app="true"] .a-sheet.is-from-fab {
+  transform-origin: center bottom;
+  transform: translateY(84%) scale(0.32, 0.26);
+  border-radius: 24px;
+}
+html[data-android-app="true"] .a-sheet-backdrop.is-open .a-sheet.is-from-fab {
+  transform: translateY(0) scale(1, 1);
+  border-radius: var(--a-radius-sheet) var(--a-radius-sheet) 0 0;
+  transition:
+    transform var(--a-dur-default) var(--a-spring-default),
+    border-radius var(--a-dur-default) var(--a-spring-default);
+}
+
+/* Capture Sheet Habit Chip Icon & Photo Pill */
+html[data-android-app="true"] .a-chip-h-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+html[data-android-app="true"] .a-photo-pill-btn {
+  appearance: none;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 11px;
+  background: var(--a-surface);
+  color: var(--a-on-surface);
+  font-family: var(--a-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+html[data-android-app="true"][data-theme="dark"] .a-photo-pill-btn {
+  background: var(--a-surface-container);
+}
+
+/* Card Library & Photo Focus Sheet Styles */
+html[data-android-app="true"] .a-lib-sub {
+  margin: -6px 0 12px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--a-on-surface-variant);
+}
+html[data-android-app="true"] .a-lib-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+html[data-android-app="true"] .a-lib-row {
+  padding: 11px 13px;
+  border-radius: 16px;
+  background: var(--a-surface-card);
+  border: 1px solid var(--a-outline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
-html[data-android-app="true"] #todayView .hero-card,
-html[data-android-app="true"] #todayView .mood-card,
-html[data-android-app="true"] .tc-card,
+html[data-android-app="true"] .a-lib-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+html[data-android-app="true"] .a-lib-copy strong {
+  font-size: 13.5px;
+  color: var(--a-on-surface);
+}
+html[data-android-app="true"] .a-lib-copy span {
+  font-size: 11.5px;
+  color: var(--a-on-surface-variant);
+  line-height: 1.35;
+}
+html[data-android-app="true"] .a-lib-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+html[data-android-app="true"] .a-lib-move {
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  border: 1px solid var(--a-outline);
+  background: var(--a-surface);
+  color: var(--a-on-surface);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+html[data-android-app="true"] .a-lib-move:disabled {
+  opacity: 0.35;
+}
+html[data-android-app="true"] .a-lib-toggle {
+  appearance: none;
+  border: 1px solid rgba(39, 110, 78, 0.3);
+  background: var(--a-primary-soft);
+  color: var(--a-nav-pill-fg);
+  padding: 6px 11px;
+  border-radius: var(--a-radius-pill);
+  font-family: var(--a-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+html[data-android-app="true"] .a-lib-toggle.is-on {
+  background: var(--a-surface);
+  border-color: var(--a-outline);
+  color: var(--a-on-surface-variant);
+}
+
+/* Interactive Photo Focus Preview */
+html[data-android-app="true"] .a-focus-preview {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--a-outline);
+  margin-bottom: 14px;
+  touch-action: none;
+  cursor: crosshair;
+  background: #141816;
+}
+html[data-android-app="true"] .a-focus-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+html[data-android-app="true"] .a-focus-pin {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
+  border-radius: 50%;
+  border: 2.5px solid #FFFFFF;
+  background: rgba(246, 180, 30, 0.45);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+html[data-android-app="true"] .a-photo-sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Full-screen Lightbox */
+html[data-android-app="true"] .a-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(12, 15, 14, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 200ms var(--a-effects-fast);
+}
+html[data-android-app="true"] .a-lightbox[hidden] {
+  display: none !important;
+}
+html[data-android-app="true"] .a-lightbox.is-open {
+  opacity: 1;
+}
+html[data-android-app="true"] .a-lb-inner {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+html[data-android-app="true"] .a-lb-img {
+  width: 100%;
+  max-height: 68dvh;
+  object-fit: contain;
+  border-radius: 18px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+html[data-android-app="true"] .a-lb-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+html[data-android-app="true"] .a-lb-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: var(--a-radius-pill);
+  font-family: var(--a-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* Compact adjustments for legacy non-Today views inside the Android shell (Phase 5+) */
 html[data-android-app="true"] .card {
   border-radius: var(--a-radius-card);
   max-width: 100%;
@@ -1375,6 +2349,44 @@ html[data-android-app="true"] .a-sheet-bridge p {
   html[data-android-app="true"] .a-btn-secondary { min-height: 44px; font-size: 12px; padding: 0 8px; }
   html[data-android-app="true"] .a-bottom-nav { padding-left: 4px; padding-right: 4px; }
   html[data-android-app="true"] .a-page-title { font-size: 21px; }
+  html[data-android-app="true"] .a-topbar { padding: calc(env(safe-area-inset-top, 0px) + 6px) 2px 5px; gap: 6px; }
+  html[data-android-app="true"] .a-icon-btn { width: 35px; height: 35px; border-radius: 12px; }
+  html[data-android-app="true"] .a-date-sub { font-size: 11px; }
+  html[data-android-app="true"] .a-back-today-pill { padding: 3px 8px; font-size: 10.5px; min-height: 24px; }
+  html[data-android-app="true"] .main-content { padding-left: 12px !important; padding-right: 12px !important; }
+  html[data-android-app="true"] .a-day-pill { height: 44px; border-radius: 13px; }
+  html[data-android-app="true"] .a-day-pill .a-dow { font-size: 10px; }
+  html[data-android-app="true"] .a-day-pill .a-num { font-size: 13px; }
+  html[data-android-app="true"] .a-today-content { gap: 7px; }
+  html[data-android-app="true"] .a-quote-strip { padding: 6px 11px; border-radius: 13px; }
+  html[data-android-app="true"] .a-quote-text { font-size: 11px; }
+  html[data-android-app="true"] .a-quote-src { font-size: 10px; }
+  html[data-android-app="true"] .a-weather-card { grid-template-columns: 108px minmax(0, 1fr); padding: 8px 11px; border-radius: 18px; gap: 8px; }
+  html[data-android-app="true"] .a-w-temp { font-size: 23px; }
+  html[data-android-app="true"] .a-w-city { font-size: 11.5px; }
+  html[data-android-app="true"] .a-w-time { font-size: 10px; }
+  html[data-android-app="true"] .a-w-cond { font-size: 11px; }
+  html[data-android-app="true"] .a-w-range { font-size: 10px; }
+  html[data-android-app="true"] .a-w-chart-wrap { height: 58px; }
+  html[data-android-app="true"] .a-card { border-radius: 18px; padding: 9px 12px 10px; }
+  html[data-android-app="true"] .a-card-title { font-size: 13.5px; }
+  html[data-android-app="true"] .a-card-meta { font-size: 11px; }
+  html[data-android-app="true"] .a-mood-grid { gap: 6px; }
+  html[data-android-app="true"] .a-mood-btn { height: 40px; border-radius: 12px; font-size: 12px; gap: 5px; }
+  html[data-android-app="true"] .a-mood-note { font-size: 11px; margin-top: 6px; padding: 5px 9px; }
+  html[data-android-app="true"] .a-habit-rail-wrap { margin: 0 -12px; }
+  html[data-android-app="true"] .a-habit-rail { padding: 2px 22px 2px 12px; gap: 7px; }
+  html[data-android-app="true"] .a-h-tile { width: 72px; height: 60px; border-radius: 13px; gap: 4px; }
+  html[data-android-app="true"] .a-h-ic { width: 27px; height: 27px; border-radius: 9px; }
+  html[data-android-app="true"] .a-h-name { font-size: 10px; }
+  html[data-android-app="true"] .a-two-up { gap: 7px; }
+  html[data-android-app="true"] .a-mini-card { border-radius: 18px; padding: 9px 11px; min-height: 98px; }
+  html[data-android-app="true"] .a-mini-title { font-size: 12.5px; gap: 5px; }
+  html[data-android-app="true"] .a-big-val { font-size: 21px; }
+  html[data-android-app="true"] .a-mini-sub { font-size: 10px; }
+  html[data-android-app="true"] .a-spark7 { height: 19px; gap: 3px; }
+  html[data-android-app="true"] .a-photo-card { padding: 5px; border-radius: 18px; }
+  html[data-android-app="true"] .a-photo-frame { height: 92px; border-radius: 13px; }
   html[data-android-app="true"] .a-sheet { padding: 8px 14px calc(14px + env(safe-area-inset-bottom, 0px)); }
   html[data-android-app="true"] .a-sheet-head { margin-bottom: 10px; }
   html[data-android-app="true"] .a-seg { margin-bottom: 12px; }

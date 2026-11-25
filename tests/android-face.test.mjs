@@ -155,3 +155,61 @@ test("Demo-mode isolation hooks in app.js never write demo data to user storage 
   // 4. Wall photo demo seeder never writes into user storage/IndexedDB on Android
   assert.match(widgetsSource, /document\.documentElement\.dataset\.androidApp === "true"/);
 });
+
+test("Phase 3 Today helpers: completed habits sort to end, back-to-today only off-today, future date read-only, card library default (l03/l029)", async () => {
+  const { win } = await loadFaceHelpers({ hostname: "example.com" });
+  const {
+    sortAndroidHabits,
+    shouldShowBackToToday,
+    isAndroidDateReadOnly,
+    buildWeekDays,
+    resolveAndroidTodayCards,
+  } = win.LifeLedgerAndroidFaceHelpers;
+
+  // 1. Completed habits move to the end while incomplete habits stay first in order (l03)
+  const habits = [
+    { id: "exercise", name: "运动" },
+    { id: "reading", name: "阅读" },
+    { id: "sleep2330", name: "23:30睡" },
+    { id: "hydration", name: "饮水" },
+  ];
+  const sorted = sortAndroidHabits(habits, ["hydration", "exercise"]);
+  assert.deepEqual(
+    Array.from(sorted, h => h.id),
+    ["reading", "sleep2330", "hydration", "exercise"],
+  );
+
+  // 2. Back-to-today capsule visible ONLY when selectedDate !== todayIso
+  assert.equal(shouldShowBackToToday("2026-11-25", "2026-11-25"), false);
+  assert.equal(shouldShowBackToToday("2026-11-24", "2026-11-25"), true);
+  assert.equal(shouldShowBackToToday("2026-11-26", "2026-11-25"), true);
+
+  // 3. Future date is strictly read-only; today and past dates remain editable
+  assert.equal(isAndroidDateReadOnly("2026-11-26", "2026-11-25"), true);
+  assert.equal(isAndroidDateReadOnly("2026-11-25", "2026-11-25"), false);
+  assert.equal(isAndroidDateReadOnly("2026-11-24", "2026-11-25"), false);
+
+  // 4. 7-day strip always builds Mon..Sun with future flags set accurately
+  const week = buildWeekDays("2026-11-25", "2026-11-25");
+  assert.equal(week.length, 7);
+  assert.equal(week[0].iso, "2026-11-23");
+  assert.equal(week[2].iso, "2026-11-25");
+  assert.equal(week[2].isSelected, true);
+  assert.equal(week[2].isFuture, false);
+  assert.equal(week[3].iso, "2026-11-26");
+  assert.equal(week[3].isFuture, true);
+  assert.equal(week[6].iso, "2026-11-29");
+  assert.equal(week[6].isFuture, true);
+
+  // 5. Optional cards (rhythm) are excluded from default Today and only added from Card Library (l029)
+  const defaultCards = resolveAndroidTodayCards(null);
+  assert.equal(defaultCards.includes("rhythm"), false);
+  const withRhythm = resolveAndroidTodayCards([...defaultCards, "rhythm", "unknown-card"]);
+  assert.equal(withRhythm.includes("rhythm"), true);
+  assert.equal(withRhythm.includes("unknown-card"), false);
+
+  // 6. Shared core write hooks guard against future-date mutations
+  const appSource = await readFile(resolve(root, "public/app.js"), "utf8");
+  assert.match(appSource, /toggleHabitImmediate:\s*\(date, id\)\s*=>\s*\{\s*if \(String\(date \|\| ""\) > effectiveDemoTodayIso\(\)\) return null;/);
+  assert.match(appSource, /setDayNote:\s*\(date, note\)\s*=>\s*\{\s*if \(String\(date \|\| ""\) > effectiveDemoTodayIso\(\)\) return false;/);
+});
