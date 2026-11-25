@@ -56,18 +56,20 @@ function replaceExact(source, from, to, label) {
   return source.replace(from, to);
 }
 
-export async function prepare() {
-  await rm(dist, { recursive: true, force: true });
-  await mkdir(dist, { recursive: true });
-  await cp(publicDir, dist, { recursive: true });
+export async function prepare(targetDist = dist) {
+  const out = resolve(targetDist);
+  await rm(out, { recursive: true, force: true });
+  await mkdir(out, { recursive: true });
+  await cp(publicDir, out, { recursive: true });
 
-  let html = await readFile(resolve(dist, "index.html"), "utf8");
+  let html = await readFile(resolve(out, "index.html"), "utf8");
+  html = replaceExact(html, '<html lang="en">', '<html lang="en" data-android-app="true">', "index android flag");
   html = replaceExact(html, '\n    <script src="./_init_tcb-env.js?v=2.1.0"></script>', "", "index tcb env");
   html = replaceExact(html, '\n    <script src="./cloudbase-sync.js?v=2.1.0"></script>', "", "index cloudbase");
-  await writeFile(resolve(dist, "index.html"), html);
-  await writeFile(resolve(dist, "deployment-mode.js"), LOCAL_MODE_SOURCE);
+  await writeFile(resolve(out, "index.html"), html);
+  await writeFile(resolve(out, "deployment-mode.js"), LOCAL_MODE_SOURCE);
 
-  let widgets = await readFile(resolve(dist, "today-widgets.js"), "utf8");
+  let widgets = await readFile(resolve(out, "today-widgets.js"), "utf8");
   widgets = replaceExact(
     widgets,
     '<a class="tw-caption" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo · CC BY 4.0</a>',
@@ -116,9 +118,9 @@ export async function prepare() {
     "  ];\n  cards.weather.remove();\n  // Another device changed the city or a card choice (cloud edition): read them again and redraw.",
     "weather card removal",
   );
-  await writeFile(resolve(dist, "today-widgets.js"), widgets);
+  await writeFile(resolve(out, "today-widgets.js"), widgets);
 
-  let cards = await readFile(resolve(dist, "today-cards.js"), "utf8");
+  let cards = await readFile(resolve(out, "today-cards.js"), "utf8");
   cards = replaceExact(cards, '    { id: "dayplan", el: wrap(planGrid, "dayplan"), sizes: ["L"] },\n', "", "online calendar card registration");
   cards = replaceExact(
     cards,
@@ -126,9 +128,9 @@ export async function prepare() {
     "  ];\n  planGrid.remove();\n  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));",
     "online calendar card removal",
   );
-  await writeFile(resolve(dist, "today-cards.js"), cards);
+  await writeFile(resolve(out, "today-cards.js"), cards);
 
-  let app = await readFile(resolve(dist, "app.js"), "utf8");
+  let app = await readFile(resolve(out, "app.js"), "utf8");
   app = replaceExact(app, 'const CLOUD_API = "./api/state";', 'const CLOUD_API = "";', "cloud api");
   app = replaceExact(
     app,
@@ -189,10 +191,10 @@ export async function prepare() {
     ].join("\n"),
     "updater invoke",
   );
-  await writeFile(resolve(dist, "app.js"), app);
+  await writeFile(resolve(out, "app.js"), app);
 
   for (const relative of REMOVE_FILES) {
-    await rm(resolve(dist, relative), { force: false });
+    await rm(resolve(out, relative), { force: false });
   }
 }
 

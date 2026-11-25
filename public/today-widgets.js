@@ -490,7 +490,7 @@
   const walls = { wall: makeWall(cards.wall, "wall", ""), wall2: makeWall(cards.wall2, "wall2", "-2"), wall3: makeWall(cards.wall3, "wall3", "-3") };
   const loadWall = () => Object.values(walls).forEach(w => w.loadWall());
   setTimeout(() => {
-    if (typeof state === "undefined" || !window.LifeLedgerDemoWorkspace?.isDemoActive?.(state) || read("life-ledger-wall-demo-seeded")) return;
+    if (document.documentElement.dataset.androidApp === "true" || typeof state === "undefined" || !window.LifeLedgerDemoWorkspace?.isDemoActive?.(state) || read("life-ledger-wall-demo-seeded")) return;
     save("life-ledger-wall-demo-seeded", 1);
     void walls.wall.seedDemo(["spree-sunset", "run-park", "meetup-talk", "weekend-hike", "analyst-desk", "dinner-friends"]);
     // a second wall shows that any card can be added more than once (user 10/21)

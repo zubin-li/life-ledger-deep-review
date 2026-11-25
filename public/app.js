@@ -2826,9 +2826,65 @@ function stripDemoCalendarPhotos() {
   });
 }
 
+let androidDemoActive = false;
+let androidDemoSavedUserState = null;
+let androidDemoState = null;
+
+function isAndroidAppFace() {
+  return document.documentElement.dataset.androidApp === "true";
+}
+
+function enterAndroidIsolatedDemo() {
+  const api = demoWorkspaceApi();
+  if (!api) return false;
+  if (!androidDemoActive) {
+    androidDemoSavedUserState = cloneData(state);
+    androidDemoActive = true;
+  }
+  const demoAnchor = api.demoSeedAnchor?.(new Date()) ?? new Date();
+  const demoState = api.buildDemoWorkspace({
+    now: demoAnchor,
+    lang: currentLang,
+    seedHabits: cloneData(seed.habits),
+  });
+  if (window.LifeLedgerLedger?.buildDemoSample) {
+    demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
+      now: demoAnchor,
+      realToday: isoDate(new Date()),
+      lang: currentLang,
+      contentSeed: demoState.meta?.demo?.contentSeed,
+    });
+    const habitIds = (demoState.habits || []).map(h => h.id);
+    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoMoodWithBudgetOverspend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
+    demoState.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
+      demoState.focusSessions,
+      demoState.ledger,
+      demoAnchor,
+    ) ?? demoState.focusSessions;
+  }
+  state = { ...cloneData(seed), ...demoState };
+  androidDemoState = cloneData(state);
+  renderAll();
+  return true;
+}
+
+function exitAndroidIsolatedDemo() {
+  if (!androidDemoActive) return false;
+  androidDemoActive = false;
+  androidDemoState = null;
+  state = androidDemoSavedUserState ? cloneData(androidDemoSavedUserState) : loadState();
+  androidDemoSavedUserState = null;
+  stripDemoCalendarPhotos();
+  renderAll();
+  return true;
+}
+
 function maybeApplyDemoWorkspace() {
   const api = demoWorkspaceApi();
   if (!api) return;
+  if (isAndroidAppFace()) return;
   const params = new URLSearchParams(location.search);
   if (previewName === api.DEMO_PREVIEW_ID && params.get("demo-reset") === "1") {
     localStorage.removeItem(STORAGE_KEY);
@@ -3457,6 +3513,10 @@ function saveState(options = {}) {
   const priorUpdatedAt = state.meta?.updatedAt || 0;
   const touchUpdatedAt = cloudSyncRuntime.shouldTouchUpdatedAt(options);
   state.meta = { ...(state.meta || {}), updatedAt: touchUpdatedAt ? Date.now() : priorUpdatedAt };
+  if (androidDemoActive) {
+    androidDemoState = cloneData(state);
+    return;
+  }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   requestPersistentStorage();
   cloudSyncRuntime.afterLocalSave(options);
@@ -6727,6 +6787,14 @@ function createRestoreSafetySnapshot(currentState, storage, { suffix = "" } = {}
 function createBackup(scope) {
   const range = exportRange(scope);
   const preferences = backupPreferencesForScope(scope, localStorage, { suffix: window.LifeLedgerStorageSuffix || "" });
+  let data;
+  if (typeof androidDemoActive !== "undefined" && androidDemoActive) {
+    const prev = state;
+    state = androidDemoSavedUserState || loadState();
+    try { data = scopedState(range); } finally { state = prev; }
+  } else {
+    data = scopedState(range);
+  }
   return {
     format: BACKUP_FORMAT,
     schemaVersion: BACKUP_SCHEMA_VERSION,
@@ -6734,7 +6802,7 @@ function createBackup(scope) {
     exportedAt: new Date().toISOString(),
     scope,
     range,
-    data: scopedState(range),
+    data,
     ...(preferences ? { preferences } : {}),
   };
 }
@@ -11587,9 +11655,11 @@ function initSettingsDialog() {
     label();
     $("#settingsClearLocal").hidden = !localOnly;
     $("#settingsRestoreLocal").hidden = !localOnly || !localStorage.getItem(LOCAL_BACKUP_KEY);
-    $("#settingsLoadDemo").hidden = macLocal
-      ? Boolean(demoWorkspaceApi()?.isDemoActive(state)) || Boolean(demoWorkspaceApi()?.hasMeaningfulUserData(state))
-      : !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
+    $("#settingsLoadDemo").hidden = isAndroidAppFace()
+      ? androidDemoActive
+      : macLocal
+        ? Boolean(demoWorkspaceApi()?.isDemoActive(state)) || Boolean(demoWorkspaceApi()?.hasMeaningfulUserData(state))
+        : !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
     $("#settingsRestoreLocal").hidden = !(localOnly || macLocal) || !localStorage.getItem(LOCAL_BACKUP_KEY);
     $("#settingsClearLocal").hidden = !(localOnly || macLocal);
     pulseModalDialog(dialog);
@@ -11611,6 +11681,11 @@ function initSettingsDialog() {
   initModeSwitch(dialog);
   $("#settingsInstallApp").addEventListener("click", () => dialog.close(), true);
   $("#settingsLoadDemo").addEventListener("click", () => {
+    if (isAndroidAppFace()) {
+      dialog.close();
+      window.LifeLedgerAndroidFace?.enterDemo?.();
+      return;
+    }
     if (macLocal) { loadMacSample(); return; }
     localStorage.removeItem(demoDismissedStorageKey());
     localStorage.removeItem(STORAGE_KEY);
@@ -11780,3 +11855,32 @@ function applyCloudPrefs(options = {}) {
   renderAll();
 }
 window.LifeLedgerPrefs = { keys: syncedPrefKeys, changed: () => notePrefChange() };
+window.LifeLedgerAndroidCore = {
+  isIsolatedDemoActive: () => androidDemoActive,
+  enterIsolatedDemo: () => enterAndroidIsolatedDemo(),
+  exitIsolatedDemo: () => exitAndroidIsolatedDemo(),
+  getState: () => state,
+  getUserState: () => (androidDemoActive ? (androidDemoSavedUserState || loadState()) : state),
+  hasUserData: () => Boolean(demoWorkspaceApi()?.hasMeaningfulUserData?.(androidDemoActive ? (androidDemoSavedUserState || loadState()) : state)),
+  getLang: () => currentLang,
+  getTodayIso: () => effectiveDemoTodayIso(),
+  getSelectedDate: () => selectedPlanningDate || isoDate(new Date()),
+  activeHabitsForDate: date => activeHabits(date),
+  getLog: date => getLog(date),
+  displayHabitName: habit => displayHabitName(habit),
+  setMood: (date, mood) => setMood(date, mood, false),
+  toggleHabit: (date, id) => toggleHabit(date, id),
+  setDayNote: (date, note) => {
+    const log = getLog(date);
+    log.note = String(note || "").trim();
+    saveState();
+    renderAll();
+  },
+  switchToView: view => switchToView(view),
+  openImportBackup: () => {
+    openBackupDialog();
+    setBackupTab("import");
+  },
+  openSettings: () => $("#settingsButton")?.click(),
+  createBackup: (scope = "all") => createBackup(scope),
+};
