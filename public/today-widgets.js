@@ -210,7 +210,7 @@
   cards.heatmap.addEventListener("click", e => { const d = e.target.closest("[data-date]")?.dataset.date; if (d && !view.classList.contains("tc-editing")) openDrawer(d); });
 
   // ---- weather (data logic from 858ede8 today-extras; drawing by weather-widget.js) ----
-  let city = read("life-ledger-weather-city"), forecast = null, stamp = 0, busy = false, searchAbort;
+  let city = read("life-ledger-weather-city"), forecast = null, stamp = 0, busy = false, weatherOffline = false, searchAbort;
   if (city && !(Number.isFinite(city.latitude) && Number.isFinite(city.longitude))) city = null;
   // The sample persona lives in Berlin: the demo shows real Berlin weather until a city is chosen.
   // (checked lazily: the demo is seeded after this script runs)
@@ -234,6 +234,7 @@
     finally { clearTimeout(timer); signal?.removeEventListener("abort", abort); }
   }
   const valid = d => d?.current?.time && Array.isArray(d.hourly?.time) && d.hourly.time.length > 2;
+  const emitWeather = () => window.dispatchEvent(new CustomEvent("life-ledger-weather-updated"));
   function status(text, attention = false) { const s = $("#weatherStatus"); s.textContent = text; s.hidden = !attention; }
   function drawWeather() {
     demoCity();
@@ -242,13 +243,25 @@
     if (forecast && city) window.LifeLedgerWeather?.update(forecast, city, lang(), t, kind, selectedPlanningDate);
     const temp = $("#weatherDetail .weather-temp", cards.weather)?.textContent || (city ? "" : t("weatherEmptyTitle"));
     setHit(cards.weather, [t("weather"), temp, t("setCity")]);
+    emitWeather();
   }
   async function loadWeather(force = false) {
     demoCity();
     if (!city || busy) return;
     const key = `${city.latitude},${city.longitude},31-16`, cache = read("life-ledger-weather-cache");
     if (!forecast && cache?.city === key && valid(cache.data)) { forecast = cache.data; stamp = cache.stamp; drawWeather(); }
-    if (!force && forecast && Date.now() - stamp < 30 * 60 * 1000) { status(`${t("updated")} ${forecast.current.time.slice(11, 16)}`); return; }
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      weatherOffline = true;
+      status(forecast ? t("cached") : t("unavailable"), true);
+      emitWeather();
+      return;
+    }
+    if (!force && forecast && Date.now() - stamp < 30 * 60 * 1000) {
+      weatherOffline = false;
+      status(`${t("updated")} ${forecast.current.time.slice(11, 16)}`);
+      emitWeather();
+      return;
+    }
     const asked = city; busy = true; status(t("loading"), !forecast);
     try {
       const url = new URL("https://api.open-meteo.com/v1/forecast");
@@ -256,14 +269,15 @@
       const data = await json(url);
       if (!valid(data)) throw new Error("invalid");
       if (city !== asked) return;
+      weatherOffline = false;
       forecast = data; stamp = Date.now(); save("life-ledger-weather-cache", { city: key, stamp, data });
       drawWeather(); status(`${t("updated")} ${data.current.time.slice(11, 16)}`);
-    } catch { status(forecast ? t("cached") : t("unavailable"), true); }
+    } catch { weatherOffline = true; status(forecast ? t("cached") : t("unavailable"), true); emitWeather(); }
     finally { busy = false; if (city !== asked) void loadWeather(true); }
   }
   function setCity(place) {
     city = { name: place.name, latitude: place.latitude, longitude: place.longitude };
-    save("life-ledger-weather-city", city); forecast = null; window.LifeLedgerWeather?.clear(); drawWeather(); void loadWeather(true);
+    save("life-ledger-weather-city", city); forecast = null; weatherOffline = false; window.LifeLedgerWeather?.clear(); drawWeather(); void loadWeather(true);
   }
   // City search UI, shown in the weather card's settings (edit mode).
   function weatherSettings(box) {
@@ -874,6 +888,64 @@
     freqPick = read("life-ledger-freq-habit");
     render();
   }
-  window.LifeLedgerTodayWidgets = { render, reload, syncWalls: () => Object.values(walls).forEach(w => w.sync()), text: t };
+  const weatherBridge = {
+    getSnapshot(day = selectedPlanningDate) {
+      const saved = read("life-ledger-weather-city");
+      const validSaved = saved && Number.isFinite(saved.latitude) && Number.isFinite(saved.longitude) ? saved : null;
+      const isDemo = typeof state !== "undefined" && Boolean(window.LifeLedgerDemoWorkspace?.isDemoActive?.(state));
+      const desiredCity = validSaved || (isDemo ? { name: "Berlin", latitude: 52.52, longitude: 13.405 } : regionCity());
+      if (!city || city.latitude !== desiredCity.latitude || city.longitude !== desiredCity.longitude || city.name !== desiredCity.name) {
+        city = desiredCity;
+        forecast = null;
+      }
+      let data = forecast;
+      let ts = stamp;
+      if (!data && city) {
+        const key = `${city.latitude},${city.longitude},31-16`;
+        const cache = read("life-ledger-weather-cache");
+        if (cache?.city === key && valid(cache.data)) {
+          data = cache.data;
+          ts = cache.stamp || 0;
+          forecast = data;
+          stamp = ts;
+        }
+      }
+      const win = data ? window.LifeLedgerWeather?.dataWindow?.(data, day) || null : null;
+      const nowStr = data ? window.LifeLedgerWeather?.cityNow?.(data) || data.current?.time?.slice(0, 16) || "" : "";
+      const offline = weatherOffline || (typeof navigator !== "undefined" && navigator.onLine === false);
+      return {
+        city,
+        forecast: data,
+        stamp: ts,
+        offline,
+        loading: busy,
+        window: win,
+        cityNow: nowStr,
+        kind,
+        label: t,
+        userChosen: Boolean(validSaved),
+      };
+    },
+    setCity(place) {
+      if (!place || !Number.isFinite(place.latitude) || !Number.isFinite(place.longitude)) return false;
+      setCity(place);
+      return true;
+    },
+    async searchCities(name, signal) {
+      const q = String(name || "").trim();
+      if (q.length < 2) return [];
+      if (typeof navigator !== "undefined" && navigator.onLine === false) return [];
+      try {
+        const data = await json(`https://geocoding-api.open-meteo.com/v1/search?${new URLSearchParams({ name: q, count: "5", language: lang(), format: "json" })}`, signal);
+        return (data?.results || []).filter(p => Number.isFinite(p.latitude) && Number.isFinite(p.longitude));
+      } catch {
+        return [];
+      }
+    },
+    refresh(force = false) {
+      return loadWeather(force);
+    },
+  };
+  window.LifeLedgerTodayWidgets = { render, reload, syncWalls: () => Object.values(walls).forEach(w => w.sync()), text: t, weather: weatherBridge };
   setTimeout(render);
 })();

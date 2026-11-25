@@ -7625,6 +7625,7 @@ function renderFocusTimer(snapshot) {
   } else {
     document.title = tr("title");
   }
+  window.dispatchEvent(new CustomEvent("life-ledger-focus-tick", { detail: snapshot || null }));
 }
 
 function openFocusTimerDialog() {
@@ -11982,11 +11983,438 @@ window.LifeLedgerAndroidCore = {
     return { pct: sumAll ? Math.round((sumDone / sumAll) * 100) : 0, days };
   },
   openFocus: () => {
+    if (isAndroidAppFace() && window.LifeLedgerAndroidFace?.openFocus) {
+      window.LifeLedgerAndroidFace.openFocus();
+      return;
+    }
     if (typeof openFocusTimerDialog === "function") openFocusTimerDialog();
   },
   openSpend: date => {
+    if (isAndroidAppFace() && window.LifeLedgerAndroidFace?.openKeypadSheet) {
+      window.LifeLedgerAndroidFace.openKeypadSheet({ date: date || selectedPlanningDate || effectiveDemoTodayIso() });
+      return;
+    }
     window.LifeLedgerLedgerUI?.openToDay?.(date || selectedPlanningDate || effectiveDemoTodayIso());
     switchToView("ledger");
+  },
+  getLedger: () => window.LifeLedgerLedger?.normalize(state.ledger || null, { lang: currentLang }) || null,
+  commitLedger: nextLedger => {
+    if (!nextLedger) return false;
+    state.ledger = nextLedger;
+    saveState();
+    renderAll();
+    return true;
+  },
+  addLedgerTransaction: draft => {
+    const L = window.LifeLedgerLedger;
+    if (!L) return null;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    const res = L.addTransaction(base, draft, { lang: currentLang });
+    if (!res?.ledger) return null;
+    state.ledger = res.ledger;
+    saveState();
+    renderAll();
+    return res.transaction || null;
+  },
+  removeLedgerTransaction: id => {
+    const L = window.LifeLedgerLedger;
+    if (!L || !id) return null;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    const res = L.removeTransaction(base, id);
+    if (!res?.removed) return null;
+    state.ledger = res.ledger;
+    saveState();
+    renderAll();
+    return { removed: res.removed, index: res.index };
+  },
+  restoreLedgerTransaction: (removed, index) => {
+    const L = window.LifeLedgerLedger;
+    if (!L || !removed) return false;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    state.ledger = L.restoreTransaction(base, removed, index);
+    saveState();
+    renderAll();
+    return true;
+  },
+  updateLedgerTransaction: (id, patch) => {
+    const L = window.LifeLedgerLedger;
+    if (!L || !id) return false;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    const res = L.updateTransaction(base, id, patch, { lang: currentLang });
+    if (!res?.ledger) return false;
+    state.ledger = res.ledger;
+    saveState();
+    renderAll();
+    return true;
+  },
+  openBankImport: () => {
+    window.LifeLedgerMoneyUI?.openImport?.();
+  },
+  getMonthTimelineData: ym => {
+    const targetYm = /^\d{4}-\d{2}$/.test(String(ym || "")) ? String(ym) : effectiveDemoTodayIso().slice(0, 7);
+    const [y, m] = targetYm.split("-").map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const todayCap = effectiveDemoTodayIso();
+    const firstDow = (new Date(y, m - 1, 1, 12).getDay() + 6) % 7; // 0=Mon..6=Sun
+    const counts = { good: 0, calm: 0, low: 0 };
+    const calendarDays = [];
+    let recordedDays = 0;
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const iso = `${targetYm}-${String(d).padStart(2, "0")}`;
+      const log = getLog(iso);
+      const isFuture = iso > todayCap;
+      if (log.mood === "很好") counts.good += 1;
+      else if (log.mood === "平静") counts.calm += 1;
+      else if (log.mood === "低落") counts.low += 1;
+      const hasAny = Boolean(log.mood || String(log.note || log.moodReason || "").trim() || (log.completed || []).length);
+      if (hasAny && !isFuture) recordedDays += 1;
+      calendarDays.push({ iso, day: d, mood: log.mood || "", isToday: iso === todayCap, isFuture, hasAny });
+    }
+    const L = window.LifeLedgerLedger;
+    const ledger = L ? L.normalize(state.ledger || null, { lang: currentLang }) : null;
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "zh-CN");
+    const currency = ledger?.settings?.defaultCurrency || "EUR";
+    // Shared rule (S5): skip pure-mood days (keep only days with written note or moodReason)
+    const entries = Object.entries(state.logs || {})
+      .filter(([date, log]) => date.startsWith(`${targetYm}-`) && date <= todayCap && String(log?.note || log?.moodReason || "").trim())
+      .sort(([a], [b]) => b.localeCompare(a))
+      .map(([date, log]) => {
+        const habits = activeHabits(date);
+        const doneCount = habits.filter(h => (log.completed || []).includes(h.id)).length;
+        const focusMins = Math.round(focusSessionsBetween(date, date).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+        const spendMinor = ledger ? Math.abs(L.rangeSummary(ledger, date, date).expenseMinor) : 0;
+        return {
+          date,
+          mood: log.mood || "",
+          text: String(log.note || log.moodReason || "").trim(),
+          doneCount,
+          totalHabits: habits.length,
+          focusMinutes: focusMins,
+          spendMinor,
+          spendFormatted: spendMinor > 0 && ledger ? L.formatMoney(spendMinor, currency, locale) : "",
+        };
+      });
+    return { ym: targetYm, firstDow, daysInMonth, counts, recordedDays, calendarDays, entries };
+  },
+  getWeekData: weekKey => {
+    const todayCap = effectiveDemoTodayIso();
+    const key = weekKey || isoWeekKey(parseDate(todayCap));
+    const { monday, sunday } = weekDatesFromKey(key);
+    const startIso = isoDate(monday);
+    const endIso = isoDate(sunday);
+    const days = [];
+    let totalDone = 0;
+    let totalPossible = 0;
+    const moodCounts = { good: 0, calm: 0, low: 0 };
+    for (let i = 0; i < 7; i += 1) {
+      const dt = new Date(monday);
+      dt.setDate(monday.getDate() + i);
+      const iso = isoDate(dt);
+      const future = iso > todayCap;
+      const scored = dailyHabits(iso);
+      const log = getLog(iso);
+      const done = future ? 0 : scored.filter(h => log.completed.includes(h.id)).length;
+      if (!future) {
+        totalDone += done;
+        totalPossible += scored.length;
+        if (log.mood === "很好") moodCounts.good += 1;
+        else if (log.mood === "平静") moodCounts.calm += 1;
+        else if (log.mood === "低落") moodCounts.low += 1;
+      }
+      days.push({
+        iso,
+        weekdayIndex: i,
+        future,
+        done,
+        total: scored.length,
+        pct: !future && scored.length ? Math.round((done / scored.length) * 100) : 0,
+        mood: future ? "" : (log.mood || ""),
+      });
+    }
+    const focusMinutes = Math.round(focusSessionsBetween(startIso, endIso).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const prevMonday = new Date(monday);
+    prevMonday.setDate(monday.getDate() - 7);
+    const prevSunday = new Date(sunday);
+    prevSunday.setDate(sunday.getDate() - 7);
+    const prevFocusMinutes = Math.round(focusSessionsBetween(isoDate(prevMonday), isoDate(prevSunday)).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const ym = startIso.slice(0, 7);
+    const monthWritten = Boolean(writtenReview(state.reviews?.[ym]).trim());
+    return {
+      weekKey: key,
+      weekNum: Number(String(key).split("-W")[1] || 1),
+      startIso,
+      endIso,
+      prevWeekKey: isoWeekKey(prevMonday),
+      nextWeekKey: isoWeekKey(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 7, 12)),
+      isCurrent: key === isoWeekKey(parseDate(todayCap)),
+      days,
+      completionPct: totalPossible ? Math.round((totalDone / totalPossible) * 100) : 0,
+      totalDone,
+      totalPossible,
+      focusMinutes,
+      focusDeltaMinutes: focusMinutes - prevFocusMinutes,
+      moodCounts,
+      goals: cloneData(state.weeklyGoals?.[key] || []),
+      output: String(state.weeklyOutputs?.[key] || ""),
+      monthYm: ym,
+      monthWritten,
+    };
+  },
+  toggleWeeklyGoal: (weekKey, goalId) => {
+    const list = cloneData(state.weeklyGoals?.[weekKey] || []);
+    const item = list.find(g => g.id === goalId);
+    if (!item) return false;
+    item.done = !item.done;
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return true;
+  },
+  addWeeklyGoal: (weekKey, text) => {
+    const clean = String(text || "").trim();
+    if (!clean) return false;
+    const list = [...cloneData(state.weeklyGoals?.[weekKey] || []), { id: createId(), text: clean, done: false }];
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return true;
+  },
+  removeWeeklyGoal: (weekKey, goalId) => {
+    const list = cloneData(state.weeklyGoals?.[weekKey] || []);
+    const idx = list.findIndex(g => g.id === goalId);
+    if (idx < 0) return null;
+    const [removed] = list.splice(idx, 1);
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return { removed, index: idx };
+  },
+  restoreWeeklyGoal: (weekKey, removed, index) => {
+    if (!removed) return false;
+    const list = cloneData(state.weeklyGoals?.[weekKey] || []);
+    list.splice(Math.min(Math.max(0, Number(index) || 0), list.length), 0, removed);
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return true;
+  },
+  setWeeklyOutput: (weekKey, text) => {
+    state.weeklyOutputs = { ...(state.weeklyOutputs || {}), [weekKey]: String(text || "") };
+    saveState();
+    return true;
+  },
+  getMonthReviewData: ym => {
+    const todayCap = effectiveDemoTodayIso();
+    const targetYm = /^\d{4}-\d{2}$/.test(String(ym || "")) ? String(ym) : todayCap.slice(0, 7);
+    const [y, m] = targetYm.split("-").map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const startIso = `${targetYm}-01`;
+    const endIso = `${targetYm}-${String(daysInMonth).padStart(2, "0")}`;
+    const capEnd = endIso > todayCap ? todayCap : endIso;
+    let totalDone = 0;
+    let totalPossible = 0;
+    const perHabit = new Map();
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const iso = `${targetYm}-${String(d).padStart(2, "0")}`;
+      if (iso > todayCap) break;
+      const log = getLog(iso);
+      const dayHabits = activeHabits(iso);
+      dayHabits.forEach(h => {
+        const done = log.completed.includes(h.id);
+        if (h.countsTowardDaily !== false && (h.frequency || "daily") === "daily") {
+          totalPossible += 1;
+          if (done) totalDone += 1;
+        }
+        const rec = perHabit.get(h.id) || { habit: h, done: 0, total: 0 };
+        rec.total += 1;
+        if (done) rec.done += 1;
+        perHabit.set(h.id, rec);
+      });
+    }
+    const focusMinutes = Math.round(focusSessionsBetween(startIso, capEnd).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const L = window.LifeLedgerLedger;
+    const ledger = L ? L.normalize(state.ledger || null, { lang: currentLang }) : null;
+    const money = ledger ? L.moneyMonth(ledger, targetYm) : { incomeMinor: 0, expenseMinor: 0 };
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "zh-CN");
+    const currency = ledger?.settings?.defaultCurrency || "EUR";
+    const habitRows = [...perHabit.values()]
+      .map(r => ({
+        id: r.habit.id,
+        name: displayHabitName(r.habit),
+        iconKey: iconKey(r.habit),
+        iconPath: iconCatalog[iconKey(r.habit)] || iconCatalog.target,
+        done: r.done,
+        total: r.total,
+        pct: r.total ? Math.round((r.done / r.total) * 100) : 0,
+      }))
+      .sort((a, b) => b.pct - a.pct);
+    return {
+      ym: targetYm,
+      prevYm: L ? L.shiftYm(targetYm, -1) : targetYm,
+      nextYm: L ? L.shiftYm(targetYm, 1) : targetYm,
+      completionPct: totalPossible ? Math.round((totalDone / totalPossible) * 100) : 0,
+      focusMinutes,
+      expenseFormatted: ledger ? L.formatMoney(money.expenseMinor, currency, locale) : "€0.00",
+      habitRows,
+      // l024: unwritten month review strictly stays blank (never auto-assembled from weekly reviews)
+      reviewText: writtenReview(state.reviews?.[targetYm]),
+    };
+  },
+  setMonthlyReview: (ym, text) => {
+    state.reviews = { ...(state.reviews || {}), [ym]: String(text || "") };
+    saveState();
+    return true;
+  },
+  getHorizonData: () => {
+    const planning = state.planning && typeof state.planning === "object" ? state.planning : { phases: [], currentPhaseId: "", note: "" };
+    const phases = Array.isArray(planning.phases) ? cloneData(planning.phases) : [];
+    const goals = Array.isArray(state.longTermGoals) ? cloneData(state.longTermGoals) : [];
+    const currentPhase = phases.find(p => p.id === planning.currentPhaseId) || phases.find(p => p.status !== "closed") || phases[0] || null;
+    return { phases, currentPhase, goals, note: String(planning.note || "") };
+  },
+  toggleHorizonStep: (goalId, stepId) => {
+    const goals = cloneData(state.longTermGoals || []);
+    const goal = goals.find(g => g.id === goalId);
+    const step = (goal?.steps || []).find(s => s.id === stepId);
+    if (!step) return false;
+    step.done = !step.done;
+    step.doneAt = step.done ? new Date().toISOString() : "";
+    state.longTermGoals = goals;
+    saveState();
+    renderAll();
+    return true;
+  },
+  getHabitsListData: dateIso => {
+    const todayCap = dateIso || effectiveDemoTodayIso();
+    const todayDt = parseDate(todayCap);
+    const ym = todayCap.slice(0, 7);
+    const [y, m] = ym.split("-").map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const { monday, sunday } = weekDatesFromKey(isoWeekKey(todayDt));
+    const weekStartIso = isoDate(monday);
+    const weekEndIso = isoDate(sunday);
+    const reminder = state.reminder || { enabled: false, time: "21:30" };
+    const items = (state.habits || []).map(h => {
+      const freq = h.frequency || "daily";
+      const todayDone = getLog(todayCap).completed.includes(h.id);
+      const streak = habitStreak(h.id, todayDone ? todayCap : isoDate(new Date(todayDt.getFullYear(), todayDt.getMonth(), todayDt.getDate() - 1, 12)));
+      const grid14 = [];
+      for (let off = 13; off >= 0; off -= 1) {
+        const dt = new Date(todayDt);
+        dt.setDate(todayDt.getDate() - off);
+        const iso = isoDate(dt);
+        grid14.push({ iso, done: getLog(iso).completed.includes(h.id), isToday: iso === todayCap });
+      }
+      let weekDone = 0;
+      let monthDone = 0;
+      const monthDots = [];
+      for (let d = 1; d <= daysInMonth; d += 1) {
+        const iso = `${ym}-${String(d).padStart(2, "0")}`;
+        const future = iso > todayCap;
+        const done = !future && getLog(iso).completed.includes(h.id);
+        if (done) monthDone += 1;
+        if (done && iso >= weekStartIso && iso <= weekEndIso) weekDone += 1;
+        monthDots.push({ iso, done, future });
+      }
+      return {
+        id: h.id,
+        habit: h,
+        name: displayHabitName(h),
+        active: h.active !== false,
+        frequency: freq,
+        trackingMode: h.trackingMode || "check",
+        target: h.target,
+        unit: h.unit || "",
+        periodTarget: Number(h.periodTarget) || (freq === "weekly" ? 3 : freq === "monthly" ? 10 : 1),
+        iconKey: iconKey(h),
+        iconPath: iconCatalog[iconKey(h)] || iconCatalog.target,
+        todayDone,
+        streak,
+        grid14,
+        weekDone,
+        monthDone,
+        monthDots,
+      };
+    });
+    return { todayCap, ym, reminder, items };
+  },
+  setHabitActive: (habitId, active) => {
+    const habit = (state.habits || []).find(h => h.id === habitId);
+    if (!habit) return null;
+    const prev = habit.active !== false;
+    habit.active = Boolean(active);
+    saveState();
+    renderAll();
+    return prev;
+  },
+  openAddHabit: () => {
+    if (typeof openHabitDialog === "function") openHabitDialog(null);
+  },
+  openEditHabit: id => {
+    if (typeof openHabitDialog === "function") openHabitDialog(id);
+  },
+  openReminderDialog: () => {
+    if (typeof openReminderDialog === "function") openReminderDialog();
+  },
+  getFocusState: () => {
+    const todayIso = effectiveDemoTodayIso();
+    const sessions = focusSessionsBetween(todayIso, todayIso);
+    const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const topicMap = new Map();
+    sessions.forEach(s => {
+      const label = String(s.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+      topicMap.set(label, (topicMap.get(label) || 0) + focusSessionMinutes(s));
+    });
+    const topics = [...topicMap.entries()]
+      .filter(([, mins]) => mins >= 0.5)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, minutes]) => ({ label, minutes: Math.round(minutes) }));
+    const recentTopics = [...new Set([...(state.focusSessions || [])].reverse().map(s => String(s.label || "").trim()).filter(Boolean))].slice(0, 8);
+    const snap = focusTimer?.snapshot?.() || null;
+    return {
+      snapshot: snap,
+      remainingText: snap ? formatFocusTime(snap.remainingMs) : "",
+      settings: { ...seed.focusSettings, ...(state.focusSettings || {}) },
+      totalMinutes,
+      topics,
+      recentTopics,
+    };
+  },
+  startFocus: ({ label = "", durationMinutes = 25, breakMinutes = 5 } = {}) => {
+    if (!focusTimer) return null;
+    const cleanLabel = String(label || "").trim() || tr("focus.untitled");
+    const mins = Math.max(1, Math.min(180, Number(durationMinutes) || 25));
+    const brk = Math.max(1, Math.min(60, Number(breakMinutes) || 5));
+    state.focusSettings = { ...seed.focusSettings, ...(state.focusSettings || {}), focusMinutes: mins, breakMinutes: brk, defaultTopic: cleanLabel };
+    saveState();
+    const snap = focusTimer.start({ date: effectiveDemoTodayIso(), label: cleanLabel, linkedGoalId: "", preset: "custom", durationMinutes: mins, breakMinutes: brk });
+    acquireFocusWakeLock();
+    return snap;
+  },
+  pauseFocus: () => {
+    const snap = focusTimer?.pause?.() || null;
+    releaseFocusWakeLock();
+    return snap;
+  },
+  resumeFocus: () => {
+    const snap = focusTimer?.resume?.() || null;
+    acquireFocusWakeLock();
+    return snap;
+  },
+  extendFocus: (extraMinutes = 5) => focusTimer?.extend?.(extraMinutes) || null,
+  endFocus: () => {
+    const session = focusTimer?.endFocus?.("finishedEarly") || null;
+    releaseFocusWakeLock();
+    return session;
+  },
+  startFocusBreak: () => {
+    const snap = focusTimer?.startBreak?.() || null;
+    acquireFocusWakeLock();
+    return snap;
+  },
+  skipFocusBreak: () => {
+    focusTimer?.skipBreak?.();
+    releaseFocusWakeLock();
   },
   switchToView: view => switchToView(view),
   openImportBackup: () => {

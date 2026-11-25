@@ -13,8 +13,14 @@ import {
   FORBIDDEN_PERMISSIONS,
   patchManifest,
   patchProject,
+  REQUIRED_PERMISSIONS,
 } from "../scripts/android-manifest.mjs";
-import { evaluateBackupPluginClass, findBackupRulesPath } from "../scripts/android-apk-check.mjs";
+import {
+  evaluateApkAssets,
+  evaluateBackupPluginClass,
+  findBackupRulesPath,
+  FORBIDDEN_APK_ASSETS,
+} from "../scripts/android-apk-check.mjs";
 import { BACKUP_PLUGIN_CLASS, injectAndroidBackupPlugin } from "../scripts/android-prepare.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,9 +30,8 @@ const FORBIDDEN_SNIPPETS = [
   "cloudbase-sync.js",
   "_init_tcb-env.js",
   "cloudbase-sdk",
-  "api.open-meteo.com",
-  "geocoding-api.open-meteo.com",
-  "https://open-meteo.com",
+  "voice-checkin.js",
+  "/api/voice-review",
   "check_for_updates",
   "/api/calendar/",
   "./api/state",
@@ -108,14 +113,17 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   }
   assert.equal(await readFile(resolve(dist, "deployment-mode.js"), "utf8"), LOCAL_MODE_SOURCE);
   assert.match(LOCAL_MODE_SOURCE, /window\.LIFE_LEDGER_DEPLOYMENT_MODE = "local";/);
-  assert.doesNotMatch(await readFile(resolve(dist, "index.html"), "utf8"), /cloudbase-sync|_init_tcb-env/);
+  assert.doesNotMatch(await readFile(resolve(dist, "index.html"), "utf8"), /cloudbase-sync|_init_tcb-env|voice-checkin\.js/);
 
-  const offlineWidgets = await readFile(resolve(dist, "today-widgets.js"), "utf8");
-  const offlineCards = await readFile(resolve(dist, "today-cards.js"), "utf8");
-  assert.match(offlineWidgets, /cards\.weather\.remove\(\)/);
-  assert.doesNotMatch(offlineWidgets, /id: "weather", el: cards\.weather/);
-  assert.match(offlineCards, /planGrid\.remove\(\)/);
-  assert.doesNotMatch(offlineCards, /id: "dayplan", el: wrap\(planGrid/);
+  const androidWidgets = await readFile(resolve(dist, "today-widgets.js"), "utf8");
+  const androidCards = await readFile(resolve(dist, "today-cards.js"), "utf8");
+  assert.match(androidWidgets, /api\.open-meteo\.com\/v1\/forecast/);
+  assert.match(androidWidgets, /geocoding-api\.open-meteo\.com\/v1\/search/);
+  assert.match(androidWidgets, /Open-Meteo · CC BY 4\.0/);
+  assert.match(androidWidgets, /id: "weather", el: cards\.weather/);
+  assert.doesNotMatch(androidWidgets, /cards\.weather\.remove\(\)/);
+  assert.match(androidCards, /planGrid\.remove\(\)/);
+  assert.doesNotMatch(androidCards, /id: "dayplan", el: wrap\(planGrid/);
 
   const hits = [];
   for (const path of await textFiles(dist)) {
@@ -144,9 +152,13 @@ test("backup plugin injection copies Kotlin into the generated android app", asy
   await rm(dir, { recursive: true, force: true });
 });
 
-test("manifest patch removes internet and storage and disables backup transfer", async () => {
+test("manifest patch keeps INTERNET, removes broad storage permissions and disables backup transfer", async () => {
   const patched = patchManifest(SAMPLE_MANIFEST);
   assert.equal(patchManifest(patched), patched);
+  for (const name of REQUIRED_PERMISSIONS) {
+    assert.match(patched, new RegExp(`<uses-permission android:name="${name.replaceAll(".", "\\.")}" \\/>`), name);
+    assert.doesNotMatch(patched, new RegExp(`${name.replaceAll(".", "\\.")}" tools:node="remove"`), name);
+  }
   for (const name of FORBIDDEN_PERMISSIONS) {
     assert.match(
       patched,
@@ -160,11 +172,12 @@ test("manifest patch removes internet and storage and disables backup transfer",
   assert.match(patched, /android:fullBackupContent="false"/);
   assert.match(patched, /android:dataExtractionRules="@xml\/life_ledger_backup_rules"/);
 
-  const debug = patchManifest(
-    '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><uses-permission android:name="android.permission.INTERNET" /><application android:usesCleartextTraffic="true" /></manifest>',
+  const withoutInternet = patchManifest(
+    '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><uses-permission android:name="android.permission.INTERNET" tools:node="remove" /><application android:usesCleartextTraffic="true" /></manifest>',
   );
-  assert.match(debug, /INTERNET" tools:node="remove"/);
-  assert.match(debug, /<application android:usesCleartextTraffic="true" android:allowBackup="false"/);
+  assert.match(withoutInternet, /<uses-permission android:name="android\.permission\.INTERNET" \/>/);
+  assert.doesNotMatch(withoutInternet, /INTERNET" tools:node="remove"/);
+  assert.match(withoutInternet, /<application android:usesCleartextTraffic="true" android:allowBackup="false"/);
 
   const dir = await mkdtemp(join(tmpdir(), "ll-android-manifest-"));
   try {
@@ -180,19 +193,31 @@ test("manifest patch removes internet and storage and disables backup transfer",
   }
 });
 
-test("apk dump check fails closed on internet and passes a patched manifest dump", () => {
-  const bad = evaluateApkDumps({
+test("apk dump and asset checks require INTERNET, reject storage permissions and cloud/AI assets", () => {
+  const missingInternet = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger.androidtest",
-    permissions: "uses-permission: name='android.permission.INTERNET'\n",
+    permissions: "uses-permission: name='android.permission.CAMERA'\n",
+    xmltree: [
+      'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
+      'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
+      "A: android:dataExtractionRules(0x0101057a)=@xml/life_ledger_backup_rules",
+    ].join("\n"),
+    rules: BACKUP_RULES_XML,
+  });
+  assert.ok(missingInternet.some((line) => line.includes("missing required permission: android.permission.INTERNET")));
+
+  const badStorage = evaluateApkDumps({
+    packageName: "app.zubinli.lifeledger.androidtest",
+    permissions: "uses-permission: name='android.permission.INTERNET'\nuses-permission: name='android.permission.READ_EXTERNAL_STORAGE'\n",
     xmltree: 'A: android:allowBackup(0x01010280)=(type 0x12)0xffffffff\n',
     rules: "<data-extraction-rules></data-extraction-rules>",
   });
-  assert.ok(bad.some((line) => line.includes("INTERNET")));
-  assert.ok(bad.some((line) => line.includes("allowBackup")));
+  assert.ok(badStorage.some((line) => line.includes("READ_EXTERNAL_STORAGE")));
+  assert.ok(badStorage.some((line) => line.includes("allowBackup")));
 
   const good = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger.androidtest",
-    permissions: "uses-permission: name='android.permission.CAMERA'\n",
+    permissions: "uses-permission: name='android.permission.INTERNET'\nuses-permission: name='android.permission.CAMERA'\n",
     xmltree: [
       'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
       'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
@@ -203,7 +228,7 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
   assert.deepEqual(good, []);
   const fromAapt = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger.androidtest",
-    permissions: "package: app.zubinli.lifeledger.androidtest\n",
+    permissions: "package: app.zubinli.lifeledger.androidtest\nuses-permission: name='android.permission.INTERNET'\n",
     xmltree: [
       "A: android:allowBackup(0x01010280)=false",
       "A: android:fullBackupContent(0x010104eb)=false",
@@ -214,7 +239,7 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
   assert.deepEqual(fromAapt, []);
   const wrongPackage = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger",
-    permissions: "",
+    permissions: "uses-permission: name='android.permission.INTERNET'\n",
     xmltree: [
       'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
       'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
@@ -223,6 +248,13 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
     rules: BACKUP_RULES_XML,
   });
   assert.ok(wrongPackage.some((line) => line.includes("package id")));
+
+  // APK asset gate: forbids cloudbase / AI / sw.js assets
+  assert.deepEqual(evaluateApkAssets(["AndroidManifest.xml", "classes.dex", "assets/weather-widget.js"]), []);
+  for (const name of FORBIDDEN_APK_ASSETS) {
+    const errs = evaluateApkAssets(["AndroidManifest.xml", `assets/${name}`]);
+    assert.ok(errs.some((line) => line.includes(name)), `should reject ${name}`);
+  }
 });
 
 test("android config is a separate test id and does not replace the desktop id", async () => {

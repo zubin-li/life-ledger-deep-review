@@ -41,6 +41,7 @@ export const REMOVE_FILES = [
   "_init_tcb-env.js",
   "vendor/cloudbase-sdk.js",
   "vendor/cloudbase-sdk.js.LEGAL.txt",
+  "voice-checkin.js",
   "sw.js",
 ];
 
@@ -66,59 +67,9 @@ export async function prepare(targetDist = dist) {
   html = replaceExact(html, '<html lang="en">', '<html lang="en" data-android-app="true">', "index android flag");
   html = replaceExact(html, '\n    <script src="./_init_tcb-env.js?v=2.1.0"></script>', "", "index tcb env");
   html = replaceExact(html, '\n    <script src="./cloudbase-sync.js?v=2.1.0"></script>', "", "index cloudbase");
+  html = replaceExact(html, '\n    <script src="./voice-checkin.js?v=2.1.0"></script>', "", "index voice ai");
   await writeFile(resolve(out, "index.html"), html);
   await writeFile(resolve(out, "deployment-mode.js"), LOCAL_MODE_SOURCE);
-
-  let widgets = await readFile(resolve(out, "today-widgets.js"), "utf8");
-  widgets = replaceExact(
-    widgets,
-    '<a class="tw-caption" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo · CC BY 4.0</a>',
-    '<span class="tw-caption">Offline</span>',
-    "weather credit",
-  );
-  widgets = replaceExact(
-    widgets,
-    [
-      "  async function json(url, signal) {",
-      "    const ctl = new AbortController(), abort = () => ctl.abort(), timer = setTimeout(abort, 12000);",
-      '    signal?.addEventListener("abort", abort, { once: true });',
-      '    try { const r = await fetch(url, { signal: ctl.signal, credentials: "omit" }); if (!r.ok) throw new Error(String(r.status)); return await r.json(); }',
-      '    finally { clearTimeout(timer); signal?.removeEventListener("abort", abort); }',
-      "  }",
-    ].join("\n"),
-    ['  async function json() {', '    throw new Error("offline");', "  }"].join("\n"),
-    "weather fetch",
-  );
-  widgets = replaceExact(
-    widgets,
-    [
-      "    try {",
-      '      const url = new URL("https://api.open-meteo.com/v1/forecast");',
-      '      url.search = new URLSearchParams({ latitude: city.latitude, longitude: city.longitude, current: "temperature_2m,weather_code", hourly: "temperature_2m,precipitation_probability,precipitation,snowfall,weather_code", past_days: "31", forecast_days: "16", timezone: "auto" });',
-      "      const data = await json(url);",
-    ].join("\n"),
-    ["    try {", "      const data = await json();"].join("\n"),
-    "forecast url",
-  );
-  widgets = replaceExact(
-    widgets,
-    '        const data = await json(`https://geocoding-api.open-meteo.com/v1/search?${new URLSearchParams({ name, count: "5", language: lang(), format: "json" })}`, searchAbort.signal);',
-    "        const data = await json();",
-    "geocoding url",
-  );
-  widgets = replaceExact(
-    widgets,
-    '    { id: "weather", el: cards.weather, sizes: ["L", "M", "S"], hidden: false, settings: weatherSettings, relabel: box => { $(".tw-city-form span", box).textContent = t("city"); $(".tw-city-form button", box).textContent = t("search"); }, onShow: () => { drawWeather(); void loadWeather(); } },\n',
-    "",
-    "weather card registration",
-  );
-  widgets = replaceExact(
-    widgets,
-    "  ];\n  // Another device changed the city or a card choice (cloud edition): read them again and redraw.",
-    "  ];\n  cards.weather.remove();\n  // Another device changed the city or a card choice (cloud edition): read them again and redraw.",
-    "weather card removal",
-  );
-  await writeFile(resolve(out, "today-widgets.js"), widgets);
 
   let cards = await readFile(resolve(out, "today-cards.js"), "utf8");
   cards = replaceExact(cards, '    { id: "dayplan", el: wrap(planGrid, "dayplan"), sizes: ["L"] },\n', "", "online calendar card registration");

@@ -67,6 +67,7 @@
   }
   root.LifeLedgerWeather={
     dataWindow,
+    cityNow,
     clear(){plot?.destroy();plot=null;model=null;signature='';$('#weatherPlot').replaceChildren();$('#weatherDetail').replaceChildren();$('#weatherDailyRange').textContent='';$('#heroWeather').hidden=true;},
     select(index){pointerActive=false;showHour(index);if(plot)plot.setCursor({left:plot.valToPos(model.index,'x'),top:0},false);},
     update(data,city,language,t,kind,day){

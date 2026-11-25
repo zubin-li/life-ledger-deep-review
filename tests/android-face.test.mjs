@@ -213,3 +213,88 @@ test("Phase 3 Today helpers: completed habits sort to end, back-to-today only of
   assert.match(appSource, /toggleHabitImmediate:\s*\(date, id\)\s*=>\s*\{\s*if \(String\(date \|\| ""\) > effectiveDemoTodayIso\(\)\) return null;/);
   assert.match(appSource, /setDayNote:\s*\(date, note\)\s*=>\s*\{\s*if \(String\(date \|\| ""\) > effectiveDemoTodayIso\(\)\) return false;/);
 });
+
+test("Phase 4 weather curve helper preserves 00/06/12/18/24 ticks and dashed current-time line (l013)", async () => {
+  const { win } = await loadFaceHelpers({ hostname: "example.com" });
+  const { buildWeatherCurveModel } = win.LifeLedgerAndroidFaceHelpers;
+
+  const hours = Array.from({ length: 25 }, (_, i) => ({
+    time: `2026-11-25T${String(i).padStart(2, "0")}:00`,
+    temperature: 4 + Math.round(Math.sin((i / 24) * Math.PI) * 7),
+    probability: i === 14 ? 20 : 10,
+    code: 2,
+  }));
+  const todayModel = buildWeatherCurveModel(hours, "2026-11-25T12:00", true);
+  assert.deepEqual(
+    Array.from(todayModel.ticks, tk => tk.label),
+    ["00", "06", "12", "18", "24"],
+  );
+  assert.equal(todayModel.nowX, 108);
+  assert.ok(todayModel.nowY >= 16 && todayModel.nowY <= 44);
+  assert.equal(todayModel.maxPt.label, "11°");
+
+  // Off-today omits dashed now line while keeping the full 5-tick curve
+  const otherDayModel = buildWeatherCurveModel(hours, "2026-11-25T12:00", false);
+  assert.equal(otherDayModel.nowX, null);
+  assert.equal(otherDayModel.ticks.length, 5);
+
+  // Flat temperature curve stays finite (no NaN division by zero)
+  const flat = buildWeatherCurveModel(hours.map(h => ({ ...h, temperature: 8 })), "2026-11-25T06:00", true);
+  assert.ok(Number.isFinite(flat.nowY));
+  assert.doesNotMatch(flat.linePath, /NaN/);
+});
+
+test("Phase 5 keypad expression evaluation and locale decimal parsing match ledger-core.js exactly", async () => {
+  const { win } = await loadFaceHelpers({ hostname: "example.com" });
+  const { localeDecimalSeparator, evaluateKeypadExpression, resolvePredictiveBackAction } = win.LifeLedgerAndroidFaceHelpers;
+
+  // Load real ledger-core.js to verify exact minor-unit parity
+  const ledgerSource = await readFile(resolve(root, "public/ledger-core.js"), "utf8");
+  const ledgerSandbox = { globalThis: {}, Intl, Date, Math, Number, String, Array, Object, Set, Map, RegExp, JSON };
+  ledgerSandbox.globalThis = ledgerSandbox;
+  vm.runInNewContext(ledgerSource, ledgerSandbox, { filename: "public/ledger-core.js" });
+  const ledgerCore = ledgerSandbox.LifeLedgerLedger;
+  assert.equal(typeof ledgerCore.parseMoneyInput, "function");
+
+  // 1. Locale decimal separator: de -> ",", zh/en -> "."
+  assert.equal(localeDecimalSeparator("de"), ",");
+  assert.equal(localeDecimalSeparator("de-DE"), ",");
+  assert.equal(localeDecimalSeparator("zh"), ".");
+  assert.equal(localeDecimalSeparator("en"), ".");
+
+  // 2. Single values with locale decimals equal ledger-core.parseMoneyInput
+  for (const [expr, lang] of [
+    ["12,50", "de"],
+    ["4,80", "de"],
+    ["12.50", "zh"],
+    ["0.99", "en"],
+    ["100", "de"],
+  ]) {
+    const res = evaluateKeypadExpression(expr, lang, ledgerCore.parseMoneyInput);
+    assert.equal(res.ok, true, expr);
+    assert.equal(res.amountMinor, ledgerCore.parseMoneyInput(expr), `minor mismatch for ${expr}`);
+  }
+
+  // 3. Inline + / - arithmetic matches exact minor-unit sum/diff in ledger-core
+  const addDe = evaluateKeypadExpression("4,80 + 7,70", "de", ledgerCore.parseMoneyInput);
+  assert.equal(addDe.ok, true);
+  assert.equal(addDe.hasOperator, true);
+  assert.equal(addDe.amountMinor, ledgerCore.parseMoneyInput("12,50"));
+  assert.equal(addDe.formattedDisplay, "12,50");
+
+  const subZh = evaluateKeypadExpression("20.00−4.80+1.30", "zh", ledgerCore.parseMoneyInput);
+  assert.equal(subZh.ok, true);
+  assert.equal(subZh.amountMinor, ledgerCore.parseMoneyInput("16.50"));
+  assert.equal(subZh.formattedDisplay, "16.50");
+
+  // 4. Zero / negative results are rejected cleanly
+  assert.equal(evaluateKeypadExpression("5,00 - 5,00", "de", ledgerCore.parseMoneyInput).ok, false);
+  assert.equal(evaluateKeypadExpression("2.00 - 9.50", "en", ledgerCore.parseMoneyInput).ok, false);
+  assert.equal(evaluateKeypadExpression("", "zh", ledgerCore.parseMoneyInput).ok, false);
+
+  // 5. Predictive back closes full-screen Focus overlay before dialogs/tabs
+  assert.deepEqual(
+    { ...resolvePredictiveBackAction({ sheetOpen: false, focusOpen: true, dialogOpen: true, activeView: "today" }) },
+    { handled: true, action: "close-focus" },
+  );
+});
