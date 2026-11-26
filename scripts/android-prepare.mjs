@@ -150,6 +150,10 @@ export async function prepare(targetDist = dist) {
 
   let html = await readFile(resolve(out, "index.html"), "utf8");
   html = replaceExact(html, '<html lang="en">', '<html lang="en" data-android-app="true">', "index android flag");
+  // The flag is static here, so load the Android stylesheet as a parser-inserted <link>: script-inserted
+  // stylesheets do not block first paint, which flashed unstyled desktop buttons before the splash.
+  html = replaceExact(html, '    <script>if (document.documentElement.dataset.androidApp === "true") { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "./android-face.css?v=2.1.0"; document.head.append(l); }</script>',
+    '    <link rel="stylesheet" href="./android-face.css?v=2.1.0" />', "index render-blocking Android CSS");
   html = replaceExact(html, '\n    <script src="./_init_tcb-env.js?v=2.1.0"></script>', "", "index tcb env");
   html = replaceExact(html, '\n    <script src="./cloudbase-sync.js?v=2.1.0"></script>', "", "index cloudbase");
   html = replaceExact(html, '\n    <script src="./voice-checkin.js?v=2.1.0"></script>', "", "index voice ai");

@@ -18,7 +18,7 @@ androidWebViewHierarchy: devtools
 - tapOn: "\\."
 - tapOn: "8"
 - tapOn: "0"
-- tapOn: "\\+"
+- tapOn: "Plus"   # the key is exposed by its aria-label
 - tapOn: "7"
 - tapOn: "\\."
 - tapOn: "7"

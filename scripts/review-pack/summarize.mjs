@@ -83,7 +83,8 @@ export async function mergeJUnitReports(paths, outPath) {
   for (const p of paths) {
     try {
       const xml = await readFile(p, "utf8");
-      const cases = [...xml.matchAll(/<testcase[\s\S]*?<\/testcase>|<testcase[^/>]*\/>/g)].map(m => m[0]);
+      // Same one-pass pattern as parseJUnit: attributes may contain "/" (file=".maestro/x.yaml"), so [^/>]* missed every passing (self-closing) case.
+      const cases = [...xml.matchAll(/<testcase\b[^>]*?(?:\/>|>[\s\S]*?<\/testcase>)/g)].map(m => m[0]);
       parts.push(...cases);
     } catch {
       /* skip */

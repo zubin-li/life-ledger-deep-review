@@ -12022,6 +12022,8 @@ window.LifeLedgerAndroidCore = {
     const L = window.LifeLedgerLedger;
     if (!L) return null;
     const base = L.normalize(state.ledger || null, { lang: currentLang });
+    // The Android keypad has no account picker: book into the first open account (normalize guarantees one).
+    if (!draft?.accountId) draft = { ...draft, accountId: base.accounts.find(a => !a.archived)?.id };
     const res = L.addTransaction(base, draft, { lang: currentLang });
     if (!res?.ledger) return null;
     state.ledger = res.ledger;

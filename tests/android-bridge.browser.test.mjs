@@ -80,6 +80,15 @@ test("Android slim bridge, reminders, backups and lazy bank import work without 
     await page.locator("#androidTodayRoot:not([hidden])").waitFor();
     assert.equal(requests.some(u => /android-bank\/|\/(?:money-ui|bank-import|ledger-ui)\.js|\/money\.css/.test(u)), false, "no import code/CSS on boot");
 
+    // The keypad sends no accountId (Android has no account picker); the core must book it anyway.
+    const keypadTx = await page.evaluate(() => {
+      const core = window.LifeLedgerAndroidCore;
+      const before = core.getLedger().transactions.length;
+      const cat = core.getLedger().categories.find(c => !c.isGroup)?.id || "";
+      const tx = core.addLedgerTransaction({ amountMinor: -500, date: core.getTodayIso(), note: "Keypad fixture", categoryId: cat, currency: "EUR" });
+      return { added: core.getLedger().transactions.length - before, hasAccount: !!tx?.accountId };
+    });
+    assert.deepEqual(keypadTx, { added: 1, hasAccount: true }, "keypad-shaped draft (no accountId) is booked");
     await page.evaluate(() => window.LifeLedgerAndroidCore.switchToView("habits"));
     await page.locator("#androidHabitsReminderBtn").click();
     await page.locator("#androidRemToggle").waitFor();
