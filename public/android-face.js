@@ -2644,7 +2644,7 @@
     // Predictive Back via keyboard Escape / BrowserBack & popstate
     window.addEventListener("keydown", e => {
       if (e.key === "Escape" || e.key === "BrowserBack") {
-        if (lightboxOpen || sheetOpen || welcomeStep === 2) {
+        if (lightboxOpen || sheetOpen || window.LifeLedgerMoneyUI?._ui?.import?.open || welcomeStep === 2) {
           e.preventDefault();
           handleBack();
         }
@@ -4307,7 +4307,7 @@
     `;
     els.sheetBody.querySelector("#androidBankImportBtn")?.addEventListener("click", () => {
       closeSheet();
-      core()?.openBankImport?.();
+      void core()?.openBankImport?.().catch(error => showUndoSnackbar(error.message));
     });
     els.sheetBody.querySelector("#androidMoneyMenuDone")?.addEventListener("click", () => closeSheet());
   }
@@ -4745,7 +4745,7 @@
 
     els.moneyRoot.querySelector("#androidMoneyAddBtn")?.addEventListener("click", () => openKeypadSheet({ date: todayIso }));
     els.moneyRoot.querySelector("#androidMoneyEmptyAdd")?.addEventListener("click", () => openKeypadSheet({ date: todayIso }));
-    els.moneyRoot.querySelector("#androidMoneyEmptyImport")?.addEventListener("click", () => core()?.openBankImport?.());
+    els.moneyRoot.querySelector("#androidMoneyEmptyImport")?.addEventListener("click", () => { void core()?.openBankImport?.().catch(error => showUndoSnackbar(error.message)); });
     els.moneyRoot.querySelector("#androidMoneyClearDrill")?.addEventListener("click", () => {
       moneyDrillCatId = "";
       syncUI();
@@ -5216,7 +5216,7 @@
     els.habitsRoot.hidden = false;
 
     const raw = core()?.getState?.() || {};
-    if (!panelChanged(els.habitsRoot, [raw.logs, raw.habits, habitsFilter])) return;
+    if (!panelChanged(els.habitsRoot, [raw.logs, raw.habits, core()?.getReminderSettings?.(), habitsFilter])) return;
     const c = core();
     const copy = t();
     const hb = copy.habits;
@@ -5336,7 +5336,7 @@
         syncUI();
       });
     });
-    els.habitsRoot.querySelector("#androidHabitsReminderBtn")?.addEventListener("click", () => c?.openReminderDialog?.());
+    els.habitsRoot.querySelector("#androidHabitsReminderBtn")?.addEventListener("click", () => { sheetMode = "reminder"; renderSheetContent(); presentSheet({ fromFab: false }); });
     els.habitsRoot.querySelector("#androidHabitsEmptyAdd")?.addEventListener("click", () => c?.openAddHabit?.());
     els.habitsRoot.querySelectorAll("[data-hb-toggle]").forEach(btn => {
       btn.addEventListener("click", () => c?.toggleHabitImmediate?.(data.todayCap, btn.dataset.hbToggle));
@@ -6300,7 +6300,8 @@
     const lastStr = stats.lastBackupAt
       ? s.lastBackupOn(formatShortDate(stats.lastBackupAt.slice(0, 10)))
       : s.lastBackupNever;
-    const themeVal = s.themeVals[c?.getThemeChoice?.() || "system"] || s.themeVals.system;
+    const themeChoice = c?.getThemeChoice?.() || "system";
+    const themeVal = s.themeVals[themeChoice] || s.themeVals.system;
     const splashPrefs = loadSplashPrefs();
     const splashChip =
       splashPrefs.frequency === "off"
@@ -6317,7 +6318,8 @@
     const wTemp = Number.isFinite(wSnap?.forecast?.current?.temperature_2m) ? `${Math.round(wSnap.forecast.current.temperature_2m)}°` : "";
     const weatherVal = wTemp ? `${wCity} · ${wTemp}` : wCity;
 
-    const cardsCount = loadCardsPref().length;
+    const cardsPref = loadCardsPref();
+    const cardsCount = cardsPref.length;
     const focusTopics = c?.getFocusTopics?.() || { custom: [], recent: [] };
     const topicSet = new Set([...(copy.focus.presetTopics || []), ...(focusTopics.custom || []), ...(focusTopics.recent || [])]);
     const ledger = c?.getLedger?.();
@@ -6326,6 +6328,9 @@
     const rem = c?.getReminderSettings?.() || { enabled: false, time: "21:30" };
     const remVal = rem.enabled ? (rem.time || "21:30") : s.reminderOff;
 
+    // These are the exact live inputs used above to render this page.
+    if (!regionChanged(els.settingsOverlay, [lang(), isDark(), demoActive, stats, themeChoice,
+      splashPrefs, disp, wSnap, weatherRevision, cardsPref, focusTopics, ledger, rem])) return;
     els.settingsOverlay.innerHTML = `
       <div class="a-subpage-shell">
         <header class="a-subpage-top">
@@ -6786,6 +6791,7 @@
 
   function syncNativeBackState() {
     const openDialog =
+      Boolean(window.LifeLedgerMoneyUI?._ui?.import?.open) ||
       Boolean(document.querySelector("dialog[open]")) ||
       Boolean(document.getElementById("dayDrawer")?.classList.contains("open"));
     const decision = resolvePredictiveBackAction({
@@ -6849,7 +6855,38 @@
     return false;
   }
 
+  let bankImportLoad;
+  async function loadBankImport() {
+    if (!bankImportLoad) {
+      bankImportLoad = (async () => {
+        const css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = "./android-bank/money.css";
+        await new Promise((resolve, reject) => {
+          css.onload = resolve;
+          css.onerror = () => { css.remove(); reject(new Error("Bank import stylesheet failed to load")); };
+          document.head.append(css);
+        });
+        for (const asset of ["bank-import.js", "money-ui.js"]) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = `./android-bank/${asset}`;
+            script.onload = resolve;
+            script.onerror = () => { script.remove(); reject(new Error(`Bank import ${asset} failed to load`)); };
+            document.head.append(script);
+          });
+        }
+      })().catch(error => { bankImportLoad = null; throw error; });
+    }
+    return bankImportLoad;
+  }
+
   function handleBack() {
+    if (window.LifeLedgerMoneyUI?._ui?.import?.open) {
+      window.LifeLedgerMoneyUI.closeImport();
+      syncNativeBackState();
+      return true;
+    }
     if (splashOpen) {
       dismissSplashOverlay();
       return true;
@@ -6859,6 +6896,7 @@
       return true;
     }
     const openDialog =
+      Boolean(window.LifeLedgerMoneyUI?._ui?.import?.open) ||
       Boolean(document.querySelector("dialog[open]")) ||
       Boolean(document.getElementById("dayDrawer")?.classList.contains("open"));
     const decision = resolvePredictiveBackAction({
@@ -7035,7 +7073,7 @@
 
     if (focusOpen) renderFocusOverlay();
     const state = core()?.getState?.() || {};
-    if (settingsOpen && regionChanged(els.settingsOverlay, [lang(), isDark(), state.profile, state.reminders, state.focusSettings, loadDisplayPrefs()])) renderSettingsOverlay();
+    if (settingsOpen) renderSettingsOverlay();
     if (splashSettingsOpen && regionChanged(els.splashSettingsOverlay, [lang(), isDark(), loadSplashPrefs(), state.quoteSettings])) renderSplashSettings();
     if (welcomeStep > 0 && regionChanged(els.welcome, [lang(), isDark(), welcomeStep])) renderWelcome();
     // Capture drafts remain owned by the sheet. Only a language/theme change
@@ -7150,6 +7188,9 @@
     openBackupImportSheet,
     closeSheet,
     isSheetOpen: () => sheetOpen,
+    loadBankImport,
+    getMoneyMonth: () => moneyYm || core()?.getTodayIso?.().slice(0, 7),
+    setMoneyMonth: ym => { moneyYm = ym; syncUI(); },
     handleBack,
   };
 

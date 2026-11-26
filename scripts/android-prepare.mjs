@@ -159,6 +159,19 @@ export async function prepare(targetDist = dist) {
       if (asset === relative) html = replaceExact(html, tag, "", `index unused ${relative}`);
     }
   }
+  // Retain import assets off the boot path; the Android face loads them on demand.
+  await mkdir(resolve(out, "android-bank"), { recursive: true });
+  for (const asset of ["bank-import.js", "money-ui.js", "money.css"]) {
+    await cp(resolve(out, asset), resolve(out, "android-bank", asset));
+  }
+  let money = await readFile(resolve(out, "android-bank/money-ui.js"), "utf8");
+  money = replaceExact(money, "    openImport: opts => { if (ctx && nav) openImportWizard(opts); },",
+    "    openImport: opts => { if (ctx && nav) openImportWizard(opts); },\n    closeImport: closeImportWizard,", "Android import back adapter");
+  money = replaceExact(money, '    ui.import = null;\n    setTimeout',
+    '    ui.import = null;\n    window.LifeLedgerAndroidFace.sync();\n    setTimeout', "Android back state after import close");
+  money = replaceExact(money, '    mountImportSheet();\n  }\n  function showMapFile()',
+    '    mountImportSheet();\n    const surface = document.querySelector("#moneyImportSheetRoot .money-sheet");\n    surface.tabIndex = -1;\n    surface.focus({ preventScroll: true });\n  }\n  function showMapFile()', "Android import surface focus");
+  await writeFile(resolve(out, "android-bank/money-ui.js"), money);
   // Let the existing quote surface paint before the shared data core boots.
   const faceScript = '    <script src="./android-face.js?v=2.1.0"></script>\n';
   html = replaceExact(html, faceScript, "", "index move Android launch surface");
@@ -290,6 +303,32 @@ function persistAndroidState(options = {}) {`, "Android save after next paint");
     return;
   }`, "lazy Android habit icon options");
   app = replaceExact(app, '  trigger.setAttribute("aria-expanded", String(opening));\n}\n\nfunction renderColorPicker()', '  trigger.setAttribute("aria-expanded", String(opening));\n  if (key === "icon") renderIconPicker();\n}\n\nfunction renderColorPicker()', "Android icon picker on demand");
+  app = replaceExact(app, '  const selected = $("#exportDate").value || isoDate(new Date());',
+    '  const selected = $("#exportDate")?.value || selectedPlanningDate || effectiveDemoTodayIso();', "Android backup selected day without desktop form");
+  app = replaceExact(app, '    const value = $("#exportMonth").value || monthKey(new Date());',
+    '    const value = $("#exportMonth")?.value || selected.slice(0, 7);', "Android backup selected month without desktop form");
+  app = replaceExact(app, '    const reminder = state.reminder || { enabled: false, time: "21:30" };',
+    '    const reminder = { ...reminderSettings };', "Android habits live reminders");
+  app = replaceExact(app, `  openBankImport: () => {
+    window.LifeLedgerMoneyUI?.openImport?.();
+  },`, `  openBankImport: async () => {
+    await window.LifeLedgerAndroidFace.loadBankImport();
+    const money = window.LifeLedgerMoneyUI;
+    // render sets ctx/nav before its missing-host guard; no desktop page is mounted.
+    money.render(null, {
+      state: () => state, save: () => saveState(), text: languageText, escape: escapeHtml,
+      iso: isoDate, lang: () => currentLang, locale: () => i18n[currentLang]?.locale || "de-DE",
+      monthName: date => new Intl.DateTimeFormat(i18n[currentLang].locale, { month: "long", year: "numeric" }).format(date),
+      toast: showToast, changed: () => renderAll(),
+    }, {
+      month: window.LifeLedgerAndroidFace.getMoneyMonth(),
+      setMonth: ym => window.LifeLedgerAndroidFace.setMoneyMonth(ym),
+    });
+    money.openImport();
+    window.LifeLedgerAndroidFace.sync();
+  },`, "Android lazy bank import with independent context");
+  app = replaceExact(app, 'function updateHabitFormPreview() {\n  const form = $("#habitForm");\n  if (!form) return;',
+    `function updateHabitFormPreview() {\n  const form = $("#habitForm");\n  if (!form) return;\n  form.querySelector('[type="submit"]').disabled = !form.elements.name.value.trim();`, "Android habit name validation");
   app = replaceExact(app, "function bootApplication() {", `${ANDROID_TODAY_CLOCK_SOURCE}\nfunction bootApplication() {`, "Android today lifecycle");
   app = replaceExact(
     app,

@@ -5181,3 +5181,19 @@ html[data-android-app="true"] button.a-sp-tap-hint {
   font-family: inherit;
   cursor: pointer;
 }
+
+/* The reused bank wizard is a full-screen Android task, never a desktop page. */
+html[data-android-app="true"] #moneyImportSheetRoot .money-sheet {
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  border-radius: 0;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(24px);
+  overscroll-behavior: contain;
+}
+html[data-android-app="true"] #moneyImportSheetRoot.money-open .money-sheet { transform: none; }
+html[data-android-app="true"] #moneyImportSheetRoot :is(button, select, input:not([type="checkbox"])) { min-height: 48px; }
+html[data-android-app="true"] #habitForm [type="submit"]:disabled { opacity: .38; cursor: default; }

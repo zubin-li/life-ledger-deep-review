@@ -7212,7 +7212,6 @@ function syncBackupPreferencesToRuntime() {
   renderDeviceProfile();
   applyNavOrder();
   renderNavOrderSettings();
-  syncWeekCollapseState();
   window.LifeLedgerTodayCards?.reload?.();
   window.LifeLedgerTodayWidgets?.reload?.();
   if (cloudMode && state && !(window.LifeLedgerStorageSuffix || "")) {
