@@ -2,10 +2,15 @@
 # Called from android-emulator-runner, which runs `script:` via `sh -c` (dash): bash-only syntax must live here.
 set -euo pipefail
 adb wait-for-device
+# The emulator can report boot_completed before system services are up, and system_server may restart
+# under load ("cmd: Can't find service: package"). Wait until the package manager answers.
+wait_pm() { for _ in $(seq 1 90); do adb shell pm path android >/dev/null 2>&1 && return 0; sleep 2; done; echo "package manager never came up" >&2; return 1; }
+wait_pm
 adb shell settings put global auto_time 1
 adb shell settings put global auto_time_zone 1
 adb shell service call alarm 3 s16 Europe/Berlin || adb shell setprop persist.sys.timezone Europe/Berlin
 adb install -r "$SIGNED_APK"
+wait_pm
 
 PACK=android-review-pack
 mkdir -p "$PACK/metrics-raw" "$PACK/recordings" "$PACK/screenshots" "$PACK/junit-parts"
@@ -30,7 +35,8 @@ for flow in "${FLOWS[@]}"; do
   adb shell dumpsys gfxinfo "$ANDROID_PKG" reset >/dev/null 2>&1 || true
   COLD_MS=""
   if [ "$flow" = "01-cold-start" ]; then
-    adb shell pm clear "$ANDROID_PKG"
+    wait_pm
+    adb shell pm clear "$ANDROID_PKG" || { sleep 5; wait_pm; adb shell pm clear "$ANDROID_PKG"; }
     START_OUT="$(adb shell am start -W -n "$ANDROID_ACTIVITY" 2>&1 || true)"
     COLD_MS="$(echo "$START_OUT" | awk '/TotalTime:/ {print $2; exit}')"
   fi

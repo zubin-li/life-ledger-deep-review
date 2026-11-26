@@ -32,6 +32,7 @@
     "tauri": "tauri",
     "android:prepare": "node scripts/android-prepare.mjs",
     "android:gate": "npm run android:prepare && node scripts/android-perf-gate.mjs",
+    "android:smoke": "npm run android:prepare && node scripts/android-tap-smoke.mjs",
     "android:manifest": "node scripts/android-manifest.mjs",
     "desktop:icons": "node scripts/desktop-icons.mjs",
     "desktop:dev": "npm run desktop:prepare && tauri dev",
