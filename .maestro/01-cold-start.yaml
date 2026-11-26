@@ -1,0 +1,25 @@
+appId: app.zubinli.lifeledger.androidtest
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/01-cold-start.mp4
+- extendedWaitUntil:
+    visible:
+      id: "androidSplashOverlay"
+    timeout: 15000
+- takeScreenshot: screenshots/01-splash-visible
+- extendedWaitUntil:
+    notVisible:
+      id: "androidSplashOverlay"
+    timeout: 4000
+- assertNotVisible:
+    id: "androidSplashOverlay"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidWelcome"
+    timeout: 8000
+- assertVisible:
+    text: "记录当下"
+- takeScreenshot: screenshots/01-welcome-ready
+- stopRecording

@@ -1,0 +1,260 @@
+name: Android review pack
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - feat/android-v1-redesign
+    paths:
+      - "src-tauri/**"
+      - "public/**"
+      - "scripts/android-*.mjs"
+      - "scripts/review-pack/**"
+      - "tests/android-*.test.mjs"
+      - "tests/review-pack-summary.test.mjs"
+      - ".maestro/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/android-cloud-build.yml"
+      - ".github/workflows/android-review-pack.yml"
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_PKG: app.zubinli.lifeledger.androidtest
+  ANDROID_ACTIVITY: app.zubinli.lifeledger.androidtest/.MainActivity
+
+jobs:
+  android-review-pack:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17.0.15"
+
+      - name: Install pinned Android SDK and NDK
+        run: |
+          set -euo pipefail
+          sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$sdkmanager"
+          mkdir -p "$ANDROID_HOME/licenses"
+          printf '%s\n' "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+          "$sdkmanager" --install "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "platform-tools" "emulator" "system-images;android-34;google_apis;x86_64"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+
+      - name: Setup Rust stable with Android targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare local Android assets
+        run: npm run android:prepare
+
+      - name: Check Android asset and manifest logic
+        run: node --test tests/android-prepare.test.mjs
+
+      - name: Generate Android icons
+        run: npx tauri icon public/assets/app-icon.svg --output src-tauri/icons
+
+      - name: Initialize the Android project
+        run: npx tauri android init --ci
+
+      - name: Patch Android manifest and disable auto-backup
+        run: node scripts/android-manifest.mjs src-tauri/gen/android
+
+      - name: Inject Android backup plugin and version config
+        run: node scripts/android-prepare.mjs src-tauri/gen/android
+
+      - name: Build the x86_64 release APK
+        run: npx tauri android build --apk --target x86_64
+
+      - name: Sign with an ephemeral test key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t apks < <(find src-tauri/gen/android/app/build/outputs/apk -type f -name '*.apk' ! -name '*-signed.apk' ! -name '*-aligned.apk' | sort)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "no apk produced"
+            exit 1
+          fi
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          keytool -genkeypair -noprompt \
+            -keystore "$RUNNER_TEMP/life-ledger-android-test.jks" \
+            -storepass "$password" -keypass "$password" \
+            -alias life-ledger-android-test \
+            -keyalg RSA -keysize 2048 -validity 3650 \
+            -dname "CN=Life Ledger Android Test,O=Local Test,C=DE"
+          zipalign="$ANDROID_HOME/build-tools/35.0.0/zipalign"
+          apksigner="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          mkdir -p android-apk
+          for apk in "${apks[@]}"; do
+            aligned="$RUNNER_TEMP/$(basename "${apk%.apk}")-aligned.apk"
+            signed="android-apk/$(basename "${apk%.apk}")-signed.apk"
+            "$zipalign" -p -f 4 "$apk" "$aligned"
+            "$apksigner" sign \
+              --ks "$RUNNER_TEMP/life-ledger-android-test.jks" \
+              --ks-key-alias life-ledger-android-test \
+              --ks-pass "pass:$password" --key-pass "pass:$password" \
+              --out "$signed" "$aligned"
+            "$apksigner" verify --verbose "$signed"
+          done
+          echo "SIGNED_APK=$(find android-apk -name '*-signed.apk' | head -n1)" >> "$GITHUB_ENV"
+
+      - name: Fail if the signed APK has forbidden permissions
+        run: |
+          set -euo pipefail
+          aapt2="$ANDROID_HOME/build-tools/35.0.0/aapt2"
+          apkanalyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+          test -x "$apkanalyzer"
+          node scripts/android-apk-check.mjs "$SIGNED_APK" "$aapt2" "$apkanalyzer"
+
+      - name: Install Maestro CLI
+        run: |
+          set -euo pipefail
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Compute Berlin today labels for Maestro
+        run: |
+          set -euo pipefail
+          node --input-type=module -e "
+            const tz = 'Europe/Berlin';
+            const iso = new Date().toLocaleDateString('en-CA', { timeZone: tz });
+            const [y, m, d] = iso.split('-').map(Number);
+            const zh = m + '月' + d + '日';
+            const core = new Date(iso + 'T12:00:00');
+            const en = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: tz }).format(core);
+            const de = new Intl.DateTimeFormat('de-DE', { day: 'numeric', month: 'short', timeZone: tz }).format(core);
+            console.log('TODAY_ZH=' + zh);
+            console.log('TODAY_EN=' + en);
+            console.log('TODAY_DE=' + de);
+          " >> "$GITHUB_ENV"
+
+      - name: Emulator quality flows (Maestro + gfxinfo)
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          SIGNED_APK: ${{ env.SIGNED_APK }}
+          ANDROID_PKG: app.zubinli.lifeledger.androidtest
+          ANDROID_ACTIVITY: app.zubinli.lifeledger.androidtest/.MainActivity
+          TODAY_ZH: ${{ env.TODAY_ZH }}
+          TODAY_EN: ${{ env.TODAY_EN }}
+          TODAY_DE: ${{ env.TODAY_DE }}
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            adb wait-for-device
+            adb shell settings put global auto_time 1
+            adb shell settings put global auto_time_zone 1
+            adb shell service call alarm 3 s16 Europe/Berlin || adb shell setprop persist.sys.timezone Europe/Berlin
+            adb shell settings put system system_locales zh-CN
+            adb install -r "$SIGNED_APK"
+
+            PACK=android-review-pack
+            mkdir -p "$PACK/metrics-raw" "$PACK/recordings" "$PACK/screenshots" "$PACK/junit-parts"
+            cd "$GITHUB_WORKSPACE"
+            export MAESTRO_DRIVER_STARTUP_TIMEOUT=120000
+
+            FLOWS=(
+              01-cold-start
+              02-welcome-sample
+              03-welcome-empty
+              04-navigation-back
+              05-fab-expense
+              06-habits-mood
+              07-focus-settings
+              08-process-death
+            )
+
+            JUNIT_PARTS=()
+            FAIL=0
+            for flow in "${FLOWS[@]}"; do
+              adb shell am force-stop "$ANDROID_PKG" || true
+              adb shell dumpsys gfxinfo "$ANDROID_PKG" reset >/dev/null 2>&1 || true
+              COLD_MS=""
+              if [ "$flow" = "01-cold-start" ]; then
+                adb shell pm clear "$ANDROID_PKG"
+                START_OUT="$(adb shell am start -W -n "$ANDROID_ACTIVITY" 2>&1 || true)"
+                COLD_MS="$(echo "$START_OUT" | awk '/TotalTime:/ {print $2; exit}')"
+              fi
+
+              set +e
+              maestro test \
+                --format junit \
+                --output "$PACK/junit-parts/${flow}.xml" \
+                -e TODAY_ZH="$TODAY_ZH" \
+                -e TODAY_EN="$TODAY_EN" \
+                -e TODAY_DE="$TODAY_DE" \
+                ".maestro/${flow}.yaml"
+              rc=$?
+              set -e
+              if [ "$rc" -ne 0 ]; then FAIL=1; fi
+              JUNIT_PARTS+=("$PACK/junit-parts/${flow}.xml")
+
+              GFX="$(adb shell dumpsys gfxinfo "$ANDROID_PKG" 2>/dev/null || true)"
+              export GFX_SNAP="$GFX"
+              export OUT_JSON="$PACK/metrics-raw/${flow}.json"
+              export METRIC_EXTRA="{\"coldStartMs\":${COLD_MS:-null},\"video\":\"recordings/${flow}.mp4\"}"
+              node --input-type=module -e "
+                import { writeFile } from 'node:fs/promises';
+                import { parseGfxInfo } from './scripts/review-pack/summarize.mjs';
+                const gfx = process.env.GFX_SNAP || '';
+                const extra = JSON.parse(process.env.METRIC_EXTRA || '{}');
+                await writeFile(process.env.OUT_JSON, JSON.stringify({ ...parseGfxInfo(gfx), ...extra }, null, 2) + '\n');
+              "
+
+              if [ -d recordings ]; then cp -a recordings/* "$PACK/recordings/" 2>/dev/null || true; fi
+              if [ -d screenshots ]; then cp -a screenshots/* "$PACK/screenshots/" 2>/dev/null || true; fi
+            done
+
+            node --input-type=module -e "
+              import { mergeJUnitReports, buildReviewPack } from './scripts/review-pack/summarize.mjs';
+              const parts = process.argv.slice(2);
+              await mergeJUnitReports(parts, 'android-review-pack/junit.xml');
+              await buildReviewPack({ packDir: 'android-review-pack' });
+            " "${JUNIT_PARTS[@]}"
+
+            if [ "$FAIL" -ne 0 ]; then
+              echo "One or more Maestro flows failed (see junit.xml and index.html)"
+              exit 1
+            fi
+
+      - name: Upload android-review-pack artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-review-pack
+          path: |
+            android-review-pack/**
+          if-no-files-found: error
+          retention-days: 14

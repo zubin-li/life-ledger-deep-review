@@ -1,0 +1,9 @@
+appId: app.zubinli.lifeledger.androidtest
+---
+- runFlow: subflows/welcome-step2.yaml
+- tapOn: "开始使用"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidTopbar"
+    timeout: 12000

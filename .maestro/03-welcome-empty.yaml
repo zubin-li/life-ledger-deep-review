@@ -1,0 +1,12 @@
+appId: app.zubinli.lifeledger.androidtest
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/03-welcome-empty.mp4
+- runFlow: subflows/welcome-empty.yaml
+- assertVisible:
+    id: "androidDateSub"
+- assertVisible:
+    text: "${TODAY_ZH}"
+- takeScreenshot: screenshots/03-empty-today
+- stopRecording

@@ -1,0 +1,24 @@
+appId: app.zubinli.lifeledger.androidtest
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/02-welcome-sample.mp4
+- runFlow: subflows/welcome-step2.yaml
+- tapOn: "看看示例"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidDemoTitle"
+    timeout: 15000
+- assertVisible:
+    text: "示例模式"
+- assertNotVisible:
+    text: "空白的一天，刚刚开始"
+- extendedWaitUntil:
+    visible:
+      id: "androidDateSub"
+    timeout: 8000
+- assertVisible:
+    text: "${TODAY_ZH}"
+- takeScreenshot: screenshots/02-sample-today
+- stopRecording

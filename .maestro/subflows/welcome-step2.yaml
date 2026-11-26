@@ -1,0 +1,16 @@
+appId: app.zubinli.lifeledger.androidtest
+---
+- extendedWaitUntil:
+    visible:
+      id: "androidWelcome"
+    timeout: 20000
+- runFlow:
+    when:
+      visible: "继续"
+    commands:
+      - tapOn: "继续"
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      text: "开始使用"
+    timeout: 8000

@@ -1,0 +1,34 @@
+appId: app.zubinli.lifeledger.androidtest
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/06-habits-mood.mp4
+- runFlow: subflows/welcome-step2.yaml
+- tapOn: "看看示例"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidDemoTitle"
+    timeout: 15000
+- tapOn:
+    id: "androidFab"
+- waitForAnimationToEnd
+- assertVisible:
+    text: "心情与习惯"
+- tapOn: "很好"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidHabitRail"
+    point: "30%,50%"
+- waitForAnimationToEnd
+- tapOn: "完成记录"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    notVisible:
+      id: "androidSheet"
+    timeout: 12000
+- takeScreenshot: screenshots/06-today-habit-mood
+- tapOn: "习惯"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/06-habits-tab
+- stopRecording
