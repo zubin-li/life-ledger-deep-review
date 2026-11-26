@@ -51,6 +51,21 @@ until [ $ok -ge 3 ]; do  # 3 consecutive healthy checks, so a system_server rest
   if services_up; then ok=$((ok + 1)); else ok=0; fi
   sleep 2
 done
+# Test devices suppress system ANR/crash dialogs (the setting CTS/Firebase Test Lab rely on): after the
+# locale restart a software-GPU System UI is slow and its "System UI isn't responding" dialog covered
+# the App in every flow of run 45905053009.
+adb shell settings put global hide_error_dialogs 1
+adb shell settings put secure anr_show_background 0 >/dev/null 2>&1 || true
+# Then wait for System UI to settle: no ANR window and a focused window, three checks in a row.
+calm=0
+until [ $calm -ge 3 ]; do
+  [ $SECONDS -lt $deadline ] || { echo "System UI did not settle"; exit 1; }
+  focus="$(adb shell dumpsys window 2>/dev/null | grep -m1 mCurrentFocus || true)"
+  if echo "$focus" | grep -qiE "not responding|Application Error|null"; then
+    calm=0; adb shell input keyevent 4 >/dev/null 2>&1 || true
+  else calm=$((calm + 1)); fi
+  sleep 3
+done
 adb shell input keyevent 82   # dismiss keyguard
 adb shell settings put global window_animation_scale 1 >/dev/null 2>&1 || true
 echo "emulator ready after ${SECONDS}s"
