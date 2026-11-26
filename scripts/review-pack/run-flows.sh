@@ -5,7 +5,6 @@ adb wait-for-device
 adb shell settings put global auto_time 1
 adb shell settings put global auto_time_zone 1
 adb shell service call alarm 3 s16 Europe/Berlin || adb shell setprop persist.sys.timezone Europe/Berlin
-adb shell settings put system system_locales zh-CN
 adb install -r "$SIGNED_APK"
 
 PACK=android-review-pack
@@ -40,6 +39,8 @@ for flow in "${FLOWS[@]}"; do
   maestro test \
     --format junit \
     --output "$PACK/junit-parts/${flow}.xml" \
+    --test-output-dir "$PACK/maestro/${flow}" \
+    --debug-output "$PACK/maestro/${flow}/debug" \
     -e TODAY_ZH="$TODAY_ZH" \
     -e TODAY_EN="$TODAY_EN" \
     -e TODAY_DE="$TODAY_DE" \
@@ -61,8 +62,10 @@ for flow in "${FLOWS[@]}"; do
     await writeFile(process.env.OUT_JSON, JSON.stringify({ ...parseGfxInfo(gfx), ...extra }, null, 2) + '\n');
   "
 
-  if [ -d recordings ]; then cp -a recordings/* "$PACK/recordings/" 2>/dev/null || true; fi
-  if [ -d screenshots ]; then cp -a screenshots/* "$PACK/screenshots/" 2>/dev/null || true; fi
+  # Maestro writes media relative to cwd or its output dir depending on version: collect from both.
+  for d in recordings screenshots; do
+    find . "$PACK/maestro/${flow}" -path "./$PACK" -prune -o -type f -path "*${d}/*" -print 2>/dev/null | while read -r f; do cp -f "$f" "$PACK/$d/"; done
+  done
 done
 
 node --input-type=module -e "
