@@ -167,7 +167,13 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # android-emulator-runner runs `input keyevent 82` right after sys.boot_completed, before
+      # system_server is ready; it intermittently dies with "Failure calling service input"
+      # (upstream issues #489/#432, fix #495 unmerged). Retry once, but only when our flows never
+      # started, so a real App failure is never retried away.
       - name: Emulator quality flows (Maestro + gfxinfo)
+        id: emu1
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         env:
           SIGNED_APK: ${{ env.SIGNED_APK }}
@@ -181,6 +187,27 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          ram-size: 4096M
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -change-locale zh-CN
+          disable-animations: false
+          script: bash scripts/review-pack/run-flows.sh
+      - name: Emulator quality flows (retry after emulator boot race)
+        id: emu2
+        if: steps.emu1.outcome == 'failure' && hashFiles('android-review-pack/.flows-started') == ''
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          SIGNED_APK: ${{ env.SIGNED_APK }}
+          ANDROID_PKG: app.zubinli.lifeledger.androidtest
+          ANDROID_ACTIVITY: app.zubinli.lifeledger.androidtest/.MainActivity
+          TODAY_ZH: ${{ env.TODAY_ZH }}
+          TODAY_EN: ${{ env.TODAY_EN }}
+          TODAY_DE: ${{ env.TODAY_DE }}
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 4096M
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -change-locale zh-CN
           disable-animations: false
           script: bash scripts/review-pack/run-flows.sh
@@ -193,3 +220,6 @@ jobs:
             android-review-pack/**
           if-no-files-found: error
           retention-days: 14
+      - name: Fail if the flows failed
+        if: steps.emu1.outcome == 'failure' && steps.emu2.outcome == 'skipped'
+        run: exit 1

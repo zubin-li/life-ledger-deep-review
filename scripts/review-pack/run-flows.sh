@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Called from android-emulator-runner, which runs `script:` via `sh -c` (dash): bash-only syntax must live here.
 set -euo pipefail
+mkdir -p android-review-pack && touch android-review-pack/.flows-started  # marks that the emulator came up and flows began (workflow retry guard)
 adb wait-for-device
 # The emulator can report boot_completed before system services are up, and system_server may restart
 # under load ("cmd: Can't find service: package"). Wait until the package manager answers.

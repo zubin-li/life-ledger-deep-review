@@ -79,6 +79,12 @@ jobs:
       - name: Inject Android backup plugin and version config
         run: node scripts/android-prepare.mjs src-tauri/gen/android
 
+      # Same as the review pack: plugins.gradle.org / Maven Central intermittently fail (429, unparsable POM)
+      # on shared runners; cache via setup-gradle and route downloads through Google's Maven Central mirror.
+      - name: Gradle cache + Maven Central mirror
+        uses: gradle/actions/setup-gradle@v5
+      - name: Route Gradle downloads via Google Maven mirror
+        run: mkdir -p ~/.gradle/init.d && cp .github/gradle/maven-mirror.init.gradle.kts ~/.gradle/init.d/
       - name: Build the arm64 release APK
         run: npx tauri android build --apk --target aarch64
 
