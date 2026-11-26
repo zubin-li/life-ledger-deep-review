@@ -184,8 +184,16 @@ export async function prepare(targetDist = dist) {
   widgets = replaceExact(widgets,
     "  window.LifeLedgerTodayWidgets = { render, reload, syncWalls: () => Object.values(walls).forEach(w => w.sync()), text: t, weather: weatherBridge };\n  setTimeout(render);",
     `  window.LifeLedgerTodayWidgets = { render: () => { void loadWeather(); }, reload: () => { city = null; forecast = null; void loadWeather(true); }, text: t, weather: weatherBridge };
-  window.addEventListener("life-ledger-rendered", () => { void loadWeather(); });
-  setTimeout(() => { void loadWeather(); });`, "Android weather startup");
+  let weatherQueued = false;
+  function queueWeather() {
+    if (weatherQueued) return;
+    weatherQueued = true;
+    const work = () => { weatherQueued = false; void loadWeather(); };
+    if (window.requestIdleCallback) window.requestIdleCallback(work, { timeout: 2000 });
+    else setTimeout(work, 150);
+  }
+  window.addEventListener("life-ledger-rendered", queueWeather);
+  queueWeather();`, "Android weather startup");
   await writeFile(resolve(out, "today-widgets.js"), widgets);
 
   let weather = await readFile(resolve(out, "weather-widget.js"), "utf8");
@@ -202,6 +210,32 @@ export async function prepare(targetDist = dist) {
     return;
   }
   applyLanguage();`, "Android state render without desktop views");
+  // Mutations remain synchronous; durable writes run after pressed feedback has
+  // painted. Flush at lifecycle/demo boundaries so no queued real data is lost.
+  app = replaceExact(app, "function saveState(options = {}) {", `let androidSavePending = null;
+let androidSaveQueued = false;
+function flushAndroidSave() {
+  androidSaveQueued = false;
+  const pending = androidSavePending;
+  androidSavePending = null;
+  if (pending) persistAndroidState(pending);
+}
+window.addEventListener("pagehide", flushAndroidSave);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") flushAndroidSave();
+});
+function saveState(options = {}) {
+  if (androidDemoActive) return persistAndroidState(options);
+  // Preserve the conflict timestamp immediately; coalesce only persistence.
+  const priorUpdatedAt = state.meta?.updatedAt || 0;
+  state.meta = { ...(state.meta || {}), updatedAt: cloudSyncRuntime.shouldTouchUpdatedAt(options) ? Date.now() : priorUpdatedAt };
+  androidSavePending = { ...options, preserveUpdatedAt: true };
+  if (androidSaveQueued) return;
+  androidSaveQueued = true;
+  requestAnimationFrame(() => setTimeout(flushAndroidSave, 0));
+}
+function persistAndroidState(options = {}) {`, "Android save after next paint");
+  app = replaceExact(app, "function enterAndroidIsolatedDemo() {", "function enterAndroidIsolatedDemo() {\n  flushAndroidSave();", "Android flush before isolated demo");
   app = replaceExact(app, "function switchToView(view) {", `function switchToView(view) {
   if (document.documentElement.dataset.androidApp === "true") {
     if (!document.getElementById(view + "View")) return Promise.resolve();

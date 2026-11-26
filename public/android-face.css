@@ -465,9 +465,6 @@ html[data-android-app="true"] .a-icon-btn {
   cursor: pointer;
   padding: 0;
 }
-html[data-android-app="true"] .a-icon-btn:active {
-  transform: scale(0.94);
-}
 
 /* History Sub-Segment Switcher (Daily / Week / Month / Long-term) */
 html[data-android-app="true"] .a-subtabs {
@@ -515,8 +512,7 @@ html[data-android-app="true"] .a-bottom-nav {
   height: calc(var(--a-bottom-bar-h) + env(safe-area-inset-bottom, 0px));
   padding: 6px 8px calc(10px + env(safe-area-inset-bottom, 0px));
   background: var(--a-nav-bg);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  /* Translucent fill avoids a full-width WebView backdrop pass. */
   border-top: 1px solid var(--a-outline);
   display: grid;
   grid-template-columns: minmax(64px, 1fr) minmax(64px, 1fr) 72px minmax(64px, 1fr) minmax(64px, 1fr);
@@ -565,9 +561,6 @@ html[data-android-app="true"] .a-nav-item.is-active .a-nav-pill {
   background: var(--a-nav-pill-bg);
   color: var(--a-nav-pill-fg);
 }
-html[data-android-app="true"] .a-nav-item:active .a-nav-pill {
-  transform: scale(0.92);
-}
 html[data-android-app="true"] .a-nav-label {
   max-width: 100%;
   overflow: hidden;
@@ -596,9 +589,6 @@ html[data-android-app="true"] .a-fab {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform var(--a-dur-fast) var(--a-spring-fast);
-}
-html[data-android-app="true"] .a-fab:active {
-  transform: scale(0.92);
 }
 
 /* ============================================================================
@@ -1094,9 +1084,6 @@ html[data-android-app="true"] .a-back-today-pill {
 html[data-android-app="true"] .a-back-today-pill[hidden] {
   display: none !important;
 }
-html[data-android-app="true"] .a-back-today-pill:active {
-  transform: scale(0.94);
-}
 html[data-android-app="true"] .a-icon-btn[hidden] {
   display: none !important;
 }
@@ -1140,9 +1127,6 @@ html[data-android-app="true"] .a-day-pill {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background var(--a-dur-effects) var(--a-effects-fast), transform var(--a-dur-fast) var(--a-spring-fast);
-}
-html[data-android-app="true"] .a-day-pill:active {
-  transform: scale(0.94);
 }
 html[data-android-app="true"] .a-day-pill .a-dow {
   font-size: 10.5px;
@@ -1339,9 +1323,6 @@ html[data-android-app="true"] .a-weather-card {
   min-width: 0;
   transition: transform var(--a-dur-fast) var(--a-spring-fast);
 }
-html[data-android-app="true"] .a-weather-card:active {
-  transform: scale(0.985);
-}
 html[data-android-app="true"] .a-w-offline-pill {
   display: inline-flex;
   align-items: center;
@@ -1455,9 +1436,6 @@ html[data-android-app="true"] .a-mood-btn {
 }
 html[data-android-app="true"][data-theme="dark"] .a-mood-btn {
   background: var(--a-surface-container);
-}
-html[data-android-app="true"] .a-mood-btn:active:not(:disabled) {
-  transform: scale(0.95);
 }
 html[data-android-app="true"] .a-mood-btn:disabled {
   cursor: default;
@@ -1657,9 +1635,6 @@ html[data-android-app="true"] .a-mini-card {
   color: var(--a-on-surface);
   cursor: pointer;
   transition: transform var(--a-dur-fast) var(--a-spring-fast);
-}
-html[data-android-app="true"] .a-mini-card:active {
-  transform: scale(0.97);
 }
 html[data-android-app="true"] .a-mini-head {
   display: flex;
@@ -3177,7 +3152,6 @@ html[data-android-app="true"] .a-kp-key {
   cursor: pointer;
   transition: transform 120ms var(--a-effects-fast);
 }
-html[data-android-app="true"] .a-kp-key:active { transform: scale(0.92); }
 html[data-android-app="true"] .a-kp-key.is-op {
   background: var(--a-surface-container-high);
   font-size: 22px;
@@ -4219,7 +4193,7 @@ html[data-android-app="true"] .a-sp-day-badge {
   border-radius: 999px;
   background: var(--sp-badge-bg);
   border: 1px solid var(--sp-badge-border);
-  backdrop-filter: blur(10px);
+  /* The existing tinted fill provides contrast without backdrop blur. */
   font-size: 11.5px;
   font-weight: 600;
   color: var(--sp-badge-fg);
@@ -5098,4 +5072,31 @@ html[data-android-app="true"] .a-btn-danger {
   html[data-android-app="true"] .a-splash-overlay.is-leaving {
     transform: none !important;
   }
+}
+
+/* Native touch-down feedback, including dynamically inserted sheets and dialogs.
+   Keep drag handles / swipe rails on their existing touch-action contracts. */
+html[data-android-app="true"] :is(button, a[href], [role="button"], [role="tab"], summary, label, select, input[type="checkbox"], input[type="radio"]) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: scale 100ms ease-out;
+}
+html[data-android-app="true"] :is(button, a[href], [role="button"], [role="tab"], summary, label, select, input[type="checkbox"], input[type="radio"]):active:not(:disabled):not([aria-disabled="true"]) {
+  /* Independent scale does not overwrite a FAB/FLIP/swipe transform. */
+  scale: 0.97;
+  transition-duration: 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-android-app="true"] :is(button, a[href], [role="button"], [role="tab"], summary, label, select, input[type="checkbox"], input[type="radio"]) {
+    transition: none;
+  }
+  html[data-android-app="true"] :is(button, a[href], [role="button"], [role="tab"], summary, label, select, input[type="checkbox"], input[type="radio"]):active:not(:disabled):not([aria-disabled="true"]) {
+    scale: none;
+    box-shadow: inset 0 0 0 100vmax color-mix(in srgb, currentColor 10%, transparent);
+  }
+}
+html[data-android-app="true"].motion-reduced :is(button, a[href], [role="button"], [role="tab"], summary, label, select, input[type="checkbox"], input[type="radio"]):active:not(:disabled):not([aria-disabled="true"]) {
+  scale: none;
+  transition: none;
+  box-shadow: inset 0 0 0 100vmax color-mix(in srgb, currentColor 10%, transparent);
 }

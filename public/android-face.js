@@ -2159,6 +2159,9 @@
   let monthReviewYm = "";
   let habitsFilter = "all"; // "all" | "daily" | "periodic" | "paused"
   let focusOpen = false;
+  let focusRevision = 0;
+  let weatherRevision = 0;
+  let focusStructure = "";
   let focusTopicDraft = "";
   let focusDurationDraft = 25;
   let snackbarTimer = 0;
@@ -2186,6 +2189,51 @@
   let habitRailScrollLeft = 0;
 
   let els = {};
+  let syncQueued = false;
+  const regionInputs = new WeakMap();
+  const regionMarkup = new WeakMap();
+
+  // Let the pressed state reach the screen before statistics or DOM work starts.
+  function afterNextPaint(work) {
+    requestAnimationFrame(() => setTimeout(work, 0));
+  }
+
+  function whenIdle(work) {
+    if (window.requestIdleCallback) window.requestIdleCallback(work, { timeout: 1500 });
+    else setTimeout(work, 120);
+  }
+
+  function regionChanged(node, inputs) {
+    const signature = JSON.stringify(inputs);
+    if (regionInputs.get(node) === signature) return false;
+    regionInputs.set(node, signature);
+    return true;
+  }
+
+  function panelChanged(node, inputs) {
+    const c = core();
+    return regionChanged(node, [lang(), isDark(), c?.isIsolatedDemoActive?.(), c?.getTodayIso?.(), ...inputs]);
+  }
+
+  // Retain unchanged Today cards (and their listeners, scroll and image state).
+  function updateTodayRegion(parent, key, html, selectedDate, isFuture) {
+    let node = [...parent.children].find(child => child.dataset.aRegion === key);
+    const signature = selectedDate + html;
+    if (node && regionMarkup.get(node) === signature) return node;
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    const next = template.content.firstElementChild;
+    if (!next) { node?.remove(); return null; }
+    next.dataset.aRegion = key;
+    regionMarkup.set(next, signature);
+    if (node) node.replaceWith(next);
+    else parent.append(next);
+    // Scope listeners to newly inserted regions; retained cards keep theirs.
+    const scope = { querySelector: selector => next.matches(selector) ? next : next.querySelector(selector),
+      querySelectorAll: selector => [...(next.matches(selector) ? [next] : []), ...next.querySelectorAll(selector)] };
+    wireTodayEvents(selectedDate, isFuture, scope);
+    return next;
+  }
 
   function getActiveView() {
     return document.body.dataset.activeView || "today";
@@ -2241,7 +2289,7 @@
           wallObjectUrls.push(url);
           return { ...r, url, x: Number.isFinite(r.x) ? r.x : 50, y: Number.isFinite(r.y) ? r.y : 50 };
         });
-      renderToday();
+      syncUI();
     } catch {
       userWallPhotos = [];
     }
@@ -2538,7 +2586,7 @@
         if (list.length > 1) {
           wallIndex = (wallIndex - 1 + list.length) % list.length;
           renderLightbox();
-          renderToday();
+          syncUI();
         }
         return;
       }
@@ -2547,7 +2595,7 @@
         if (list.length > 1) {
           wallIndex = (wallIndex + 1) % list.length;
           renderLightbox();
-          renderToday();
+          syncUI();
         }
       }
     });
@@ -2595,20 +2643,30 @@
     // Re-sync whenever shared core re-renders (language/theme/state/view changes)
     window.addEventListener("life-ledger-rendered", () => syncUI());
     window.addEventListener("life-ledger-weather-updated", () => {
+      weatherRevision += 1;
       syncSettingsWeatherRow();
-      renderToday();
+      syncUI();
       if (sheetOpen && sheetMode === "weather") renderWeatherSheetContent();
     });
     window.addEventListener("online", () => {
       window.LifeLedgerTodayWidgets?.weather?.refresh?.(true);
     });
     window.addEventListener("offline", () => {
+      weatherRevision += 1;
       syncSettingsWeatherRow();
-      renderToday();
+      syncUI();
     });
     window.addEventListener("life-ledger-focus-tick", () => {
-      syncFocusCapsule();
-      if (focusOpen) renderFocusOverlay();
+      focusRevision += 1;
+      afterNextPaint(() => {
+        syncFocusCapsule();
+        if (focusOpen) renderFocusOverlay();
+        const fs = core()?.getFocusState?.();
+        const clock = els.todayRoot?.querySelector("#androidFocusCard .a-big-val");
+        if (clock && fs?.snapshot) clock.textContent = fs.remainingText;
+        else if (getActiveView() === "today" && clock?.dataset.running === "true") syncUI();
+        if (clock) clock.dataset.running = String(Boolean(fs?.snapshot));
+      });
     });
   }
 
@@ -2772,13 +2830,16 @@
     }
 
     els.todayRoot.hidden = false;
-    if (!demoActive && !userWallLoaded) void ensureUserWallLoaded();
+    if (!demoActive && !userWallLoaded) whenIdle(() => { void ensureUserWallLoaded(); });
 
     const todayIso = c?.getTodayIso?.() || toIsoDate(new Date());
     const selectedDate = c?.getSelectedDate?.() || todayIso;
     const isFuture = isAndroidDateReadOnly(selectedDate, todayIso);
     const isOffToday = shouldShowBackToToday(selectedDate, todayIso);
     const log = c?.getLog?.(selectedDate) || { mood: "", completed: [], note: "", moodReason: "" };
+    const raw = c?.getState?.() || {};
+    if (!panelChanged(els.todayRoot, [selectedDate, raw.logs, raw.habits, raw.focusSessions,
+      raw.ledger, raw.quoteSettings, loadCardsPref(), currentWallPhoto(), weatherRevision, focusRevision])) return;
 
     // Preserve horizontal scroll position of habit rail across re-renders
     const prevRail = els.todayRoot.querySelector("#androidHabitRail");
@@ -3019,8 +3080,25 @@
       `;
     }
 
-    const cardsStream = activeCards.map(id => cardHtmlMap[id] || "").filter(Boolean).join("");
-    els.todayRoot.innerHTML = `${dateStripHtml}<div class="a-today-content">${futureBannerHtml}${cardsStream}</div>`;
+    updateTodayRegion(els.todayRoot, "dates", dateStripHtml, selectedDate, isFuture);
+    let content = els.todayRoot.querySelector(".a-today-content");
+    if (!content) {
+      content = document.createElement("div");
+      content.className = "a-today-content";
+      els.todayRoot.append(content);
+    }
+    const banner = updateTodayRegion(content, "future", futureBannerHtml, selectedDate, isFuture);
+    if (banner && content.firstElementChild !== banner) content.prepend(banner);
+    const shown = new Set(["future", ...activeCards]);
+    for (const child of [...content.children]) if (!shown.has(child.dataset.aRegion)) child.remove();
+    let index = banner ? 1 : 0;
+    for (const id of activeCards) {
+      const card = updateTodayRegion(content, id, cardHtmlMap[id] || "", selectedDate, isFuture);
+      if (!card) continue;
+      // Move only when the order changed; retained controls keep their state.
+      if (content.children[index] !== card) content.insertBefore(card, content.children[index] || null);
+      index += 1;
+    }
 
     // Restore habit rail scroll & run pending FLIP animation if triggered
     const rail = els.todayRoot.querySelector("#androidHabitRail");
@@ -3034,8 +3112,6 @@
         pendingFlip = null;
       }
     }
-
-    wireTodayEvents(selectedDate, isFuture);
   }
 
   function runHabitFlipPlay(rail, flippedId, firstRects) {
@@ -3077,9 +3153,9 @@
     });
   }
 
-  function wireTodayEvents(selectedDate, isFuture) {
+  function wireTodayEvents(selectedDate, isFuture, root = els.todayRoot) {
     // 1. Date strip taps & horizontal week swipe
-    const strip = els.todayRoot.querySelector("#androidDateStrip");
+    const strip = root.querySelector("#androidDateStrip");
     if (strip) {
       let startX = null;
       let swiped = false;
@@ -3111,15 +3187,15 @@
     }
 
     // 2. Quote tap -> Splash & Quote Settings (18-splash-settings); Weather card tap -> Weather City sheet
-    els.todayRoot.querySelector("#androidQuoteStrip")?.addEventListener("click", () => {
+    root.querySelector("#androidQuoteStrip")?.addEventListener("click", () => {
       openSplashSettings();
     });
-    els.todayRoot.querySelector("#androidWeatherCard")?.addEventListener("click", () => {
+    root.querySelector("#androidWeatherCard")?.addEventListener("click", () => {
       openWeatherSheet();
     });
 
     // 3. Direct 1-tap Mood buttons (read-only on future dates)
-    els.todayRoot.querySelectorAll("[data-a-today-mood]").forEach(btn => {
+    root.querySelectorAll("[data-a-today-mood]").forEach(btn => {
       btn.addEventListener("click", () => {
         if (isFuture) return;
         const mood = btn.dataset.aTodayMood;
@@ -3129,13 +3205,13 @@
     });
 
     // 4. Mood note tap -> open Capture Sheet
-    els.todayRoot.querySelector("#androidMoodNoteBtn")?.addEventListener("click", () => {
+    root.querySelector("#androidMoodNoteBtn")?.addEventListener("click", () => {
       if (isFuture) return;
       openSheet("mood", { fromFab: false });
     });
 
     // 5. Horizontal Habit tiles: bounce + FLIP move-to-end (l03)
-    const rail = els.todayRoot.querySelector("#androidHabitRail");
+    const rail = root.querySelector("#androidHabitRail");
     if (rail) {
       rail.addEventListener("scroll", () => {
         habitRailScrollLeft = rail.scrollLeft;
@@ -3172,15 +3248,15 @@
     }
 
     // 6. Whole-card tap: Focus & Today Spend (C110)
-    els.todayRoot.querySelector("#androidFocusCard")?.addEventListener("click", () => {
+    root.querySelector("#androidFocusCard")?.addEventListener("click", () => {
       core()?.openFocus?.();
     });
-    els.todayRoot.querySelector("#androidSpendCard")?.addEventListener("click", () => {
+    root.querySelector("#androidSpendCard")?.addEventListener("click", () => {
       core()?.openSpend?.(selectedDate);
     });
 
     // 7. Full-bleed Photo Wall: tap opens lightbox (or picker if empty); long-press opens focus adjuster
-    const wallEl = els.todayRoot.querySelector("#androidPhotoWallCard");
+    const wallEl = root.querySelector("#androidPhotoWallCard");
     if (wallEl) {
       let pressTimer = 0;
       let longPressed = false;
@@ -3532,7 +3608,7 @@
           if (!picked) return;
           wb?.setCity?.(picked);
           syncSettingsWeatherRow();
-          renderToday();
+          syncUI();
           closeSheet();
         });
       });
@@ -3552,7 +3628,7 @@
         const label = p[l] || p.name;
         wb?.setCity?.({ name: label, latitude: p.latitude, longitude: p.longitude });
         syncSettingsWeatherRow();
-        renderToday();
+        syncUI();
         closeSheet();
       });
     });
@@ -3624,6 +3700,7 @@
   }
 
   function renderSheetContent() {
+    regionChanged(els.sheetBody, [lang(), isDark(), sheetMode]);
     if (!els.sheetBody) return;
     if (sheetMode === "cardlib") {
       renderCardLibraryContent();
@@ -3915,7 +3992,7 @@
         else cur.push(id);
         saveCardsPref(cur);
         renderCardLibraryContent();
-        renderToday();
+        syncUI();
       });
     });
     els.sheetBody.querySelectorAll("[data-lib-up]").forEach(btn => {
@@ -3927,7 +4004,7 @@
           [cur[i - 1], cur[i]] = [cur[i], cur[i - 1]];
           saveCardsPref(cur);
           renderCardLibraryContent();
-          renderToday();
+          syncUI();
         }
       });
     });
@@ -3940,7 +4017,7 @@
           [cur[i + 1], cur[i]] = [cur[i], cur[i + 1]];
           saveCardsPref(cur);
           renderCardLibraryContent();
-          renderToday();
+          syncUI();
         }
       });
     });
@@ -4008,7 +4085,7 @@
           const { url, ...row } = photo;
           void wallDb.put(row).catch(() => {});
         }
-        renderToday();
+        syncUI();
       };
       preview.addEventListener("pointerdown", e => {
         preview.setPointerCapture?.(e.pointerId);
@@ -4044,7 +4121,7 @@
         const cards = loadCardsPref();
         if (!cards.includes("wall")) saveCardsPref([...cards, "wall"]);
         renderPhotoSheetContent();
-        renderToday();
+        syncUI();
       } catch {}
     });
 
@@ -4055,7 +4132,7 @@
         userWallPhotos = userWallPhotos.filter(p => p.id !== photo.id);
         wallIndex = Math.max(0, Math.min(wallIndex, userWallPhotos.length - 1));
         renderPhotoSheetContent();
-        renderToday();
+        syncUI();
       } catch {}
     });
 
@@ -4430,6 +4507,8 @@
     }
     els.moneyRoot.hidden = false;
 
+    const raw = core()?.getState?.() || {};
+    if (!panelChanged(els.moneyRoot, [raw.ledger, moneyYm, moneyDrillCatId])) return;
     const c = core();
     const L = window.LifeLedgerLedger;
     const ledger = c?.getLedger?.();
@@ -4649,13 +4728,13 @@
     els.moneyRoot.querySelector("#androidMoneyEmptyImport")?.addEventListener("click", () => core()?.openBankImport?.());
     els.moneyRoot.querySelector("#androidMoneyClearDrill")?.addEventListener("click", () => {
       moneyDrillCatId = "";
-      renderMoney();
+      syncUI();
     });
     els.moneyRoot.querySelectorAll("[data-money-cat]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.dataset.moneyCat;
         moneyDrillCatId = moneyDrillCatId === id ? "" : id;
-        renderMoney();
+        syncUI();
       });
     });
     const txById = new Map(dayGroups.flatMap(g => g.rows).map(tx => [tx.id, tx]));
@@ -4687,6 +4766,8 @@
     }
     els.timelineRoot.hidden = false;
 
+    const raw = core()?.getState?.() || {};
+    if (!panelChanged(els.timelineRoot, [raw.logs, raw.habits, raw.focusSessions, raw.ledger, timelineYm])) return;
     const c = core();
     const copy = t();
     const hCopy = copy.history;
@@ -4795,6 +4876,8 @@
     }
     els.weekRoot.hidden = false;
 
+    const raw = core()?.getState?.() || {};
+    if (!panelChanged(els.weekRoot, [raw.logs, raw.habits, raw.focusSessions, raw.weeklyOutputs, raw.weeklyGoals, raw.reviews, weekKeySel])) return;
     const c = core();
     const copy = t();
     const h = copy.history;
@@ -4947,6 +5030,8 @@
     }
     els.monthRoot.hidden = false;
 
+    const raw = core()?.getState?.() || {};
+    if (!panelChanged(els.monthRoot, [raw.logs, raw.habits, raw.focusSessions, raw.ledger, raw.reviews, monthReviewYm])) return;
     const c = core();
     const copy = t();
     const h = copy.history;
@@ -5031,6 +5116,8 @@
     }
     els.horizonRoot.hidden = false;
 
+    const raw = core()?.getState?.() || {};
+    if (!panelChanged(els.horizonRoot, [raw.planning, raw.longTermGoals])) return;
     const c = core();
     const h = t().history;
     const data = c?.getHorizonData?.() || { phases: [], currentPhase: null, goals: [] };
@@ -5106,6 +5193,8 @@
     }
     els.habitsRoot.hidden = false;
 
+    const raw = core()?.getState?.() || {};
+    if (!panelChanged(els.habitsRoot, [raw.logs, raw.habits, habitsFilter])) return;
     const c = core();
     const copy = t();
     const hb = copy.habits;
@@ -5222,7 +5311,7 @@
     els.habitsRoot.querySelectorAll("[data-hb-filter]").forEach(btn => {
       btn.addEventListener("click", () => {
         habitsFilter = btn.dataset.hbFilter;
-        renderHabits();
+        syncUI();
       });
     });
     els.habitsRoot.querySelector("#androidHabitsReminderBtn")?.addEventListener("click", () => c?.openReminderDialog?.());
@@ -5349,6 +5438,17 @@
     const circ = Math.round(2 * Math.PI * r * 10) / 10;
     const dashOffset = Math.round(circ * (1 - progress) * 10) / 10;
     const topicColors = ["#6D5ACF", "#2B72B8", "#D97706", "#2E7D5B"];
+
+    const structure = JSON.stringify([lang(), isDark(), snap?.phase, snap?.status, snap?.durationMs, activeTopic, focusDurationDraft, fs.totalMinutes, fs.topics]);
+    if (focusStructure === structure && els.focusOverlay.querySelector("#androidFocusClock")) {
+      const clock = els.focusOverlay.querySelector("#androidFocusClock");
+      if (clock.textContent !== timeDisplay) clock.textContent = timeDisplay;
+      const badge = els.focusOverlay.querySelector(".a-focus-status-pill > span:last-child");
+      if (badge.textContent !== statusBadge) badge.textContent = statusBadge;
+      els.focusOverlay.querySelector(".a-focus-ring-prog")?.setAttribute("stroke-dashoffset", String(dashOffset));
+      return;
+    }
+    focusStructure = structure;
 
     els.focusOverlay.innerHTML = `
       <div class="a-focus-shell">
@@ -6787,6 +6887,15 @@
   }
 
   function syncUI() {
+    if (!mounted || syncQueued) return;
+    syncQueued = true;
+    afterNextPaint(() => {
+      syncQueued = false;
+      performSyncUI();
+    });
+  }
+
+  function performSyncUI() {
     if (!mounted) return;
     const copy = t();
     const view = getActiveView();
@@ -6795,110 +6904,116 @@
     const todayIso = core()?.getTodayIso?.() || toIsoDate(new Date());
     const selectedDate = core()?.getSelectedDate?.() || todayIso;
 
-    // Demo ribbon
-    document.documentElement.classList.toggle("a-demo-on", demoActive);
-    els.ribbon.hidden = !demoActive;
-    els.ribbon.querySelector("#androidDemoTitle").textContent = copy.demoTitle;
-    els.ribbon.querySelector("#androidDemoSub").textContent = copy.demoSub;
-    els.ribbon.querySelector("#androidDemoExit").textContent = copy.demoExit;
+    const shellChanged = regionChanged(els.topbar, [lang(), isDark(), view, demoActive, hasUserData, todayIso, selectedDate, moneyYm, weekKeySel, monthReviewYm]);
+    if (shellChanged) {
+      // Demo ribbon
+      document.documentElement.classList.toggle("a-demo-on", demoActive);
+      els.ribbon.hidden = !demoActive;
+      els.ribbon.querySelector("#androidDemoTitle").textContent = copy.demoTitle;
+      els.ribbon.querySelector("#androidDemoSub").textContent = copy.demoSub;
+      els.ribbon.querySelector("#androidDemoExit").textContent = copy.demoExit;
 
-    // Top bar
-    const titleText = view === "week" ? copy.history.weekTitle : (copy.titles[view] || copy.titles.today);
-    els.topbar.querySelector("#androidPageTitle").textContent = titleText;
-    const dateSub = els.topbar.querySelector("#androidDateSub");
-    dateSub.textContent = view === "today" ? formatTopDate(selectedDate) : "";
-    dateSub.hidden = view !== "today";
+      // Top bar
+      const titleText = view === "week" ? copy.history.weekTitle : (copy.titles[view] || copy.titles.today);
+      els.topbar.querySelector("#androidPageTitle").textContent = titleText;
+      const dateSub = els.topbar.querySelector("#androidDateSub");
+      dateSub.textContent = view === "today" ? formatTopDate(selectedDate) : "";
+      dateSub.hidden = view !== "today";
 
-    // Back-to-Today capsule: visible ONLY off-today on Today view
-    const backBtn = els.topbar.querySelector("#androidBackTodayBtn");
-    const showBackToday = view === "today" && (demoActive || hasUserData) && shouldShowBackToToday(selectedDate, todayIso);
-    backBtn.hidden = !showBackToday;
-    backBtn.textContent = copy.backToday;
+      // Back-to-Today capsule: visible ONLY off-today on Today view
+      const backBtn = els.topbar.querySelector("#androidBackTodayBtn");
+      const showBackToday = view === "today" && (demoActive || hasUserData) && shouldShowBackToToday(selectedDate, todayIso);
+      backBtn.hidden = !showBackToday;
+      backBtn.textContent = copy.backToday;
 
-    // Period switcher pill in topbar for Money / Week / Month
-    const periodPill = els.topbar.querySelector("#androidPeriodPill");
-    const periodLabel = els.topbar.querySelector("#androidPeriodLabel");
-    let showPeriod = false;
-    if (view === "ledger") {
-      showPeriod = true;
-      periodLabel.textContent = formatYmLabel(moneyYm || todayIso.slice(0, 7));
-    } else if (view === "week") {
-      const wd = core()?.getWeekData?.(weekKeySel);
-      if (wd) {
+      // Period switcher pill in topbar for Money / Week / Month
+      const periodPill = els.topbar.querySelector("#androidPeriodPill");
+      const periodLabel = els.topbar.querySelector("#androidPeriodLabel");
+      let showPeriod = false;
+      if (view === "ledger") {
         showPeriod = true;
-        periodLabel.textContent = formatWeekRangeLabel(wd.startIso, wd.endIso);
+        periodLabel.textContent = formatYmLabel(moneyYm || todayIso.slice(0, 7));
+      } else if (view === "week") {
+        const wd = core()?.getWeekData?.(weekKeySel);
+        if (wd) {
+          showPeriod = true;
+          periodLabel.textContent = formatWeekRangeLabel(wd.startIso, wd.endIso);
+        }
+      } else if (view === "review") {
+        showPeriod = true;
+        periodLabel.textContent = formatYmLabel(monthReviewYm || todayIso.slice(0, 7));
       }
-    } else if (view === "review") {
-      showPeriod = true;
-      periodLabel.textContent = formatYmLabel(monthReviewYm || todayIso.slice(0, 7));
+      periodPill.hidden = !showPeriod;
+
+      // Context topbar buttons
+      const habitsAddBtn = els.topbar.querySelector("#androidHabitsAddBtn");
+      habitsAddBtn.hidden = view !== "habits";
+      habitsAddBtn.textContent = copy.habits.addBtn;
+
+      const moneyMoreBtn = els.topbar.querySelector("#androidMoneyMoreBtn");
+      moneyMoreBtn.hidden = view !== "ledger";
+      moneyMoreBtn.setAttribute("aria-label", copy.money.moreTitle);
+
+      const cardLibBtn = els.topbar.querySelector("#androidCardLibBtn");
+      cardLibBtn.hidden = view !== "today" || (!demoActive && !hasUserData);
+      cardLibBtn.setAttribute("aria-label", copy.cardLibAria);
+
+      const settingsBtn = els.topbar.querySelector("#androidSettingsBtn");
+      settingsBtn.hidden = view === "ledger" || view === "habits" || view === "week" || view === "review";
+      settingsBtn.setAttribute("aria-label", copy.settingsAria);
+
+      // History subtabs
+      const onHistory = HISTORY_VIEWS.has(view);
+      els.subtabs.hidden = !onHistory;
+      els.subtabs.querySelectorAll("[data-a-subview]").forEach(btn => {
+        const sub = btn.dataset.aSubview;
+        btn.textContent = copy.subtabs[sub] || sub;
+        const active = sub === view;
+        btn.classList.toggle("is-active", active);
+        btn.setAttribute("aria-selected", String(active));
+      });
+
+      // Bottom nav labels & active state
+      const activeTab = HISTORY_VIEWS.has(view) ? "timeline" : PRIMARY_TABS.has(view) ? view : "today";
+      els.bottomNav.querySelectorAll("[data-a-tab]").forEach(btn => {
+        const tab = btn.dataset.aTab;
+        btn.querySelector(".a-nav-label").textContent = copy.tabs[tab] || tab;
+        const active = tab === activeTab;
+        btn.classList.toggle("is-active", active);
+        if (active) btn.setAttribute("aria-current", "page");
+        else btn.removeAttribute("aria-current");
+      });
+      els.bottomNav.querySelector("#androidFab").setAttribute("aria-label", copy.fabAria);
+
+      // Empty Today state vs Rebuilt Today
+      const showEmptyToday = !demoActive && !hasUserData && view === "today";
+      document.documentElement.classList.toggle("a-today-empty", showEmptyToday);
+      els.emptyToday.hidden = !showEmptyToday;
+      els.emptyToday.querySelector("#androidEmptyTodayTitle").textContent = copy.emptyToday.title;
+      els.emptyToday.querySelector("#androidEmptyTodayDesc").textContent = copy.emptyToday.desc;
+      els.emptyToday.querySelector("#androidEmptyTodayCta").textContent = copy.emptyToday.cta;
+      els.emptyToday.querySelector("#androidEmptyTodaySample span").textContent = copy.emptyToday.sample;
+
     }
-    periodPill.hidden = !showPeriod;
-
-    // Context topbar buttons
-    const habitsAddBtn = els.topbar.querySelector("#androidHabitsAddBtn");
-    habitsAddBtn.hidden = view !== "habits";
-    habitsAddBtn.textContent = copy.habits.addBtn;
-
-    const moneyMoreBtn = els.topbar.querySelector("#androidMoneyMoreBtn");
-    moneyMoreBtn.hidden = view !== "ledger";
-    moneyMoreBtn.setAttribute("aria-label", copy.money.moreTitle);
-
-    const cardLibBtn = els.topbar.querySelector("#androidCardLibBtn");
-    cardLibBtn.hidden = view !== "today" || (!demoActive && !hasUserData);
-    cardLibBtn.setAttribute("aria-label", copy.cardLibAria);
-
-    const settingsBtn = els.topbar.querySelector("#androidSettingsBtn");
-    settingsBtn.hidden = view === "ledger" || view === "habits" || view === "week" || view === "review";
-    settingsBtn.setAttribute("aria-label", copy.settingsAria);
-
     syncFocusCapsule();
-
-    // History subtabs
-    const onHistory = HISTORY_VIEWS.has(view);
-    els.subtabs.hidden = !onHistory;
-    els.subtabs.querySelectorAll("[data-a-subview]").forEach(btn => {
-      const sub = btn.dataset.aSubview;
-      btn.textContent = copy.subtabs[sub] || sub;
-      const active = sub === view;
-      btn.classList.toggle("is-active", active);
-      btn.setAttribute("aria-selected", String(active));
-    });
-
-    // Bottom nav labels & active state
-    const activeTab = HISTORY_VIEWS.has(view) ? "timeline" : PRIMARY_TABS.has(view) ? view : "today";
-    els.bottomNav.querySelectorAll("[data-a-tab]").forEach(btn => {
-      const tab = btn.dataset.aTab;
-      btn.querySelector(".a-nav-label").textContent = copy.tabs[tab] || tab;
-      const active = tab === activeTab;
-      btn.classList.toggle("is-active", active);
-      if (active) btn.setAttribute("aria-current", "page");
-      else btn.removeAttribute("aria-current");
-    });
-    els.bottomNav.querySelector("#androidFab").setAttribute("aria-label", copy.fabAria);
-
-    // Empty Today state vs Rebuilt Today
-    const showEmptyToday = !demoActive && !hasUserData && view === "today";
-    document.documentElement.classList.toggle("a-today-empty", showEmptyToday);
-    els.emptyToday.hidden = !showEmptyToday;
-    els.emptyToday.querySelector("#androidEmptyTodayTitle").textContent = copy.emptyToday.title;
-    els.emptyToday.querySelector("#androidEmptyTodayDesc").textContent = copy.emptyToday.desc;
-    els.emptyToday.querySelector("#androidEmptyTodayCta").textContent = copy.emptyToday.cta;
-    els.emptyToday.querySelector("#androidEmptyTodaySample span").textContent = copy.emptyToday.sample;
-
-    syncSettingsWeatherRow();
-    renderToday();
-    renderMoney();
-    renderTimelineDaily();
-    renderTimelineWeek();
-    renderTimelineMonth();
-    renderTimelineHorizon();
-    renderHabits();
+    // Hidden tabs do no statistics or markup work until the user visits them.
+    const panels = {
+      today: [els.todayRoot, renderToday], ledger: [els.moneyRoot, renderMoney],
+      timeline: [els.timelineRoot, renderTimelineDaily], week: [els.weekRoot, renderTimelineWeek],
+      review: [els.monthRoot, renderTimelineMonth], longrange: [els.horizonRoot, renderTimelineHorizon],
+      habits: [els.habitsRoot, renderHabits],
+    };
+    for (const [tab, [root]] of Object.entries(panels)) root.hidden = tab !== view;
+    panels[view]?.[1]();
 
     if (focusOpen) renderFocusOverlay();
-    if (settingsOpen) renderSettingsOverlay();
-    if (splashSettingsOpen) renderSplashSettings();
-    if (welcomeStep > 0) renderWelcome();
-    if (sheetOpen) renderSheetContent();
+    const state = core()?.getState?.() || {};
+    if (settingsOpen && regionChanged(els.settingsOverlay, [lang(), isDark(), state.profile, state.reminders, state.focusSettings, loadDisplayPrefs()])) renderSettingsOverlay();
+    if (splashSettingsOpen && regionChanged(els.splashSettingsOverlay, [lang(), isDark(), loadSplashPrefs(), state.quoteSettings])) renderSplashSettings();
+    if (welcomeStep > 0 && regionChanged(els.welcome, [lang(), isDark(), welcomeStep])) renderWelcome();
+    // Capture drafts remain owned by the sheet. Only a language/theme change
+    // requires rebuilding an already-open sheet during a core notification.
+    if (sheetOpen && regionChanged(els.sheetBody, [lang(), isDark(), sheetMode])) renderSheetContent();
     syncNativeBackState();
   }
 
@@ -6919,7 +7034,6 @@
       welcomeStep = 0;
     }
     syncUI();
-    renderWelcome();
 
     const todayIso = core()?.getTodayIso?.() || toIsoDate(new Date());
     if (forceSplashParam != null && forceSplashParam !== "") {
@@ -6929,8 +7043,8 @@
     } else {
       const prefs = loadSplashPrefs();
       if (shouldShowSplashOnLaunch({ frequency: prefs.frequency, lastShownDate: prefs.lastShownDate, todayIso, welcomeStep })) {
-        void refreshSplashMediaCache().then(() => {
-          showSplashOverlay({ preview: false });
+        whenIdle(() => {
+          void refreshSplashMediaCache().then(() => showSplashOverlay({ preview: false }));
         });
       }
     }
