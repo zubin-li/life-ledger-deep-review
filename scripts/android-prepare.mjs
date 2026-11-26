@@ -78,6 +78,32 @@ export const LOCAL_MODE_SOURCE = [
   "",
 ].join("\n");
 
+// Android-only lifecycle wiring: shared web and Mac assets stay untouched.
+export const ANDROID_TODAY_CLOCK_SOURCE = `function armAndroidTodayClock() {
+  let lastToday = isoDate(new Date());
+  let midnightTimer;
+  function refreshToday() {
+    const now = new Date();
+    const today = isoDate(now);
+    const previousToday = lastToday;
+    lastToday = today;
+    clearTimeout(midnightTimer);
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    midnightTimer = window.setTimeout(refreshToday, midnight.getTime() - now.getTime());
+    if (today === previousToday || androidDemoActive) return;
+    if (selectedPlanningDate === previousToday) selectPlanningDate(today);
+    else renderAll();
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshToday();
+  });
+  window.addEventListener("pageshow", refreshToday);
+  window.addEventListener("focus", refreshToday);
+  refreshToday();
+}
+`;
+
 function replaceExact(source, from, to, label) {
   const count = source.split(from).length - 1;
   if (count !== 1) throw new Error(`${label}: expected 1 match, found ${count}`);
@@ -103,12 +129,19 @@ export async function prepare(targetDist = dist) {
   cards = replaceExact(
     cards,
     "  ];\n  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));",
-    "  ];\n  planGrid.remove();\n  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));",
-    "online calendar card removal",
+    "  ];\n  planGrid.hidden = true;\n  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));",
+    "online calendar card hiding (preserve shared event and render targets)",
   );
   await writeFile(resolve(out, "today-cards.js"), cards);
 
   let app = await readFile(resolve(out, "app.js"), "utf8");
+  app = replaceExact(app, "function bootApplication() {", `${ANDROID_TODAY_CLOCK_SOURCE}\nfunction bootApplication() {`, "Android today lifecycle");
+  app = replaceExact(
+    app,
+    "  renderAll();\n  armReminderClock();\n  initializeCloudSync();",
+    "  renderAll();\n  armReminderClock();\n  armAndroidTodayClock();\n  initializeCloudSync();",
+    "Android today lifecycle startup",
+  );
   app = replaceExact(app, 'const CLOUD_API = "./api/state";', 'const CLOUD_API = "";', "cloud api");
   app = replaceExact(
     app,

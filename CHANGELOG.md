@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+- Android offline test build preserves hidden calendar DOM targets so startup and the welcome sample can finish rendering. Today advances at local midnight and on resume when the selected date was the previous today; deliberately selected historical dates and the isolated sample stay in place. Web and Mac assets are unchanged.
+
 - Android offline test build: backup export and import use Storage Access Framework (`ACTION_CREATE_DOCUMENT` / `ACTION_OPEN_DOCUMENT`) with `ContentResolver` streaming through a dedicated in-app plugin. Media `.llmedia` backups no longer cap at 160 MiB or assemble the full payload in memory during export; import preview and restore stream one photo entry at a time on Android. Desktop and browser backup behavior is unchanged.
 
 - Browser tests for sync-conflict recovery, the all-habits celebration, and the review jump spy wait for the page state they assert, so a slow CI runner no longer races the check animation, the deferred cloud push, or scatter hydration.

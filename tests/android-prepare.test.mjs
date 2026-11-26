@@ -122,7 +122,8 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   assert.match(androidWidgets, /Open-Meteo · CC BY 4\.0/);
   assert.match(androidWidgets, /id: "weather", el: cards\.weather/);
   assert.doesNotMatch(androidWidgets, /cards\.weather\.remove\(\)/);
-  assert.match(androidCards, /planGrid\.remove\(\)/);
+  assert.doesNotMatch(androidCards, /planGrid\.remove\(\)/);
+  assert.match(androidCards, /planGrid\.hidden = true/);
   assert.doesNotMatch(androidCards, /id: "dayplan", el: wrap\(planGrid/);
 
   const hits = [];
