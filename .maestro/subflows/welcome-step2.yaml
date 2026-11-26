@@ -1,4 +1,5 @@
 appId: app.zubinli.lifeledger.androidtest
+androidWebViewHierarchy: devtools
 ---
 - extendedWaitUntil:
     visible:
