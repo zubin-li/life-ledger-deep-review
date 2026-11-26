@@ -8,8 +8,12 @@ set -euo pipefail
 IMG="system-images;android-34;google_apis;x86_64"
 AVD=ci
 mkdir -p android-review-pack
+export ANDROID_AVD_HOME="$HOME/.android/avd"   # pin it: avdmanager and emulator must agree (runner image sets ANDROID_USER_HOME elsewhere)
+mkdir -p "$ANDROID_AVD_HOME"
 echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd -n "$AVD" -k "$IMG" -d pixel_6 --force
-printf 'hw.ramSize=4096\ndisk.dataPartition.size=6G\n' >> "$HOME/.android/avd/$AVD.avd/config.ini"
+CFG="$ANDROID_AVD_HOME/$AVD.avd/config.ini"
+test -f "$CFG" || { echo "AVD config missing; avdmanager list:"; "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" list avd; exit 1; }
+printf 'hw.ramSize=4096\ndisk.dataPartition.size=6G\n' >> "$CFG"
 "$ANDROID_HOME/emulator/emulator" -avd "$AVD" -no-snapshot -no-window -gpu swiftshader_indirect \
   -noaudio -no-boot-anim -change-locale zh-CN > android-review-pack/emulator.log 2>&1 &
 adb wait-for-device
