@@ -3,8 +3,9 @@ name: Android review pack
 on:
   workflow_dispatch:
   pull_request:
+    # PR #27 targets main; paths below keep it Android-only.
     branches:
-      - feat/android-v1-redesign
+      - main
     paths:
       - "src-tauri/**"
       - "public/**"
