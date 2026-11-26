@@ -3,7 +3,7 @@ androidWebViewHierarchy: devtools
 ---
 - launchApp:
     clearState: true
-- startRecording: recordings/01-cold-start.mp4
+- startRecording: recordings/01-cold-start  # Maestro appends .mp4
 # The 2.5 s quote splash can be over before one WebView hierarchy poll returns on a software-GPU emulator,
 # so catching it is best-effort here; splash content and timing are asserted in tests/android-boot.browser.test.mjs
 # and visible in the recording. What must hold: it goes away by itself and the welcome screen follows.

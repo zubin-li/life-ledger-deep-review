@@ -3,7 +3,7 @@ androidWebViewHierarchy: devtools
 ---
 - launchApp:
     clearState: true
-- startRecording: recordings/06-habits-mood.mp4
+- startRecording: recordings/06-habits-mood  # Maestro appends .mp4
 - runFlow: subflows/welcome-step2.yaml
 - tapOn: "看看示例"
 - waitForAnimationToEnd

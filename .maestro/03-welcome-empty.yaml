@@ -3,7 +3,7 @@ androidWebViewHierarchy: devtools
 ---
 - launchApp:
     clearState: true
-- startRecording: recordings/03-welcome-empty.mp4
+- startRecording: recordings/03-welcome-empty  # Maestro appends .mp4
 - runFlow: subflows/welcome-empty.yaml
 - assertVisible:
     id: "androidDateSub"

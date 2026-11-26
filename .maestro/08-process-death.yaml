@@ -3,7 +3,7 @@ androidWebViewHierarchy: devtools
 ---
 - launchApp:
     clearState: true
-- startRecording: recordings/08-process-death.mp4
+- startRecording: recordings/08-process-death  # Maestro appends .mp4
 - runFlow: subflows/welcome-empty.yaml
 - tapOn: "记账"
 - waitForAnimationToEnd

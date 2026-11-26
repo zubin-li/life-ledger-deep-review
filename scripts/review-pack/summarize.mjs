@@ -197,7 +197,7 @@ function buildHtml({ flows, thresholds, generatedAt, packDir }) {
       const badge = f.pass ? '<span class="ok">通过</span>' : '<span class="bad">未通过</span>';
       const why = f.reasons.length ? `<ul class="why">${f.reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : "";
       const shot = f.screenshot ? `<a href="${esc(relative(packDir, f.screenshot))}"><img src="${esc(relative(packDir, f.screenshot))}" alt="" loading="lazy"/></a>` : "";
-      const vid = f.video ? `<video controls preload="metadata" src="${esc(relative(packDir, f.video))}"></video>` : "";
+      const vid = f.video ? `<video controls preload="metadata" src="${esc(f.video)}"></video>` : "";
       const nums = [
         f.coldStartMs != null ? `冷启动 ${f.coldStartMs}ms` : null,
         f.jankyPct != null ? `卡顿 ${f.jankyPct.toFixed(1)}%` : null,

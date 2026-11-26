@@ -3,7 +3,7 @@ androidWebViewHierarchy: devtools
 ---
 - launchApp:
     clearState: true
-- startRecording: recordings/04-navigation-back.mp4
+- startRecording: recordings/04-navigation-back  # Maestro appends .mp4
 - runFlow: subflows/welcome-empty.yaml
 - tapOn:
     id: "androidFab"
