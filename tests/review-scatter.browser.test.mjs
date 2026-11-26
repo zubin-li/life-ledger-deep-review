@@ -169,6 +169,14 @@ test(
       const rollValue = await page.locator(".review-ledger-stat-btn").first().getAttribute("data-roll-value");
       assert.equal(rollValue, spendAfter, "rolled stat should persist data-roll-value after animation");
 
+      // The month change re-renders the scatter grid and hydrates it lazily (one chart per frame, tips
+      // bound at the end). Focusing a dot before that finished raced the binding and flaked in CI.
+      await page.waitForFunction(() => {
+        const host = document.querySelector("#reviewLedgerSummary");
+        const grid = host?.querySelector(".review-scatter-grid");
+        return grid && !grid.classList.contains("is-scatter-pending") && !grid.hasAttribute("aria-busy")
+          && !host._reviewScatterHydrateGen && grid.querySelector(".review-scatter-dot-hit[tabindex='0']");
+      }, null, { timeout: 15_000 });
       const firstDot = page.locator("#reviewLedgerSummary .review-scatter-dot-hit[tabindex='0']").first();
       await firstDot.focus();
       await page.waitForSelector("#reviewLedgerSummary .review-scatter-tip:not([hidden])", { timeout: 15_000 });
