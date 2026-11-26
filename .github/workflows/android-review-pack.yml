@@ -156,6 +156,13 @@ jobs:
             console.log('TODAY_DE=' + de);
           " >> "$GITHUB_ENV"
 
+      # From the android-emulator-runner README: ubuntu runners need KVM enabled explicitly.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       - name: Emulator quality flows (Maestro + gfxinfo)
         uses: reactivecircus/android-emulator-runner@v2
         env:
@@ -171,7 +178,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          disable-animations: true
+          disable-animations: false
           script: |
             set -euo pipefail
             adb wait-for-device
