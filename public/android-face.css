@@ -5100,3 +5100,84 @@ html[data-android-app="true"].motion-reduced :is(button, a[href], [role="button"
   transition: none;
   box-shadow: inset 0 0 0 100vmax color-mix(in srgb, currentColor 10%, transparent);
 }
+
+
+/* Android accessibility: real 48 dp boxes, never overlapping pseudo hit areas. */
+html[data-android-app="true"] :is(button, a[href], [role="button"], [role="tab"], select, textarea, input:not([type="hidden"])) {
+  min-width: 48px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+html[data-android-app="true"] :is(button, a[href], input, select, textarea):focus-visible {
+  outline: 3px solid var(--a-primary);
+  outline-offset: 2px;
+}
+html[data-android-app="true"] .a-period-pill { height: auto; min-height: 48px; }
+html[data-android-app="true"] .a-topbar { flex-wrap: wrap; }
+html[data-android-app="true"] .a-top-actions { flex-wrap: wrap; max-width: 100%; }
+html[data-android-app="true"] .a-sp-styles-grid {
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+}
+/* Seven days keep aligned, readable 48 dp cells; small phones can scroll the month. */
+html[data-android-app="true"] .a-cal-scroll { overflow-x: auto; }
+html[data-android-app="true"] :is(.a-cal-dow, .a-cal-grid) {
+  min-width: 348px;
+  gap: 2px;
+}
+html[data-android-app="true"] .a-toggle,
+html[data-android-app="true"] .a-toggle.is-on {
+  position: relative;
+  width: 52px;
+  padding: 0 3px;
+  background: transparent;
+}
+html[data-android-app="true"] .a-toggle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 13px);
+  height: 26px;
+  border-radius: 999px;
+  background: var(--a-surface-container-high);
+}
+html[data-android-app="true"] .a-toggle.is-on::before { background: var(--a-primary); }
+html[data-android-app="true"] .a-toggle-knob { position: relative; }
+
+/* Text accents meet AA on the light card and their tinted surfaces. */
+html[data-android-app="true"]:not([data-theme="dark"]) {
+  --a-habit: #286E50;
+  --a-focus: #6551C4;
+  --a-photo: #955609;
+  --a-expense: #AD422C;
+  --a-income: #1D704D;
+  --a-sky: #25649D;
+}
+html[data-android-app="true"] :is(.a-card.is-readonly, .a-hb-card.is-paused) { opacity: 1; }
+html[data-android-app="true"] .a-sp-en-sub { opacity: 1; }
+html[data-android-app="true"] .a-btn-danger {
+  background: #AD422C;
+  color: #FFFFFF;
+}
+/* A photo or the light mountain sky must not reduce small-text contrast. */
+html[data-android-app="true"] .a-sp-custom-scrim { background: rgba(8, 16, 12, 0.76); }
+html[data-android-app="true"] .a-sp-style-moss .a-sp-style-name,
+html[data-android-app="true"] .a-sp-style-moss .a-sp-center,
+html[data-android-app="true"] .a-sp-style-moss .a-sp-bottom {
+  background: #17221D;
+  border-radius: 16px;
+}
+html[data-android-app="true"] .a-sp-style-moss .a-sp-style-name { color: #F2F6F3; padding: 6px; }
+html[data-android-app="true"] .a-sp-style-moss .a-sp-center { margin: 16px 16px 0; padding: 24px 14px; flex: 0 1 auto; }
+
+html[data-android-app="true"][data-theme="dark"] :is(.a-wk-chk, .a-hb-check) { color: #121815; }
+html[data-android-app="true"] .a-sp-img-default { min-width: 48px; min-height: 48px; }
+
+html[data-android-app="true"] button.a-sp-tap-hint {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+}

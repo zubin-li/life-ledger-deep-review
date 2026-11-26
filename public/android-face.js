@@ -179,8 +179,13 @@
     return Math.floor(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()) / 86400000);
   }
 
-  function shouldShowSplashOnLaunch({ frequency = "daily", lastShownDate = "", todayIso = "", welcomeStep = 0 } = {}) {
-    if (Number(welcomeStep) > 0) return false;
+  function resolveAndroidLanguage({ stored = null, explicit = null, requested = null, languages = [] } = {}) {
+    if (explicit !== "false" && ["en", "de", "zh"].includes(stored)) return stored;
+    if (["en", "de", "zh"].includes(requested)) return requested;
+    return languages.map(tag => /^(zh|de)(?:-|$)/i.exec(String(tag))?.[1]?.toLowerCase()).find(Boolean) || "en";
+  }
+
+  function shouldShowSplashOnLaunch({ frequency = "daily", lastShownDate = "", todayIso = "" } = {}) {
     const freq = frequency === "off" || frequency === "always" || frequency === "daily" ? frequency : "daily";
     if (freq === "off") return false;
     if (freq === "always") return true;
@@ -501,6 +506,7 @@
     SPLASH_MEDIA_MAX_BYTES,
     weekdayIndexFromIso,
     shouldShowSplashOnLaunch,
+    resolveAndroidLanguage,
     resolveSplashStyleAndQuote,
     shouldPlaySplashAudio,
     isSplashMediaBackupEntry,
@@ -1770,7 +1776,12 @@
   }
 
   function lang() {
-    const l = core()?.getLang?.() || document.documentElement.lang || "zh";
+    const l = core()?.getLang?.() || resolveAndroidLanguage({
+      stored: localStorage.getItem("life-ledger-language"),
+      explicit: localStorage.getItem("life-ledger-language-preference-set"),
+      requested: new URLSearchParams(location.search).get("lang"),
+      languages: navigator.languages || [navigator.language],
+    });
     if (l.startsWith("de")) return "de";
     if (l.startsWith("en")) return "en";
     return "zh";
@@ -1996,6 +2007,8 @@
   let pendingBackupImportPreview = null;
   let backupImportError = "";
   let splashTimer = 0;
+  let launchPrepared = false;
+  let launchSplashDeadline = 0;
   let splashAudioEl = null;
   let splashPreviewWeekday = null; // 0..6 when inspecting a weekday in splash settings
   let splashMediaItems = [];
@@ -2427,6 +2440,7 @@
     sheetBackdrop.id = "androidSheetBackdrop";
     sheetBackdrop.className = "a-sheet-backdrop";
     sheetBackdrop.setAttribute("aria-hidden", "true");
+    sheetBackdrop.inert = true;
     sheetBackdrop.innerHTML = `
       <div class="a-sheet" id="androidSheet" role="dialog" aria-modal="true" aria-labelledby="androidSheetTitle">
         <div class="a-sheet-handle-zone" id="androidSheetHandle"><span class="a-sheet-handle" aria-hidden="true"></span></div>
@@ -3343,13 +3357,16 @@
      ============================================================================ */
 
   function renderWelcome() {
-    if (!els.welcome) return;
+    if (!els.welcome || splashOpen || !els.splashOverlay.hidden) return;
     els.welcome.hidden = welcomeStep === 0;
     els.bottomNav.hidden = welcomeStep !== 0;
-    if (welcomeStep === 0) return;
+    if (welcomeStep === 0) {
+      els.welcome.replaceChildren();
+      return;
+    }
     const w = t().welcome;
-    els.welcome.innerHTML = `
-      <div class="a-welcome-step" data-step="1" ${welcomeStep === 1 ? "" : "hidden"}>
+    els.welcome.innerHTML = welcomeStep === 1 ? `
+      <div class="a-welcome-step" data-step="1">
         <div class="a-w-topbar">
           <div class="a-brand-pill">${ICONS.appIcon}<span>Life Ledger</span></div>
           <button type="button" class="a-skip-btn" data-w-action="start">${escapeHtml(w.skip)}</button>
@@ -3398,7 +3415,8 @@
           <button type="button" class="a-btn-primary" data-w-action="next">${escapeHtml(w.next)} <span aria-hidden="true">→</span></button>
         </div>
       </div>
-      <div class="a-welcome-step" data-step="2" ${welcomeStep === 2 ? "" : "hidden"}>
+    ` : `
+      <div class="a-welcome-step" data-step="2">
         <div class="a-w-topbar">
           <button type="button" class="a-back-btn" data-w-action="prev" aria-label="${escapeHtml(w.backAria)}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -3494,6 +3512,7 @@
     if (els.fab && fromFab) els.fab.classList.add("is-morphed");
     document.documentElement.classList.add("a-sheet-open");
     els.sheetBackdrop.classList.add("is-open");
+    els.sheetBackdrop.inert = false;
     els.sheetBackdrop.setAttribute("aria-hidden", "false");
     pushBackStateIfNeeded();
   }
@@ -3692,6 +3711,7 @@
     sheetOpen = false;
     document.documentElement.classList.remove("a-sheet-open");
     els.sheetBackdrop.classList.remove("is-open");
+    els.sheetBackdrop.inert = true;
     els.sheetBackdrop.setAttribute("aria-hidden", "true");
     els.fab?.classList.remove("is-morphed");
     setTimeout(() => {
@@ -4799,6 +4819,7 @@
             <span><i style="background:var(--a-low)"></i>${escapeHtml(hCopy.lowShort)} ${data.counts.low}</span>
           </div>
         </div>
+        <div class="a-cal-scroll">
         <div class="a-cal-dow">${copy.weekdays.map(w => `<span>${escapeHtml(w)}</span>`).join("")}</div>
         <div class="a-cal-grid">
           ${spacers}
@@ -4809,6 +4830,7 @@
               return `<button type="button" class="a-cal-cell ${moodCls}${d.isToday ? " is-today" : ""}" data-cal-date="${d.iso}" ${d.isFuture ? "disabled" : ""}>${d.day}</button>`;
             })
             .join("")}
+        </div>
         </div>
       </section>
 
@@ -5759,19 +5781,23 @@
     if (!els.splashOverlay) return;
     if (isReducedMotion()) {
       els.splashOverlay.hidden = true;
+      els.splashOverlay.replaceChildren();
       els.splashOverlay.classList.remove("is-leaving", "is-entering");
+      syncUI();
       return;
     }
     els.splashOverlay.classList.add("is-leaving");
     setTimeout(() => {
       if (!splashOpen && els.splashOverlay) {
         els.splashOverlay.hidden = true;
+        els.splashOverlay.replaceChildren();
         els.splashOverlay.classList.remove("is-leaving", "is-entering");
+        syncUI();
       }
     }, 320);
   }
 
-  function showSplashOverlay({ weekdayOverride = null, preview = false, hold = false, progressPct = null } = {}) {
+  function showSplashOverlay({ weekdayOverride = null, preview = false, hold = false, progressPct = null, durationMs = SPLASH_DURATION_MS } = {}) {
     if (!els.splashOverlay) return;
     const c = core();
     const l = lang();
@@ -5810,6 +5836,7 @@
           ? `<div class="a-sp-sync-note">${ICONS.check}<span>${escapeHtml(sp.syncSourceNote)}</span></div>`
           : "";
 
+    const duration = Math.max(0, Math.min(SPLASH_DURATION_MS, durationMs));
     const reduced = isReducedMotion();
     const fixedPct = Number.isFinite(progressPct) ? Math.max(0, Math.min(100, progressPct)) : null;
 
@@ -5842,7 +5869,7 @@
             ${ICONS.appIcon}
             <span>Life Ledger</span>
           </div>
-          <span class="a-sp-tap-hint">${escapeHtml(sp.tapHint)}</span>
+          <button type="button" class="a-sp-tap-hint">${escapeHtml(sp.tapHint)}</button>
         </div>
         <div class="a-sp-progress-track" aria-hidden="true">
           <div class="a-sp-progress-fill" id="androidSplashProgFill" style="${fixedPct != null ? `width:${fixedPct}%;transition:none;` : ""}"></div>
@@ -5862,11 +5889,11 @@
         if (reduced) {
           fill.style.width = "100%";
         } else {
-          fill.style.width = "0%";
+          fill.style.width = `${100 * (1 - duration / SPLASH_DURATION_MS)}%`;
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               if (splashOpen && fill) {
-                fill.style.transition = `width ${SPLASH_DURATION_MS}ms linear`;
+                fill.style.transition = `width ${duration}ms linear`;
                 fill.style.width = "100%";
               }
             });
@@ -5876,7 +5903,7 @@
     }
 
     if (!hold) {
-      splashTimer = setTimeout(() => dismissSplashOverlay(), SPLASH_DURATION_MS);
+      splashTimer = setTimeout(() => dismissSplashOverlay(), duration);
     }
 
     if (!preview) {
@@ -6896,7 +6923,7 @@
   }
 
   function performSyncUI() {
-    if (!mounted) return;
+    if (!mounted || !core() || splashOpen || !els.splashOverlay.hidden) return;
     const copy = t();
     const view = getActiveView();
     const demoActive = Boolean(core()?.isIsolatedDemoActive?.());
@@ -7017,12 +7044,65 @@
     syncNativeBackState();
   }
 
+  function installLayerAccessibility() {
+    const layers = [...document.body.children].filter(el =>
+      el.matches('.app-shell, dialog, [id^="android"]'));
+    const views = [...document.querySelectorAll(".view")];
+    const update = () => {
+      const modal = [...document.querySelectorAll("dialog[open]")].pop() || layers.filter(el =>
+        el.matches('[role="dialog"], dialog[open], .a-sheet-backdrop.is-open') &&
+        !el.hidden && el.getAttribute("aria-hidden") !== "true" &&
+        (!el.matches("dialog") || el.open))
+        .sort((a, b) => Number(getComputedStyle(b).zIndex) - Number(getComputedStyle(a).zIndex))[0];
+      for (const layer of layers) {
+        layer.inert = layer.hidden || layer.getAttribute("aria-hidden") === "true" ||
+          (layer.matches("dialog") && !layer.open) || Boolean(modal && layer !== modal);
+      }
+      for (const view of views) view.inert = !view.classList.contains("active");
+    };
+    const observer = new MutationObserver(update);
+    for (const layer of [...layers, ...views]) {
+      observer.observe(layer, { attributes: true, attributeFilter: ["hidden", "aria-hidden", "class", "open"] });
+    }
+    update();
+  }
+
+  function prepareLaunch() {
+    launchPrepared = true;
+    applyDisplayPrefs();
+    buildShell();
+    installLayerAccessibility();
+    const params = new URLSearchParams(location.search);
+    const forceSplashParam = isLocalHostname(location.hostname) ? params.get("android-splash") : null;
+
+    const todayIso = core()?.getTodayIso?.() || toIsoDate(new Date());
+    if (forceSplashParam != null && forceSplashParam !== "") {
+      const wdMap = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
+      const parsedWd = wdMap[forceSplashParam.toLowerCase()] ?? (Number.isInteger(Number(forceSplashParam)) ? Number(forceSplashParam) : null);
+      showSplashOverlay({ weekdayOverride: parsedWd, preview: true, hold: true, progressPct: parsedWd === 0 ? 44 : parsedWd === 2 ? 62 : parsedWd === 5 ? 36 : 50 });
+    } else {
+      const prefs = loadSplashPrefs();
+      if (shouldShowSplashOnLaunch({ frequency: prefs.frequency, lastShownDate: prefs.lastShownDate, todayIso, welcomeStep })) {
+        // Paint the built-in quote immediately; media I/O must never delay launch.
+        launchSplashDeadline = performance.now() + SPLASH_DURATION_MS;
+        showSplashOverlay({ preview: false });
+        whenIdle(() => {
+          void refreshSplashMediaCache().then(items => {
+            // Apply restored/custom media if ready, keeping the original launch deadline.
+            if (items.length && splashOpen && performance.now() < launchSplashDeadline) {
+              showSplashOverlay({ durationMs: launchSplashDeadline - performance.now() });
+            }
+          });
+        });
+      }
+    }
+  }
+
   function init() {
     applyDisplayPrefs();
     buildShell();
     const params = new URLSearchParams(location.search);
     const forceWelcome = isLocalHostname(location.hostname) ? Number(params.get("android-welcome") || 0) : 0;
-    const forceSplashParam = isLocalHostname(location.hostname) ? params.get("android-splash") : null;
     const onboarded = localStorage.getItem(ONBOARDED_KEY) === "1";
     const hasData = Boolean(core()?.hasUserData?.());
 
@@ -7033,21 +7113,12 @@
     } else {
       welcomeStep = 0;
     }
-    syncUI();
-
-    const todayIso = core()?.getTodayIso?.() || toIsoDate(new Date());
-    if (forceSplashParam != null && forceSplashParam !== "") {
-      const wdMap = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
-      const parsedWd = wdMap[forceSplashParam.toLowerCase()] ?? (Number.isInteger(Number(forceSplashParam)) ? Number(forceSplashParam) : null);
-      showSplashOverlay({ weekdayOverride: parsedWd, preview: true, hold: true, progressPct: parsedWd === 0 ? 44 : parsedWd === 2 ? 62 : parsedWd === 5 ? 36 : 50 });
-    } else {
-      const prefs = loadSplashPrefs();
-      if (shouldShowSplashOnLaunch({ frequency: prefs.frequency, lastShownDate: prefs.lastShownDate, todayIso, welcomeStep })) {
-        whenIdle(() => {
-          void refreshSplashMediaCache().then(() => showSplashOverlay({ preview: false }));
-        });
-      }
+    if (!launchPrepared) prepareLaunch();
+    else if (splashOpen && launchSplashDeadline) {
+      // Refresh from the now-ready core (custom quotes), without extending launch.
+      showSplashOverlay({ durationMs: launchSplashDeadline - performance.now() });
     }
+    syncUI();
   }
 
   window.LifeLedgerAndroidFace = {
@@ -7082,6 +7153,7 @@
     handleBack,
   };
 
+  if (!core() && document.documentElement.dataset.androidApp === "true" && document.querySelector(".app-shell")) prepareLaunch();
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => setTimeout(init, 0));
   } else {

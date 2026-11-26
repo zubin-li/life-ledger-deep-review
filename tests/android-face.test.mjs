@@ -57,6 +57,8 @@ test("Android-flag gating keeps web and macOS builds completely free of Android 
     await prepare(tempDist);
     const androidDistHtml = await readFile(resolve(tempDist, "index.html"), "utf8");
     assert.match(androidDistHtml, /<html lang="en" data-android-app="true">/, "android-dist/index.html must enable data-android-app");
+    assert.equal((androidDistHtml.match(/src="\.\/android-face\.js/g) || []).length, 1);
+    assert.ok(androidDistHtml.indexOf('src="./android-face.js') < androidDistHtml.indexOf('src="./app.js'), "launch surface precedes the shared core");
   } finally {
     await rm(tempDist, { recursive: true, force: true });
   }
@@ -321,7 +323,10 @@ test("Phase 6 launch splash: frequency rules, 7 styles × 21 quotes, silent-mode
   assert.equal(shouldShowSplashOnLaunch({ frequency: "daily", lastShownDate: "2026-11-25", todayIso: "2026-11-25" }), false);
   assert.equal(shouldShowSplashOnLaunch({ frequency: "always", lastShownDate: "2026-11-25", todayIso: "2026-11-25" }), true);
   assert.equal(shouldShowSplashOnLaunch({ frequency: "off", lastShownDate: "", todayIso: "2026-11-25" }), false);
-  assert.equal(shouldShowSplashOnLaunch({ frequency: "always", lastShownDate: "", todayIso: "2026-11-25", welcomeStep: 1 }), false);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "always", lastShownDate: "", todayIso: "2026-11-25", welcomeStep: 1 }), true);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "daily", lastShownDate: "", todayIso: "2026-11-25", welcomeStep: 1 }), true);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "off", todayIso: "2026-11-25", welcomeStep: 2 }), false);
+  assert.equal(shouldShowSplashOnLaunch({ frequency: "daily", lastShownDate: "2026-11-25", todayIso: "2026-11-25", welcomeStep: 1 }), false);
 
   // 2. 7 weekday styles & all 21 quotes (zh/en/de, text + author/work) complete and accurate
   assert.equal(SPLASH_WEEKDAY_STYLES.length, 7);
@@ -419,4 +424,68 @@ test("Phase 6 launch splash: frequency rules, 7 styles × 21 quotes, silent-mode
     { ...resolvePredictiveBackAction({ splashOpen: false, sheetOpen: false, splashSettingsOpen: true, settingsOpen: true, activeView: "today" }) },
     { handled: true, action: "close-splash-settings" },
   );
+});
+
+
+test("Android phone language uses BCP-47 prefixes until an explicit choice, including after restore", async () => {
+  const dist = await mkdtemp(join(tmpdir(), "ll-android-language-"));
+  try {
+    await prepare(dist);
+    const source = await readFile(join(dist, "app.js"), "utf8");
+    const { win } = await loadFaceHelpers();
+    const { resolveAndroidLanguage } = win.LifeLedgerAndroidFaceHelpers;
+    const helper = source.match(/function androidLanguage\(stored, explicit\) \{[\s\S]*?\n\}/)?.[0];
+    assert.ok(helper);
+    for (const [languages, stored, explicit, expected] of [
+      [["zh-CN", "en-US"], null, null, "zh"],
+      [["de-DE", "en-US"], null, null, "de"],
+      [["fr-FR", "DE-at", "zh-Hant-TW"], null, null, "de"],
+      [["en-US", "zh-Hant"], null, null, "zh"],
+      [["fr-FR", "en-US"], null, null, "en"],
+      [["den", "zho"], null, null, "en"],
+      [["zh-CN"], "en", "true", "en"],
+      [["de-DE"], "en", null, "en"],
+      [["de-DE"], "en", "false", "de"],
+      [["zh-CN"], "invalid", "true", "zh"],
+    ]) {
+      const actual = vm.runInNewContext(`${helper}; androidLanguage(stored, explicit)`, {
+        supportedLanguages: ["en", "de", "zh"], requestedLanguage: null,
+        navigator: { languages }, stored, explicit,
+        window: { LifeLedgerAndroidFaceHelpers: { resolveAndroidLanguage } },
+      });
+      assert.equal(actual, expected, JSON.stringify({ languages, stored, explicit }));
+    }
+    assert.match(source, /let currentLang = androidLanguage\(storedLanguage, explicitLanguagePreference\)/);
+    assert.match(source, /function syncBackupPreferencesToRuntime\(\) \{[\s\S]*?currentLang = androidLanguage\(storedLang, explicitLang\)/);
+  } finally {
+    await rm(dist, { recursive: true, force: true });
+  }
+});
+
+
+test("Android semantic text colors meet AA on light and dark surfaces", async () => {
+  const css = await readFile(resolve(root, "public/android-face.css"), "utf8");
+  const tokens = selector => {
+    const start = css.indexOf(`${selector} {`);
+    assert.notEqual(start, -1);
+    const block = css.slice(start, css.indexOf("}", start));
+    return Object.fromEntries([...block.matchAll(/--a-([\w-]+):\s*(#[A-Fa-f0-9]{6})/g)].map(match => [match[1], match[2]]));
+  };
+  const luminance = hex => [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, value, i) => sum + value * [0.2126, 0.7152, 0.0722][i], 0);
+  const base = tokens('html[data-android-app="true"]');
+  for (const selector of ['html[data-android-app="true"]:not([data-theme="dark"])', 'html[data-android-app="true"][data-theme="dark"]']) {
+    const palette = { ...base, ...tokens(selector) };
+    for (const [foreground, background] of [
+      ["on-surface", "surface"], ["on-surface-variant", "surface-container-high"],
+      ["primary", "primary-soft"], ["good-fg", "good-soft"], ["calm-fg", "calm-soft"],
+      ["low-fg", "low-soft"], ["habit", "habit-soft"], ["focus", "focus-soft"],
+      ["photo", "photo-soft"], ["expense", "expense-soft"], ["sky", "sky-soft"], ["income", "surface-card"],
+    ]) {
+      const values = [luminance(palette[foreground]), luminance(palette[background])].sort((a, b) => a - b);
+      const ratio = (values[1] + 0.05) / (values[0] + 0.05);
+      assert.ok(ratio >= 4.5, `${selector}: ${foreground} on ${background} = ${ratio}`);
+    }
+  }
 });

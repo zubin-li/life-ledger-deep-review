@@ -159,6 +159,9 @@ export async function prepare(targetDist = dist) {
       if (asset === relative) html = replaceExact(html, tag, "", `index unused ${relative}`);
     }
   }
+  // Let the existing quote surface paint before the shared data core boots.
+  const faceScript = '    <script src="./android-face.js?v=2.1.0"></script>\n';
+  html = replaceExact(html, faceScript, "", "index move Android launch surface");
   // Android owns these pages. Only shared editors still used by its core bridge survive.
   const editors = ["habitDialog", "moodReasonDialog"].map(id => {
     const matches = [...html.matchAll(new RegExp(`<dialog\\b[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/dialog>`, "g"))];
@@ -171,6 +174,7 @@ export async function prepare(targetDist = dist) {
   if (!toast) throw new Error("index shared toast: expected 1 match");
   html = replaceBlock(html, '    <div class="app-shell">', '    <script src="./deployment-mode.js',
     `    <div class="app-shell"><main class="main-content">${mounts}</main></div>\n${editors.join("\n")}\n${toast}\n    <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>\n\n`, "index desktop markup");
+  html = replaceExact(html, '    <script src="./deployment-mode.js?v=2.1.0"></script>', `${faceScript}    <script src="./deployment-mode.js?v=2.1.0"></script>`, "index early Android launch surface");
   await writeFile(resolve(out, "index.html"), html);
   await writeFile(resolve(out, "deployment-mode.js"), LOCAL_MODE_SOURCE);
 
@@ -202,6 +206,15 @@ export async function prepare(targetDist = dist) {
   await writeFile(resolve(out, "weather-widget.js"), weather);
 
   let app = await readFile(resolve(out, "app.js"), "utf8");
+  // Follow the phone until a Settings choice (including legacy saved choices) exists.
+  app = replaceExact(app, 'let currentLang = supportedLanguages.includes(requestedLanguage)\n  ? requestedLanguage\n  : explicitLanguagePreference !== "false" && supportedLanguages.includes(storedLanguage)\n    ? storedLanguage\n    : "en";', `function androidLanguage(stored, explicit) {
+  return window.LifeLedgerAndroidFaceHelpers.resolveAndroidLanguage({
+    stored, explicit, requested: requestedLanguage, languages: navigator.languages || [navigator.language],
+  });
+}
+let currentLang = androidLanguage(storedLanguage, explicitLanguagePreference);`, "Android phone language on boot");
+  app = replaceExact(app, '  currentLang = explicitLang !== "false" && supportedLanguages.includes(storedLang)\n    ? storedLang\n    : supportedLanguages.includes(requestedLanguage)\n      ? requestedLanguage\n      : "en";', '  currentLang = androidLanguage(storedLang, explicitLang);', "Android phone language after restore");
+
   app = replaceExact(app, "function renderAll() {\n  applyLanguage();", `function renderAll() {
   if (document.documentElement.dataset.androidApp === "true") {
     applyLanguage();
