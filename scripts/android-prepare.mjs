@@ -70,6 +70,28 @@ export const REMOVE_FILES = [
   "vendor/cloudbase-sdk.js.LEGAL.txt",
   "voice-checkin.js",
   "sw.js",
+  "vendor/echarts.min.js",
+  "bank-import.js",
+  "insights.js",
+  "insights.css",
+  "long-range.js",
+  "review-metrics-preview.js",
+  "review-bars.js",
+  "vendor/sortable.min.js",
+  "pages-art.js",
+  "view-headers-art.js",
+  "pages-858.css",
+  "vendor/widget-ui.css",
+  "today-cards.css",
+  "v202.css",
+  "pages-polish.css",
+  "money.css",
+  "v210.css",
+  "money-ui.js",
+  "ledger-ui.js",
+  "vendor/widget-ui.js",
+  "hairline.js",
+  "today-cards.js",
 ];
 
 export const LOCAL_MODE_SOURCE = [
@@ -104,10 +126,20 @@ export const ANDROID_TODAY_CLOCK_SOURCE = `function armAndroidTodayClock() {
 }
 `;
 
-function replaceExact(source, from, to, label) {
+function replaceExact(source, from, to, label, expectedCount = 1) {
   const count = source.split(from).length - 1;
-  if (count !== 1) throw new Error(`${label}: expected 1 match, found ${count}`);
-  return source.replace(from, to);
+  if (count !== expectedCount) throw new Error(`${label}: expected ${expectedCount} match(es), found ${count}`);
+  return source.split(from).join(to);
+}
+
+// Keep the existing patcher's fail-closed behavior for larger copied-only blocks.
+function replaceBlock(source, start, end, to, label) {
+  if (source.split(start).length !== 2 || source.split(end).length !== 2) {
+    throw new Error(`${label}: block anchors must each occur once`);
+  }
+  const from = source.slice(source.indexOf(start), source.indexOf(end));
+  if (!from) throw new Error(`${label}: invalid block order`);
+  return replaceExact(source, from, to, label);
 }
 
 export async function prepare(targetDist = dist) {
@@ -121,20 +153,96 @@ export async function prepare(targetDist = dist) {
   html = replaceExact(html, '\n    <script src="./_init_tcb-env.js?v=2.1.0"></script>', "", "index tcb env");
   html = replaceExact(html, '\n    <script src="./cloudbase-sync.js?v=2.1.0"></script>', "", "index cloudbase");
   html = replaceExact(html, '\n    <script src="./voice-checkin.js?v=2.1.0"></script>', "", "index voice ai");
+  for (const relative of REMOVE_FILES) {
+    const tags = [...html.matchAll(/^[ \t]*<(?:script\b[^>]*src|link\b[^>]*href)="\.\/([^"?]+)[^"]*"[^>]*(?:><\/script>|\/>)[ \t]*\n/gm)];
+    for (const [tag, asset] of tags) {
+      if (asset === relative) html = replaceExact(html, tag, "", `index unused ${relative}`);
+    }
+  }
+  // Android owns these pages. Only shared editors still used by its core bridge survive.
+  const editors = ["habitDialog", "moodReasonDialog"].map(id => {
+    const matches = [...html.matchAll(new RegExp(`<dialog\\b[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/dialog>`, "g"))];
+    if (matches.length !== 1) throw new Error(`index editor ${id}: expected 1 match`);
+    return matches[0][0];
+  });
+  const mounts = ["today", "week", "longrange", "timeline", "review", "ledger", "habits"]
+    .map(view => `<div class="view${view === "today" ? " active" : ""}" id="${view}View"></div>`).join("\n");
+  const toast = html.match(/^    <div class="toast" id="toast"[^\n]+$/m)?.[0];
+  if (!toast) throw new Error("index shared toast: expected 1 match");
+  html = replaceBlock(html, '    <div class="app-shell">', '    <script src="./deployment-mode.js',
+    `    <div class="app-shell"><main class="main-content">${mounts}</main></div>\n${editors.join("\n")}\n${toast}\n    <div class="sr-only" id="submitLiveRegion" aria-live="polite" aria-atomic="true"></div>\n\n`, "index desktop markup");
   await writeFile(resolve(out, "index.html"), html);
   await writeFile(resolve(out, "deployment-mode.js"), LOCAL_MODE_SOURCE);
 
-  let cards = await readFile(resolve(out, "today-cards.js"), "utf8");
-  cards = replaceExact(cards, '    { id: "dayplan", el: wrap(planGrid, "dayplan"), sizes: ["L"] },\n', "", "online calendar card registration");
-  cards = replaceExact(
-    cards,
-    "  ];\n  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));",
-    "  ];\n  planGrid.hidden = true;\n  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));",
-    "online calendar card hiding (preserve shared event and render targets)",
-  );
-  await writeFile(resolve(out, "today-cards.js"), cards);
+  // Reuse the weather data/cache bridge, without constructing or rendering desktop widgets.
+  let widgets = await readFile(resolve(out, "today-widgets.js"), "utf8");
+  widgets = replaceBlock(widgets, "  // Line icons", "  // ---- weather", "  // Weather data: Open-Meteo · CC BY 4.0\n", "Android weather data only");
+  widgets = replaceBlock(widgets, "  function status(text, attention = false)", "  async function loadWeather", `  function status() {}
+  function drawWeather() { demoCity(); emitWeather(); }
+`, "Android weather notification without desktop drawing");
+  widgets = replaceBlock(widgets, "  // City search UI", "  const weatherBridge = {", "", "Android weather bridge without desktop cards");
+  widgets = replaceExact(widgets,
+    "  window.LifeLedgerTodayWidgets = { render, reload, syncWalls: () => Object.values(walls).forEach(w => w.sync()), text: t, weather: weatherBridge };\n  setTimeout(render);",
+    `  window.LifeLedgerTodayWidgets = { render: () => { void loadWeather(); }, reload: () => { city = null; forecast = null; void loadWeather(true); }, text: t, weather: weatherBridge };
+  window.addEventListener("life-ledger-rendered", () => { void loadWeather(); });
+  setTimeout(() => { void loadWeather(); });`, "Android weather startup");
+  await writeFile(resolve(out, "today-widgets.js"), widgets);
+
+  let weather = await readFile(resolve(out, "weather-widget.js"), "utf8");
+  weather = replaceExact(weather, "  if(!document.getElementById('weatherPlot'))return; // Today cards (web and Mac app)\n", "", "Android forecast helpers without desktop plot");
+  weather = replaceBlock(weather, "  function timeLabel(time)", "})(window);", "  root.LifeLedgerWeather = { dataWindow, cityNow };\n", "Android forecast helpers only");
+  await writeFile(resolve(out, "weather-widget.js"), weather);
 
   let app = await readFile(resolve(out, "app.js"), "utf8");
+  app = replaceExact(app, "function renderAll() {\n  applyLanguage();", `function renderAll() {
+  if (document.documentElement.dataset.androidApp === "true") {
+    applyLanguage();
+    applyTheme();
+    window.dispatchEvent(new Event("life-ledger-rendered"));
+    return;
+  }
+  applyLanguage();`, "Android state render without desktop views");
+  app = replaceExact(app, "function switchToView(view) {", `function switchToView(view) {
+  if (document.documentElement.dataset.androidApp === "true") {
+    if (!document.getElementById(view + "View")) return Promise.resolve();
+    $$(".view").forEach(section => section.classList.toggle("active", section.id === view + "View"));
+    document.body.dataset.activeView = view;
+    lastShownView = view;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    window.dispatchEvent(new Event("life-ledger-rendered"));
+    return Promise.resolve();
+  }`, "Android view state without desktop renders");
+  app = replaceExact(app, '  const activeView = $(".nav-item.active")?.dataset.view || "today";',
+    '  const activeView = document.documentElement.dataset.androidApp === "true" ? (document.body.dataset.activeView || "today") : $(".nav-item.active")?.dataset.view || "today";', "Android active view language sync");
+  app = replaceExact(app, '  const year = $("#yearSelect"), month = $("#monthSelect");',
+    '  const year = $("#yearSelect"), month = $("#monthSelect");\n  if (!year || !month) return;', "optional desktop date selectors");
+  app = replaceExact(app, "function renderFocusOverview() {", 'function renderFocusOverview() {\n  if (document.documentElement.dataset.androidApp === "true") return;', "Android focus overview is owned by face");
+  // Shared callbacks (including photo changes) may also call a desktop producer directly.
+  for (const name of ["renderToday", "renderWeeklyWorkspace", "renderCalendar", "renderReview", "renderHabitSettings", "renderLongRange", "renderLedger", "renderTimeline", "decorateMotionSurfaces"]) {
+    const signature = `function ${name}() {`;
+    app = replaceExact(app, signature, `${signature}\n  if (document.documentElement.dataset.androidApp === "true") return;`, `Android skips ${name}`);
+  }
+  app = replaceExact(app, "function renderFocusTimer(snapshot) {", `function renderFocusTimer(snapshot) {
+  if (document.documentElement.dataset.androidApp === "true") {
+    window.dispatchEvent(new CustomEvent("life-ledger-focus-tick", { detail: snapshot || null }));
+    return;
+  }`, "Android focus notification without desktop timer");
+  // Removed desktop controls are optional; retain shared editor bindings and their handlers.
+  const bindingStart = app.indexOf("function bindEvents() {");
+  const bindings = app.slice(bindingStart, app.indexOf("\nfunction ", bindingStart + 1));
+  app = replaceExact(app, bindings, bindings.replace(/(?<!\$)(\$\((?:"[^"\n]*"|'[^'\n]*')\))\.addEventListener/g, "$1?.addEventListener"), "optional desktop event targets");
+  app = replaceExact(app, '  $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";', '  if ($("#cloudAccountButton")) $("#cloudAccountButton").hidden = cloudProvider !== "cloudbase";', "optional cloud account control");
+  app = replaceExact(app, '  const badge = $("#saveMode");', '  const badge = $("#saveMode");\n  if (!badge) return;', "optional desktop save badge");
+  // All shared mutation paths (mood, habits, restore) can run without the desktop drawer.
+  app = replaceExact(app, '$("#dayDrawer").classList', '$("#dayDrawer")?.classList', "optional desktop drawer on state changes", 7);
+  app = replaceExact(app, "function closeDrawer() {", 'function closeDrawer() {\n  if (!$("#dayDrawer")) return;', "optional desktop drawer close");
+  app = replaceExact(app, "function updateDailyToolControls(page) {", 'function updateDailyToolControls(page) {\n  if (document.documentElement.dataset.androidApp === "true") return;', "Android has no desktop daily tools");
+  app = replaceExact(app, '  $("#iconPickerName").textContent = iconLabels[currentLang][selected];', `  $("#iconPickerName").textContent = iconLabels[currentLang][selected];
+  if (document.documentElement.dataset.androidApp === "true" && popover.hidden) {
+    popover.replaceChildren();
+    return;
+  }`, "lazy Android habit icon options");
+  app = replaceExact(app, '  trigger.setAttribute("aria-expanded", String(opening));\n}\n\nfunction renderColorPicker()', '  trigger.setAttribute("aria-expanded", String(opening));\n  if (key === "icon") renderIconPicker();\n}\n\nfunction renderColorPicker()', "Android icon picker on demand");
   app = replaceExact(app, "function bootApplication() {", `${ANDROID_TODAY_CLOCK_SOURCE}\nfunction bootApplication() {`, "Android today lifecycle");
   app = replaceExact(
     app,

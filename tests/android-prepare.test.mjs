@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import vm from "node:vm";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { mkdtemp, readFile, readdir, rm, writeFile, mkdir } from "node:fs/promises";
@@ -43,12 +44,15 @@ const CORE_FILES = [
   "app.js",
   "styles.css",
   "ledger-core.js",
-  "ledger-ui.js",
   "deployment-mode.js",
   "manifest.webmanifest",
   "assets/app-icon.svg",
   "today-widgets.js",
   "weather-widget.js",
+  "focus-timer.js",
+  "habit-analytics.js",
+  "android-face.js",
+  "android-face.css",
 ];
 
 const SAMPLE_MANIFEST = `<?xml version="1.0" encoding="utf-8"?>
@@ -88,6 +92,8 @@ async function textFiles(dir) {
 test("android prepare keeps a local offline dist and leaves public untouched", async () => {
   const publicIndexBefore = await readFile(resolve(root, "public/index.html"), "utf8");
   const publicCloudBefore = await readFile(resolve(root, "public/cloudbase-sync.js"), "utf8");
+  const copiedSources = ["app.js", "today-widgets.js", "weather-widget.js", "today-cards.js"];
+  const publicHashes = await Promise.all(copiedSources.map(async name => sha256(await readFile(resolve(root, "public", name), "utf8"))));
   await prepare();
   const first = {
     index: sha256(await readFile(resolve(dist, "index.html"), "utf8")),
@@ -103,6 +109,7 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   assert.equal(await readFile(resolve(root, "public/index.html"), "utf8"), publicIndexBefore);
   assert.equal(await readFile(resolve(root, "public/cloudbase-sync.js"), "utf8"), publicCloudBefore);
   assert.match(publicIndexBefore, /cloudbase-sync\.js/);
+  assert.deepEqual(await Promise.all(copiedSources.map(async name => sha256(await readFile(resolve(root, "public", name), "utf8")))), publicHashes);
 
   for (const relative of REMOVE_FILES) {
     await assert.rejects(readFile(resolve(dist, relative)), { code: "ENOENT" });
@@ -116,15 +123,24 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   assert.doesNotMatch(await readFile(resolve(dist, "index.html"), "utf8"), /cloudbase-sync|_init_tcb-env|voice-checkin\.js/);
 
   const androidWidgets = await readFile(resolve(dist, "today-widgets.js"), "utf8");
-  const androidCards = await readFile(resolve(dist, "today-cards.js"), "utf8");
   assert.match(androidWidgets, /api\.open-meteo\.com\/v1\/forecast/);
   assert.match(androidWidgets, /geocoding-api\.open-meteo\.com\/v1\/search/);
   assert.match(androidWidgets, /Open-Meteo · CC BY 4\.0/);
-  assert.match(androidWidgets, /id: "weather", el: cards\.weather/);
-  assert.doesNotMatch(androidWidgets, /cards\.weather\.remove\(\)/);
-  assert.doesNotMatch(androidCards, /planGrid\.remove\(\)/);
-  assert.match(androidCards, /planGrid\.hidden = true/);
-  assert.doesNotMatch(androidCards, /id: "dayplan", el: wrap\(planGrid/);
+  assert.match(androidWidgets, /weather: weatherBridge/);
+  assert.doesNotMatch(androidWidgets, /\bcards\.(?:weather|rhythm|focus)|LifeLedgerExtraCards|createElement|renderToday/);
+  const androidIndex = await readFile(resolve(dist, "index.html"), "utf8");
+  for (const relative of REMOVE_FILES) assert.ok(!androidIndex.includes(`./${relative}`), relative);
+  for (const relative of ["deployment-mode.js", "app.js", "ledger-core.js", "habit-analytics.js", "interaction.js", "focus-timer.js", "demo-workspace.js", "photo-memories.js", "media-backup.js", "today-widgets.js", "weather-widget.js", "android-face.js", "styles.css", "android-face.css"]) {
+    assert.ok(androidIndex.includes(`./${relative}`), relative);
+  }
+  assert.doesNotMatch(androidIndex, /<section\b[^>]*\bclass="[^"]*\bview\b|hero-grid|daily-planning-grid|week-board|review-manuscript|habit-library|sidebar|id="previousPlanDay"/);
+  for (const view of ["today", "week", "longrange", "timeline", "review", "ledger", "habits"]) {
+    assert.match(androidIndex, new RegExp(`<div class="view(?: active)?" id="${view}View"></div>`));
+  }
+  assert.match(androidIndex, /id="habitDialog"/);
+  assert.match(androidIndex, /id="moodReasonDialog"/);
+  assert.match(androidIndex, /id="toastAction"/);
+  assert.ok((androidIndex.match(/<[a-z][^>]*>/gi) || []).length < 220, "static Android markup stays below the hidden-node budget");
 
   const hits = [];
   for (const path of await textFiles(dist)) {
@@ -135,10 +151,27 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   }
   assert.deepEqual(hits, []);
 
-  for (const relative of ["app.js", "today-widgets.js", "deployment-mode.js"]) {
+  for (const relative of ["app.js", "today-widgets.js", "weather-widget.js", "deployment-mode.js"]) {
     const checked = spawnSync(process.execPath, ["--check", resolve(dist, relative)], { encoding: "utf8" });
     assert.equal(checked.status, 0, checked.stderr);
   }
+
+  const app = await readFile(resolve(dist, "app.js"), "utf8");
+  const renderStart = app.indexOf("function renderAll() {");
+  const render = app.slice(renderStart, app.indexOf("\n// Today's card motion", renderStart));
+  const calls = [];
+  const sandbox = {
+    document: { documentElement: { dataset: { androidApp: "true" } } },
+    applyLanguage: () => calls.push("language"),
+    applyTheme: () => calls.push("theme"),
+    window: { dispatchEvent: event => calls.push(event.type) },
+    Event,
+  };
+  // Desktop helpers deliberately do not exist: every desktop producer must be skipped.
+  vm.runInNewContext(`${render}\nrenderAll();`, sandbox);
+  assert.deepEqual(calls, ["language", "theme", "life-ledger-rendered"]);
+  assert.match(app, /\$\("#previousPlanDay"\)\?\.addEventListener/);
+  assert.match(app, /\$\('#journalMonthFilter'\)\?\.addEventListener/);
 });
 
 test("backup plugin injection copies Kotlin into the generated android app and pins Android 1.0 (versionCode 1)", async () => {
