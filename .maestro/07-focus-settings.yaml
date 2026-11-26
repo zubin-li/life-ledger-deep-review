@@ -21,6 +21,11 @@ androidWebViewHierarchy: devtools
 - tapOn:
     id: "androidFocusEndBtn"
 - waitForAnimationToEnd
+- assertVisible:
+    id: "androidFocusStartBtn"
+- tapOn:
+    id: "androidFocusMinBtn"
+- waitForAnimationToEnd
 - assertNotVisible:
     id: "androidFocusOverlay"
 - tapOn:

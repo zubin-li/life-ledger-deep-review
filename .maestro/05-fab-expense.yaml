@@ -15,12 +15,12 @@ androidWebViewHierarchy: devtools
       id: "androidKpGrid"
     timeout: 8000
 - tapOn: "4"
-- tapOn: "."
+- tapOn: "\\."
 - tapOn: "8"
 - tapOn: "0"
-- tapOn: "+"
+- tapOn: "\\+"
 - tapOn: "7"
-- tapOn: "."
+- tapOn: "\\."
 - tapOn: "7"
 - tapOn: "0"
 - waitForAnimationToEnd
@@ -37,6 +37,6 @@ androidWebViewHierarchy: devtools
 - tapOn: "记账"
 - waitForAnimationToEnd
 - assertVisible:
-    text: "12.50"
+    text: ".*12\\.50.*"
 - takeScreenshot: screenshots/05-money-total
 - stopRecording

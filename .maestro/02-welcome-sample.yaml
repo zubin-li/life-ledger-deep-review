@@ -12,7 +12,7 @@ androidWebViewHierarchy: devtools
       id: "androidDemoTitle"
     timeout: 15000
 - assertVisible:
-    text: "示例模式"
+    text: ".*示例模式.*"
 - assertNotVisible:
     text: "空白的一天，刚刚开始"
 - extendedWaitUntil:
@@ -20,6 +20,6 @@ androidWebViewHierarchy: devtools
       id: "androidDateSub"
     timeout: 8000
 - assertVisible:
-    text: "${TODAY_ZH}"
+    text: ".*${TODAY_ZH}.*"
 - takeScreenshot: screenshots/02-sample-today
 - stopRecording

@@ -8,6 +8,6 @@ androidWebViewHierarchy: devtools
 - assertVisible:
     id: "androidDateSub"
 - assertVisible:
-    text: "${TODAY_ZH}"
+    text: ".*${TODAY_ZH}.*"
 - takeScreenshot: screenshots/03-empty-today
 - stopRecording

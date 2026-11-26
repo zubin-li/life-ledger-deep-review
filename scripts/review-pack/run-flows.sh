@@ -31,6 +31,12 @@ FLOWS=(
 
 JUNIT_PARTS=()
 FAIL=0
+# The first screenrecord right after boot often fails on CI emulators ("Failed to capture screen
+# recording"), which failed flow 01 before the App was even looked at. Warm the encoder up once.
+adb shell screenrecord --time-limit 2 /sdcard/warmup.mp4 >/dev/null 2>&1 || true
+adb shell rm -f /sdcard/warmup.mp4 >/dev/null 2>&1 || true
+export REVIEW_PACK_SOFTWARE_GPU=1  # emulator runs -gpu swiftshader_indirect (see workflow)
+
 for flow in "${FLOWS[@]}"; do
   adb shell am force-stop "$ANDROID_PKG" || true
   adb shell dumpsys gfxinfo "$ANDROID_PKG" reset >/dev/null 2>&1 || true

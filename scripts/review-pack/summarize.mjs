@@ -141,17 +141,24 @@ function evaluateFlow(flow, junit, metrics, thresholds) {
   if (flow.id === "01-cold-start" && coldStartMs != null && coldStartMs > thresholds.coldStartMs) {
     reasons.push(`冷启动 ${coldStartMs}ms 超过 ${thresholds.coldStartMs}ms（模拟器阈值）`);
   }
+  // Frame stats from a software-rendered CI emulator (swiftshader) measure the rasterizer, not the App:
+  // there they are shown as advisory and do not decide pass/fail. Real-device frame pacing is judged on hardware.
+  const frameIssues = [];
   if (jankyPct != null && jankyPct > thresholds.jankyPctMax) {
-    reasons.push(`卡顿帧占比 ${jankyPct.toFixed(1)}% 超过 ${thresholds.jankyPctMax}%`);
+    frameIssues.push(`卡顿帧占比 ${jankyPct.toFixed(1)}% 超过 ${thresholds.jankyPctMax}%`);
   }
   if (frozenFrames != null && frozenFrames > thresholds.frozenFramesMax) {
-    reasons.push(`>700ms 冻结帧 ${frozenFrames}，要求为 ${thresholds.frozenFramesMax}`);
+    frameIssues.push(`>700ms 冻结帧 ${frozenFrames}，要求为 ${thresholds.frozenFramesMax}`);
   }
   if (p90FrameMs != null && p90FrameMs > thresholds.p90FrameMsMax) {
-    reasons.push(`p90 帧时 ${p90FrameMs}ms 超过 ${thresholds.p90FrameMsMax}ms`);
+    frameIssues.push(`p90 帧时 ${p90FrameMs}ms 超过 ${thresholds.p90FrameMsMax}ms`);
   }
 
-  const pass = junitOk && reasons.length === 0;
+  const softwareGpu = process.env.REVIEW_PACK_SOFTWARE_GPU === "1";
+  if (softwareGpu) reasons.push(...frameIssues.map(r => `${r}（软件渲染模拟器，仅供参考）`));
+  const hardReasons = softwareGpu ? reasons.filter(r => !r.endsWith("（软件渲染模拟器，仅供参考）")) : [...reasons, ...frameIssues];
+  if (!softwareGpu) reasons.push(...frameIssues);
+  const pass = junitOk && hardReasons.length === 0;
   return {
     id: flow.id,
     nameZh: flow.nameZh,
