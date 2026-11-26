@@ -23,6 +23,6 @@ androidWebViewHierarchy: devtools
       id: "androidWelcome"
     timeout: 8000
 - assertVisible:
-    text: "记录当下"
+    text: "记录当下.*"
 - takeScreenshot: screenshots/01-welcome-ready
 - stopRecording

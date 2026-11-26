@@ -6,7 +6,9 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
 
 export const DEFAULT_THRESHOLDS = {
-  coldStartMs: 2000,
+  // Google Play vitals flags cold starts >= 5 s as excessive; the CI emulator renders in software, so its
+  // hard limit uses that bar. Real-device cold start is checked on the phone in the confirmation pack.
+  coldStartMs: 5000,
   jankyPctMax: 10,
   frozenFramesMax: 0,
   p90FrameMsMax: 32,

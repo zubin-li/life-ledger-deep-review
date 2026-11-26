@@ -82,7 +82,7 @@ done
 
 node --input-type=module -e "
   import { mergeJUnitReports, buildReviewPack } from './scripts/review-pack/summarize.mjs';
-  const parts = process.argv.slice(2);
+  const parts = process.argv.slice(1);  // node -e has no script path in argv: slice(2) dropped flow 01
   await mergeJUnitReports(parts, 'android-review-pack/junit.xml');
   await buildReviewPack({ packDir: 'android-review-pack' });
 " "${JUNIT_PARTS[@]}"
