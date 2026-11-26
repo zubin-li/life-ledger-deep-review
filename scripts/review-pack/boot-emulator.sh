@@ -20,14 +20,25 @@ CFG="$ANDROID_AVD_HOME/$AVD.avd/config.ini"
 test -f "$CFG" || { echo "AVD config missing; avdmanager list:"; "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" list avd; exit 1; }
 printf 'hw.ramSize=4096\ndisk.dataPartition.size=6G\n' >> "$CFG"
 "$ANDROID_HOME/emulator/emulator" -avd "$AVD" -no-snapshot -no-window -gpu swiftshader_indirect \
-  -noaudio -no-boot-anim -change-locale zh-CN > android-review-pack/emulator.log 2>&1 &
+  -noaudio -no-boot-anim > android-review-pack/emulator.log 2>&1 &
 adb wait-for-device
 
 deadline=$((SECONDS + 600))
-until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do
-  [ $SECONDS -lt $deadline ] || { echo "emulator did not boot in 10 min"; exit 1; }
-  sleep 3
-done
+wait_boot() {
+  until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do
+    [ $SECONDS -lt $deadline ] || { echo "emulator did not boot in 10 min"; exit 1; }
+    sleep 3
+  done
+}
+wait_boot
+# Switch to zh-CN ourselves. The emulator's -change-locale does it by restarting the framework *after*
+# boot_completed=1, which is what kept breaking every readiness check ("Restarting framework" in the
+# emulator log, then "Failure calling service input: Broken pipe"). Here the restart is ours, so we can
+# clear the boot flag first and wait for the second boot deterministically.
+adb root >/dev/null; adb wait-for-device
+adb shell "setprop persist.sys.locale zh-CN; setprop sys.boot_completed 0; stop; start"
+wait_boot
+[ "$(adb shell getprop persist.sys.locale | tr -d '\r')" = "zh-CN" ] || { echo "locale not applied"; exit 1; }
 services_up() {
   for s in input package activity window settings; do
     adb shell service check "$s" 2>/dev/null | grep -q ": found" || return 1
