@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import vm from "node:vm";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { mkdtemp, readFile, readdir, rm, writeFile, mkdir } from "node:fs/promises";
@@ -13,8 +14,14 @@ import {
   FORBIDDEN_PERMISSIONS,
   patchManifest,
   patchProject,
+  REQUIRED_PERMISSIONS,
 } from "../scripts/android-manifest.mjs";
-import { evaluateBackupPluginClass, findBackupRulesPath } from "../scripts/android-apk-check.mjs";
+import {
+  evaluateApkAssets,
+  evaluateBackupPluginClass,
+  findBackupRulesPath,
+  FORBIDDEN_APK_ASSETS,
+} from "../scripts/android-apk-check.mjs";
 import { BACKUP_PLUGIN_CLASS, injectAndroidBackupPlugin } from "../scripts/android-prepare.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,9 +31,8 @@ const FORBIDDEN_SNIPPETS = [
   "cloudbase-sync.js",
   "_init_tcb-env.js",
   "cloudbase-sdk",
-  "api.open-meteo.com",
-  "geocoding-api.open-meteo.com",
-  "https://open-meteo.com",
+  "voice-checkin.js",
+  "/api/voice-review",
   "check_for_updates",
   "/api/calendar/",
   "./api/state",
@@ -38,12 +44,15 @@ const CORE_FILES = [
   "app.js",
   "styles.css",
   "ledger-core.js",
-  "ledger-ui.js",
   "deployment-mode.js",
   "manifest.webmanifest",
   "assets/app-icon.svg",
   "today-widgets.js",
   "weather-widget.js",
+  "focus-timer.js",
+  "habit-analytics.js",
+  "android-face.js",
+  "android-face.css",
 ];
 
 const SAMPLE_MANIFEST = `<?xml version="1.0" encoding="utf-8"?>
@@ -83,6 +92,8 @@ async function textFiles(dir) {
 test("android prepare keeps a local offline dist and leaves public untouched", async () => {
   const publicIndexBefore = await readFile(resolve(root, "public/index.html"), "utf8");
   const publicCloudBefore = await readFile(resolve(root, "public/cloudbase-sync.js"), "utf8");
+  const copiedSources = ["app.js", "today-widgets.js", "weather-widget.js", "today-cards.js"];
+  const publicHashes = await Promise.all(copiedSources.map(async name => sha256(await readFile(resolve(root, "public", name), "utf8"))));
   await prepare();
   const first = {
     index: sha256(await readFile(resolve(dist, "index.html"), "utf8")),
@@ -98,6 +109,7 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   assert.equal(await readFile(resolve(root, "public/index.html"), "utf8"), publicIndexBefore);
   assert.equal(await readFile(resolve(root, "public/cloudbase-sync.js"), "utf8"), publicCloudBefore);
   assert.match(publicIndexBefore, /cloudbase-sync\.js/);
+  assert.deepEqual(await Promise.all(copiedSources.map(async name => sha256(await readFile(resolve(root, "public", name), "utf8")))), publicHashes);
 
   for (const relative of REMOVE_FILES) {
     await assert.rejects(readFile(resolve(dist, relative)), { code: "ENOENT" });
@@ -108,14 +120,27 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   }
   assert.equal(await readFile(resolve(dist, "deployment-mode.js"), "utf8"), LOCAL_MODE_SOURCE);
   assert.match(LOCAL_MODE_SOURCE, /window\.LIFE_LEDGER_DEPLOYMENT_MODE = "local";/);
-  assert.doesNotMatch(await readFile(resolve(dist, "index.html"), "utf8"), /cloudbase-sync|_init_tcb-env/);
+  assert.doesNotMatch(await readFile(resolve(dist, "index.html"), "utf8"), /cloudbase-sync|_init_tcb-env|voice-checkin\.js/);
 
-  const offlineWidgets = await readFile(resolve(dist, "today-widgets.js"), "utf8");
-  const offlineCards = await readFile(resolve(dist, "today-cards.js"), "utf8");
-  assert.match(offlineWidgets, /cards\.weather\.remove\(\)/);
-  assert.doesNotMatch(offlineWidgets, /id: "weather", el: cards\.weather/);
-  assert.match(offlineCards, /planGrid\.remove\(\)/);
-  assert.doesNotMatch(offlineCards, /id: "dayplan", el: wrap\(planGrid/);
+  const androidWidgets = await readFile(resolve(dist, "today-widgets.js"), "utf8");
+  assert.match(androidWidgets, /api\.open-meteo\.com\/v1\/forecast/);
+  assert.match(androidWidgets, /geocoding-api\.open-meteo\.com\/v1\/search/);
+  assert.match(androidWidgets, /Open-Meteo · CC BY 4\.0/);
+  assert.match(androidWidgets, /weather: weatherBridge/);
+  assert.doesNotMatch(androidWidgets, /\bcards\.(?:weather|rhythm|focus)|LifeLedgerExtraCards|createElement|renderToday/);
+  const androidIndex = await readFile(resolve(dist, "index.html"), "utf8");
+  for (const relative of REMOVE_FILES) assert.ok(!androidIndex.includes(`./${relative}`), relative);
+  for (const relative of ["deployment-mode.js", "app.js", "ledger-core.js", "habit-analytics.js", "interaction.js", "focus-timer.js", "demo-workspace.js", "photo-memories.js", "media-backup.js", "today-widgets.js", "weather-widget.js", "android-face.js", "styles.css", "android-face.css"]) {
+    assert.ok(androidIndex.includes(`./${relative}`), relative);
+  }
+  assert.doesNotMatch(androidIndex, /<section\b[^>]*\bclass="[^"]*\bview\b|hero-grid|daily-planning-grid|week-board|review-manuscript|habit-library|sidebar|id="previousPlanDay"/);
+  for (const view of ["today", "week", "longrange", "timeline", "review", "ledger", "habits"]) {
+    assert.match(androidIndex, new RegExp(`<div class="view(?: active)?" id="${view}View"></div>`));
+  }
+  assert.match(androidIndex, /id="habitDialog"/);
+  assert.match(androidIndex, /id="moodReasonDialog"/);
+  assert.match(androidIndex, /id="toastAction"/);
+  assert.ok((androidIndex.match(/<[a-z][^>]*>/gi) || []).length < 220, "static Android markup stays below the hidden-node budget");
 
   const hits = [];
   for (const path of await textFiles(dist)) {
@@ -126,27 +151,58 @@ test("android prepare keeps a local offline dist and leaves public untouched", a
   }
   assert.deepEqual(hits, []);
 
-  for (const relative of ["app.js", "today-widgets.js", "deployment-mode.js"]) {
+  for (const relative of ["app.js", "today-widgets.js", "weather-widget.js", "deployment-mode.js"]) {
     const checked = spawnSync(process.execPath, ["--check", resolve(dist, relative)], { encoding: "utf8" });
     assert.equal(checked.status, 0, checked.stderr);
   }
+
+  const app = await readFile(resolve(dist, "app.js"), "utf8");
+  const renderStart = app.indexOf("function renderAll() {");
+  const render = app.slice(renderStart, app.indexOf("\n// Today's card motion", renderStart));
+  const calls = [];
+  const sandbox = {
+    document: { documentElement: { dataset: { androidApp: "true" } } },
+    applyLanguage: () => calls.push("language"),
+    applyTheme: () => calls.push("theme"),
+    window: { dispatchEvent: event => calls.push(event.type) },
+    Event,
+  };
+  // Desktop helpers deliberately do not exist: every desktop producer must be skipped.
+  vm.runInNewContext(`${render}\nrenderAll();`, sandbox);
+  assert.deepEqual(calls, ["language", "theme", "life-ledger-rendered"]);
+  assert.match(app, /\$\("#previousPlanDay"\)\?\.addEventListener/);
+  assert.match(app, /\$\('#journalMonthFilter'\)\?\.addEventListener/);
 });
 
-test("backup plugin injection copies Kotlin into the generated android app", async () => {
+test("backup plugin injection copies Kotlin into the generated android app and pins Android 1.0 (versionCode 1)", async () => {
   const dir = await mkdtemp(join(tmpdir(), "ll-android-inject-"));
   const appRoot = join(dir, "app");
   await mkdir(join(appRoot, "src/main"), { recursive: true });
   await writeFile(join(appRoot, "proguard-rules.pro"), "-keep class androidx.appcompat.widget.Toolbar { *; }\n");
+  await writeFile(
+    join(appRoot, "build.gradle.kts"),
+    'android {\n  defaultConfig {\n    versionCode = tauriProperties.getProperty("tauri.android.versionCode", "3001000").toInt()\n    versionName = tauriProperties.getProperty("tauri.android.versionName", "3.1.0")\n  }\n}\n',
+  );
   const destination = await injectAndroidBackupPlugin(dir);
   const injected = await readFile(destination, "utf8");
   assert.match(injected, /BackupPlugin/);
   assert.match(await readFile(join(appRoot, "proguard-rules.pro"), "utf8"), /life-ledger-backup-plugin/);
+  const gradle = await readFile(join(appRoot, "build.gradle.kts"), "utf8");
+  assert.match(gradle, /versionCode = 1\b/);
+  assert.match(gradle, /versionName = "1\.0"/);
+  const props = await readFile(join(appRoot, "tauri.properties"), "utf8");
+  assert.match(props, /tauri\.android\.versionCode=1/);
+  assert.match(props, /tauri\.android\.versionName=1\.0/);
   await rm(dir, { recursive: true, force: true });
 });
 
-test("manifest patch removes internet and storage and disables backup transfer", async () => {
+test("manifest patch keeps INTERNET, removes broad storage permissions and disables backup transfer", async () => {
   const patched = patchManifest(SAMPLE_MANIFEST);
   assert.equal(patchManifest(patched), patched);
+  for (const name of REQUIRED_PERMISSIONS) {
+    assert.match(patched, new RegExp(`<uses-permission android:name="${name.replaceAll(".", "\\.")}" \\/>`), name);
+    assert.doesNotMatch(patched, new RegExp(`${name.replaceAll(".", "\\.")}" tools:node="remove"`), name);
+  }
   for (const name of FORBIDDEN_PERMISSIONS) {
     assert.match(
       patched,
@@ -159,12 +215,14 @@ test("manifest patch removes internet and storage and disables backup transfer",
   assert.match(patched, /android:allowBackup="false"/);
   assert.match(patched, /android:fullBackupContent="false"/);
   assert.match(patched, /android:dataExtractionRules="@xml\/life_ledger_backup_rules"/);
+  assert.match(patched, /android:enableOnBackInvokedCallback="true"/);
 
-  const debug = patchManifest(
-    '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><uses-permission android:name="android.permission.INTERNET" /><application android:usesCleartextTraffic="true" /></manifest>',
+  const withoutInternet = patchManifest(
+    '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><uses-permission android:name="android.permission.INTERNET" tools:node="remove" /><application android:usesCleartextTraffic="true" /></manifest>',
   );
-  assert.match(debug, /INTERNET" tools:node="remove"/);
-  assert.match(debug, /<application android:usesCleartextTraffic="true" android:allowBackup="false"/);
+  assert.match(withoutInternet, /<uses-permission android:name="android\.permission\.INTERNET" \/>/);
+  assert.doesNotMatch(withoutInternet, /INTERNET" tools:node="remove"/);
+  assert.match(withoutInternet, /<application android:usesCleartextTraffic="true" android:allowBackup="false"/);
 
   const dir = await mkdtemp(join(tmpdir(), "ll-android-manifest-"));
   try {
@@ -180,19 +238,31 @@ test("manifest patch removes internet and storage and disables backup transfer",
   }
 });
 
-test("apk dump check fails closed on internet and passes a patched manifest dump", () => {
-  const bad = evaluateApkDumps({
+test("apk dump and asset checks require INTERNET, reject storage permissions and cloud/AI assets", () => {
+  const missingInternet = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger.androidtest",
-    permissions: "uses-permission: name='android.permission.INTERNET'\n",
+    permissions: "uses-permission: name='android.permission.CAMERA'\n",
+    xmltree: [
+      'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
+      'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
+      "A: android:dataExtractionRules(0x0101057a)=@xml/life_ledger_backup_rules",
+    ].join("\n"),
+    rules: BACKUP_RULES_XML,
+  });
+  assert.ok(missingInternet.some((line) => line.includes("missing required permission: android.permission.INTERNET")));
+
+  const badStorage = evaluateApkDumps({
+    packageName: "app.zubinli.lifeledger.androidtest",
+    permissions: "uses-permission: name='android.permission.INTERNET'\nuses-permission: name='android.permission.READ_EXTERNAL_STORAGE'\n",
     xmltree: 'A: android:allowBackup(0x01010280)=(type 0x12)0xffffffff\n',
     rules: "<data-extraction-rules></data-extraction-rules>",
   });
-  assert.ok(bad.some((line) => line.includes("INTERNET")));
-  assert.ok(bad.some((line) => line.includes("allowBackup")));
+  assert.ok(badStorage.some((line) => line.includes("READ_EXTERNAL_STORAGE")));
+  assert.ok(badStorage.some((line) => line.includes("allowBackup")));
 
   const good = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger.androidtest",
-    permissions: "uses-permission: name='android.permission.CAMERA'\n",
+    permissions: "uses-permission: name='android.permission.INTERNET'\nuses-permission: name='android.permission.CAMERA'\n",
     xmltree: [
       'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
       'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
@@ -203,7 +273,7 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
   assert.deepEqual(good, []);
   const fromAapt = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger.androidtest",
-    permissions: "package: app.zubinli.lifeledger.androidtest\n",
+    permissions: "package: app.zubinli.lifeledger.androidtest\nuses-permission: name='android.permission.INTERNET'\n",
     xmltree: [
       "A: android:allowBackup(0x01010280)=false",
       "A: android:fullBackupContent(0x010104eb)=false",
@@ -214,7 +284,7 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
   assert.deepEqual(fromAapt, []);
   const wrongPackage = evaluateApkDumps({
     packageName: "app.zubinli.lifeledger",
-    permissions: "",
+    permissions: "uses-permission: name='android.permission.INTERNET'\n",
     xmltree: [
       'A: android:allowBackup(0x01010280)=(type 0x12)0x0',
       'A: android:fullBackupContent(0x010104eb)=(type 0x12)0x0',
@@ -223,6 +293,13 @@ test("apk dump check fails closed on internet and passes a patched manifest dump
     rules: BACKUP_RULES_XML,
   });
   assert.ok(wrongPackage.some((line) => line.includes("package id")));
+
+  // APK asset gate: forbids cloudbase / AI / sw.js assets
+  assert.deepEqual(evaluateApkAssets(["AndroidManifest.xml", "classes.dex", "assets/weather-widget.js"]), []);
+  for (const name of FORBIDDEN_APK_ASSETS) {
+    const errs = evaluateApkAssets(["AndroidManifest.xml", `assets/${name}`]);
+    assert.ok(errs.some((line) => line.includes(name)), `should reject ${name}`);
+  }
 });
 
 test("android config is a separate test id and does not replace the desktop id", async () => {
@@ -236,6 +313,8 @@ test("android config is a separate test id and does not replace the desktop id",
   assert.equal(desktop.identifier, "app.zubinli.lifeledger");
   assert.equal(android.identifier, "app.zubinli.lifeledger.androidtest");
   assert.equal(android.productName, "Life Ledger Android Test");
+  assert.equal(android.version, "1.0.0");
+  assert.equal(android.bundle.android.versionCode, 1);
   assert.equal(android.app.windows[0].label, "main");
   assert.equal(android.app.windows[0].title, "Life Ledger Android Test");
   assert.equal(android.build.frontendDist, "../android-dist");
@@ -253,11 +332,14 @@ test("android config is a separate test id and does not replace the desktop id",
     "allow-android-backup-open-read",
     "allow-android-backup-read-chunk",
     "allow-android-backup-close-read",
+    "allow-android-get-ringer-mode",
+    "allow-android-set-back-enabled",
   ]);
   const backupPlugin = await readFile(resolve(root, "src-tauri/android/src/main/java/BackupPlugin.kt"), "utf8");
   assert.match(backupPlugin, /ACTION_CREATE_DOCUMENT/);
   assert.match(backupPlugin, /ACTION_OPEN_DOCUMENT/);
   const workflow = await readFile(resolve(root, ".github/workflows/android-cloud-build.yml"), "utf8");
+  assert.doesNotMatch(workflow, /Strip internet permission/i);
   assert.match(workflow, /tauri android init --ci/);
   assert.match(workflow, /android-prepare\.mjs src-tauri\/gen\/android/);
   assert.match(workflow, /apkanalyzer/);

@@ -2826,9 +2826,69 @@ function stripDemoCalendarPhotos() {
   });
 }
 
+let androidDemoActive = false;
+let androidDemoSavedUserState = null;
+let androidDemoState = null;
+
+function isAndroidAppFace() {
+  return document.documentElement.dataset.androidApp === "true";
+}
+
+function enterAndroidIsolatedDemo() {
+  const api = demoWorkspaceApi();
+  if (!api) return false;
+  if (!androidDemoActive) {
+    androidDemoSavedUserState = cloneData(state);
+    androidDemoActive = true;
+  }
+  const demoAnchor = api.demoSeedAnchor?.(new Date()) ?? new Date();
+  const demoState = api.buildDemoWorkspace({
+    now: demoAnchor,
+    lang: currentLang,
+    seedHabits: cloneData(seed.habits),
+  });
+  if (window.LifeLedgerLedger?.buildDemoSample) {
+    demoState.ledger = window.LifeLedgerLedger.buildDemoSample({
+      now: demoAnchor,
+      realToday: isoDate(new Date()),
+      lang: currentLang,
+      contentSeed: demoState.meta?.demo?.contentSeed,
+    });
+    const habitIds = (demoState.habits || []).map(h => h.id);
+    window.LifeLedgerLedger.alignDemoMoodWithSpend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoMoodWithBudgetOverspend?.(demoState.logs, demoState.ledger, demoAnchor);
+    window.LifeLedgerLedger.alignDemoHabitCompletionWithSpend?.(demoState.logs, demoState.ledger, habitIds, demoAnchor);
+    demoState.focusSessions = window.LifeLedgerLedger.alignDemoFocusWithSpend?.(
+      demoState.focusSessions,
+      demoState.ledger,
+      demoAnchor,
+    ) ?? demoState.focusSessions;
+  }
+  state = { ...cloneData(seed), ...demoState };
+  androidDemoState = cloneData(state);
+  selectedPlanningDate = effectiveDemoTodayIso();
+  cursor = parseDate(selectedPlanningDate);
+  renderAll();
+  return true;
+}
+
+function exitAndroidIsolatedDemo() {
+  if (!androidDemoActive) return false;
+  androidDemoActive = false;
+  androidDemoState = null;
+  state = androidDemoSavedUserState ? cloneData(androidDemoSavedUserState) : loadState();
+  androidDemoSavedUserState = null;
+  selectedPlanningDate = isoDate(new Date());
+  cursor = parseDate(selectedPlanningDate);
+  stripDemoCalendarPhotos();
+  renderAll();
+  return true;
+}
+
 function maybeApplyDemoWorkspace() {
   const api = demoWorkspaceApi();
   if (!api) return;
+  if (isAndroidAppFace()) return;
   const params = new URLSearchParams(location.search);
   if (previewName === api.DEMO_PREVIEW_ID && params.get("demo-reset") === "1") {
     localStorage.removeItem(STORAGE_KEY);
@@ -3457,6 +3517,10 @@ function saveState(options = {}) {
   const priorUpdatedAt = state.meta?.updatedAt || 0;
   const touchUpdatedAt = cloudSyncRuntime.shouldTouchUpdatedAt(options);
   state.meta = { ...(state.meta || {}), updatedAt: touchUpdatedAt ? Date.now() : priorUpdatedAt };
+  if (androidDemoActive) {
+    androidDemoState = cloneData(state);
+    return;
+  }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   requestPersistentStorage();
   cloudSyncRuntime.afterLocalSave(options);
@@ -6727,6 +6791,14 @@ function createRestoreSafetySnapshot(currentState, storage, { suffix = "" } = {}
 function createBackup(scope) {
   const range = exportRange(scope);
   const preferences = backupPreferencesForScope(scope, localStorage, { suffix: window.LifeLedgerStorageSuffix || "" });
+  let data;
+  if (typeof androidDemoActive !== "undefined" && androidDemoActive) {
+    const prev = state;
+    state = androidDemoSavedUserState || loadState();
+    try { data = scopedState(range); } finally { state = prev; }
+  } else {
+    data = scopedState(range);
+  }
   return {
     format: BACKUP_FORMAT,
     schemaVersion: BACKUP_SCHEMA_VERSION,
@@ -6734,7 +6806,7 @@ function createBackup(scope) {
     exportedAt: new Date().toISOString(),
     scope,
     range,
-    data: scopedState(range),
+    data,
     ...(preferences ? { preferences } : {}),
   };
 }
@@ -6898,7 +6970,9 @@ async function downloadExport(event) {
     if (includePhotos) {
       if (scope !== "month") throw new Error("photo-backup-month-only");
       confirmButton.textContent = tr("backup.mediaExporting");
-      const photos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
+      const dayPhotos = await photoMemories?.listRange(backup.range.start, backup.range.end) || [];
+      const splashMedia = await window.LifeLedgerSplashMedia?.listForBackup?.() || [];
+      const photos = [...dayPhotos, ...splashMedia];
       if (androidNativeBackup) {
         await exportAndroidMediaBackup(backup, photos);
       } else {
@@ -7096,6 +7170,7 @@ function mergeBackupData(current, incoming) {
     weeklyReviews: { ...(current.weeklyReviews || {}), ...(incoming.weeklyReviews || {}) },
     focusSessions: [...focusSessions.values()].sort((a, b) => Number(a.startedAt || 0) - Number(b.startedAt || 0)),
     focusSettings: { ...(current.focusSettings || seed.focusSettings) },
+    ...(isRecord(incoming.quoteSettings) ? { quoteSettings: cloneData(incoming.quoteSettings) } : isRecord(current.quoteSettings) ? { quoteSettings: cloneData(current.quoteSettings) } : {}),
     ...(ledger ? { ledger } : {}),
     ...(current.insights || incoming.insights ? { insights: window.LifeLedgerInsights?.merge(current.insights, incoming.insights) || cloneData(current.insights || incoming.insights) } : {}),
   };
@@ -7137,7 +7212,6 @@ function syncBackupPreferencesToRuntime() {
   renderDeviceProfile();
   applyNavOrder();
   renderNavOrderSettings();
-  syncWeekCollapseState();
   window.LifeLedgerTodayCards?.reload?.();
   window.LifeLedgerTodayWidgets?.reload?.();
   if (cloudMode && state && !(window.LifeLedgerStorageSuffix || "")) {
@@ -7177,7 +7251,12 @@ async function restorePendingImport() {
     try {
       const parsed = await window.LifeLedgerMediaBackup.parseBundleStream(source, source.length);
       for (const entry of parsed.entries) {
-        await photoMemories.restorePhoto(entry.photo, await entry.readBlob());
+        const blob = await entry.readBlob();
+        if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+          await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, blob);
+        } else {
+          await photoMemories.restorePhoto(entry.photo, blob);
+        }
       }
     } catch (error) {
       console.warn("Photo restore failed", error);
@@ -7188,7 +7267,13 @@ async function restorePendingImport() {
   } else if (media?.entries?.length) {
     restoreButton.textContent = tr("backup.mediaRestoring");
     try {
-      for (const entry of media.entries) await photoMemories.restorePhoto(entry.photo, entry.blob);
+      for (const entry of media.entries) {
+        if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+          await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, entry.blob);
+        } else {
+          await photoMemories.restorePhoto(entry.photo, entry.blob);
+        }
+      }
     } catch (error) {
       console.warn("Photo restore failed", error);
       void appAlert(tr("backup.mediaInvalid"));
@@ -7553,6 +7638,7 @@ function renderFocusTimer(snapshot) {
   } else {
     document.title = tr("title");
   }
+  window.dispatchEvent(new CustomEvent("life-ledger-focus-tick", { detail: snapshot || null }));
 }
 
 function openFocusTimerDialog() {
@@ -11587,9 +11673,11 @@ function initSettingsDialog() {
     label();
     $("#settingsClearLocal").hidden = !localOnly;
     $("#settingsRestoreLocal").hidden = !localOnly || !localStorage.getItem(LOCAL_BACKUP_KEY);
-    $("#settingsLoadDemo").hidden = macLocal
-      ? Boolean(demoWorkspaceApi()?.isDemoActive(state)) || Boolean(demoWorkspaceApi()?.hasMeaningfulUserData(state))
-      : !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
+    $("#settingsLoadDemo").hidden = isAndroidAppFace()
+      ? androidDemoActive
+      : macLocal
+        ? Boolean(demoWorkspaceApi()?.isDemoActive(state)) || Boolean(demoWorkspaceApi()?.hasMeaningfulUserData(state))
+        : !localOnly || Boolean(demoWorkspaceApi()?.isDemoActive(state));
     $("#settingsRestoreLocal").hidden = !(localOnly || macLocal) || !localStorage.getItem(LOCAL_BACKUP_KEY);
     $("#settingsClearLocal").hidden = !(localOnly || macLocal);
     pulseModalDialog(dialog);
@@ -11611,6 +11699,11 @@ function initSettingsDialog() {
   initModeSwitch(dialog);
   $("#settingsInstallApp").addEventListener("click", () => dialog.close(), true);
   $("#settingsLoadDemo").addEventListener("click", () => {
+    if (isAndroidAppFace()) {
+      dialog.close();
+      window.LifeLedgerAndroidFace?.enterDemo?.();
+      return;
+    }
     if (macLocal) { loadMacSample(); return; }
     localStorage.removeItem(demoDismissedStorageKey());
     localStorage.removeItem(STORAGE_KEY);
@@ -11780,3 +11873,821 @@ function applyCloudPrefs(options = {}) {
   renderAll();
 }
 window.LifeLedgerPrefs = { keys: syncedPrefKeys, changed: () => notePrefChange() };
+window.LifeLedgerAndroidCore = {
+  isIsolatedDemoActive: () => androidDemoActive,
+  enterIsolatedDemo: () => enterAndroidIsolatedDemo(),
+  exitIsolatedDemo: () => exitAndroidIsolatedDemo(),
+  getState: () => state,
+  getUserState: () => (androidDemoActive ? (androidDemoSavedUserState || loadState()) : state),
+  hasUserData: () => Boolean(demoWorkspaceApi()?.hasMeaningfulUserData?.(androidDemoActive ? (androidDemoSavedUserState || loadState()) : state)),
+  getLang: () => currentLang,
+  getTodayIso: () => effectiveDemoTodayIso(),
+  getSelectedDate: () => selectedPlanningDate || effectiveDemoTodayIso(),
+  isFutureDate: date => String(date || "") > effectiveDemoTodayIso(),
+  selectDate: date => {
+    if (!date) return;
+    selectPlanningDate(String(date));
+  },
+  getTodayQuote: () => quoteFor(0),
+  activeHabitsForDate: date => activeHabits(date),
+  orderedHabitsForDate: date => orderedTodayHabits(activeHabits(date), getLog(date).completed),
+  getHabitIconKey: habit => iconKey(habit),
+  getHabitIconPath: habit => iconCatalog[iconKey(habit)] || iconCatalog.target,
+  getLog: date => getLog(date),
+  displayHabitName: habit => displayHabitName(habit),
+  setMood: (date, mood) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return false;
+    setMood(date, mood, false);
+    return true;
+  },
+  toggleHabit: (date, id) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return false;
+    toggleHabit(date, id);
+    return true;
+  },
+  toggleHabitImmediate: (date, id) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return null;
+    const log = { ...getLog(date), completed: [...getLog(date).completed] };
+    const idx = log.completed.indexOf(id);
+    const nowDone = idx < 0;
+    if (nowDone) log.completed.push(id);
+    else log.completed.splice(idx, 1);
+    state.logs[date] = log;
+    saveState();
+    renderAll();
+    return nowDone;
+  },
+  setDayNote: (date, note) => {
+    if (String(date || "") > effectiveDemoTodayIso()) return false;
+    state.logs[date] = { ...getLog(date), note: String(note || "").trim() };
+    saveState();
+    renderAll();
+    return true;
+  },
+  getFocusDaySummary: date => {
+    const target = date || selectedPlanningDate || effectiveDemoTodayIso();
+    const sessions = focusSessionsBetween(target, target);
+    const totalMinutes = Math.round(sessions.reduce((sum, session) => sum + focusSessionMinutes(session), 0));
+    const topicMap = new Map();
+    sessions.forEach(session => {
+      const label = String(session.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+      topicMap.set(label, (topicMap.get(label) || 0) + focusSessionMinutes(session));
+    });
+    const topics = [...topicMap.entries()]
+      .filter(([, mins]) => mins >= 0.5)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([label, minutes]) => ({ label, minutes: Math.round(minutes) }));
+    const snap = focusTimer?.snapshot?.() || null;
+    return {
+      totalMinutes,
+      topics,
+      running: Boolean(snap),
+      remainingText: snap ? formatFocusTime(snap.remainingMs) : "",
+    };
+  },
+  getSpendDaySummary: date => {
+    const target = date || selectedPlanningDate || effectiveDemoTodayIso();
+    const L = window.LifeLedgerLedger;
+    const ledger = L ? L.normalize(state.ledger || null, { lang: currentLang }) : null;
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "de-DE");
+    const currency = ledger?.settings?.defaultCurrency || "EUR";
+    const detail = ledger ? L.spendingTodayDetail(ledger, target, { lang: currentLang }) : { totalMinor: 0, expenseCount: 0 };
+    const totalMinor = Math.abs(Number(detail.totalMinor) || 0);
+    const formatted = ledger ? L.formatMoney(totalMinor, currency, locale) : "€0.00";
+    const end = parseDate(target);
+    const bars = [];
+    for (let off = 6; off >= 0; off -= 1) {
+      const d = new Date(end);
+      d.setDate(end.getDate() - off);
+      const key = isoDate(d);
+      const minor = ledger ? Math.abs(L.rangeSummary(ledger, key, key).expenseMinor) : 0;
+      bars.push({ date: key, minor, isSelected: key === target });
+    }
+    const maxMinor = Math.max(1, ...bars.map(b => b.minor));
+    const spark7 = bars.map(b => ({
+      ...b,
+      heightPct: b.minor > 0 ? Math.max(18, Math.round((b.minor / maxMinor) * 100)) : 14,
+    }));
+    return {
+      totalMinor,
+      formatted,
+      count: Number(detail.expenseCount) || 0,
+      currency,
+      spark7,
+    };
+  },
+  getRhythm7Summary: date => {
+    const end = parseDate(date || selectedPlanningDate || effectiveDemoTodayIso());
+    const todayCap = effectiveDemoTodayIso();
+    const days = [];
+    for (let off = 6; off >= 0; off -= 1) {
+      const d = new Date(end);
+      d.setDate(end.getDate() - off);
+      const key = isoDate(d);
+      const scored = dailyHabits(key);
+      const future = key > todayCap;
+      const done = future ? 0 : scored.filter(h => getLog(key).completed.includes(h.id)).length;
+      days.push({ date: key, done, total: scored.length, future, pct: scored.length && !future ? Math.round((done / scored.length) * 100) : 0 });
+    }
+    const past = days.filter(d => !d.future);
+    const sumDone = past.reduce((s, d) => s + d.done, 0);
+    const sumAll = past.reduce((s, d) => s + d.total, 0);
+    return { pct: sumAll ? Math.round((sumDone / sumAll) * 100) : 0, days };
+  },
+  openFocus: () => {
+    if (isAndroidAppFace() && window.LifeLedgerAndroidFace?.openFocus) {
+      window.LifeLedgerAndroidFace.openFocus();
+      return;
+    }
+    if (typeof openFocusTimerDialog === "function") openFocusTimerDialog();
+  },
+  openSpend: date => {
+    if (isAndroidAppFace() && window.LifeLedgerAndroidFace?.openKeypadSheet) {
+      window.LifeLedgerAndroidFace.openKeypadSheet({ date: date || selectedPlanningDate || effectiveDemoTodayIso() });
+      return;
+    }
+    window.LifeLedgerLedgerUI?.openToDay?.(date || selectedPlanningDate || effectiveDemoTodayIso());
+    switchToView("ledger");
+  },
+  getLedger: () => window.LifeLedgerLedger?.normalize(state.ledger || null, { lang: currentLang }) || null,
+  commitLedger: nextLedger => {
+    if (!nextLedger) return false;
+    state.ledger = nextLedger;
+    saveState();
+    renderAll();
+    return true;
+  },
+  addLedgerTransaction: draft => {
+    const L = window.LifeLedgerLedger;
+    if (!L) return null;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    // The Android keypad has no account picker: book into the first open account (normalize guarantees one).
+    if (!draft?.accountId) draft = { ...draft, accountId: base.accounts.find(a => !a.archived)?.id };
+    const res = L.addTransaction(base, draft, { lang: currentLang });
+    if (!res?.ledger) return null;
+    state.ledger = res.ledger;
+    saveState();
+    renderAll();
+    return res.transaction || null;
+  },
+  removeLedgerTransaction: id => {
+    const L = window.LifeLedgerLedger;
+    if (!L || !id) return null;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    const res = L.removeTransaction(base, id);
+    if (!res?.removed) return null;
+    state.ledger = res.ledger;
+    saveState();
+    renderAll();
+    return { removed: res.removed, index: res.index };
+  },
+  restoreLedgerTransaction: (removed, index) => {
+    const L = window.LifeLedgerLedger;
+    if (!L || !removed) return false;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    state.ledger = L.restoreTransaction(base, removed, index);
+    saveState();
+    renderAll();
+    return true;
+  },
+  updateLedgerTransaction: (id, patch) => {
+    const L = window.LifeLedgerLedger;
+    if (!L || !id) return false;
+    const base = L.normalize(state.ledger || null, { lang: currentLang });
+    const res = L.updateTransaction(base, id, patch, { lang: currentLang });
+    if (!res?.ledger) return false;
+    state.ledger = res.ledger;
+    saveState();
+    renderAll();
+    return true;
+  },
+  openBankImport: () => {
+    window.LifeLedgerMoneyUI?.openImport?.();
+  },
+  getMonthTimelineData: ym => {
+    const targetYm = /^\d{4}-\d{2}$/.test(String(ym || "")) ? String(ym) : effectiveDemoTodayIso().slice(0, 7);
+    const [y, m] = targetYm.split("-").map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const todayCap = effectiveDemoTodayIso();
+    const firstDow = (new Date(y, m - 1, 1, 12).getDay() + 6) % 7; // 0=Mon..6=Sun
+    const counts = { good: 0, calm: 0, low: 0 };
+    const calendarDays = [];
+    let recordedDays = 0;
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const iso = `${targetYm}-${String(d).padStart(2, "0")}`;
+      const log = getLog(iso);
+      const isFuture = iso > todayCap;
+      if (log.mood === "很好") counts.good += 1;
+      else if (log.mood === "平静") counts.calm += 1;
+      else if (log.mood === "低落") counts.low += 1;
+      const hasAny = Boolean(log.mood || String(log.note || log.moodReason || "").trim() || (log.completed || []).length);
+      if (hasAny && !isFuture) recordedDays += 1;
+      calendarDays.push({ iso, day: d, mood: log.mood || "", isToday: iso === todayCap, isFuture, hasAny });
+    }
+    const L = window.LifeLedgerLedger;
+    const ledger = L ? L.normalize(state.ledger || null, { lang: currentLang }) : null;
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "zh-CN");
+    const currency = ledger?.settings?.defaultCurrency || "EUR";
+    // Shared rule (S5): skip pure-mood days (keep only days with written note or moodReason)
+    const entries = Object.entries(state.logs || {})
+      .filter(([date, log]) => date.startsWith(`${targetYm}-`) && date <= todayCap && String(log?.note || log?.moodReason || "").trim())
+      .sort(([a], [b]) => b.localeCompare(a))
+      .map(([date, log]) => {
+        const habits = activeHabits(date);
+        const doneCount = habits.filter(h => (log.completed || []).includes(h.id)).length;
+        const focusMins = Math.round(focusSessionsBetween(date, date).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+        const spendMinor = ledger ? Math.abs(L.rangeSummary(ledger, date, date).expenseMinor) : 0;
+        return {
+          date,
+          mood: log.mood || "",
+          text: String(log.note || log.moodReason || "").trim(),
+          doneCount,
+          totalHabits: habits.length,
+          focusMinutes: focusMins,
+          spendMinor,
+          spendFormatted: spendMinor > 0 && ledger ? L.formatMoney(spendMinor, currency, locale) : "",
+        };
+      });
+    return { ym: targetYm, firstDow, daysInMonth, counts, recordedDays, calendarDays, entries };
+  },
+  getWeekData: weekKey => {
+    const todayCap = effectiveDemoTodayIso();
+    const key = weekKey || isoWeekKey(parseDate(todayCap));
+    const { monday, sunday } = weekDatesFromKey(key);
+    const startIso = isoDate(monday);
+    const endIso = isoDate(sunday);
+    const days = [];
+    let totalDone = 0;
+    let totalPossible = 0;
+    const moodCounts = { good: 0, calm: 0, low: 0 };
+    for (let i = 0; i < 7; i += 1) {
+      const dt = new Date(monday);
+      dt.setDate(monday.getDate() + i);
+      const iso = isoDate(dt);
+      const future = iso > todayCap;
+      const scored = dailyHabits(iso);
+      const log = getLog(iso);
+      const done = future ? 0 : scored.filter(h => log.completed.includes(h.id)).length;
+      if (!future) {
+        totalDone += done;
+        totalPossible += scored.length;
+        if (log.mood === "很好") moodCounts.good += 1;
+        else if (log.mood === "平静") moodCounts.calm += 1;
+        else if (log.mood === "低落") moodCounts.low += 1;
+      }
+      days.push({
+        iso,
+        weekdayIndex: i,
+        future,
+        done,
+        total: scored.length,
+        pct: !future && scored.length ? Math.round((done / scored.length) * 100) : 0,
+        mood: future ? "" : (log.mood || ""),
+      });
+    }
+    const focusMinutes = Math.round(focusSessionsBetween(startIso, endIso).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const prevMonday = new Date(monday);
+    prevMonday.setDate(monday.getDate() - 7);
+    const prevSunday = new Date(sunday);
+    prevSunday.setDate(sunday.getDate() - 7);
+    const prevFocusMinutes = Math.round(focusSessionsBetween(isoDate(prevMonday), isoDate(prevSunday)).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const ym = startIso.slice(0, 7);
+    const monthWritten = Boolean(writtenReview(state.reviews?.[ym]).trim());
+    return {
+      weekKey: key,
+      weekNum: Number(String(key).split("-W")[1] || 1),
+      startIso,
+      endIso,
+      prevWeekKey: isoWeekKey(prevMonday),
+      nextWeekKey: isoWeekKey(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 7, 12)),
+      isCurrent: key === isoWeekKey(parseDate(todayCap)),
+      days,
+      completionPct: totalPossible ? Math.round((totalDone / totalPossible) * 100) : 0,
+      totalDone,
+      totalPossible,
+      focusMinutes,
+      focusDeltaMinutes: focusMinutes - prevFocusMinutes,
+      moodCounts,
+      goals: cloneData(state.weeklyGoals?.[key] || []),
+      output: String(state.weeklyOutputs?.[key] || ""),
+      monthYm: ym,
+      monthWritten,
+    };
+  },
+  toggleWeeklyGoal: (weekKey, goalId) => {
+    const list = cloneData(state.weeklyGoals?.[weekKey] || []);
+    const item = list.find(g => g.id === goalId);
+    if (!item) return false;
+    item.done = !item.done;
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return true;
+  },
+  addWeeklyGoal: (weekKey, text) => {
+    const clean = String(text || "").trim();
+    if (!clean) return false;
+    const list = [...cloneData(state.weeklyGoals?.[weekKey] || []), { id: createId(), text: clean, done: false }];
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return true;
+  },
+  removeWeeklyGoal: (weekKey, goalId) => {
+    const list = cloneData(state.weeklyGoals?.[weekKey] || []);
+    const idx = list.findIndex(g => g.id === goalId);
+    if (idx < 0) return null;
+    const [removed] = list.splice(idx, 1);
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return { removed, index: idx };
+  },
+  restoreWeeklyGoal: (weekKey, removed, index) => {
+    if (!removed) return false;
+    const list = cloneData(state.weeklyGoals?.[weekKey] || []);
+    list.splice(Math.min(Math.max(0, Number(index) || 0), list.length), 0, removed);
+    state.weeklyGoals = { ...(state.weeklyGoals || {}), [weekKey]: list };
+    saveState();
+    renderAll();
+    return true;
+  },
+  setWeeklyOutput: (weekKey, text) => {
+    state.weeklyOutputs = { ...(state.weeklyOutputs || {}), [weekKey]: String(text || "") };
+    saveState();
+    return true;
+  },
+  getMonthReviewData: ym => {
+    const todayCap = effectiveDemoTodayIso();
+    const targetYm = /^\d{4}-\d{2}$/.test(String(ym || "")) ? String(ym) : todayCap.slice(0, 7);
+    const [y, m] = targetYm.split("-").map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const startIso = `${targetYm}-01`;
+    const endIso = `${targetYm}-${String(daysInMonth).padStart(2, "0")}`;
+    const capEnd = endIso > todayCap ? todayCap : endIso;
+    let totalDone = 0;
+    let totalPossible = 0;
+    const perHabit = new Map();
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const iso = `${targetYm}-${String(d).padStart(2, "0")}`;
+      if (iso > todayCap) break;
+      const log = getLog(iso);
+      const dayHabits = activeHabits(iso);
+      dayHabits.forEach(h => {
+        const done = log.completed.includes(h.id);
+        if (h.countsTowardDaily !== false && (h.frequency || "daily") === "daily") {
+          totalPossible += 1;
+          if (done) totalDone += 1;
+        }
+        const rec = perHabit.get(h.id) || { habit: h, done: 0, total: 0 };
+        rec.total += 1;
+        if (done) rec.done += 1;
+        perHabit.set(h.id, rec);
+      });
+    }
+    const focusMinutes = Math.round(focusSessionsBetween(startIso, capEnd).reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const L = window.LifeLedgerLedger;
+    const ledger = L ? L.normalize(state.ledger || null, { lang: currentLang }) : null;
+    const money = ledger ? L.moneyMonth(ledger, targetYm) : { incomeMinor: 0, expenseMinor: 0 };
+    const locale = ({ en: "en-GB", zh: "zh-CN", de: "de-DE" }[currentLang] || "zh-CN");
+    const currency = ledger?.settings?.defaultCurrency || "EUR";
+    const habitRows = [...perHabit.values()]
+      .map(r => ({
+        id: r.habit.id,
+        name: displayHabitName(r.habit),
+        iconKey: iconKey(r.habit),
+        iconPath: iconCatalog[iconKey(r.habit)] || iconCatalog.target,
+        done: r.done,
+        total: r.total,
+        pct: r.total ? Math.round((r.done / r.total) * 100) : 0,
+      }))
+      .sort((a, b) => b.pct - a.pct);
+    return {
+      ym: targetYm,
+      prevYm: L ? L.shiftYm(targetYm, -1) : targetYm,
+      nextYm: L ? L.shiftYm(targetYm, 1) : targetYm,
+      completionPct: totalPossible ? Math.round((totalDone / totalPossible) * 100) : 0,
+      focusMinutes,
+      expenseFormatted: ledger ? L.formatMoney(money.expenseMinor, currency, locale) : "€0.00",
+      habitRows,
+      // l024: unwritten month review strictly stays blank (never auto-assembled from weekly reviews)
+      reviewText: writtenReview(state.reviews?.[targetYm]),
+    };
+  },
+  setMonthlyReview: (ym, text) => {
+    state.reviews = { ...(state.reviews || {}), [ym]: String(text || "") };
+    saveState();
+    return true;
+  },
+  getHorizonData: () => {
+    const planning = state.planning && typeof state.planning === "object" ? state.planning : { phases: [], currentPhaseId: "", note: "" };
+    const phases = Array.isArray(planning.phases) ? cloneData(planning.phases) : [];
+    const goals = Array.isArray(state.longTermGoals) ? cloneData(state.longTermGoals) : [];
+    const currentPhase = phases.find(p => p.id === planning.currentPhaseId) || phases.find(p => p.status !== "closed") || phases[0] || null;
+    return { phases, currentPhase, goals, note: String(planning.note || "") };
+  },
+  toggleHorizonStep: (goalId, stepId) => {
+    const goals = cloneData(state.longTermGoals || []);
+    const goal = goals.find(g => g.id === goalId);
+    const step = (goal?.steps || []).find(s => s.id === stepId);
+    if (!step) return false;
+    step.done = !step.done;
+    step.doneAt = step.done ? new Date().toISOString() : "";
+    state.longTermGoals = goals;
+    saveState();
+    renderAll();
+    return true;
+  },
+  getHabitsListData: dateIso => {
+    const todayCap = dateIso || effectiveDemoTodayIso();
+    const todayDt = parseDate(todayCap);
+    const ym = todayCap.slice(0, 7);
+    const [y, m] = ym.split("-").map(Number);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const { monday, sunday } = weekDatesFromKey(isoWeekKey(todayDt));
+    const weekStartIso = isoDate(monday);
+    const weekEndIso = isoDate(sunday);
+    const reminder = state.reminder || { enabled: false, time: "21:30" };
+    const items = (state.habits || []).map(h => {
+      const freq = h.frequency || "daily";
+      const todayDone = getLog(todayCap).completed.includes(h.id);
+      const streak = habitStreak(h.id, todayDone ? todayCap : isoDate(new Date(todayDt.getFullYear(), todayDt.getMonth(), todayDt.getDate() - 1, 12)));
+      const grid14 = [];
+      for (let off = 13; off >= 0; off -= 1) {
+        const dt = new Date(todayDt);
+        dt.setDate(todayDt.getDate() - off);
+        const iso = isoDate(dt);
+        grid14.push({ iso, done: getLog(iso).completed.includes(h.id), isToday: iso === todayCap });
+      }
+      let weekDone = 0;
+      let monthDone = 0;
+      const monthDots = [];
+      for (let d = 1; d <= daysInMonth; d += 1) {
+        const iso = `${ym}-${String(d).padStart(2, "0")}`;
+        const future = iso > todayCap;
+        const done = !future && getLog(iso).completed.includes(h.id);
+        if (done) monthDone += 1;
+        if (done && iso >= weekStartIso && iso <= weekEndIso) weekDone += 1;
+        monthDots.push({ iso, done, future });
+      }
+      return {
+        id: h.id,
+        habit: h,
+        name: displayHabitName(h),
+        active: h.active !== false,
+        frequency: freq,
+        trackingMode: h.trackingMode || "check",
+        target: h.target,
+        unit: h.unit || "",
+        periodTarget: Number(h.periodTarget) || (freq === "weekly" ? 3 : freq === "monthly" ? 10 : 1),
+        iconKey: iconKey(h),
+        iconPath: iconCatalog[iconKey(h)] || iconCatalog.target,
+        todayDone,
+        streak,
+        grid14,
+        weekDone,
+        monthDone,
+        monthDots,
+      };
+    });
+    return { todayCap, ym, reminder, items };
+  },
+  setHabitActive: (habitId, active) => {
+    const habit = (state.habits || []).find(h => h.id === habitId);
+    if (!habit) return null;
+    const prev = habit.active !== false;
+    habit.active = Boolean(active);
+    saveState();
+    renderAll();
+    return prev;
+  },
+  openAddHabit: () => {
+    if (typeof openHabitDialog === "function") openHabitDialog(null);
+  },
+  openEditHabit: id => {
+    if (typeof openHabitDialog === "function") openHabitDialog(id);
+  },
+  openReminderDialog: () => {
+    if (typeof openReminderDialog === "function") openReminderDialog();
+  },
+  getFocusState: () => {
+    const todayIso = effectiveDemoTodayIso();
+    const sessions = focusSessionsBetween(todayIso, todayIso);
+    const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + focusSessionMinutes(s), 0));
+    const topicMap = new Map();
+    sessions.forEach(s => {
+      const label = String(s.label || tr("focus.untitled")).trim() || tr("focus.untitled");
+      topicMap.set(label, (topicMap.get(label) || 0) + focusSessionMinutes(s));
+    });
+    const topics = [...topicMap.entries()]
+      .filter(([, mins]) => mins >= 0.5)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, minutes]) => ({ label, minutes: Math.round(minutes) }));
+    const recentTopics = [...new Set([...(state.focusSessions || [])].reverse().map(s => String(s.label || "").trim()).filter(Boolean))].slice(0, 8);
+    const snap = focusTimer?.snapshot?.() || null;
+    return {
+      snapshot: snap,
+      remainingText: snap ? formatFocusTime(snap.remainingMs) : "",
+      settings: { ...seed.focusSettings, ...(state.focusSettings || {}) },
+      totalMinutes,
+      topics,
+      recentTopics,
+    };
+  },
+  startFocus: ({ label = "", durationMinutes = 25, breakMinutes = 5 } = {}) => {
+    if (!focusTimer) return null;
+    const cleanLabel = String(label || "").trim() || tr("focus.untitled");
+    const mins = Math.max(1, Math.min(180, Number(durationMinutes) || 25));
+    const brk = Math.max(1, Math.min(60, Number(breakMinutes) || 5));
+    state.focusSettings = { ...seed.focusSettings, ...(state.focusSettings || {}), focusMinutes: mins, breakMinutes: brk, defaultTopic: cleanLabel };
+    saveState();
+    const snap = focusTimer.start({ date: effectiveDemoTodayIso(), label: cleanLabel, linkedGoalId: "", preset: "custom", durationMinutes: mins, breakMinutes: brk });
+    acquireFocusWakeLock();
+    return snap;
+  },
+  pauseFocus: () => {
+    const snap = focusTimer?.pause?.() || null;
+    releaseFocusWakeLock();
+    return snap;
+  },
+  resumeFocus: () => {
+    const snap = focusTimer?.resume?.() || null;
+    acquireFocusWakeLock();
+    return snap;
+  },
+  extendFocus: (extraMinutes = 5) => focusTimer?.extend?.(extraMinutes) || null,
+  endFocus: () => {
+    const session = focusTimer?.endFocus?.("finishedEarly") || null;
+    releaseFocusWakeLock();
+    return session;
+  },
+  startFocusBreak: () => {
+    const snap = focusTimer?.startBreak?.() || null;
+    acquireFocusWakeLock();
+    return snap;
+  },
+  skipFocusBreak: () => {
+    focusTimer?.skipBreak?.();
+    releaseFocusWakeLock();
+  },
+  switchToView: view => switchToView(view),
+  openImportBackup: () => {
+    openBackupDialog();
+    setBackupTab("import");
+  },
+  openSettings: () => {
+    if (isAndroidAppFace() && window.LifeLedgerAndroidFace?.openSettings) {
+      window.LifeLedgerAndroidFace.openSettings();
+      return;
+    }
+    $("#settingsButton")?.click();
+  },
+  createBackup: (scope = "all") => createBackup(scope),
+  getQuoteSettings: () => {
+    const src = androidDemoActive ? (androidDemoSavedUserState || loadState()) : state;
+    const q = src?.quoteSettings;
+    const mode = q?.mode === "custom" || q?.mode === "mixed" ? q.mode : "auto";
+    const items = Array.isArray(q?.items) ? cloneData(q.items.filter(it => it && String(it.text || "").trim())) : [];
+    return { mode, items };
+  },
+  setQuoteSettings: next => {
+    const mode = next?.mode === "custom" || next?.mode === "mixed" ? next.mode : "auto";
+    const rawItems = Array.isArray(next?.items)
+      ? next.items
+          .map(it => ({ text: String(it?.text || "").trim().slice(0, 300), source: String(it?.source || "").trim().slice(0, 120) }))
+          .filter(it => it.text)
+          .slice(0, 100)
+      : typeof next?.rawText === "string"
+        ? parseCustomQuotes(next.rawText)
+        : (state.quoteSettings?.items || []);
+    state.quoteSettings = { mode, items: rawItems };
+    saveState();
+    applyLanguage();
+    renderAll();
+    return cloneData(state.quoteSettings);
+  },
+  parseCustomQuotes: raw => parseCustomQuotes(raw),
+  getThemeChoice: () => themeChoice,
+  setThemeChoice: next => {
+    if (!["system", "light", "dark"].includes(next)) return themeChoice;
+    themeChoice = next;
+    try { localStorage.setItem(THEME_KEY, themeChoice); } catch {}
+    applyTheme();
+    renderAll();
+    return themeChoice;
+  },
+  setLanguage: next => {
+    if (!supportedLanguages.includes(next)) return currentLang;
+    currentLang = next;
+    try {
+      localStorage.setItem(LANGUAGE_KEY, currentLang);
+      localStorage.setItem(LANGUAGE_PREFERENCE_KEY, "true");
+    } catch {}
+    try {
+      const url = new URL(location.href);
+      url.searchParams.set("lang", currentLang);
+      history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    } catch {}
+    voiceReflection?.setLanguage?.(currentLang);
+    photoMemories?.setLanguage?.(currentLang);
+    renderAll();
+    if ($("#dayDrawer")?.classList.contains("open")) renderDrawer();
+    return currentLang;
+  },
+  getReminderSettings: () => ({ ...reminderSettings }),
+  setReminderSettings: patch => {
+    reminderSettings = { ...reminderSettings, ...(patch || {}) };
+    try { localStorage.setItem(REMINDER_KEY, JSON.stringify(reminderSettings)); } catch {}
+    if ($("#reminderEnabled")) $("#reminderEnabled").checked = Boolean(reminderSettings.enabled);
+    if ($("#reminderTime")) $("#reminderTime").value = reminderSettings.time;
+    armReminderClock();
+    renderAll();
+    return { ...reminderSettings };
+  },
+  getBackupStats: () => {
+    const userState = androidDemoActive ? (androidDemoSavedUserState || loadState()) : state;
+    const dayKeys = new Set([
+      ...Object.keys(userState?.logs || {}),
+      ...Object.keys(userState?.dailyGoals || {}),
+    ]);
+    let approxBytes = 0;
+    try { approxBytes = new Blob([JSON.stringify(userState || {})]).size; } catch { approxBytes = JSON.stringify(userState || {}).length; }
+    return {
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      days: dayKeys.size,
+      habits: Array.isArray(userState?.habits) ? userState.habits.length : 0,
+      approxBytes,
+      lastBackupAt: localStorage.getItem("life-ledger-android-last-backup") || "",
+      hasNativeSaf: Boolean(androidNativeBackup),
+    };
+  },
+  exportAndroidBackup: async ({ format = "json", scope = "all" } = {}) => {
+    const backup = createBackup(scope);
+    const todayStr = isoDate(new Date());
+    if (format === "llmedia") {
+      const dayPhotos = await photoMemories?.listRange("0000-01-01", "9999-12-31") || [];
+      const splashMedia = await window.LifeLedgerSplashMedia?.listForBackup?.() || [];
+      const photos = [...dayPhotos, ...splashMedia];
+      const filename = `life-ledger-media-${todayStr}.llmedia`;
+      if (androidNativeBackup) {
+        const picked = await window.LifeLedgerAndroidBackup.pickExport(filename, "application/octet-stream");
+        if (picked?.cancelled || !picked?.uri) return { cancelled: true };
+        const sink = await androidWriteSink(picked.uri);
+        try {
+          await window.LifeLedgerMediaBackup.writeBundle(sink, backup, photos);
+        } finally {
+          await sink.close().catch(() => {});
+        }
+      } else {
+        const blob = await window.LifeLedgerMediaBackup.createBundle(backup, photos);
+        triggerFileDownload(blob, filename);
+      }
+      try { localStorage.setItem("life-ledger-android-last-backup", new Date().toISOString()); } catch {}
+      return { cancelled: false, format: "llmedia", mediaCount: photos.length, filename };
+    }
+    const filename = `life-ledger-backup-${scope}-${todayStr}.json`;
+    if (androidNativeBackup) {
+      const picked = await window.LifeLedgerAndroidBackup.pickExport(filename, "application/json");
+      if (picked?.cancelled || !picked?.uri) return { cancelled: true };
+      const sink = await androidWriteSink(picked.uri);
+      try {
+        await sink.write(new TextEncoder().encode(JSON.stringify(backup, null, 2)));
+      } finally {
+        await sink.close().catch(() => {});
+      }
+    } else {
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      triggerFileDownload(blob, filename);
+    }
+    try { localStorage.setItem("life-ledger-android-last-backup", new Date().toISOString()); } catch {}
+    return { cancelled: false, format: "json", filename };
+  },
+  pickAndPreviewAndroidImport: async (file = null) => {
+    if (!file && androidNativeBackup) {
+      const picked = await window.LifeLedgerAndroidBackup.pickImport();
+      if (picked?.cancelled || !picked?.uri) return { cancelled: true };
+      const name = picked.displayName || "life-ledger-backup";
+      const source = await androidReadSource(picked.uri);
+      let manifest = null;
+      try {
+        manifest = await window.LifeLedgerMediaBackup.parseBundlePreview(source, source.length);
+      } catch {
+        manifest = null;
+      } finally {
+        await source.close().catch(() => {});
+      }
+      if (manifest) {
+        const candidate = importedPayload(manifest.backup);
+        return {
+          cancelled: false,
+          fileName: name,
+          kind: "llmedia",
+          mediaCount: Array.isArray(manifest.photos) ? manifest.photos.length : 0,
+          summary: importStats(candidate),
+          candidate,
+          media: { manifest, androidUri: picked.uri, androidImport: true },
+        };
+      }
+      const jsonSource = await androidReadSource(picked.uri);
+      let contents = "";
+      try {
+        contents = await readAndroidTextBackup(jsonSource);
+      } finally {
+        await jsonSource.close().catch(() => {});
+      }
+      const candidate = importedPayload(JSON.parse(contents));
+      return {
+        cancelled: false,
+        fileName: name,
+        kind: "json",
+        mediaCount: 0,
+        summary: importStats(candidate),
+        candidate,
+        media: null,
+      };
+    }
+    if (!file) return { cancelled: true };
+    const mediaBundle = await window.LifeLedgerMediaBackup?.isBundle(file).catch(() => false);
+    if (!mediaBundle && file.size > MAX_IMPORT_BYTES) throw new Error("too-large");
+    const media = mediaBundle ? await window.LifeLedgerMediaBackup.parseBundle(file) : null;
+    const candidate = importedPayload(media ? media.manifest.backup : JSON.parse(await file.text()));
+    return {
+      cancelled: false,
+      fileName: file.name || "life-ledger-backup",
+      kind: media ? "llmedia" : "json",
+      mediaCount: media ? (media.entries?.length || 0) : 0,
+      summary: importStats(candidate),
+      candidate,
+      media,
+    };
+  },
+  applyAndroidImport: async preview => {
+    if (!preview?.candidate) return false;
+    if (androidDemoActive) exitAndroidIsolatedDemo();
+    const candidate = preview.candidate;
+    const media = preview.media;
+    const isComplete = candidate.scope === "all";
+    const suffix = window.LifeLedgerStorageSuffix || "";
+    try { localStorage.setItem(RESTORE_SAFETY_KEY, JSON.stringify(createRestoreSafetySnapshot(state, localStorage, { suffix }))); } catch {}
+    state = isComplete ? cloneData(candidate.data) : mergeBackupData(state, candidate.data);
+    if (isComplete && candidate.preferences && applyBackupPreferences(localStorage, candidate.preferences, { suffix })) {
+      syncBackupPreferencesToRuntime();
+    }
+    saveState();
+    let restoredMedia = 0;
+    if (media?.androidImport && media?.androidUri) {
+      const source = await androidReadSource(media.androidUri);
+      try {
+        const parsed = await window.LifeLedgerMediaBackup.parseBundleStream(source, source.length);
+        for (const entry of parsed.entries) {
+          const blob = await entry.readBlob();
+          if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+            await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, blob);
+          } else {
+            await photoMemories.restorePhoto(entry.photo, blob);
+          }
+          restoredMedia += 1;
+        }
+      } finally {
+        await source.close().catch(() => {});
+      }
+    } else if (media?.entries?.length) {
+      for (const entry of media.entries) {
+        if (entry.photo?.date === "__splash_image__" || entry.photo?.date === "__splash_audio__") {
+          await window.LifeLedgerSplashMedia?.restoreFromBackup?.(entry.photo, entry.blob);
+        } else {
+          await photoMemories.restorePhoto(entry.photo, entry.blob);
+        }
+        restoredMedia += 1;
+      }
+    }
+    selectedAnalyticsHabitIds = [];
+    renderAll();
+    return { ok: true, restoredMedia };
+  },
+  clearAllLocalData: async () => {
+    if (androidDemoActive) exitAndroidIsolatedDemo();
+    Object.keys(localStorage)
+      .filter(key => key.startsWith("life-ledger") && !KEEP_ON_CLEAR.has(key))
+      .forEach(key => localStorage.removeItem(key));
+    localStorage.setItem(demoDismissedStorageKey(), "1");
+    localStorage.setItem(LOCAL_EDITION_KEY, "wipe");
+    await window.LifeLedgerSplashMedia?.clearAll?.().catch(() => {});
+    try { indexedDB.deleteDatabase("life-ledger-wall"); } catch {}
+    try { indexedDB.deleteDatabase("life-ledger-photos" + (window.LifeLedgerStorageSuffix || "")); } catch {}
+    location.reload();
+  },
+  getFocusTopics: () => {
+    const custom = Array.isArray(state.focusSettings?.customTopics) ? state.focusSettings.customTopics : [];
+    const recent = [...new Set([...(state.focusSessions || [])].reverse().map(s => String(s.label || "").trim()).filter(Boolean))];
+    return { custom: cloneData(custom), recent: recent.slice(0, 12), defaultTopic: state.focusSettings?.defaultTopic || "" };
+  },
+  setFocusTopics: customTopics => {
+    const clean = [...new Set((Array.isArray(customTopics) ? customTopics : []).map(s => String(s || "").trim().slice(0, 60)).filter(Boolean))].slice(0, 20);
+    state.focusSettings = { ...seed.focusSettings, ...(state.focusSettings || {}), customTopics: clean };
+    saveState();
+    renderAll();
+    return clean;
+  },
+};

@@ -23,3 +23,14 @@ The optional HEIC/HEIF browser conversion fallback bundles [heic2any](https://gi
 Copyright (c) 2020 Alex Corvi.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the conditions in the upstream MIT License.
+
+
+## Plus Jakarta Sans
+
+The Android interface bundles the Latin and Latin-Extended WOFF2 subsets (weights 500, 600, 700) of [Plus Jakarta Sans](https://github.com/tokotype/PlusJakartaSans) (packaged via Fontsource v5.3.0), distributed under the SIL Open Font License, Version 1.1.
+
+Copyright 2020 The Plus Jakarta Sans Project Authors (https://github.com/tokotype/PlusJakartaSans)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at https://openfontlicense.org/ (and http://scripts.sil.org/OFL).
+
+The fonts may be used, studied, modified, and redistributed freely as long as they are not sold by themselves. Any modified or derivative versions must not use the Reserved Font Name(s) and must remain under the SIL Open Font License, Version 1.1. THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT.

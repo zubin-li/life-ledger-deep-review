@@ -18,6 +18,8 @@
     "allow-android-backup-close-write",
     "allow-android-backup-open-read",
     "allow-android-backup-read-chunk",
-    "allow-android-backup-close-read"
+    "allow-android-backup-close-read",
+    "allow-android-get-ringer-mode",
+    "allow-android-set-back-enabled"
   ]
 }

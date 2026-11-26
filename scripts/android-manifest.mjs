@@ -4,8 +4,11 @@ import { fileURLToPath } from "node:url";
 
 export const ANDROID_TEST_ID = "app.zubinli.lifeledger.androidtest";
 
-export const FORBIDDEN_PERMISSIONS = [
+export const REQUIRED_PERMISSIONS = [
   "android.permission.INTERNET",
+];
+
+export const FORBIDDEN_PERMISSIONS = [
   "android.permission.READ_EXTERNAL_STORAGE",
   "android.permission.WRITE_EXTERNAL_STORAGE",
   "android.permission.MANAGE_EXTERNAL_STORAGE",
@@ -38,6 +41,7 @@ const BACKUP_ATTRS = [
   ["android:allowBackup", "false"],
   ["android:fullBackupContent", "false"],
   ["android:dataExtractionRules", "@xml/life_ledger_backup_rules"],
+  ["android:enableOnBackInvokedCallback", "true"],
 ];
 
 function setAttr(attrs, name, value) {
@@ -58,26 +62,37 @@ function stripPermission(xml, name) {
 
 const TOOLS_NAMESPACE = "http://schemas.android.com/tools";
 
-function addRemovalMarkers(xml) {
+function addPermissionEntries(xml) {
   let next = xml.replace(/<manifest\b([^>]*)>/, (full, attrs) => {
     if (/\bxmlns:tools=/.test(attrs)) return full;
     return `<manifest${attrs} xmlns:tools="${TOOLS_NAMESPACE}">`;
   });
-  const markers = FORBIDDEN_PERMISSIONS.map(
+  const required = REQUIRED_PERMISSIONS.map(
+    (name) => `    <uses-permission android:name="${name}" />`,
+  );
+  const removals = FORBIDDEN_PERMISSIONS.map(
     (name) => `    <uses-permission android:name="${name}" tools:node="remove" />`,
-  ).join("\n");
-  return next.replace(/(<manifest\b[^>]*>)/, `$1\n${markers}`);
+  );
+  const block = [...required, ...removals].join("\n");
+  return next.replace(/(<manifest\b[^>]*>)/, `$1\n${block}`);
 }
 
 export function patchManifest(xml) {
-  let next = FORBIDDEN_PERMISSIONS.reduce(stripPermission, xml);
-  next = addRemovalMarkers(next);
+  let next = [...REQUIRED_PERMISSIONS, ...FORBIDDEN_PERMISSIONS].reduce(stripPermission, xml);
+  next = addPermissionEntries(next);
   if (!/<application\b/.test(next)) throw new Error("manifest has no application tag");
   next = next.replace(/<application\b([^>]*?)(\/?)>/g, (_full, attrs, slash) => {
     let updated = attrs.replace(/\s*\/\s*$/, "");
     for (const [name, value] of BACKUP_ATTRS) updated = setAttr(updated, name, value);
     return `<application${updated}${slash}>`;
   });
+  for (const name of REQUIRED_PERMISSIONS) {
+    const entry = `<uses-permission android:name="${name}" />`;
+    if (!next.includes(entry)) throw new Error(`required permission missing: ${name}`);
+    if (next.includes(`android:name="${name}" tools:node="remove"`)) {
+      throw new Error(`required permission must not be removed: ${name}`);
+    }
+  }
   for (const name of FORBIDDEN_PERMISSIONS) {
     const marker = `<uses-permission android:name="${name}" tools:node="remove" />`;
     if (!next.includes(marker)) throw new Error(`permission removal marker missing: ${name}`);
@@ -86,6 +101,9 @@ export function patchManifest(xml) {
   if (!next.includes('android:fullBackupContent="false"')) throw new Error("full backup was not disabled");
   if (!next.includes('android:dataExtractionRules="@xml/life_ledger_backup_rules"')) {
     throw new Error("device transfer rules were not set");
+  }
+  if (!next.includes('android:enableOnBackInvokedCallback="true"')) {
+    throw new Error("predictive back callback was not enabled");
   }
   return next;
 }
@@ -133,6 +151,9 @@ export function evaluateApkDumps({ packageName, permissions, xmltree, rules }) {
   const errors = [];
   if (packageName.trim() !== ANDROID_TEST_ID) errors.push(`unexpected package id: ${packageName.trim() || "missing"}`);
   const haystack = `${permissions}\n${xmltree}`;
+  for (const name of REQUIRED_PERMISSIONS) {
+    if (!haystack.includes(name)) errors.push(`missing required permission: ${name}`);
+  }
   for (const name of FORBIDDEN_PERMISSIONS) {
     if (haystack.includes(name)) errors.push(`forbidden permission: ${name}`);
   }

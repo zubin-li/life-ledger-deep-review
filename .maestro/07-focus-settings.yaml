@@ -1,0 +1,55 @@
+appId: app.zubinli.lifeledger.androidtest
+androidWebViewHierarchy: devtools
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/07-focus-settings  # Maestro appends .mp4
+- runFlow: subflows/welcome-empty.yaml
+- tapOn:
+    id: "androidFab"
+- waitForAnimationToEnd
+- tapOn: "专注计时"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidFocusOverlay"
+    timeout: 8000
+- tapOn:
+    id: "androidFocusStartBtn"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/07-focus-running
+- tapOn:
+    id: "androidFocusEndBtn"
+- waitForAnimationToEnd
+- assertVisible:
+    id: "androidFocusStartBtn"
+- tapOn:
+    id: "androidFocusMinBtn"
+- waitForAnimationToEnd
+- assertNotVisible:
+    id: "androidFocusOverlay"
+- tapOn:
+    id: "androidSettingsBtn"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidSetLangBtn"
+- waitForAnimationToEnd
+- tapOn: "English"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/07-lang-en
+- tapOn:
+    id: "androidSetLangBtn"
+- tapOn: "Deutsch"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/07-lang-de
+- tapOn:
+    id: "androidSetLangBtn"
+- tapOn: "简体中文"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidSetThemeBtn"
+- waitForAnimationToEnd
+- tapOn: "深色"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/07-theme-dark
+- stopRecording

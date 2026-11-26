@@ -26,6 +26,8 @@ const COMMANDS: &[&str] = &[
     "android_backup_open_read",
     "android_backup_read_chunk",
     "android_backup_close_read",
+    "android_get_ringer_mode",
+    "android_set_back_enabled",
 ];
 
 fn main() {

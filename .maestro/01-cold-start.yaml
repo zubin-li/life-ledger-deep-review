@@ -1,0 +1,28 @@
+appId: app.zubinli.lifeledger.androidtest
+androidWebViewHierarchy: devtools
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/01-cold-start  # Maestro appends .mp4
+# The 2.5 s quote splash can be over before one WebView hierarchy poll returns on a software-GPU emulator,
+# so catching it is best-effort here; splash content and timing are asserted in tests/android-boot.browser.test.mjs
+# and visible in the recording. What must hold: it goes away by itself and the welcome screen follows.
+- extendedWaitUntil:
+    visible:
+      id: "androidSplashOverlay"
+    timeout: 15000
+    optional: true
+- takeScreenshot: screenshots/01-splash-visible
+- extendedWaitUntil:
+    notVisible:
+      id: "androidSplashOverlay"
+    timeout: 15000
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidWelcome"
+    timeout: 8000
+- assertVisible:
+    text: "记录当下.*"
+- takeScreenshot: screenshots/01-welcome-ready
+- stopRecording

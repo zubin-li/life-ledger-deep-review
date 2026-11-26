@@ -1,0 +1,42 @@
+appId: app.zubinli.lifeledger.androidtest
+androidWebViewHierarchy: devtools
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/05-fab-expense  # Maestro appends .mp4
+- runFlow: subflows/welcome-empty.yaml
+- tapOn:
+    id: "androidFab"
+- waitForAnimationToEnd
+- tapOn: "记一笔 €"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidKpGrid"
+    timeout: 8000
+- tapOn: "4"
+- tapOn: "\\."
+- tapOn: "8"
+- tapOn: "0"
+- tapOn: "Plus"   # the key is exposed by its aria-label
+- tapOn: "7"
+- tapOn: "\\."
+- tapOn: "7"
+- tapOn: "0"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidKpSubmit"
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    notVisible:
+      id: "androidSheet"
+    timeout: 10000
+- assertVisible:
+    id: "androidTopbar"
+- takeScreenshot: screenshots/05-today-after-expense
+- tapOn: "记账"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*12\\.50.*"
+- takeScreenshot: screenshots/05-money-total
+- stopRecording

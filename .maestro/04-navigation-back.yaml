@@ -1,0 +1,39 @@
+appId: app.zubinli.lifeledger.androidtest
+androidWebViewHierarchy: devtools
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/04-navigation-back  # Maestro appends .mp4
+- runFlow: subflows/welcome-empty.yaml
+- tapOn:
+    id: "androidFab"
+- waitForAnimationToEnd
+- assertVisible:
+    id: "androidSheet"
+- pressKey: back
+- waitForAnimationToEnd
+- assertNotVisible:
+    id: "androidSheet"
+- tapOn: "记账"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/04-ledger-tab
+- pressKey: back
+- tapOn: "时间轴"
+- waitForAnimationToEnd
+- pressKey: back
+- tapOn: "习惯"
+- waitForAnimationToEnd
+- takeScreenshot: screenshots/04-habits-tab
+- pressKey: back
+- tapOn: "今日"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidSettingsBtn"
+- waitForAnimationToEnd
+- assertVisible:
+    id: "androidSettingsOverlay"
+- pressKey: back
+- waitForAnimationToEnd
+- assertNotVisible:
+    id: "androidSettingsOverlay"
+- stopRecording

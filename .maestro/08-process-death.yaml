@@ -1,0 +1,39 @@
+appId: app.zubinli.lifeledger.androidtest
+androidWebViewHierarchy: devtools
+---
+- launchApp:
+    clearState: true
+- startRecording: recordings/08-process-death  # Maestro appends .mp4
+- runFlow: subflows/welcome-empty.yaml
+- tapOn: "记账"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidMoneyAddBtn"
+- waitForAnimationToEnd
+- tapOn: "5"
+- tapOn: "\\."
+- tapOn: "0"
+- tapOn: "0"
+- waitForAnimationToEnd
+- tapOn:
+    id: "androidKpSubmit"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*5\\.00.*"
+- takeScreenshot: screenshots/08-before-kill
+- stopApp
+- launchApp:
+    clearState: false
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: "androidTopbar"
+    timeout: 15000
+- assertVisible:
+    text: ".*${TODAY_ZH}.*"
+- tapOn: "记账"
+- waitForAnimationToEnd
+- assertVisible:
+    text: ".*5\\.00.*"
+- takeScreenshot: screenshots/08-after-relaunch
+- stopRecording

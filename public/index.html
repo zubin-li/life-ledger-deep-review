@@ -26,6 +26,9 @@
         if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
           document.documentElement.classList.add("motion-reduced");
         }
+        if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) && new URLSearchParams(location.search).get("platform") === "android") {
+          document.documentElement.dataset.androidApp = "true";
+        }
       })();
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
@@ -38,6 +41,7 @@
     <link rel="stylesheet" href="./pages-polish.css?v=2.1.0" />
     <link rel="stylesheet" href="./money.css?v=2.1.0" />
     <link rel="stylesheet" href="./v210.css?v=2.1.0" />
+    <script>if (document.documentElement.dataset.androidApp === "true") { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "./android-face.css?v=2.1.0"; document.head.append(l); }</script>
     <title>Life Ledger · Deep Review</title>
   </head>
   <body>
@@ -1164,5 +1168,6 @@
     <script src="./today-widgets.js?v=2.1.0"></script>
     <script src="./weather-widget.js?v=2.1.0"></script>
     <script src="./today-cards.js?v=2.1.0"></script>
+    <script src="./android-face.js?v=2.1.0"></script>
   </body>
 </html>

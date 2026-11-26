@@ -1,0 +1,189 @@
+name: Android review pack
+
+on:
+  workflow_dispatch:
+  pull_request:
+    # PR #27 targets main; paths below keep it Android-only.
+    branches:
+      - main
+    paths:
+      - "src-tauri/**"
+      - "public/**"
+      - "scripts/android-*.mjs"
+      - "scripts/review-pack/**"
+      - "tests/android-*.test.mjs"
+      - "tests/review-pack-summary.test.mjs"
+      - ".maestro/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/android-cloud-build.yml"
+      - ".github/workflows/android-review-pack.yml"
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_PKG: app.zubinli.lifeledger.androidtest
+  ANDROID_ACTIVITY: app.zubinli.lifeledger.androidtest/.MainActivity
+
+jobs:
+  android-review-pack:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17.0.15"
+
+      - name: Install pinned Android SDK and NDK
+        run: |
+          set -euo pipefail
+          sdkmanager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$sdkmanager"
+          mkdir -p "$ANDROID_HOME/licenses"
+          printf '%s\n' "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
+          "$sdkmanager" --install "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018" "platform-tools" "emulator" "system-images;android-34;google_apis;x86_64"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+
+      - name: Setup Rust stable with Android targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare local Android assets
+        run: npm run android:prepare
+
+      - name: Check Android asset and manifest logic
+        run: node --test tests/android-prepare.test.mjs
+
+      - name: Generate Android icons
+        run: npx tauri icon public/assets/app-icon.svg --output src-tauri/icons
+
+      - name: Initialize the Android project
+        run: npx tauri android init --ci
+
+      - name: Patch Android manifest and disable auto-backup
+        run: node scripts/android-manifest.mjs src-tauri/gen/android
+
+      - name: Inject Android backup plugin and version config
+        run: node scripts/android-prepare.mjs src-tauri/gen/android
+
+      - name: Gradle cache + Maven Central mirror
+        uses: gradle/actions/setup-gradle@v5
+      - name: Route Gradle downloads via Google Maven mirror
+        run: mkdir -p ~/.gradle/init.d && cp .github/gradle/maven-mirror.init.gradle.kts ~/.gradle/init.d/
+      - name: Build the x86_64 release APK
+        run: npx tauri android build --apk --target x86_64 --features review-devtools
+
+      - name: Sign with an ephemeral test key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t apks < <(find src-tauri/gen/android/app/build/outputs/apk -type f -name '*.apk' ! -name '*-signed.apk' ! -name '*-aligned.apk' | sort)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "no apk produced"
+            exit 1
+          fi
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          keytool -genkeypair -noprompt \
+            -keystore "$RUNNER_TEMP/life-ledger-android-test.jks" \
+            -storepass "$password" -keypass "$password" \
+            -alias life-ledger-android-test \
+            -keyalg RSA -keysize 2048 -validity 3650 \
+            -dname "CN=Life Ledger Android Test,O=Local Test,C=DE"
+          zipalign="$ANDROID_HOME/build-tools/35.0.0/zipalign"
+          apksigner="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          mkdir -p android-apk
+          for apk in "${apks[@]}"; do
+            aligned="$RUNNER_TEMP/$(basename "${apk%.apk}")-aligned.apk"
+            signed="android-apk/$(basename "${apk%.apk}")-signed.apk"
+            "$zipalign" -p -f 4 "$apk" "$aligned"
+            "$apksigner" sign \
+              --ks "$RUNNER_TEMP/life-ledger-android-test.jks" \
+              --ks-key-alias life-ledger-android-test \
+              --ks-pass "pass:$password" --key-pass "pass:$password" \
+              --out "$signed" "$aligned"
+            "$apksigner" verify --verbose "$signed"
+          done
+          echo "SIGNED_APK=$(find android-apk -name '*-signed.apk' | head -n1)" >> "$GITHUB_ENV"
+
+      - name: Fail if the signed APK has forbidden permissions
+        run: |
+          set -euo pipefail
+          aapt2="$ANDROID_HOME/build-tools/35.0.0/aapt2"
+          apkanalyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+          test -x "$apkanalyzer"
+          node scripts/android-apk-check.mjs "$SIGNED_APK" "$aapt2" "$apkanalyzer"
+
+      - name: Install Maestro CLI
+        run: |
+          set -euo pipefail
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Compute Berlin today labels for Maestro
+        run: |
+          set -euo pipefail
+          node --input-type=module -e "
+            const tz = 'Europe/Berlin';
+            const iso = new Date().toLocaleDateString('en-CA', { timeZone: tz });
+            const [y, m, d] = iso.split('-').map(Number);
+            const zh = m + '月' + d + '日';
+            const core = new Date(iso + 'T12:00:00');
+            const en = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: tz }).format(core);
+            const de = new Intl.DateTimeFormat('de-DE', { day: 'numeric', month: 'short', timeZone: tz }).format(core);
+            console.log('TODAY_ZH=' + zh);
+            console.log('TODAY_EN=' + en);
+            console.log('TODAY_DE=' + de);
+          " >> "$GITHUB_ENV"
+
+      # From the android-emulator-runner README: ubuntu runners need KVM enabled explicitly.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Boot emulator (wait for system services, not just boot_completed)
+        run: bash scripts/review-pack/boot-emulator.sh
+      - name: Emulator quality flows (Maestro + gfxinfo)
+        id: flows
+        env:
+          ANDROID_PKG: app.zubinli.lifeledger.androidtest
+          ANDROID_ACTIVITY: app.zubinli.lifeledger.androidtest/.MainActivity
+        run: bash scripts/review-pack/run-flows.sh
+      - name: Save logcat
+        if: always()
+        run: adb logcat -d > android-review-pack/logcat.txt 2>/dev/null || true
+      - name: Upload android-review-pack artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-review-pack
+          path: |
+            android-review-pack/**
+          if-no-files-found: error
+          retention-days: 14

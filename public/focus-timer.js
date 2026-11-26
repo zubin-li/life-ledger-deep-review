@@ -173,6 +173,20 @@
       return snapshot();
     }
 
+    function extend(extraMinutes = 5) {
+      if (!active || active.phase !== "focus") return snapshot();
+      const addMs = Math.max(1, Number(extraMinutes) || 5) * 60000;
+      active.durationMs = clampMs(active.durationMs) + addMs;
+      if (active.status === "running") {
+        active.endsAt = (active.endsAt || now()) + addMs;
+      } else {
+        active.remainingMs = clampMs(active.remainingMs) + addMs;
+      }
+      persist();
+      emit(true);
+      return snapshot();
+    }
+
     function endFocus(outcome = "finishedEarly") {
       if (!active || active.phase !== "focus") return null;
       const session = sessionFromActive(outcome);
@@ -206,7 +220,7 @@
       return snapshot();
     }
 
-    return { initialize, snapshot, reconcile, start, startBreak, pause, resume, endFocus, skipBreak, clear };
+    return { initialize, snapshot, reconcile, start, startBreak, pause, resume, extend, endFocus, skipBreak, clear };
   }
 
   root.LifeLedgerFocusTimer = { createTimer };
