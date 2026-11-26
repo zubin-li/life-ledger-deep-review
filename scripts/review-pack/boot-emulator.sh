@@ -8,6 +8,11 @@ set -euo pipefail
 IMG="system-images;android-34;google_apis;x86_64"
 AVD=ci
 mkdir -p android-review-pack
+# The emulator action used to put these on PATH; later steps (run-flows.sh) need them too.
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+[ -n "${GITHUB_PATH:-}" ] && printf '%s\n%s\n' "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/emulator" >> "$GITHUB_PATH"
+command -v adb >/dev/null || { echo "adb not found under $ANDROID_HOME/platform-tools"; exit 1; }
+adb start-server
 export ANDROID_AVD_HOME="$HOME/.android/avd"   # pin it: avdmanager and emulator must agree (runner image sets ANDROID_USER_HOME elsewhere)
 mkdir -p "$ANDROID_AVD_HOME"
 echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd -n "$AVD" -k "$IMG" -d pixel_6 --force
